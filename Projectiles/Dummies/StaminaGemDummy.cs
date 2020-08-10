@@ -1,0 +1,4 @@
+﻿namespace StarlightRiver.Projectiles.Dummies
+{
+
+}

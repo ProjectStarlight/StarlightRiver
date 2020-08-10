@@ -1,0 +1,28 @@
+﻿[*.cs]
+
+# RCS1123: Add parentheses according to operator precedence.
+dotnet_diagnostic.RCS1123.severity = none
+
+# RCS1018: Add accessibility modifiers.
+dotnet_diagnostic.RCS1018.severity = none
+
+# RCS1129: Remove redundant field initalization.
+dotnet_diagnostic.RCS1129.severity = none
+
+# RCS1036: Remove redundant empty line.
+dotnet_diagnostic.RCS1036.severity = none
+
+# RCS1032: Remove redundant parentheses.
+dotnet_diagnostic.RCS1032.severity = none
+
+# IDE0047: Remove unnecessary parentheses
+dotnet_diagnostic.IDE0047.severity = none
+
+# IDE0011: Add braces
+csharp_prefer_braces = false:none
+
+# CA1815: Override equals and operator equals on value types
+dotnet_diagnostic.CA1815.severity = none
+
+# CA1031: Do not catch general exception types
+dotnet_diagnostic.CA1031.severity = none
