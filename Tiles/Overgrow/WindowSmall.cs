@@ -40,14 +40,14 @@ namespace StarlightRiver.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Window2");
+            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Window3");
             Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Overgrow/WindowSmall");
 
             Rectangle target = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.position.Y - Main.screenPosition.Y), 4 * 16, 6 * 16);
 
             float offX = (Main.screenPosition.X + Main.screenWidth / 2 - projectile.Center.X) * -0.14f;
             float offY = (Main.screenPosition.Y + Main.screenHeight / 2 - projectile.Center.Y) * -0.14f;
-            Rectangle source = new Rectangle(tex.Width / 2 + (int)offX, 16 + (int)offY, 4 * 16, 6 * 16);
+            Rectangle source = new Rectangle((int)(projectile.position.X % tex.Width) + (int)offX, (int)(projectile.position.Y % tex.Height) + (int)offY, 4 * 16, 6 * 16);
 
             spriteBatch.Draw(tex, target, source, Color.White);
             spriteBatch.Draw(tex2, target, tex2.Frame(), lightColor);

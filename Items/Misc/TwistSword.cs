@@ -30,6 +30,7 @@ namespace StarlightRiver.Items.Misc
             item.knockBack = 2;
             item.rare = ItemRarityID.Orange;
             item.channel = true;
+            item.noUseGraphic = true;
         }
 
         public override bool CanUseItem(Player player) => charge > 40;
