@@ -30,6 +30,7 @@ namespace StarlightRiver.Items.Vitric
             recipe.AddIngredient(ItemType<VitricGem>(), 3);
             recipe.AddIngredient(ItemID.Sandstone, 20);
             recipe.AddTile(TileID.WorkBenches);
+            recipe.SetResult(this);
             recipe.AddRecipe();
         }
     }
