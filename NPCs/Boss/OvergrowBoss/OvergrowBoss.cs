@@ -70,27 +70,35 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                     GlobalTimer = 0;
 
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.ScreenMoveTime = 320;
+                    mp.ScreenMoveTime = 860;
                     mp.ScreenMoveTarget = npc.Center;
+                    mp.ScreenMovePan = npc.Center + new Vector2(0, -100);
 
-                    string message = "Faerie Guardian";
-                    if (Main.rand.Next(10000) == 0) message = "Titty Elongator";
-                    StarlightRiver.Instance.textcard.Display("Eggshells", message, null, 260);
-
-                    StarlightWorld.OvergrowBossFree = true;
                     Phase = (int)OvergrowBossPhase.spawnAnimation;
                 }
             }
 
             if (Phase == (int)OvergrowBossPhase.spawnAnimation) //the boss' spawn animation.
             {
-                if (GlobalTimer >= 500) Phase = (int)OvergrowBossPhase.Setup;
+                if(GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/OvergrowBoss");
+
+                if (GlobalTimer <= 120) npc.position.Y--;
+
+                if (GlobalTimer == 120) StarlightWorld.OvergrowBossFree = true;
+
+                if (GlobalTimer == 500)
+                {
+                    string message = "Faerie Guardian";
+                    if (Main.rand.Next(10000) == 0) message = "Titty Elongator";
+                    StarlightRiver.Instance.textcard.Display("Eggshells", message, null, 220);
+                }
+
+                if (GlobalTimer >= 860) Phase = (int)OvergrowBossPhase.Setup;
             }
 
             if (Phase == (int)OvergrowBossPhase.Setup)
             {
                 npc.boss = true;
-                music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/OvergrowBoss");
 
                 int index = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<OvergrowBossFlail>()); //spawn the flail after intro
                 (Main.npc[index].modNPC as OvergrowBossFlail).parent = this; //set the flail's parent

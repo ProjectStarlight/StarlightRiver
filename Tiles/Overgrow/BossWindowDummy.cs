@@ -38,7 +38,12 @@ namespace StarlightRiver.Tiles.Overgrow
 
         private static void UpdateWindowParticles(Particle particle)
         {
+            particle.Color = Color.White * (particle.Timer / 600f) * 0.6f;
+            particle.Scale = particle.Timer / 600f * 0.6f;
+            particle.Position = particle.StoredPosition + FindOffset(particle.StoredPosition, 0.35f) + particle.Velocity * (600 - particle.Timer) - Main.screenPosition;
+            particle.Rotation += 0.1f;
 
+            particle.Timer--;
         }
 
         public override void Update()
@@ -92,7 +97,7 @@ namespace StarlightRiver.Tiles.Overgrow
                 }
             }
 
-            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>()) /*&& !StarlightWorld.OvergrowBossFree*/)
+            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.OvergrowBossFree)
             {
                 NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 250, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>());
 
@@ -102,15 +107,15 @@ namespace StarlightRiver.Tiles.Overgrow
                 NPC.NewNPC((int)projectile.Center.X + 300, (int)projectile.Center.Y + 600, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
             }
 
-            if (StarlightWorld.OvergrowBossOpen && projectile.ai[0] <= 360) projectile.ai[0]++;
+            if (StarlightWorld.OvergrowBossFree && projectile.ai[0] <= 360) projectile.ai[0]++;
         }
 
-        public Vector2 FindOffset(Vector2 basepos, float factor)
+        private static Vector2 FindOffset(Vector2 basepos, float factor, bool noVertical = false)
         {
             Vector2 origin = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
             float x = (origin.X - basepos.X) * factor;
             float y = (origin.Y - basepos.Y) * factor * 0.4f;
-            return new Vector2(x, y);
+            return new Vector2(x, noVertical ? 0 : y);
         }
 
         private Rectangle GetSource(float offset, Texture2D tex)
@@ -145,7 +150,7 @@ namespace StarlightRiver.Tiles.Overgrow
 
             // Update + draw dusts
             particles.DrawParticles(spriteBatch);
-            if (Main.rand.Next(10) == 0) particles.AddParticle(new Particle(projectile.Center + new Vector2(Main.rand.Next(-350, 350), -650), new Vector2(0, Main.rand.NextFloat(0.8f, 1.6f)), 0, 1, Color.White, 300, Vector2.Zero));
+            if (Main.rand.Next(10) == 0) particles.AddParticle(new Particle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, projectile.Center + new Vector2(Main.rand.Next(-350, 350), -580)));
 
             for (int k = -2; k < 3; k++)
             {
@@ -155,7 +160,7 @@ namespace StarlightRiver.Tiles.Overgrow
                 float sin2 = (float)Math.Sin(rot + k * 1.4f);
                 float cos = (float)Math.Cos(rot + k * 1.8f);
 
-                Vector2 beampos = dpos + FindOffset(pos, 0.4f + Math.Abs(k) * 0.05f) + new Vector2(k * 85 + (k % 2 == 0 ? sin : sin2) * 30, -300);
+                Vector2 beampos = dpos + FindOffset(pos, 0.4f + Math.Abs(k) * 0.05f, true) + new Vector2(k * 85 + (k % 2 == 0 ? sin : sin2) * 30, -220);
                 Rectangle beamrect = new Rectangle((int)beampos.X - (int)(sin * 30), (int)beampos.Y + (int)(sin2 * 70), 90 + (int)(sin * 30), 700 + (int)(sin2 * 140));
 
                 spriteBatch.Draw(tex2, beamrect, tex2.Frame(), new Color(255, 255, 200) * (1.4f + cos) * 0.9f, 0, tex2.Frame().Size() / 2, SpriteEffects.FlipVertically, 0);
@@ -164,31 +169,22 @@ namespace StarlightRiver.Tiles.Overgrow
             spriteBatch.End();
             spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            for (int k = -10; k < 10; k++)// small waterfalls
+            for (int k = -9; k < 8; k++)// small waterfalls
             {
                 Texture2D watertex = GetTexture("StarlightRiver/Tiles/Overgrow/Waterfall");
                 int frame = (int)Main.time % 16 / 2;
-                spriteBatch.Draw(watertex, dpos + new Vector2(100, k * 64) + FindOffset(pos, 0.22f), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 2, 0, 0);
+                spriteBatch.Draw(watertex, dpos + new Vector2(100, k * 64) + FindOffset(pos, 0.22f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 2, 0, 0);
             }
 
-
+            //front row
             Texture2D backtex4 = GetTexture("StarlightRiver/Tiles/Overgrow/Window1");
                 spriteBatch.Draw(backtex4, target, GetSource(0.2f, backtex4), Color.White, 0, Vector2.Zero, 0, 0);
 
-
-            /*for (int k = -5; k < 5; k++) //top row
-            {
-                Texture2D backtex4 = GetTexture("StarlightRiver/Tiles/Overgrow/Window1");
-                Vector2 thispos = dpos + new Vector2(k * backtex4.Width, -450) + FindOffset(pos, 0.25f);
-                if (Vector2.Distance(thispos, dpos) < 800)
-                    spriteBatch.Draw(backtex4, thispos, backtex4.Frame(), Color.White, 0, backtex4.Frame().Size() / 2, 1, 0, 0);
-            }*/
-
-            for (int k = -7; k < 7; k++) //big waterfall
+            for (int k = -6; k < 6; k++) //big waterfall
             {
                 Texture2D watertex = GetTexture("StarlightRiver/Tiles/Overgrow/Waterfall");
                 int frame = (int)Main.time % 16 / 2;
-                spriteBatch.Draw(watertex, dpos + new Vector2(300, k * 96) + FindOffset(pos, 0.1f), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 3, 0, 0);
+                spriteBatch.Draw(watertex, dpos + new Vector2(300, k * 96) + FindOffset(pos, 0.1f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 3, 0, 0);
             }
 
             if (projectile.ai[0] <= 360) //wall
