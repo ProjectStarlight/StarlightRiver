@@ -19,6 +19,7 @@ namespace StarlightRiver.GUI
         private bool used = false;
         private float textScale = 1;
         private string texturePath = "StarlightRiver/GUI/Assets/DefaultCard";
+        private bool reverse = false;
 
         private int tempTime = 0;
         private int tempTimeMax = 0;
@@ -27,7 +28,7 @@ namespace StarlightRiver.GUI
 
         public void SetTexture(string path) => texturePath = path;
 
-        public void Display(string title, string message, Ability ability = null, int time = 0, float scale = 1)
+        public void Display(string title, string message, Ability ability = null, int time = 0, float scale = 1, bool titleFirst = false)
         {
             Thisability = ability;
             Title = title;
@@ -38,6 +39,7 @@ namespace StarlightRiver.GUI
             tempTime = 0;
             Timer = 1;
             textScale = scale;
+            reverse = titleFirst;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -57,8 +59,16 @@ namespace StarlightRiver.GUI
             spriteBatch.End();
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(Main.fontDeathText, Title, new Vector2(startX - TitleLength, startY + 10), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
-            spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+            if (reverse)
+            {
+                spriteBatch.DrawString(Main.fontDeathText, Title, new Vector2(startX - TitleLength, startY + (int)(30 * textScale)), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + 10), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+            }
+            else
+            {
+                spriteBatch.DrawString(Main.fontDeathText, Title, new Vector2(startX - TitleLength, startY + 10), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+            }
 
             spriteBatch.Draw(texture, new Rectangle(startX - (int)(Longest * 1.2f), startY + (int)(75 * textScale), (int)(Longest * 2.4f), 6), new Rectangle(94, 0, 8, 6), color);
 

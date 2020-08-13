@@ -334,6 +334,7 @@ namespace StarlightRiver
         public override void PostSetupContent()
         {
             NetEasy.NetEasy.Register(this);
+            CallBossChecklist();
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
