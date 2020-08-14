@@ -80,12 +80,10 @@ namespace StarlightRiver
         {
             for (int i = 1; i < segmentCount; i++)
             {
-                RopeSegment firstSegment = ropeSegments[i];
-                Vector2 velocity = (firstSegment.posNow - firstSegment.posOld) / drag;
-                firstSegment.posOld = firstSegment.posNow;
-                firstSegment.posNow += velocity;
-                firstSegment.posNow += (customGravity ? forceGravityList[i] : forceGravity) * gravityStrengthMult;
-                ropeSegments[i] = firstSegment;
+                Vector2 velocity = (ropeSegments[i].posNow - ropeSegments[i].posOld) / drag;
+                ropeSegments[i].posOld = ropeSegments[i].posNow;
+                ropeSegments[i].posNow += velocity;
+                ropeSegments[i].posNow += (customGravity ? forceGravityList[i] : forceGravity) * gravityStrengthMult;
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
@@ -96,45 +94,40 @@ namespace StarlightRiver
 
         private void ApplyConstraint(Vector2 targetPosition)
         {
-            RopeSegment firstSegment = ropeSegments[0];
-            firstSegment.posNow = targetPosition;
-            ropeSegments[0] = firstSegment;
+            ropeSegments[0].posNow = targetPosition;
 
             for (int i = 0; i < segmentCount - 1; i++)
             {
-                RopeSegment firstSeg = ropeSegments[i];
-                RopeSegment secondSeg = ropeSegments[i + 1];
-
                 float segmentDist = (customDistances ? segmentDistanceList[i] : segmentDistance);
 
-                //Vector2 distVect = (firstSeg.posNow - secondSeg.posNow);
+                //Vector2 distVect = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
                 //float dist = (float)Math.Sqrt(distVect.X * (distVect.X + distVect.Y) * distVect.Y);
 
-                float dist = (firstSeg.posNow - secondSeg.posNow).Length();
+                float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
                 float error = Math.Abs(dist - segmentDist);
                 Vector2 changeDir = Vector2.Zero;
 
                 if (dist > segmentDist)
                 {
-                    changeDir = Vector2.Normalize(firstSeg.posNow - secondSeg.posNow);
+                    changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
                 }
                 else if (dist < segmentDist)
                 {
-                    changeDir = Vector2.Normalize(secondSeg.posNow - firstSeg.posNow);
+                    changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
                 }
 
                 Vector2 changeAmount = changeDir * error;
                 if (i != 0)
                 {
-                    firstSeg.posNow -= changeAmount * 0.5f;
-                    ropeSegments[i] = firstSeg;
-                    secondSeg.posNow += changeAmount * 0.5f;
-                    ropeSegments[i + 1] = secondSeg;
+                    ropeSegments[i].posNow -= changeAmount * 0.5f;
+                    ropeSegments[i] = ropeSegments[i];
+                    ropeSegments[i + 1].posNow += changeAmount * 0.5f;
+                    ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
                 else
                 {
-                    secondSeg.posNow += changeAmount;
-                    ropeSegments[i + 1] = secondSeg;
+                    ropeSegments[i + 1].posNow += changeAmount;
+                    ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
             }
         }
@@ -236,7 +229,7 @@ namespace StarlightRiver
             }
         }
 
-        public struct RopeSegment
+        public class RopeSegment
         {
             public Vector2 posNow;
             public Vector2 posOld;

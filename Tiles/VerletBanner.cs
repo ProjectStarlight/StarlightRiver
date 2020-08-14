@@ -50,22 +50,23 @@ namespace StarlightRiver.Tiles
             {
                 segmentCount = 16,
                 segmentDistance = 16,//if your using a texture to connect all the points, keep this near the texture size
-                constraintRepetitions = 1,//defaults to 2, raising this lowers stretching at the cost of performance
-                drag = 1.01f,//This number defaults to 1, Is very sensitive
+                constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+                drag = 2f,//This number defaults to 1, Is very sensitive
                 forceGravity = new Vector2(0f, 0.25f),//gravity x/y
                 gravityStrengthMult = 1f
             };
         }
 
+
         public override void Update()
         {
             Chain.UpdateChain(projectile.Center);
 
-            if (Chain.init) Chain.IterateRope(TestMethod);
+            if (Chain.init) Chain.IterateRope(WindForce);
             projectile.ai[0] += 0.005f;
         }
 
-        private void TestMethod(int index)//wind
+        private void WindForce(int index)//wind
         {
             float sin = (float)System.Math.Sin(StarlightWorld.rottime - index / 3f);
 
@@ -76,27 +77,29 @@ namespace StarlightRiver.Tiles
 
             Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.5f));
 
-            Chain.ropeSegments[index] = new VerletChainInstance.RopeSegment(pos, color);
+            Chain.ropeSegments[index].posNow = pos;
+            Chain.ropeSegments[index].color = color;
         }
+
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             if (Chain.init) Chain.DrawStrip();
         }
 
-        private void ChainDrawMethod(SpriteBatch spriteBatch, int index, Vector2 position, Vector2 prevPosition, Vector2 nextPosition)
-        {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Decoration/VerletBannerTex");
-            Texture2D tex2 = GetTexture("StarlightRiver/Tiles/VerletBanner");
+        //private void ChainDrawMethod(SpriteBatch spriteBatch, int index, Vector2 position, Vector2 prevPosition, Vector2 nextPosition)
+        //{
+        //    Texture2D tex = GetTexture("StarlightRiver/Tiles/Decoration/VerletBannerTex");
+        //    Texture2D tex2 = GetTexture("StarlightRiver/Tiles/VerletBanner");
 
-            //dots between each segment
-            spriteBatch.Draw(tex2,
-                position - Main.screenPosition,
-                new Rectangle(0, 0, tex2.Width, tex2.Height),
-                Color.White,
-                0f,
-                new Vector2(tex2.Width / 2, tex2.Height / 2),
-                0.50f, default, default);
-        }
+        //    //dots between each segment
+        //    spriteBatch.Draw(tex2,
+        //        position - Main.screenPosition,
+        //        new Rectangle(0, 0, tex2.Width, tex2.Height),
+        //        Color.White,
+        //        0f,
+        //        new Vector2(tex2.Width / 2, tex2.Height / 2),
+        //        0.50f, default, default);
+        //}
     }
 }
