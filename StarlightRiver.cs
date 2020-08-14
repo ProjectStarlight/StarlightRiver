@@ -74,12 +74,6 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
                 if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
@@ -119,6 +113,12 @@ namespace StarlightRiver
                 if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.SquidBossDowned)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
+                    priority = MusicPriority.BiomeHigh;
+                }
+
+                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+                {
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
                 }
             }
@@ -334,6 +334,7 @@ namespace StarlightRiver
         public override void PostSetupContent()
         {
             NetEasy.NetEasy.Register(this);
+            CallBossChecklist();
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)

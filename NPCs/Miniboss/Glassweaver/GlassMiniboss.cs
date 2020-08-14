@@ -58,6 +58,9 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
                     ResetAttack();
                     targetRectangle = RegionCenter;
+
+                    StarlightRiver.Instance.textcard.Display("Glassweaver", "the", null, 240, 1, true);
+
                     SetPhase(PhaseEnum.SpawnAnimation);
 
                     break;

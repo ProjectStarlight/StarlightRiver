@@ -61,6 +61,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             npc.dontTakeDamage = true;
         }
 
+        public override void NPCLoot()
+        {
+            StarlightWorld.SquidBossDowned = true;
+        }
+
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
             Texture2D ring = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyRing");
