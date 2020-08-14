@@ -62,15 +62,13 @@ namespace StarlightRiver
 
         public void UpdateChain(Vector2 targetPosition)
         {
-            if (ChainActive)
+            if (ChainActive)//the below else can be renabled for this to reset the chain, or this check can be removed
             {
                 if (init == false)
                 {
                     Start(targetPosition); //run once
                     init = true;
                 }
-
-                //Main.NewText("updated" + targetPosition);
                 //DrawRope();
                 Simulate(targetPosition);
             }
@@ -143,7 +141,7 @@ namespace StarlightRiver
             }
         }
 
-        public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing
+        public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index
         {
             for (int i = 0; i < segmentCount; i++)
             {
@@ -154,13 +152,15 @@ namespace StarlightRiver
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
         {
             //Vector2[] ropePositions = new Vector2[segmentCount];
-
+            //if (init)//some things end up calling the draw method before the update method has had a chance to run, commented out since this can be done on the side of where this method is being called
+            //{
             for (int i = 0; i < segmentCount; i++)
             {
                 //ropePositions[i] = this.ropeSegments[i].posNow; //original did this for an unknown reason
 
                 drawMethod_curPos(spritebatch, i, ropeSegments[i].posNow);
             }
+            //}
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, RopeSegment> drawMethod_curSeg) //current segment (has position and previous position)

@@ -14,7 +14,7 @@ namespace StarlightRiver.Items.Debug
     public class DebugPlacer3 : QuickTileItem
     {
         public override string Texture => "StarlightRiver/Items/Debug/DebugPotion";
-        public DebugPlacer3() : base("Debug Placer 3", "Suck my huge dragon dong", TileType<Tiles.Overgrow.OvergrowDoorLocked>(), 0) { }
+        public DebugPlacer3() : base("Debug Placer 3", "Suck my huge dragon dong", TileType<Tiles.VerletBanner>(), 0) { }
     }
 
     public class DebugPlacer4 : QuickTileItem
