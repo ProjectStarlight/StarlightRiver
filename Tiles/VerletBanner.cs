@@ -51,8 +51,8 @@ namespace StarlightRiver.Tiles
             {
                 segmentCount = 16,
                 segmentDistance = 16,//if your using a texture to connect all the points, keep this near the texture size
-                constraintRepetitions = 1,//defaults to 2, raising this lowers stretching at the cost of performance
-                drag = 1.01f,//This number defaults to 1, Is very sensitive
+                constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
+                drag = 1.2f,//This number defaults to 1, Is very sensitive
                 forceGravity = new Vector2(0f, 0.25f),//gravity x/y
                 gravityStrengthMult = 1f
             };
@@ -80,8 +80,8 @@ namespace StarlightRiver.Tiles
         }
         private void TestMethod(int index)//wind
         {
-            Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1, Chain.ropeSegments[index].posNow.Y);
-            Chain.ropeSegments[index] = new VerletChainInstance.RopeSegment(pos);
+            Chain.ropeSegments[index].posNow.X += 0.5f;
+            //Chain.ropeSegments[index].posOld = Chain.ropeSegments[index].posNow;//old behaviour, a bit of a waste of resources to just reset this
         }
 
 

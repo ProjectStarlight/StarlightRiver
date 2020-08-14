@@ -77,22 +77,22 @@ namespace StarlightRiver
             StarlightRiver.Instance.ExtraNPCInterface.SetState(state);
         }
 
-        public static void DrawLine(SpriteBatch spritebatch, Vector2 startPoint, Vector2 endPoint, Texture2D texture, Color color, int width = 1)
+        public static void DrawLine(SpriteBatch spritebatch, Vector2 startPoint, Vector2 endPoint, Texture2D texture, Color color, Rectangle sourceRect = default)
         {
             Vector2 edge = endPoint - startPoint;
             // calculate angle to rotate line
             float angle =
                 (float)Math.Atan2(edge.Y, edge.X);
 
-            Vector2 offsetStart = startPoint + new Vector2(0, -(width / 2)).RotatedBy(angle);
+            Vector2 offsetStart = startPoint + new Vector2(0, -(sourceRect.Width / 2)).RotatedBy(angle);//multiply before adding to startpoint to make the points closer
 
             spritebatch.Draw(texture,
                 new Rectangle(// rectangle defines shape of line and position of start of line
                     (int)offsetStart.X,
                     (int)offsetStart.Y,
-                    (int)edge.Length(), //sb will strech the texture to fill this rectangle
-                    width), //width of line, change this to make thicker line (may have to offset?)
-                null,
+                    (int)edge.Length(), //sb will stretch the texture to fill this rectangle
+                    sourceRect.Width), //width of line, change this to make thicker line (may have to offset?)
+                sourceRect,
                 color, //colour of line
                 angle, //angle of line (calulated above)
                 new Vector2(0, 0), // point in line about which to rotate
