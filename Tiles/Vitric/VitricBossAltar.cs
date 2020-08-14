@@ -28,10 +28,30 @@ namespace StarlightRiver.Tiles.Vitric
             minPick = int.MaxValue;
         }
 
+        public override void MouseOver(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            if (tile.frameX >= 90)
+            {
+                Player player = Main.LocalPlayer;
+                player.showItemIcon2 = ItemType<Items.Vitric.GlassIdol>();
+                player.noThrow = 2;
+                player.showItemIcon = true;
+            }
+        }
+
         public override bool NewRightClick(int i, int j)
         {
-            (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
-            return true;
+            Player player = Main.LocalPlayer;
+
+            if (Helper.HasItem(player, ItemType<Items.Vitric.GlassIdol>(), 1))
+            {
+                (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
+                Helper.TryTakeItem(player, ItemType<Items.Vitric.GlassIdol>(), 1);
+                return true;
+            }
+            return false;
         }
     }
 

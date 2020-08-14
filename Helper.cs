@@ -282,20 +282,15 @@ namespace StarlightRiver
                 {
                     npc.ai[slot] = (y + 1);
                 }
+
                 if (y >= npc.ai[slot] + (npc.height / 16) || (!jump && y >= 2)) //stops counting if there is room for the npc to walk under //((int)((npc.position.Y - target.position.Y) / 16) + 1)
                 {
                     if (npc.HasValidTarget && jump)
                     {
                         Player target = Main.player[npc.target];
-                        if (npc.ai[slot] >= ((int)((npc.position.Y - target.position.Y) / 16) + 1) - (npc.height / 16 - 1))
-                        {
-                            break;
-                        }
+                        if (npc.ai[slot] >= ((int)((npc.position.Y - target.position.Y) / 16) + 1) - (npc.height / 16 - 1)) break;
                     }
-                    else
-                    {
-                        break;
-                    }
+                    else break;
                 }
             }
             if (npc.ai[slot] > 0)//jump and step up
