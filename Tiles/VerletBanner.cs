@@ -42,7 +42,6 @@ namespace StarlightRiver.Tiles
     {
         public VerletBannerDummy() : base(TileType<VerletBanner>(), 16, 16) { }
 
-
         private VerletChainInstance Chain;
 
         public override void SafeSetDefaults()
@@ -62,36 +61,29 @@ namespace StarlightRiver.Tiles
         {
             Chain.UpdateChain(projectile.Center);
 
-            if (Chain.init)
-            {
-                Chain.IterateRope(TestMethod);//This is basically a for loop
-
-                //this was for if the end of the banner could be pinned to a location
-                //    Chain.ropeSegments[Chain.segmentCount - 1] = new VerletChainInstance.RopeSegment(new Vector2(projectile.position.X + 250, projectile.position.Y + 50));
-                //    
-                //if (Main.rand.Next(25) == 0)//random movements for testing
-                //{
-                //    int index = Main.rand.Next(Chain.segmentCount);
-                //    Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 20, Chain.ropeSegments[index].posNow.Y);
-                //    Chain.ropeSegments[index] = new VerletChainInstance.RopeSegment(pos);
-                //}
-                //    //}
-            }
+            if (Chain.init) Chain.IterateRope(TestMethod);
+            projectile.ai[0] += 0.005f;
         }
+
         private void TestMethod(int index)//wind
         {
-            Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1, Chain.ropeSegments[index].posNow.Y);
-            Chain.ropeSegments[index] = new VerletChainInstance.RopeSegment(pos);
-        }
+            float sin = (float)System.Math.Sin(StarlightWorld.rottime - index / 3f);
 
+            float cos = (float)System.Math.Cos(projectile.ai[0]);
+            float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + cos);
+
+            Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
+
+            Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.5f));
+
+            Chain.ropeSegments[index] = new VerletChainInstance.RopeSegment(pos, color);
+        }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            if (Chain.init)
-            {
-                Chain.DrawRope(spriteBatch, ChainDrawMethod);
-            }
+            if (Chain.init) Chain.DrawStrip();
         }
+
         private void ChainDrawMethod(SpriteBatch spriteBatch, int index, Vector2 position, Vector2 prevPosition, Vector2 nextPosition)
         {
             Texture2D tex = GetTexture("StarlightRiver/Tiles/Decoration/VerletBannerTex");
@@ -105,16 +97,6 @@ namespace StarlightRiver.Tiles
                 0f,
                 new Vector2(tex2.Width / 2, tex2.Height / 2),
                 0.50f, default, default);
-
-            if (nextPosition != Vector2.Zero)
-            {
-                //old version used a int instead of a rect for the last input
-                //Helper.DrawLine(spriteBatch, position - Main.screenPosition, nextPosition - Main.screenPosition, Main.blackTileTexture, Color.White, (int)((-((float)i / Chain.segmentCount) + 1) * 20));
-                
-                //see the boomerang, It has a switch statment that shows having a texture for the ends
-                int frameWidth = tex.Width / 3;
-                Helper.DrawLine(spriteBatch, position - Main.screenPosition, nextPosition - Main.screenPosition, tex, Color.White, new Rectangle(frameWidth * (index % 3), 0, frameWidth, tex.Height));
-            }
         }
     }
 }

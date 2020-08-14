@@ -111,8 +111,8 @@ namespace StarlightRiver
                         for (int m = 0; m < tex.Height; m += 16)
                         {
                             Vector2 target = pos + new Vector2(k, m);
-                            Vector3 vector = Lighting.GetSubLight(target + Main.screenPosition);
-                            Color color = new Color(vector.X, vector.Y, vector.Z);//Lighting.GetColor((int)(pos.X + k + Main.screenPosition.X) / 16, (int)(pos.Y + m + Main.screenPosition.Y) / 16);
+                            //Vector3 vector = Lighting.GetSubLight(target + Main.screenPosition);
+                            Color color = Color.White;//new Color(vector.X, vector.Y, vector.Z);//Lighting.GetColor((int)(pos.X + k + Main.screenPosition.X) / 16, (int)(pos.Y + m + Main.screenPosition.Y) / 16);
                             if (CheckBackground(target, Vector2.One * 16, blacklist)) Main.spriteBatch.Draw(tex, target, new Rectangle(k, m, 16, 16), color, 0, Vector2.Zero, 1, 0, 0);
                         }
                 }
