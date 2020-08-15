@@ -89,13 +89,13 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
                     switch (AttackPhase)
                     {
-                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else ThrowSpear(); break;
+                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SlashCombo(); break;
                         case 1: PathToTarget(); break;
 
                         case 2: ThrowSpear(); break;
                         case 3: PathToTarget(); break;
 
-                        case 4: SlashCombo(); break;
+                        case 4: if (GetRegion(npc) == RegionPit) LavaWave(); else SlashCombo(); break;
                         case 5: PathToTarget(); break;
 
                         case 6: ThrowSpear(); break;

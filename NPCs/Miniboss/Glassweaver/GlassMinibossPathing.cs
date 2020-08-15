@@ -22,18 +22,18 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         //the bounce pads which the boss will use to jump when he needs to.
         private BouncePad[] pads => new BouncePad[]
         {
-            new BouncePad(new Rectangle((int)spawnPos.X - 280, (int)spawnPos.Y + 200, 32, 8), RegionCenter, this, 10),
-            new BouncePad(new Rectangle((int)spawnPos.X + 232, (int)spawnPos.Y + 200, 32, 8), RegionCenter, this, 10),
-            new BouncePad(new Rectangle((int)spawnPos.X - 16, (int)spawnPos.Y + 300, 32, 8), RegionCenter, this, 12, true),
+            new BouncePad(new Rectangle((int)spawnPos.X - 280, (int)spawnPos.Y + 200, 32, 8), RegionCenter, this, 10, 1),
+            new BouncePad(new Rectangle((int)spawnPos.X + 232, (int)spawnPos.Y + 200, 32, 8), RegionCenter, this, 10, -1),
+            new BouncePad(new Rectangle((int)spawnPos.X - 16, (int)spawnPos.Y + 300, 32, 8), RegionCenter, this, 12, 1, true),
 
-            new BouncePad(new Rectangle((int)spawnPos.X + 130, (int)spawnPos.Y + 84, 32, 8), RegionRight, this, 5),
-            new BouncePad(new Rectangle((int)spawnPos.X - 178, (int)spawnPos.Y + 84, 32, 8), RegionLeft, this, 5),
+            new BouncePad(new Rectangle((int)spawnPos.X + 130, (int)spawnPos.Y + 84, 32, 8), RegionRight, this, 5, 1),
+            new BouncePad(new Rectangle((int)spawnPos.X - 178, (int)spawnPos.Y + 84, 32, 8), RegionLeft, this, 5, -1),
 
-            new BouncePad(new Rectangle((int)spawnPos.X + 80, (int)spawnPos.Y + 300, 32, 8), RegionRight, this, 8),
-            new BouncePad(new Rectangle((int)spawnPos.X - 128, (int)spawnPos.Y + 300, 32, 8), RegionLeft, this, 8),
+            new BouncePad(new Rectangle((int)spawnPos.X + 80, (int)spawnPos.Y + 300, 32, 8), RegionRight, this, 8, 1),
+            new BouncePad(new Rectangle((int)spawnPos.X - 128, (int)spawnPos.Y + 300, 32, 8), RegionLeft, this, 8, -1),
 
-            new BouncePad(new Rectangle((int)spawnPos.X - 46, (int)spawnPos.Y + 84, 32, 8), RegionPit, this, 4, true),
-            new BouncePad(new Rectangle((int)spawnPos.X + 32, (int)spawnPos.Y + 84, 32, 8), RegionPit, this, 4, true)
+            new BouncePad(new Rectangle((int)spawnPos.X - 46, (int)spawnPos.Y + 84, 32, 8), RegionPit, this, 4, 1, true),
+            new BouncePad(new Rectangle((int)spawnPos.X + 32, (int)spawnPos.Y + 84, 32, 8), RegionPit, this, 4, 1, true)
         };
 
         //debug drawing of regions and pads
@@ -58,17 +58,15 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private Rectangle arena => new Rectangle((int)spawnPos.X - 442, (int)spawnPos.Y - 210, 868, 600);
 
-        public void Jump(int strength, bool cancel)
+        public void Jump(int strength, bool cancel, int direction)
         {
             PathingTimer++;
-
-            if (PathingTimer == 1) storedVelocity = npc.velocity.X;
 
             npc.velocity.X *= 1 - (PathingTimer / 30f);
 
             if (PathingTimer >= 30)
             {
-                if (!cancel) npc.velocity.X = storedVelocity;
+                if (!cancel) npc.velocity.X = 3 * direction;
                 npc.velocity.Y -= strength;
                 PathingTimer = 0;
             }
@@ -86,39 +84,58 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             }
 
-            if (AttackTimer == 30) npc.Center = targetRectangle.Center.ToVector2() + new Vector2(0, -100);
-
-            if(AttackTimer > 30)
+            if (AttackTimer == 30)
             {
-
+                npc.Center = targetRectangle.Center.ToVector2() + new Vector2(0, -100);
+                npc.noGravity = true;
+                npc.velocity.X = 0;
+                for (int k = 0; k < 100; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(Math.PI));
             }
 
-            if (AttackTimer == 60) ResetAttack();
+            if (AttackTimer == 45) npc.noGravity = false;
+
+            if (AttackTimer >= 60)
+            {
+                moves = 0;
+                ResetAttack();
+            }
         }
 
         private void PathToTarget()
         {
-            if (moves >= 3) Teleport(); //after too much movement without rest, teleport instead
+            if (moves >= 3)
+            {
+                Teleport(); //after too much movement without rest, teleport instead
+                return;
+            }
 
             if (AttackTimer == 1)
             {
                 PickTarget();
                 if (AttackTimer != 0)
                 {
-                    npc.velocity.X = targetRectangle.Center.X > npc.Center.X ? 3 : -3; //if we do need to change targets, set velocity   
+                    npc.velocity.X = targetRectangle.Center.X > npc.Center.X ? 4.5f : -4.5f; //if we do need to change targets, set velocity   
                     moves++;
                 }
             }
 
             npc.noTileCollide = npc.velocity.Y < 0 || (npc.velocity.Y != 0 && GetRegion(npc) == RegionCenter && targetRectangle == RegionPit); //allow us to clip on the way up, also a special case here for jumping down from center => pit
 
-            if ((npc.Hitbox.Intersects(targetRectangle) && npc.velocity.Y == 0) || AttackTimer >= 240) //extra failsafe if pathing takes longer than 4s
+            if ((npc.Hitbox.Intersects(targetRectangle) && npc.velocity.Y == 0)) //extra failsafe if pathing takes longer than 2.5s
             {
                 if (!(targetRectangle == RegionPit && Math.Abs(npc.Center.X - spawnPos.X) > 120)) //dumb bonus check for hte pit aaaa this is so shitcodedd
                 {
                     ResetAttack();
                     npc.velocity.X = 0;
                 }
+            }
+
+            if(AttackTimer >= 150) //failsafe, teleport to target instead
+            {
+                npc.Center = targetRectangle.Center.ToVector2() + new Vector2(0, -100);
+                npc.velocity.X = 0;
+                for (int k = 0; k < 100; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(Math.PI));
+                ResetAttack();
             }
         }
 

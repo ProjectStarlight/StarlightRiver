@@ -42,7 +42,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 npc.spriteDirection = npc.direction;
             }
 
-            if (AttackTimer >= 180) ResetAttack();
+            if (AttackTimer >= 120) ResetAttack();
         }
 
         #region Slash Combo Attack
@@ -153,11 +153,21 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer == 30)
             {
                 npc.TargetClosest();
-                Main.PlaySound(SoundID.Item3, npc.Center);
+                Main.PlaySound(SoundID.Item1, npc.Center);
                 Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Target.Center) * -8, ProjectileType<GlassSpear>(), 10, 1, Main.myPlayer);
             }
 
             if (AttackTimer >= 45) ResetAttack();
+        }
+
+        private void LavaWave()
+        {
+            if(AttackTimer == 1)
+            {
+
+            }
+
+            if (AttackTimer >= 90) ResetAttack();
         }
     }
 }
