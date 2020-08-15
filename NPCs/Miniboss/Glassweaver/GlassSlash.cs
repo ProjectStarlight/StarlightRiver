@@ -31,7 +31,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void AI()
         {
-            if (projectile.timeLeft == 60) Main.PlaySound(SoundID.Item2, projectile.Center);
+            if (projectile.timeLeft == 59) Main.PlaySound(SoundID.Item2, projectile.Center);
             if (parent != null) projectile.Center = parent.npc.Center + Vector2.UnitX * (projectile.ai[0] == 0 ? -23 : 23);
         }
 

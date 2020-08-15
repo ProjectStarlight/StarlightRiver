@@ -17,6 +17,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
     {
         public Rectangle targetRectangle;
         private float storedVelocity; //this should be deterministic in theory? to be tested.
+        private int moves; //same as above. testing needed.
 
         //the bounce pads which the boss will use to jump when he needs to.
         private BouncePad[] pads => new BouncePad[]
@@ -73,12 +74,40 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
         }
 
+        private void Teleport()
+        {
+            if(AttackTimer == 1)
+            {
+                PickTarget();
+            }
+
+            if(AttackTimer < 30)
+            {
+
+            }
+
+            if (AttackTimer == 30) npc.Center = targetRectangle.Center.ToVector2() + new Vector2(0, -100);
+
+            if(AttackTimer > 30)
+            {
+
+            }
+
+            if (AttackTimer == 60) ResetAttack();
+        }
+
         private void PathToTarget()
         {
+            if (moves >= 3) Teleport(); //after too much movement without rest, teleport instead
+
             if (AttackTimer == 1)
             {
                 PickTarget();
-                if (AttackTimer != 0) npc.velocity.X = targetRectangle.Center.X > npc.Center.X ? 3 : -3; //if we do need to change targets, set velocity           
+                if (AttackTimer != 0)
+                {
+                    npc.velocity.X = targetRectangle.Center.X > npc.Center.X ? 3 : -3; //if we do need to change targets, set velocity   
+                    moves++;
+                }
             }
 
             npc.noTileCollide = npc.velocity.Y < 0 || (npc.velocity.Y != 0 && GetRegion(npc) == RegionCenter && targetRectangle == RegionPit); //allow us to clip on the way up, also a special case here for jumping down from center => pit
@@ -113,7 +142,11 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 }
             }
 
-            if (GetRegion(npc) == targetRectangle) ResetAttack(); //cycle attack instead of trying to move if we dont need to move!
+            if (GetRegion(npc) == targetRectangle)//cycle attack instead of trying to move if we dont need to move!
+            {
+                ResetAttack();
+                moves = 0;
+            }
         }
 
         private Rectangle GetRegion(Entity entity)

@@ -18,12 +18,13 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             projectile.width = 16;
             projectile.height = 16;
             projectile.timeLeft = 60;
-
+            projectile.tileCollide = false;
         }
 
         public override void AI()
         {
-            base.AI();
+            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.Zero, 0, default, 0.4f);
+            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
         }
     }
 }

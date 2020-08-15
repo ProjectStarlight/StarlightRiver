@@ -148,9 +148,16 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         }
         #endregion
 
-        private void SummonKnives()
+        private void ThrowSpear()
         {
-            if (AttackTimer >= 60) ResetAttack();
+            if (AttackTimer == 30)
+            {
+                npc.TargetClosest();
+                Main.PlaySound(SoundID.Item3, npc.Center);
+                Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Target.Center) * -8, ProjectileType<GlassSpear>(), 10, 1, Main.myPlayer);
+            }
+
+            if (AttackTimer >= 45) ResetAttack();
         }
     }
 }
