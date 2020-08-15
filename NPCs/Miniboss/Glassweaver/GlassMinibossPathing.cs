@@ -38,10 +38,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         //debug drawing of regions and pads
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            spriteBatch.Draw(Main.magicPixel, drawRect(RegionCenter), null, Color.Blue * 0.4f);
-            spriteBatch.Draw(Main.magicPixel, drawRect(RegionLeft), null, Color.Green * 0.4f);
-            spriteBatch.Draw(Main.magicPixel, drawRect(RegionRight), null, Color.Purple * 0.4f);
-            spriteBatch.Draw(Main.magicPixel, drawRect(RegionPit), null, Color.Red * 0.4f);
+            spriteBatch.Draw(Main.magicPixel, drawRect(RegionCenter), null, Color.Blue * 0.1f);
+            spriteBatch.Draw(Main.magicPixel, drawRect(RegionLeft), null, Color.Green * 0.1f);
+            spriteBatch.Draw(Main.magicPixel, drawRect(RegionRight), null, Color.Purple * 0.1f);
+            spriteBatch.Draw(Main.magicPixel, drawRect(RegionPit), null, Color.Red * 0.1f);
 
             for (int k = 0; k < pads.Length; k++) pads[k].DebugDraw(spriteBatch);
 
@@ -85,8 +85,11 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             if ((npc.Hitbox.Intersects(targetRectangle) && npc.velocity.Y == 0) || AttackTimer >= 240) //extra failsafe if pathing takes longer than 4s
             {
-                ResetAttack();
-                npc.velocity.X = 0;
+                if (!(targetRectangle == RegionPit && Math.Abs(npc.Center.X - spawnPos.X) > 120)) //dumb bonus check for hte pit aaaa this is so shitcodedd
+                {
+                    ResetAttack();
+                    npc.velocity.X = 0;
+                }
             }
         }
 

@@ -10,6 +10,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
     {
         Vector2 moveStart;
         Vector2 moveTarget;
+        Player Target => Main.player[npc.target];
 
         private void ResetAttack() => AttackTimer = 0;
 
@@ -34,7 +35,12 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             if (AttackTimer < 60) npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f); //move into position
 
-            if (AttackTimer == 60) Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 0, Main.myPlayer, npc.Center.X > spawnPos.X ? -1 : 1); //spawn our hammer, see GlassHammer's AI for more information
+            if (AttackTimer == 60)
+            {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 0, Main.myPlayer, npc.Center.X > spawnPos.X ? -1 : 1); //spawn our hammer, see GlassHammer's AI for more information
+                npc.direction = npc.Center.X > spawnPos.X ? -1 : 1;
+                npc.spriteDirection = npc.direction;
+            }
 
             if (AttackTimer >= 180) ResetAttack();
         }
@@ -58,13 +64,20 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             if (AttackTimer < 60) npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f); //move into position
 
-            if (AttackTimer == 70) Projectile.NewProjectile(npc.Center + new Vector2(0, 32), Vector2.Zero, ProjectileType<GlassSlash>(), 40, 0.5f, Main.myPlayer, moveTarget.X > spawnPos.X ? 0 : 1); //spawn the slash
+            if (AttackTimer >= 60 && AttackTimer % 30 == 0)
+            {
+                npc.velocity.X += moveTarget.X > spawnPos.X ? -6 : 6; //burst forward
+                npc.direction = npc.velocity.X > 0 ? 1 : -1;
 
-            if (AttackTimer > 60 && AttackTimer % 20 == 0 && AttackTimer <= 120) npc.velocity.X += moveTarget.X > spawnPos.X ? -5 : 5; //burst forward
+                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, AttackTimer == 90 ? 1 : 0);
+                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
+
+
+            }
 
             if (AttackTimer > 60) npc.velocity.X *= 0.95f; //decelerate
 
-            if (AttackTimer >= 180)
+            if (AttackTimer >= 140)
             {
                 npc.velocity *= 0;
                 ResetAttack();
@@ -73,33 +86,71 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void SlashComboLeft()
         {
-            ResetAttack();
+            if (AttackTimer == 1)
+            {
+                npc.TargetClosest();
+                npc.velocity.X += Target.Center.X > npc.Center.X ? 3 : -3;
+
+                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 0);
+                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
+            }
+
+            npc.velocity.X *= 0.96f;
+            if(npc.Center.X > spawnPos.X - 280 && npc.velocity.X > 0) npc.velocity *= 0;
+
+            if (AttackTimer >= 60)
+            {
+                npc.velocity *= 0;
+                ResetAttack();
+            }
         }
 
         private void SlashComboRight()
         {
-            ResetAttack();
+            if (AttackTimer == 1)
+            {
+                npc.TargetClosest();
+                npc.velocity.X += Target.Center.X > npc.Center.X ? 3 : -3;
+
+                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 0);
+                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
+            }
+
+            npc.velocity.X *= 0.96f;
+            if (npc.Center.X < spawnPos.X + 232 && npc.velocity.X < 0) npc.velocity *= 0;
+
+            if (AttackTimer >= 60)
+            {
+                npc.velocity *= 0;
+                ResetAttack();
+            }
         }
 
         private void SlashComboPit()
         {
-            ResetAttack();
+            if (AttackTimer == 1)
+            {
+                npc.TargetClosest();
+
+                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 1);
+                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
+
+                npc.velocity.X += Target.Center.X > npc.Center.X ? 7 : -7;
+            }
+
+            if (AttackTimer < 60) npc.velocity.X *= 0.96f; //decelerate
+
+            if (AttackTimer >= 60)
+            {
+                npc.velocity *= 0;
+                ResetAttack();
+            }
         }
         #endregion
 
         private void SummonKnives()
         {
-            if (AttackTimer == 1) npc.TargetClosest();
-
-            if (AttackTimer >= 60 && AttackTimer % 30 == 0)
-            {
-                for(int k = 0; k < 3; k++)
-                    Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center).RotatedBy((k - 1) * 0.3f) * -1, ProjectileType<GlassKnife>(), 15, 0.2f, Main.myPlayer);
-
-                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, npc.Center);
-            }
-
-            if (AttackTimer >= (Main.expertMode ? 160 : 120)) ResetAttack();
+            if (AttackTimer >= 60) ResetAttack();
         }
     }
 }

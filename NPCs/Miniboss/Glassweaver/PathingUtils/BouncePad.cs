@@ -35,7 +35,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver.PathingUtils
         //debug stuff
         public void DebugDraw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Main.magicPixel, drawRect(_hitbox), null, Color.Yellow * 0.5f);
+            spriteBatch.Draw(Main.magicPixel, drawRect(_hitbox), null, Color.Yellow * 0.1f);
             if (_parent.targetRectangle == _activeRegion) spriteBatch.Draw(Main.magicPixel, drawRect(_hitbox), null, Color.White);
         }
 

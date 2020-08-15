@@ -84,28 +84,26 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
-                        if (AttackPhase > 1) AttackPhase = 0;
+                        if (AttackPhase > 7) AttackPhase = 0;
                     }
 
                     switch (AttackPhase)
                     {
-                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SummonKnives(); break;
+                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else ThrowSpear(); break;
                         case 1: PathToTarget(); break;
 
-                        case 2: SummonKnives(); break;
+                        case 2: ThrowSpear(); break;
                         case 3: PathToTarget(); break;
 
                         case 4: SlashCombo(); break;
                         case 5: PathToTarget(); break;
 
-                        case 6: SummonKnives(); break;
+                        case 6: ThrowSpear(); break;
                         case 7: PathToTarget(); break;
                     }
 
                     //pathing updates
                     for (int k = 0; k < pads.Length; k++) pads[k].Update();
-
-                    Main.NewText(npc.noTileCollide);
 
                     break;
             }
