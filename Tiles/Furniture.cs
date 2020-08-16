@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 using Terraria;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
@@ -14,7 +9,7 @@ using Terraria.Enums;
 
 namespace StarlightRiver.Tiles
 {
-    public class AutoFurniture
+    public abstract class AutoFurniture
     {
         private readonly string name = "Nameless";
         private readonly string path = "StarlightRiver/Tiles/Placeholders";
@@ -52,6 +47,11 @@ namespace StarlightRiver.Tiles
             Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod, 5);
             Add("Table", new GenericTable(color, dust, name + "Table"), mod, 8);
             Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod, 10);
+
+            //special stuff for the door
+            mod.AddTile(name + "DoorClosed", new GenericDoorClosed(color, dust, name + "DoorClosed"), path + name + "DoorClosed");
+            mod.AddTile(name + "DoorOpen", new GenericDoorOpen(color, dust, name + "DoorOpen"), path + name + "DoorOpen");
+            mod.AddItem(name + "Door", new GenericFurnitureItem(name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
         }
 
         private void Add(string typename, ModTile tile, Mod mod, int craftingQuantity)
@@ -68,7 +68,7 @@ namespace StarlightRiver.Tiles
         private readonly int craftingMaterial;
         private readonly string texture;
 
-        public GenericFurnitureItem(string name, string texture, int craftingQuantity, int craftingMaterial) : base(name, "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
+        public GenericFurnitureItem(string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
         {
             this.name = name;
             this.craftingQuantity = craftingQuantity;
