@@ -1,0 +1,499 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.ModLoader;
+using Terraria;
+using Microsoft.Xna.Framework;
+using StarlightRiver.Items;
+using Terraria.ID;
+using Terraria.ObjectData;
+using Terraria.DataStructures;
+using Terraria.Enums;
+
+namespace StarlightRiver.Tiles
+{
+    public class AutoFurniture
+    {
+        private readonly string name = "Nameless";
+        private readonly string path = "StarlightRiver/Tiles/Placeholders";
+
+        private readonly Color color = Color.White;
+        private readonly Color glowColor = Color.Blue;
+        private readonly int dust = DustID.Dirt;
+
+        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust)
+        {
+            this.name = name;
+            this.path = path;
+            this.color = color;
+            this.glowColor = glowColor;
+            this.dust = dust;
+        }
+
+        public void Load(Mod mod)
+        {
+            Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), mod);
+            Add("Bed", new GenericBed(color, dust, name + "Bed"), mod);
+            Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), mod);
+            Add("Candelabra", new GenericCandelabra(glowColor, dust, name + "Candelabra"), mod);
+            Add("Candle", new GenericCandle(glowColor, dust, name + "Candle"), mod);
+            Add("Chair", new GenericChair(color, dust, name + "Chair"), mod);
+            Add("Chandelier", new GenericChandelier(glowColor, dust, name + "Chandelier"), mod);
+            Add("Clock", new GenericClock(color, dust, name + "Clock"), mod);
+            Add("Dresser", new Generic3x2(color, dust, name + "Dresser"), mod);
+            Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), mod);
+            Add("Lantern", new GenericLantern(glowColor, dust,  name + "Lantern"), mod);
+            Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod);
+            Add("Sink", new GenericSink(color, dust, name + "Sink"), mod);
+            Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod);
+            Add("Table", new GenericTable(color, dust, name + "Table"), mod);
+            Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod);
+        }
+
+        private void Add(string typename, ModTile tile, Mod mod)
+        {
+            mod.AddTile(name + typename, tile, path + name + typename);
+            mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item"));
+        }
+    }
+
+    class GenericFurnitureItem : QuickTileItem
+    {
+        private readonly string name;
+        private readonly string texture;
+
+        public GenericFurnitureItem(string name, string texture) : base(name, "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
+        {
+            this.name = name;
+            this.texture = texture;
+        }
+
+        public override bool CloneNewInstances => true;
+
+        public override string Texture => texture;
+    }
+
+    abstract class Furniture : ModTile
+    {
+        protected readonly Color color;
+        protected readonly int dust;
+        protected readonly string name;
+
+        public Furniture(Color color, int dust, string name)
+        {
+            this.color = color;
+            this.dust = dust;
+            this.name = name;
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name));
+    }
+
+    //Bathtub
+    class GenericBathtub : Furniture
+    {
+        public GenericBathtub(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.addAlternate(1);
+
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+            QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //bed
+    class GenericBed : Furniture
+    {
+        public GenericBed(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.addAlternate(1);
+
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+            QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //bookcase
+    class GenericBookcase : Furniture
+    {
+        public GenericBookcase(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            QuickBlock.QuickSetFurniture(this, 3, 4, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //Candelabra
+    class GenericCandelabra : Furniture
+    {
+        public GenericCandelabra(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        }
+
+        public override void HitWire(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j); 
+
+            int newX = i; 
+            int newY = j;
+            if (tile.frameX % 36 == 18) newX = i - 1;
+            if (tile.frameY % 36 == 18) newY = j - 1;
+
+            for (int k = 0; k < 2; k++)
+                for (int l = 0; l < 2; ++l)
+                {
+                    Main.tile[newX + k, newY + l].frameX += (short)(tile.frameX >= 36 ? -36 : 36);
+                    Wiring.SkipWire(newX + k, newY + l);
+                }
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (tile.frameX >= 36) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+        }     
+    }
+
+    //Candle
+    class GenericCandle : Furniture
+    {
+        public GenericCandle(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            QuickBlock.QuickSetFurniture(this, 1, 1, dust, SoundID.Dig, false, color);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        }
+
+        public override void HitWire(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            tile.frameX += (short)(tile.frameX >= 18 ? -18 : 18);
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+        }
+    }
+
+    //Chair
+    class GenericChair : Furniture
+    {
+        public GenericChair(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.addAlternate(1);
+
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
+
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
+        }
+    }
+
+    //Chandelier
+    class GenericChandelier : Furniture
+    {
+        public GenericChandelier(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 3, 0);
+            QuickBlock.QuickSetFurniture(this, 3, 3, dust, SoundID.Dig, false, color);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        }
+
+        public override void HitWire(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            int newX = i - tile.frameX % 54 / 18;
+            int newY = j - tile.frameY % 54 / 18;
+
+            for (int k = 0; k < 3; k++)
+                for (int l = 0; l < 3; ++l)
+                {
+                    Main.tile[newX + k, newY + l].frameX += (short)(tile.frameX >= 54 ? -54 : 54);
+                    Wiring.SkipWire(newX + k, newY + l);
+                }
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (tile.frameX >= 54) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+        }
+    }
+
+    //Clock
+    class GenericClock : Furniture
+    {
+        public GenericClock(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 4, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //Door
+    class GenericDoorClosed : Furniture
+    {
+        public GenericDoorClosed(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.UsesCustomCanPlace = true;
+            TileObjectData.newTile.StyleHorizontal = true;
+
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 1);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 2);
+            TileObjectData.addAlternate(0);
+
+            QuickBlock.QuickSetFurniture(this, 1, 3, dust, SoundID.Dig, false, color);
+
+            Main.tileBlockLight[Type] = true;
+            Main.tileSolid[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+            TileID.Sets.NotReallySolid[Type] = true;
+            TileID.Sets.DrawsWalls[Type] = true;
+            TileID.Sets.HasOutlines[Type] = true;
+
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.ClosedDoor };
+            openDoorID = mod.TileType(name.Replace("Closed", "Open"));
+        }
+
+        public override bool HasSmartInteract() => true;
+
+        public override void MouseOver(int i, int j)
+        {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.showItemIcon = true;
+            player.showItemIcon2 = mod.ItemType(name.Replace("Closed", ""));
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Closed", "")));
+    }
+
+    //Open Door
+    class GenericDoorOpen : Furniture //Fucking fuck vanilla and your stuipd ass TileObjectData fuck fuck fuck fuck fuck
+    {
+        public GenericDoorOpen(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+
+            TileObjectData.newTile.LavaDeath = true;
+
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.StyleMultiplier = 2;
+            TileObjectData.newTile.StyleWrapLimit = 2;
+
+            TileObjectData.newTile.Direction = TileObjectDirection.PlaceRight;
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 1);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(0, 2);
+            TileObjectData.addAlternate(0);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 0);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 1);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+            TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+            TileObjectData.newAlternate.Origin = new Point16(1, 2);
+            TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 1);
+            TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceLeft;
+            TileObjectData.addAlternate(1);
+
+            QuickBlock.QuickSetFurniture(this, 2, 3, dust, SoundID.Dig, false, color);
+
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            TileID.Sets.HousingWalls[Type] = true; 
+            TileID.Sets.HasOutlines[Type] = true;
+
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.OpenDoor };
+            closeDoorID = mod.TileType(name.Replace("Open", "Closed"));
+        }
+
+        public override bool HasSmartInteract() => true;
+
+        public override void MouseOver(int i, int j)
+        {
+            Player player = Main.LocalPlayer;
+            player.noThrow = 2;
+            player.showItemIcon = true;
+            player.showItemIcon2 = mod.ItemType(name.Replace("Open", ""));
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Open", "")));
+    }
+
+    //Dresser, Piano, Sofa
+    class Generic3x2 : Furniture
+    {
+        public Generic3x2(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //Lamp
+    class GenericLamp : Furniture
+    {
+        public GenericLamp(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            QuickBlock.QuickSetFurniture(this, 1, 3, dust, SoundID.Dig, false, color);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        }
+
+        public override void HitWire(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            int newY = j - tile.frameY % 54 / 18;
+
+            for (int l = 0; l < 3; ++l)
+            {
+                Main.tile[i, newY + l].frameX += (short)(tile.frameX >= 18 ? -18 : 18);
+                Wiring.SkipWire(i, newY + l);
+            }
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+        }
+    }
+
+    //Lantern
+    class GenericLantern : Furniture
+    {
+        public GenericLantern(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
+            QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+        }
+
+        public override void HitWire(int i, int j)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            int newY = j - tile.frameY % 36 / 18;
+
+            for (int l = 0; l < 2; ++l)
+            {
+                Main.tile[i, newY + l].frameX += (short)(tile.frameX >= 18 ? -18 : 18);
+                Wiring.SkipWire(i, newY + l);
+            }
+        }
+
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+        }
+    }
+
+    //Sink
+    class GenericSink : Furniture
+    {
+        public GenericSink(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
+        }
+    }
+
+    //Table
+    class GenericTable : Furniture
+    {
+        public GenericTable(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color, true);
+            adjTiles = new int[] { TileID.Tables };
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
+        }
+    }
+
+    //Workbench
+    class GenericWorkbench : Furniture
+    {
+        public GenericWorkbench(Color color, int dust, string name) : base(color, dust, name) { }
+
+        public override void SetDefaults()
+        {
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 1, dust, SoundID.Dig, false, color);
+            adjTiles = new int[] { TileID.WorkBenches };
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
+        }
+    }
+}
