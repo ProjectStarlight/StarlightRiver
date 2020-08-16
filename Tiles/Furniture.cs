@@ -80,6 +80,12 @@ namespace StarlightRiver.Tiles
 
         public override string Texture => texture;
 
+        public override void SafeSetDefaults()
+        {
+            item.maxStack = 99;
+            item.value = 30;
+        }
+
         public override void AddRecipes()
         {
             if(craftingMaterial != ItemID.None)
@@ -202,6 +208,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -238,6 +245,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 1, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -283,6 +291,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 3, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -456,6 +465,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 3, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -477,7 +487,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 18 && tile.frameY == 0) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
         }
     }
 
@@ -488,6 +498,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -509,7 +520,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 18 && tile.frameY == 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
         }
     }
 
