@@ -234,7 +234,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 36) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 36) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }     
     }
 
@@ -260,7 +260,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -315,7 +315,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 54) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 54) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -487,7 +487,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 18 && tile.frameY == 0) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 18 && tile.frameY == 0) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -520,7 +520,7 @@ namespace StarlightRiver.Tiles
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX >= 18 && tile.frameY == 18) (r, g, b) = (color.R / 255, color.G / 255, color.B / 255);
+            if (tile.frameX >= 18 && tile.frameY == 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
