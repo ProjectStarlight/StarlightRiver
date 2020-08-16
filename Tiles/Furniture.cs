@@ -22,57 +22,113 @@ namespace StarlightRiver.Tiles
         private readonly Color color = Color.White;
         private readonly Color glowColor = Color.Blue;
         private readonly int dust = DustID.Dirt;
+        private readonly int material = ItemID.DirtBlock;
 
-        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust)
+        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
         {
             this.name = name;
             this.path = path;
             this.color = color;
             this.glowColor = glowColor;
             this.dust = dust;
+            this.material = material;
         }
 
         public void Load(Mod mod)
         {
-            Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), mod);
-            Add("Bed", new GenericBed(color, dust, name + "Bed"), mod);
-            Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), mod);
-            Add("Candelabra", new GenericCandelabra(glowColor, dust, name + "Candelabra"), mod);
-            Add("Candle", new GenericCandle(glowColor, dust, name + "Candle"), mod);
-            Add("Chair", new GenericChair(color, dust, name + "Chair"), mod);
-            Add("Chandelier", new GenericChandelier(glowColor, dust, name + "Chandelier"), mod);
-            Add("Clock", new GenericClock(color, dust, name + "Clock"), mod);
-            Add("Dresser", new Generic3x2(color, dust, name + "Dresser"), mod);
-            Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), mod);
-            Add("Lantern", new GenericLantern(glowColor, dust,  name + "Lantern"), mod);
-            Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod);
-            Add("Sink", new GenericSink(color, dust, name + "Sink"), mod);
-            Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod);
-            Add("Table", new GenericTable(color, dust, name + "Table"), mod);
-            Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod);
+            Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), mod, 14);
+            Add("Bed", new GenericBed(color, dust, name + "Bed"), mod, 15);
+            Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), mod, 20);
+            Add("Candelabra", new GenericCandelabra(glowColor, dust, name + "Candelabra"), mod, 5);
+            Add("Candle", new GenericCandle(glowColor, dust, name + "Candle"), mod, 4);
+            Add("Chair", new GenericChair(color, dust, name + "Chair"), mod, 4);
+            Add("Chandelier", new GenericChandelier(glowColor, dust, name + "Chandelier"), mod, 4);
+            Add("Clock", new GenericClock(color, dust, name + "Clock"), mod, 10);
+            Add("Dresser", new Generic3x2(color, dust, name + "Dresser"), mod, 16);
+            Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), mod, 3);
+            Add("Lantern", new GenericLantern(glowColor, dust,  name + "Lantern"), mod, 6);
+            Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod, 15);
+            Add("Sink", new GenericSink(color, dust, name + "Sink"), mod, 6);
+            Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod, 5);
+            Add("Table", new GenericTable(color, dust, name + "Table"), mod, 8);
+            Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod, 10);
         }
 
-        private void Add(string typename, ModTile tile, Mod mod)
+        private void Add(string typename, ModTile tile, Mod mod, int craftingQuantity)
         {
             mod.AddTile(name + typename, tile, path + name + typename);
-            mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item"));
+            mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item", craftingQuantity, material));
         }
     }
 
     class GenericFurnitureItem : QuickTileItem
     {
         private readonly string name;
+        private readonly int craftingQuantity;
+        private readonly int craftingMaterial;
         private readonly string texture;
 
-        public GenericFurnitureItem(string name, string texture) : base(name, "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
+        public GenericFurnitureItem(string name, string texture, int craftingQuantity, int craftingMaterial) : base(name, "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
         {
             this.name = name;
+            this.craftingQuantity = craftingQuantity;
+            this.craftingMaterial = craftingMaterial;
             this.texture = texture;
         }
 
         public override bool CloneNewInstances => true;
 
         public override string Texture => texture;
+
+        public override void AddRecipes()
+        {
+            if(craftingMaterial != ItemID.None)
+            {
+                ModRecipe recipe = new ModRecipe(mod);
+                recipe.AddIngredient(craftingMaterial, craftingQuantity);
+
+                if (name.Contains("Candle") || name.Contains("Lamp") || name.Contains("Lantern") || name.Contains("Candelabra"))
+                    recipe.AddIngredient(ItemID.Torch);
+
+                if (name.Contains("Candelabra")) 
+                    recipe.AddIngredient(ItemID.Torch, 3);
+
+                if (name.Contains("Chandelier"))
+                {
+                    recipe.AddIngredient(ItemID.Torch, 4);
+                    recipe.AddIngredient(ItemID.Chain);
+                }
+
+                if (name.Contains("Bed"))
+                    recipe.AddIngredient(ItemID.Silk, 5);
+
+                if (name.Contains("Bookcase"))
+                    recipe.AddIngredient(ItemID.Book, 10);
+
+                if (name.Contains("Clock"))
+                {
+                    recipe.AddRecipeGroup(RecipeGroupID.IronBar, 3);
+                    recipe.AddIngredient(ItemID.Glass, 6);
+                }
+
+                if (name.Contains("Piano"))
+                {
+                    recipe.AddIngredient(ItemID.Bone, 4);
+                    recipe.AddIngredient(ItemID.Book);
+                }
+
+                if (name.Contains("Sink"))
+                    recipe.AddIngredient(ItemID.WaterBucket);
+
+                if (name.Contains("Sofa"))
+                    recipe.AddIngredient(ItemID.Silk, 2);
+
+
+                recipe.AddTile(TileID.WorkBenches);
+                recipe.SetResult(this);
+                recipe.AddRecipe();
+            }
+        }
     }
 
     abstract class Furniture : ModTile
@@ -88,7 +144,7 @@ namespace StarlightRiver.Tiles
             this.name = name;
         }
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name));
     }
 
     //Bathtub
@@ -312,7 +368,7 @@ namespace StarlightRiver.Tiles
             player.showItemIcon2 = mod.ItemType(name.Replace("Closed", ""));
         }
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Closed", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Closed", "")));
     }
 
     //Open Door
@@ -378,7 +434,7 @@ namespace StarlightRiver.Tiles
             player.showItemIcon2 = mod.ItemType(name.Replace("Open", ""));
         }
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Open", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Open", "")));
     }
 
     //Dresser, Piano, Sofa
