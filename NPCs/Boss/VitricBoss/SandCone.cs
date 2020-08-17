@@ -33,7 +33,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 foreach (Player player in Main.player.Where(n => Helper.CheckConicalCollision(projectile.Center, 700, projectile.rotation, 0.2f, n.Hitbox)))
                 {
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bit the dust..."), Main.expertMode ? 50 : 35, 0); //hurt em
-                    if (Main.rand.Next(Main.expertMode ? 1 : 2) == 0) player.AddBuff(BuffID.Obstructed, 180); //blind em
+                    if (Main.rand.Next(Main.expertMode ? 4 : 5) == 0) player.AddBuff(BuffID.Obstructed, 60); //blind em
                 }
                 Main.PlaySound(SoundID.DD2_BookStaffCast); //sound
                 projectile.Kill(); //self-destruct

@@ -46,9 +46,16 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     crystalNpc.ai[2] = 1; //set them into this attack's mode
                 }
             }
+
             if (AttackTimer == 180)
             {
                 crystals.FirstOrDefault(n => n.ai[0] == 2).ai[0] = 0;
+            }
+
+            if(AttackTimer > 180 && AttackTimer % 40 == 0)
+            {
+                Vector2 pos = crystalLocations[Main.rand.Next(crystalLocations.Count)] + new Vector2(0, -20);
+                Projectile.NewProjectile(pos + new Vector2(Main.rand.Next(-100, 60), 64), Vector2.Zero, ProjectileType<BossSpikeSmall>(), 5, 0);
             }
 
             if (AttackTimer >= 720)
@@ -277,9 +284,16 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (AttackTimer >= 120 * 4 - 1) ResetAttack(); //end after the third volley is fired
         }
 
-        private void Lasers()
+        private void Rest()
         {
-            if (AttackTimer == 660) ResetAttack();
+            int restTime = Main.expertMode ? 240 : 300;
+            if (AttackTimer % 20 == 0)
+            {
+                Projectile.NewProjectile(homePos + new Vector2(-700 + (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<Projectiles.GlassSpike>(), 5, 0);
+                Projectile.NewProjectile(homePos + new Vector2(700 - (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<Projectiles.GlassSpike>(), 5, 0);
+            }
+
+            if (AttackTimer == restTime) ResetAttack();
         }
 
         private void Whirl()

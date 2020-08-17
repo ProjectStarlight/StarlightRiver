@@ -51,6 +51,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
+            if (npc.ai[2] == 3 && npc.velocity.Y <= 0) return false; //can only do damage when moving downwards
             return !(npc.ai[0] == 0 || npc.ai[0] == 1); //too tired of dealing with this sheeeet
         }
 

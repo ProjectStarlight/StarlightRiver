@@ -4,6 +4,7 @@ using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -58,6 +59,60 @@ namespace StarlightRiver
         public static List<Key> Keys = new List<Key>();
 
         public static List<Key> KeyInventory = new List<Key>();
+
+        public override void NetSend(BinaryWriter writer)
+        {
+            writer.Write(AluminumMeteors);
+
+            writer.Write(DesertOpen);
+
+            writer.Write(SquidBossOpen);
+            writer.Write(SquidBossDowned);
+
+            writer.Write(GlassBossOpen);
+            writer.Write(GlassBossDowned);
+
+            writer.Write(OvergrowBossOpen);
+            writer.Write(OvergrowBossFree);
+            writer.Write(OvergrowBossDowned);
+
+            writer.Write(SealOpen);
+
+            WriteRectangle(writer, VitricBiome);
+            WriteRectangle(writer, SquidBossArena);       
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            AluminumMeteors = reader.ReadBoolean();
+
+            DesertOpen = reader.ReadBoolean();
+
+            SquidBossOpen = reader.ReadBoolean();
+            SquidBossDowned = reader.ReadBoolean();
+
+            GlassBossOpen = reader.ReadBoolean();
+            GlassBossDowned = reader.ReadBoolean();
+
+            OvergrowBossOpen = reader.ReadBoolean();
+            OvergrowBossFree = reader.ReadBoolean();
+            OvergrowBossDowned = reader.ReadBoolean();
+
+            SealOpen = reader.ReadBoolean();
+
+            VitricBiome = ReadRectangle(reader);
+            SquidBossArena = ReadRectangle(reader);
+        }
+
+        private void WriteRectangle(BinaryWriter writer, Rectangle rect)
+        {
+            writer.Write(rect.X);
+            writer.Write(rect.Y);
+            writer.Write(rect.Width);
+            writer.Write(rect.Height);
+        }
+
+        private Rectangle ReadRectangle(BinaryReader reader) => new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 
         private void EbonyGen(GenerationProgress progress)
         {

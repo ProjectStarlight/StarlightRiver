@@ -18,21 +18,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             projectile.timeLeft = 180;
         }
 
-        public override bool CanHitPlayer(Player target)
-        {
-            if (projectile.ai[0] > 70 && Abilities.AbilityHelper.CheckDash(target, projectile.Hitbox))
-            {
-                for (int k = 0; k < 50; k++)
-                {
-                    Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
-                }
-                Main.PlaySound(Terraria.ID.SoundID.Shatter, target.Center);
-                projectile.Kill();
-                return false;
-            }
-            return true;
-        }
-
         public override void AI()
         {
             projectile.ai[0]++; //ticks up the timer
@@ -74,7 +59,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 for (int k = 0; k < 4; k++)
                 {
                     int off = projectile.ai[0] < 100 ? (int)((projectile.ai[0] - 90) / 10f * 128) : 128 - (int)((projectile.ai[0] - 100) / 80f * 128);
-                    Rectangle targetRect = new Rectangle((int)(projectile.position.X - Main.screenPosition.X + k * tex.Width), (int)(projectile.ai[1] - off - Main.screenPosition.Y), tex.Width, off);
+                    Rectangle targetRect = new Rectangle((int)(projectile.position.X - Main.screenPosition.X + k * tex.Width + 14), (int)(projectile.ai[1] - off - Main.screenPosition.Y), tex.Width, off);
                     Rectangle sourceRect = new Rectangle(0, 0, tex.Width, off);
                     spriteBatch.Draw(tex, targetRect, sourceRect, lightColor, 0, Vector2.Zero, 0, 0);
                 }
