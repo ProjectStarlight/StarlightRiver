@@ -70,3 +70,4 @@ StarlightRiver.csproj.DotSettings
 obj/
 bin/
 Properties/launchSettings.json
+*.user
