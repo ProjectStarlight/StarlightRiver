@@ -1,13 +1,7 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Keys;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using Terraria.World.Generation;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using StarlightRiver.Prefixes;

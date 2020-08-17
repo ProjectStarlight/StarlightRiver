@@ -4,19 +4,14 @@ using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Core;
-using StarlightRiver.Dragons;
-using StarlightRiver.GUI;
 using StarlightRiver.NPCs;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
-using System;
 using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.UI;
-using Terraria.GameInput;
 using Terraria.DataStructures;
 
 namespace StarlightRiver

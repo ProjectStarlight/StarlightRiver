@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ID;
-using Terraria;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Localization;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {

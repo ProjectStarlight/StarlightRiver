@@ -94,7 +94,7 @@ namespace StarlightRiver.Items.Ultrashark
         #region item
         public override void SetDefaults()
         {
-            item.useStyle = 5;
+            item.useStyle = ItemUseStyleID.HoldingOut;
             item.useAnimation = 24;
             item.useTime = 24;
             item.shootSpeed = 20f;

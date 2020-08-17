@@ -1,15 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
-using StarlightRiver.Keys;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.ModLoader.IO;
-using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles

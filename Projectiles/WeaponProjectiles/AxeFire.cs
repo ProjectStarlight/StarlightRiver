@@ -1,15 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using StarlightRiver.Core;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
-	public class AxeFire : ModProjectile
+    public class AxeFire : ModProjectile
 	{
 		public override void SetStaticDefaults()
 		{

@@ -1,13 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Configs;
-using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
 {
@@ -127,7 +121,9 @@ namespace StarlightRiver
         public static void DrawWithLighting(Vector2 pos, Texture2D tex)
         {
             return;
+#pragma warning disable CS0162 // Unreachable code detected
             if (!OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
+#pragma warning restore CS0162 // Unreachable code detected
 
             int coarseness = 1;
             int coarse16 = coarseness * 16;

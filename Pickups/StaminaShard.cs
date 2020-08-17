@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static Terraria.ModLoader.ModContent;
 using Terraria;
 using StarlightRiver.Items;

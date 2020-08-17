@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
-	public class VitricYoyoProj : ModProjectile
+    public class VitricYoyoProj : ModProjectile
 	{
 		public override void SetStaticDefaults()
 		{

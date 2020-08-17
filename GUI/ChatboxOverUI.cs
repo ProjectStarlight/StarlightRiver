@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.Graphics;
-using Terraria.GameContent.UI;
+﻿using Terraria;
 using Terraria.UI;
 using StarlightRiver.NPCs.TownUpgrade;
-using Terraria.GameContent.UI.Elements;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;

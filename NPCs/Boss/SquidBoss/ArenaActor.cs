@@ -5,7 +5,6 @@ using StarlightRiver.Tiles.Permafrost;
 using System;
 using System.Linq;
 using Terraria;
-using Terraria.Graphics;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 

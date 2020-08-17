@@ -2,12 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
-using Terraria.Graphics;
-using StarlightRiver.Configs;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
 {

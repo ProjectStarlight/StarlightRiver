@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -11,7 +8,6 @@ using StarlightRiver.Projectiles.Dummies;
 using Terraria.ID;
 using StarlightRiver.Items;
 using Terraria.DataStructures;
-using Terraria.Audio;
 
 namespace StarlightRiver.Tiles.Overgrow
 {
