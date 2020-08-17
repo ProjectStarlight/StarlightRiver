@@ -120,7 +120,6 @@ namespace StarlightRiver
     {
         public static void DrawWithLighting(Vector2 pos, Texture2D tex)
         {
-            ;
             return;
 #pragma warning disable CS0162 // Unreachable code detected
             if (!OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
