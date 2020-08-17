@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="NetEasy">
-      <HintPath>lib\NetEasy_v0.1.6.dll</HintPath>
+      <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
     </Reference>
     <Reference Include="StructureHelper">
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>

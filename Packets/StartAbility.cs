@@ -13,11 +13,11 @@ namespace StarlightRiver.Packets
         public StartAbility(int fromWho, Ability ability)
         {
             this.fromWho = fromWho;
-            abType = ability.GetType();
+            abTypeName = ability.GetType().FullName;
         }
 
         private readonly int fromWho;
-        private readonly Type abType;
+        private readonly string abTypeName;
 
         protected override void Receive()
         {
@@ -30,6 +30,7 @@ namespace StarlightRiver.Packets
             Player player = Main.player[fromWho];
             AbilityHandler handler = player.GetModPlayer<AbilityHandler>();
             DragonHandler dragon = player.GetModPlayer<DragonHandler>();
+            Type abType = Type.GetType(abTypeName);
             Ability ab = handler.Abilities.Single(a => a.GetType() == abType);
 
             //if the player: has enough stamina  && unlocked && not on CD     && Has no other abilities active
@@ -37,7 +38,7 @@ namespace StarlightRiver.Packets
             {
                 handler.StatStamina -= ab.StaminaCost; //Consume the stamina
                                                     //if (dragon.DragonMounted) OnCastDragon(); //Do what the ability should do when it starts
-                /*else*/
+
                 ab.OnCast();
                 ab.Active = true; //Ability is activated
             }
