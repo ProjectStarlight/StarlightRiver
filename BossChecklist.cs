@@ -24,8 +24,14 @@ namespace StarlightRiver
             string vitricMiniBossInfo = "Talk to the glassweaver in the vitric desert.";
             bcl.Call("AddMiniBoss", 3.1f, ModContent.NPCType<NPCs.Miniboss.Glassweaver.GlassMiniboss>(), this, "Glassweaver", (Func<bool>)(() => StarlightWorld.DesertOpen), null, vitricMiniBossCollection, vitricMiniBossLoot, vitricMiniBossInfo);
 
-            List<int> vitricBossCollection = new List<int>();
-            List<int> vitricBossLoot = new List<int>();
+            List<int> vitricBossCollection = new List<int>()
+            {
+                ModContent.ItemType<Tiles.Trophies.CeirosTrophyItem>(),
+            };
+            List<int> vitricBossLoot = new List<int>()
+            {
+                ModContent.ItemType<Items.BossDrops.VitricBossDrops.VitricBossBag>(),
+            };
             string vitricBossInfo = "Use a Glass Idol at cerios' altar in the vitric desert, after breaking the crystal covering it.";
             bcl.Call("AddBoss", 3.9f, ModContent.NPCType<NPCs.Boss.VitricBoss.VitricBoss>(), this, "Ceiros", (Func<bool>)(() => StarlightWorld.GlassBossDowned), ModContent.ItemType<Items.Vitric.GlassIdol>(), vitricBossCollection, vitricBossLoot, vitricBossInfo, null, "StarlightRiver/NPCs/Boss/VitricBoss/Preview");
         }

@@ -9,6 +9,9 @@ namespace StarlightRiver.Abilities
 {
     public partial class AbilityHandler : ModPlayer
     {
+        //max stamina shards
+        public const int maxStaminaShards = 3;
+
         //All players store 1 instance of each ability. This instance is changed to the infusion variant if an infusion is equipped.
         public Dash dash = new Dash(Main.LocalPlayer);
 
@@ -28,6 +31,10 @@ namespace StarlightRiver.Abilities
         public int StatStamina = 1;
         public int StatStaminaRegenMax = 210;
         public int StatStaminaRegen = 0;
+
+        //stamina shard tracker
+        public int shardCount = 0;
+        public bool[] shards = new bool[maxStaminaShards];
 
         //Holds the player's wing or rocket boot timer, since they must be disabled to move upwards correctly.
         private float StoredAccessoryTime = 0;
@@ -50,7 +57,8 @@ namespace StarlightRiver.Abilities
                 [nameof(slot1)] = slot1,
                 [nameof(slot2)] = slot2,
 
-                [nameof(HasSecondSlot)] = HasSecondSlot
+                [nameof(HasSecondSlot)] = HasSecondSlot,
+                [nameof(shards)] = shards.ToList<bool>()
             };
         }
 
@@ -84,6 +92,12 @@ namespace StarlightRiver.Abilities
             slot1 = tag.Get<Item>(nameof(slot1)); if (string.IsNullOrEmpty(slot1.Name)) { slot1 = null; }
             slot2 = tag.Get<Item>(nameof(slot2)); if (string.IsNullOrEmpty(slot2.Name)) { slot2 = null; }
             HasSecondSlot = tag.GetBool(nameof(HasSecondSlot));
+
+            List<bool> tempList = tag.Get<List<bool>>(nameof(shards)); //there is probably a better way to do this but im retarded and lazy and tired
+            for (int k = tempList.Count; k < maxStaminaShards; k++) tempList.Add(false);
+            shards = tempList.ToArray();
+
+            shardCount = shards.Count(n => n == true) % 3;
         }
 
         //Updates the Ability list with the latest info

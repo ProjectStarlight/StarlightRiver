@@ -30,13 +30,18 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             npc.width = 64;
             npc.height = 64;
-            npc.lifeMax = 2500;
+            npc.lifeMax = 3000;
             npc.damage = 20;
             npc.aiStyle = -1;
             npc.noGravity = true;
             npc.knockBackResist = 0;
             npc.boss = true;
             npc.defense = 14;
+        }
+
+        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+        {
+            npc.lifeMax = (int)(4000 * bossLifeScale);
         }
 
         public override bool CheckDead()
@@ -84,28 +89,26 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
-                        if (AttackPhase > 1) AttackPhase = 0;
+                        if (AttackPhase > 7) AttackPhase = 0;
                     }
 
                     switch (AttackPhase)
                     {
-                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SummonKnives(); break;
+                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SlashCombo(); break;
                         case 1: PathToTarget(); break;
 
-                        case 2: SummonKnives(); break;
+                        case 2: ThrowSpear(); break;
                         case 3: PathToTarget(); break;
 
-                        case 4: SlashCombo(); break;
+                        case 4: if (GetRegion(npc) == RegionPit) LavaWave(); else SlashCombo(); break;
                         case 5: PathToTarget(); break;
 
-                        case 6: SummonKnives(); break;
+                        case 6: ThrowSpear(); break;
                         case 7: PathToTarget(); break;
                     }
 
                     //pathing updates
                     for (int k = 0; k < pads.Length; k++) pads[k].Update();
-
-                    Main.NewText(npc.noTileCollide);
 
                     break;
             }

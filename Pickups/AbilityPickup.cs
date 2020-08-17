@@ -16,6 +16,8 @@ namespace StarlightRiver.Pickups
         /// </summary>
         private bool Visible => CanPickup(Main.LocalPlayer);
 
+        public virtual bool Fancy => true;
+
         public sealed override void SetDefaults()
         {
             npc.width = 32;
@@ -66,6 +68,8 @@ namespace StarlightRiver.Pickups
             if (Visible)
             {
                 Visuals();
+
+                if (!Fancy) return;
 
                 if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), npc.Center) <= Main.screenWidth / 2 + 100) //shader
                 {

@@ -49,7 +49,16 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             switch (npc.ai[1])
             {
                 case 0:
-                    if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox))) npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
+                    if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
+                    {
+                        npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
+                        if (npc.ai[0] > 90)
+                        {
+                            Dust.NewDustPerfect(npc.position, DustType<Dusts.Sand>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(10), 100, default, 2); //tell for when its about to go off
+                            Dust.NewDustPerfect(npc.position, DustType<Dusts.Air>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(2), 100, default, 1);
+                        }
+                    }
+
                     if (npc.ai[0] > 120) //after standing there for too long a wave comes by to fuck em up.
                     {
                         npc.ai[1] = 1; //wave mode

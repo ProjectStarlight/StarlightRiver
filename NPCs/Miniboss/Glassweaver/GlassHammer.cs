@@ -23,7 +23,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             projectile.width = 32;
             projectile.height = 32;
             projectile.hostile = true;
-            projectile.timeLeft = 120;
+            projectile.timeLeft = 60;
             projectile.tileCollide = false;
             projectile.aiStyle = -1;
             projectile.penetrate = -1;
@@ -31,22 +31,22 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void AI()
         {
-            if (projectile.timeLeft == 120) origin = projectile.Center; //sets origin when spawned
+            if (projectile.timeLeft == 60) origin = projectile.Center; //sets origin when spawned
 
-            if (projectile.timeLeft >= 60)
+            if (projectile.timeLeft >= 30)
             {
-                float radius = (120 - projectile.timeLeft) * 2;
-                float rotation = -(120 - projectile.timeLeft) / 60f * 0.8f; //ai 0 is direction
+                float radius = (60 - projectile.timeLeft) * 4;
+                float rotation = -(60 - projectile.timeLeft) / 30f * 0.8f; //ai 0 is direction
 
                 projectile.Center = origin - Vector2.UnitY.RotatedBy(rotation * projectile.ai[0]) * radius;
             }
-            else if (projectile.timeLeft >= 40)
+            else if (projectile.timeLeft >= 20)
             {
-                float rotation = -0.8f + (120 - projectile.timeLeft - 60) / 20f * ((float)Math.PI / 2 + 1.2f);
+                float rotation = -0.8f + (60 - projectile.timeLeft - 30) / 10f * ((float)Math.PI / 2 + 1.2f);
 
                 projectile.Center = origin - Vector2.UnitY.RotatedBy(rotation * projectile.ai[0]) * 120;
 
-                if (projectile.timeLeft == 40)
+                if (projectile.timeLeft == 20)
                 {
                     Main.PlaySound(SoundID.Shatter, projectile.Center);
                     Main.LocalPlayer.GetModPlayer<Core.StarlightPlayer>().Shake += 15;
@@ -60,15 +60,11 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     Projectile.NewProjectile(projectile.Center + Vector2.UnitY * -8, Vector2.Zero, ProjectileType<Shockwave>(), 10, 0, Main.myPlayer, projectile.ai[0], 13);
                 }
             }
-            else if (projectile.timeLeft % 2 == 0)
-            {
-                Main.NewText(projectile.ai[0]);
-            }
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if(projectile.timeLeft <= 60 && projectile.timeLeft >= 40)
+            if(projectile.timeLeft <= 30 && projectile.timeLeft >= 20)
             {
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
             }
@@ -76,8 +72,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Rectangle frame = new Rectangle(0, 166 * (int)((120 - projectile.timeLeft) / 80f * 12), 214, 166);
-            if (projectile.timeLeft <= 40) frame.Y = 12 * 166;
+            Rectangle frame = new Rectangle(0, 166 * (int)((60 - projectile.timeLeft) / 40f * 12), 214, 166);
+            if (projectile.timeLeft <= 20) frame.Y = 12 * 166;
             spriteBatch.Draw(GetTexture(Texture), origin + new Vector2(-100, -130) - Main.screenPosition, frame, Color.White, 0, Vector2.Zero, 1, projectile.ai[0] == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }

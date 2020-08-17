@@ -20,19 +20,16 @@ namespace StarlightRiver
 
         public List<RopeSegment> ropeSegments = new List<RopeSegment>();
 
-
         //distances
         public int segmentDistance = 5;
 
         public bool customDistances = false;
         public List<float> segmentDistanceList = new List<float>();//length must match the segment count
 
-
         //general
         public int segmentCount = 10;
         public int constraintRepetitions = 2;
         public float drag = 1;
-
 
         //gravity
         public Vector2 forceGravity = new Vector2(0f, 1f);//x, y (positive = down)
@@ -48,6 +45,7 @@ namespace StarlightRiver
             for (int i = 0; i < segmentCount; i++)
             {
                 ropeSegments.Add(new RopeSegment(ropeStartPoint));
+
                 if((customGravity ? forceGravityList[i] : forceGravity) != Vector2.Zero)
                 {
                     ropeStartPoint += Vector2.Normalize((customGravity ? forceGravityList[i] : forceGravity)) * (customDistances ? segmentDistanceList[i] : segmentDistance);
@@ -82,12 +80,10 @@ namespace StarlightRiver
         {
             for (int i = 1; i < segmentCount; i++)
             {
-                RopeSegment firstSegment = ropeSegments[i];
-                Vector2 velocity = (firstSegment.posNow - firstSegment.posOld) / drag;
-                firstSegment.posOld = firstSegment.posNow;
-                firstSegment.posNow += velocity;
-                firstSegment.posNow += (customGravity ? forceGravityList[i] : forceGravity) * gravityStrengthMult;
-                ropeSegments[i] = firstSegment;
+                Vector2 velocity = (ropeSegments[i].posNow - ropeSegments[i].posOld) / drag;
+                ropeSegments[i].posOld = ropeSegments[i].posNow;
+                ropeSegments[i].posNow += velocity;
+                ropeSegments[i].posNow += (customGravity ? forceGravityList[i] : forceGravity) * gravityStrengthMult;
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
@@ -98,45 +94,40 @@ namespace StarlightRiver
 
         private void ApplyConstraint(Vector2 targetPosition)
         {
-            RopeSegment firstSegment = ropeSegments[0];
-            firstSegment.posNow = targetPosition;
-            ropeSegments[0] = firstSegment;
+            ropeSegments[0].posNow = targetPosition;
 
             for (int i = 0; i < segmentCount - 1; i++)
             {
-                RopeSegment firstSeg = ropeSegments[i];
-                RopeSegment secondSeg = ropeSegments[i + 1];
-
                 float segmentDist = (customDistances ? segmentDistanceList[i] : segmentDistance);
 
-                //Vector2 distVect = (firstSeg.posNow - secondSeg.posNow);
+                //Vector2 distVect = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
                 //float dist = (float)Math.Sqrt(distVect.X * (distVect.X + distVect.Y) * distVect.Y);
 
-                float dist = (firstSeg.posNow - secondSeg.posNow).Length();
+                float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
                 float error = Math.Abs(dist - segmentDist);
                 Vector2 changeDir = Vector2.Zero;
 
                 if (dist > segmentDist)
                 {
-                    changeDir = Vector2.Normalize(firstSeg.posNow - secondSeg.posNow);
+                    changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
                 }
                 else if (dist < segmentDist)
                 {
-                    changeDir = Vector2.Normalize(secondSeg.posNow - firstSeg.posNow);
+                    changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
                 }
 
                 Vector2 changeAmount = changeDir * error;
                 if (i != 0)
                 {
-                    firstSeg.posNow -= changeAmount * 0.5f;
-                    ropeSegments[i] = firstSeg;
-                    secondSeg.posNow += changeAmount * 0.5f;
-                    ropeSegments[i + 1] = secondSeg;
+                    ropeSegments[i].posNow -= changeAmount * 0.5f;
+                    ropeSegments[i] = ropeSegments[i];
+                    ropeSegments[i + 1].posNow += changeAmount * 0.5f;
+                    ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
                 else
                 {
-                    secondSeg.posNow += changeAmount;
-                    ropeSegments[i + 1] = secondSeg;
+                    ropeSegments[i + 1].posNow += changeAmount;
+                    ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
             }
         }
@@ -147,6 +138,65 @@ namespace StarlightRiver
             {
                 iterateMethod(i);
             }
+        }
+
+        public void PrepareStrip(out VertexBuffer buffer)
+        {
+            var buff = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
+
+            VertexPositionColor[] verticies = new VertexPositionColor[segmentCount * 9 - 6];
+
+            float rotation = (ropeSegments[0].posScreen - ropeSegments[1].posScreen).ToRotation() + (float)Math.PI / 2;
+
+            verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[2] = new VertexPositionColor(ropeSegments[1].posScreen.Vec3().ScreenCoord(), ropeSegments[1].color);
+
+            for (int k = 1; k < segmentCount - 1; k++)
+            {
+                float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
+
+                int point = k * 9 - 6;
+
+                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - k)).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - k)).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+
+                int extra = k == 1 ? 0 : 6;
+                verticies[point + 3] = verticies[point];
+                verticies[point + 4] = verticies[point - (3 + extra)];              
+                verticies[point + 5] = verticies[point - (1 + extra)];
+
+                verticies[point + 6] = verticies[point - (2 + extra)];              
+                verticies[point + 7] = verticies[point + 1];
+                verticies[point + 8] = verticies[point - (1 + extra)];
+            }
+
+            buff.SetData(verticies);
+
+            buffer = buff;
+        }
+
+        public void DrawStrip()
+        {
+            GraphicsDevice graphics = Main.graphics.GraphicsDevice;
+
+            VertexBuffer buffer;
+            PrepareStrip(out buffer);
+            graphics.SetVertexBuffer(buffer);
+
+            Effect effect = new BasicEffect(graphics)
+            {
+                VertexColorEnabled = true
+            };
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
+            }
+
+            effect.Dispose();
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
@@ -183,11 +233,22 @@ namespace StarlightRiver
         {
             public Vector2 posNow;
             public Vector2 posOld;
+            public Color color;
+
+            public Vector2 posScreen => posNow - Main.screenPosition;
 
             public RopeSegment(Vector2 pos)
             {
                 this.posNow = pos;
                 this.posOld = pos;
+                color = Color.White;
+            }
+
+            public RopeSegment(Vector2 pos, Color color)
+            {
+                this.posNow = pos;
+                this.posOld = pos;
+                this.color = color;
             }
         }
     }

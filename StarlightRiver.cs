@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.GUI;
 using StarlightRiver.RiftCrafting;
+using StarlightRiver.Tiles;
 using StarlightRiver.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
@@ -136,6 +137,17 @@ namespace StarlightRiver
             }
         }
 
+        public static void AutoloadFurniture()
+        {
+            if (Instance.Code != null)
+            {
+                foreach (Type type in Instance.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(AutoFurniture))))
+                {
+                    (Activator.CreateInstance(type) as AutoFurniture).Load(Instance);
+                }
+            }
+        }
+
         public override void Load()
         {
             //Shaders
@@ -175,6 +187,9 @@ namespace StarlightRiver
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();
             AutoloadRiftRecipes(RiftRecipes);
+
+            //Furniture
+            AutoloadFurniture();
 
             //Hotkeys
             Dash = RegisterHotKey("Forbidden Winds", "LeftShift");

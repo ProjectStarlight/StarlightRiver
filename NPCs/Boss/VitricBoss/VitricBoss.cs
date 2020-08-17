@@ -383,7 +383,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         case 0: Volley(); break;
                         case 1: Mines(); break;
                         case 2: Whirl(); break;
-                        case 3: Lasers(); break;
+                        case 3: Rest(); break;
                     }
                     break;
 

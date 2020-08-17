@@ -65,14 +65,13 @@ namespace StarlightRiver.Tiles.Herbology
 
                 int newX = i; //Here to line 67 adjusts the tile position so we get the top-left of the multitile
                 int newY = j;
-                if (tile.frameX % 36 == 18)
-                    newX = i - 1;
-                if (tile.frameY % 36 == 18)
-                    newY = j - 1;
+                if (tile.frameX % 36 == 18) newX = i - 1;
+                if (tile.frameY % 36 == 18) newY = j - 1;
 
                 for (int k = 0; k < 2; k++)
                     for (int l = 0; l < 2; ++l)
                         Main.tile[newX + k, newY + l].frameX -= 36; //Changes frames to berry-less
+
                 Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
             }
             return true;
