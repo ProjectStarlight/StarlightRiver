@@ -44,7 +44,7 @@ namespace StarlightRiver.Tiles.Interactive
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-            if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StatStaminaMax && mp.Abilities.Any(a => a.Active))
+            if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StaminaMax && mp.Abilities.Any(a => a.Active))
             {
                 mp.StatStamina++;
                 if (mp.wisp.Active) { mp.wisp.Timer = 60 * mp.StatStamina - 1; }

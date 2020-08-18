@@ -1,63 +1,39 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Dragons;
+using StarlightRiver.Dusts;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Abilities
 {
-    public class Ability
+    public abstract class Ability
     {
-        public int StaminaCost;
-        public bool Active;
-        public int Timer;
-        public int Cooldown;
-        public bool Locked = true;
-        public virtual Texture2D Texture { get; }
-        public Player player;
-        public virtual bool CanUse => true;
+        public abstract string Texture { get; }
+        public virtual float StaminaCost { get; }
+        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= StaminaCost;
+        public AbilityHandler User { get; internal set; }
 
-        public Ability(int staminaCost, Player Player)
+        public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
+        public abstract bool HotkeyMatch(TriggersSet triggers);
+        public virtual void OnCast() { }
+        public virtual void UpdateActive() { }
+        public virtual void Update() { }
+        public virtual void OnExit() { }
+
+        public void Activate()
         {
-            StaminaCost = staminaCost;
-            player = Player;
+            User.ActiveAbility = this;
+            OnCast();
+            // TODO probably sync idk
         }
-
-        public virtual void StartAbility(Player player)
+        public void Deactivate()
         {
-            new Packets.StartAbility(player.whoAmI, this).Send(-1, player.whoAmI, true);
-        }
-
-        public virtual void OnCast()
-        {
-        }
-
-        public virtual void OnCastDragon()
-        {
-        }
-
-        public virtual void InUse()
-        {
-        }
-
-        public virtual void InUseDragon()
-        {
-        }
-
-        public virtual void UseEffects()
-        {
-        }
-
-        public virtual void UseEffectsDragon()
-        {
-        }
-
-        public virtual void OffCooldownEffects()
-        {
-        }
-
-        public virtual void OnExit()
-        {
+            User.ActiveAbility = null;
+            OnExit();
         }
     }
 }

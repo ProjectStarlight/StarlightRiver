@@ -40,7 +40,7 @@ namespace StarlightRiver.Projectiles.Dummies
             {
                 AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-                if (projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StatStaminaMax && !mp.Abilities.Any(a => a.Active) && projectile.localAI[0] == 0)
+                if (projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StaminaMax && !mp.Abilities.Any(a => a.Active) && projectile.localAI[0] == 0)
                 {
                     mp.StatStamina++;
                     projectile.localAI[0] = 300;

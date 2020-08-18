@@ -21,7 +21,7 @@ namespace StarlightRiver.Pickups
         public override bool CanPickup(Player player)
         {
             AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
-            return !ah.shards[Parent.frameX];
+            return !ah.Shards[Parent.frameX];
         }
 
         public override void Visuals()
@@ -35,7 +35,7 @@ namespace StarlightRiver.Pickups
             AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
             
             ah.shardCount++;
-            ah.shards[Parent.frameX] = true;
+            ah.Shards[Parent.frameX] = true;
 
             if (ah.shardCount >= 3)
             {

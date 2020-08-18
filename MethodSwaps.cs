@@ -439,7 +439,7 @@ namespace StarlightRiver
 
             if (mp == null || mp2 == null) { return; }
 
-            playerStamina = mp.StatStaminaMax;
+            playerStamina = mp.StaminaMax;
 
             List<Texture2D> textures = new List<Texture2D>()
                 {

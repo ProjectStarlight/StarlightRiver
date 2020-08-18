@@ -15,7 +15,7 @@ namespace StarlightRiver.Abilities
         }
 
         public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/PureCrown");
-        public override bool CanUse => !Main.projectile.Any(proj => proj.owner == player.whoAmI && proj.active && (proj.type == ProjectileType<Purifier>() || proj.type == ProjectileType<PurifierReturn>()));
+        public override bool Available => !Main.projectile.Any(proj => proj.owner == User.whoAmI && proj.active && (proj.type == ProjectileType<Purifier>() || proj.type == ProjectileType<PurifierReturn>()));
 
         public override void OnCast()
         {
@@ -25,10 +25,10 @@ namespace StarlightRiver.Abilities
             //Filters.Scene.Activate("PurityFilter", player.Center + new Vector2(0, -40)).GetShader();
         }
 
-        public override void InUse()
+        public override void UpdateActive()
         {
-            Projectile.NewProjectile(player.Center + new Vector2(16, -24), Vector2.Zero, ProjectileType<Purifier>(), 0, 0, player.whoAmI);
-            StarlightWorld.PureTiles.Add((player.Center + new Vector2(16, -24)) / 16);
+            Projectile.NewProjectile(User.Center + new Vector2(16, -24), Vector2.Zero, ProjectileType<Purifier>(), 0, 0, User.whoAmI);
+            StarlightWorld.PureTiles.Add((User.Center + new Vector2(16, -24)) / 16);
 
             Active = false;
             OnExit();
