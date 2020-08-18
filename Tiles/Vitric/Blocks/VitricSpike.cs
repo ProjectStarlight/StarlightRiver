@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,5 +23,10 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
             player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " thought glass shards would be soft..."), 25, 0);
             player.velocity.Y -= 15;
         }
+    }
+
+    class VitricSpikeItem : QuickTileItem
+    {
+        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0) { }
     }
 }

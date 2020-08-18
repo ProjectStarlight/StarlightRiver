@@ -19,8 +19,6 @@ namespace StarlightRiver.NPCs.Vitric
 {
     class FlyingSentinel : ModNPC
     {
-        public override bool Autoload(ref string name) => false;
-
         public override void SetDefaults()
         {
             npc.width = 32;
@@ -50,8 +48,6 @@ namespace StarlightRiver.NPCs.Vitric
 
     class FlyingSentinelTile : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture) => false;
-
         public override int DummyType => ProjectileType<FlyingSentinelDummy>();
 
         public override void SetDefaults()
@@ -63,8 +59,19 @@ namespace StarlightRiver.NPCs.Vitric
 
     class FlyingSentinelDummy : Dummy
     {
-        public override bool Autoload(ref string name) => false;
+        public FlyingSentinelDummy() : base(TileType<FlyingSentinelTile>(), 2 * 16, 2 * 16) { }
 
-        public FlyingSentinelDummy() : base(TileType<FlyingSentinelTile>(), 2 * 16, 3 * 16) { }
+        public override void Update()
+        {
+            for (int k = 0; k < Main.maxProjectiles; k++)
+            {
+                Projectile proj = Main.projectile[k];
+                if (proj.active && proj.type == ProjectileType<Tiles.Vitric.Puzzle.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
+                {
+                    WorldGen.KillTile(ParentX, ParentY);
+                    NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<FlyingSentinel>());
+                }            
+            }
+        }
     }
 }

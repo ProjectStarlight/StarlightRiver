@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -17,8 +18,6 @@ namespace StarlightRiver.NPCs.Vitric
 {
     class WalkingSentinel : ModNPC
     {
-        public override bool Autoload(ref string name) => false;
-
         public override void SetDefaults()
         {
             npc.width = 32;
@@ -28,12 +27,22 @@ namespace StarlightRiver.NPCs.Vitric
             npc.damage = 30;
             npc.aiStyle = -1;
         }
+
+        public override void AI()
+        {
+            npc.TargetClosest();
+            Player player = Main.player[npc.target];
+
+            //basic movement
+            if (player.Center.X > npc.Center.X && npc.velocity.X < 3) npc.velocity.X += 0.02f;
+            else if (npc.velocity.X > -3) npc.velocity.X -= 0.02f;
+
+            if (npc.collideX) npc.velocity.Y -= 3;
+        }
     }
 
     class WalkingSentinelTile : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture) => false;
-
         public override int DummyType => ProjectileType<WalkingSentinelDummy>();
 
         public override void SetDefaults()
@@ -45,8 +54,19 @@ namespace StarlightRiver.NPCs.Vitric
 
     class WalkingSentinelDummy : Dummy
     {
-        public override bool Autoload(ref string name) => false;
-
         public WalkingSentinelDummy() : base(TileType<WalkingSentinelTile>(), 2 * 16, 3 * 16) { }
+
+        public override void Update()
+        {
+            for(int k = 0; k < Main.maxProjectiles; k++)
+            {
+                Projectile proj = Main.projectile[k];
+                if(proj.active && proj.type == ProjectileType<Tiles.Vitric.Puzzle.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
+                {
+                    WorldGen.KillTile(ParentX, ParentY);
+                    NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<WalkingSentinel>());
+                }              
+            }
+        }
     }
 }

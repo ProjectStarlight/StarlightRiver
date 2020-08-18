@@ -34,7 +34,7 @@ namespace StarlightRiver.Items.Debug
             item.useTime = 10;
             item.rare = ItemRarityID.Green;
             item.autoReuse = true;
-            item.createTile = TileType<Tiles.Vitric.ForgeActor>();
+            item.createTile = TileType<NPCs.Vitric.FlyingSentinelTile>();
         }
 
         public override string Texture => "StarlightRiver/MarioCumming";
@@ -73,6 +73,7 @@ namespace StarlightRiver.Items.Debug
             item.useTime = 2;
             item.rare = ItemRarityID.Green;
             item.noUseGraphic = true;
+            item.createTile = TileType<NPCs.Vitric.WalkingSentinelTile>();
         }
 
         public override string Texture => "StarlightRiver/MarioCumming";
@@ -85,7 +86,7 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            Keys.Key.Spawn<Keys.OvergrowKey>(Main.MouseWorld);
+            //Keys.Key.Spawn<Keys.OvergrowKey>(Main.MouseWorld);
             return true;
         }
 
