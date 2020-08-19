@@ -55,10 +55,7 @@ namespace StarlightRiver.Abilities.Content
             Player.gravity = 0;
             Player.maxFallSpeed = 999;
 
-            if (time-- <= 0)
-            {
-                Deactivate();
-            }
+            if (time-- <= 0) Deactivate();
 
             // Notable differences with new Ability:
             // - you can tech building momentum
@@ -80,10 +77,9 @@ namespace StarlightRiver.Abilities.Content
 
         private float SignedLesserBound(float limit, float other)
         {
-            if (limit < 0)
-                return Math.Min(limit, other);
-            if (limit > 0)
-                return Math.Max(limit, other);
+            if (limit < 0) return Math.Min(limit, other);
+            if (limit > 0) return Math.Max(limit, other);
+
             return other;
             // TODO show modification of Dash
             // return 0; <-- do this to lock the player's perpendicular momentum when dashing
@@ -97,6 +93,7 @@ namespace StarlightRiver.Abilities.Content
         {
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
             int direction = time % 2 == 0 ? -1 : 1;
+
             for (int k = 0; k < 60; k++)
             {
                 float rot = (0.1f * k) * direction;
@@ -112,6 +109,7 @@ namespace StarlightRiver.Abilities.Content
                 Dust dus = Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(k / 60f * 6.28f) * Main.rand.NextFloat(50), DustType<Air2>(), Vector2.Zero);
                 dus.customData = Player;
             }
+
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item25, Player.Center);
         }
