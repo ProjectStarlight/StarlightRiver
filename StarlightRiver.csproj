@@ -27,6 +27,6 @@
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build &quot;$(ProjectDir)\&quot; -eac &quot;$(TargetPath)&quot;" />
+    <Exec Command="&quot;$(tMLServerPath)&quot; -build &quot;$(ProjectDir)\&quot; -eac &quot;$(TargetPath)&quot;" />
   </Target>
 </Project>

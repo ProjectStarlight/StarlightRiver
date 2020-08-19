@@ -8,6 +8,7 @@ using System.Data.Odbc;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -23,7 +24,8 @@ namespace StarlightRiver.Abilities
             {
                 if (value is null || Stamina > value.ActivationCost)
                 {
-                    GetOrNull(activeAbility.GetType())?.OnEnd();
+                    if (activeAbility != null)
+                        GetOrNull(activeAbility.GetType())?.OnEnd();
                     activeAbility = value;
                 }
             }
@@ -53,14 +55,14 @@ namespace StarlightRiver.Abilities
         public bool AnyUnlocked => unlockedAbilities.Count > 0;
 
         // Some constants.
-        private const int staminaRegenCDMax = 180;
+        private const int infusionCount = 2;
         private const int shardsPerVessel = 3;
 
-        public ShardSet Shards { get; } = new ShardSet();
+        public ShardSet Shards { get; private set; } = new ShardSet();
 
         // Internal-only information.
+        private InfusionItem[] infusions = new InfusionItem[infusionCount];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
-        private List<InfusionItem> infusions = new List<InfusionItem>() { null, null };
         private int staminaRegenCD;
         private float stamina;
         private float staminaMaxBonus;
@@ -74,7 +76,7 @@ namespace StarlightRiver.Abilities
 
         private InfusionItem GetOrNull(Type t)
         {
-            return infusions.FirstOrDefault(i => i.AbilityType == t);
+            return infusions.FirstOrDefault(i => i?.AbilityType == t);
         }
 
         /// <summary>
@@ -103,6 +105,23 @@ namespace StarlightRiver.Abilities
         }
 
         /// <summary>
+        /// Checks if the given ability type is unlocked.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool Unlocked<T>() where T : Ability
+        {
+            return TryGetAbility<T>(out _);
+        }
+        /// <summary>
+        /// Checks if the given ability type is unlocked.
+        /// </summary>
+        public bool Unlocked(Ability ability)
+        {
+            return unlockedAbilities.ContainsKey(ability.GetType());
+        }
+
+        /// <summary>
         /// Gets an unlocked ability from the player, or null if none exists.
         /// </summary>
         /// <typeparam name="T">The type of ability.</typeparam>
@@ -126,40 +145,59 @@ namespace StarlightRiver.Abilities
             return false;
         }
 
-        public InfusionItem GetInfusion(int slot) => infusions[slot];
+        public InfusionItem GetInfusion(int slot) => slot < 0 || slot >= infusions.Length ? null : infusions[slot];
+
+        public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
 
         public override TagCompound Save()
         {
             return new TagCompound
             {
                 [nameof(Shards)] = Shards.ToList(),
-                [nameof(unlockedAbilities)] = unlockedAbilities.Select(t => t.GetType().AssemblyQualifiedName).ToList(),
-                [nameof(infusions)] = infusions.Select(t => t.item.type).ToList(),
+                [nameof(unlockedAbilities)] = unlockedAbilities.Keys.Select(t => t.FullName).ToList(),
+                [nameof(infusions)] = infusions.Where(t => t != null).Select(t => t.item).ToList(),
                 [nameof(InfusionLimit)] = InfusionLimit
             };
         }
 
         public override void Load(TagCompound tag)
         {
-            // load shards
-            var shardsTemp = tag.GetList<int>(nameof(Shards));
-            foreach (var item in shardsTemp)
-            {
-                Shards.Add(item);
-            }
-
-            var abilitiesTemp = tag.GetList<string>(nameof(unlockedAbilities));
+            Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            foreach (var item in abilitiesTemp)
+            infusions = new InfusionItem[infusionCount];
+            InfusionLimit = 1;
+            try
             {
-                Type t = Type.GetType(item);
-                Unlock(t, Activator.CreateInstance(t) as Ability);
+                // Load shards
+                var shardsTemp = tag.GetList<int>(nameof(Shards));
+                foreach (var item in shardsTemp)
+                {
+                    Shards.Add(item);
+                }
+
+                // Load unlocked abilities and init them
+                var abilitiesTemp = tag.GetList<string>(nameof(unlockedAbilities));
+                foreach (var item in abilitiesTemp)
+                {
+                    var t = typeof(Ability).Assembly.GetType(item);
+                    if (t != null)
+                        Unlock(t, Activator.CreateInstance(t) as Ability);
+                }
+
+                // Load infusions
+                var infusionsTemp = tag.GetList<Item>(nameof(infusions));
+                for (int i = 0; i < infusionsTemp.Count; i++)
+                {
+                    infusions[i] = infusionsTemp[i].modItem as InfusionItem;
+                }
+
+                // Load max infusions
+                InfusionLimit = tag.GetInt(nameof(InfusionLimit));
             }
+            catch
+            {
 
-            var infusionsTemp = tag.GetList<int>(nameof(infusions));
-            infusions = infusionsTemp.Select(t => ItemLoader.GetItem(t) as InfusionItem).ToList();
-
-            InfusionLimit = tag.GetInt(nameof(InfusionLimit));
+            }
         }
 
         public override void ResetEffects()
@@ -207,37 +245,47 @@ namespace StarlightRiver.Abilities
             }
             foreach (var infusion in infusions)
             {
+                if (infusion == null) continue;
                 infusion.UpdateFixed();
                 if (ActiveAbility?.GetType() == infusion.AbilityType)
+                {
                     infusion.UpdateActive();
+                }
             }
 
             if (ActiveAbility != null)
             {
-                // Update active ability and its infusion
-                unlockedAbilities[ActiveAbility.GetType()] = ActiveAbility;
+                // Update active ability
                 ActiveAbility.UpdateActive();
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    ActiveAbility?.UpdateActiveEffects();
+                }
             }
 
             if (ActiveAbility != null)
             {
                 player.velocity.Y += 0.01f; //Required to ensure that the game never thinks we hit the ground when using an ability. Thanks redcode!
 
+                // Disable wings and rockets temporarily
                 player.rocketRelease = true;
-                player.fallStart = (int)player.Center.Y;
-                player.fallStart2 = (int)player.Center.Y;
-                player.rocketTimeMax = 0;
-                player.wingTimeMax = 0;
+                player.canRocket = false;
+                player.wings = -1;
 
-                staminaRegenCD = staminaRegenCDMax;
+                SetStaminaRegenCD(300);
             }
             else
             {
-                if (staminaRegenCD > 1)
+                if (staminaRegenCD > 0)
                 {
                     staminaRegenCD--;
                 }
-                Stamina += StaminaRegenRate * staminaRegenCD;
+                Stamina += StaminaRegenRate / (staminaRegenCD + 1);
+            }
+
+            if (player.velocity != Vector2.Zero)
+            {
+                SetStaminaRegenCD(90);
             }
         }
 

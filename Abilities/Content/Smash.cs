@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Content
         public override float ActivationCost => 2;
 
         public override bool Available => base.Available && Player.velocity.Y != 0;
-        public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/GaiaFist");
+        public override string Texture => "StarlightRiver/Pickups/GaiaFist";
 
         public float Timer { get; private set; }
 

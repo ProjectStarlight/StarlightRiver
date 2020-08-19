@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Dusts;
+using Steamworks;
 using System;
 using System.Runtime.Serialization;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Abilities.Content
@@ -15,11 +17,13 @@ namespace StarlightRiver.Abilities.Content
         public int time;
 
         public override float ActivationCost => 1;
-        public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/ForbiddenWinds");
+        public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
 
-        public override int CooldownMax => 180;
+        public override int CooldownMax => 90;
 
         protected Vector2 dir;
+        protected Vector2 vel;
+        protected const int maxTime = 7;
 
         public float Speed { get; set; }
 
@@ -32,6 +36,9 @@ namespace StarlightRiver.Abilities.Content
         {
             base.OnActivate();
 
+            var b = 0.15f; // boost velocity when exiting dash
+            vel = SignedLesserBound(GetDashBoost() * b, Player.velocity); // "conservation of momentum" (lol)
+            time = maxTime;
             Speed = 28;
 
             Main.PlaySound(SoundID.Item45, Player.Center);
@@ -42,19 +49,51 @@ namespace StarlightRiver.Abilities.Content
         {
             base.UpdateActive();
 
-            Player.maxFallSpeed = 999;
-            Player.velocity = Vector2.Normalize(dir) * Speed;
+            Player.velocity = SignedLesserBound(GetDashBoost(), Player.velocity); // "conservation of momentum"
 
-            if (Vector2.DistanceSquared(Player.position, Player.oldPosition) < 5*5 && time < 4)
+            Player.frozen = true;
+            Player.gravity = 0;
+            Player.maxFallSpeed = 999;
+
+            if (time-- <= 0)
             {
                 Deactivate();
-                Player.velocity *= -0.2f;
             }
 
-            UpdateEffects();
+            // Notable differences with new Ability:
+            // - you can tech building momentum
+            // - less bug prone
+            // - supports gamepad i think
+            // - it just.. feels better..
+
+            // Notable issues found with Ability:
+            // - new and old:
+            //   - you can tech a jump if you hold jump during the ability (I like this, very celeste-y)
+            // - old:
+            //   - you can double-jump mid dash and f*ck up your dash
         }
 
-        protected virtual void UpdateEffects()
+        private Vector2 GetDashBoost()
+        {
+            return Vector2.Normalize(dir) * Speed;
+        }
+
+        private float SignedLesserBound(float limit, float other)
+        {
+            if (limit < 0)
+                return Math.Min(limit, other);
+            if (limit > 0)
+                return Math.Max(limit, other);
+            return other;
+            // TODO show modification of Dash
+            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
+        }
+        private Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+        {
+            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
+        }
+
+        public override void UpdateActiveEffects()
         {
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
             int direction = time % 2 == 0 ? -1 : 1;
@@ -79,8 +118,7 @@ namespace StarlightRiver.Abilities.Content
 
         public override void OnExit()
         {
-            Player.velocity.X *= 0.15f;
-            Player.velocity.Y *= 0.15f;
+            Player.velocity = vel;
         }
 
         //public override void OnCastDragon()

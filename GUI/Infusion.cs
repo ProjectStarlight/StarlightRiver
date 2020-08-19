@@ -68,7 +68,7 @@ namespace StarlightRiver.GUI
         {
             var tex = Main.inventoryBackTexture;
             var mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-            var hover = mp.GetInfusion(TargetSlot).item;
+            var hover = mp.GetInfusion(TargetSlot)?.item;
 
             //Draws the slot
             spriteBatch.Draw(tex, GetDimensions().ToRectangle(), new Rectangle(0, 0, (int)tex.Size().X, (int)tex.Size().Y), Color.White * 0.75f);

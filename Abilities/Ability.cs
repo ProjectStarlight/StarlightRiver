@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Dragons;
 using StarlightRiver.Dusts;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -12,7 +14,8 @@ namespace StarlightRiver.Abilities
 {
     public abstract class Ability
     {
-        public abstract Texture2D Texture { get; }
+        public abstract string Texture { get; }
+        public virtual string TextureLocked => Texture + "Locked";
         public virtual float ActivationCost { get; }
         public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost;
         public AbilityHandler User { get; internal set; }
@@ -23,8 +26,15 @@ namespace StarlightRiver.Abilities
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
         public virtual void OnActivate() { }
         public virtual void UpdateActive() { }
+        public virtual void UpdateActiveEffects() { }
         public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
+
+        public Texture2D GetTexture(Player player)
+        {
+            var tex = player.GetHandler().Unlocked(this) ? Texture : TextureLocked;
+            return ModContent.GetTexture(tex);
+        }
 
         public void Activate(AbilityHandler user)
         {
@@ -44,6 +54,15 @@ namespace StarlightRiver.Abilities
                 User.ActiveAbility = null;
                 OnExit();
             }
+        }
+
+        // TODO load, cache, and unload. super ugly rn
+        public static Ability[] GetAbilityInstances()
+        {
+            return new Ability[]
+            {
+                new Dash(), new Wisp(), new Pure(), new Smash()//, new Superdash()
+            };
         }
     }
 }

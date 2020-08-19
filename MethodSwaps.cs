@@ -35,7 +35,7 @@ namespace StarlightRiver
 
     public partial class StarlightRiver : Mod
     {
-        Dictionary<UIWorldListItem, TagCompound> worldDataCache = new Dictionary<UIWorldListItem, TagCompound>();
+        readonly Dictionary<UIWorldListItem, TagCompound> worldDataCache = new Dictionary<UIWorldListItem, TagCompound>();
 
         private void HookOn()
         {
@@ -214,9 +214,9 @@ namespace StarlightRiver
             Main.spriteBatch.End();
         }
 
-        private bool NoSoulboundFrame(On.Terraria.Player.orig_ItemFitsItemFrame orig, Player self, Item i) => i.modItem is Items.SoulboundItem ? false : orig(self, i);
+        private bool NoSoulboundFrame(On.Terraria.Player.orig_ItemFitsItemFrame orig, Player self, Item i) => !(i.modItem is Items.SoulboundItem) && orig(self, i);
 
-        private bool NoSoulboundRack(On.Terraria.Player.orig_ItemFitsWeaponRack orig, Player self, Item i) => i.modItem is Items.SoulboundItem ? false : orig(self, i);
+        private bool NoSoulboundRack(On.Terraria.Player.orig_ItemFitsWeaponRack orig, Player self, Item i) => !(i.modItem is Items.SoulboundItem) && orig(self, i);
 
         private void SoulboundPriority(On.Terraria.Player.orig_dropItemCheck orig, Player self)
         {
@@ -266,7 +266,7 @@ namespace StarlightRiver
             orig(self);
         }
 
-        private bool UpdateMatrixFirst(On.Terraria.Graphics.SpriteViewMatrix.orig_ShouldRebuild orig, SpriteViewMatrix self) => Rotation != 0 ? false : orig(self);
+        private bool UpdateMatrixFirst(On.Terraria.Graphics.SpriteViewMatrix.orig_ShouldRebuild orig, SpriteViewMatrix self) => Rotation == 0 && orig(self);
 
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
         {
@@ -341,9 +341,8 @@ namespace StarlightRiver
             Vector2 pos = self.GetDimensions().ToRectangle().TopRight();
 
             float chungosity = 0;
-            TagCompound tag3;
 
-            if (worldDataCache.TryGetValue(self, out tag3) && tag3 != null) chungosity = tag3.GetFloat("Chungus");
+            if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) chungosity = tag3.GetFloat("Chungus");
 
             Texture2D tex = ModContent.GetTexture("StarlightRiver/GUI/Assets/ChungusMeter");
             Texture2D tex2 = ModContent.GetTexture("StarlightRiver/GUI/Assets/ChungusMeterFill");
@@ -426,7 +425,7 @@ namespace StarlightRiver
             orig(self, spriteBatch);
             Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
-            //horray double reflection, fuck you vanilla
+            //hooray double reflection, fuck you vanilla
             Type typ = self.GetType();
             FieldInfo playerInfo = typ.GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
             UICharacter character = (UICharacter)playerInfo.GetValue(self);
@@ -440,15 +439,6 @@ namespace StarlightRiver
             if (mp == null || mp2 == null) { return; }
 
             float playerStamina = mp.StaminaMax;
-
-            List<Texture2D> textures = new List<Texture2D>()
-                {
-                    !mp.TryGetAbility<Dash>(out var d) ? d.Texture : ModContent.GetTexture("StarlightRiver/Pickups/ForbiddenWindsLocked"),
-                    !mp.TryGetAbility<Wisp>(out var w) ? w.Texture : ModContent.GetTexture("StarlightRiver/Pickups/FaeflameLocked"),
-                    !mp.TryGetAbility<Pure>(out var p) ? p.Texture : ModContent.GetTexture("StarlightRiver/Pickups/PureCrownLocked"),
-                    !mp.TryGetAbility<Smash>(out var s) ? s.Texture : ModContent.GetTexture("StarlightRiver/Pickups/GaiaFistLocked"),
-                    //!mp.TryGet<Superdash>(out _) ? ModContent.GetTexture("StarlightRiver/Pickups/Cloak1") : ModContent.GetTexture("StarlightRiver/Pickups/Cloak0"),
-                };
 
             Rectangle box = new Rectangle((int)(origin + new Vector2(86, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
             Rectangle box2 = new Rectangle((int)(origin + new Vector2(172, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
@@ -468,9 +458,10 @@ namespace StarlightRiver
 
             if (mp2.CodexState != 0)//Draw codex percentage if unlocked
             {
-                Texture2D bookTex = mp2.CodexState == 2 ? ModContent.GetTexture("StarlightRiver/GUI/Assets/Book2Closed") : ModContent.GetTexture("StarlightRiver/GUI/Assets/Book1Closed");
+                var bookTex = mp2.CodexState == 2 ? ("StarlightRiver/GUI/Assets/Book2Closed") : ("StarlightRiver/GUI/Assets/Book1Closed");
+                var drawTex = ModContent.GetTexture(bookTex);
                 int percent = (int)(mp2.Entries.Count(n => !n.Locked) / (float)mp2.Entries.Count * 100f);
-                spriteBatch.Draw(bookTex, origin + new Vector2(178, 60), Color.White);
+                spriteBatch.Draw(drawTex, origin + new Vector2(178, 60), Color.White);
                 Utils.DrawBorderString(spriteBatch, percent + "%", origin + new Vector2(212, 68), percent >= 100 ? new Color(255, 205 + (int)(Math.Sin(Main.time / 50000 * 100) * 40), 50) : Color.White);
             }
             else//Mysterious if locked
@@ -480,10 +471,19 @@ namespace StarlightRiver
             }
 
 
+            var abilities = Ability.GetAbilityInstances();
+
             //Draw ability Icons
-            for (int k = 0; k < textures.Count; k++)
+            for (int k = 0; k < abilities.Length; k++)
             {
-                spriteBatch.Draw(textures[(textures.Count - 1) - k], origin + new Vector2(536 - k * 32, 62), Color.White);
+                try
+                {
+                    spriteBatch.Draw(abilities[(abilities.Length - 1) - k].GetTexture(player), origin + new Vector2(536 - k * 32, 62), Color.White);
+                } 
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
             }
 
 

@@ -18,7 +18,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return player.GetHandler().TryGetAbility<Smash>(out _);
+            return !player.GetHandler().Unlocked<Smash>();
         }
 
         public override void SetStaticDefaults()

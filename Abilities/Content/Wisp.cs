@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Dusts;
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Void = StarlightRiver.Dusts.Void;
 
@@ -14,7 +16,7 @@ namespace StarlightRiver.Abilities.Content
 {
     public class Wisp : Ability
     {
-        public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/Faeflame");
+        public override string Texture => "StarlightRiver/Pickups/Faeflame";
         public override bool Available => base.Available && User.Stamina > 1;
 
         private bool safe => User.Stamina > 1 / 60f;
@@ -37,8 +39,11 @@ namespace StarlightRiver.Abilities.Content
                 Main.screenPosition.Y + Main.mouseY - Player.Hitbox.Center.Y
                 )) * 5 + new Vector2(0.25f, 0.25f);
 
+            const int size = 14;
+
             // Set dimensions to 14x14
-            Player.Hitbox.Inflate(14 - Player.Hitbox.Width, 14 - Player.Hitbox.Height);
+            if (Player.Hitbox.Width != Player.Hitbox.Height && Player.Hitbox.Width != size)
+            Player.Hitbox = InflateTo(Player.Hitbox, size, size);
 
             Lighting.AddLight(Player.Center, 0.15f, 0.15f, 0f);
 
@@ -87,14 +92,26 @@ namespace StarlightRiver.Abilities.Content
             //    Main.PlaySound(SoundID.NPCHit13, Player.Center);
             //}
             // TODO make this a buff?
+        }
 
+        private static Rectangle InflateTo(Rectangle rectangle, int width, int height)
+        {
+            rectangle.X -= (width - rectangle.Width) / 2;
+            rectangle.Y -= (height - rectangle.Height) / 2;
+            rectangle.Width = width;
+            rectangle.Height = height;
+            return rectangle;
+        }
+
+        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+        {
+            layers.ForEach(p => p.visible = false);
         }
 
         public override void OnExit()
         {
-            Player.velocity.X = 0;
-            Player.velocity.Y = 0;
-            Player.Hitbox = new Rectangle((int)Player.position.X, (int)Player.position.Y - 16, 20, 42);
+            Player.Hitbox = InflateTo(Player.Hitbox, Player.defaultWidth, Player.defaultHeight);
+            Player.direction = Math.Sign(Player.velocity.X);
 
             for (int k = 0; k <= 30; k++)
             {
@@ -113,7 +130,7 @@ namespace StarlightRiver.Abilities.Content
                     bool safe = !Collision.SolidTiles(x, x + 1, y, y + 2);
                     if (safe)
                     {
-                        topLeft = new Vector2(x, y);
+                        topLeft = new Vector2(x, y) * 16;
                         return true;
                     }
                 }

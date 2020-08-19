@@ -144,8 +144,8 @@ namespace StarlightRiver.Core
                 ScreenMoveTimer++;
             }
 
-            if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() &&
-                Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) //the worlds most ungodly check ever
+            if (Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>() &&
+                Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
             {
                 panDown++;
             }

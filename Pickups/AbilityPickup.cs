@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -56,9 +57,9 @@ namespace StarlightRiver.Pickups
         public virtual void PickupEffects(Player player) { }
 
         /// <summary>
-        /// if the player should be able to pick this up or not
+        /// If the player should be able to pick this up or not.
         /// </summary>
-        public virtual bool CanPickup(Player player) { return false; }
+        public abstract bool CanPickup(Player player);
 
         public virtual Color GlowColor => Color.White;
 
@@ -86,7 +87,7 @@ namespace StarlightRiver.Pickups
                 }
             }
 
-            if (mp.PickupTarget == npc) PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
+            if (mp.PickupTarget?.whoAmI == npc.whoAmI) PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
         }
 
         public sealed override bool CanHitPlayer(Player target, ref int cooldownSlot)

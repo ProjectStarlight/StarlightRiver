@@ -45,7 +45,7 @@ namespace StarlightRiver.NPCs.Pickups
             Player player = Main.player[npc.target];
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-            if (npc.Hitbox.Intersects(player.Hitbox) && !mp.TryGetAbility<Pure>(out _) && animate == 0)
+            if (npc.Hitbox.Intersects(player.Hitbox) && !mp.Unlocked<Pure>() && animate == 0)
             {
                 animate = 500;
             }
@@ -133,7 +133,7 @@ namespace StarlightRiver.NPCs.Pickups
                 timer = 0;
             }
 
-            if (!mp.TryGetAbility<Pure>(out _) && animate == 0)
+            if (!mp.Unlocked<Pure>() && animate == 0)
             {
                 spriteBatch.Draw(wind, npc.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
                 Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 16), npc.width, npc.height, DustType<Dusts.Purify>());

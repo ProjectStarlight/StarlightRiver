@@ -38,7 +38,7 @@ namespace StarlightRiver.NPCs.Passive
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if ((distance.Length() <= 180 && !(mp.TryGetAbility<Wisp>(out _))) || Main.dayTime) npc.ai[3] = 1;
+            if ((distance.Length() <= 180 && !(mp.Unlocked<Wisp>())) || Main.dayTime) npc.ai[3] = 1;
 
             if (npc.ai[3] == 1)
             {

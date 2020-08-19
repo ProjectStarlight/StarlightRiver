@@ -11,7 +11,7 @@ namespace StarlightRiver.Abilities.Content
 {
     public class Pure : Ability
     {
-        public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/PureCrown");
+        public override string Texture => "StarlightRiver/Pickups/PureCrown";
         public override bool Available => base.Available && !Main.projectile.Any(proj => proj.owner == Player.whoAmI && proj.active && (proj.type == ProjectileType<Purifier>() || proj.type == ProjectileType<PurifierReturn>()));
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)

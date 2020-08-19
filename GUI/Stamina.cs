@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -58,7 +59,12 @@ namespace StarlightRiver.GUI
             if (Stam1.IsMouseHovering)
             {
                 AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-                Utils.DrawBorderString(spriteBatch, "Stamina: " + mp.Stamina + "/" + mp.StaminaMax, Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal);
+                var stamina = Math.Round(mp.Stamina, 1);
+                var staminaMax = Math.Round(mp.StaminaMax, 1);
+                string text = $"Stamina: {stamina}/{staminaMax}";
+                Vector2 pos = Main.MouseScreen + Vector2.One*16;
+                pos.X = Math.Min(Main.screenWidth - Main.fontMouseText.MeasureString(text).X - 6, pos.X);
+                Utils.DrawBorderString(spriteBatch, text, pos, Main.mouseTextColorReal);
             }
 
             Recalculate();
@@ -69,7 +75,7 @@ namespace StarlightRiver.GUI
     {
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            CalculatedStyle dimensions = GetDimensions();
+            Rectangle dimensions = GetDimensions().ToRectangle();
             Player player = Main.LocalPlayer;
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
@@ -77,14 +83,14 @@ namespace StarlightRiver.GUI
             Texture2D fillTex = GetTexture("StarlightRiver/GUI/Assets/Stamina");
 
             int row = 0;
-            for (int k = 0; k < mp.StaminaMax + 1; k++)
+            for (int k = 0; k <= mp.StaminaMax; k++)
             {
                 if (k % 7 == 0 && k != 0) row++;
 
-                Vector2 pos = row % 2 == 0 ? dimensions.ToRectangle().TopLeft() + new Vector2(row * -18, (k % 7) * 28) :
-                    dimensions.ToRectangle().TopLeft() + new Vector2(row * -18, 14 + (k % 7) * 28);
+                Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, (k % 7) * 28) :
+                    dimensions.TopLeft() + new Vector2(row * -18, 14 + (k % 7) * 28);
 
-                if (k == mp.StaminaMax + 1) //draws the incomplete vessel
+                if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
                     Texture2D shard1 = GetTexture("StarlightRiver/Pickups/Stamina1");
                     Texture2D shard2 = GetTexture("StarlightRiver/Pickups/Stamina2");
@@ -101,7 +107,7 @@ namespace StarlightRiver.GUI
                 {
                     spriteBatch.Draw(fillTex, pos + Vector2.One * 4, Color.White);
                 }
-                // If not greater than the top-level stamina vessel
+                // If on the last stamina vessel
                 else if (k <= mp.Stamina)
                 {
                     float scale = mp.Stamina - k;

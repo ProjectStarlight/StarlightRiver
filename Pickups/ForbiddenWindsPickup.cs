@@ -19,7 +19,10 @@ namespace StarlightRiver.Pickups
 
         public override Color GlowColor => new Color(160, 230, 255);
 
-        public override bool CanPickup(Player player) => player.GetHandler().TryGetAbility<Dash>(out _);
+        public override bool CanPickup(Player player)
+        {
+            return !player.GetHandler().Unlocked<Dash>();
+        }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Forbidden Winds");
 
@@ -96,8 +99,7 @@ namespace StarlightRiver.Pickups
 
         public override void PickupEffects(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.Unlock<Dash>();
+            player.GetHandler().Unlock<Dash>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
             player.AddBuff(BuffID.Featherfall, 580);

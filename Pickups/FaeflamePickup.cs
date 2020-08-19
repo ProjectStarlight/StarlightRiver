@@ -19,7 +19,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return player.GetModPlayer<AbilityHandler>().TryGetAbility<Wisp>(out _);
+            return !player.GetModPlayer<AbilityHandler>().Unlocked<Wisp>();
         }
 
         public override void SetStaticDefaults()

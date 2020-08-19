@@ -43,7 +43,7 @@ namespace StarlightRiver.Pickups
             Player player = Main.player[npc.target];
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-            if (npc.Hitbox.Intersects(player.Hitbox) && mp.TryGetAbility<Superdash>(out _))
+            if (npc.Hitbox.Intersects(player.Hitbox) && mp.Unlocked<Superdash>())
             {
                 mp.Unlock<Superdash>();
                 animate = 300;
@@ -94,7 +94,7 @@ namespace StarlightRiver.Pickups
                 timer = 0;
             }
 
-            if (mp.TryGetAbility<Superdash>(out _))
+            if (mp.Unlocked<Superdash>())
             {
                 spriteBatch.Draw(wind, npc.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
                 Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 4), npc.width, npc.height, DustType<Dusts.Darkness>(), 0, 0, 0, default, 0.5f);

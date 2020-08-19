@@ -170,6 +170,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
+            // TODO add pre-draw check here! this is lots of drawcode
+
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
             Texture2D backdrop = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Window");

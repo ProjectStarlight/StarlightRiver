@@ -23,13 +23,16 @@ namespace StarlightRiver.Abilities
         {
             base.UpdateFixed();
 
+            if (CooldownReduction > CooldownMax)
+                CooldownReduction = CooldownMax;
+
             if (!Active)
                 Cooldown--;
             else
                 Cooldown = CooldownMax - CooldownReduction;
             CooldownReduction = 0;
 
-            if (Cooldown <= 0)
+            if (Cooldown == 0)
                 CooldownFinish();
         }
 

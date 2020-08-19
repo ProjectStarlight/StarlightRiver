@@ -14,7 +14,7 @@ namespace StarlightRiver.Abilities.Content
     {
         //private Vector2 to;
 
-        public override Texture2D Texture => GetTexture("StarlightRiver/Pickups/Cloak1");
+        public override string Texture => "StarlightRiver/Pickups/Cloak1";
         //public override bool Available => base.Available;
 
         //public override int CooldownMax => 120;
@@ -34,7 +34,6 @@ namespace StarlightRiver.Abilities.Content
         //        Dust.NewDust(Player.Center - new Vector2(100, 100), 200, 200, DustType<Void2>(), 0, 0, 0, default, 1.2f);
         //    }
 
-        //    // TODO sync
         //    if (Main.myPlayer == Player.whoAmI)
         //    {
         //        to = Main.MouseWorld - Player.Center;
