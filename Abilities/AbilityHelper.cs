@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.Content;
 using Terraria;
 
 namespace StarlightRiver.Abilities
@@ -8,17 +9,21 @@ namespace StarlightRiver.Abilities
     {
         public static bool CheckDash(Player player, Rectangle hitbox)
         {
-            return Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size()) && player.GetModPlayer<AbilityHandler>().dash.Active;
+            return player.ActiveAbility<Dash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool CheckWisp(Player player, Rectangle hitbox)
         {
-            return Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size()) && player.GetModPlayer<AbilityHandler>().wisp.Active;
+            return player.ActiveAbility<Wisp>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool CheckSmash(Player player, Rectangle hitbox)
         {
-            return Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size()) && player.GetModPlayer<AbilityHandler>().smash.Active;
+            return player.ActiveAbility<Smash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
+
+        public static bool ActiveAbility<T>(this Player player) where T : Ability => player.GetHandler().ActiveAbility is T;
+
+        public static AbilityHandler GetHandler(this Player player) => player.GetModPlayer<AbilityHandler>();
     }
 }

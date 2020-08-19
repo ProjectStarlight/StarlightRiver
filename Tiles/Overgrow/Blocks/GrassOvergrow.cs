@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Items;
 using System.Linq;
 using Terraria;
@@ -60,7 +61,7 @@ namespace StarlightRiver.Tiles.Overgrow.Blocks
                 if (Main.rand.Next(10) == 0) Dust.NewDust(playerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, 0.6f);
             }
 
-            if (player.GetModPlayer<Abilities.AbilityHandler>().dash.Cooldown == 90)
+            if (player.GetModPlayer<Abilities.AbilityHandler>().GetAbility<Dash>().Cooldown == 90)
                 for (int k = 0; k < 20; k++)
                     Dust.NewDust(playerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, -2);
         }

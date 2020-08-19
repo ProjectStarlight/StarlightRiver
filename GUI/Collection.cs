@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -41,11 +42,15 @@ namespace StarlightRiver.GUI
             {
                 RemoveAllChildren();
                 AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-
-                for (int k = 0; k < mp.Abilities.Count; k++)
+                var abilities = new Ability[5]
                 {
-                    Ability ability = mp.Abilities[k];
-                    Vector2 pos = new Vector2(100, 300) + new Vector2(-50, 0).RotatedBy(-k / (float)(mp.Abilities.Count - 1) * 3.14f);
+                    mp.GetAbility<Dash>(), mp.GetAbility<Wisp>(), mp.GetAbility<Pure>(), mp.GetAbility<Smash>(), mp.GetAbility<Superdash>()
+                }; // TODO "list of default abilities" somewhere?
+
+                for (int k = 0; k < abilities.Length; k++)
+                {
+                    Ability ability = abilities[k];
+                    Vector2 pos = new Vector2(100, 300) + new Vector2(-50, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
                     AddAbility(ability, pos);
                 }
                 ShouldReset = false;
@@ -55,19 +60,19 @@ namespace StarlightRiver.GUI
 
     public class AbilityDisplay : UIElement
     {
-        private readonly Ability Ability;
+        private readonly Ability ability;
 
-        public AbilityDisplay(Ability ability) => Ability = ability;
+        public AbilityDisplay(Ability ability) => this.ability = ability;
 
         public override void Click(UIMouseEvent evt)
         {
-            if (!Ability.Locked) Collection.ActiveAbility = Ability;
+            if (ability != null) Collection.ActiveAbility = ability;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = Ability.Locked ? GetTexture("StarlightRiver/GUI/Assets/blank") : Ability.Texture;
+            Texture2D tex = ability == null ? GetTexture("StarlightRiver/GUI/Assets/blank") : ability.Texture;
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

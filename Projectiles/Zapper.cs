@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using System.Linq;
 using Terraria;
@@ -43,7 +44,7 @@ namespace StarlightRiver.Projectiles
 
             foreach (Player player in Main.player.Where(player => player.active))
             {
-                if (Collision.CheckAABBvAABBCollision(projectile.position, dims, player.position, player.Hitbox.Size()) && !player.GetModPlayer<AbilityHandler>().wisp.Active)
+                if (Collision.CheckAABBvAABBCollision(projectile.position, dims, player.position, player.Hitbox.Size()) && !player.ActiveAbility<Wisp>())
                 {
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was zapped to death."), 50, 0);
                     player.velocity.X = (player.velocity.Length() <= 8) ? (-Vector2.Normalize(player.velocity) * 8).X : player.velocity.X * -1;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Projectiles
                     Projectile proj = Main.projectile.FirstOrDefault(p => p.owner == player.whoAmI && Main.projHook[p.type]);
                     if (proj != null) proj.timeLeft = 0;
 
-                    player.GetModPlayer<AbilityHandler>().dash.Active = false;
+                    player.GetModPlayer<AbilityHandler>().GetAbility<Dash>().Deactivate();
                 }
             }
 

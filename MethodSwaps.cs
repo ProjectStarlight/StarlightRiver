@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Items.CursedAccessories;
@@ -424,7 +425,6 @@ namespace StarlightRiver
         {
             orig(self, spriteBatch);
             Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
-            int playerStamina = 0;
 
             //horray double reflection, fuck you vanilla
             Type typ = self.GetType();
@@ -439,15 +439,15 @@ namespace StarlightRiver
 
             if (mp == null || mp2 == null) { return; }
 
-            playerStamina = mp.StaminaMax;
+            float playerStamina = mp.StaminaMax;
 
             List<Texture2D> textures = new List<Texture2D>()
                 {
-                    !mp.dash.Locked ? ModContent.GetTexture("StarlightRiver/Pickups/ForbiddenWinds") : ModContent.GetTexture("StarlightRiver/Pickups/ForbiddenWindsLocked"),
-                    !mp.wisp.Locked ? ModContent.GetTexture("StarlightRiver/Pickups/Faeflame") : ModContent.GetTexture("StarlightRiver/Pickups/FaeflameLocked"),
-                    !mp.pure.Locked ? ModContent.GetTexture("StarlightRiver/Pickups/PureCrown") : ModContent.GetTexture("StarlightRiver/Pickups/PureCrownLocked"),
-                    !mp.smash.Locked ? ModContent.GetTexture("StarlightRiver/Pickups/GaiaFist") : ModContent.GetTexture("StarlightRiver/Pickups/GaiaFistLocked"),
-                    //!mp.sdash.Locked ? ModContent.GetTexture("StarlightRiver/Pickups/Cloak1") : ModContent.GetTexture("StarlightRiver/Pickups/Cloak0"),
+                    !mp.TryGetAbility<Dash>(out var d) ? d.Texture : ModContent.GetTexture("StarlightRiver/Pickups/ForbiddenWindsLocked"),
+                    !mp.TryGetAbility<Wisp>(out var w) ? w.Texture : ModContent.GetTexture("StarlightRiver/Pickups/FaeflameLocked"),
+                    !mp.TryGetAbility<Pure>(out var p) ? p.Texture : ModContent.GetTexture("StarlightRiver/Pickups/PureCrownLocked"),
+                    !mp.TryGetAbility<Smash>(out var s) ? s.Texture : ModContent.GetTexture("StarlightRiver/Pickups/GaiaFistLocked"),
+                    //!mp.TryGet<Superdash>(out _) ? ModContent.GetTexture("StarlightRiver/Pickups/Cloak1") : ModContent.GetTexture("StarlightRiver/Pickups/Cloak0"),
                 };
 
             Rectangle box = new Rectangle((int)(origin + new Vector2(86, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
@@ -455,9 +455,7 @@ namespace StarlightRiver
             spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/box"), box, Color.White); //Stamina box
             spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/box"), box2, Color.White); //Codex box
 
-            mp.SetList();//update ability list
-
-            if (mp.Abilities.Any(a => !a.Locked))//Draw stamina if any unlocked
+            if (mp.AnyUnlocked)//Draw stamina if any unlocked
             {
                 spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/Stamina"), origin + new Vector2(91, 68), Color.White);
                 Utils.DrawBorderString(spriteBatch, playerStamina + " SP", origin + new Vector2(118, 68), Color.White);

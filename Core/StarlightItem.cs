@@ -26,7 +26,9 @@ namespace StarlightRiver.Core
             base.UpdateAccessory(item, player, hideVisual);
 
             //prefix updates for accessoies
-            player.GetModPlayer<Abilities.AbilityHandler>().StatStaminaRegenMax -= staminaRegenUp;
+            player.GetModPlayer<Abilities.AbilityHandler>().StaminaRegenRate -= staminaRegenUp;
+
+            // TODO what is this class
         }
 
         public override int ChoosePrefix(Item item, UnifiedRandom rand)

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -22,11 +23,8 @@ namespace StarlightRiver.Items.Accessories.Expert
 
         public override void UpdateEquip(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            if (mp.dash.Cooldown == 90)
-            {
-                mp.dash.Cooldown = 74;
-            }
+            if (player.GetHandler().TryGetAbility<Dash>(out var dash))
+                dash.CooldownReduction += 16;
         }
     }
 }

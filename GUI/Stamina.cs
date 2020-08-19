@@ -45,7 +45,8 @@ namespace StarlightRiver.GUI
                 Stam1.Left.Set(-306, 1);
                 Stam1.Top.Set(110, 0);
             }
-            int height = 30 * mp.StaminaMax; if (height > 30 * 7) height = 30 * 7;
+            
+            float height = 30 * mp.StaminaMax; if (height > 30 * 7) height = 30 * 7;
 
             Stam1.Height.Set(height, 0f);
         }
@@ -57,7 +58,7 @@ namespace StarlightRiver.GUI
             if (Stam1.IsMouseHovering)
             {
                 AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-                Utils.DrawBorderString(spriteBatch, "Stamina: " + mp.StatStamina + "/" + mp.StaminaMax, Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal);
+                Utils.DrawBorderString(spriteBatch, "Stamina: " + mp.Stamina + "/" + mp.StaminaMax, Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal);
             }
 
             Recalculate();
@@ -83,26 +84,28 @@ namespace StarlightRiver.GUI
                 Vector2 pos = row % 2 == 0 ? dimensions.ToRectangle().TopLeft() + new Vector2(row * -18, (k % 7) * 28) :
                     dimensions.ToRectangle().TopLeft() + new Vector2(row * -18, 14 + (k % 7) * 28);
 
-                if (mp.StaminaMax > k) spriteBatch.Draw(emptyTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-                if (mp.StatStamina > k)
-                {
-                    spriteBatch.Draw(fillTex, pos + Vector2.One * 4, Color.White);
-                }
-
-                if (mp.StatStamina == k)
-                {
-                    float scale = 1 - (mp.StatStaminaRegen / (float)mp.StatStaminaRegenMax);
-                    spriteBatch.Draw(fillTex, pos + Vector2.One * 4 + fillTex.Size() / 2, fillTex.Frame(), Color.White, 0, fillTex.Size() / 2, scale, 0, 0);
-                }
-
-                if (k == mp.StaminaMax) //draws the incomplete vessel
+                if (k == mp.StaminaMax + 1) //draws the incomplete vessel
                 {
                     Texture2D shard1 = GetTexture("StarlightRiver/Pickups/Stamina1");
                     Texture2D shard2 = GetTexture("StarlightRiver/Pickups/Stamina2");
 
-                    if (mp.shardCount >= 1) spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-                    if(mp.shardCount >= 2) spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    if (mp.ShardCount >= 1) spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    if (mp.ShardCount >= 2) spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                    continue;
+                }
+
+                spriteBatch.Draw(emptyTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+                // If on a filled stamina vessel
+                if (k < mp.Stamina - 1)
+                {
+                    spriteBatch.Draw(fillTex, pos + Vector2.One * 4, Color.White);
+                }
+                // If not greater than the top-level stamina vessel
+                else if (k <= mp.Stamina)
+                {
+                    float scale = mp.Stamina - k;
+                    spriteBatch.Draw(fillTex, pos + Vector2.One * 4 + fillTex.Size() / 2, fillTex.Frame(), Color.White, 0, fillTex.Size() / 2, scale, 0, 0);
                 }
             }
         }

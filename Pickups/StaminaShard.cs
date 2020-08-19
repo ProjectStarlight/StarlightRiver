@@ -21,7 +21,7 @@ namespace StarlightRiver.Pickups
         public override bool CanPickup(Player player)
         {
             AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
-            return !ah.Shards[Parent.frameX];
+            return !ah.Shards.Has(Parent.frameX);
         }
 
         public override void Visuals()
@@ -34,18 +34,15 @@ namespace StarlightRiver.Pickups
         {
             AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
             
-            ah.shardCount++;
-            ah.Shards[Parent.frameX] = true;
+            ah.Shards.Add(Parent.frameX);
 
-            if (ah.shardCount >= 3)
+            if (ah.ShardCount % 3 == 0)
             {
-                ah.StatStaminaMaxPerm++;
-                ah.shardCount = 0;
                 StarlightRiver.Instance.textcard.Display("Stamina Vessel", "Your maximum stamina has increased by 1", null, 240, 0.8f);
             }
             else
             {
-                StarlightRiver.Instance.textcard.Display("Stamina Vessel Shard", "Collect " + (3 - ah.shardCount) + " more to increase your maximum stamina", null, 240, 0.6f);
+                StarlightRiver.Instance.textcard.Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
             }
 
             Helper.UnlockEntry<StaminaShardEntry>(Main.LocalPlayer);
@@ -56,7 +53,7 @@ namespace StarlightRiver.Pickups
             if (Main.gameMenu) return "StarlightRiver/Pickups/Stamina1";
 
             AbilityHandler ah = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-            return "StarlightRiver/Pickups/Stamina" + (ah.shardCount + 1);
+            return "StarlightRiver/Pickups/Stamina" + (ah.ShardCount + 1);
         }
     }
 
@@ -70,8 +67,9 @@ namespace StarlightRiver.Pickups
 
             Tile tile = Framing.GetTileSafely(i, j);
 
-            tile.frameX++;
-            if (tile.frameX > 2) tile.frameX = 0;
+            tile.frameX += 1;
+            if (tile.frameX > 2) 
+                tile.frameX = 0;
             Main.NewText("pickup set to stamina shard number " + tile.frameX, Color.Orange);
         }
     }

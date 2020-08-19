@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Items;
 using StarlightRiver.Projectiles.Dummies;
 using System;
@@ -29,7 +30,8 @@ namespace StarlightRiver.Tiles.Interactive
 
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                mp.dash.Active = false;
+                mp.TryGetAbility(out Dash dash);
+                dash?.Deactivate();
 
                 if (player.velocity.Length() != 0)
                 {

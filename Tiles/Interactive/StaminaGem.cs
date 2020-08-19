@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Items;
 using StarlightRiver.Projectiles.Dummies;
 using System;
@@ -44,10 +45,9 @@ namespace StarlightRiver.Tiles.Interactive
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-            if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StaminaMax && mp.Abilities.Any(a => a.Active))
+            if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.Stamina < mp.StaminaMax && mp.ActiveAbility != null)
             {
-                mp.StatStamina++;
-                if (mp.wisp.Active) { mp.wisp.Timer = 60 * mp.StatStamina - 1; }
+                mp.Stamina++;
                 projectile.ai[0] = 300;
 
                 Main.PlaySound(SoundID.Shatter, projectile.Center);

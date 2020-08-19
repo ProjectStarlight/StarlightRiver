@@ -12,28 +12,38 @@ namespace StarlightRiver.Abilities
 {
     public abstract class Ability
     {
-        public abstract string Texture { get; }
-        public virtual float StaminaCost { get; }
-        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= StaminaCost;
+        public abstract Texture2D Texture { get; }
+        public virtual float ActivationCost { get; }
+        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost;
         public AbilityHandler User { get; internal set; }
+        public Player Player => User.player;
+        public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
+        public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
-        public abstract bool HotkeyMatch(TriggersSet triggers);
-        public virtual void OnCast() { }
+        public virtual void OnActivate() { }
         public virtual void UpdateActive() { }
-        public virtual void Update() { }
+        public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
 
-        public void Activate()
+        public void Activate(AbilityHandler user)
         {
-            User.ActiveAbility = this;
-            OnCast();
-            // TODO probably sync idk
+            if (!Active)
+            {
+                User = user;
+                User.ActiveAbility = this;
+                User.Stamina -= ActivationCost;
+                OnActivate();
+                // TODO probably sync idk
+            }
         }
         public void Deactivate()
         {
-            User.ActiveAbility = null;
-            OnExit();
+            if (Active)
+            {
+                User.ActiveAbility = null;
+                OnExit();
+            }
         }
     }
 }

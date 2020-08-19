@@ -67,7 +67,7 @@ namespace StarlightRiver.Core
                 Stamina.visible = false;
                 Infusion.visible = false;
 
-                if (mp.Abilities.Any(a => !a.Locked)) Stamina.visible = true;
+                if (mp.AnyUnlocked) Stamina.visible = true;
 
                 if (Main.playerInventory)
                 {
@@ -75,7 +75,7 @@ namespace StarlightRiver.Core
                     else Collection.visible = false;
 
                     GUI.Codex.ButtonVisible = true;
-                    if (mp.Abilities.Any(a => !a.Locked)) Infusion.visible = true;
+                    if (mp.AnyUnlocked) Infusion.visible = true;
                 }
                 else
                 {
