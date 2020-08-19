@@ -91,7 +91,9 @@ namespace StarlightRiver
                         ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1550), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
                 }
 
+                Main.spriteBatch.End();
                 DrawTilingBackground();
+                Main.spriteBatch.Begin();
 
                 DrawBlack();
             }
@@ -100,33 +102,16 @@ namespace StarlightRiver
         private void DrawTilingBackground()
         {
             Texture2D tex = GetTexture("Backgrounds/VitricSand");
-            Rectangle blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y + 6, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height - 12);
+            Texture2D tex2 = GetTexture("Backgrounds/VitricSandBottom");
+            Rectangle blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y - 2, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height);
 
             for (int x = 0; x <= Main.screenWidth + tex.Width; x += tex.Width)
                 for (int y = 0; y <= Main.screenHeight + tex.Height; y += tex.Height)
                 {
-                    Vector2 pos = new Vector2(x - Main.screenPosition.X % tex.Width, y - Main.screenPosition.Y % tex.Height);
-
-                    for (int k = 0; k < tex.Width; k += 16)
-                        for (int m = 0; m < tex.Height; m += 16)
-                        {
-                            Vector2 target = pos + new Vector2(k, m);
-                            //Vector3 vector = Lighting.GetSubLight(target + Main.screenPosition);
-                            Color color = Color.White;//new Color(vector.X, vector.Y, vector.Z);//Lighting.GetColor((int)(pos.X + k + Main.screenPosition.X) / 16, (int)(pos.Y + m + Main.screenPosition.Y) / 16);
-                            if (CheckBackground(target, Vector2.One * 16, blacklist)) Main.spriteBatch.Draw(tex, target, new Rectangle(k, m, 16, 16), color, 0, Vector2.Zero, 1, 0, 0);
-                        }
+                    Vector2 pos = new Vector2(x, y) - new Vector2(Main.screenPosition.X % tex.Width, Main.screenPosition.Y % tex.Height);
+                    if (CheckBackground(pos, tex.Size(), blacklist)) Helper.DrawWithLighting(pos, tex);
+                    else if (CheckBackground(pos + Vector2.UnitY * -tex.Height, tex.Size(), blacklist)) Helper.DrawWithLighting(pos, tex2);
                 }
-        }
-
-        private float ConvertX (float input) => input / (Main.screenWidth / 2) - 1;
-
-        private float ConvertY (float input) => -1 * (input / (Main.screenHeight / 2) - 1);
-
-        private Vector2 ConvertTex(Vector2 input, Texture2D tex)
-        {
-            float x = input.X / tex.Width;
-            float y = input.Y / tex.Height;
-            return new Vector2(x, y);
         }
 
         private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome)

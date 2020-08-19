@@ -59,7 +59,7 @@ namespace StarlightRiver
         public enum AbilityEnum : int { dash, wisp, purify, smash, superdash };
         public static StarlightRiver Instance { get; set; }
 
-        public static RenderTest lightingTest = new RenderTest();
+        public static RenderTest lightingTest = null;
 
         public StarlightRiver() { Instance = this; }
 
@@ -179,10 +179,12 @@ namespace StarlightRiver
                 Terraria.Graphics.Effects.Filters.Scene["Lighting"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef6, "LightingPass"), Terraria.Graphics.Effects.EffectPriority.High);
                 Terraria.Graphics.Effects.Filters.Scene["Lighting"].Load();
 
-                Ref<Effect> screenRef7 = new Ref<Effect>(GetEffect("Effects/LightApplicator"));
+                Ref<Effect> screenRef7 = new Ref<Effect>(GetEffect("Effects/LightApply"));
                 Terraria.Graphics.Effects.Filters.Scene["LightingApply"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef7, "LightingApplyPass"), Terraria.Graphics.Effects.EffectPriority.High);
                 Terraria.Graphics.Effects.Filters.Scene["LightingApply"].Load();
             }
+
+            lightingTest = new RenderTest();
 
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();

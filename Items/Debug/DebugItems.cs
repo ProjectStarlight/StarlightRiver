@@ -58,7 +58,6 @@ namespace StarlightRiver.Items.Debug
 
         public override void HoldItem(Player player)
         {
-
         }
     }
 

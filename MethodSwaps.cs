@@ -88,7 +88,10 @@ namespace StarlightRiver
             ForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells); //TODO: Move this later
         }
 
-        private void TestLighting(GameTime obj) { if (!Main.gameMenu) lightingTest.DebugDraw(obj); }
+        private void TestLighting(GameTime obj)
+        {
+            if (!Main.gameMenu) lightingTest.DebugDraw(obj);
+        }
 
         #region hooks
         private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
@@ -326,6 +329,10 @@ namespace StarlightRiver
                         }
                     }
             }
+
+            //TODO: remove
+            //lightingTest.DebugDraw2();
+
             Main.spriteBatch.End();
             orig(self, gameTime);
         }

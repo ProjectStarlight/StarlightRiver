@@ -177,6 +177,11 @@ namespace StarlightRiver
             buffer = buff;
         }
 
+        private static BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
+        {
+            VertexColorEnabled = true
+        };
+
         public void DrawStrip()
         {
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
@@ -185,18 +190,11 @@ namespace StarlightRiver
             PrepareStrip(out buffer);
             graphics.SetVertexBuffer(buffer);
 
-            Effect effect = new BasicEffect(graphics)
-            {
-                VertexColorEnabled = true
-            };
-
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
             }
-
-            effect.Dispose();
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

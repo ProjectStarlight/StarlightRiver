@@ -71,6 +71,8 @@ namespace StarlightRiver
             graphics.SetRenderTarget(null);
         }
 
+        private Effect UpscaleEffect = Main.dedServ ? null : Filters.Scene["Lighting"].GetShader().Shader;
+
         private void RenderLightingQuad()
         {
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
@@ -90,15 +92,14 @@ namespace StarlightRiver
             graphics.SetVertexBuffer(buffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
-            Vector2 offset = (Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2f - tileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
-            float scale = 0.668f; //TODO: Figure out how to calculate this
+            Vector2 offset = (Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2f - tileLightingCenter - Vector2.One * 64) / new Vector2(Main.screenWidth, Main.screenHeight);
+            
+            UpscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            UpscaleEffect.Parameters["fullBufferSize"].SetValue(tileLightingTexture.Size() * 16);
+            UpscaleEffect.Parameters["offset"].SetValue(offset);
+            UpscaleEffect.Parameters["sampleTexture"].SetValue(tileLightingTexture);
 
-            Effect someEffect = Filters.Scene["Lighting"].GetShader().Shader;
-            someEffect.Parameters["uScreenResolution"].SetValue(new Vector2(scale, scale));
-            someEffect.Parameters["mouse"].SetValue(offset);
-            someEffect.Parameters["sampleTexture"].SetValue(tileLightingTexture);
-
-            foreach (EffectPass pass in someEffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in UpscaleEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
@@ -115,8 +116,10 @@ namespace StarlightRiver
 
         public void DebugDraw2()
         {
-            Main.spriteBatch.Draw(tileLightingTexture, new Vector2(50, 150), Color.White);
-            Main.spriteBatch.Draw(screenLightingTexture, new Rectangle(50, 160 + YMax, XMax, YMax), Color.White);
+            Main.spriteBatch.Draw(tileLightingTexture, new Rectangle(0, 0, Main.screenWidth / 2, Main.screenHeight / 2), Color.White);
+            Main.spriteBatch.Draw(screenLightingTexture, new Rectangle(Main.screenWidth / 2, 0, Main.screenWidth / 2, Main.screenHeight / 2), Color.White);
+            Main.spriteBatch.Draw(Main.screenTarget, new Rectangle(0, Main.screenHeight / 2, Main.screenWidth / 2, Main.screenHeight / 2), Color.White);
+            Main.spriteBatch.Draw(Main.magicPixel, new Rectangle(Main.screenWidth / 2, Main.screenHeight / 2, Main.screenWidth / 2, Main.screenHeight / 2), Color.Black);
             //Main.spriteBatch.Draw(screenLightingTexture, Vector2.Zero, Color.White);
         }
     }
@@ -124,81 +127,45 @@ namespace StarlightRiver
 
     public static partial class Helper
     {
+        private static Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightingApply"].GetShader().Shader;
+
+        private static VertexPositionTexture[] verticies = new VertexPositionTexture[6];
+
+        private static VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+
         public static void DrawWithLighting(Vector2 pos, Texture2D tex)
         {
-            return;
-            if (!OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
+            if (Main.dedServ || !OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
 
-            int coarseness = 1;
-            int coarse16 = coarseness * 16;
+            ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
+            ApplyEffect.Parameters["offset"].SetValue(pos / new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["targetTexture"].SetValue(tex);
+            ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
+         
+            verticies[0] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y), 0), Vector2.Zero);
+            verticies[1] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y), 0), Vector2.UnitX);
+            verticies[2] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y + tex.Height), 0), Vector2.UnitY);
 
-            VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[(tex.Width / coarse16 + 1) * (tex.Height / coarse16 * 6 + 1)];
+            verticies[3] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y), 0), Vector2.UnitX);
+            verticies[4] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y + tex.Height), 0), Vector2.One);
+            verticies[5] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y + tex.Height), 0), Vector2.UnitY);
+         
+            buffer.SetData(verticies);
 
-            Color[,] colorCache = new Color[tex.Width / coarse16 + 1, tex.Height / coarse16 + 2];
-            Vector3[,] posCache = new Vector3[tex.Width / coarse16 + 1, tex.Height / coarse16 + 2];
+            Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
 
-            for (int x = 0; x < tex.Width / coarse16 + 1; x++) //populate the position/color arrays, so that they dont have to be re-calculated for each square
-                for (int y = 0; y < tex.Height / coarse16 + 2; y++)
-                {
-                    Vector2 target = pos + new Vector2(x, y) * coarse16;
-                    colorCache[x, y] = Lighting.GetColor((int)(target.X + Main.screenPosition.X) / 16, (int)(target.Y + Main.screenPosition.Y) / 16);
-                    posCache[x, y] = new Vector3(ConvertX(target.X), ConvertY(target.Y), 0);
-                }
-
-            int targetIndex = 0;
-            for (int x = 0; x < tex.Width; x += coarse16)
-                for (int y = 0; y < tex.Height; y += coarse16)
-                {
-                    int xRel = x / coarse16;
-                    int yRel = y / coarse16;
-
-                    Color topLeft = colorCache[xRel, yRel];
-                    Color topRight = colorCache[xRel + 1, yRel];
-                    Color bottomLeft = colorCache[xRel, yRel + 1];
-                    Color bottomRight = colorCache[xRel + 1, yRel + 1];
-
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel, yRel], topLeft, ConvertTex(new Vector2(x, y), tex))); targetIndex++;
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel + 1, yRel], topRight, ConvertTex(new Vector2(x + coarse16, y), tex))); targetIndex++;
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel + 1, yRel + 1], bottomRight, ConvertTex(new Vector2(x + coarse16, y + coarse16), tex))); targetIndex++;
-
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel, yRel + 1], bottomLeft, ConvertTex(new Vector2(x, y + coarse16), tex))); targetIndex++;
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel, yRel], topLeft, ConvertTex(new Vector2(x, y), tex))); targetIndex++;
-                    verticies[targetIndex] = (new VertexPositionColorTexture(posCache[xRel + 1, yRel + 1], bottomRight, ConvertTex(new Vector2(x + coarse16, y + coarse16), tex))); targetIndex++;
-                }
-                
-            if (verticies.Length >= 3) //cant draw a triangle with < 3 points fucktard
+            foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
             {
-                VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), verticies.Length, BufferUsage.WriteOnly);
-                buffer.SetData(verticies);
-
-                Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
-
-                BasicEffect basicEffect = new BasicEffect(Main.instance.GraphicsDevice)
-                {
-                    VertexColorEnabled = true,
-                    TextureEnabled = true,
-                    Texture = tex
-                };
-
-                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, verticies.Length / 3);
-                }
-
-                Main.instance.GraphicsDevice.SetVertexBuffer(null);
+                pass.Apply();
+                Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
             }
+
+            Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
         private static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
         private static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
-
-        private static Vector2 ConvertTex(Vector2 input, Texture2D tex)
-        {
-            float x = input.X / tex.Width;
-            float y = input.Y / tex.Height;
-            return new Vector2(x, y);
-        }
     }
 }

@@ -33,6 +33,8 @@ namespace StarlightRiver.Tiles.Permafrost
                 spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/RainbowCrystalGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, color * 2);
                 Lighting.AddLight(new Vector2(i + 1, j + 1.5f) * 16, color.ToVector3() * 0.5f);
             }
+
+            Helper.DrawWithLighting((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, GetTexture("StarlightRiver/Backgrounds/VitricSand"));
         }
 
         class RainbowCrystalItem : QuickTileItem
