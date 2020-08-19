@@ -1,13 +1,7 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Keys;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ModLoader.IO;
-using Terraria.World.Generation;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver
@@ -38,6 +32,19 @@ namespace StarlightRiver
         public bool customGravity = false;
         public List<Vector2> forceGravityList = new List<Vector2>();//length must match the segment count
 
+        public static RenderTarget2D target = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
+
+        public VerletChainInstance()
+        {
+            toDraw.Add(this);
+        }
+
+        ~VerletChainInstance()
+        {
+            toDraw.Remove(this);
+        }
+
         private void Start(Vector2 targetPosition)
         {
             Vector2 ropeStartPoint = targetPosition;
@@ -67,13 +74,8 @@ namespace StarlightRiver
                     Start(targetPosition); //run once
                     init = true;
                 }
-                //DrawRope();
                 Simulate(targetPosition);
             }
-            //else if (!ChainActive && init == true)//if in-active and initalized 
-            //{
-            //    //Reset here
-            //}
         }
 
         private void Simulate(Vector2 targetPosition)
@@ -99,9 +101,6 @@ namespace StarlightRiver
             for (int i = 0; i < segmentCount - 1; i++)
             {
                 float segmentDist = (customDistances ? segmentDistanceList[i] : segmentDistance);
-
-                //Vector2 distVect = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-                //float dist = (float)Math.Sqrt(distVect.X * (distVect.X + distVect.Y) * distVect.Y);
 
                 float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
                 float error = Math.Abs(dist - segmentDist);
@@ -184,6 +183,7 @@ namespace StarlightRiver
 
         public void DrawStrip()
         {
+            if (ropeSegments.Count < 1) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             VertexBuffer buffer;
@@ -197,18 +197,17 @@ namespace StarlightRiver
             }
         }
 
+        public static void DrawStripsPixelated(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+        }
+
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
         {
-            //Vector2[] ropePositions = new Vector2[segmentCount];
-            //if (init)//some things end up calling the draw method before the update method has had a chance to run, commented out since this can be done on the side of where this method is being called
-            //{
             for (int i = 0; i < segmentCount; i++)
             {
-                //ropePositions[i] = this.ropeSegments[i].posNow; //original did this for an unknown reason
-
                 drawMethod_curPos(spritebatch, i, ropeSegments[i].posNow);
             }
-            //}
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, RopeSegment> drawMethod_curSeg) //current segment (has position and previous position)

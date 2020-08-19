@@ -114,11 +114,11 @@ namespace StarlightRiver
 
             if (ZoneVoidPre)
             {
-                Overlay.state = 1;
+                ParticleOverlay.state = 1;
             }
             else if (ZoneJungleCorrupt)
             {
-                Overlay.state = 2;
+                ParticleOverlay.state = 2;
                 if (player.wet)
                 {
                     player.maxFallSpeed = 999f;
@@ -130,7 +130,7 @@ namespace StarlightRiver
             }
             else if (ZoneJungleBloody)
             {
-                Overlay.state = 3;
+                ParticleOverlay.state = 3;
                 if (player.wet)
                 {
                     player.AddBuff(Terraria.ID.BuffID.Ichor, 600);
@@ -138,7 +138,7 @@ namespace StarlightRiver
             }
             else if (ZoneJungleHoly)
             {
-                Overlay.state = (int)OverlayState.HolyJungle;
+                ParticleOverlay.state = (int)OverlayState.HolyJungle;
             }
 
             if (ZoneOvergrow && Main.rand.Next(10) == 0)

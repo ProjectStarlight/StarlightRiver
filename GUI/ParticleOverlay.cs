@@ -13,7 +13,7 @@ namespace StarlightRiver.GUI
         Overgrow = 5
     }
 
-    public class Overlay : UIState
+    public class ParticleOverlay : UIState
     {
         public static bool visible = true;
         public static int state = 0;

@@ -21,19 +21,7 @@ namespace StarlightRiver.Tiles
 			Main.tileMergeDirt[Type] = true;
 			Main.tileBlockLight[Type] = true;
             Main.tileFrameImportant[Type] = true;
-            //drop = ModContent.ItemType< >();
         }
-
-        //These were for if the end of the banner could be pinned to a location
-        //public override bool SpawnConditions(int i, int j)
-        //{
-        //    return true;
-        //}
-        //public override void PlaceInWorld(int i, int j, Item item)
-        //{
-        //    Main.tile[i, j].frameX = short.MaxValue / 2;
-        //    Main.tile[i, j].frameY = short.MaxValue / 2;
-        //}
     }
 
 
@@ -57,7 +45,6 @@ namespace StarlightRiver.Tiles
             };
         }
 
-
         public override void Update()
         {
             Chain.UpdateChain(projectile.Center);
@@ -75,31 +62,15 @@ namespace StarlightRiver.Tiles
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
 
-            Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.5f));
+            Color color = (new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16)));
 
             Chain.ropeSegments[index].posNow = pos;
             Chain.ropeSegments[index].color = color;
         }
 
-
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void Kill(int timeLeft)
         {
-            if (Chain.init) Chain.DrawStrip();
+            VerletChainInstance.toDraw.Remove(Chain);
         }
-
-        //private void ChainDrawMethod(SpriteBatch spriteBatch, int index, Vector2 position, Vector2 prevPosition, Vector2 nextPosition)
-        //{
-        //    Texture2D tex = GetTexture("StarlightRiver/Tiles/Decoration/VerletBannerTex");
-        //    Texture2D tex2 = GetTexture("StarlightRiver/Tiles/VerletBanner");
-
-        //    //dots between each segment
-        //    spriteBatch.Draw(tex2,
-        //        position - Main.screenPosition,
-        //        new Rectangle(0, 0, tex2.Width, tex2.Height),
-        //        Color.White,
-        //        0f,
-        //        new Vector2(tex2.Width / 2, tex2.Height / 2),
-        //        0.50f, default, default);
-        //}
     }
 }

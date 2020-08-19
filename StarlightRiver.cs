@@ -14,6 +14,7 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
+using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
@@ -22,7 +23,7 @@ namespace StarlightRiver
     {
         public Stamina stamina;
         public Collection collection;
-        public Overlay overlay;
+        public ParticleOverlay overlay;
         public Infusion infusion;
         public Cooking cooking;
         public KeyInventory keyinventory;
@@ -156,32 +157,36 @@ namespace StarlightRiver
                 GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
 
                 Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
-                Terraria.Graphics.Effects.Filters.Scene["ShockwaveFilter"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef4, "ShockwavePass"), Terraria.Graphics.Effects.EffectPriority.VeryHigh);
-                Terraria.Graphics.Effects.Filters.Scene["ShockwaveFilter"].Load();
+                Filters.Scene["ShockwaveFilter"] = new Filter(new ScreenShaderData(screenRef4, "ShockwavePass"), EffectPriority.VeryHigh);
+                Filters.Scene["ShockwaveFilter"].Load();
 
                 Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/WaterEffect"));
-                Terraria.Graphics.Effects.Filters.Scene["WaterFilter"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef3, "WaterPass"), Terraria.Graphics.Effects.EffectPriority.VeryHigh);
-                Terraria.Graphics.Effects.Filters.Scene["WaterFilter"].Load();
+                Filters.Scene["WaterFilter"] = new Filter(new ScreenShaderData(screenRef3, "WaterPass"), EffectPriority.VeryHigh);
+                Filters.Scene["WaterFilter"].Load();
 
                 Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/AuraEffect"));
-                Terraria.Graphics.Effects.Filters.Scene["AuraFilter"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef2, "AuraPass"), Terraria.Graphics.Effects.EffectPriority.VeryHigh);
-                Terraria.Graphics.Effects.Filters.Scene["AuraFilter"].Load();
+                Filters.Scene["AuraFilter"] = new Filter(new ScreenShaderData(screenRef2, "AuraPass"), EffectPriority.VeryHigh);
+                Filters.Scene["AuraFilter"].Load();
 
                 Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/BlurEffect"));
-                Terraria.Graphics.Effects.Filters.Scene["BlurFilter"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef, "BlurPass"), Terraria.Graphics.Effects.EffectPriority.High);
-                Terraria.Graphics.Effects.Filters.Scene["BlurFilter"].Load();
+                Filters.Scene["BlurFilter"] = new Filter(new ScreenShaderData(screenRef, "BlurPass"), EffectPriority.High);
+                Filters.Scene["BlurFilter"].Load();
 
                 Ref<Effect> screenRef5 = new Ref<Effect>(GetEffect("Effects/Purity"));
-                Terraria.Graphics.Effects.Filters.Scene["PurityFilter"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef5, "PurityPass"), Terraria.Graphics.Effects.EffectPriority.High);
-                Terraria.Graphics.Effects.Filters.Scene["PurityFilter"].Load();
+                Filters.Scene["PurityFilter"] = new Filter(new ScreenShaderData(screenRef5, "PurityPass"), EffectPriority.High);
+                Filters.Scene["PurityFilter"].Load();
 
                 Ref<Effect> screenRef6 = new Ref<Effect>(GetEffect("Effects/LightShader"));
-                Terraria.Graphics.Effects.Filters.Scene["Lighting"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef6, "LightingPass"), Terraria.Graphics.Effects.EffectPriority.High);
-                Terraria.Graphics.Effects.Filters.Scene["Lighting"].Load();
+                Filters.Scene["Lighting"] = new Filter(new ScreenShaderData(screenRef6, "LightingPass"), EffectPriority.High);
+                Filters.Scene["Lighting"].Load();
 
                 Ref<Effect> screenRef7 = new Ref<Effect>(GetEffect("Effects/LightApply"));
-                Terraria.Graphics.Effects.Filters.Scene["LightingApply"] = new Terraria.Graphics.Effects.Filter(new ScreenShaderData(screenRef7, "LightingApplyPass"), Terraria.Graphics.Effects.EffectPriority.High);
-                Terraria.Graphics.Effects.Filters.Scene["LightingApply"].Load();
+                Filters.Scene["LightingApply"] = new Filter(new ScreenShaderData(screenRef7, "LightingApplyPass"), EffectPriority.High);
+                Filters.Scene["LightingApply"].Load();
+
+                Ref<Effect> screenRef8 = new Ref<Effect>(GetEffect("Effects/pixelationFull"));
+                Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
+                Filters.Scene["Pixelation"].Load();
             }
 
             lightingTest = new RenderTest();
@@ -218,7 +223,7 @@ namespace StarlightRiver
 
                 stamina = new Stamina();
                 collection = new Collection();
-                overlay = new Overlay();
+                overlay = new ParticleOverlay();
                 infusion = new Infusion();
                 cooking = new Cooking();
                 keyinventory = new KeyInventory();
@@ -277,7 +282,7 @@ namespace StarlightRiver
             {
                 AddLayer(layers, StaminaUserInterface, stamina, MouseTextIndex, Stamina.visible);
                 AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex, Collection.visible);
-                AddLayer(layers, OverlayUserInterface, overlay, 0, Overlay.visible);
+                AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
                 AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
                 AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, Cooking.Visible);
                 AddLayer(layers, KeyInventoryUserInterface, keyinventory, MouseTextIndex, KeyInventory.visible);

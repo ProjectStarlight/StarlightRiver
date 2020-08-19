@@ -55,6 +55,8 @@ namespace StarlightRiver
             On.Terraria.Main.DrawBackgroundBlackFill += DrawVitricBackground;
             //Rift fading
             On.Terraria.Main.DrawUnderworldBackground += DrawBlackFade;
+            //Verlet Banners
+            On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
             //Mines
             On.Terraria.Main.drawWaters += DrawUnderwaterNPCs;
             //Keys
@@ -91,9 +93,29 @@ namespace StarlightRiver
         private void TestLighting(GameTime obj)
         {
             if (!Main.gameMenu) lightingTest.DebugDraw(obj);
+
+            GraphicsDevice graphics = Main.instance.GraphicsDevice;
+
+            graphics.SetRenderTarget(VerletChainInstance.target);
+            graphics.Clear(Color.Transparent);
+
+            foreach (var i in VerletChainInstance.toDraw)
+            {
+                i.DrawStrip();
+            }
+
+            graphics.SetRenderTarget(null);
         }
 
         #region hooks
+        private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
+        {
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            VerletChainInstance.DrawStripsPixelated(Main.spriteBatch);
+            Main.spriteBatch.End();
+            orig(self);
+        }
+
         private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
         {
             if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked) && unlocked)
