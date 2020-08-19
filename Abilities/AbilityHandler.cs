@@ -34,7 +34,6 @@ namespace StarlightRiver.Abilities
         // The player's stamina stats.
         public float StaminaMax => StaminaMaxDefault + StaminaMaxBonus;
         public float StaminaMaxDefault => 1 + Shards.Count / shardsPerVessel + unlockedAbilities.Count;
-
         public float StaminaMaxBonus
         {
             get => staminaMaxBonus;
@@ -44,13 +43,11 @@ namespace StarlightRiver.Abilities
                 Stamina = stamina; // Update Stamina property setter safely
             }
         }
-
         public float Stamina
         {
             get => stamina;
             set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
         }
-
         public float StaminaRegenRate { get; set; }
         public int InfusionLimit { get; set; } = 1;
 
@@ -77,7 +74,10 @@ namespace StarlightRiver.Abilities
             ability.User = this;
         }
 
-        private InfusionItem GetOrNull(Type t) => infusions.FirstOrDefault(i => i?.AbilityType == t);
+        private InfusionItem GetOrNull(Type t)
+        {
+            return infusions.FirstOrDefault(i => i?.AbilityType == t);
+        }
 
         /// <summary>
         /// Unlocks the ability type for the player.
@@ -85,7 +85,10 @@ namespace StarlightRiver.Abilities
         public void Unlock<T>() where T : Ability, new()
         {
             // Ensure we don't unlock the same thing twice
-            if (!unlockedAbilities.ContainsKey(typeof(T))) Unlock(typeof(T), new T());
+            if (!unlockedAbilities.ContainsKey(typeof(T)))
+            {
+                Unlock(typeof(T), new T());
+            }
         }
 
         /// <summary>
@@ -106,12 +109,17 @@ namespace StarlightRiver.Abilities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public bool Unlocked<T>() where T : Ability => TryGetAbility<T>(out _);
-
+        public bool Unlocked<T>() where T : Ability
+        {
+            return TryGetAbility<T>(out _);
+        }
         /// <summary>
         /// Checks if the given ability type is unlocked.
         /// </summary>
-        public bool Unlocked(Ability ability) => unlockedAbilities.ContainsKey(ability.GetType());
+        public bool Unlocked(Ability ability)
+        {
+            return unlockedAbilities.ContainsKey(ability.GetType());
+        }
 
         /// <summary>
         /// Gets an unlocked ability from the player, or null if none exists.
@@ -235,20 +243,24 @@ namespace StarlightRiver.Abilities
             {
                 ability.UpdateFixed();
             }
-
             foreach (var infusion in infusions)
             {
                 if (infusion == null) continue;
                 infusion.UpdateFixed();
-
-                if (ActiveAbility?.GetType() == infusion.AbilityType) infusion.UpdateActive();
+                if (ActiveAbility?.GetType() == infusion.AbilityType)
+                {
+                    infusion.UpdateActive();
+                }
             }
 
             if (ActiveAbility != null)
             {
                 // Update active ability
                 ActiveAbility.UpdateActive();
-                if (Main.netMode != NetmodeID.Server) ActiveAbility?.UpdateActiveEffects();
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    ActiveAbility?.UpdateActiveEffects();
+                }
             }
 
             if (ActiveAbility != null)
@@ -264,11 +276,17 @@ namespace StarlightRiver.Abilities
             }
             else
             {
-                if (staminaRegenCD > 0) staminaRegenCD--;
+                if (staminaRegenCD > 0)
+                {
+                    staminaRegenCD--;
+                }
                 Stamina += StaminaRegenRate / (staminaRegenCD + 1);
             }
 
-            if (player.velocity != Vector2.Zero) SetStaminaRegenCD(90);
+            if (player.velocity != Vector2.Zero)
+            {
+                SetStaminaRegenCD(90);
+            }
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
