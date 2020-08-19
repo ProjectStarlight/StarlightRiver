@@ -129,7 +129,7 @@ namespace StarlightRiver
 
         private void PlacementRestriction(On.Terraria.Player.orig_PlaceThing orig, Player self)
         {
-            Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
+            Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
             if (tile.wall == ModContent.WallType<AuroraBrickWall>()) 
             {
