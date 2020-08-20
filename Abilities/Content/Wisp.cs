@@ -17,12 +17,20 @@ namespace StarlightRiver.Abilities.Content
     public class Wisp : Ability
     {
         public override string Texture => "StarlightRiver/Pickups/Faeflame";
-        public override bool Available => base.Available && User.Stamina > 1;
+        public override float ActivationCost => 0.5f;
 
-        private bool safe => User.Stamina > 1 / 60f;
+        public float Speed { get; set; }
+
+        private const float drainAmount = 1 / 60f;
+        private const float diffTolerance = 5;
+
+        private bool safe => User.Stamina > drainAmount;
+
+        private static readonly int size = 10; // TODO make constant in release build
 
         public override void OnActivate()
         {
+            Speed = 5;
             for (int k = 0; k <= 50; k++)
             {
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-20, 20), Main.rand.Next(-20, 20), 0, default, 1.2f);
@@ -31,31 +39,45 @@ namespace StarlightRiver.Abilities.Content
 
         public override void UpdateActive()
         {
-            Player.maxFallSpeed = 999;
             Player.gravity = 0;
-            Player.velocity = Vector2.Normalize(new Vector2
-                (
-                Main.screenPosition.X + Main.mouseX - Player.Hitbox.Center.X,
-                Main.screenPosition.Y + Main.mouseY - Player.Hitbox.Center.Y
-                )) * 5 + new Vector2(0.25f, 0.25f);
+            Player.maxFallSpeed = Speed;
+            Player.frozen = true;
 
-            const int size = 14;
+            // Local velocity update
+            if (Player.whoAmI == Main.myPlayer)
+            {
+                Player.velocity = (Main.MouseScreen - Helper.ScreenSize / 2) / 20;
+                
+                if (Main.netMode != NetmodeID.SinglePlayer && (Player.position - Player.oldPosition).LengthSquared() > diffTolerance * diffTolerance)
+                {
+                    // TODO let's not send every single control every 5 pixels someday
+                    NetMessage.SendData(MessageID.PlayerControls);
+                }
+            }
+            if (Player.velocity.LengthSquared() > Speed * Speed)
+            {
+                Player.velocity = Vector2.Normalize(Player.velocity) * Speed;
+            }
 
-            // Set dimensions to 14x14
-            if (Player.Hitbox.Width != Player.Hitbox.Height && Player.Hitbox.Width != size)
-            Player.Hitbox = InflateTo(Player.Hitbox, size, size);
+            // Set dimensions to size
+            Player.position.X += Player.width - size;
+            Player.position.Y += Player.height - size;
+            Player.width = size;
+            Player.height = size;
 
             Lighting.AddLight(Player.Center, 0.15f, 0.15f, 0f);
 
-            // If it's safe and the player wants to, sure
-            if (safe && StarlightRiver.Instance.AbilityKeys.Get<Wisp>().Current)
-                User.Stamina -= 1 / 60f;
-            // Ok abort
-            else
-                AttemptDeactivate();
+            UpdateEffects();
 
-            if (Active)
-                UpdateEffects();
+            bool control = StarlightRiver.Instance.AbilityKeys.Get<Wisp>().Current;
+
+            // If it's safe and the player wants to continue, sure
+            if (safe && control)
+                User.Stamina -= 1 / 60f;
+
+            // Ok abort
+            if (!safe || !control)
+                AttemptDeactivate();
         }
 
         protected virtual void UpdateEffects()
@@ -94,15 +116,6 @@ namespace StarlightRiver.Abilities.Content
             // TODO make this a buff?
         }
 
-        private static Rectangle InflateTo(Rectangle rectangle, int width, int height)
-        {
-            rectangle.X -= (width - rectangle.Width) / 2;
-            rectangle.Y -= (height - rectangle.Height) / 2;
-            rectangle.Width = width;
-            rectangle.Height = height;
-            return rectangle;
-        }
-
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             layers.ForEach(p => p.visible = false);
@@ -110,8 +123,8 @@ namespace StarlightRiver.Abilities.Content
 
         public override void OnExit()
         {
-            Player.Hitbox = InflateTo(Player.Hitbox, Player.defaultWidth, Player.defaultHeight);
-            Player.direction = Math.Sign(Player.velocity.X);
+            if (Player.velocity.X != 0)
+                Player.direction = Math.Sign(Player.velocity.X);
 
             for (int k = 0; k <= 30; k++)
             {
@@ -121,27 +134,29 @@ namespace StarlightRiver.Abilities.Content
 
         public bool SafeExit(out Vector2 topLeft)
         {
-            int i = (int)(Player.Left.X / 16);
-            int j = (int)(Player.Top.Y / 16);
-            for (int x = i - 1; x <= i + 1; x++)
+            topLeft = Player.position;
+            if (!Collision.SolidCollision(Player.TopLeft, Player.defaultWidth, Player.defaultHeight))
+                return true;
+            for (var x = Player.Left.X - 16; x <= Player.Left.X + 16; x += 16)
             {
-                for (int y = j - 2; y <= j + 2; y++)
+                for (var y = Player.Top.Y - 16; y <= Player.Top.Y + 16; y += 16)
                 {
-                    bool safe = !Collision.SolidTiles(x, x + 1, y, y + 2);
-                    if (safe)
-                    {
-                        topLeft = new Vector2(x, y) * 16;
+                    topLeft = new Vector2(x, y);
+                    if (!Collision.SolidCollision(topLeft, Player.defaultWidth, Player.defaultHeight))
                         return true;
-                    }
                 }
             }
-            topLeft = default;
             return false;
         }
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
             return abilityKeys.Get<Wisp>().Current;
+        }
+
+        private class WispMount : ModMountData
+        {
+            
         }
     }
 }

@@ -53,7 +53,7 @@ namespace StarlightRiver.Abilities.Content
 
             Player.frozen = true;
             Player.gravity = 0;
-            Player.maxFallSpeed = 999;
+            Player.maxFallSpeed = Speed;
 
             if (time-- <= 0) Deactivate();
 

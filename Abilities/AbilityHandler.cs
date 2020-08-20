@@ -239,10 +239,13 @@ namespace StarlightRiver.Abilities
 
         public override void PreUpdate()
         {
+            // Update abilities
             foreach (var ability in unlockedAbilities.Values)
             {
                 ability.UpdateFixed();
             }
+
+            // Update infusions
             foreach (var infusion in infusions)
             {
                 if (infusion == null) continue;
@@ -261,31 +264,31 @@ namespace StarlightRiver.Abilities
                 {
                     ActiveAbility?.UpdateActiveEffects();
                 }
-            }
 
-            if (ActiveAbility != null)
-            {
-                player.velocity.Y += 0.01f; //Required to ensure that the game never thinks we hit the ground when using an ability. Thanks redcode!
+                // Jank
+                player.velocity.Y += 0.01f; 
 
                 // Disable wings and rockets temporarily
-                player.rocketRelease = true;
                 player.canRocket = false;
+                player.rocketBoots = -1;
                 player.wings = -1;
 
                 SetStaminaRegenCD(300);
             }
             else
             {
+                // Faster regen while not moving much
+                if (player.velocity.LengthSquared() < 1)
+                {
+                    SetStaminaRegenCD(90);
+                }
+
+                // Regen stamina
                 if (staminaRegenCD > 0)
                 {
                     staminaRegenCD--;
                 }
                 Stamina += StaminaRegenRate / (staminaRegenCD + 1);
-            }
-
-            if (player.velocity != Vector2.Zero)
-            {
-                SetStaminaRegenCD(90);
             }
         }
 
