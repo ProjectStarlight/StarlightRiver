@@ -507,7 +507,11 @@ namespace StarlightRiver
             {
                 try
                 {
-                    spriteBatch.Draw(abilities[(abilities.Length - 1) - k].GetTexture(player), origin + new Vector2(536 - k * 32, 62), Color.White);
+                    var ability = abilities[(abilities.Length - 1) - k];
+                    var texture = player.GetHandler().Unlocked(ability.GetType())
+                        ? ability.Texture
+                        : ability.TextureLocked;
+                    spriteBatch.Draw(GetTexture(texture), origin + new Vector2(536 - k * 32, 62), Color.White);
                 } 
                 catch (Exception e)
                 {
