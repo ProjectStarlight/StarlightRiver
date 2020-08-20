@@ -254,7 +254,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         }
                     }
 
-                    if (GlobalTimer > 460) //start the fight
+                    if (GlobalTimer > 620) //start the fight
                     {
                         npc.dontTakeDamage = false; //make him vulnerable
                         npc.friendly = false; //and hurt when touched
