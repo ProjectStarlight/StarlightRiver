@@ -15,6 +15,45 @@ namespace StarlightRiver
         internal ParticleSystem ForegroundParticles;
         internal ParticleSystem BackgroundParticles;
 
+        static RenderTarget2D vitricBackgroundBannerTarget = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+        static VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
+        {
+            segmentCount = 30,
+            segmentDistance = 20,
+            constraintRepetitions = 2,
+            drag = 2.8f,
+            forceGravity = new Vector2(0f, 0.20f),
+            gravityStrengthMult = 1f
+        };     
+        
+        private void DrawBanner(SpriteBatch spriteBatch, Vector2 pos)
+        {
+            bannerTimer += 0.01f;
+
+            BackgroundBanner.UpdateChain(Vector2.Zero);
+            if (BackgroundBanner.init) BackgroundBanner.IterateRope(WindForce);
+
+            spriteBatch.Draw(GetTexture("Backgrounds/GlassPin"), pos + new Vector2(-200, -300), null, new Color(100, 120, 150), 0, Vector2.Zero, 1, 0, 0);
+            spriteBatch.Draw(vitricBackgroundBannerTarget, pos + new Vector2(-30, -240), null, Color.White, 0, Vector2.Zero, 2, 0, 0);
+        }
+
+        float bannerTimer = 0;
+        private void WindForce(int index)//wind
+        {
+            float sin = (float)Math.Sin(bannerTimer - index / 3f);
+
+            float cos = (float)Math.Cos(bannerTimer);
+            float sin2 = (float)Math.Sin(bannerTimer + cos);
+
+            Vector2 pos = new Vector2(BackgroundBanner.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, BackgroundBanner.ropeSegments[index].posNow.Y + sin * 1.8f);
+
+            Color color = new Color(95, 20, 75).MultiplyRGB(Color.White * (1 - sin * 0.2f));
+
+            BackgroundBanner.ropeSegments[index].posNow = pos;
+            BackgroundBanner.ropeSegments[index].color = color;
+        }
+
         private void LoadVitricBGSystems()
         {
             ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
@@ -60,8 +99,18 @@ namespace StarlightRiver
 
                 DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
 
-                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 5, 170, new Color(150, 175, 190)); //the back sand
-                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 5.5f, 400, new Color(120, 150, 170), true); //the back sand on top
+                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
+                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
+                float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
+                DrawBanner(Main.spriteBatch, new Vector2(x, y) + new Vector2(1200, 1100));
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 BackgroundParticles.DrawParticles(Main.spriteBatch);
 
@@ -89,7 +138,7 @@ namespace StarlightRiver
 
                 Main.spriteBatch.End();
                 DrawTilingBackground();
-                Main.spriteBatch.Begin();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 DrawBlack();
             }

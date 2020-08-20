@@ -35,14 +35,9 @@ namespace StarlightRiver
         public static RenderTarget2D target = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
 
-        public VerletChainInstance()
+        public VerletChainInstance(bool specialDraw)
         {
-            toDraw.Add(this);
-        }
-
-        ~VerletChainInstance()
-        {
-            toDraw.Remove(this);
+            if(!specialDraw) toDraw.Add(this);
         }
 
         private void Start(Vector2 targetPosition)
@@ -139,7 +134,7 @@ namespace StarlightRiver
             }
         }
 
-        public void PrepareStrip(out VertexBuffer buffer)
+        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset)
         {
             var buff = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
@@ -147,19 +142,20 @@ namespace StarlightRiver
 
             float rotation = (ropeSegments[0].posScreen - ropeSegments[1].posScreen).ToRotation() + (float)Math.PI / 2;
 
-            verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-            verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-            verticies[2] = new VertexPositionColor(ropeSegments[1].posScreen.Vec3().ScreenCoord(), ropeSegments[1].color);
+            verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[2] = new VertexPositionColor((ropeSegments[1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[1].color);
 
             for (int k = 1; k < segmentCount - 1; k++)
             {
                 float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
+                float scale = 0.6f;
 
                 int point = k * 9 - 6;
 
-                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - k)).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - k)).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
 
                 int extra = k == 1 ? 0 : 6;
                 verticies[point + 3] = verticies[point];
@@ -181,13 +177,13 @@ namespace StarlightRiver
             VertexColorEnabled = true
         };
 
-        public void DrawStrip()
+        public void DrawStrip(Vector2 offset = default)
         {
             if (ropeSegments.Count < 1) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             VertexBuffer buffer;
-            PrepareStrip(out buffer);
+            PrepareStrip(out buffer, offset);
             graphics.SetVertexBuffer(buffer);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)

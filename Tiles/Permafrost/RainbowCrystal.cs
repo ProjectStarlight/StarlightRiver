@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Items;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,6 +12,22 @@ namespace StarlightRiver.Tiles.Permafrost
 {
     class RainbowCrystal : ModTile
     {
+        [System.ComponentModel.Bindable(true)]
+        static RainbowCrystal()
+        {
+
+        }
+
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        {
+            ConstructorInfo info = typeof(RainbowCrystal).GetConstructor(BindingFlags.Static | BindingFlags.NonPublic, null, new Type[0], null);
+
+            foreach (CustomAttributeData data in info.CustomAttributes)
+            {
+                Main.NewText(data.ToString());
+            }
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Aurora>(), SoundID.Tink, false, Color.White, false, false, "Aurora Crystal");
