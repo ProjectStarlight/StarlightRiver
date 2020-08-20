@@ -11,7 +11,7 @@ namespace StarlightRiver.Items.Accessories
         public override void SafeUpdateEquip(Player player)
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.StatStaminaMaxTemp += 1;
+            mp.StaminaMaxBonus += 1;
         }
     }
 }

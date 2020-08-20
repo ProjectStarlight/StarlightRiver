@@ -26,7 +26,7 @@ namespace StarlightRiver.Codex
             CodexState = tag.GetInt(nameof(CodexState));
 
             Entries = new List<CodexEntry>();
-            List<TagCompound> entriesToLoad = (List<TagCompound>)tag.GetList<TagCompound>(nameof(Entries));
+            var entriesToLoad = tag.GetList<TagCompound>(nameof(Entries));
 
             foreach (Type type in mod.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(CodexEntry))))
             {

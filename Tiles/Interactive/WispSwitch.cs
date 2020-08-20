@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using System.Linq;
 using Terraria;
@@ -96,7 +97,7 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void Update()
         {
-            if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.GetModPlayer<AbilityHandler>().wisp.Active) && timer == 0)
+            if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.ActiveAbility<Wisp>()) && timer == 0)
             {
                 timer = 300;
             }

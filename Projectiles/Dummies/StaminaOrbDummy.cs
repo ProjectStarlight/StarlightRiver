@@ -40,9 +40,9 @@ namespace StarlightRiver.Projectiles.Dummies
             {
                 AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-                if (projectile.Hitbox.Intersects(player.Hitbox) && mp.StatStamina < mp.StatStaminaMax && !mp.Abilities.Any(a => a.Active) && projectile.localAI[0] == 0)
+                if (projectile.Hitbox.Intersects(player.Hitbox) && mp.Stamina < mp.StaminaMax && mp.ActiveAbility != null && projectile.localAI[0] == 0)
                 {
-                    mp.StatStamina++;
+                    mp.Stamina++;
                     projectile.localAI[0] = 300;
                     Main.PlaySound(SoundID.Item112, projectile.Center);
                     CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");

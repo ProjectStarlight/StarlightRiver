@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities;
 using StarlightRiver.GUI;
 using StarlightRiver.RiftCrafting;
 using StarlightRiver.Tiles;
@@ -47,20 +48,15 @@ namespace StarlightRiver
         public UserInterface ChatboxUserInterface;
         public UserInterface ExtraNPCInterface;
 
-        public static ModHotKey Dash;
-        public static ModHotKey Wisp;
-        public static ModHotKey Purify;
-        public static ModHotKey Smash;
-        public static ModHotKey Superdash;
+        public AbilityHotkeys AbilityKeys { get; private set; }
 
         public List<RiftRecipe> RiftRecipes;
 
         public static float Rotation;
 
-        public enum AbilityEnum : int { dash, wisp, purify, smash, superdash };
-        public static StarlightRiver Instance { get; set; }
+        public static RenderTest lightingTest;
 
-        public static RenderTest lightingTest = null;
+        public static StarlightRiver Instance { get; set; }
 
         public StarlightRiver() { Instance = this; }
 
@@ -154,6 +150,8 @@ namespace StarlightRiver
             //Shaders
             if (!Main.dedServ)
             {
+                lightingTest = new RenderTest();
+
                 GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
 
                 Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
@@ -198,16 +196,13 @@ namespace StarlightRiver
             //Furniture
             AutoloadFurniture();
 
-            //Hotkeys
-            Dash = RegisterHotKey("Forbidden Winds", "LeftShift");
-            Wisp = RegisterHotKey("Faeflame", "F");
-            Purify = RegisterHotKey("[PH]Purify Crown", "N");
-            Smash = RegisterHotKey("Gaia's Fist", "Z");
-            Superdash = RegisterHotKey("Zzelera's Cloak", "Q");
-
             //UI
             if (!Main.dedServ)
             {
+                //Hotkeys
+                AbilityKeys = new AbilityHotkeys(this);
+                AbilityKeys.LoadDefaults();
+
                 StaminaUserInterface = new UserInterface();
                 CollectionUserInterface = new UserInterface();
                 OverlayUserInterface = new UserInterface();
@@ -341,11 +336,7 @@ namespace StarlightRiver
                 ExtraNPCState = null;
 
                 Instance = null;
-                Dash = null;
-                Superdash = null;
-                Wisp = null;
-                Smash = null;
-                Purify = null;
+                AbilityKeys.Unload();
             }
 
             UnhookIL();

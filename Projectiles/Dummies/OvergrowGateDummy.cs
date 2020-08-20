@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using System.Linq;
 using Terraria;
@@ -37,7 +38,7 @@ namespace StarlightRiver.Projectiles.Dummies
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     WorldGen.KillTile((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
-                    mp.dash.Active = false;
+                    mp.GetAbility<Dash>().Deactivate();
 
                     if (player.velocity.Length() != 0)
                     {

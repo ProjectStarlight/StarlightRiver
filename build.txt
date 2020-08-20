@@ -1,4 +1,4 @@
 displayName = Starlight River
 author = TSG
 version = 0.01
-dllReferences = StructureHelper_v0.1.8, NetEasy_v0.1.6, NetSerializer
+dllReferences = StructureHelper_v0.1.8, NetEasy_v0.1.7, NetSerializer

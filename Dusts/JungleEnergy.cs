@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.Content;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -64,18 +65,21 @@ namespace StarlightRiver.Dusts
 
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Player)
+            if (dust.customData is Player player)
             {
-                Player player = dust.customData as Player;
                 Abilities.AbilityHandler mp = player.GetModPlayer<Abilities.AbilityHandler>();
 
                 dust.position = player.Center + dust.velocity;
-                dust.rotation += 6.28f / Abilities.Smash.ChargeTime;
 
-                if (mp.smash.Active && mp.smash.Timer <= Abilities.Smash.ChargeTime) dust.alpha = (int)(mp.smash.Timer / (float)Abilities.Smash.ChargeTime * 255f);
+                if (mp.TryGetAbility<Smash>(out var smash))
+                {
+                    dust.rotation += 6.28f / Smash.ChargeTime;
 
-                if (mp.smash.Timer > Abilities.Smash.ChargeTime || !mp.smash.Active) dust.alpha -= 10;
-                if (dust.alpha <= 0) dust.active = false;
+                    if (smash.Active && smash.Timer <= Smash.ChargeTime) dust.alpha = (int)(smash.Timer / (float)Smash.ChargeTime * 255f);
+
+                    if (smash.Timer > Smash.ChargeTime || !smash.Active) dust.alpha -= 10;
+                    if (dust.alpha <= 0) dust.active = false;
+                }
             }
             else
             {

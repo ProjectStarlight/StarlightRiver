@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Tiles.Permafrost;
 using System;
 using System.Linq;
 using Terraria;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -17,7 +18,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return player.GetModPlayer<AbilityHandler>().smash.Locked;
+            return !player.GetHandler().Unlocked<Smash>();
         }
 
         public override void SetStaticDefaults()
@@ -54,8 +55,7 @@ namespace StarlightRiver.Pickups
         public override void PickupEffects(Player player)
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.smash.Locked = false;
-            mp.StatStaminaMaxPerm++;
+            mp.Unlock<Smash>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
             player.AddBuff(BuffID.Featherfall, 580);

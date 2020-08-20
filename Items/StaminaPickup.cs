@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -21,8 +22,7 @@ namespace StarlightRiver.Items
         public override bool OnPickup(Player player)
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.StatStamina++;
-            if (mp.wisp.Active) { mp.wisp.Timer = 60 * mp.StatStamina - 1; }
+            mp.Stamina++;
 
             for (int k = 0; k <= 20; k++)
             {

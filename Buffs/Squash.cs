@@ -1,7 +1,5 @@
 ﻿using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Buffs
 {

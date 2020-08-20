@@ -1,17 +1,12 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Projectiles.Dummies;
 
 namespace StarlightRiver.Tiles
 {
-	class VerletBanner : DummyTile
+    class VerletBanner : DummyTile
 	{
         public override int DummyType => ProjectileType<VerletBannerDummy>();
 

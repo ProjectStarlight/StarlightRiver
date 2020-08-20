@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
@@ -322,17 +321,20 @@ namespace StarlightRiver
         private static void PopulateRoom(Rectangle room, bool fancy)
         {
             //this will determine what kind of room this is based on it's openings.
-            bool up = false;
-            bool down = false;
-            bool left = false;
-            bool right = false;
+
+            // commented out to remove warnings.
+            // TODO fix up this commented code
+            //bool up = false;
+            //bool down = false;
+            //bool left = false;
+            //bool right = false;
 
             int type = TileType<Tiles.Overgrow.MarkerGem>();
 
-            for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y - 2).type == type) up = true;
-            for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y + room.Height + 2).type == type) down = true;
-            for (int y = room.Y; y <= room.Y + room.Height; y++) if (Framing.GetTileSafely(room.X - 2, y).type == type) left = true;
-            for (int y = room.Y; y <= room.Y + room.Height; y++) if (Framing.GetTileSafely(room.X + room.Width + 2, y).type == type) right = true;
+            //for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y - 2).type == type) up = true;
+            //for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y + room.Height + 2).type == type) down = true;
+            //for (int y = room.Y; y <= room.Y + room.Height; y++) if (Framing.GetTileSafely(room.X - 2, y).type == type) left = true;
+            //for (int y = room.Y; y <= room.Y + room.Height; y++) if (Framing.GetTileSafely(room.X + room.Width + 2, y).type == type) right = true;
 
             for (int x = room.X; x <= room.X + room.Width; x++)
             {

@@ -1,81 +1,68 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Dragons;
+using StarlightRiver.Dusts;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using Terraria;
+using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Abilities
 {
-    public class Ability
+    public abstract class Ability
     {
-        public int StaminaCost;
-        public bool Active;
-        public int Timer;
-        public int Cooldown;
-        public bool Locked = true;
-        public virtual Texture2D Texture { get; }
-        public Player player;
-        public virtual bool CanUse => true;
+        public abstract string Texture { get; }
+        public virtual string TextureLocked => Texture + "Locked";
+        public virtual float ActivationCost { get; }
+        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost;
+        public AbilityHandler User { get; internal set; }
+        public Player Player => User.player;
+        public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
-        public Ability(int staminaCost, Player Player)
+        public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
+        public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
+        public virtual void OnActivate() { }
+        public virtual void UpdateActive() { }
+        public virtual void UpdateActiveEffects() { }
+        public virtual void UpdateFixed() { }
+        public virtual void OnExit() { }
+
+        public Texture2D GetTexture(Player player)
         {
-            StaminaCost = staminaCost;
-            player = Player;
+            var tex = player.GetHandler().Unlocked(this) ? Texture : TextureLocked;
+            return ModContent.GetTexture(tex);
         }
 
-        public virtual void StartAbility(Player player)
+        public void Activate(AbilityHandler user)
         {
-            AbilityHandler handler = player.GetModPlayer<AbilityHandler>();
-            DragonHandler dragon = player.GetModPlayer<DragonHandler>();
-            //if the player: has enough stamina  && unlocked && not on CD     && Has no other abilities active
-            if (CanUse && handler.StatStamina >= StaminaCost && !Locked && Cooldown == 0 && !handler.Abilities.Any(a => a.Active))
+            if (!Active)
             {
-                handler.StatStamina -= StaminaCost; //Consume the stamina
-                                                    //if (dragon.DragonMounted) OnCastDragon(); //Do what the ability should do when it starts
-                                                    /*else*/
-                OnCast();
-                Active = true; //Ability is activated
-
-                if (Main.netMode == NetmodeID.MultiplayerClient)
-                    SendPacket();
+                User = user;
+                User.ActiveAbility = this;
+                User.Stamina -= ActivationCost;
+                OnActivate();
+                // TODO probably sync idk
+            }
+        }
+        public void Deactivate()
+        {
+            if (Active)
+            {
+                User.ActiveAbility = null;
+                OnExit();
             }
         }
 
-        public virtual void OnCast()
+        // TODO load, cache, and unload. super ugly rn
+        public static Ability[] GetAbilityInstances()
         {
-        }
-
-        public virtual void OnCastDragon()
-        {
-        }
-
-        public virtual void InUse()
-        {
-        }
-
-        public virtual void InUseDragon()
-        {
-        }
-
-        public virtual void UseEffects()
-        {
-        }
-
-        public virtual void UseEffectsDragon()
-        {
-        }
-
-        public virtual void OffCooldownEffects()
-        {
-        }
-
-        public virtual void OnExit()
-        {
-        }
-
-        public virtual void SendPacket(int toWho = -1, int fromWho = -1)
-        {
-            new Packets.UseAbility(Main.myPlayer, this).Send(toWho, fromWho);
+            return new Ability[]
+            {
+                new Dash(), new Wisp(), new Pure(), new Smash()//, new Superdash()
+            };
         }
     }
 }

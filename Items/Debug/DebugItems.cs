@@ -49,9 +49,6 @@ namespace StarlightRiver.Items.Debug
         {
             NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             var ah = player.GetModPlayer<Abilities.AbilityHandler>();
-            for (int k = 0; k < ah.shards.Length; k++) ah.shards[k] = false;
-            ah.shardCount = 0;
-            ah.StatStaminaMaxPerm--;
             //StarlightWorld.OvergrowBossFree = false;
             return true;
         }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -36,7 +37,7 @@ namespace StarlightRiver.NPCs.Hostile
             return Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.75f;
         }
 
-        private bool shielded = true;
+        private bool shielded { get => npc.ai[0] == 0; set => npc.ai[0] = value ? 0 : 1; }
 
         public override void AI()
         {
@@ -50,7 +51,7 @@ namespace StarlightRiver.NPCs.Hostile
                 {
                     shielded = false;
                     npc.velocity += player.velocity * 0.5f;
-                    mp.dash.Active = false;
+                    mp.GetAbility<Dash>()?.Deactivate();
                     player.velocity *= (player.velocity.X == 0) ? -0.4f : -0.2f;
                     player.immune = true;
                     player.immuneTime = 10;
@@ -60,6 +61,7 @@ namespace StarlightRiver.NPCs.Hostile
                     {
                         Dust.NewDust(npc.position, 48, 32, mod.DustType("Glass2"), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
                     }
+                    npc.netUpdate = true;
                 }
             }
 

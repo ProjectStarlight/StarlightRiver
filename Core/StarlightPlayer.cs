@@ -67,7 +67,7 @@ namespace StarlightRiver.Core
                 Stamina.visible = false;
                 Infusion.visible = false;
 
-                if (mp.Abilities.Any(a => !a.Locked)) Stamina.visible = true;
+                if (mp.AnyUnlocked) Stamina.visible = true;
 
                 if (Main.playerInventory)
                 {
@@ -75,7 +75,7 @@ namespace StarlightRiver.Core
                     else Collection.visible = false;
 
                     GUI.Codex.ButtonVisible = true;
-                    if (mp.Abilities.Any(a => !a.Locked)) Infusion.visible = true;
+                    if (mp.AnyUnlocked) Infusion.visible = true;
                 }
                 else
                 {
@@ -144,8 +144,8 @@ namespace StarlightRiver.Core
                 ScreenMoveTimer++;
             }
 
-            if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() &&
-                Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) //the worlds most ungodly check ever
+            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
+            if (validTile && Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
             {
                 panDown++;
             }

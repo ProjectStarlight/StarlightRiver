@@ -1,13 +1,14 @@
-﻿using Terraria;
+﻿using StarlightRiver.Abilities;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Items.Infusions
 {
-    public class InfusionItem : ModItem
+    public class InfusionBase<T> : InfusionItem<T> where T : Ability
     {
         private readonly int Rarity;
 
-        public InfusionItem(int rarity)
+        public InfusionBase(int rarity)
         {
             Rarity = rarity;
         }

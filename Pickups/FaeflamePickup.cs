@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Core;
 using StarlightRiver.Items;
 using System;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return player.GetModPlayer<AbilityHandler>().wisp.Locked;
+            return !player.GetModPlayer<AbilityHandler>().Unlocked<Wisp>();
         }
 
         public override void SetStaticDefaults()
@@ -47,8 +48,7 @@ namespace StarlightRiver.Pickups
         public override void PickupEffects(Player player)
         {
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.wisp.Locked = false;
-            mp.StatStaminaMaxPerm++;
+            mp.Unlock<Wisp>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
             player.AddBuff(BuffID.Featherfall, 580);

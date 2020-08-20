@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
 using StarlightRiver.Items;
@@ -18,7 +19,10 @@ namespace StarlightRiver.Pickups
 
         public override Color GlowColor => new Color(160, 230, 255);
 
-        public override bool CanPickup(Player player) => player.GetModPlayer<AbilityHandler>().dash.Locked;
+        public override bool CanPickup(Player player)
+        {
+            return !player.GetHandler().Unlocked<Dash>();
+        }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Forbidden Winds");
 
@@ -80,11 +84,11 @@ namespace StarlightRiver.Pickups
 
             if (timer == 569) //popup + codex entry
             {
-                string message = StarlightRiver.Dash.GetAssignedKeys().Count > 0 ?
-                    "Press A/W/S/D + " + StarlightRiver.Dash.GetAssignedKeys()[0] + " to dash." :
+                string message = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count > 0 ?
+                    "Press A/W/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
                     "Press A/W/S/D + [Please Bind a Key] to dash.";
 
-                StarlightRiver.Instance.textcard.Display("Forbidden Winds", message, Main.LocalPlayer.GetModPlayer<AbilityHandler>().dash);
+                StarlightRiver.Instance.textcard.Display("Forbidden Winds", message, Main.LocalPlayer.GetModPlayer<AbilityHandler>().GetAbility<Dash>());
                 Helper.UnlockEntry<WindsEntry>(Main.LocalPlayer);
                 Helper.UnlockEntry<StaminaEntry>(Main.LocalPlayer);
             }
@@ -95,9 +99,7 @@ namespace StarlightRiver.Pickups
 
         public override void PickupEffects(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
-            mp.dash.Locked = false;
-            mp.StatStaminaMaxPerm++;
+            player.GetHandler().Unlock<Dash>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
             player.AddBuff(BuffID.Featherfall, 580);

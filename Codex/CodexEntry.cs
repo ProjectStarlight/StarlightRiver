@@ -70,7 +70,7 @@ namespace StarlightRiver.Codex
         {
             return new TagCompound()
             {
-                ["Name"] = GetType().ToString(),
+                ["Name"] = GetType().FullName,
                 ["Locked"] = Locked
             };
         }
@@ -79,7 +79,9 @@ namespace StarlightRiver.Codex
         {
             try
             {
-                Type t = Type.GetType(tag.GetString("Name"));
+                var t = Type.GetType(tag.GetString("Name"));
+                if (t is null) return null;
+
                 CodexEntry entry = (CodexEntry)Activator.CreateInstance(t);
                 entry.Locked = tag.GetBool("Locked");
                 return entry;

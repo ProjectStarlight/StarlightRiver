@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
@@ -35,8 +36,7 @@ namespace StarlightRiver.Projectiles.Dummies
                     if (!StarlightWorld.SealOpen)
                     {
                         StarlightWorld.SealOpen = true;
-                        player.GetModPlayer<AbilityHandler>().smash.OnExit();
-                        player.GetModPlayer<AbilityHandler>().smash.Active = false;
+                        player.GetHandler().GetAbility<Smash>().Deactivate();
                         player.GetModPlayer<StarlightPlayer>().Shake = 80;
 
                         Main.PlaySound(SoundID.NPCDeath59);

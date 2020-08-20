@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -42,10 +43,9 @@ namespace StarlightRiver.Pickups
             Player player = Main.player[npc.target];
             AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
 
-            if (npc.Hitbox.Intersects(player.Hitbox) && mp.sdash.Locked)
+            if (npc.Hitbox.Intersects(player.Hitbox) && mp.Unlocked<Superdash>())
             {
-                mp.sdash.Locked = false;
-                mp.StatStaminaMaxPerm += 1;
+                mp.Unlock<Superdash>();
                 animate = 300;
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get"));
             }
@@ -71,7 +71,7 @@ namespace StarlightRiver.Pickups
                 if (animate == 1)
                 {
                     player.AddBuff(BuffID.Featherfall, 120);
-                    StarlightRiver.Instance.textcard.Display("Zzelera's Cloak", "Press " + StarlightRiver.Superdash.GetAssignedKeys()[0] + " to become invincible and fly to your mouse", mp.sdash);
+                    StarlightRiver.Instance.textcard.Display("Zzelera's Cloak", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Superdash>().GetAssignedKeys()[0] + " to become invincible and fly to your mouse", mp.GetAbility<Superdash>());
                 }
             }
 
@@ -94,7 +94,7 @@ namespace StarlightRiver.Pickups
                 timer = 0;
             }
 
-            if (mp.sdash.Locked)
+            if (mp.Unlocked<Superdash>())
             {
                 spriteBatch.Draw(wind, npc.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
                 Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 4), npc.width, npc.height, DustType<Dusts.Darkness>(), 0, 0, 0, default, 0.5f);

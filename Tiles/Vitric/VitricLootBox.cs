@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Items;
 using Terraria.ID;

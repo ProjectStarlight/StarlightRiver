@@ -25,7 +25,7 @@ namespace StarlightRiver.Items.Infusions
 
         public override bool UseItem(Player player)
         {
-            player.GetModPlayer<AbilityHandler>().HasSecondSlot = true;
+            player.GetModPlayer<AbilityHandler>().InfusionLimit++;
             return true;
         }
     }

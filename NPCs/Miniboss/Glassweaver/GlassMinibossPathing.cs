@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.NPCs.Miniboss.Glassweaver.PathingUtils;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -16,7 +12,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
     internal partial class GlassMiniboss : ModNPC
     {
         public Rectangle targetRectangle;
-        private float storedVelocity; //this should be deterministic in theory? to be tested.
+        //private float storedVelocity; //this should be deterministic in theory? to be tested. TODO unused
         private int moves; //same as above. testing needed.
 
         //the bounce pads which the boss will use to jump when he needs to.

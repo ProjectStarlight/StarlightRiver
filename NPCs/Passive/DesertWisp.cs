@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
+using StarlightRiver.Abilities.Content;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -37,7 +38,7 @@ namespace StarlightRiver.NPCs.Passive
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if ((distance.Length() <= 180 && !(mp.wisp.Active)) || Main.dayTime) npc.ai[3] = 1;
+            if ((distance.Length() <= 180 && !(mp.Unlocked<Wisp>())) || Main.dayTime) npc.ai[3] = 1;
 
             if (npc.ai[3] == 1)
             {
@@ -60,7 +61,7 @@ namespace StarlightRiver.NPCs.Passive
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if (distance.Length() <= 120 && !mp.wisp.Active) npc.velocity += Vector2.Normalize(distance) * -10;
+            if (distance.Length() <= 120 && !mp.GetAbility<Wisp>().Active) npc.velocity += Vector2.Normalize(distance) * -10;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;

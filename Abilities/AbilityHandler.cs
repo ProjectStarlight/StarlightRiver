@@ -1,7 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Serialization;
+using StarlightRiver.GUI;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.Odbc;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
@@ -9,209 +16,285 @@ namespace StarlightRiver.Abilities
 {
     public partial class AbilityHandler : ModPlayer
     {
-        //max stamina shards
-        public const int maxStaminaShards = 3;
+        // The player's active ability.
+        public Ability ActiveAbility
+        {
+            get => activeAbility; 
+            internal set
+            {
+                if (value is null || Stamina > value.ActivationCost)
+                {
+                    if (activeAbility != null)
+                        GetOrNull(activeAbility.GetType())?.OnEnd();
+                    activeAbility = value;
+                }
+            }
+        }
 
-        //All players store 1 instance of each ability. This instance is changed to the infusion variant if an infusion is equipped.
-        public Dash dash = new Dash(Main.LocalPlayer);
+        // The player's stamina stats.
+        public float StaminaMax => StaminaMaxDefault + StaminaMaxBonus;
+        public float StaminaMaxDefault => 1 + Shards.Count / shardsPerVessel + unlockedAbilities.Count;
+        public float StaminaMaxBonus
+        {
+            get => staminaMaxBonus;
+            set
+            {
+                staminaMaxBonus = Math.Max(value, -StaminaMaxDefault); // Can't have less than 0 max hp...
+                Stamina = stamina; // Update Stamina property setter safely
+            }
+        }
+        public float Stamina
+        {
+            get => stamina;
+            set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
+        }
+        public float StaminaRegenRate { get; set; }
+        public int InfusionLimit { get; set; } = 1;
 
-        public Wisp wisp = new Wisp(Main.LocalPlayer);
-        public Pure pure = new Pure(Main.LocalPlayer);
-        public Smash smash = new Smash(Main.LocalPlayer);
-        public Superdash sdash = new Superdash(Main.LocalPlayer);
+        public int ShardCount => Shards.Count;
+        public bool AnyUnlocked => unlockedAbilities.Count > 0;
 
-        //A list of all ability instances is kept to easily check things globally across the player's abilities.
-        public List<Ability> Abilities = new List<Ability>();
+        // Some constants.
+        private const int infusionCount = 2;
+        private const int shardsPerVessel = 3;
 
-        //The players stamina stats.
-        public int StatStaminaMax = 0;
+        public ShardSet Shards { get; private set; } = new ShardSet();
 
-        public int StatStaminaMaxTemp = 0;
-        public int StatStaminaMaxPerm = 1;
-        public int StatStamina = 1;
-        public int StatStaminaRegenMax = 210;
-        public int StatStaminaRegen = 0;
+        // Internal-only information.
+        private InfusionItem[] infusions = new InfusionItem[infusionCount];
+        private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
+        private int staminaRegenCD;
+        private float stamina;
+        private float staminaMaxBonus;
+        private Ability activeAbility;
 
-        //stamina shard tracker
-        public int shardCount = 0;
-        public bool[] shards = new bool[maxStaminaShards];
+        private void Unlock(Type t, Ability ability)
+        {
+            unlockedAbilities[t] = ability;
+            ability.User = this;
+        }
 
-        //Holds the player's wing or rocket boot timer, since they must be disabled to move upwards correctly.
-        private float StoredAccessoryTime = 0;
+        private InfusionItem GetOrNull(Type t)
+        {
+            return infusions.FirstOrDefault(i => i?.AbilityType == t);
+        }
+
+        /// <summary>
+        /// Unlocks the ability type for the player.
+        /// </summary>
+        public void Unlock<T>() where T : Ability, new()
+        {
+            // Ensure we don't unlock the same thing twice
+            if (!unlockedAbilities.ContainsKey(typeof(T)))
+            {
+                Unlock(typeof(T), new T());
+            }
+        }
+
+        /// <summary>
+        /// Tries to get an unlocked ability from the player.
+        /// </summary>
+        /// <typeparam name="T">The type of ability.</typeparam>
+        /// <param name="value">The ability.</param>
+        /// <returns>Success or not.</returns>
+        public bool TryGetAbility<T>(out T value) where T : Ability
+        {
+            bool r = unlockedAbilities.TryGetValue(typeof(T), out var a);
+            value = a as T;
+            return r;
+        }
+
+        /// <summary>
+        /// Checks if the given ability type is unlocked.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public bool Unlocked<T>() where T : Ability
+        {
+            return TryGetAbility<T>(out _);
+        }
+        /// <summary>
+        /// Checks if the given ability type is unlocked.
+        /// </summary>
+        public bool Unlocked(Ability ability)
+        {
+            return unlockedAbilities.ContainsKey(ability.GetType());
+        }
+
+        /// <summary>
+        /// Gets an unlocked ability from the player, or null if none exists.
+        /// </summary>
+        /// <typeparam name="T">The type of ability.</typeparam>
+        /// <returns>The ability, if any.</returns>
+        public T GetAbility<T>() where T : Ability => unlockedAbilities.TryGetValue(typeof(T), out var ret) ? (T)ret : null;
+
+        /// <summary>
+        /// Tries to add the matching infusion type.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
+        /// <returns>If the add was successful.</returns>
+        public bool SetInfusion(InfusionItem item, int slot)
+        {
+            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t) &&
+                !infusions.Any(i => i.AbilityType == item.AbilityType))
+            {
+                item.Ability = t;
+                infusions[slot] = item;
+                return true;
+            }
+            return false;
+        }
+
+        public InfusionItem GetInfusion(int slot) => slot < 0 || slot >= infusions.Length ? null : infusions[slot];
+
+        public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
 
         public override TagCompound Save()
         {
             return new TagCompound
             {
-                //ability unlock data
-                [nameof(dash)] = dash.Locked,
-                [nameof(wisp)] = wisp.Locked,
-                [nameof(pure)] = pure.Locked,
-                [nameof(smash)] = smash.Locked,
-                [nameof(sdash)] = sdash.Locked,
-
-                //permanent stamina amount
-                [nameof(StatStaminaMaxPerm)] = StatStaminaMaxPerm,
-
-                //infusion data
-                [nameof(slot1)] = slot1,
-                [nameof(slot2)] = slot2,
-
-                [nameof(HasSecondSlot)] = HasSecondSlot,
-                [nameof(shards)] = shards.ToList<bool>()
+                [nameof(Shards)] = Shards.ToList(),
+                [nameof(unlockedAbilities)] = unlockedAbilities.Keys.Select(t => t.FullName).ToList(),
+                [nameof(infusions)] = infusions.Where(t => t != null).Select(t => t.item).ToList(),
+                [nameof(InfusionLimit)] = InfusionLimit
             };
         }
 
         public override void Load(TagCompound tag)
         {
-            //dash
-            dash = new Dash(player);
-            dash.Locked = tag.GetBool(nameof(dash));
-            Abilities.Add(dash);
-            //wisp
-            wisp = new Wisp(player);
-            wisp.Locked = tag.GetBool(nameof(wisp));
-            Abilities.Add(wisp);
-            //pure
-            pure = new Pure(player);
-            pure.Locked = tag.GetBool(nameof(pure));
-            //Abilities.Add(pure);
-            //smash
-            smash = new Smash(player);
-            smash.Locked = tag.GetBool(nameof(smash));
-            //Abilities.Add(smash);
-            //shadow dash
-            sdash = new Superdash(player);
-            sdash.Locked = tag.GetBool(nameof(sdash));
-            //Abilities.Add(sdash);
+            Shards = new ShardSet();
+            unlockedAbilities = new Dictionary<Type, Ability>();
+            infusions = new InfusionItem[infusionCount];
+            InfusionLimit = 1;
+            try
+            {
+                // Load shards
+                var shardsTemp = tag.GetList<int>(nameof(Shards));
+                foreach (var item in shardsTemp)
+                {
+                    Shards.Add(item);
+                }
 
-            //loads the player's maximum stamina.
-            StatStaminaMaxPerm = tag.GetInt(nameof(StatStaminaMaxPerm));
+                // Load unlocked abilities and init them
+                var abilitiesTemp = tag.GetList<string>(nameof(unlockedAbilities));
+                foreach (var item in abilitiesTemp)
+                {
+                    var t = typeof(Ability).Assembly.GetType(item);
+                    if (t != null)
+                        Unlock(t, Activator.CreateInstance(t) as Ability);
+                }
 
-            //loads infusion data.
-            slot1 = tag.Get<Item>(nameof(slot1)); if (string.IsNullOrEmpty(slot1.Name)) { slot1 = null; }
-            slot2 = tag.Get<Item>(nameof(slot2)); if (string.IsNullOrEmpty(slot2.Name)) { slot2 = null; }
-            HasSecondSlot = tag.GetBool(nameof(HasSecondSlot));
+                // Load infusions
+                var infusionsTemp = tag.GetList<Item>(nameof(infusions));
+                for (int i = 0; i < infusionsTemp.Count; i++)
+                {
+                    infusions[i] = infusionsTemp[i].modItem as InfusionItem;
+                }
 
-            List<bool> tempList = tag.Get<List<bool>>(nameof(shards)); //there is probably a better way to do this but im retarded and lazy and tired
-            for (int k = tempList.Count; k < maxStaminaShards; k++) tempList.Add(false);
-            shards = tempList.ToArray();
+                // Load max infusions
+                InfusionLimit = tag.GetInt(nameof(InfusionLimit));
+            }
+            catch
+            {
 
-            shardCount = shards.Count(n => n == true) % 3;
-        }
-
-        //Updates the Ability list with the latest info
-        public void SetList()
-        {
-            Abilities.Clear();
-            Abilities.Add(dash);
-            Abilities.Add(wisp);
-            Abilities.Add(pure);
-            Abilities.Add(smash);
-            //Abilities.Add(sdash);
+            }
         }
 
         public override void ResetEffects()
         {
             //Resets the player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
-            StatStaminaMax = StatStaminaMaxTemp + StatStaminaMaxPerm;
-            StatStaminaMaxTemp = 0;
-            StatStaminaRegenMax = 240;
+            staminaMaxBonus = 0;
+            StaminaRegenRate = 1;
 
-            if (Abilities.Any(ability => ability.Active))
+            if (ActiveAbility != null)
             {
                 // The player cant use items while casting an ability.
                 player.noItems = true;
                 player.noBuilding = true;
             }
+        }
 
-            SetList(); //Update the list to ensure all interactions work correctly
+        public override void UpdateDead()
+        {
+            ActiveAbility = null;
+        }
+
+        public override void OnRespawn(Player player)
+        {
+            Stamina = StaminaMax;
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
-            //Dismounts player from mount if any ability (apart from Purify) is used
-            if (StarlightRiver.Dash.JustPressed || StarlightRiver.Wisp.JustPressed || StarlightRiver.Smash.JustPressed || StarlightRiver.Superdash.JustPressed)
-                player.mount.Dismount(player);
-            //Activates one of the player's abilities on the appropriate keystroke.
-            if (StarlightRiver.Dash.JustPressed) { triggersSet.Jump = false; dash.StartAbility(player); }
-            if (StarlightRiver.Wisp.JustPressed) { wisp.StartAbility(player); }
-            if (StarlightRiver.Purify.JustPressed) { pure.StartAbility(player); }
-            if (StarlightRiver.Smash.JustPressed) { smash.StartAbility(player); }
-            if (StarlightRiver.Superdash.JustPressed) { sdash.StartAbility(player); }
+            // Beyah
+            foreach (var item in unlockedAbilities.Values)
+            {
+                if (item.Available && item.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
+                {
+                    item.Activate(this);
+                    break;
+                }
+            }
         }
 
         public override void PreUpdate()
         {
-            //Executes the ability's use code while it's active.
-            if (player.GetModPlayer<Dragons.DragonHandler>().DragonMounted)
-                foreach (Ability ability in Abilities.Where(ability => ability.Active)) { ability.InUseDragon(); ability.UseEffectsDragon(); }
+            // Update abilities
+            foreach (var ability in unlockedAbilities.Values)
+            {
+                ability.UpdateFixed();
+            }
+
+            // Update infusions
+            foreach (var infusion in infusions)
+            {
+                if (infusion == null) continue;
+                infusion.UpdateFixed();
+                if (ActiveAbility?.GetType() == infusion.AbilityType)
+                {
+                    infusion.UpdateActive();
+                }
+            }
+
+            if (ActiveAbility != null)
+            {
+                // Update active ability
+                ActiveAbility.UpdateActive();
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    ActiveAbility?.UpdateActiveEffects();
+                }
+
+                // Jank
+                player.velocity.Y += 0.01f; 
+
+                // Disable wings and rockets temporarily
+                player.canRocket = false;
+                player.rocketBoots = -1;
+                player.wings = -1;
+
+                SetStaminaRegenCD(300);
+            }
             else
-                foreach (Ability ability in Abilities.Where(ability => ability.Active)) { ability.InUse(); ability.UseEffects(); }
-
-            //Decrements internal cooldowns of abilities.
-            foreach (Ability ability in Abilities.Where(ability => ability.Cooldown > 0)) { ability.Cooldown--; }
-
-            //Ability cooldown Effects
-            foreach (Ability ability in Abilities.Where(ability => ability.Cooldown == 1)) { ability.OffCooldownEffects(); }
-
-            //Physics fuckery due to redcode being retarded
-            if (Abilities.Any(ability => ability.Active))
             {
-                player.velocity.Y += 0.01f; //Required to ensure that the game never thinks we hit the ground when using an ability. Thanks redcode!
+                // Faster regen while not moving much
+                if (player.velocity.LengthSquared() < 1)
+                {
+                    SetStaminaRegenCD(90);
+                }
 
-                // We need to store the player's wing or rocket boot time and set the effective time to zero while an ability is active to move upwards correctly. Thanks redcode!
-                if (StoredAccessoryTime == 0) { StoredAccessoryTime = ((player.wingTimeMax > 0) ? player.wingTime : player.rocketTime + 1); }
-                player.wingTime = 0;
-                player.rocketTime = 0;
-                player.rocketRelease = true;
-                player.fallStart = (int)player.Center.Y;
-                player.fallStart2 = (int)player.Center.Y;
-            }
-
-            //This restores the player's wings or rocket boots after the ability is over.
-            else if (StoredAccessoryTime > 0)
-            {
-                player.velocity.Y += 0.01f; //We need to do this the frame after also.
-
-                //Makes the determination between which of the two flight accessories the player has.
-                if (player.wingTimeMax > 0) { player.wingTime = StoredAccessoryTime; }
-                else { player.rocketTime = (int)StoredAccessoryTime - 1; }
-                StoredAccessoryTime = 0;
-            }
-
-            //Dont exceed max stamina or regenerate stamina when full.
-            if (StatStamina >= StatStaminaMax)
-            {
-                StatStamina = StatStaminaMax;
-                StatStaminaRegen = StatStaminaRegenMax;
-            }
-
-            //The player's stamina regeneration.
-            if (StatStaminaRegen <= 0 && StatStamina < StatStaminaMax)
-            {
-                StatStamina++;
-                StatStaminaRegen = StatStaminaRegenMax;
-            }
-
-            //Regenerate only when abilities are not active.
-            if (!Abilities.Any(a => a.Active)) { StatStaminaRegen--; }
-
-            //If the player is dead, drain their stamina and disable all of their abilities.
-            if (player.dead)
-            {
-                StatStamina = 0;
-                StatStaminaRegen = StatStaminaRegenMax;
-                foreach (Ability ability in Abilities) { ability.Active = false; }
+                // Regen stamina
+                if (staminaRegenCD > 0)
+                {
+                    staminaRegenCD--;
+                }
+                Stamina += StaminaRegenRate / (staminaRegenCD + 1);
             }
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (wisp.Active || sdash.Active)
-            {
-                foreach (PlayerLayer layer in layers) { layer.visible = false; }
-            }
+            ActiveAbility?.ModifyDrawLayers(layers);
         }
     }
 }
