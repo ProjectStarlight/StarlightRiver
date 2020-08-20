@@ -43,7 +43,7 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void Collision(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.Stamina < mp.StaminaMax && mp.ActiveAbility != null)
             {

@@ -33,12 +33,12 @@ namespace StarlightRiver.Projectiles.Dummies
         {
             foreach (Player player in Main.player.Where(player => Vector2.Distance(player.Center, projectile.Center) <= 100))
             {
-                AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+                AbilityHandler mp = player.GetHandler();
 
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     WorldGen.KillTile((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
-                    mp.GetAbility<Dash>().Deactivate();
+                    mp.ActiveAbility?.Deactivate();
 
                     if (player.velocity.Length() != 0)
                     {

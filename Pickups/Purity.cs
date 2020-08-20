@@ -43,7 +43,7 @@ namespace StarlightRiver.NPCs.Pickups
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (npc.Hitbox.Intersects(player.Hitbox) && !mp.Unlocked<Pure>() && animate == 0)
             {
@@ -81,7 +81,8 @@ namespace StarlightRiver.NPCs.Pickups
                 if (animate == 1)
                 {
                     player.AddBuff(BuffID.Featherfall, 120);
-                    StarlightRiver.Instance.textcard.Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Purify>().GetAssignedKeys()[0] + " to purify nearby tiles", mp.GetAbility<Pure>());
+                    mp.GetAbility<Pure>(out var purify);
+                    StarlightRiver.Instance.textcard.Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Purify>().GetAssignedKeys()[0] + " to purify nearby tiles", purify);
                     Helper.UnlockEntry<PureEntry>(player);
                 }
             }
@@ -125,7 +126,7 @@ namespace StarlightRiver.NPCs.Pickups
                 }
             }
 
-            AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = Main.LocalPlayer.GetHandler();
 
             timer += (float)(Math.PI * 2) / 120;
             if (timer >= Math.PI * 2)

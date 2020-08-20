@@ -20,7 +20,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler ah = player.GetHandler();
             return !ah.Shards.Has(Parent.frameX);
         }
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Pickups
 
         public override void PickupEffects(Player player)
         {
-            AbilityHandler ah = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler ah = player.GetHandler();
             
             ah.Shards.Add(Parent.frameX);
 
@@ -54,7 +54,7 @@ namespace StarlightRiver.Pickups
         {
             if (Main.gameMenu) return "StarlightRiver/Pickups/Stamina1";
 
-            AbilityHandler ah = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+            AbilityHandler ah = Main.LocalPlayer.GetHandler();
             return "StarlightRiver/Pickups/Stamina" + (ah.ShardCount + 1);
         }
     }

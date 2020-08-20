@@ -97,7 +97,7 @@ namespace StarlightRiver.Abilities
         /// <typeparam name="T">The type of ability.</typeparam>
         /// <param name="value">The ability.</param>
         /// <returns>Success or not.</returns>
-        public bool TryGetAbility<T>(out T value) where T : Ability
+        public bool GetAbility<T>(out T value) where T : Ability
         {
             bool r = unlockedAbilities.TryGetValue(typeof(T), out var a);
             value = a as T;
@@ -111,22 +111,15 @@ namespace StarlightRiver.Abilities
         /// <returns></returns>
         public bool Unlocked<T>() where T : Ability
         {
-            return TryGetAbility<T>(out _);
+            return GetAbility<T>(out _);
         }
         /// <summary>
         /// Checks if the given ability type is unlocked.
         /// </summary>
-        public bool Unlocked(Ability ability)
+        public bool Unlocked(Type type)
         {
-            return unlockedAbilities.ContainsKey(ability.GetType());
+            return unlockedAbilities.ContainsKey(type);
         }
-
-        /// <summary>
-        /// Gets an unlocked ability from the player, or null if none exists.
-        /// </summary>
-        /// <typeparam name="T">The type of ability.</typeparam>
-        /// <returns>The ability, if any.</returns>
-        public T GetAbility<T>() where T : Ability => unlockedAbilities.TryGetValue(typeof(T), out var ret) ? (T)ret : null;
 
         /// <summary>
         /// Tries to add the matching infusion type.

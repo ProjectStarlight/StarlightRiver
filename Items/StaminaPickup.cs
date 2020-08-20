@@ -21,7 +21,7 @@ namespace StarlightRiver.Items
 
         public override bool OnPickup(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             mp.Stamina++;
 
             for (int k = 0; k <= 20; k++)

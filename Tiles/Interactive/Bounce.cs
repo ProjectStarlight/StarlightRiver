@@ -26,11 +26,11 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void Collision(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                mp.TryGetAbility(out Dash dash);
+                mp.GetAbility(out Dash dash);
                 dash?.Deactivate();
 
                 if (player.velocity.Length() != 0)

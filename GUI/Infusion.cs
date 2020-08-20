@@ -32,7 +32,7 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = Main.LocalPlayer.GetHandler();
 
             if (mp.InfusionLimit > 1) //draw both slots
             {
@@ -67,7 +67,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             var tex = Main.inventoryBackTexture;
-            var mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+            var mp = Main.LocalPlayer.GetHandler();
             var hover = mp.GetInfusion(TargetSlot)?.item;
 
             //Draws the slot

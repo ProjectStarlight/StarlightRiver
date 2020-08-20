@@ -54,7 +54,7 @@ namespace StarlightRiver.Pickups
 
         public override void PickupEffects(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             mp.Unlock<Smash>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;

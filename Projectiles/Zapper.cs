@@ -53,7 +53,7 @@ namespace StarlightRiver.Projectiles
                     Projectile proj = Main.projectile.FirstOrDefault(p => p.owner == player.whoAmI && Main.projHook[p.type]);
                     if (proj != null) proj.timeLeft = 0;
 
-                    player.GetModPlayer<AbilityHandler>().GetAbility<Dash>().Deactivate();
+                    player.GetHandler().ActiveAbility?.Deactivate();
                 }
             }
 

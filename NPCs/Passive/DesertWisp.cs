@@ -33,7 +33,7 @@ namespace StarlightRiver.NPCs.Passive
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             Vector2 distance = player.Center - npc.Center;
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
@@ -56,12 +56,11 @@ namespace StarlightRiver.NPCs.Passive
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
             Vector2 distance = player.Center - npc.Center;
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if (distance.Length() <= 120 && !mp.GetAbility<Wisp>().Active) npc.velocity += Vector2.Normalize(distance) * -10;
+            if (distance.Length() <= 120 && !player.ActiveAbility<Wisp>()) npc.velocity += Vector2.Normalize(distance) * -10;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;

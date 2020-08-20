@@ -30,12 +30,6 @@ namespace StarlightRiver.Abilities
         public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
 
-        public Texture2D GetTexture(Player player)
-        {
-            var tex = player.GetHandler().Unlocked(this) ? Texture : TextureLocked;
-            return ModContent.GetTexture(tex);
-        }
-
         public void Activate(AbilityHandler user)
         {
             if (!Active)

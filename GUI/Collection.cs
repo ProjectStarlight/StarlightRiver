@@ -38,14 +38,11 @@ namespace StarlightRiver.GUI
 
         public override void Update(GameTime gameTime)
         {
-            if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetModPlayer<AbilityHandler>() != null) || ShouldReset)
+            if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null) || ShouldReset)
             {
                 RemoveAllChildren();
-                AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
-                var abilities = new Ability[5]
-                {
-                    mp.GetAbility<Dash>(), mp.GetAbility<Wisp>(), mp.GetAbility<Pure>(), mp.GetAbility<Smash>(), mp.GetAbility<Superdash>()
-                }; // TODO "list of default abilities" somewhere?
+                AbilityHandler mp = Main.LocalPlayer.GetHandler();
+                var abilities = Ability.GetAbilityInstances();
 
                 for (int k = 0; k < abilities.Length; k++)
                 {
@@ -72,7 +69,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = ability == null ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
+            Texture2D tex = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

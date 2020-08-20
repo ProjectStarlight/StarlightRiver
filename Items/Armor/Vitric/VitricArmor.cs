@@ -127,7 +127,7 @@ namespace StarlightRiver.Items.Armor.Vitric
 
         public override void UpdateEquip(Player player)
         {
-            player.GetModPlayer<AbilityHandler>().StaminaRegenRate += 0.1f;
+            player.GetHandler().StaminaRegenRate += 0.1f;
         }
 
         public override void AddRecipes()

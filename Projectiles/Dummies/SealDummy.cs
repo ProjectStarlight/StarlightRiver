@@ -36,7 +36,7 @@ namespace StarlightRiver.Projectiles.Dummies
                     if (!StarlightWorld.SealOpen)
                     {
                         StarlightWorld.SealOpen = true;
-                        player.GetHandler().GetAbility<Smash>().Deactivate();
+                        player.GetHandler().ActiveAbility?.Deactivate();
                         player.GetModPlayer<StarlightPlayer>().Shake = 80;
 
                         Main.PlaySound(SoundID.NPCDeath59);

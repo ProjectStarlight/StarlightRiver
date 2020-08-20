@@ -71,7 +71,7 @@ namespace StarlightRiver.Dusts
 
                 dust.position = player.Center + dust.velocity;
 
-                if (mp.TryGetAbility<Smash>(out var smash))
+                if (mp.GetAbility<Smash>(out var smash))
                 {
                     dust.rotation += 6.28f / Smash.ChargeTime;
 
