@@ -19,7 +19,7 @@ namespace StarlightRiver.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return !player.GetModPlayer<AbilityHandler>().Unlocked<Wisp>();
+            return !player.GetHandler().Unlocked<Wisp>();
         }
 
         public override void SetStaticDefaults()
@@ -47,7 +47,7 @@ namespace StarlightRiver.Pickups
 
         public override void PickupEffects(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             mp.Unlock<Wisp>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;

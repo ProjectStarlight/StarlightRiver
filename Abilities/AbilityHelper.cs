@@ -27,6 +27,6 @@ namespace StarlightRiver.Abilities
 
         public static bool ActiveAbility<T>(this Player player) where T : Ability => player.GetHandler().ActiveAbility is T;
 
-        public static AbilityHandler GetHandler(this Player player) => player.GetModPlayer<AbilityHandler>();
+        public static AbilityHandler GetHandler(this Player player) => player.GetHandler();
     }
 }

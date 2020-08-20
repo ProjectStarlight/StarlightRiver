@@ -88,7 +88,7 @@ namespace StarlightRiver.Pickups
                     "Press A/W/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
                     "Press A/W/S/D + [Please Bind a Key] to dash.";
 
-                StarlightRiver.Instance.textcard.Display("Forbidden Winds", message, Main.LocalPlayer.GetModPlayer<AbilityHandler>().GetAbility<Dash>());
+                StarlightRiver.Instance.textcard.Display("Forbidden Winds", message, Main.LocalPlayer.GetHandler().GetAbility<Dash>());
                 Helper.UnlockEntry<WindsEntry>(Main.LocalPlayer);
                 Helper.UnlockEntry<StaminaEntry>(Main.LocalPlayer);
             }

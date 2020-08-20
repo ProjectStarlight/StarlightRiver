@@ -38,10 +38,10 @@ namespace StarlightRiver.GUI
 
         public override void Update(GameTime gameTime)
         {
-            if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetModPlayer<AbilityHandler>() != null) || ShouldReset)
+            if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null) || ShouldReset)
             {
                 RemoveAllChildren();
-                AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+                AbilityHandler mp = Main.LocalPlayer.GetHandler();
                 var abilities = new Ability[5]
                 {
                     mp.GetAbility<Dash>(), mp.GetAbility<Wisp>(), mp.GetAbility<Pure>(), mp.GetAbility<Smash>(), mp.GetAbility<Superdash>()

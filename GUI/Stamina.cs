@@ -26,7 +26,7 @@ namespace StarlightRiver.GUI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             Player player = Main.LocalPlayer;
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (Main.mapStyle != 1)
             {
@@ -58,7 +58,7 @@ namespace StarlightRiver.GUI
 
             if (Stam1.IsMouseHovering)
             {
-                AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+                AbilityHandler mp = Main.LocalPlayer.GetHandler();
                 var stamina = Math.Round(mp.Stamina, 1);
                 var staminaMax = Math.Round(mp.StaminaMax, 1);
                 string text = $"Stamina: {stamina}/{staminaMax}";
@@ -77,7 +77,7 @@ namespace StarlightRiver.GUI
         {
             Rectangle dimensions = GetDimensions().ToRectangle();
             Player player = Main.LocalPlayer;
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             Texture2D emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaEmpty");
             Texture2D fillTex = GetTexture("StarlightRiver/GUI/Assets/Stamina");

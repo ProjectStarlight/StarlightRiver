@@ -462,7 +462,7 @@ namespace StarlightRiver
             Type typ2 = character.GetType();
             FieldInfo playerInfo2 = typ2.GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
             Player player = (Player)playerInfo2.GetValue(character);
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             CodexHandler mp2 = player.GetModPlayer<CodexHandler>();
 
             if (mp == null || mp2 == null) { return; }

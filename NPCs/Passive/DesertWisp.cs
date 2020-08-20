@@ -33,7 +33,7 @@ namespace StarlightRiver.NPCs.Passive
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             Vector2 distance = player.Center - npc.Center;
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
@@ -56,7 +56,7 @@ namespace StarlightRiver.NPCs.Passive
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             Vector2 distance = player.Center - npc.Center;
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);

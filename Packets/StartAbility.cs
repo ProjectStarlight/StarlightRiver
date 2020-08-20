@@ -28,7 +28,7 @@ namespace StarlightRiver.Packets
     //        }
 
     //        Player player = Main.player[fromWho];
-    //        AbilityHandler handler = player.GetModPlayer<AbilityHandler>();
+    //        AbilityHandler handler = player.GetHandler();
     //        DragonHandler dragon = player.GetModPlayer<DragonHandler>();
     //        Type abType = Type.GetType(abTypeName);
     //        Ability ab = handler.Abilities.Single(a => a.GetType() == abType);

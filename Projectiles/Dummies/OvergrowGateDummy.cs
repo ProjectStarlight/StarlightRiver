@@ -33,7 +33,7 @@ namespace StarlightRiver.Projectiles.Dummies
         {
             foreach (Player player in Main.player.Where(player => Vector2.Distance(player.Center, projectile.Center) <= 100))
             {
-                AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+                AbilityHandler mp = player.GetHandler();
 
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {

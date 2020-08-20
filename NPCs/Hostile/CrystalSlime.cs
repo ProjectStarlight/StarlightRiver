@@ -43,7 +43,7 @@ namespace StarlightRiver.NPCs.Hostile
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (AbilityHelper.CheckDash(player, npc.Hitbox))
             {

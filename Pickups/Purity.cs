@@ -43,7 +43,7 @@ namespace StarlightRiver.NPCs.Pickups
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
 
             if (npc.Hitbox.Intersects(player.Hitbox) && !mp.Unlocked<Pure>() && animate == 0)
             {
@@ -125,7 +125,7 @@ namespace StarlightRiver.NPCs.Pickups
                 }
             }
 
-            AbilityHandler mp = Main.LocalPlayer.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = Main.LocalPlayer.GetHandler();
 
             timer += (float)(Math.PI * 2) / 120;
             if (timer >= Math.PI * 2)

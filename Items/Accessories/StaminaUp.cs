@@ -10,7 +10,7 @@ namespace StarlightRiver.Items.Accessories
         public override void SafeSetDefaults() { item.rare = ItemRarityID.Blue; }
         public override void SafeUpdateEquip(Player player)
         {
-            AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+            AbilityHandler mp = player.GetHandler();
             mp.StaminaMaxBonus += 1;
         }
     }

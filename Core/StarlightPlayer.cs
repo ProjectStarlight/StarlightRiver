@@ -62,7 +62,7 @@ namespace StarlightRiver.Core
 
             if (Main.netMode != NetmodeID.Server)
             {
-                AbilityHandler mp = player.GetModPlayer<AbilityHandler>();
+                AbilityHandler mp = player.GetHandler();
 
                 Stamina.visible = false;
                 Infusion.visible = false;
