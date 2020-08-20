@@ -19,8 +19,8 @@ namespace StarlightRiver
 
         static VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
         {
-            segmentCount = 30,
-            segmentDistance = 20,
+            segmentCount = 35,
+            segmentDistance = 24,
             constraintRepetitions = 2,
             drag = 2.8f,
             forceGravity = new Vector2(0f, 0.20f),
