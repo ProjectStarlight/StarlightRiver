@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Projectiles.Dummies;
+using Terraria.ID;
+using Terraria.ObjectData;
+using Terraria.DataStructures;
+using Terraria.Enums;
 
 namespace StarlightRiver.Tiles
 {
@@ -10,26 +14,22 @@ namespace StarlightRiver.Tiles
 	{
         public override int DummyType => ProjectileType<VerletBannerDummy>();
 
-		public override void SetDefaults()
+		public override void SetDefaults() 
 		{
-			Main.tileSolid[Type] = true;
-			Main.tileMergeDirt[Type] = true;
-			Main.tileBlockLight[Type] = true;
-            Main.tileFrameImportant[Type] = true;
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
     }
 
-
-
     internal class VerletBannerDummy : Dummy
     {
-        public VerletBannerDummy() : base(TileType<VerletBanner>(), 16, 16) { }
+        public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
 
         private VerletChainInstance Chain;
 
         public override void SafeSetDefaults()
         {
-            Chain = new VerletChainInstance
+            Chain = new VerletChainInstance(false)
             {
                 segmentCount = 16,
                 segmentDistance = 16,//if your using a texture to connect all the points, keep this near the texture size

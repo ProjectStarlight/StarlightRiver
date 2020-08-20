@@ -105,6 +105,13 @@ namespace StarlightRiver
             }
 
             graphics.SetRenderTarget(null);
+
+            graphics.SetRenderTarget(vitricBackgroundBannerTarget);
+            graphics.Clear(Color.Transparent);
+
+            BackgroundBanner.DrawStrip(Main.screenPosition + new Vector2(0, 50));
+
+            graphics.SetRenderTarget(null);
         }
 
         #region hooks
