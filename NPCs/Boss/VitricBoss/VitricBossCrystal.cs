@@ -71,7 +71,9 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
             if (npc.ai[0] == 0)
             {
-                foreach (Player player in Main.player)
+                for (int i = 0; i < Main.maxPlayers; i++)
+                {
+                    Player player = Main.player[i];
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
@@ -94,6 +96,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                             npc.friendly = false; //damaging again
                         }
                     }
+                }
             }
 
             switch (npc.ai[2])

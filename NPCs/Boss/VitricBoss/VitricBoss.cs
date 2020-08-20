@@ -262,6 +262,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         int index = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<ArenaBottom>());
                         (Main.npc[index].modNPC as ArenaBottom).Parent = this;
                         ChangePhase(AIStates.FirstPhase, true);
+                        ResetAttack();
 
                         const int arenaWidth = 1408;
                         const int arenaHeight = 900;

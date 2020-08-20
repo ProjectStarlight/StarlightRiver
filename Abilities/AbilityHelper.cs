@@ -9,16 +9,19 @@ namespace StarlightRiver.Abilities
     {
         public static bool CheckDash(Player player, Rectangle hitbox)
         {
+            if (!player.active) return false;
             return player.ActiveAbility<Dash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool CheckWisp(Player player, Rectangle hitbox)
         {
+            if (!player.active) return false;
             return player.ActiveAbility<Wisp>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool CheckSmash(Player player, Rectangle hitbox)
         {
+            if (!player.active) return false;
             return player.ActiveAbility<Smash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 

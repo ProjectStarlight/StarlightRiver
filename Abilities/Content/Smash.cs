@@ -38,7 +38,7 @@ namespace StarlightRiver.Abilities.Content
                     Main.PlaySound(SoundID.MaxMana, Player.Center);
             }
 
-            if (Timer == ChargeTime)
+            if (Timer == ChargeTime && !StarlightRiver.Instance.AbilityKeys.Get<Smash>().Current)
             {
                 Player.velocity.Y -= 20;
                 Timer++;
@@ -114,6 +114,8 @@ namespace StarlightRiver.Abilities.Content
 
         public override void OnExit()
         {
+            Timer = 0;
+
             int power = (Timer > 120) ? 12 : (int)(Timer / 120f * 12);
             for (float k = 0; k <= 6.28; k += 0.1f - (power * 0.005f))
             {
