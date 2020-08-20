@@ -186,8 +186,7 @@ namespace StarlightRiver
             if (ropeSegments.Count < 1) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-            VertexBuffer buffer;
-            PrepareStrip(out buffer);
+            PrepareStrip(out VertexBuffer buffer);
             graphics.SetVertexBuffer(buffer);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
