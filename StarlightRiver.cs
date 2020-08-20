@@ -54,7 +54,7 @@ namespace StarlightRiver
 
         public static float Rotation;
 
-        public static RenderTest lightingTest;
+        public static RenderTest lightingTest = null;
 
         public static StarlightRiver Instance { get; set; }
 
