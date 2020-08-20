@@ -52,7 +52,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 crystals.FirstOrDefault(n => n.ai[0] == 2).ai[0] = 0;
             }
 
-            if(AttackTimer > 180 && AttackTimer % 40 == 0)
+            if(AttackTimer > 180 && AttackTimer % 15 == 0)
             {
                 Vector2 pos = crystalLocations[Main.rand.Next(crystalLocations.Count)] + new Vector2(0, -20);
                 Projectile.NewProjectile(pos + new Vector2(Main.rand.Next(-100, 60), 64), Vector2.Zero, ProjectileType<BossSpikeSmall>(), 5, 0);

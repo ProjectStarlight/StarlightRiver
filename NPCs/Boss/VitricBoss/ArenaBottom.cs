@@ -43,6 +43,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             /* AI fields:
              * 0: timer
              * 1: state
+             * 2: mirrored?
              */
             if (Parent?.npc.active != true) { npc.active = false; return; }
             if (Parent.npc.ai[1] == (int)VitricBoss.AIStates.FirstToSecond) npc.ai[1] = 2;
@@ -52,17 +53,16 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
                     {
                         npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
-                        if (npc.ai[0] > 90)
-                        {
-                            Dust.NewDustPerfect(npc.position, DustType<Dusts.Sand>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(10), 100, default, 2); //tell for when its about to go off
-                            Dust.NewDustPerfect(npc.position, DustType<Dusts.Air>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(2), 100, default, 1);
-                        }
                     }
 
                     if (npc.ai[0] > 120) //after standing there for too long a wave comes by to fuck em up.
                     {
                         npc.ai[1] = 1; //wave mode
                         npc.ai[0] = 0; //reset timer so it can be reused
+
+                        npc.TargetClosest();
+                        if (Main.player[npc.target].Center.X > npc.Center.X) npc.ai[2] = 0;
+                        else npc.ai[2] = 1;
                     }
                     break;
 
@@ -70,7 +70,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     npc.ai[0] += 8; //timer is now used to track where we are in the crystal wave
                     if (npc.ai[0] % 32 == 0) //summons a crystal at every tile covered by the NPC
                     {
-                        Projectile.NewProjectile(new Vector2(npc.position.X + npc.ai[0], npc.position.Y + 48), Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
+                        Vector2 pos = new Vector2(npc.ai[2] == 1 ? npc.position.X + npc.width - npc.ai[0] : npc.position.X + npc.ai[0], npc.position.Y + 48);
+                        Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
                     }
                     if (npc.ai[0] > npc.width)
                     {

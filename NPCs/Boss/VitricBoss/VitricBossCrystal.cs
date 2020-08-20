@@ -51,7 +51,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (npc.ai[2] == 3 && npc.velocity.Y <= 0) return false; //can only do damage when moving downwards
+            if (npc.ai[2] == 0 && npc.velocity.Y <= 0) return false; //can only do damage when moving downwards
             return !(npc.ai[0] == 0 || npc.ai[0] == 1); //too tired of dealing with this sheeeet
         }
 
@@ -196,7 +196,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                             }
                         }
 
-                    if (Framing.GetTileSafely((int)npc.Center.X / 16, (int)(npc.Center.Y + 24) / 16).collisionType == 1 && npc.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
+                    Tile tile = Framing.GetTileSafely((int)npc.Center.X / 16, (int)(npc.Center.Y + 24) / 16);
+                    if (tile.collisionType == 1 && tile.type != TileType<Tiles.Vitric.VitricBossBarrier>() && npc.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
                     {
                         npc.velocity *= 0;
                         npc.ai[2] = 0; //turn it idle
