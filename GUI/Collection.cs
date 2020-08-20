@@ -69,7 +69,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = Main.LocalPlayer.GetHandler().Unlocked(ability) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
+            Texture2D tex = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

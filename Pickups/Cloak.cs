@@ -71,7 +71,7 @@ namespace StarlightRiver.Pickups
                 if (animate == 1)
                 {
                     player.AddBuff(BuffID.Featherfall, 120);
-                    if (mp.TryGetAbility<Superdash>(out var sdash))
+                    if (mp.GetAbility<Superdash>(out var sdash))
                         StarlightRiver.Instance.textcard.Display("Zzelera's Cloak", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Superdash>().GetAssignedKeys()[0] + " to become invincible and fly to your mouse", sdash);
                 }
             }

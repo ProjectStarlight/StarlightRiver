@@ -32,7 +32,7 @@ namespace StarlightRiver.Abilities
 
         public Texture2D GetTexture(Player player)
         {
-            var tex = player.GetHandler().Unlocked(this) ? Texture : TextureLocked;
+            var tex = player.GetHandler().Unlocked(GetType()) ? Texture : TextureLocked;
             return ModContent.GetTexture(tex);
         }
 
