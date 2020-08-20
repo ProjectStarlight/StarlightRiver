@@ -150,8 +150,6 @@ namespace StarlightRiver
             //Shaders
             if (!Main.dedServ)
             {
-                lightingTest = new RenderTest();
-
                 GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
 
                 Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
@@ -185,9 +183,9 @@ namespace StarlightRiver
                 Ref<Effect> screenRef8 = new Ref<Effect>(GetEffect("Effects/pixelationFull"));
                 Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
                 Filters.Scene["Pixelation"].Load();
-            }
 
-            lightingTest = new RenderTest();
+                lightingTest = new RenderTest();
+            }
 
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();
