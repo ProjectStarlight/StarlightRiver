@@ -122,13 +122,6 @@ namespace StarlightRiver.Abilities
         }
 
         /// <summary>
-        /// Gets an unlocked ability from the player, or null if none exists.
-        /// </summary>
-        /// <typeparam name="T">The type of ability.</typeparam>
-        /// <returns>The ability, if any.</returns>
-        public T GetAbility<T>() where T : Ability => unlockedAbilities.TryGetValue(typeof(T), out var ret) ? (T)ret : null;
-
-        /// <summary>
         /// Tries to add the matching infusion type.
         /// </summary>
         /// <param name="item">The item to add.</param>

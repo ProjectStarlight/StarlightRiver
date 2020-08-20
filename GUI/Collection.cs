@@ -42,10 +42,7 @@ namespace StarlightRiver.GUI
             {
                 RemoveAllChildren();
                 AbilityHandler mp = Main.LocalPlayer.GetHandler();
-                var abilities = new Ability[5]
-                {
-                    mp.GetAbility<Dash>(), mp.GetAbility<Wisp>(), mp.GetAbility<Pure>(), mp.GetAbility<Smash>(), mp.GetAbility<Superdash>()
-                }; // TODO "list of default abilities" somewhere?
+                var abilities = Ability.GetAbilityInstances();
 
                 for (int k = 0; k < abilities.Length; k++)
                 {
@@ -72,7 +69,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = ability == null ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
+            Texture2D tex = Main.LocalPlayer.GetHandler().Unlocked(ability) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

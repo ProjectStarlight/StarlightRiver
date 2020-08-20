@@ -51,7 +51,7 @@ namespace StarlightRiver.NPCs.Hostile
                 {
                     shielded = false;
                     npc.velocity += player.velocity * 0.5f;
-                    mp.GetAbility<Dash>()?.Deactivate();
+                    mp.ActiveAbility?.Deactivate();
                     player.velocity *= (player.velocity.X == 0) ? -0.4f : -0.2f;
                     player.immune = true;
                     player.immuneTime = 10;

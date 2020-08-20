@@ -38,7 +38,7 @@ namespace StarlightRiver.Projectiles.Dummies
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     WorldGen.KillTile((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
-                    mp.GetAbility<Dash>().Deactivate();
+                    mp.ActiveAbility?.Deactivate();
 
                     if (player.velocity.Length() != 0)
                     {
