@@ -28,13 +28,13 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void OnActivate()
         {
-            Ability.Speed *= 0.7f;
+            Ability.Speed *= 0.6f;
             Ability.Boost = 0.5f;
 
             base.OnActivate();
             Main.PlaySound(SoundID.Item96, Player.Center);
 
-            Ability.time = 15;
+            Ability.time = 13;
         }
 
         public override void UpdateActiveEffects()

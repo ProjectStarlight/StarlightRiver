@@ -367,6 +367,13 @@ namespace StarlightRiver
             string line = "";
             foreach (string str in words)
             {
+                if(str == "NEWBLOCK")
+                {
+                    output += ("\n\n");
+                    line = ("");
+                    continue;
+                }
+
                 if (font.MeasureString(line).X * scale < length)
                 {
                     output += (" " + str);

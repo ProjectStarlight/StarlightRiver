@@ -34,8 +34,8 @@ namespace StarlightRiver.Codex.Entries
         {
             Category = Categories.Misc;
             Title = "Infusions";
-            Body = "Infusions are powerful magical relics which can augment a user's abilities or change how they work altogether. Two main types of infusions exist, Generic Infusions and Ability Infusions.\n\n" +
-                "Generic Infusions typically provide a general boost that applied to all of the player's abilities, or have small enough effects that they do not warrant the ability-type restriction of Ability Infusions. While you can equip as many Generic Infusions as you have slots, you cannot equip duplicates.\n\n" +
+            Body = "Infusions are powerful magical relics which can augment a user's abilities or change how they work altogether. Two main types of infusions exist, Generic Infusions and Ability Infusions. NEWBLOCK " +
+                "Generic Infusions typically provide a general boost that applied to all of the player's abilities, or have small enough effects that they do not warrant the ability-type restriction of Ability Infusions. While you can equip as many Generic Infusions as you have slots, you cannot equip duplicates. NEWBLOCK " +
                 "Ability Infusions are specific to one of your abilities, and greatly augment them or change how they function alltogether. While powerful, these infusions are generally harder to come by than Generic Infusions. You cannot equip two Ability Infusions for the same ability, and you cannot equip duplicates.";
             Hint = "Find a mysterious altar...";
             Image = GetTexture("StarlightRiver/Abilities/Infusion/DashAstral");
