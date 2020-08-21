@@ -22,7 +22,7 @@ namespace StarlightRiver.Abilities
             get => activeAbility; 
             internal set
             {
-                if (ReferenceEquals(value, ActiveAbility))
+                if (ReferenceEquals(value, activeAbility))
                     return;
                 if (value is null || Stamina > value.ActivationCost)
                 {

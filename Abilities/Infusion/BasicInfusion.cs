@@ -26,7 +26,9 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void UpdateFixed()
         {
-            
+            base.UpdateFixed();
+
+
         }
     }
 }
