@@ -138,9 +138,11 @@ namespace StarlightRiver.Abilities
                 return true;
             }
 
-            foreach (var infusion in infusions)
+            if(item.AbilityType is null)
             {
-                if (infusion is null) continue;
+                foreach (var infusion in infusions)
+                {
+                    if (infusion is null) continue;
 
                     if (item.GetType() == infusion.GetType())
                         return false;
@@ -151,12 +153,24 @@ namespace StarlightRiver.Abilities
                 return true;
             }
 
-            var newItem = item.item.Clone();
-            newItem.SetDefaults(item.item.type);
-            infusions[slot] = newItem.modItem as InfusionItem;
             if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
+            {
+                foreach (var infusion in infusions)
+                {
+                    if (infusion is null) continue;
+                    
+                    if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
+                        item.GetType() == infusion.GetType())
+                        return false;
+                }
+
+                var newItem = item.item.Clone();
+                newItem.SetDefaults(item.item.type);
                 (newItem.modItem as InfusionItem).Ability = t;
-            return true;
+                infusions[slot] = newItem.modItem as InfusionItem;            
+                return true;
+            }
+            return false;
         }
 
         public InfusionItem GetInfusion(int slot) => slot < 0 || slot >= infusions.Length ? null : infusions[slot];
