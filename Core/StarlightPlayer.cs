@@ -71,11 +71,18 @@ namespace StarlightRiver.Core
 
                 if (Main.playerInventory)
                 {
-                    if (player.chest == -1 && Main.npcShop == 0) Collection.visible = true;
-                    else Collection.visible = false;
-
-                    GUI.Codex.ButtonVisible = true;
-                    if (mp.AnyUnlocked) Infusion.visible = true;
+                    if (player.chest == -1 && Main.npcShop == 0)
+                    {
+                        Collection.visible = true;
+                        GUI.Codex.ButtonVisible = true;
+                        if (mp.AnyUnlocked) Infusion.visible = true;
+                    }
+                    else
+                    {
+                        Collection.visible = false;
+                        GUI.Codex.ButtonVisible = false;
+                        if (mp.AnyUnlocked) Infusion.visible = false;
+                    }
                 }
                 else
                 {

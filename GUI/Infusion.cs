@@ -75,11 +75,11 @@ namespace StarlightRiver.GUI
             var mp = Main.LocalPlayer.GetHandler();
             var hover = mp.GetInfusion(TargetSlot)?.item;
 
-            
-            // Draws the lock
-            if (!Unlocked)
+
+            if (Unlocked) //draw a lock instead for locked slots
             {
-                // TODO implement
+                Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionLock");
+                spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White, 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
             }
 
             //Draws the slot
@@ -125,8 +125,11 @@ namespace StarlightRiver.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if (Unlocked)
+            if (Unlocked) 
+            {
+                Main.PlaySound(SoundID.Unlock);
                 return;
+            }
 
             var handler = Main.LocalPlayer.GetHandler();
 

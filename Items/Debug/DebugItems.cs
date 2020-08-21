@@ -47,9 +47,9 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
+            //NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             var ah = player.GetModPlayer<Abilities.AbilityHandler>();
-            //StarlightWorld.OvergrowBossFree = false;
+            if(ah.InfusionLimit < 3) ah.InfusionLimit++;
             return true;
         }
 
