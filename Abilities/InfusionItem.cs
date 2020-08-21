@@ -16,6 +16,7 @@ namespace StarlightRiver.Abilities
         public abstract Type AbilityType { get; }
         public Ability Ability { get; internal set; }
 
+        public virtual void OnActivate() { }
         public virtual void UpdateActive() { }
         public virtual void UpdateFixed() { }
         public virtual void OnEnd() { }
