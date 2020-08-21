@@ -27,16 +27,10 @@ namespace StarlightRiver.Abilities.Infusion
         }
 
         public override void OnActivate()
-        {
-            base.OnActivate();
-       
-            var b = 0.15f; // boost velocity when exiting dash
-            Ability.vel = Ability.SignedLesserBound(Ability.GetDashBoost() * b, Ability.Player.velocity); // "conservation of momentum" (lol)
-            Ability.time = 10;
-            Ability.Speed = 28;
+        {       
+            Ability.time = Dash.maxTime + 3;
 
-            Main.PlaySound(SoundID.Item45, Ability.Player.Center);
-            Main.PlaySound(SoundID.Item104, Ability.Player.Center);
+            base.OnActivate();
         }
 
         public override void UpdateActiveEffects()

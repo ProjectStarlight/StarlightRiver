@@ -14,6 +14,8 @@ namespace StarlightRiver.Abilities.Content
 {
     public class Dash : CooldownAbility
     {
+        public Dash() => ResetStats();
+
         public int time;
 
         public override float ActivationCost => 1;
@@ -24,9 +26,17 @@ namespace StarlightRiver.Abilities.Content
 
         public Vector2 dir;
         public Vector2 vel;
-        protected const int maxTime = 7;
+        public const int maxTime = 7;
 
         public float Speed { get; set; }
+        public float Boost { get; set; }
+
+        private void ResetStats()
+        {
+            Boost = 0.15f;
+            Speed = 28;
+            time = maxTime;
+        }
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
@@ -37,10 +47,8 @@ namespace StarlightRiver.Abilities.Content
         {
             base.OnActivate();
 
-            var b = 0.15f; // boost velocity when exiting dash
-            vel = SignedLesserBound(GetDashBoost() * b, Player.velocity); // "conservation of momentum" (lol)
-            time = maxTime;
-            Speed = 28;
+            vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
+            ResetStats();
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
