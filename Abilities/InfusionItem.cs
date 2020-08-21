@@ -39,7 +39,7 @@ namespace StarlightRiver.Abilities
 
             Color color;
 
-            if (AbilityType == null) color = Main.DiscoColor;
+            if (AbilityType == null) color = Color.Gray;
             else
             {
                 if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
@@ -59,7 +59,7 @@ namespace StarlightRiver.Abilities
         {
             Color color;
 
-            if (AbilityType == null) color = Main.DiscoColor;
+            if (AbilityType == null) color = Color.Gray;
             else
             {
                 if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return;
@@ -79,7 +79,7 @@ namespace StarlightRiver.Abilities
 
             Color color;
 
-            if (AbilityType == null) color = Main.DiscoColor;
+            if (AbilityType == null) color = Color.Gray;
             else
             {
                 if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
