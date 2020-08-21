@@ -20,23 +20,23 @@ namespace StarlightRiver.GUI
         public override void OnInitialize()
         {
             slot[0].Width.Set(20, 0);
-            slot[0].Height.Set(14, 0);
+            slot[0].Height.Set(22, 0);
             slot[0].Left.Set(78, 0);
-            slot[0].Top.Set(298, 0);
+            slot[0].Top.Set(294, 0);
             slot[0].TargetSlot = 0;
             Append(slot[0]);
 
             slot[1].Width.Set(20, 0);
-            slot[1].Height.Set(14, 0);
+            slot[1].Height.Set(22, 0);
             slot[1].Left.Set(102, 0);
-            slot[1].Top.Set(298, 0);
+            slot[1].Top.Set(294, 0);
             slot[1].TargetSlot = 1;
             Append(slot[1]);
 
             slot[2].Width.Set(20, 0);
-            slot[2].Height.Set(14, 0);
+            slot[2].Height.Set(22, 0);
             slot[2].Left.Set(90, 0);
-            slot[2].Top.Set(280, 0);
+            slot[2].Top.Set(276, 0);
             slot[2].TargetSlot = 2;
             Append(slot[2]);
         }

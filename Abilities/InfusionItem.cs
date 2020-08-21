@@ -39,7 +39,7 @@ namespace StarlightRiver.Abilities
 
             Color color;
 
-            if (AbilityType == null) color = Color.White;
+            if (AbilityType == null) color = Main.DiscoColor;
             else
             {
                 if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
@@ -48,6 +48,46 @@ namespace StarlightRiver.Abilities
 
             float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
             Vector2 pos = position + tex2.Size() / 2 - Vector2.One;
+
+            spriteBatch.Draw(tex, pos, null, color * sin, 0, tex.Size() / 2, 1, 0, 0);
+
+            spriteBatch.Draw(tex2, pos, null, Color.White, 0, tex2.Size() / 2, 1, 0, 0);
+            return false;
+        }
+
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+        {
+            Color color;
+
+            if (AbilityType == null) color = Main.DiscoColor;
+            else
+            {
+                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return;
+                color = ability.Color;
+            }
+
+            float rot = Main.rand.NextFloat((float)Math.PI * 2);
+            Dust d = Dust.NewDustPerfect(item.Center + Vector2.One.RotatedBy(rot) * 16, 264, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
+            d.noGravity = true;
+            d.noLight = true;
+        }
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            Texture2D tex = GetTexture("StarlightRiver/Abilities/Infusion/InfusionGlow");
+            Texture2D tex2 = GetTexture(Texture);
+
+            Color color;
+
+            if (AbilityType == null) color = Main.DiscoColor;
+            else
+            {
+                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
+                color = ability.Color;
+            }
+
+            float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+            Vector2 pos = item.Center - Main.screenPosition;
 
             spriteBatch.Draw(tex, pos, null, color * sin, 0, tex.Size() / 2, 1, 0, 0);
 

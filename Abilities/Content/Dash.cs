@@ -127,6 +127,7 @@ namespace StarlightRiver.Abilities.Content
         public override void OnExit()
         {
             Player.velocity = vel;
+            Player.fallStart = (int)Player.position.Y;
         }
 
         //public override void OnCastDragon()
