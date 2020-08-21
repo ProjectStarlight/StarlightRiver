@@ -14,11 +14,14 @@ namespace StarlightRiver.Abilities.Content
 {
     public class Dash : CooldownAbility
     {
-        public Dash() => ResetStats();
+        public Dash()
+        {
+            ResetStats();
+        }
 
         public int time;
 
-        public override float ActivationCost => 1;
+        public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
         public override Color Color => new Color(188, 255, 246);
 

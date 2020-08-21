@@ -13,7 +13,7 @@ namespace StarlightRiver.Abilities.Content
 {
     public class Smash : Ability
     {
-        public override float ActivationCost => 2;
+        public override float ActivationCostDefault => 2;
 
         public override bool Available => base.Available && Player.velocity.Y != 0;
         public override string Texture => "StarlightRiver/Pickups/GaiaFist";
