@@ -25,8 +25,10 @@ namespace StarlightRiver.Abilities
                 if (value is null || Stamina > value.ActivationCost)
                 {
                     if (activeAbility != null)
-                        GetOrNull(activeAbility.GetType())?.OnEnd();
+                        GetOrNull(activeAbility.GetType())?.OnExit();
                     activeAbility = value;
+                    if (activeAbility != null)
+                        GetOrNull(activeAbility.GetType())?.OnActivate();
                 }
             }
         }
