@@ -135,9 +135,15 @@ namespace StarlightRiver.Abilities
                 return true;
             }
 
-            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t) &&
-                !infusions.Any(i => i?.AbilityType == item.AbilityType))
+            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
             {
+                foreach (var infusion in infusions)
+                {
+                    if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
+                        item.GetType() == infusion.GetType())
+                        return false;
+                }
+
                 var newItem = item.item.Clone();
                 newItem.SetDefaults(item.item.type);
                 (newItem.modItem as InfusionItem).Ability = t;
