@@ -16,44 +16,53 @@ namespace StarlightRiver.GUI
         public static bool visible = false;
         private readonly InfusionSlot slot0 = new InfusionSlot();
         private readonly InfusionSlot slot1 = new InfusionSlot();
+        private readonly InfusionSlot slot2 = new InfusionSlot();
 
         public override void OnInitialize()
         {
-            slot0.Width.Set(32, 0);
-            slot0.Height.Set(32, 0);
+            slot0.Width.Set(20, 0);
+            slot0.Height.Set(14, 0);
+            slot0.Left.Set(80, 0);
+            slot0.Top.Set(200, 0);
             slot0.TargetSlot = 0;
             Append(slot0);
 
-            slot1.Width.Set(32, 0);
-            slot1.Height.Set(32, 0);
+            slot1.Width.Set(20, 0);
+            slot1.Height.Set(14, 0);
+            slot1.Left.Set(100, 0);
+            slot1.Top.Set(200, 0);
             slot1.TargetSlot = 1;
             Append(slot1);
+
+            slot2.Width.Set(20, 0);
+            slot2.Height.Set(14, 0);
+            slot2.Left.Set(90, 0);
+            slot2.Top.Set(214, 0);
+            slot2.TargetSlot = 2;
+            Append(slot2);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            AbilityHandler mp = Main.LocalPlayer.GetHandler();
+            slot0.Width.Set(20, 0);
+            slot0.Height.Set(14, 0);
+            slot0.Left.Set(78, 0);
+            slot0.Top.Set(298, 0);
+            slot0.TargetSlot = 0;
 
-            if (mp.InfusionLimit > 1) //draw both slots
-            {
-                slot0.Left.Set(496, 0);
-                slot0.Top.Set(50, 0);
+            slot1.Width.Set(20, 0);
+            slot1.Height.Set(14, 0);
+            slot1.Left.Set(102, 0);
+            slot1.Top.Set(298, 0);
+            slot1.TargetSlot = 1;
 
-                slot1.Left.Set(534, 0);
-                slot1.Top.Set(50, 0);
-                slot1.Width.Set(32, 0);
-                slot1.Height.Set(32, 0);
-            }
-            else //only 1 slot
-            {
-                slot0.Left.Set(515, 0);
-                slot0.Top.Set(50, 0);
+            slot2.Width.Set(20, 0);
+            slot2.Height.Set(14, 0);
+            slot2.Left.Set(90, 0);
+            slot2.Top.Set(280, 0);
+            slot2.TargetSlot = 2;
 
-                slot1.Width.Set(0, 0);
-                slot1.Height.Set(0, 0);
-            }
-
-            spriteBatch.DrawString(Main.fontItemStack, "Infusions", new Vector2(503, 30), Main.mouseTextColorReal, 0f, Vector2.Zero, 0.85f, 0, 0);
+            spriteBatch.Draw(GetTexture("StarlightRiver/GUI/Assets/Infusions"), new Vector2(100 - 26, 300 - 26), Color.White);
 
             base.Draw(spriteBatch);
             Recalculate();
@@ -66,17 +75,16 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var tex = Main.inventoryBackTexture;
             var mp = Main.LocalPlayer.GetHandler();
             var hover = mp.GetInfusion(TargetSlot)?.item;
 
             //Draws the slot
-            spriteBatch.Draw(tex, GetDimensions().ToRectangle(), new Rectangle(0, 0, (int)tex.Size().X, (int)tex.Size().Y), Color.White * 0.75f);
             if (hover != null)
             {
                 //Draws the item itself
                 Texture2D tex2 = GetTexture(hover.modItem.Texture);
-                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0f, tex2.Frame().Center(), 0.8f, SpriteEffects.None, 0);
+                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0f, tex2.Frame().Center(), 1, SpriteEffects.None, 0);
+
                 if (IsMouseHovering && Main.mouseItem.IsAir)
                 {
                     //Grabs the items tooltip
@@ -102,19 +110,13 @@ namespace StarlightRiver.GUI
             //if the player is holding an infusion
             var occupant = handler.GetInfusion(TargetSlot);
             if (Main.mouseItem.modItem is InfusionItem item && handler.SetInfusion(item, TargetSlot))
-            {
-                //if nothing is equipped, equip the held item
-                if (occupant == null)
-                {
-                    Main.mouseItem.TurnToAir();
-                }
-                //if something is equipped, swap that for the held item
-                else
-                {
-                    Main.mouseItem = occupant.item;
-                }
+            {             
+                if (occupant == null) Main.mouseItem.TurnToAir();  //if nothing is equipped, equip the held item
+                else Main.mouseItem = occupant.item; //if something is equipped, swap that for the held item
+
                 Main.PlaySound(SoundID.Grab);
             }
+
             //if the player isnt holding anything but something is equipped, unequip it
             else if (occupant != null && Main.mouseItem.IsAir)
             {

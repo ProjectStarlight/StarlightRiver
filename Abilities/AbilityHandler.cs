@@ -55,7 +55,7 @@ namespace StarlightRiver.Abilities
         public bool AnyUnlocked => unlockedAbilities.Count > 0;
 
         // Some constants.
-        private const int infusionCount = 2;
+        private const int infusionCount = 3;
         private const int shardsPerVessel = 3;
 
         public ShardSet Shards { get; private set; } = new ShardSet();
@@ -113,6 +113,7 @@ namespace StarlightRiver.Abilities
         {
             return GetAbility<T>(out _);
         }
+
         /// <summary>
         /// Checks if the given ability type is unlocked.
         /// </summary>
@@ -128,11 +129,19 @@ namespace StarlightRiver.Abilities
         /// <returns>If the add was successful.</returns>
         public bool SetInfusion(InfusionItem item, int slot)
         {
-            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t) &&
-                !infusions.Any(i => i.AbilityType == item.AbilityType))
+            if (item == null)
             {
-                item.Ability = t;
-                infusions[slot] = item;
+                infusions[slot] = null;
+                return true;
+            }
+
+            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t) &&
+                !infusions.Any(i => i?.AbilityType == item.AbilityType))
+            {
+                var newItem = item.item.Clone();
+                newItem.SetDefaults(item.item.type);
+                (newItem.modItem as InfusionItem).Ability = t;
+                infusions[slot] = newItem.modItem as InfusionItem;            
                 return true;
             }
             return false;

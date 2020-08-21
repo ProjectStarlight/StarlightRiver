@@ -25,17 +25,6 @@ namespace StarlightRiver.GUI
             Append(element);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/back");
-            spriteBatch.Draw(tex, new Vector2(100, 300), tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
-            base.Draw(spriteBatch);
-
-            //dust.ForEach(n => n.SafeDraw(spriteBatch));
-            //dust.ForEach(n => n.Update());
-            //dust.RemoveAll(n => n.time == 0);
-        }
-
         public override void Update(GameTime gameTime)
         {
             if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null) || ShouldReset)
@@ -47,7 +36,7 @@ namespace StarlightRiver.GUI
                 for (int k = 0; k < abilities.Length; k++)
                 {
                     Ability ability = abilities[k];
-                    Vector2 pos = new Vector2(100, 300) + new Vector2(-50, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
+                    Vector2 pos = new Vector2(100, 300) + new Vector2(-60, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
                     AddAbility(ability, pos);
                 }
                 ShouldReset = false;
@@ -69,7 +58,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
+            Texture2D tex = !Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 

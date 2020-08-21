@@ -518,7 +518,7 @@ namespace StarlightRiver
                     var texture = player.GetHandler().Unlocked(ability.GetType())
                         ? ability.Texture
                         : ability.TextureLocked;
-                    spriteBatch.Draw(GetTexture(texture), origin + new Vector2(536 - k * 32, 62), Color.White);
+                    spriteBatch.Draw(ModContent.GetTexture(texture), origin + new Vector2(536 - k * 32, 62), Color.White);
                 } 
                 catch (Exception e)
                 {
