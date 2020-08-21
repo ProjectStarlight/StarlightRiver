@@ -61,7 +61,8 @@ namespace StarlightRiver.Abilities
         public ShardSet Shards { get; private set; } = new ShardSet();
 
         // Internal-only information.
-        private InfusionItem[] infusions = new InfusionItem[infusionCount];
+
+        private InfusionItem[] infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;
@@ -101,13 +102,6 @@ namespace StarlightRiver.Abilities
         {
             bool r = unlockedAbilities.TryGetValue(typeof(T), out var a);
             value = a as T;
-            return r;
-        }
-
-        public bool GetAbility(out Type type)
-        {
-            bool r = unlockedAbilities.TryGetValue(type, out var a);
-            return a ;
             return r;
         }
 
@@ -181,7 +175,7 @@ namespace StarlightRiver.Abilities
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            infusions = new InfusionItem[infusionCount];
+            infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
             InfusionLimit = 1;
             try
             {
