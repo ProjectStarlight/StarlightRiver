@@ -34,7 +34,7 @@ namespace StarlightRiver.Abilities.Infusion
             base.OnActivate();
             Main.PlaySound(SoundID.Item96, Player.Center);
 
-            Ability.time = 13;
+            Ability.time = 10;
         }
 
         public override void UpdateActiveEffects()
@@ -42,7 +42,7 @@ namespace StarlightRiver.Abilities.Infusion
             Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
             for(float k = -2; k <= 2; k += 0.1f)
             {
-                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - Ability.time);
+                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - 3 - Ability.time);
 
                 if (Ability.time == 0)
                 {
