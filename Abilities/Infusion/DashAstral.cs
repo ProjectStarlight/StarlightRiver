@@ -27,8 +27,10 @@ namespace StarlightRiver.Abilities.Infusion
         }
 
         public override void OnActivate()
-        {       
+        {
             Ability.time = Dash.maxTime + 3;
+            Ability.Speed = 30;
+            Ability.Boost = 0.4f;
 
             base.OnActivate();
         }
@@ -40,8 +42,8 @@ namespace StarlightRiver.Abilities.Infusion
 
             for (int k = 0; k < 60; k++)
             {
-                float rot = (0.1f * k) * direction;
-                Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Ability.Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Ability.time / 8f), DustType<Dusts.Starlight>());
+                Vector2 off = Vector2.Normalize(Ability.Player.velocity).RotatedBy(k % 2 == 0 ? 0.2f : -0.2f) * -k * (1 - Ability.time / 10f);
+                Dust dus = Dust.NewDustPerfect(prevPos + off, DustType<Dusts.Starlight>(), off, 0, default, 1 - Ability.time / 10f);
                 dus.fadeIn = k - Ability.time * 3;
             }
         }
