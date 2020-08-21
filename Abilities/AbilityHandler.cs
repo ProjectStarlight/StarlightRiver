@@ -104,6 +104,13 @@ namespace StarlightRiver.Abilities
             return r;
         }
 
+        public bool GetAbility(out Type type)
+        {
+            bool r = unlockedAbilities.TryGetValue(type, out var a);
+            return a ;
+            return r;
+        }
+
         /// <summary>
         /// Checks if the given ability type is unlocked.
         /// </summary>
