@@ -55,13 +55,12 @@ namespace StarlightRiver.Abilities
         public bool AnyUnlocked => unlockedAbilities.Count > 0;
 
         // Some constants.
-        private const int infusionCount = 3;
         private const int shardsPerVessel = 3;
 
         public ShardSet Shards { get; private set; } = new ShardSet();
 
         // Internal-only information.
-        private InfusionItem[] infusions = new InfusionItem[infusionCount];
+        private InfusionItem[] infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;
@@ -99,9 +98,20 @@ namespace StarlightRiver.Abilities
         /// <returns>Success or not.</returns>
         public bool GetAbility<T>(out T value) where T : Ability
         {
-            bool r = unlockedAbilities.TryGetValue(typeof(T), out var a);
+            bool r = GetAbility(typeof(T), out var a);
             value = a as T;
             return r;
+        }
+
+        /// <summary>
+        /// Tries to get an unlocked ability from the player.
+        /// </summary>
+        /// <param name="type">The type of ability.</param>
+        /// <param name="value">The ability.</param>
+        /// <returns>Success or not.</returns>
+        public bool GetAbility(Type type, out Ability value)
+        {
+            return unlockedAbilities.TryGetValue(type, out value);
         }
 
         /// <summary>
@@ -174,7 +184,7 @@ namespace StarlightRiver.Abilities
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            infusions = new InfusionItem[infusionCount];
+            infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
             InfusionLimit = 1;
             try
             {
@@ -212,9 +222,10 @@ namespace StarlightRiver.Abilities
 
         public override void ResetEffects()
         {
+            const float defaultStaminaPerSecond = 2;
             //Resets the player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
             staminaMaxBonus = 0;
-            StaminaRegenRate = 1;
+            StaminaRegenRate = 1f / 60f * defaultStaminaPerSecond;
 
             if (ActiveAbility != null)
             {
@@ -283,22 +294,26 @@ namespace StarlightRiver.Abilities
                 player.rocketBoots = -1;
                 player.wings = -1;
 
-                SetStaminaRegenCD(300);
+                // Slow stamina regen for 200 ticks after using an ability
+                SetStaminaRegenCD(200); 
             }
-            else
+            else if (StaminaRegenRate > 0)
             {
-                // Faster regen while not moving much
-                if (player.velocity.LengthSquared() < 1)
+                // Slower regen while moving a lot
+                if (player.velocity.LengthSquared() > 1)
                 {
-                    SetStaminaRegenCD(90);
+                    StaminaRegenRate /= 2;
                 }
+
+                // Controls how smoothly stamina regen accelerates during a cooldown
+                const float cooldownSmoothing = 20;
 
                 // Regen stamina
                 if (staminaRegenCD > 0)
                 {
                     staminaRegenCD--;
                 }
-                Stamina += StaminaRegenRate / (staminaRegenCD + 1);
+                Stamina += StaminaRegenRate / (staminaRegenCD / cooldownSmoothing + 1);
             }
         }
 
