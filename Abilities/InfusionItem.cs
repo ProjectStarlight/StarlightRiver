@@ -22,10 +22,16 @@ namespace StarlightRiver.Abilities
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Texture2D tex = GetTexture(Texture);
-            float sin = (float)Math.Sin(StarlightWorld.rottime) * 0.1f;
-            spriteBatch.Draw(tex, position, frame, Color.White * (0.5f + sin), 0, tex.Size() / 2, 1 + sin, 0, 0);
-            return true;
+            Texture2D tex = GetTexture("StarlightRiver/Abilities/Infusion/InfusionGlow");
+            Texture2D tex2 = GetTexture(Texture);
+
+            float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+            Vector2 pos = position + tex2.Size() / 2 - Vector2.One;
+
+            spriteBatch.Draw(tex, pos, null, Color.White * sin, 0, tex.Size() / 2, 1, 0, 0);
+
+            spriteBatch.Draw(tex2, pos, null, Color.White, 0, tex2.Size() / 2, 1, 0, 0);
+            return false;
         }
     }
 
