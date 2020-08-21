@@ -25,10 +25,10 @@ namespace StarlightRiver.Abilities
                 if (value is null || Stamina > value.ActivationCost)
                 {
                     if (activeAbility != null)
-                        GetOrNull(activeAbility.GetType())?.OnExit();
+                        GetInfusionOrNull(activeAbility.GetType())?.OnExit();
                     activeAbility = value;
                     if (activeAbility != null)
-                        GetOrNull(activeAbility.GetType())?.OnActivate();
+                        GetInfusionOrNull(activeAbility.GetType())?.OnActivate();
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace StarlightRiver.Abilities
             ability.User = this;
         }
 
-        private InfusionItem GetOrNull(Type t)
+        private InfusionItem GetInfusionOrNull(Type t)
         {
             return infusions.FirstOrDefault(i => i?.AbilityType == t);
         }

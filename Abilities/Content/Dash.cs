@@ -22,8 +22,8 @@ namespace StarlightRiver.Abilities.Content
 
         public override int CooldownMax => 90;
 
-        protected Vector2 dir;
-        protected Vector2 vel;
+        public Vector2 dir;
+        public Vector2 vel;
         protected const int maxTime = 7;
 
         public float Speed { get; set; }
@@ -71,12 +71,12 @@ namespace StarlightRiver.Abilities.Content
             //   - you can double-jump mid dash and f*ck up your dash
         }
 
-        private Vector2 GetDashBoost()
+        public Vector2 GetDashBoost()
         {
             return Vector2.Normalize(dir) * Speed;
         }
 
-        private float SignedLesserBound(float limit, float other)
+        public float SignedLesserBound(float limit, float other)
         {
             if (limit < 0) return Math.Min(limit, other);
             if (limit > 0) return Math.Max(limit, other);
@@ -85,7 +85,8 @@ namespace StarlightRiver.Abilities.Content
             // TODO show modification of Dash
             // return 0; <-- do this to lock the player's perpendicular momentum when dashing
         }
-        private Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+
+        public Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
         {
             return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
         }
