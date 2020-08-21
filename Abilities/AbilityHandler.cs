@@ -105,6 +105,8 @@ namespace StarlightRiver.Abilities
             return r;
         }
 
+        public bool GetAbility(Type type, out Ability ability) => unlockedAbilities.TryGetValue(type, out ability);
+
         /// <summary>
         /// Checks if the given ability type is unlocked.
         /// </summary>
@@ -133,6 +135,18 @@ namespace StarlightRiver.Abilities
             if (item == null)
             {
                 infusions[slot] = null;
+                return true;
+            }
+
+            if(item.AbilityType is null)
+            {
+                foreach (var infusion in infusions)
+                {
+                    if (infusion is null) continue;
+
+                    if (item.GetType() == infusion.GetType())
+                        return false;
+                }
                 return true;
             }
 

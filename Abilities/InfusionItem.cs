@@ -25,12 +25,22 @@ namespace StarlightRiver.Abilities
             Texture2D tex = GetTexture("StarlightRiver/Abilities/Infusion/InfusionGlow");
             Texture2D tex2 = GetTexture(Texture);
 
+            Ability ability;
+            Color color;
+
+            if (AbilityType == null) color = Color.White;
+            else
+            {
+                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out ability)) return false;
+                color = ability.Color;
+            }
+
             float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
             Vector2 pos = position + tex2.Size() / 2 - Vector2.One;
 
-            spriteBatch.Draw(tex, pos, null, Ability.Color * sin, 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, pos, null, color * sin, 0, tex.Size() / 2, 1, 0, 0);
 
-            spriteBatch.Draw(tex2, pos, null, Ability.Color, 0, tex2.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex2, pos, null, color, 0, tex2.Size() / 2, 1, 0, 0);
             return false;
         }
     }
