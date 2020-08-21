@@ -98,9 +98,20 @@ namespace StarlightRiver.Abilities
         /// <returns>Success or not.</returns>
         public bool GetAbility<T>(out T value) where T : Ability
         {
-            bool r = unlockedAbilities.TryGetValue(typeof(T), out var a);
+            bool r = GetAbility(typeof(T), out var a);
             value = a as T;
             return r;
+        }
+
+        /// <summary>
+        /// Tries to get an unlocked ability from the player.
+        /// </summary>
+        /// <param name="type">The type of ability.</param>
+        /// <param name="value">The ability.</param>
+        /// <returns>Success or not.</returns>
+        public bool GetAbility(Type type, out Ability value)
+        {
+            return unlockedAbilities.TryGetValue(type, out value);
         }
 
         /// <summary>
