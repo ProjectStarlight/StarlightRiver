@@ -45,8 +45,12 @@ namespace StarlightRiver.Abilities
                 // Fire more ability hooks and update stamina
                 if (activeAbility != null)
                 {
+                    // Stamina
                     activeAbility.User = this;
                     Stamina -= activeAbility.ActivationCost(this);
+                    activeAbility.ActivationCostBonus = 0;
+
+                    // Hooks
                     if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
                         infusion.OnActivate();
                     else
