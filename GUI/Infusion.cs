@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -14,32 +15,42 @@ namespace StarlightRiver.GUI
     public class Infusion : UIState
     {
         public static bool visible = false;
-        private readonly InfusionSlot[] slot = new InfusionSlot[InfusionSlots] { new InfusionSlot(), new InfusionSlot(), new InfusionSlot() };
+        private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
+
+        /// <summary>
+        /// Returns a copy of the internal slots array.
+        /// </summary>
+        public InfusionSlot[] GetInfusionSlots() => slots.ToArray();
 
         internal const int InfusionSlots = 3;
 
         public override void OnInitialize()
         {
-            slot[0].Width.Set(20, 0);
-            slot[0].Height.Set(22, 0);
-            slot[0].Left.Set(78, 0);
-            slot[0].Top.Set(294, 0);
-            slot[0].TargetSlot = 0;
-            Append(slot[0]);
+            InfusionSlot slot;
 
-            slot[1].Width.Set(20, 0);
-            slot[1].Height.Set(22, 0);
-            slot[1].Left.Set(102, 0);
-            slot[1].Top.Set(294, 0);
-            slot[1].TargetSlot = 1;
-            Append(slot[1]);
+            slot = new InfusionSlot(0);
+            slots[slot.TargetSlot] = slot;
+            slot.Width.Set(20, 0);
+            slot.Height.Set(22, 0);
+            slot.Left.Set(90, 0);
+            slot.Top.Set(276, 0);
+            Append(slot);
 
-            slot[2].Width.Set(20, 0);
-            slot[2].Height.Set(22, 0);
-            slot[2].Left.Set(90, 0);
-            slot[2].Top.Set(276, 0);
-            slot[2].TargetSlot = 2;
-            Append(slot[2]);
+            slot = new InfusionSlot(1);
+            slots[slot.TargetSlot] = slot;
+            slot.Width.Set(20, 0);
+            slot.Height.Set(22, 0);
+            slot.Left.Set(78, 0);
+            slot.Top.Set(294, 0);
+            Append(slot);
+
+            slot = new InfusionSlot(2);
+            slots[slot.TargetSlot] = slot;
+            slot.Width.Set(20, 0);
+            slot.Height.Set(22, 0);
+            slot.Left.Set(102, 0);
+            slot.Top.Set(294, 0);
+            Append(slot);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -53,15 +64,26 @@ namespace StarlightRiver.GUI
 
     public class InfusionSlot : UIElement
     {
-        public int TargetSlot;
+        public InfusionSlot(int slot) => TargetSlot = slot;
+
+        public int TargetSlot { get; }
+
+        public bool Unlocked => Main.LocalPlayer.GetHandler().InfusionLimit <= TargetSlot;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             var mp = Main.LocalPlayer.GetHandler();
             var hover = mp.GetInfusion(TargetSlot)?.item;
 
+            
+            // Draws the lock
+            if (!Unlocked)
+            {
+                // TODO implement
+            }
+
             //Draws the slot
-            if (hover != null)
+            else if (hover != null)
             {
                 //Draws the item itself
                 Texture2D tex2 = GetTexture(hover.modItem.Texture);
@@ -82,7 +104,9 @@ namespace StarlightRiver.GUI
                     Utils.DrawBorderStringBig(spriteBatch, ToolTip, Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
                 }
             }
-            else if (mp.InfusionLimit > TargetSlot && Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
+
+            // Draws the transparent visual
+            else if (Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
             {
                 float opacity = 0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
                 Texture2D tex2 = GetTexture(mouseItem.Texture);
@@ -90,15 +114,43 @@ namespace StarlightRiver.GUI
             }
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (Unlocked && IsMouseHovering && ItemSlot.ShiftInUse)
+            {
+                // Set cursor to the little chest icon
+                Main.cursorOverride = 9;
+            }
+        }
+
         public override void Click(UIMouseEvent evt)
         {
-            var player = Main.LocalPlayer;
-            var handler = player.GetHandler();
+            if (Unlocked)
+                return;
+
+            var handler = Main.LocalPlayer.GetHandler();
+
+            var occupant = handler.GetInfusion(TargetSlot);
+
+            if (ItemSlot.ShiftInUse)
+            {
+                if (occupant == null)
+                    return;
+
+                // Find an open slot and pop it in there
+                var slot = Array.FindIndex(Main.LocalPlayer.inventory, i => i == null || i.IsAir);
+                if (slot > -1)
+                {
+                    Main.LocalPlayer.inventory[slot] = occupant.item;
+                    handler.SetInfusion(null, TargetSlot);
+                    Main.PlaySound(SoundID.Grab);
+                    return;
+                }
+            }
 
             //if the player is holding an infusion
-            var occupant = handler.GetInfusion(TargetSlot);
             if (Main.mouseItem.modItem is InfusionItem item && handler.SetInfusion(item, TargetSlot))
-            {             
+            {
                 if (occupant == null) Main.mouseItem.TurnToAir();  //if nothing is equipped, equip the held item
                 else Main.mouseItem = occupant.item; //if something is equipped, swap that for the held item
 
