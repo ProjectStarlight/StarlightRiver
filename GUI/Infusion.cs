@@ -95,6 +95,12 @@ namespace StarlightRiver.GUI
                     Utils.DrawBorderStringBig(spriteBatch, ToolTip, Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
                 }
             }
+            else if (mp.InfusionLimit > TargetSlot && Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
+            {
+                float opacity = 0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+                Texture2D tex2 = GetTexture(mouseItem.Texture);
+                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White * opacity, 0f, tex2.Frame().Center(), 1, SpriteEffects.None, 0);
+            }
         }
 
         public override void Click(UIMouseEvent evt)
