@@ -76,7 +76,7 @@ namespace StarlightRiver.GUI
             var hover = mp.GetInfusion(TargetSlot)?.item;
 
 
-            if (Unlocked) //draw a lock instead for locked slots
+            if (!Unlocked) //draw a lock instead for locked slots
             {
                 Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionLock");
                 spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White, 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
