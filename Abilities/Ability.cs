@@ -39,7 +39,6 @@ namespace StarlightRiver.Abilities
                 User = user;
                 User.ActiveAbility = this;
                 User.Stamina -= ActivationCost;
-                OnActivate();
                 // TODO probably sync idk
             }
         }
@@ -48,7 +47,6 @@ namespace StarlightRiver.Abilities
             if (Active)
             {
                 User.ActiveAbility = null;
-                OnExit();
             }
         }
 

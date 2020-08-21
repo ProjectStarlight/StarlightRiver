@@ -25,10 +25,20 @@ namespace StarlightRiver.Abilities
                 if (value is null || Stamina > value.ActivationCost)
                 {
                     if (activeAbility != null)
-                        GetInfusionOrNull(activeAbility.GetType())?.OnExit();
+                    {
+                        if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                            infusion.OnExit();
+                        else
+                            activeAbility.OnExit();
+                    }
                     activeAbility = value;
                     if (activeAbility != null)
-                        GetInfusionOrNull(activeAbility.GetType())?.OnActivate();
+                    {
+                        if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                            infusion.OnActivate();
+                        else
+                            activeAbility.OnActivate();
+                    }
                 }
             }
         }
@@ -57,7 +67,6 @@ namespace StarlightRiver.Abilities
         public bool AnyUnlocked => unlockedAbilities.Count > 0;
 
         // Some constants.
-        private const int infusionCount = 3;
         private const int shardsPerVessel = 3;
 
         public ShardSet Shards { get; private set; } = new ShardSet();
@@ -77,9 +86,10 @@ namespace StarlightRiver.Abilities
             ability.User = this;
         }
 
-        private InfusionItem GetInfusionOrNull(Type t)
+        private bool TryMatchInfusion(Type t, out InfusionItem infusion)
         {
-            return infusions.FirstOrDefault(i => i?.AbilityType == t);
+            infusion = infusions.FirstOrDefault(i => i?.AbilityType == t);
+            return infusion != null;
         }
 
         /// <summary>
@@ -253,30 +263,7 @@ namespace StarlightRiver.Abilities
 
         public override void PreUpdate()
         {
-            // Update abilities
-            foreach (var ability in unlockedAbilities.Values)
-            {
-                ability.UpdateFixed();
-            }
-
-            // Update infusions
-            bool updatedInfusion = false;
-
-            foreach (var infusion in infusions)
-            {
-                if (infusion == null) continue;
-                infusion.UpdateFixed();
-
-                if (ActiveAbility?.GetType() == infusion.AbilityType)
-                {
-                    infusion.UpdateActive();
-
-                    if (Main.netMode != NetmodeID.Server)                   
-                        infusion.UpdateActiveEffects();
-
-                    updatedInfusion = true;
-                }
-            }
+            UpdateAbilities();
 
             if (ActiveAbility != null)
             {
@@ -291,7 +278,7 @@ namespace StarlightRiver.Abilities
                 }
 
                 // Jank
-                player.velocity.Y += 0.01f; 
+                player.velocity.Y += 0.01f;
 
                 // Disable wings and rockets temporarily
                 player.canRocket = false;
@@ -302,18 +289,62 @@ namespace StarlightRiver.Abilities
             }
             else
             {
-                // Faster regen while not moving much
-                if (player.velocity.LengthSquared() < 1)
-                {
-                    SetStaminaRegenCD(90);
-                }
+                UpdateStaminaRegen();
+            }
+        }
 
-                // Regen stamina
-                if (staminaRegenCD > 0)
+        private void UpdateStaminaRegen()
+        {
+            // Faster regen while not moving much
+            if (player.velocity.LengthSquared() < 1)
+            {
+                SetStaminaRegenCD(90);
+            }
+
+            // Regen stamina
+            if (staminaRegenCD > 0)
+            {
+                staminaRegenCD--;
+            }
+            Stamina += StaminaRegenRate / (staminaRegenCD + 1);
+        }
+
+        private void UpdateAbilities()
+        {
+            var called = new HashSet<Ability>();
+
+            // Update infusions
+            foreach (var infusion in infusions)
+            {
+                if (infusion == null) continue;
+                infusion.UpdateFixed();
+                if (infusion.Ability != null)
                 {
-                    staminaRegenCD--;
+                    if (infusion.AbilityType == ActiveAbility?.GetType())
+                    {
+                        infusion.UpdateActive();
+                        if (Main.netMode != NetmodeID.Server)
+                            infusion.UpdateActiveEffects();
+                    }
+                    called.Add(infusion.Ability);
                 }
-                Stamina += StaminaRegenRate / (staminaRegenCD + 1);
+            }
+
+            // Cut out previously called abilities
+            called.SymmetricExceptWith(unlockedAbilities.Values);
+
+            // Iterate abilities unaffected by infusions
+            foreach (var ability in called)
+            {
+                ability.UpdateFixed();
+            }
+
+            // Update active ability if unaffected by an infusion
+            if (ActiveAbility != null && called.Contains(ActiveAbility))
+            {
+                ActiveAbility.UpdateActive();
+                if (Main.netMode != NetmodeID.Server)
+                    ActiveAbility.UpdateActiveEffects();
             }
         }
 
