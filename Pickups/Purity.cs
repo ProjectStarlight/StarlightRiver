@@ -103,19 +103,19 @@ namespace StarlightRiver.NPCs.Pickups
                 //darkness
                 if (animate >= 400)
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (100 - ((float)animate - 400)) / 100));
+                    //spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (100 - ((float)animate - 400)) / 100));
                     Lighting.brightness = (float)(animate - 400) / 100;
                 }
 
                 if (animate >= 30 && animate < 400)
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, 0.99f));
+                    //spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, 0.99f));
                     Lighting.brightness = 0f;
                 }
 
                 if (animate < 30 && animate > 0)
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (float)animate / 30));
+                    //spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (float)animate / 30));
                     Lighting.brightness = (float)(30 - animate) / 30;
                 }
 

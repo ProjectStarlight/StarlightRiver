@@ -29,4 +29,20 @@ namespace StarlightRiver.Abilities.Infusion
             Player.GetHandler().StaminaRegenRate += 0.2f;
         }
     }
+
+    class TestInfusion : InfusionItem<Content.Pure>
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Test Infusion");
+            Tooltip.SetDefault("IM GONNA SHIT MYSELF OH MY FUCKING GODDDD");
+        }
+
+        public override void SetDefaults()
+        {
+            item.width = 20;
+            item.height = 14;
+            item.rare = ItemRarityID.Blue;
+        }
+    }
 }

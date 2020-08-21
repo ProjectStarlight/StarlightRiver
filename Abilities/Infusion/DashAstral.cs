@@ -86,7 +86,7 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void OnActivate()
         {
-            Ability.ActivationCostBonus += 0.4f;
+            Ability.ActivationCostBonus += 0.7f;
             base.OnActivate();
             Ability.Speed *= 1.2f;
         }
