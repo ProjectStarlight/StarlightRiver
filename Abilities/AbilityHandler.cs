@@ -147,6 +147,9 @@ namespace StarlightRiver.Abilities
                     if (item.GetType() == infusion.GetType())
                         return false;
                 }
+                var newItem = item.item.Clone();
+                newItem.SetDefaults(item.item.type);
+                infusions[slot] = newItem.modItem as InfusionItem;
                 return true;
             }
 
