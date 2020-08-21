@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush I");
-            Tooltip.SetDefault("Forbidden Winds Infustion\nDash farther and faster");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed");
         }
 
         public override void SetDefaults()
@@ -28,7 +28,6 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void OnActivate()
         {
-            Ability.time = Dash.maxTime + 5;
             Ability.Speed *= 1.5f;
             Ability.Boost = 0.25f;
 
@@ -37,14 +36,22 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void UpdateActiveEffects()
         {
-            Vector2 prevPos = Ability.Player.Center + Vector2.Normalize(Ability.Player.velocity) * 10;
-            int direction = Ability.time % 2 == 0 ? -1 : 1;
-
-            for (int k = 0; k < 60; k++)
+            Vector2 nextPos = Ability.Player.Center + Vector2.Normalize(Ability.Player.velocity) * Ability.Speed;
+            for(float k = -2; k <= 2; k += 0.1f)
             {
-                Vector2 off = Vector2.Normalize(Ability.Player.velocity).RotatedBy(k % 2 == 0 ? 0.2f : -0.2f) * -k * (1 - Ability.time / 10f);
-                Dust dus = Dust.NewDustPerfect(prevPos + off, DustType<Dusts.Starlight>(), off, 0, default, 1 - Ability.time / 10f);
-                dus.fadeIn = k - Ability.time * 3;
+                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - Ability.time);
+
+                if (Ability.time == 0)
+                {
+                    //Vector2 pos2 = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 60;
+                    //Dust.NewDustPerfect(pos2, DustType<Dusts.BlueStamina>(), Vector2.UnitY.RotatedBy(Ability.Player.velocity.ToRotation() + k + 1.57f) * Math.Abs(k), 0, default, 3 - Math.Abs(k));
+                }
+                Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Ability.Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.time / 10f);
+
+                if(Math.Abs(k) >= 1.5f)
+                {
+                    Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Ability.Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.time / 10f);
+                }
             }
         }
     }

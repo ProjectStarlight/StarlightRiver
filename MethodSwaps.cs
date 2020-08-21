@@ -278,12 +278,19 @@ namespace StarlightRiver
 
         private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
         {
+            // TODO this needs synced somehow
             if (self.controlDown) self.GetModPlayer<StarlightPlayer>().platformTimer = 5;
             if (self.controlDown || self.GetModPlayer<StarlightPlayer>().platformTimer > 0 || self.GoingDownWithGrapple) { orig(self); return; }
-            foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC != null && n.modNPC is NPCs.MovingPlatform))
+            foreach (NPC npc in Main.npc)
             {
-                if (new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1).Intersects
-                (new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0))) && self.position.Y <= npc.position.Y)
+                if (!npc.active || npc.modNPC == null || !(npc.modNPC is NPCs.MovingPlatform))
+                {
+                    continue;
+                }
+
+                Rectangle playerRect = new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1);
+                Rectangle npcRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
+                if (playerRect.Intersects(npcRect) && self.position.Y <= npc.position.Y)
                 {
                     if (!self.justJumped && self.velocity.Y >= 0)
                     {

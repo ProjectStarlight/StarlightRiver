@@ -28,7 +28,7 @@ namespace StarlightRiver.Dusts
             dust.color *= 0.98f;
 
             dust.scale *= 0.98f;
-            if (dust.scale < 0.1f)
+            if (dust.scale < 0.1f || dust.color == Color.Transparent)
             {
                 dust.active = false;
             }

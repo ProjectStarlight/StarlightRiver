@@ -26,7 +26,7 @@ namespace StarlightRiver.Abilities.Content
 
         public Vector2 dir;
         public Vector2 vel;
-        public const int maxTime = 7;
+        public const int defaultTime = 7;
 
         public float Speed { get; set; }
         public float Boost { get; set; }
@@ -35,7 +35,7 @@ namespace StarlightRiver.Abilities.Content
         {
             Boost = 0.15f;
             Speed = 28;
-            time = maxTime;
+            time = defaultTime;
         }
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)

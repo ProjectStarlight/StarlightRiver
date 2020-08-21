@@ -165,8 +165,7 @@ namespace StarlightRiver.Abilities
             var newItem = item.item.Clone();
             newItem.SetDefaults(item.item.type);
             infusions[slot] = newItem.modItem as InfusionItem;
-
-            item.Player = player;
+            infusions[slot].Player = player;
 
             return true;
         }

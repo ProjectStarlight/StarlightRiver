@@ -27,10 +27,13 @@ namespace StarlightRiver.Abilities.Content
 
         private bool safe => User.Stamina > drainAmount;
 
+        private Rectangle oldHitbox;
+
         private static readonly int size = 10; // TODO make constant in release build
 
         public override void OnActivate()
         {
+            Player.mount.Dismount(Player);
             Speed = 5;
             for (int k = 0; k <= 50; k++)
             {
@@ -60,8 +63,13 @@ namespace StarlightRiver.Abilities.Content
                 Player.velocity = Vector2.Normalize(Player.velocity) * Speed;
             }
 
+            // Why doesn't vanilla reset player width automatically??
+            // I have to do this because of it
+            Player.width = Player.defaultWidth;
+
             // Set dimensions to size
-            Player.position.X += Player.width - size;
+            oldHitbox = Player.Hitbox;
+            //Player.position.X += Player.width - size; // also can't do this for some reason
             Player.position.Y += Player.height - size;
             Player.width = size;
             Player.height = size;
@@ -97,6 +105,8 @@ namespace StarlightRiver.Abilities.Content
             {
                 Deactivate();
                 Player.TopLeft = safeSpot;
+                Player.width = oldHitbox.Width;
+                Player.height = oldHitbox.Height;
             }
             else if (!safe) SquishDamage();
         }
@@ -135,15 +145,20 @@ namespace StarlightRiver.Abilities.Content
 
         public bool SafeExit(out Vector2 topLeft)
         {
-            topLeft = Player.position;
-            if (!Collision.SolidCollision(Player.TopLeft, Player.defaultWidth, Player.defaultHeight))
+            var oldTopLeft = oldHitbox.TopLeft();
+            topLeft = oldTopLeft;
+
+            // If we can just exit where we are, then go ahead.
+            if (!Collision.SolidCollision(oldTopLeft, oldHitbox.Width, oldHitbox.Height))
                 return true;
-            for (var x = Player.Left.X - 16; x <= Player.Left.X + 16; x += 16)
+
+            // Otherwise, search for a fitting space.
+            for (var x = oldTopLeft.X - 16; x <= oldTopLeft.X + 16; x += 16)
             {
-                for (var y = Player.Top.Y - 16; y <= Player.Top.Y + 16; y += 16)
+                for (var y = oldTopLeft.Y - 16; y <= oldTopLeft.Y + 16; y += 16)
                 {
                     topLeft = new Vector2(x, y);
-                    if (!Collision.SolidCollision(topLeft, Player.defaultWidth, Player.defaultHeight))
+                    if (!Collision.SolidCollision(topLeft, oldHitbox.Width, oldHitbox.Height))
                         return true;
                 }
             }
