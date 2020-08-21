@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush I");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases stamina cost to 1.2");
         }
 
         public override void SetDefaults()
@@ -64,7 +64,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush II");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed\nIncreases stamina cost to 1.4");
         }
 
         public override void OnActivate()
@@ -79,7 +79,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush III");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed\nIncreases stamina cost to 1.6");
         }
 
         public override void OnActivate()
