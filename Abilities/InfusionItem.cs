@@ -13,27 +13,25 @@ namespace StarlightRiver.Abilities
 {
     public abstract class InfusionItem : ModItem
     {
-        public abstract Type AbilityType { get; }
+        public virtual Type AbilityType { get; }
         public Ability Ability { get; internal set; }
 
         public virtual void OnActivate() { }
         public virtual void UpdateActive() { }
         public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
-        public virtual void OnActivate() { }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             Texture2D tex = GetTexture("StarlightRiver/Abilities/Infusion/InfusionGlow");
             Texture2D tex2 = GetTexture(Texture);
 
-            Ability ability;
             Color color;
 
             if (AbilityType == null) color = Color.White;
             else
             {
-                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out ability)) return false;
+                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
                 color = ability.Color;
             }
 
