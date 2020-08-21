@@ -125,7 +125,7 @@ namespace StarlightRiver.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if (Unlocked) 
+            if (!Unlocked) 
             {
                 Main.PlaySound(SoundID.Unlock);
                 return;
