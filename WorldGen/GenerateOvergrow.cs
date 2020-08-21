@@ -15,8 +15,8 @@ namespace StarlightRiver
         private const int RoomHeight = 32;
         private const int HallWidth = 16;
         private const int HallThickness = 2;
-        private static List<Rectangle> Rooms = new List<Rectangle>();
-        private static List<Rectangle> Halls = new List<Rectangle>();
+        private static readonly List<Rectangle> Rooms = new List<Rectangle>();
+        private static readonly List<Rectangle> Halls = new List<Rectangle>();
         private static Rectangle wispRoom = Rectangle.Empty;
         private static Rectangle bossRoom = Rectangle.Empty;
         private static int attempts = 0;

@@ -43,7 +43,7 @@ namespace StarlightRiver.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Bow");
-            Tooltip.SetDefault("Shoots two arrows at once");
+            Tooltip.SetDefault("Shoots two extra smaller arrows");
         }
     }
 }

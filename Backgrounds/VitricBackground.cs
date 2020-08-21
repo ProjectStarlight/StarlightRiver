@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Physics;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -15,9 +16,9 @@ namespace StarlightRiver
         internal ParticleSystem ForegroundParticles;
         internal ParticleSystem BackgroundParticles;
 
-        static RenderTarget2D vitricBackgroundBannerTarget = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        static readonly RenderTarget2D vitricBackgroundBannerTarget = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-        static VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
+        static readonly VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
         {
             segmentCount = 35,
             segmentDistance = 24,

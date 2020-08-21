@@ -12,7 +12,7 @@ namespace StarlightRiver.Tiles.Overgrow
 {
     internal class BossWindowDummy : Dummy, IMoonlordLayerDrawable
     {
-        private ParticleSystem particles = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", update);
+        private readonly ParticleSystem particles = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", update);
 
         public BossWindowDummy() : base(TileType<BossWindow>(), 16, 16) { }
 

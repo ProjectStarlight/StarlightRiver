@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarlightRiver
+namespace StarlightRiver.Physics
 {
     public class VerletChainInstance
     {
@@ -37,7 +37,7 @@ namespace StarlightRiver
 
         public VerletChainInstance(bool specialDraw)
         {
-            if(!specialDraw) toDraw.Add(this);
+            if (!specialDraw) toDraw.Add(this);
         }
 
         private void Start(Vector2 targetPosition)
@@ -48,14 +48,10 @@ namespace StarlightRiver
             {
                 ropeSegments.Add(new RopeSegment(ropeStartPoint));
 
-                if((customGravity ? forceGravityList[i] : forceGravity) != Vector2.Zero)
-                {
-                    ropeStartPoint += Vector2.Normalize((customGravity ? forceGravityList[i] : forceGravity)) * (customDistances ? segmentDistanceList[i] : segmentDistance);
-                }
+                if ((customGravity ? forceGravityList[i] : forceGravity) != Vector2.Zero)
+                    ropeStartPoint += Vector2.Normalize(customGravity ? forceGravityList[i] : forceGravity) * (customDistances ? segmentDistanceList[i] : segmentDistance);
                 else
-                {
-                    ropeStartPoint.Y += (customDistances ? segmentDistanceList[i] : segmentDistance);
-                }
+                    ropeStartPoint.Y += customDistances ? segmentDistanceList[i] : segmentDistance;
             }
         }
 
@@ -84,9 +80,7 @@ namespace StarlightRiver
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
-            {
                 ApplyConstraint(targetPosition);
-            }
         }
 
         private void ApplyConstraint(Vector2 targetPosition)
@@ -95,20 +89,16 @@ namespace StarlightRiver
 
             for (int i = 0; i < segmentCount - 1; i++)
             {
-                float segmentDist = (customDistances ? segmentDistanceList[i] : segmentDistance);
+                float segmentDist = customDistances ? segmentDistanceList[i] : segmentDistance;
 
                 float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
                 float error = Math.Abs(dist - segmentDist);
                 Vector2 changeDir = Vector2.Zero;
 
                 if (dist > segmentDist)
-                {
                     changeDir = Vector2.Normalize(ropeSegments[i].posNow - ropeSegments[i + 1].posNow);
-                }
                 else if (dist < segmentDist)
-                {
                     changeDir = Vector2.Normalize(ropeSegments[i + 1].posNow - ropeSegments[i].posNow);
-                }
 
                 Vector2 changeAmount = changeDir * error;
                 if (i != 0)
@@ -129,9 +119,7 @@ namespace StarlightRiver
         public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index
         {
             for (int i = 0; i < segmentCount; i++)
-            {
                 iterateMethod(i);
-            }
         }
 
         public void PrepareStrip(out VertexBuffer buffer, Vector2 offset)
@@ -159,10 +147,10 @@ namespace StarlightRiver
 
                 int extra = k == 1 ? 0 : 6;
                 verticies[point + 3] = verticies[point];
-                verticies[point + 4] = verticies[point - (3 + extra)];              
+                verticies[point + 4] = verticies[point - (3 + extra)];
                 verticies[point + 5] = verticies[point - (1 + extra)];
 
-                verticies[point + 6] = verticies[point - (2 + extra)];              
+                verticies[point + 6] = verticies[point - (2 + extra)];
                 verticies[point + 7] = verticies[point + 1];
                 verticies[point + 8] = verticies[point - (1 + extra)];
             }
@@ -172,7 +160,7 @@ namespace StarlightRiver
             buffer = buff;
         }
 
-        private static BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
+        private static readonly BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
         {
             VertexColorEnabled = true
         };
@@ -200,48 +188,19 @@ namespace StarlightRiver
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
         {
             for (int i = 0; i < segmentCount; i++)
-            {
                 drawMethod_curPos(spritebatch, i, ropeSegments[i].posNow);
-            }
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, RopeSegment> drawMethod_curSeg) //current segment (has position and previous position)
         {
             for (int i = 0; i < segmentCount; i++)
-            {
                 drawMethod_curSeg(spritebatch, i, ropeSegments[i]);
-            }
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2, Vector2, Vector2> drawMethod_curPos_prevPos_nextPos)//current position, previous point position, next point position
         {
             for (int i = 0; i < segmentCount; i++)
-            {
-                drawMethod_curPos_prevPos_nextPos(spritebatch, i, ropeSegments[i].posNow, (i > 0 ? ropeSegments[i - 1].posNow : Vector2.Zero), (i < segmentCount - 1 ? ropeSegments[i + 1].posNow : Vector2.Zero));
-            }
-        }
-
-        public class RopeSegment
-        {
-            public Vector2 posNow;
-            public Vector2 posOld;
-            public Color color;
-
-            public Vector2 posScreen => posNow - Main.screenPosition;
-
-            public RopeSegment(Vector2 pos)
-            {
-                this.posNow = pos;
-                this.posOld = pos;
-                color = Color.White;
-            }
-
-            public RopeSegment(Vector2 pos, Color color)
-            {
-                this.posNow = pos;
-                this.posOld = pos;
-                this.color = color;
-            }
+                drawMethod_curPos_prevPos_nextPos(spritebatch, i, ropeSegments[i].posNow, i > 0 ? ropeSegments[i - 1].posNow : Vector2.Zero, i < segmentCount - 1 ? ropeSegments[i + 1].posNow : Vector2.Zero);
         }
     }
 }

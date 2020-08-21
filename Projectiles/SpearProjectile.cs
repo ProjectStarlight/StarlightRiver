@@ -10,7 +10,7 @@ namespace StarlightRiver.Projectiles
         private readonly float Min;
         private readonly float Max;
 
-        public SpearProjectile(int duration, float minOff, float maxOff)
+        protected SpearProjectile(int duration, float minOff, float maxOff)
         {
             Duration = duration;
             Min = minOff;

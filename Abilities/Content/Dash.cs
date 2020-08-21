@@ -87,7 +87,7 @@ namespace StarlightRiver.Abilities.Content
             return Vector2.Normalize(dir) * Speed;
         }
 
-        public float SignedLesserBound(float limit, float other)
+        public static float SignedLesserBound(float limit, float other)
         {
             if (limit < 0) return Math.Min(limit, other);
             if (limit > 0) return Math.Max(limit, other);
@@ -97,7 +97,7 @@ namespace StarlightRiver.Abilities.Content
             // return 0; <-- do this to lock the player's perpendicular momentum when dashing
         }
 
-        public Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
         {
             return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
         }

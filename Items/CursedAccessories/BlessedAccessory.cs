@@ -11,7 +11,7 @@ namespace StarlightRiver.Items.CursedAccessories
         private readonly Texture2D Glow = null;
         private Vector2 drawpos = Vector2.Zero;
 
-        public BlessedAccessory(Texture2D glow) : base("Unnamed Blessed Accessory", "You forgot to set a display name/tooltip dingus!")
+        protected BlessedAccessory(Texture2D glow) : base("Unnamed Blessed Accessory", "You forgot to set a display name/tooltip dingus!")
         {
             Glow = glow;
         }

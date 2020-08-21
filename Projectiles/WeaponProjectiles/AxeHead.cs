@@ -29,7 +29,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.alpha = 255;
 		}
         bool released = false;
-        int chargeTime = 60;
+        readonly int chargeTime = 60;
         float angularMomentum = 1;
         double radians = 0;
         int lingerTimer = 0;

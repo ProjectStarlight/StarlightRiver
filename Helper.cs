@@ -247,7 +247,7 @@ namespace StarlightRiver
                 Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
                 for (float i = 0; i < 1; i += 0.05f)
                 {
-                    Dust d = Dust.NewDustPerfect(Vector2.Lerp(prevPos, nodes[k], i), dusttype, Vector2.Zero, 0, color, scale);
+                    Dust.NewDustPerfect(Vector2.Lerp(prevPos, nodes[k], i), dusttype, Vector2.Zero, 0, color, scale);
                 }
             }
         }

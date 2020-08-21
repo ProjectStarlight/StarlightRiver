@@ -22,14 +22,13 @@ namespace StarlightRiver.Abilities.Content
 
         public float Speed { get; set; }
 
-        private const float drainAmount = 1 / 60f;
         private const float diffTolerance = 5;
 
         private bool safe => User.Stamina > 0;
 
         private Rectangle oldHitbox;
 
-        private static readonly int size = 10; // TODO make constant in release build
+        private const int size = 10; // TODO make constant in release build
 
         public override void OnActivate()
         {

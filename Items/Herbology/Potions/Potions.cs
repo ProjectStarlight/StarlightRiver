@@ -29,7 +29,7 @@ namespace StarlightRiver.Items.Herbology.Potions
         private readonly int BuffID;
         private readonly int Rare;
 
-        public QuickPotion(string name, string tooltip, int time, int buffID, int rare = 1)
+        protected QuickPotion(string name, string tooltip, int time, int buffID, int rare = 1)
         {
             ItemName = name;
             ItemTooltip = tooltip;

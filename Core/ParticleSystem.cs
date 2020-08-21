@@ -11,7 +11,7 @@ namespace StarlightRiver.Core
     {
         public delegate void Update(Particle particle);
 
-        private List<Particle> Particles = new List<Particle>();
+        private readonly List<Particle> Particles = new List<Particle>();
         private readonly Texture2D Texture;
         private readonly Update UpdateDelegate;
         private readonly int Styles;

@@ -13,7 +13,7 @@ namespace StarlightRiver.Tiles.Decoration
         private readonly string texture;
         private readonly string glowTexture;
 
-        public SplineBanner(string texturePath, string glowTexturePath = "")
+        protected SplineBanner(string texturePath, string glowTexturePath = "")
         {
             texture = texturePath;
             glowTexture = glowTexturePath;
@@ -88,7 +88,7 @@ namespace StarlightRiver.Tiles.Decoration
 
         private Tile target;
 
-        public SplineBannerItem(string displayName, int place)
+        protected SplineBannerItem(string displayName, int place)
         {
             name = displayName;
             placeType = place;

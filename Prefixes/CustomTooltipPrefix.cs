@@ -8,7 +8,7 @@ namespace StarlightRiver.Prefixes
     {
         public readonly string _tooltip;
 
-        public CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
+        protected CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
 
         public virtual void SafeApply(Item item) { }
 
