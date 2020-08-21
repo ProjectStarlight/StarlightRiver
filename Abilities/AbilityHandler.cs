@@ -19,29 +19,38 @@ namespace StarlightRiver.Abilities
         // The player's active ability.
         public Ability ActiveAbility
         {
-            get => activeAbility; 
-            internal set
-            {
-                if (ReferenceEquals(value, activeAbility))
-                    return;
+            get => activeAbility;
+            internal set => ActivateAbility(value);
+        }
 
-                if (value is null || Stamina > value.ActivationCost)
+        private void ActivateAbility(Ability value)
+        {
+            // Ignore dupes
+            if (ReferenceEquals(value, activeAbility))
+            {
+                return;
+            }
+            // If we have enough stamina
+            if (value is null || Stamina > value.ActivationCost(this))
+            {
+                // Fire ability hooks
+                if (activeAbility != null)
                 {
-                    if (activeAbility != null)
-                    {
-                        if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                            infusion.OnExit();
-                        else
-                            activeAbility.OnExit();
-                    }
-                    activeAbility = value;
-                    if (activeAbility != null)
-                    {
-                        if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                            infusion.OnActivate();
-                        else
-                            activeAbility.OnActivate();
-                    }
+                    if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                        infusion.OnExit();
+                    else
+                        activeAbility.OnExit();
+                }
+                activeAbility = value;
+                // Fire more ability hooks and update stamina
+                if (activeAbility != null)
+                {
+                    activeAbility.User = this;
+                    Stamina -= activeAbility.ActivationCost(this);
+                    if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                        infusion.OnActivate();
+                    else
+                        activeAbility.OnActivate();
                 }
             }
         }
@@ -65,6 +74,9 @@ namespace StarlightRiver.Abilities
         }
         public float StaminaRegenRate { get; set; }
         public int InfusionLimit { get; set; } = 1;
+
+        public float StaminaCostMultiplier { get; set; }
+        public float StaminaCostBonus { get; set; }
 
         public int ShardCount => Shards.Count;
         public bool AnyUnlocked => unlockedAbilities.Count > 0;
@@ -231,6 +243,8 @@ namespace StarlightRiver.Abilities
             //Resets the player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
             staminaMaxBonus = 0;
             StaminaRegenRate = 1;
+            StaminaCostMultiplier = 1;
+            StaminaCostBonus = 0;
 
             if (ActiveAbility != null)
             {
@@ -288,7 +302,7 @@ namespace StarlightRiver.Abilities
         private void UpdateStaminaRegen()
         {
             // Faster regen while not moving much
-            if (player.velocity.LengthSquared() < 1)
+            if (player.velocity.LengthSquared() > 1)
             {
                 SetStaminaRegenCD(90);
             }

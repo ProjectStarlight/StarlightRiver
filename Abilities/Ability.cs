@@ -15,14 +15,16 @@ namespace StarlightRiver.Abilities
 {
     public abstract class Ability
     {
-        public abstract string Texture { get; }
-        public virtual string TextureLocked => Texture + "Locked";
-        public virtual float ActivationCost { get; }
-        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost;
-        public virtual Color Color => Color.White;
         public AbilityHandler User { get; internal set; }
         public Player Player => User.player;
+        public float ActivationCostBonus { get; set; }
         public bool Active => ReferenceEquals(User.ActiveAbility, this);
+
+        public abstract string Texture { get; }
+        public virtual float ActivationCostDefault { get; }
+        public virtual string TextureLocked => Texture + "Locked";
+        public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost(User);
+        public virtual Color Color => Color.White;
 
         public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
@@ -32,22 +34,14 @@ namespace StarlightRiver.Abilities
         public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
 
+        public float ActivationCost(AbilityHandler handler) => (ActivationCostDefault + ActivationCostBonus) * handler.StaminaCostMultiplier + handler.StaminaCostBonus;
         public void Activate(AbilityHandler user)
         {
-            if (!Active)
-            {
-                User = user;
-                User.ActiveAbility = this;
-                User.Stamina -= ActivationCost;
-                // TODO probably sync idk
-            }
+            user.ActiveAbility = this;
         }
         public void Deactivate()
         {
-            if (Active)
-            {
-                User.ActiveAbility = null;
-            }
+            User.ActiveAbility = null;
         }
 
         // TODO load, cache, and unload. super ugly rn
