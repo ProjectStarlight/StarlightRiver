@@ -14,17 +14,7 @@ namespace StarlightRiver.Abilities
     public abstract class InfusionItem : ModItem
     {
         public virtual Type AbilityType { get; }
-        public Player Player { get; internal set; } // TODO sync this somehow
-        public Ability Ability
-        {
-            get
-            {
-                if (AbilityType == null) return null;
-                if (ability == null) Player.GetHandler().GetAbility(AbilityType, out ability);
-                return ability;
-            }
-        }
-        private Ability ability;
+        public Ability Ability { get; internal set; }
 
         public virtual void OnActivate() => Ability?.OnActivate();
         public virtual void UpdateActive() => Ability?.UpdateActive();

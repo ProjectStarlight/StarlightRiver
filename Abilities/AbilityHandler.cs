@@ -166,7 +166,8 @@ namespace StarlightRiver.Abilities
             newItem.SetDefaults(item.item.type);
             infusions[slot] = newItem.modItem as InfusionItem;
 
-            item.Player = player;
+            if (item.AbilityType != null && unlockedAbilities.TryGetValue(item.AbilityType, out var t))
+                (newItem.modItem as InfusionItem).Ability = t;
 
             return true;
         }
@@ -215,7 +216,6 @@ namespace StarlightRiver.Abilities
                 for (int i = 0; i < infusionsTemp.Count; i++)
                 {
                     infusions[i] = infusionsTemp[i].modItem as InfusionItem;
-                    infusions[i].Player = player;
                 }
 
                 // Load max infusions
