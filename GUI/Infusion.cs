@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.Items.Infusions;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;

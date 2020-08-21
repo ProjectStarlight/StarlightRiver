@@ -13,7 +13,8 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("");
+            DisplayName.SetDefault("Basic Infusion I");
+            Tooltip.SetDefault("Generic Infusion\nSlightly improves stamina regeneration\nUsed to create other infusions");
         }
 
         public override void SetDefaults()
@@ -21,6 +22,11 @@ namespace StarlightRiver.Abilities.Infusion
             item.width = 20;
             item.height = 14;
             item.rare = ItemRarityID.Blue;
+        }
+
+        public override void UpdateFixed()
+        {
+            
         }
     }
 }

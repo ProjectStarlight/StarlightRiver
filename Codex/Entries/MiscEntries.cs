@@ -36,8 +36,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Infusions";
             Body = "";
             Hint = "Find a mysterious altar...";
-            Image = GetTexture("StarlightRiver/Items/Infusions/DashAstralItem");
-            Icon = GetTexture("StarlightRiver/Items/Infusions/DashAstralItem");
+            Image = GetTexture("StarlightRiver/Abilities/Infusion/DashAstral");
+            Icon = GetTexture("StarlightRiver/Abilities/Infusion/DashAstral");
         }
     }
 }

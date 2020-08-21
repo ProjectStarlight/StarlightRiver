@@ -18,6 +18,7 @@ namespace StarlightRiver.Abilities
 
         public virtual void OnActivate() { }
         public virtual void UpdateActive() { }
+        public virtual void UpdateActiveEffects() { }
         public virtual void UpdateFixed() { }
         public virtual void OnExit() { }
 
@@ -40,7 +41,7 @@ namespace StarlightRiver.Abilities
 
             spriteBatch.Draw(tex, pos, null, color * sin, 0, tex.Size() / 2, 1, 0, 0);
 
-            spriteBatch.Draw(tex2, pos, null, color, 0, tex2.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex2, pos, null, Color.White, 0, tex2.Size() / 2, 1, 0, 0);
             return false;
         }
     }

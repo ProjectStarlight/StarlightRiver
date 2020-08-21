@@ -260,23 +260,34 @@ namespace StarlightRiver.Abilities
             }
 
             // Update infusions
+            bool updatedInfusion = false;
+
             foreach (var infusion in infusions)
             {
                 if (infusion == null) continue;
                 infusion.UpdateFixed();
+
                 if (ActiveAbility?.GetType() == infusion.AbilityType)
                 {
                     infusion.UpdateActive();
+
+                    if (Main.netMode != NetmodeID.Server)                   
+                        infusion.UpdateActiveEffects();
+
+                    updatedInfusion = true;
                 }
             }
 
             if (ActiveAbility != null)
             {
                 // Update active ability
-                ActiveAbility.UpdateActive();
-                if (Main.netMode != NetmodeID.Server)
+                if (!updatedInfusion)
                 {
-                    ActiveAbility?.UpdateActiveEffects();
+                    ActiveAbility.UpdateActive();
+                    if (Main.netMode != NetmodeID.Server)
+                    {
+                        ActiveAbility?.UpdateActiveEffects();
+                    }
                 }
 
                 // Jank

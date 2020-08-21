@@ -37,9 +37,9 @@ namespace StarlightRiver.Abilities.Infusion
             Main.PlaySound(SoundID.Item104, Ability.Player.Center);
         }
 
-        public override void UpdateActive()
+        public override void UpdateActiveEffects()
         {
-            base.UpdateActive();
+            Main.NewText("SHIT!");
         }
     }
 }
