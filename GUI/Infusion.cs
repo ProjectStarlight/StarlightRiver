@@ -67,12 +67,6 @@ namespace StarlightRiver.GUI
                 return;
             }
 
-            if (Main.mouseItem.modItem is InfusionItem)
-            {
-                Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionGlow");
-                spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White * (0.25f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.25f), 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
-            }
-
             //Draws the slot
             if (hover != null)
             {
