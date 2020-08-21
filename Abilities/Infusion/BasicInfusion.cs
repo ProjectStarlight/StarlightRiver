@@ -9,7 +9,12 @@ namespace StarlightRiver.Abilities.Infusion
 {
     class BasicInfusion : InfusionItem
     {
-        public override Type AbilityType => typeof(Content.Dash);
+        public override Type AbilityType => null;
+
+        public override void SetStaticDefaults()
+        {
+            Tooltip.SetDefault("");
+        }
 
         public override void SetDefaults()
         {
