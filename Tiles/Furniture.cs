@@ -197,6 +197,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            TileObjectData.newTile.Origin = new Point16(0, 4);
             QuickBlock.QuickSetFurniture(this, 3, 4, dust, SoundID.Dig, false, color);
         }
     }
@@ -327,7 +328,8 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            QuickBlock.QuickSetFurniture(this, 2, 4, dust, SoundID.Dig, false, color);
+            TileObjectData.newTile.Origin = new Point16(0, 5);
+            QuickBlock.QuickSetFurniture(this, 2, 5, dust, SoundID.Dig, false, color);
         }
     }
 

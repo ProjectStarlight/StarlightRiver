@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities.Content;
 using StarlightRiver.Dragons;
 using StarlightRiver.Dusts;
@@ -18,6 +19,7 @@ namespace StarlightRiver.Abilities
         public virtual string TextureLocked => Texture + "Locked";
         public virtual float ActivationCost { get; }
         public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost;
+        public virtual Color Color => Color.White;
         public AbilityHandler User { get; internal set; }
         public Player Player => User.player;
         public bool Active => ReferenceEquals(User.ActiveAbility, this);

@@ -13,6 +13,7 @@ namespace StarlightRiver.Abilities.Content
     {
         public override string Texture => "StarlightRiver/Pickups/PureCrown";
         public override bool Available => base.Available && !Main.projectile.Any(proj => proj.owner == Player.whoAmI && proj.active && (proj.type == ProjectileType<Purifier>() || proj.type == ProjectileType<PurifierReturn>()));
+        public override Color Color => Color.White;
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {

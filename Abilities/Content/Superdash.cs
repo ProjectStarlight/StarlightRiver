@@ -15,6 +15,7 @@ namespace StarlightRiver.Abilities.Content
         //private Vector2 to;
 
         public override string Texture => "StarlightRiver/Pickups/Cloak1";
+        public override Color Color => new Color(199, 143, 255);
         //public override bool Available => base.Available;
 
         //public override int CooldownMax => 120;

@@ -18,6 +18,7 @@ namespace StarlightRiver.Abilities.Content
     {
         public override string Texture => "StarlightRiver/Pickups/Faeflame";
         public override float ActivationCost => 0.5f;
+        public override Color Color => new Color(255, 247, 126);
 
         public float Speed { get; set; }
 

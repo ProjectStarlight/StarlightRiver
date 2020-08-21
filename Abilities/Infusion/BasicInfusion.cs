@@ -18,14 +18,4 @@ namespace StarlightRiver.Abilities.Infusion
             item.rare = ItemRarityID.Blue;
         }
     }
-
-    class Infusion2 : BasicInfusion
-    {
-        public override Type AbilityType => typeof(Content.Wisp);
-    }
-
-    class Infusion3 : BasicInfusion
-    {
-        public override Type AbilityType => typeof(Content.Smash);
-    }
 }

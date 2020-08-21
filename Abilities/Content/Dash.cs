@@ -18,6 +18,7 @@ namespace StarlightRiver.Abilities.Content
 
         public override float ActivationCost => 1;
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
+        public override Color Color => new Color(188, 255, 246);
 
         public override int CooldownMax => 90;
 

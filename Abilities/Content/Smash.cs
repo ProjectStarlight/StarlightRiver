@@ -17,6 +17,7 @@ namespace StarlightRiver.Abilities.Content
 
         public override bool Available => base.Available && Player.velocity.Y != 0;
         public override string Texture => "StarlightRiver/Pickups/GaiaFist";
+        public override Color Color => new Color(127, 255, 77);
 
         public float Timer { get; private set; }
 
