@@ -25,7 +25,7 @@ namespace StarlightRiver.Abilities.Content
         private const float drainAmount = 1 / 60f;
         private const float diffTolerance = 5;
 
-        private bool safe => User.Stamina > drainAmount;
+        private bool safe => User.Stamina > 0;
 
         private Rectangle oldHitbox;
 
@@ -78,11 +78,10 @@ namespace StarlightRiver.Abilities.Content
 
             UpdateEffects();
 
-            bool control = StarlightRiver.Instance.AbilityKeys.Get<Wisp>().Current;
-
             // If it's safe and the player wants to continue, sure
-            if (safe && control)
-                User.Stamina -= 1 / 60f;
+            User.Stamina -= 1 / 60f;
+
+            bool control = StarlightRiver.Instance.AbilityKeys.Get<Wisp>().Current;
 
             // Ok abort
             if (!safe || !control)
