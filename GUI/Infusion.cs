@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
+using System;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -80,6 +81,12 @@ namespace StarlightRiver.GUI
                     Utils.DrawBorderStringBig(spriteBatch, hover.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(hover.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
                     Utils.DrawBorderStringBig(spriteBatch, ToolTip, Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
                 }
+            }
+            else if (mp.InfusionLimit > TargetSlot && Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
+            {
+                float opacity = 0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+                Texture2D tex2 = GetTexture(mouseItem.Texture);
+                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White * opacity, 0f, tex2.Frame().Center(), 1, SpriteEffects.None, 0);
             }
         }
 

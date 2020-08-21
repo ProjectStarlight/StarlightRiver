@@ -163,11 +163,35 @@ namespace StarlightRiver.Abilities
         /// <returns>If the add was successful.</returns>
         public bool SetInfusion(InfusionItem item, int slot)
         {
+            // Safety check
+            if (!CanSetInfusion(item))
+                return false;
+
+            // Null check
             if (item == null)
             {
                 infusions[slot] = null;
                 return true;
             }
+
+            // General use case
+            var newItem = item.item.Clone();
+            newItem.SetDefaults(item.item.type);
+            infusions[slot] = newItem.modItem as InfusionItem;
+            infusions[slot].Player = player;
+
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if the infusion can be added.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>Whether the item can be added.</returns>
+        public bool CanSetInfusion(InfusionItem item)
+        {
+            if (item == null) 
+                return true;
 
             foreach (var infusion in infusions)
             {
@@ -177,12 +201,6 @@ namespace StarlightRiver.Abilities
                     item.GetType() == infusion.GetType())
                     return false;
             }
-
-            var newItem = item.item.Clone();
-            newItem.SetDefaults(item.item.type);
-            infusions[slot] = newItem.modItem as InfusionItem;
-            infusions[slot].Player = player;
-
             return true;
         }
 
