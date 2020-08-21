@@ -28,9 +28,9 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void OnActivate()
         {
-            Ability.time = Dash.maxTime + 3;
-            Ability.Speed = 30;
-            Ability.Boost = 0.4f;
+            Ability.time = Dash.maxTime + 5;
+            Ability.Speed *= 1.5f;
+            Ability.Boost = 0.25f;
 
             base.OnActivate();
         }
