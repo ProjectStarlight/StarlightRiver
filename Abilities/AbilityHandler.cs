@@ -138,39 +138,23 @@ namespace StarlightRiver.Abilities
                 return true;
             }
 
-            if(item.AbilityType is null)
+            foreach (var infusion in infusions)
             {
-                foreach (var infusion in infusions)
-                {
-                    if (infusion is null) continue;
+                if (infusion is null) continue;
 
-                    if (item.GetType() == infusion.GetType())
-                        return false;
-                }
-                var newItem = item.item.Clone();
-                newItem.SetDefaults(item.item.type);
-                infusions[slot] = newItem.modItem as InfusionItem;
-                return true;
+                if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
+                    item.GetType() == infusion.GetType())
+                    return false;
             }
 
-            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
-            {
-                foreach (var infusion in infusions)
-                {
-                    if (infusion is null) continue;
-                    
-                    if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
-                        item.GetType() == infusion.GetType())
-                        return false;
-                }
+            var newItem = item.item.Clone();
+            newItem.SetDefaults(item.item.type);
+            infusions[slot] = newItem.modItem as InfusionItem;
 
-                var newItem = item.item.Clone();
-                newItem.SetDefaults(item.item.type);
+            if (item.AbilityType != null && unlockedAbilities.TryGetValue(item.AbilityType, out var t))
                 (newItem.modItem as InfusionItem).Ability = t;
-                infusions[slot] = newItem.modItem as InfusionItem;            
-                return true;
-            }
-            return false;
+
+            return true;
         }
 
         public InfusionItem GetInfusion(int slot) => slot < 0 || slot >= infusions.Length ? null : infusions[slot];
