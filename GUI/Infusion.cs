@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
+using System;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -21,22 +22,22 @@ namespace StarlightRiver.GUI
         {
             slot[0].Width.Set(20, 0);
             slot[0].Height.Set(22, 0);
-            slot[0].Left.Set(78, 0);
-            slot[0].Top.Set(294, 0);
+            slot[0].Left.Set(90, 0);
+            slot[0].Top.Set(276, 0);
             slot[0].TargetSlot = 0;
             Append(slot[0]);
 
             slot[1].Width.Set(20, 0);
             slot[1].Height.Set(22, 0);
-            slot[1].Left.Set(102, 0);
+            slot[1].Left.Set(78, 0);
             slot[1].Top.Set(294, 0);
             slot[1].TargetSlot = 1;
             Append(slot[1]);
 
             slot[2].Width.Set(20, 0);
             slot[2].Height.Set(22, 0);
-            slot[2].Left.Set(90, 0);
-            slot[2].Top.Set(276, 0);
+            slot[2].Left.Set(102, 0);
+            slot[2].Top.Set(294, 0);
             slot[2].TargetSlot = 2;
             Append(slot[2]);
         }
@@ -58,6 +59,19 @@ namespace StarlightRiver.GUI
         {
             var mp = Main.LocalPlayer.GetHandler();
             var hover = mp.GetInfusion(TargetSlot)?.item;
+
+            if (mp.InfusionLimit <= TargetSlot) //draw a lock instead for locked slots
+            {
+                Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionLock");
+                spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White, 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
+                return;
+            }
+
+            if (Main.mouseItem.modItem is InfusionItem)
+            {
+                Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionGlow");
+                spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White * (0.25f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.25f), 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
+            }
 
             //Draws the slot
             if (hover != null)
@@ -87,6 +101,12 @@ namespace StarlightRiver.GUI
         {
             var player = Main.LocalPlayer;
             var handler = player.GetHandler();
+
+            if(handler.InfusionLimit <= TargetSlot) //dont allow equipping infusions in locked slots
+            {
+                Main.PlaySound(SoundID.Unlock);
+                return;
+            }
 
             //if the player is holding an infusion
             var occupant = handler.GetInfusion(TargetSlot);
