@@ -21,7 +21,7 @@ namespace StarlightRiver.Abilities.Content
 
         public float Timer { get; private set; }
 
-        public const int ChargeTime = 30;
+        public static readonly int ChargeTime = 30;
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
@@ -30,25 +30,46 @@ namespace StarlightRiver.Abilities.Content
 
         public override void UpdateActive()
         {
+            var held = StarlightRiver.Instance.AbilityKeys.Get<Smash>().Current;
             if (Timer < ChargeTime)
             {
-                Player.frozen = true;
-                Player.maxFallSpeed = 0.8f;
-                Timer++;
-                if (Timer == ChargeTime) 
-                    Main.PlaySound(SoundID.MaxMana, Player.Center);
+                if (held)
+                {
+                    Player.frozen = true;
+                    Player.gravity = 0;
+                    Player.velocity.Y = 0;
+                    Timer++;
+                    if (Timer == ChargeTime)
+                    {
+                        Main.PlaySound(SoundID.MaxMana, Player.Center);
+                    }
+                }
+                else Deactivate();
             }
 
-            if (Timer == ChargeTime && !StarlightRiver.Instance.AbilityKeys.Get<Smash>().Current)
+            if (Timer == ChargeTime)
             {
-                Player.velocity.Y -= 20;
-                Timer++;
+                if (held)
+                {
+                    Player.frozen = true;
+                    Player.gravity = 0;
+                    Player.velocity.Y = -0.01f;
+                    User.Stamina -= 1 / 120f;
+                    if (User.Stamina <= 0)
+                        Deactivate();
+                }
+                else
+                {
+                    Player.velocity.Y -= 20;
+                    Timer++;
+                }
             }
 
             if (Timer > ChargeTime)
             {
                 Timer++;
 
+                Player.frozen = true;
                 Player.maxFallSpeed = 999;
                 //player.velocity.X = 0;
                 if (Player.velocity.Y < 35) Player.velocity.Y += 2;
@@ -59,18 +80,30 @@ namespace StarlightRiver.Abilities.Content
                     Main.PlaySound(SoundID.DD2_BookStaffCast.WithVolume(0.25f + (Timer - 60) / 30f), Player.Center);
                 }
 
-                if (Player.position.Y - Player.oldPosition.Y == 0)
+                if (Timer > ChargeTime + 2 && Player.position.Y - Player.oldPosition.Y == 0)
                 {
+                    Slam();
                     Deactivate();
                 }
             }
-            else
-            {
-                //player.velocity.X = 0;
-                Player.velocity.Y = Timer * 2 - 15;
-            }
 
             UpdateEffects();
+        }
+
+        private void Slam()
+        {
+            int power = (Timer > 120) ? 12 : (int)(Timer / 120f * 12);
+            for (float k = 0; k <= 6.28; k += 0.1f - (power * 0.005f))
+            {
+                Dust.NewDust(Player.Center, 1, 1, DustType<Stone>(), (float)Math.Cos(k) * power, (float)Math.Sin(k) * power, 0, default, 0.5f + power / 7f);
+                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, -32), Player.height, Player.height, DustType<Grass>(), (float)Math.Cos(k) * power * 0.75f, (float)Math.Sin(k) * power * 0.75f, 0, default, 0.5f + power / 7f);
+            }
+
+            Main.PlaySound(SoundID.Item70, Player.Center);
+            Main.PlaySound(SoundID.DD2_BetsysWrathImpact, Player.Center);
+            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Player.Center);
+
+            Player.GetModPlayer<StarlightPlayer>().Shake = power;
         }
 
         private void UpdateEffects()
@@ -79,7 +112,7 @@ namespace StarlightRiver.Abilities.Content
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    float rot = (Timer * 3 - k) / ((float)(ChargeTime - 1) * 3) * 6.28f;
+                    float rot = (Timer * 3 - k) / ((ChargeTime - 1f) * 3) * 6.28f;
                     Dust d = Dust.NewDustPerfect(Player.Center, DustType<JungleEnergyFollow>(), Vector2.One.RotatedBy(rot) * 20, 0, default, 0.7f);
                     Dust d2 = Dust.NewDustPerfect(Player.Center, DustType<JungleEnergyFollow>(), Vector2.One.RotatedBy(rot) * 30, 0, default, 0.7f);
                     Dust d3 = Dust.NewDustPerfect(Player.Center, DustType<JungleEnergyFollow>(), Vector2.One.RotatedBy(rot) * (25 + (float)Math.Sin(rot * 8f) * 5), 0, default, 0.7f);
@@ -116,19 +149,6 @@ namespace StarlightRiver.Abilities.Content
         public override void OnExit()
         {
             Timer = 0;
-
-            int power = (Timer > 120) ? 12 : (int)(Timer / 120f * 12);
-            for (float k = 0; k <= 6.28; k += 0.1f - (power * 0.005f))
-            {
-                Dust.NewDust(Player.Center, 1, 1, DustType<Stone>(), (float)Math.Cos(k) * power, (float)Math.Sin(k) * power, 0, default, 0.5f + power / 7f);
-                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, -32), Player.height, Player.height, DustType<Grass>(), (float)Math.Cos(k) * power * 0.75f, (float)Math.Sin(k) * power * 0.75f, 0, default, 0.5f + power / 7f);
-            }
-
-            Main.PlaySound(SoundID.Item70, Player.Center);
-            Main.PlaySound(SoundID.DD2_BetsysWrathImpact, Player.Center);
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Player.Center);
-
-            Player.GetModPlayer<StarlightPlayer>().Shake = power;
 
             Player.velocity.X = 0;
             Player.velocity.Y = 0;

@@ -190,7 +190,8 @@ namespace StarlightRiver
         public override TagCompound Save()
         {
             TagCompound tag = new TagCompound();
-            foreach (KeyValuePair<string, bool> pair in TownUpgrades) tag.Add(pair.Key, pair.Value);
+            foreach (var pair in TownUpgrades.ToList())  // ToList so it doesnt crash for some reason
+                tag.Add(pair.Key, pair.Value);
 
             return new TagCompound
             {
