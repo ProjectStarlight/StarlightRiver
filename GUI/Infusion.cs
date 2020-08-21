@@ -14,32 +14,32 @@ namespace StarlightRiver.GUI
     public class Infusion : UIState
     {
         public static bool visible = false;
-        private readonly InfusionSlot slot0 = new InfusionSlot();
-        private readonly InfusionSlot slot1 = new InfusionSlot();
-        private readonly InfusionSlot slot2 = new InfusionSlot();
+        private readonly InfusionSlot[] slot = new InfusionSlot[InfusionSlots] { new InfusionSlot(), new InfusionSlot(), new InfusionSlot() };
+
+        internal const int InfusionSlots = 3;
 
         public override void OnInitialize()
         {
-            slot0.Width.Set(20, 0);
-            slot0.Height.Set(14, 0);
-            slot0.Left.Set(78, 0);
-            slot0.Top.Set(298, 0);
-            slot0.TargetSlot = 0;
-            Append(slot0);
+            slot[0].Width.Set(20, 0);
+            slot[0].Height.Set(14, 0);
+            slot[0].Left.Set(78, 0);
+            slot[0].Top.Set(298, 0);
+            slot[0].TargetSlot = 0;
+            Append(slot[0]);
 
-            slot1.Width.Set(20, 0);
-            slot1.Height.Set(14, 0);
-            slot1.Left.Set(102, 0);
-            slot1.Top.Set(298, 0);
-            slot1.TargetSlot = 1;
-            Append(slot1);
+            slot[1].Width.Set(20, 0);
+            slot[1].Height.Set(14, 0);
+            slot[1].Left.Set(102, 0);
+            slot[1].Top.Set(298, 0);
+            slot[1].TargetSlot = 1;
+            Append(slot[1]);
 
-            slot2.Width.Set(20, 0);
-            slot2.Height.Set(14, 0);
-            slot2.Left.Set(90, 0);
-            slot2.Top.Set(280, 0);
-            slot2.TargetSlot = 2;
-            Append(slot2);
+            slot[2].Width.Set(20, 0);
+            slot[2].Height.Set(14, 0);
+            slot[2].Left.Set(90, 0);
+            slot[2].Top.Set(280, 0);
+            slot[2].TargetSlot = 2;
+            Append(slot[2]);
         }
 
         public override void Draw(SpriteBatch spriteBatch)

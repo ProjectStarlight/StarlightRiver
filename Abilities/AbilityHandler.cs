@@ -140,7 +140,7 @@ namespace StarlightRiver.Abilities
                 foreach (var infusion in infusions)
                 {
                     if (infusion is null) continue;
-
+                    
                     if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
                         item.GetType() == infusion.GetType())
                         return false;
