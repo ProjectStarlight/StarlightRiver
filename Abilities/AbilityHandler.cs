@@ -150,8 +150,10 @@ namespace StarlightRiver.Abilities
             var newItem = item.item.Clone();
             newItem.SetDefaults(item.item.type);
             infusions[slot] = newItem.modItem as InfusionItem;
-            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
+
+            if (item.AbilityType != null && unlockedAbilities.TryGetValue(item.AbilityType, out var t))
                 (newItem.modItem as InfusionItem).Ability = t;
+
             return true;
         }
 
