@@ -60,7 +60,7 @@ namespace StarlightRiver.Abilities
         public ShardSet Shards { get; private set; } = new ShardSet();
 
         // Internal-only information.
-        private InfusionItem[] infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
+        private InfusionItem[] infusions = new InfusionItem[3];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Abilities
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
+            infusions = new InfusionItem[3];
             InfusionLimit = 1;
             try
             {
