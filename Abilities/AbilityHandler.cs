@@ -24,6 +24,7 @@ namespace StarlightRiver.Abilities
             {
                 if (ReferenceEquals(value, activeAbility))
                     return;
+
                 if (value is null || Stamina > value.ActivationCost)
                 {
                     if (activeAbility != null)
