@@ -94,6 +94,12 @@ namespace StarlightRiver.Abilities
             spriteBatch.Draw(tex2, pos, null, Color.White, 0, tex2.Size() / 2, 1, 0, 0);
             return false;
         }
+
+        public override bool OnPickup(Player player)
+        {
+            Helper.UnlockEntry<Codex.Entries.InfusionEntry>(player);
+            return true;
+        }
     }
 
     public abstract class InfusionItem<T> : InfusionItem where T : Ability
