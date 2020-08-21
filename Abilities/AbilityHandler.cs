@@ -147,11 +147,11 @@ namespace StarlightRiver.Abilities
                     return false;
             }
 
-            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
-                (newItem.modItem as InfusionItem).Ability = t;
             var newItem = item.item.Clone();
             newItem.SetDefaults(item.item.type);
             infusions[slot] = newItem.modItem as InfusionItem;
+            if (unlockedAbilities.TryGetValue(item.AbilityType, out var t))
+                (newItem.modItem as InfusionItem).Ability = t;
             return true;
         }
 
