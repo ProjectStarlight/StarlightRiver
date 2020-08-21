@@ -22,46 +22,28 @@ namespace StarlightRiver.GUI
         {
             slot0.Width.Set(20, 0);
             slot0.Height.Set(14, 0);
-            slot0.Left.Set(80, 0);
-            slot0.Top.Set(200, 0);
-            slot0.TargetSlot = 0;
-            Append(slot0);
-
-            slot1.Width.Set(20, 0);
-            slot1.Height.Set(14, 0);
-            slot1.Left.Set(100, 0);
-            slot1.Top.Set(200, 0);
-            slot1.TargetSlot = 1;
-            Append(slot1);
-
-            slot2.Width.Set(20, 0);
-            slot2.Height.Set(14, 0);
-            slot2.Left.Set(90, 0);
-            slot2.Top.Set(214, 0);
-            slot2.TargetSlot = 2;
-            Append(slot2);
-        }
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            slot0.Width.Set(20, 0);
-            slot0.Height.Set(14, 0);
             slot0.Left.Set(78, 0);
             slot0.Top.Set(298, 0);
             slot0.TargetSlot = 0;
+            Append(slot0);
 
             slot1.Width.Set(20, 0);
             slot1.Height.Set(14, 0);
             slot1.Left.Set(102, 0);
             slot1.Top.Set(298, 0);
             slot1.TargetSlot = 1;
+            Append(slot1);
 
             slot2.Width.Set(20, 0);
             slot2.Height.Set(14, 0);
             slot2.Left.Set(90, 0);
             slot2.Top.Set(280, 0);
             slot2.TargetSlot = 2;
+            Append(slot2);
+        }
 
+        public override void Draw(SpriteBatch spriteBatch)
+        {
             spriteBatch.Draw(GetTexture("StarlightRiver/GUI/Assets/Infusions"), new Vector2(100 - 26, 300 - 26), Color.White);
 
             base.Draw(spriteBatch);

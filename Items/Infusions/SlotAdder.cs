@@ -26,6 +26,7 @@ namespace StarlightRiver.Items.Infusions
         public override bool UseItem(Player player)
         {
             player.GetHandler().InfusionLimit++;
+            Main.NewText(player.GetHandler().InfusionLimit);
             return true;
         }
     }
