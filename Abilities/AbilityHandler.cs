@@ -267,16 +267,6 @@ namespace StarlightRiver.Abilities
 
             if (ActiveAbility != null)
             {
-                // Update active ability
-                if (!updatedInfusion)
-                {
-                    ActiveAbility.UpdateActive();
-                    if (Main.netMode != NetmodeID.Server)
-                    {
-                        ActiveAbility?.UpdateActiveEffects();
-                    }
-                }
-
                 // Jank
                 player.velocity.Y += 0.01f;
 
