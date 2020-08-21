@@ -70,7 +70,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void OnActivate()
         {
             base.OnActivate();
-            Ability.Speed *= 1.2f;
+            Ability.Speed *= 1.1f;
         }
     }
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void OnActivate()
         {
             base.OnActivate();
-            Ability.Speed *= 1.4f;
+            Ability.Speed *= 1.2f;
         }
     }
 }
