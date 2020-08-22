@@ -42,8 +42,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
 
-            float sizeMult = 0.33f;
-            float maxSize = 2;
+            float maxSize = 1.4f;
             float numCircles = 10 * sizeMult;
 
             for (var size = maxSize; size > 0; size -= maxSize / numCircles)
