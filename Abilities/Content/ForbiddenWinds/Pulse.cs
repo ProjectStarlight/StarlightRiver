@@ -42,7 +42,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             if (Ability.Time < 3)
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
-                    float factor = Ability.Time / 3f;
+                    float factor = Ability.Time / 2f;
                     Vector2 pos = Player.Center + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * factor).RotatedBy(Player.velocity.ToRotation());
 
                     Dust d = Dust.NewDustPerfect(pos, 264, vel * 10, 0, new Color(220, 20, 50), 0.5f);
