@@ -16,9 +16,6 @@
     <None Remove="Tiles\Overgrow\Multitiles\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
     </Reference>

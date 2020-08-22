@@ -250,18 +250,17 @@ namespace StarlightRiver
             HookIL();
         }
 
+        private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
         public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
             if (Rotation != 0)
             {
-                var type = typeof(SpriteViewMatrix);
-                var field = type.GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
 
                 Matrix rotation = Matrix.CreateRotationZ(Rotation);
                 Matrix translation = Matrix.CreateTranslation(new Vector3(Main.screenWidth / 2, Main.screenHeight / 2, 0));
                 Matrix translation2 = Matrix.CreateTranslation(new Vector3(Main.screenWidth / -2, Main.screenHeight / -2, 0));
 
-                field.SetValue(Transform, (translation2 * rotation) * translation);
+                _transformMatrix.SetValue(Transform, (translation2 * rotation) * translation);
                 base.ModifyTransformMatrix(ref Transform);
                 Helper.UpdateTilt();
             }

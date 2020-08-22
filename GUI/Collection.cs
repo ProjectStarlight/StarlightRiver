@@ -30,7 +30,6 @@ namespace StarlightRiver.GUI
             if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null) || ShouldReset)
             {
                 RemoveAllChildren();
-                AbilityHandler mp = Main.LocalPlayer.GetHandler();
                 var abilities = Ability.GetAbilityInstances();
 
                 for (int k = 0; k < abilities.Length; k++)

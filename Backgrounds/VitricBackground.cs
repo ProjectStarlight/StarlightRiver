@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Physics;
 using System;
 using Terraria;
 using Terraria.ModLoader;

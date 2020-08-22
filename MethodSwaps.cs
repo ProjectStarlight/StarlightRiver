@@ -9,6 +9,7 @@ using StarlightRiver.Items.Prototypes;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
+using StarlightRiver.Physics;
 using StarlightRiver.Tiles.Overgrow.Blocks;
 using StarlightRiver.Tiles.Permafrost;
 using System;
@@ -463,19 +464,17 @@ namespace StarlightRiver
             }
         }
 
+        private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
+        private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
         private void DrawSpecialCharacter(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
         {
             orig(self, spriteBatch);
             Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
             //hooray double reflection, fuck you vanilla
-            Type typ = self.GetType();
-            FieldInfo playerInfo = typ.GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
-            UICharacter character = (UICharacter)playerInfo.GetValue(self);
+            UICharacter character = (UICharacter)_playerPanel.GetValue(self);
 
-            Type typ2 = character.GetType();
-            FieldInfo playerInfo2 = typ2.GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
-            Player player = (Player)playerInfo2.GetValue(character);
+            Player player = (Player)_player.GetValue(character);
             AbilityHandler mp = player.GetHandler();
             CodexHandler mp2 = player.GetModPlayer<CodexHandler>();
 

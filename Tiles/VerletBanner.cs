@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using StarlightRiver.Physics;
 
 namespace StarlightRiver.Tiles
 {
