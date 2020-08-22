@@ -265,7 +265,7 @@ namespace StarlightRiver.Abilities
         {
             //Resets the player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
             staminaMaxBonus = 0;
-            StaminaRegenRate = 1;
+            StaminaRegenRate = 1 / 60f * 2; // stamina per tick = 1 / 60f * (stamina per second)
             StaminaCostMultiplier = 1;
             StaminaCostBonus = 0;
 
@@ -314,7 +314,7 @@ namespace StarlightRiver.Abilities
                 player.rocketBoots = -1;
                 player.wings = -1;
 
-                SetStaminaRegenCD(300);
+                SetStaminaRegenCD(200);
             }
             else
             {
@@ -324,10 +324,12 @@ namespace StarlightRiver.Abilities
 
         private void UpdateStaminaRegen()
         {
+            const int regenSmoothing = 10;
+
             // Faster regen while not moving much
             if (player.velocity.LengthSquared() > 1)
             {
-                SetStaminaRegenCD(90);
+                SetStaminaRegenCD(regenSmoothing);
             }
 
             // Regen stamina
@@ -335,7 +337,7 @@ namespace StarlightRiver.Abilities
             {
                 staminaRegenCD--;
             }
-            Stamina += StaminaRegenRate / (staminaRegenCD + 1);
+            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)regenSmoothing) + 1);
         }
 
         private void UpdateAbilities()

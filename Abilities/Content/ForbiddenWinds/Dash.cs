@@ -36,7 +36,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         private void ResetStats()
         {
-            Boost = 0.15f;
+            Boost = 0.1f;
             Speed = 28;
             Time = defaultTime;
             CooldownBonus = 0;
@@ -52,7 +52,6 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             base.OnActivate();
 
             vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
-            ResetStats();
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
@@ -66,7 +65,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
             Player.frozen = true;
             Player.gravity = 0;
-            Player.maxFallSpeed = Speed;
+            Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
             if (Time-- <= 0) Deactivate();
 
@@ -130,8 +129,10 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnExit()
         {
+            ResetStats();
             Player.velocity = vel;
-            Player.fallStart = (int)Player.position.Y;
+            Player.fallStart = (int)(Player.position.Y/16);
+            Player.fallStart2 = (int)(Player.position.Y/16);
         }
 
         //public override void OnCastDragon()
