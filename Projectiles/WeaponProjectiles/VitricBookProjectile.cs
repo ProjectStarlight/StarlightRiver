@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using StarlightRiver.NPCs;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
@@ -134,9 +135,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Main.dust[num316].fadeIn = 0.5f;
             }
 
-            projectile.ai[0] += 1;
             if (projectile.ai[0]%2==0)
             Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 2, ModContent.ProjectileType<VitricBookProjectiletilecheck>(), projectile.damage, projectile.knockBack, projectile.owner);
+            projectile.ai[0] += 1;
         }
     }
 
@@ -190,12 +191,38 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         return true;
                 }
             }
+            Point16 point = new Point16((int)(projectile.Center.X / 16), Math.Min(Main.maxTilesY, (int)(projectile.Center.Y / 16) + 1));
+            Tile tile = Framing.GetTileSafely(point.X, point.Y);
+            int dusttype = mod.DustType("VitricDust");
 
-            for (float num315 = 0.2f; num315 < 8; num315 += 0.25f)
+            //hard coded dust ids in worldgen.cs, ew
+            if (tile != null)
+            {
+                switch (tile.type)
+                {
+                case TileID.Stone: dusttype = DustID.Stone; break;
+                    case TileID.Sand: case TileID.Sandstone: dusttype = DustID.Sandstorm; break;
+                    case TileID.Granite: dusttype = DustID.Granite; break;
+                    case TileID.Marble: dusttype = DustID.Marble; break;
+                    case TileID.Grass: dusttype = DustID.Grass; break;
+                    case TileID.SnowBlock: case TileID.Cloud: case TileID.RainCloud: case TileID.IceBlock: dusttype = DustID.Ice; break;
+
+                    default:
+                    dusttype = mod.DustType("VitricDust");
+                    break;
+
+                }
+                ModTile modtile = TileLoader.GetTile(tile.type);
+                if (modtile != null)
+                    dusttype = modtile.dustType;
+            }
+
+
+            for (float num315 = 0.2f; num315 < 8; num315 += 0.50f)
             {
                 float angle = MathHelper.ToRadians(-Main.rand.Next(70, 120));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y), projectile.width, projectile.height, mod.DustType("VitricDust"), 0f, 0f, 50, default(Color), (10f - num315) / 5f);
+                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y), projectile.width, projectile.height, dusttype, 0f, 0f, 50, default(Color), (10f - num315) / 5f);
                 Main.dust[num316].noGravity = true;
                 Main.dust[num316].velocity = vecangle;
                 Main.dust[num316].fadeIn = 0.5f;
