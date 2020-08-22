@@ -56,7 +56,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
                     float offset = (size / maxSize) * 30 + 10;
                     Vector2 pos = Player.Center + vel * offset + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * ovalScale).RotatedBy(Player.velocity.ToRotation());
 
-                    Dust d = Dust.NewDustPerfect(pos, 264, vel * 20 / offset, 0, new Color(220, 20, 50), 0.7f);
+                    Dust d = Dust.NewDustPerfect(pos, 264, vel * (size / maxSize) * 10, 0, new Color(220, 20, 50), 0.7f);
                     d.noGravity = true;
                     d.noLight = true;
                 }
