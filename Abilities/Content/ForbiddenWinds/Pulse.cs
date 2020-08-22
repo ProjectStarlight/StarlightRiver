@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria;
+using static Terraria.ModLoader.ModContent;
+using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
@@ -34,8 +37,18 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void UpdateActiveEffects()
         {
-            // TODO visuals
-            base.UpdateActiveEffects();
+            Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
+
+            if (Ability.Time > 0)
+                for (float k = 0; k < 6.28f; k += 0.02f)
+                {
+                    float factor = Ability.Time / 10f;
+                    Vector2 pos = Player.Center + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * factor).RotatedBy(Player.velocity.ToRotation());
+
+                    Dust d = Dust.NewDustPerfect(pos, 264, vel * 10, 0, new Color(220, 20, 50), 0.5f);
+                    d.noGravity = true;
+                    d.noLight = true;
+                }
         }
 
         class Pulse2 : Pulse
