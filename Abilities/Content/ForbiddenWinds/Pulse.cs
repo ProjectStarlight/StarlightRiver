@@ -10,8 +10,6 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Pulse : InfusionItem<Dash>
     {
-        public override string Texture => ModContent.GetInstance<Astral>().Texture;
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse I");
