@@ -373,10 +373,11 @@ namespace StarlightRiver.Abilities
             // Update active ability if unaffected by an infusion
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
+                // TODO here
                 var temp = ActiveAbility;
-                temp.UpdateActive();
                 if (Main.netMode != NetmodeID.Server)
                     temp.UpdateActiveEffects();
+                temp.UpdateActive();
             }
         }
 
