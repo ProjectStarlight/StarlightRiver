@@ -3,6 +3,7 @@ using StarlightRiver.Abilities.Content.Faeflame;
 using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Abilities.Content.GaiasFist;
 using StarlightRiver.Abilities.Content.Purify;
+using StarlightRiver.Dusts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +23,13 @@ namespace StarlightRiver.Abilities
         private readonly Dictionary<Type, ModHotKey> bindings = new Dictionary<Type, ModHotKey>();
         private readonly Mod mod;
 
-        public ModHotKey this[Type type]
+        private ModHotKey this[Type type]
         {
             get
             {
-                if (!typeof(Ability).IsAssignableFrom(type))
+                if (type == typeof(object) || type == typeof(Ability))
                 {
-                    throw new InvalidOperationException("Not a registered ability binding. This should never happen!");
+                    throw new InvalidOperationException("Not a registered ability binding. This should never happen! Contact mod devs to implement a missing key binding for the ability.");
                 }
                 if (bindings.TryGetValue(type, out ModHotKey ret))
                 {
@@ -38,9 +39,9 @@ namespace StarlightRiver.Abilities
             }
         }
 
-        public ModHotKey Get<T>() => this[typeof(T)];
+        public ModHotKey Get<T>() where T : Ability => this[typeof(T)];
 
-        public void Bind<T>(string display, string defaultKey)
+        public void Bind<T>(string display, string defaultKey) where T : Ability
         {
             bindings[typeof(T)] = mod.RegisterHotKey(display, defaultKey);
         }

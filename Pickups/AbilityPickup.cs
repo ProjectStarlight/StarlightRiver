@@ -87,7 +87,14 @@ namespace StarlightRiver.Pickups
                 }
             }
 
-            if (mp.PickupTarget?.whoAmI == npc.whoAmI) PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
+            Main.blockInput = false;
+            if (mp.PickupTarget?.whoAmI == npc.whoAmI)
+            {
+                PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
+                Main.blockInput = true;
+                Main.playerInventory = false;
+                // TODO sync it so they're not floating? idk
+            }
         }
 
         public sealed override bool CanHitPlayer(Player target, ref int cooldownSlot)
