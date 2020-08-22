@@ -42,10 +42,13 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
 
-            float maxSize = 1.4f;
-            float numCircles = 10 * sizeMult;
+            const float sizeMult = 0.3f;
+            const float maxSize = 1.4f;
+            const float numCircles = 3.3f;
 
+            // Iterate circle sizes
             for (var size = maxSize; size > 0; size -= maxSize / numCircles)
+                // Iterate dust particle in a circle
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
                     float ovalScale = size / (1 + Ability.Time) * sizeMult;
