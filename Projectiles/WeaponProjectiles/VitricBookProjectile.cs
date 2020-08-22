@@ -198,25 +198,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             //hard coded dust ids in worldgen.cs, ew
             if (tile != null)
             {
-                switch (tile.type)
-                {
-                case TileID.Stone: dusttype = DustID.Stone; break;
-                    case TileID.Sand: case TileID.Sandstone: dusttype = DustID.Sandstorm; break;
-                    case TileID.Granite: dusttype = DustID.Granite; break;
-                    case TileID.Marble: dusttype = DustID.Marble; break;
-                    case TileID.Grass: dusttype = DustID.Grass; break;
-                    case TileID.SnowBlock: case TileID.Cloud: case TileID.RainCloud: case TileID.IceBlock: dusttype = DustID.Ice; break;
-
-                    default:
-                    dusttype = mod.DustType("VitricDust");
-                    break;
-
-                }
-                ModTile modtile = TileLoader.GetTile(tile.type);
-                if (modtile != null)
-                    dusttype = modtile.dustType;
+                DustHelper.TileDust(tile, ref dusttype);
             }
-
 
             for (float num315 = 0.2f; num315 < 8; num315 += 0.50f)
             {
