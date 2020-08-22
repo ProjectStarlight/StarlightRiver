@@ -15,36 +15,40 @@ namespace StarlightRiver.Items.Vitric
             item.height = 34;
             item.useStyle = ItemUseStyleID.HoldingOut;
             Item.staff[item.type] = true;
-            item.useAnimation = 9;
-            item.useTime = 3;
-            item.reuseDelay = 27;
+            item.useAnimation = 20;
+            item.useTime = 20;
+            item.reuseDelay = 60;
             item.autoReuse = true;
             item.shootSpeed = 12f;
-            item.knockBack = 2f;
+            item.knockBack = 0f;
             item.damage = 12;
-            item.shoot = ProjectileType<VitricStaffProjectile>();
+            item.shoot = ProjectileType<VitricBookProjectile>();
             item.rare = ItemRarityID.Green;
             item.noMelee = true;
             item.magic = true;
+            item.mana = 15;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Vector2 muzzleOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 35f;
-            if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
+            for (int i = 0; i < 181; i += 180)
             {
-                position += muzzleOffset;
+                Vector2 muzzleOffset = MathHelper.ToRadians(i).ToRotationVector2() * 35f;
+                if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
+                {
+                    position += muzzleOffset;
+                }
+                Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 8, 1);
+                muzzleOffset.Normalize();
+                Projectile.NewProjectile(position.X, position.Y, muzzleOffset.X*16f, 0, item.shoot, damage, knockBack, player.whoAmI);
             }
-            Main.PlaySound(SoundID.Item, -1, -1, 8, 1);
-            Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(20));
-            Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, item.shoot, damage, knockBack, player.whoAmI);
             return false;
         }
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitric Staff");
-            Tooltip.SetDefault("It like shoots crystals and like the cystals stick to enemies\nThe more crsytals stuck to enemy you hit the more damag!!!!");
+            DisplayName.SetDefault("Vitric Book");
+            Tooltip.SetDefault("Summons waves that leave behind traps on nearby ground, with spacing between them\nThese traps rapidly spike enemies who step on them");
         }
     }
 }

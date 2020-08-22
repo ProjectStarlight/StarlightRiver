@@ -10,17 +10,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class VitricStaffProjectile : ModProjectile
     {
-        private int maxImpale=6;
-        private int impaletime = 300;
+        internal int maxImpale=6;
+        internal int impaletime = 300;
         private float appear = 0f;
         private float scaleup = 0;
         public override void SetDefaults()
         {
-            projectile.width = 28;
-            projectile.height = 28;
+            projectile.width = 16;
+            projectile.height = 16;
             projectile.friendly = true;
             projectile.penetrate = 1;
             projectile.timeLeft = 600;
+            projectile.magic = true;
             projectile.tileCollide = true;
             projectile.ignoreWater = true;
 
@@ -41,7 +42,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 for (int k = projectile.oldPos.Length - 1; k > 0; k -= 1)
                 {
-                    float sizer = (projectile.scale - (k * 0.15f)) * (0.75f);
+                    float sizer = (projectile.scale - (k * 0.15f)) * (1.00f);
                     if (sizer > 0)
                     {
                         Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY);
@@ -92,7 +93,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
-            for (float num315 = 0.2f; num315 < 8; num315 = num315 + 0.25f)
+            for (float num315 = 0.2f; num315 < 8; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle))* num315;

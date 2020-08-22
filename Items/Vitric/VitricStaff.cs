@@ -17,16 +17,16 @@ namespace StarlightRiver.Items.Vitric
             Item.staff[item.type] = true;
             item.useAnimation = 9;
             item.useTime = 3;
-            item.reuseDelay = 45;
+            item.reuseDelay = 15;
             item.autoReuse = true;
-            item.shootSpeed = 12f;
+            item.shootSpeed = 10f;
             item.knockBack = 2f;
-            item.damage = 12;
+            item.damage = 8;
             item.shoot = ProjectileType<VitricStaffProjectile>();
             item.rare = ItemRarityID.Green;
             item.noMelee = true;
             item.magic = true;
-            item.mana = 2;
+            item.mana = 3;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
