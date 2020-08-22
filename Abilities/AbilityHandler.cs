@@ -299,10 +299,8 @@ namespace StarlightRiver.Abilities
                 if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
                     infusion.OnExit();
                 else
-                {
-                    activeAbility.Reset();
                     activeAbility.OnExit();
-                }
+                activeAbility.Reset();
             }
 
             activeAbility = nextAbility;
