@@ -57,7 +57,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         }
     }
 
-    class DashAstral2 : Astral
+    class Astral2 : Astral
     {
         public override void SetStaticDefaults()
         {
@@ -73,7 +73,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         }
     }
 
-    class DashAstral3 : Astral
+    class Astral3 : Astral
     {
         public override void SetStaticDefaults()
         {

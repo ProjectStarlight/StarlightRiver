@@ -248,7 +248,8 @@ namespace StarlightRiver.Abilities
                 for (int i = 0; i < infusionsTemp.Count; i++)
                 {
                     infusions[i] = infusionsTemp[i].modItem as InfusionItem;
-                    infusions[i].Player = player;
+                    if (infusions[i] != null)
+                        infusions[i].Player = player;
                 }
 
                 // Load max infusions

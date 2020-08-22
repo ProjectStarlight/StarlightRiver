@@ -1,4 +1,6 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using StarlightRiver.Abilities.Content.ForbiddenWinds;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Codex.Entries
 {
@@ -8,7 +10,7 @@ namespace StarlightRiver.Codex.Entries
         {
             Category = Categories.Misc;
             Title = "Stamina";
-            Body = "All of your abilities utilize stamina, a resource represented by the orange diamonds to the right of your mana bar. Your stamina will replenish itself over time. You can gain additional stamina by unlocking new abilities and equipping certain armors and accessories.";
+            Body = "All of your abilities utilize stamina, a resource represented by the orange diamonds next to your mana bar. Your stamina will replenish itself over time. You can gain additional stamina by unlocking new abilities and having certain equipment.";
             Hint = "Unlock an ability...";
             Image = GetTexture("StarlightRiver/GUI/Assets/Stamina");
             Icon = GetTexture("StarlightRiver/GUI/Assets/Stamina");
@@ -38,8 +40,8 @@ namespace StarlightRiver.Codex.Entries
                 "Generic Infusions typically provide a general boost that applied to all of the player's abilities, or have small enough effects that they do not warrant the ability-type restriction of Ability Infusions. While you can equip as many Generic Infusions as you have slots, you cannot equip duplicates. NEWBLOCK " +
                 "Ability Infusions are specific to one of your abilities, and greatly augment them or change how they function alltogether. While powerful, these infusions are generally harder to come by than Generic Infusions. You cannot equip two Ability Infusions for the same ability, and you cannot equip duplicates.";
             Hint = "Find a mysterious altar...";
-            Image = GetTexture("StarlightRiver/Abilities/Infusion/DashAstral");
-            Icon = GetTexture("StarlightRiver/Abilities/Infusion/DashAstral");
+            Image = GetTexture(ModContent.GetInstance<Astral>().Texture);
+            Icon = Image;
         }
     }
 }

@@ -68,7 +68,7 @@ namespace StarlightRiver.GUI
 
         public int TargetSlot { get; }
 
-        public bool Unlocked => Main.LocalPlayer.GetHandler().InfusionLimit <= TargetSlot;
+        public bool Unlocked => Main.LocalPlayer.GetHandler().InfusionLimit > TargetSlot;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
