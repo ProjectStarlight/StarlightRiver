@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Buffs;
 using StarlightRiver.Dusts;
 using System;
 using System.Collections.Generic;
@@ -98,23 +99,8 @@ namespace StarlightRiver.Abilities.Content.Faeflame
                 Player.width = oldHitbox.Width;
                 Player.height = oldHitbox.Height;
             }
-            else if (!safe) SquishDamage();
-        }
-
-        private void SquishDamage()
-        {
-            //if (timer-- <= 0)
-            //{
-            //    Player.lifeRegen = 0;
-            //    Player.lifeRegenCount = 0;
-            //    Player.statLife -= 5;
-            //    if (Player.statLife <= 0)
-            //    {
-            //        Player.KillMe(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " couldn't maintain their form"), 0, 0);
-            //    }
-            //    Main.PlaySound(SoundID.NPCHit13, Player.Center);
-            //}
-            // TODO make this a buff?
+            else if (!safe) 
+                Player.AddBuff(BuffType<Claustrophobia>(), 2);
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
