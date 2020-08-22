@@ -15,7 +15,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse I");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nMakes dashes shorter and more controlled\nShorter cooldown and decreases stamina usage by 0.2");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nMakes dashes shorter and more controlled\nShorter cooldown and reduces stamina cost by 0.2");
         }
 
         public override void SetDefaults()
