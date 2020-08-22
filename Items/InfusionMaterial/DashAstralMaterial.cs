@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Abilities.Content.ForbiddenWinds;
+using StarlightRiver.Abilities.Content.Infusions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +19,9 @@ namespace StarlightRiver.Items.InfusionMaterial
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(item.type);
-            recipe.AddIngredient(ItemType<StarlightRiver.Abilities.Infusions.BasicInfusion>());
+            recipe.AddIngredient(ItemType<BasicInfusion>());
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(ItemType<StarlightRiver.Abilities.Dash.DashAstral>());
+            recipe.SetResult(ItemType<Astral>());
             recipe.AddRecipe();
         }
     }

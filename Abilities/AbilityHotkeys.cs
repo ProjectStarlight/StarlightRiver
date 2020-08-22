@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Abilities.Content;
 using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Abilities.Content.GaiasFist;
 using StarlightRiver.Abilities.Content.Purify;
 using System;
@@ -50,7 +51,6 @@ namespace StarlightRiver.Abilities
             Bind<Wisp>("Faeflame", "F");
             Bind<Pure>("Purity Crown", "N");
             Bind<Smash>("Gaia's Fist", "Z");
-            Bind<Superdash>("Zzelera's Cloak", "Q");
         }
         internal void Unload()
         {

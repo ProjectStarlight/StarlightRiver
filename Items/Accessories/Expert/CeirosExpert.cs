@@ -24,7 +24,7 @@ namespace StarlightRiver.Items.Accessories.Expert
         public override void UpdateEquip(Player player)
         {
             if (player.GetHandler().GetAbility<Dash>(out var dash))
-                dash.CooldownReduction += 16;
+                dash.CooldownBonus += 16;
         }
     }
 }
