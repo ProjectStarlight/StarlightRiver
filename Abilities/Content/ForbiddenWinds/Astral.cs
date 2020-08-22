@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
-    class DashAstral : InfusionItem<Dash>
+    class Astral : InfusionItem<Dash>
     {
         public override void SetStaticDefaults()
         {
@@ -57,7 +57,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         }
     }
 
-    class DashAstral2 : DashAstral
+    class DashAstral2 : Astral
     {
         public override void SetStaticDefaults()
         {
@@ -73,7 +73,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         }
     }
 
-    class DashAstral3 : DashAstral
+    class DashAstral3 : Astral
     {
         public override void SetStaticDefaults()
         {
