@@ -3,6 +3,7 @@ using StarlightRiver.Abilities.Content.Faeflame;
 using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Abilities.Content.GaiasFist;
 using StarlightRiver.Abilities.Content.Purify;
+using StarlightRiver.Dusts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace StarlightRiver.Abilities
         {
             get
             {
-                if (!typeof(Ability).IsAssignableFrom(type))
+                if (type == typeof(object) || type == typeof(Ability))
                 {
                     throw new InvalidOperationException("Not a registered ability binding. This should never happen!");
                 }
@@ -40,7 +41,7 @@ namespace StarlightRiver.Abilities
 
         public ModHotKey Get<T>() => this[typeof(T)];
 
-        public void Bind<T>(string display, string defaultKey)
+        public void Bind<T>(string display, string defaultKey) where T : Ability
         {
             bindings[typeof(T)] = mod.RegisterHotKey(display, defaultKey);
         }
@@ -49,7 +50,7 @@ namespace StarlightRiver.Abilities
         {
             Bind<Dash>("Forbidden Winds", "LeftShift");
             Bind<Wisp>("Faeflame", "F");
-            Bind<Pure>("Purity Crown", "N");
+            Bind<Purify>("Purity Crown", "N");
             Bind<Smash>("Gaia's Fist", "Z");
         }
         internal void Unload()
