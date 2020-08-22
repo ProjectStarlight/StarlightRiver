@@ -13,6 +13,8 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Pulse : InfusionItem<Dash>
     {
+        protected float sizeMult;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse I");
@@ -28,24 +30,33 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time -= 2;
-            Ability.CooldownBonus -= 15;
+            Ability.Time = 4;
+            Ability.Speed -= 3;
+            Ability.CooldownBonus -= 10;
             Ability.ActivationCostBonus -= 0.15f;
-            Ability.Boost += 0.1f;
+            Ability.Boost += 0.2f;
             base.OnActivate();
+            sizeMult = 0.33f;
         }
 
         public override void UpdateActiveEffects()
         {
+            if (Ability.Time > 0)
+                return;
+
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
 
-            if (Ability.Time < 3)
+            float maxSize = 2;
+            float numCircles = 10 * sizeMult;
+
+            for (var size = maxSize; size > 0; size -= maxSize / numCircles)
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
-                    float factor = Ability.Time / 2f;
-                    Vector2 pos = Player.Center + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * factor).RotatedBy(Player.velocity.ToRotation());
+                    float ovalScale = size / (1 + Ability.Time) * sizeMult;
+                    float offset = (size / maxSize) * 30 + 10;
+                    Vector2 pos = Player.Center + vel * offset + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * ovalScale).RotatedBy(Player.velocity.ToRotation());
 
-                    Dust d = Dust.NewDustPerfect(pos, 264, vel * 10, 0, new Color(220, 20, 50), 0.5f);
+                    Dust d = Dust.NewDustPerfect(pos, 264, vel * 20 / offset, 0, new Color(220, 20, 50), 0.7f);
                     d.noGravity = true;
                     d.noLight = true;
                 }
@@ -61,11 +72,12 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
             public override void OnActivate()
             {
-                Ability.Time -= 1;
+                Ability.Time -= 2;
                 Ability.CooldownBonus -= 10;
                 Ability.ActivationCostBonus -= 0.1f;
-                //Ability.Boost += 0.15f;
+                Ability.Boost += 0.15f;
                 base.OnActivate();
+                sizeMult = 0.5f;
             }
         }
 
@@ -82,8 +94,9 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
                 Ability.Time -= 1;
                 Ability.CooldownBonus -= 10;
                 Ability.ActivationCostBonus -= 0.25f;
-                //Ability.Boost += 0.15f;
+                Ability.Boost += 0.15f;
                 base.OnActivate();
+                sizeMult = 0.66f;
             }
         }
     }
