@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Items.Vitric
 {
-    public class VitricStaff : ModItem
+    public class VitricMagicBook : ModItem
     {
         public override void SetDefaults()
         {
@@ -17,7 +17,7 @@ namespace StarlightRiver.Items.Vitric
             Item.staff[item.type] = true;
             item.useAnimation = 9;
             item.useTime = 3;
-            item.reuseDelay = 45;
+            item.reuseDelay = 27;
             item.autoReuse = true;
             item.shootSpeed = 12f;
             item.knockBack = 2f;
@@ -26,7 +26,6 @@ namespace StarlightRiver.Items.Vitric
             item.rare = ItemRarityID.Green;
             item.noMelee = true;
             item.magic = true;
-            item.mana = 2;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -36,7 +35,7 @@ namespace StarlightRiver.Items.Vitric
             {
                 position += muzzleOffset;
             }
-            Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 43, 0.75f);
+            Main.PlaySound(SoundID.Item, -1, -1, 8, 1);
             Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(20));
             Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, item.shoot, damage, knockBack, player.whoAmI);
             return false;
@@ -45,7 +44,7 @@ namespace StarlightRiver.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Staff");
-            Tooltip.SetDefault("Shoots 3 crystals in a small arc that stick to enemies and do damage over time\nCan stack up to 6 on 1 target, if the target dies the crystals fly off and can hit again");
+            Tooltip.SetDefault("It like shoots crystals and like the cystals stick to enemies\nThe more crsytals stuck to enemy you hit the more damag!!!!");
         }
     }
 }

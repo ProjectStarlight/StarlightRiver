@@ -46,6 +46,9 @@ namespace StarlightRiver
 
         public static float rottime = 0;
 
+        //Players have a timer, can't the world get one synced one too?
+        public static int Timer;
+
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
 
@@ -62,6 +65,8 @@ namespace StarlightRiver
 
         public override void NetSend(BinaryWriter writer)
         {
+            writer.Write(Timer);
+
             writer.Write(AluminumMeteors);
 
             writer.Write(DesertOpen);
@@ -84,6 +89,8 @@ namespace StarlightRiver
 
         public override void NetReceive(BinaryReader reader)
         {
+            Timer = reader.ReadInt32();
+
             AluminumMeteors = reader.ReadBoolean();
 
             DesertOpen = reader.ReadBoolean();
@@ -132,6 +139,7 @@ namespace StarlightRiver
 
         public override void PreUpdate()
         {
+            Timer++;
             rottime += (float)Math.PI / 60;
             if (rottime >= Math.PI * 2) rottime = 0;
         }
