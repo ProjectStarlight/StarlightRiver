@@ -14,7 +14,7 @@ namespace StarlightRiver.Items.CursedAccessories
         private readonly Texture2D Glow = null;
         private Vector2 drawpos = Vector2.Zero;
 
-        public CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
+        protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
         {
             Glow = glow;
         }

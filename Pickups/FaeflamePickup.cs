@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.Faeflame;
 using StarlightRiver.Core;
 using StarlightRiver.Items;
 using System;

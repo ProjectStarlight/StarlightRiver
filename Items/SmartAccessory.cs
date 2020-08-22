@@ -15,7 +15,7 @@ namespace StarlightRiver.Items
             return false;
         }
 
-        public SmartAccessory(string name, string tooltip) : base()
+        protected SmartAccessory(string name, string tooltip) : base()
         {
             ThisName = name;
             ThisTooltip = tooltip;

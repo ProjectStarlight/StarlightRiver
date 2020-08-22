@@ -19,7 +19,7 @@ namespace StarlightRiver.Tiles
         private readonly int dust = DustID.Dirt;
         private readonly int material = ItemID.DirtBlock;
 
-        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
+        protected AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
         {
             this.name = name;
             this.path = path;

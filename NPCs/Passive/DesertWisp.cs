@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.Faeflame;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;

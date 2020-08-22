@@ -14,7 +14,7 @@ namespace StarlightRiver.Buffs
 
         public virtual void SafeSetDetafults() { }
 
-        public SmartBuff(string name, string tooltip, bool debuff)
+        protected SmartBuff(string name, string tooltip, bool debuff)
         {
             ThisName = name;
             ThisTooltip = tooltip;

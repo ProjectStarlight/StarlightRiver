@@ -92,7 +92,7 @@ namespace StarlightRiver
 
         private void TestLighting(GameTime obj)
         {
-            if (!Main.gameMenu) lightingTest.DebugDraw(obj);
+            if (!Main.gameMenu) lightingTest.DebugDraw();
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 

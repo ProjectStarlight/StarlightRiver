@@ -32,8 +32,9 @@ namespace StarlightRiver.Projectiles
         {
             target.AddBuff(BuffID.ShadowFlame, 200);
         }
-        float randomRotation = Main.rand.NextFloat(0.1f) - 0.05f;
-        float randomSpeed = 5f + Main.rand.NextFloat(6f);
+
+        readonly float randomRotation = Main.rand.NextFloat(0.1f) - 0.05f;
+        readonly float randomSpeed = 5f + Main.rand.NextFloat(6f);
 
         bool picked = false;
         NPC target = Main.npc[0];

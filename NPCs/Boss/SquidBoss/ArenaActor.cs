@@ -12,7 +12,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     class ArenaActor : ModNPC
     {
-        int whitelistID = WallType<AuroraBrickWall>();
+        readonly int whitelistID = WallType<AuroraBrickWall>();
         public float WaterLevel { get => npc.Center.Y + 35 * 16 - npc.ai[0]; }
 
         public override string Texture => "StarlightRiver/Invisible";

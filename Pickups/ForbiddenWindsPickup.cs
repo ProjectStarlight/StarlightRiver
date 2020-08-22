@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
 using StarlightRiver.Items;

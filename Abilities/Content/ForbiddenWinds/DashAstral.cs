@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.Content;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.Infusion
+namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     class DashAstral : InfusionItem<Dash>
     {
@@ -41,7 +40,7 @@ namespace StarlightRiver.Abilities.Infusion
         public override void UpdateActiveEffects()
         {
             Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
-            for(float k = -2; k <= 2; k += 0.1f)
+            for (float k = -2; k <= 2; k += 0.1f)
             {
                 Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - 3 - Ability.time);
 
@@ -52,10 +51,8 @@ namespace StarlightRiver.Abilities.Infusion
                 }
                 Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.time / 10f);
 
-                if(Math.Abs(k) >= 1.5f)
-                {
+                if (Math.Abs(k) >= 1.5f)
                     Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.time / 10f);
-                }
             }
         }
     }

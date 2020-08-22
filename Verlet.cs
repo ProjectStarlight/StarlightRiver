@@ -172,7 +172,7 @@ namespace StarlightRiver
             buffer = buff;
         }
 
-        private static BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
+        private static readonly BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
         {
             VertexColorEnabled = true
         };

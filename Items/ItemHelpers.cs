@@ -11,7 +11,7 @@ namespace StarlightRiver.Items
         private readonly int Value;
         private readonly int Rare;
 
-        public QuickMaterial(string name, string tooltip, int maxstack, int value, int rare)
+        protected QuickMaterial(string name, string tooltip, int maxstack, int value, int rare)
         {
             Matname = name;
             Mattooltip = tooltip;
@@ -43,7 +43,7 @@ namespace StarlightRiver.Items
         private readonly int Tiletype;
         private readonly int Rare;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare)
+        protected QuickTileItem(string name, string tooltip, int placetype, int rare)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -84,7 +84,7 @@ namespace StarlightRiver.Items
         private readonly int Walltype;
         private readonly int Rare;
 
-        public QuickWallItem(string name, string tooltip, int placetype, int rare)
+        protected QuickWallItem(string name, string tooltip, int placetype, int rare)
         {
             Itemname = name;
             Itemtooltip = tooltip;

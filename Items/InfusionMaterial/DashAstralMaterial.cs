@@ -17,9 +17,9 @@ namespace StarlightRiver.Items.InfusionMaterial
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(item.type);
-            recipe.AddIngredient(ItemType<Abilities.Infusion.BasicInfusion>());
+            recipe.AddIngredient(ItemType<StarlightRiver.Abilities.Infusions.BasicInfusion>());
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(ItemType<Abilities.Infusion.DashAstral>());
+            recipe.SetResult(ItemType<StarlightRiver.Abilities.Dash.DashAstral>());
             recipe.AddRecipe();
         }
     }

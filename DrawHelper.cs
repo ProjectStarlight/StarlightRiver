@@ -65,7 +65,7 @@ namespace StarlightRiver
             graphics.SetRenderTarget(null);
         }
 
-        private Effect UpscaleEffect = Main.dedServ ? null : Filters.Scene["Lighting"].GetShader().Shader;
+        private readonly Effect UpscaleEffect = Main.dedServ ? null : Filters.Scene["Lighting"].GetShader().Shader;
 
         private void RenderLightingQuad()
         {
@@ -101,7 +101,7 @@ namespace StarlightRiver
         }
 
         int thetimer = 0;
-        public void DebugDraw(GameTime timer)
+        public void DebugDraw()
         {
             thetimer++;
             if(thetimer % 5 == 0) PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * padding * 16);
@@ -121,11 +121,11 @@ namespace StarlightRiver
 
     public static partial class Helper
     {
-        private static Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightingApply"].GetShader().Shader;
+        private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightingApply"].GetShader().Shader;
 
-        private static VertexPositionTexture[] verticies = new VertexPositionTexture[6];
+        private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
 
-        private static VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+        private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
 
         public static void DrawWithLighting(Vector2 pos, Texture2D tex)
         {

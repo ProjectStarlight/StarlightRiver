@@ -10,7 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.Content
+namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {
@@ -21,11 +21,12 @@ namespace StarlightRiver.Abilities.Content
 
         public int time;
 
+        public int CooldownBonus { get; set; }
         public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
         public override Color Color => new Color(188, 255, 246);
 
-        public override int CooldownMax => 90;
+        public override int CooldownMax => CooldownBonus + 90;
 
         public Vector2 dir;
         public Vector2 vel;
@@ -39,6 +40,7 @@ namespace StarlightRiver.Abilities.Content
             Boost = 0.15f;
             Speed = 28;
             time = defaultTime;
+            CooldownBonus = 0;
         }
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
@@ -109,7 +111,7 @@ namespace StarlightRiver.Abilities.Content
 
             for (int k = 0; k < 60; k++)
             {
-                float rot = (0.1f * k) * direction;
+                float rot = 0.1f * k * direction;
                 Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + time / 8f), DustType<AirDash>());
                 dus.fadeIn = k - time * 3;
             }

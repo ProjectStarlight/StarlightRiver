@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using Terraria;
 using Terraria.ModLoader;
 

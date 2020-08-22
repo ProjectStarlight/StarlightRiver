@@ -11,7 +11,7 @@ namespace StarlightRiver.GUI
     {
         public TownUpgrade activeUpgrade;
 
-        private TownButton button = new TownButton();
+        private readonly TownButton button = new TownButton();
 
         public override void OnInitialize()
         {

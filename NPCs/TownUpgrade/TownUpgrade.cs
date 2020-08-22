@@ -15,7 +15,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
         public readonly string _title;
         public readonly Texture2D icon;
 
-        public TownUpgrade(string npcName, string questName, string questTip, string buttonName, string title)
+        protected TownUpgrade(string npcName, string questName, string questTip, string buttonName, string title)
         {
             _buttonName = buttonName;
             _npcName = npcName;

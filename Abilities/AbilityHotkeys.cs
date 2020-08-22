@@ -1,4 +1,7 @@
 ﻿using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.Content.GaiasFist;
+using StarlightRiver.Abilities.Content.Purify;
 using System;
 using System.Collections.Generic;
 using System.Linq;

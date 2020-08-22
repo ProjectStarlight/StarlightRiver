@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Void = StarlightRiver.Dusts.Void;
 
-namespace StarlightRiver.Abilities.Content
+namespace StarlightRiver.Abilities.Content.Faeflame
 {
     public class Wisp : Ability
     {
@@ -36,9 +36,7 @@ namespace StarlightRiver.Abilities.Content
             Player.mount.Dismount(Player);
             Speed = 5;
             for (int k = 0; k <= 50; k++)
-            {
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-20, 20), Main.rand.Next(-20, 20), 0, default, 1.2f);
-            }
         }
 
         public override void UpdateActive()
@@ -51,17 +49,13 @@ namespace StarlightRiver.Abilities.Content
             if (Player.whoAmI == Main.myPlayer)
             {
                 Player.velocity = (Main.MouseScreen - Helper.ScreenSize / 2) / 20;
-                
+
                 if (Main.netMode != NetmodeID.SinglePlayer && (Player.position - Player.oldPosition).LengthSquared() > diffTolerance * diffTolerance)
-                {
                     // TODO let's not send every single control every 5 pixels someday
                     NetMessage.SendData(MessageID.PlayerControls);
-                }
             }
             if (Player.velocity.LengthSquared() > Speed * Speed)
-            {
                 Player.velocity = Vector2.Normalize(Player.velocity) * Speed;
-            }
 
             // Why doesn't vanilla reset player width automatically??
             // I have to do this because of it
@@ -92,9 +86,7 @@ namespace StarlightRiver.Abilities.Content
         {
             int type = safe ? DustType<Gold>() : DustType<Void>();
             for (int k = 0; k <= 2; k++)
-            {
                 Dust.NewDust(Player.Center - new Vector2(4, 4), 8, 8, type);
-            }
         }
 
         private void AttemptDeactivate()
@@ -137,9 +129,7 @@ namespace StarlightRiver.Abilities.Content
                 Player.direction = Math.Sign(Player.velocity.X);
 
             for (int k = 0; k <= 30; k++)
-            {
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-5, 5), Main.rand.Next(-5, 5), 0, default, 1.2f);
-            }
         }
 
         public bool SafeExit(out Vector2 topLeft)
@@ -153,14 +143,12 @@ namespace StarlightRiver.Abilities.Content
 
             // Otherwise, search for a fitting space.
             for (var x = oldTopLeft.X - 16; x <= oldTopLeft.X + 16; x += 16)
-            {
                 for (var y = oldTopLeft.Y - 16; y <= oldTopLeft.Y + 16; y += 16)
                 {
                     topLeft = new Vector2(x, y);
                     if (!Collision.SolidCollision(topLeft, oldHitbox.Width, oldHitbox.Height))
                         return true;
                 }
-            }
             return false;
         }
 
@@ -171,7 +159,7 @@ namespace StarlightRiver.Abilities.Content
 
         private class WispMount : ModMountData
         {
-            
+
         }
     }
 }

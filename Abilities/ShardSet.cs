@@ -9,7 +9,7 @@ namespace StarlightRiver.Abilities
 {
     public class ShardSet
     {
-        private HashSet<int> collected = new HashSet<int>();
+        private readonly HashSet<int> collected = new HashSet<int>();
 
         public bool Has(int id) => collected.Contains(id);
         public void Add(int id) => collected.Add(id);

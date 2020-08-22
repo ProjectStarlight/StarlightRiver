@@ -13,8 +13,8 @@ namespace StarlightRiver.GUI
 {
     class TownQuestList : UIState
     {
-        private UIList quests = new UIList();
-        private UIList itemList = new UIList();
+        private readonly UIList quests = new UIList();
+        private readonly UIList itemList = new UIList();
         private readonly UIScrollbar questScroll = new UIScrollbar();
         private readonly SubmitButton submitButton = new SubmitButton();
 
