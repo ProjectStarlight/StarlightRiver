@@ -28,7 +28,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time -= 4;
+            Ability.Time -= 2;
             Ability.CooldownBonus -= 15;
             Ability.ActivationCostBonus -= 0.15f;
             Ability.Boost += 0.1f;
@@ -39,7 +39,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         {
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
 
-            if (Ability.Time > 0)
+            if (Ability.Time < 3)
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
                     float factor = Ability.Time / 3f;
