@@ -20,43 +20,7 @@ namespace StarlightRiver.Abilities
         public Ability ActiveAbility
         {
             get => activeAbility;
-            internal set => ActivateAbility(value);
-        }
-
-        private void ActivateAbility(Ability value)
-        {
-            // Ignore dupes
-            if (ReferenceEquals(value, activeAbility))
-            {
-                return;
-            }
-            // If we have enough stamina
-            if (value is null || Stamina > value.ActivationCost(this))
-            {
-                // Fire ability hooks
-                if (activeAbility != null)
-                {
-                    if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                        infusion.OnExit();
-                    else
-                        activeAbility.OnExit();
-                }
-                activeAbility = value;
-                // Fire more ability hooks and update stamina
-                if (activeAbility != null)
-                {
-                    // Stamina
-                    activeAbility.User = this;
-                    Stamina -= activeAbility.ActivationCost(this);
-                    activeAbility.ActivationCostBonus = 0;
-
-                    // Hooks
-                    if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                        infusion.OnActivate();
-                    else
-                        activeAbility.OnActivate();
-                }
-            }
+            set => nextAbility = value;
         }
 
         // The player's stamina stats.
@@ -98,6 +62,7 @@ namespace StarlightRiver.Abilities
         private float stamina;
         private float staminaMaxBonus;
         private Ability activeAbility;
+        private Ability nextAbility;
 
         private void Unlock(Type t, Ability ability)
         {
@@ -320,6 +285,42 @@ namespace StarlightRiver.Abilities
             {
                 UpdateStaminaRegen();
             }
+
+            UpdateActiveAbility();
+        }
+
+        private void UpdateActiveAbility()
+        {
+            if (ReferenceEquals(nextAbility, activeAbility))
+                return;
+
+            if (activeAbility != null)
+            {
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnExit();
+                else
+                {
+                    activeAbility.Reset();
+                    activeAbility.OnExit();
+                }
+            }
+
+            activeAbility = nextAbility;
+
+            // Fire more ability hooks and update stamina
+            if (activeAbility != null)
+            {
+                // Stamina
+                activeAbility.User = this;
+                Stamina -= activeAbility.ActivationCost(this);
+                activeAbility.ActivationCostBonus = 0;
+
+                // Hooks
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnActivate();
+                else
+                    activeAbility.OnActivate();
+            }
         }
 
         private void UpdateStaminaRegen()
@@ -373,11 +374,9 @@ namespace StarlightRiver.Abilities
             // Update active ability if unaffected by an infusion
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
-                // TODO here
-                var temp = ActiveAbility;
+                ActiveAbility.UpdateActive();
                 if (Main.netMode != NetmodeID.Server)
-                    temp.UpdateActiveEffects();
-                temp.UpdateActive();
+                    ActiveAbility.UpdateActiveEffects();
             }
         }
 

@@ -18,6 +18,11 @@ namespace StarlightRiver.Abilities
 {
     public abstract class Ability
     {
+        protected Ability()
+        {
+            Reset();
+        }
+
         public AbilityHandler User { get; internal set; }
         public Player Player => User.player;
         public float ActivationCostBonus { get; set; }
@@ -32,6 +37,7 @@ namespace StarlightRiver.Abilities
         public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
         public virtual void OnActivate() { }
+        public virtual void Reset() { }
         public virtual void UpdateActive() { }
         public virtual void UpdateActiveEffects() { }
         public virtual void UpdateFixed() { }
