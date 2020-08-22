@@ -125,8 +125,8 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void OnExit()
         {
             Player.velocity = Vel;
-            Player.fallStart = (int)(Player.position.Y/16);
-            Player.fallStart2 = (int)(Player.position.Y/16);
+            Player.fallStart = (int)(Player.position.Y / 16);
+            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         //public override void OnCastDragon()

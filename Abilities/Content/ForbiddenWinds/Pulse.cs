@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDashes become short, frequent, and potent pulses\nDecreases Dash stamina cost by 0.25");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDashes become short, frequent, and potent bursts of speed\nDecreases Dash stamina cost by 0.25");
         }
 
         public override void SetDefaults()
@@ -28,11 +28,26 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time = 3;
-            Ability.CooldownBonus -= 10;
+            Ability.Time = 2;
+            Ability.CooldownBonus -= 20;
             Ability.ActivationCostBonus -= 0.25f;
-            Ability.Boost += 0.15f;
+            Ability.Boost = 0.35f;
             base.OnActivate();
+
+            // Allow cumulative velocity
+            Player.velocity += Ability.Vel;
+        }
+
+        public override void UpdateActive()
+        {
+            if (Ability.Time-- <= 0) 
+                Ability.Deactivate();
+        }
+
+        public override void OnExit()
+        {
+            Player.fallStart = (int)(Player.position.Y / 16);
+            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         public override void UpdateActiveEffects()
