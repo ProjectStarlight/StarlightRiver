@@ -14,11 +14,6 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {
-        public Dash()
-        {
-            ResetStats();
-        }
-
         public int Time;
 
         public override float ActivationCostDefault => 1;
@@ -27,14 +22,14 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override int CooldownMax => CooldownBonus + 90;
 
-        public Vector2 dir;
-        public Vector2 vel;
+        private Vector2 dir;
         public const int defaultTime = 7;
 
+        public Vector2 Vel { get; private set; }
         public float Speed { get; set; }
         public float Boost { get; set; }
 
-        private void ResetStats()
+        public override void Reset()
         {
             Boost = 0.1f;
             Speed = 28;
@@ -51,7 +46,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         {
             base.OnActivate();
 
-            vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
+            Vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
@@ -129,8 +124,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnExit()
         {
-            ResetStats();
-            Player.velocity = vel;
+            Player.velocity = Vel;
             Player.fallStart = (int)(Player.position.Y/16);
             Player.fallStart2 = (int)(Player.position.Y/16);
         }
