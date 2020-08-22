@@ -19,7 +19,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             ResetStats();
         }
 
-        public int time;
+        public int Time;
 
         public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
@@ -38,7 +38,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         {
             Boost = 0.15f;
             Speed = 28;
-            time = defaultTime;
+            Time = defaultTime;
             CooldownBonus = 0;
         }
 
@@ -68,7 +68,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             Player.gravity = 0;
             Player.maxFallSpeed = Speed;
 
-            if (time-- <= 0) Deactivate();
+            if (Time-- <= 0) Deactivate();
 
             // Notable differences with new Ability:
             // - you can tech building momentum
@@ -106,13 +106,13 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void UpdateActiveEffects()
         {
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
-            int direction = time % 2 == 0 ? -1 : 1;
+            int direction = Time % 2 == 0 ? -1 : 1;
 
             for (int k = 0; k < 60; k++)
             {
                 float rot = 0.1f * k * direction;
-                Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + time / 8f), DustType<AirDash>());
-                dus.fadeIn = k - time * 3;
+                Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f), DustType<AirDash>());
+                dus.fadeIn = k - Time * 3;
             }
         }
 

@@ -34,7 +34,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             base.OnActivate();
             Main.PlaySound(SoundID.Item96, Player.Center);
 
-            Ability.time = 10;
+            Ability.Time = 10;
         }
 
         public override void UpdateActiveEffects()
@@ -42,17 +42,17 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
             for (float k = -2; k <= 2; k += 0.1f)
             {
-                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - 3 - Ability.time);
+                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - 3 - Ability.Time);
 
-                if (Ability.time == 0)
+                if (Ability.Time == 0)
                 {
                     //Vector2 pos2 = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 60;
                     //Dust.NewDustPerfect(pos2, DustType<Dusts.BlueStamina>(), Vector2.UnitY.RotatedBy(Ability.Player.velocity.ToRotation() + k + 1.57f) * Math.Abs(k), 0, default, 3 - Math.Abs(k));
                 }
-                Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.time / 10f);
+                Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.Time / 10f);
 
                 if (Math.Abs(k) >= 1.5f)
-                    Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.time / 10f);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.Time / 10f);
             }
         }
     }

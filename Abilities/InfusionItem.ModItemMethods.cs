@@ -22,7 +22,7 @@ namespace StarlightRiver.Abilities
 
         public void DrawInventory(SpriteBatch spriteBatch, Vector2 position, float opacity)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Abilities/Infusion/InfusionGlow");
+            Texture2D tex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
             Texture2D tex2 = GetTexture(Texture);
 
             Color color;
