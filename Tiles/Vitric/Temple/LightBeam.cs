@@ -112,7 +112,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                     Wiring.TripWire(x, y, 1, 1);
                 }
 
-                if(tile.type == TileType<DoorVertical>())
+                if(tile.type == TileType<DoorVertical>() || tile.type == TileType<DoorHorizontal>())
                 {
                     WorldGen.KillTile(x, y);
                 }
