@@ -22,9 +22,9 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override int CooldownMax => CooldownBonus + 90;
 
-        private Vector2 dir;
         public const int defaultTime = 7;
 
+        public Vector2 Dir { get; private set; }
         public Vector2 Vel { get; private set; }
         public float Speed { get; set; }
         public float Boost { get; set; }
@@ -39,7 +39,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
-            return abilityKeys.Get<Dash>().JustPressed && (dir = triggers.DirectionsRaw) != default;
+            return abilityKeys.Get<Dash>().JustPressed && (Dir = triggers.DirectionsRaw) != default;
         }
 
         public override void OnActivate()
@@ -79,7 +79,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public Vector2 GetDashBoost()
         {
-            return Vector2.Normalize(dir) * Speed;
+            return Vector2.Normalize(Dir) * Speed;
         }
 
         public static float SignedLesserBound(float limit, float other)
