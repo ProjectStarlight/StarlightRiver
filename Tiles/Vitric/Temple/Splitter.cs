@@ -10,7 +10,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
     {
         public override void SetDefaults()
         {
-            //minPick = int.MaxValue;
+            minPick = int.MaxValue;
             QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Splitter");
         }
     }
