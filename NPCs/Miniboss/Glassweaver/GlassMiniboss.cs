@@ -37,6 +37,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             npc.knockBackResist = 0;
             npc.boss = true;
             npc.defense = 14;
+            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
