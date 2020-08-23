@@ -30,8 +30,7 @@ namespace StarlightRiver.Tiles.Interactive
 
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                mp.GetAbility(out Dash dash);
-                dash?.Deactivate();
+                mp.ActiveAbility?.Deactivate();
 
                 if (player.velocity.Length() != 0)
                 {
