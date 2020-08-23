@@ -31,13 +31,16 @@ namespace StarlightRiver.Abilities
             get => staminaMaxBonus;
             set
             {
-                staminaMaxBonus = Math.Max(value, -StaminaMaxDefault); // Can't have less than 0 max hp...
-                Stamina = stamina; // Update Stamina property setter safely
+                // Can't have less than 0 max hp.
+                staminaMaxBonus = Math.Max(value, -StaminaMaxDefault);
+                // Call the Stamina.set internal method, to make sure Stamina is less than StaminaMax.
+                Stamina = stamina;
             }
         }
         public float Stamina
         {
             get => stamina;
+            // Can't have less than 0 or more than max stamina.
             set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
         }
         public float StaminaRegenRate { get; set; }
