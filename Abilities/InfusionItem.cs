@@ -13,14 +13,20 @@ namespace StarlightRiver.Abilities
 {
     public abstract partial class InfusionItem : ModItem
     {
+        public abstract InfusionTier Tier { get; }
         public virtual Type AbilityType { get; }
-        public Player Player { get; internal set; } // TODO sync this somehow
+        public Player Player => Main.player[item.owner];
         public Ability Ability
         {
             get
             {
-                if (AbilityType == null) return null;
-                if (ability == null) Player.GetHandler().GetAbility(AbilityType, out ability);
+                // If this ability doesn't have a type, don't try getting its Ability
+                if (AbilityType == null)
+                    return null;
+                // If it does, but ability is uninitialized, set ability to its type [if we have it unlocked]
+                if (ability == null)
+                    Player.GetHandler().GetAbility(AbilityType, out ability);
+                // Ret.
                 return ability;
             }
         }

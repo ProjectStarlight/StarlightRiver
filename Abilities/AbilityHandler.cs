@@ -145,8 +145,8 @@ namespace StarlightRiver.Abilities
             // General use case
             var newItem = item.item.Clone();
             newItem.SetDefaults(item.item.type);
+            newItem.owner = player.whoAmI;
             infusions[slot] = newItem.modItem as InfusionItem;
-            infusions[slot].Player = player;
 
             return true;
         }
@@ -161,8 +161,9 @@ namespace StarlightRiver.Abilities
             if (item == null) 
                 return true;
 
-            foreach (var infusion in infusions)
+            for (int i = 0; i < infusions.Length; i++)
             {
+                InfusionItem infusion = infusions[i];
                 if (infusion is null) continue;
 
                 if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
@@ -216,8 +217,6 @@ namespace StarlightRiver.Abilities
                 for (int i = 0; i < infusionsTemp.Count; i++)
                 {
                     infusions[i] = infusionsTemp[i].modItem as InfusionItem;
-                    if (infusions[i] != null)
-                        infusions[i].Player = player;
                 }
 
                 // Load max infusions
@@ -290,6 +289,15 @@ namespace StarlightRiver.Abilities
             }
 
             UpdateActiveAbility();
+
+            // To ensure fusions always have their owner set to a valid player.
+            for (int i = 0; i < infusions.Length; i++)
+            {
+                if (infusions[i] != null)
+                {
+                    infusions[i].item.owner = player.whoAmI;
+                }
+            }
         }
 
         private void UpdateActiveAbility()
@@ -297,6 +305,7 @@ namespace StarlightRiver.Abilities
             if (ReferenceEquals(nextAbility, activeAbility))
                 return;
 
+            // Call the current ability's deactivation hooks
             if (activeAbility != null)
             {
                 if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
@@ -306,12 +315,13 @@ namespace StarlightRiver.Abilities
                 activeAbility.Reset();
             }
 
+            // Set new active ability
             activeAbility = nextAbility;
 
-            // Fire more ability hooks and update stamina
+            // Call the new current ability's activation hooks, and apply stamina cost if new ability is real
             if (activeAbility != null)
             {
-                // Stamina
+                // Stamina cost
                 activeAbility.User = this;
                 Stamina -= activeAbility.ActivationCost(this);
                 activeAbility.ActivationCostBonus = 0;
@@ -326,20 +336,22 @@ namespace StarlightRiver.Abilities
 
         private void UpdateStaminaRegen()
         {
-            const int regenSmoothing = 10;
+            const int cooldownSmoothing = 10;
 
             // Faster regen while not moving much
             if (player.velocity.LengthSquared() > 1)
             {
-                SetStaminaRegenCD(regenSmoothing);
+                SetStaminaRegenCD(cooldownSmoothing);
             }
 
-            // Regen stamina
+            // Decrement cooldown
             if (staminaRegenCD > 0)
             {
                 staminaRegenCD--;
             }
-            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)regenSmoothing) + 1);
+
+            // Regen stamina at a speed inversely proportional to the smoothed cooldown
+            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)cooldownSmoothing) + 1);
         }
 
         private void UpdateAbilities()
@@ -356,8 +368,6 @@ namespace StarlightRiver.Abilities
                     if (infusion.AbilityType == ActiveAbility?.GetType())
                     {
                         infusion.UpdateActive();
-                        if (Main.netMode != NetmodeID.Server)
-                            infusion.UpdateActiveEffects();
                     }
                     called.Add(infusion.Ability);
                 }
@@ -366,7 +376,7 @@ namespace StarlightRiver.Abilities
             // Cut out previously called abilities
             called.SymmetricExceptWith(unlockedAbilities.Values);
 
-            // Iterate abilities unaffected by infusions
+            // Update abilities unaffected by infusions
             foreach (var ability in called)
             {
                 ability.UpdateFixed();
@@ -376,8 +386,6 @@ namespace StarlightRiver.Abilities
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
                 ActiveAbility.UpdateActive();
-                if (Main.netMode != NetmodeID.Server)
-                    ActiveAbility.UpdateActiveEffects();
             }
         }
 

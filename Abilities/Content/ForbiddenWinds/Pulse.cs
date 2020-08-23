@@ -13,6 +13,8 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Pulse : InfusionItem<Dash>
     {
+        public override InfusionTier Tier => InfusionTier.Untiered;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse");

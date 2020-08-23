@@ -9,6 +9,8 @@ namespace StarlightRiver.Abilities.Content.Infusions
 {
     class BasicInfusion : InfusionItem
     {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+
         public override Type AbilityType => null;
 
         public override void SetStaticDefaults()

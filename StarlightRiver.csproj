@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\references\tModLoader.targets" />
   <PropertyGroup>
@@ -11,11 +11,7 @@
     <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks)" />
   </Target>
   <ItemGroup>
-    <Compile Remove="Tiles\Overgrow\Multitiles\**" />
-    <EmbeddedResource Remove="Tiles\Overgrow\Multitiles\**" />
-    <None Remove="Tiles\Overgrow\Multitiles\**" />
-  </ItemGroup>
-  <ItemGroup>
+    <PackageReference Include="tModLoader.CodeAssist" Version="0.1.1" />
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
     </Reference>
@@ -23,7 +19,4 @@
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="&quot;$(tMLServerPath)&quot; -build &quot;$(ProjectDir)\&quot; -eac &quot;$(TargetPath)&quot;" />
-  </Target>
 </Project>

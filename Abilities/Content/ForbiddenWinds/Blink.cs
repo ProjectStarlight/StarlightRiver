@@ -12,6 +12,8 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Blink : InfusionItem<Dash>
     {
+        public override InfusionTier Tier => InfusionTier.Untiered;
+
         public override string Texture => ModContent.GetInstance<Astral>().Texture;
 
         public override void SetStaticDefaults()
