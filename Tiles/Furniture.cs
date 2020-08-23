@@ -550,7 +550,7 @@ namespace StarlightRiver.Tiles
         }
     }
 
-    //SolidWithTop
+    //Table
     class GenericSolidWithTop : Furniture
     {
         public GenericSolidWithTop(Color color, int dust, string name) : base(color, dust, name) { }
@@ -559,8 +559,8 @@ namespace StarlightRiver.Tiles
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color, true);
-            adjTiles = new int[] { TileID.SolidWithTops };
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsSolidWithTop);
+            adjTiles = new int[] { TileID.Tables };
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
         }
     }
 
@@ -574,7 +574,7 @@ namespace StarlightRiver.Tiles
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 1, dust, SoundID.Dig, false, color);
             adjTiles = new int[] { TileID.WorkBenches };
-            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsSolidWithTop);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
         }
     }
 }
