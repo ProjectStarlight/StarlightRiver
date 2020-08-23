@@ -16,9 +16,9 @@ namespace StarlightRiver
         internal ParticleSystem ForegroundParticles;
         internal ParticleSystem BackgroundParticles;
 
-        static readonly RenderTarget2D vitricBackgroundBannerTarget = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        static readonly RenderTarget2D vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-        static readonly VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
+        static readonly VerletChainInstance BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
         {
             segmentCount = 35,
             segmentDistance = 24,
@@ -89,7 +89,7 @@ namespace StarlightRiver
         {
             orig(self);
 
-            if (Main.gameMenu) return;
+            if (Main.gameMenu || Main.dedServ) return;
 
             Player player = null;
             if (Main.playerLoaded) { player = Main.LocalPlayer; }

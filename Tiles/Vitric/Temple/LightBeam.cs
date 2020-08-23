@@ -81,6 +81,8 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                     return false;
                 }
 
+                //TODO: Make this not yandev
+
                 if (tile.type == TileType<Splitter>())
                 {
                     Vector2 vel = oldVelocity.RotatedBy(MathHelper.Pi / 2f).ToPoint16().ToVector2();
@@ -108,6 +110,11 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                     Main.PlaySound(SoundID.DD2_BetsyFireballImpact, projectile.Center);
 
                     Wiring.TripWire(x, y, 1, 1);
+                }
+
+                if(tile.type == TileType<DoorVertical>())
+                {
+                    WorldGen.KillTile(x, y);
                 }
             }
             return true;

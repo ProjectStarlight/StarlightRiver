@@ -32,7 +32,7 @@ namespace StarlightRiver.Physics
         public bool customGravity = false;
         public List<Vector2> forceGravityList = new List<Vector2>();//length must match the segment count
 
-        public static RenderTarget2D target = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
 
         public VerletChainInstance(bool specialDraw)
@@ -160,14 +160,14 @@ namespace StarlightRiver.Physics
             buffer = buff;
         }
 
-        private static readonly BasicEffect effect = new BasicEffect(Main.graphics.GraphicsDevice)
+        private static readonly BasicEffect effect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
         {
             VertexColorEnabled = true
         };
 
         public void DrawStrip(Vector2 offset = default)
         {
-            if (ropeSegments.Count < 1) return;
+            if (ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             PrepareStrip(out var buffer, offset);
@@ -182,6 +182,7 @@ namespace StarlightRiver.Physics
 
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)
         {
+            if (Main.dedServ) return;
             spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
         }
 

@@ -63,7 +63,7 @@ namespace StarlightRiver.Abilities
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Abilities/Content/Infusion/InfusionGlow");
+            Texture2D tex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
             Texture2D tex2 = GetTexture(Texture);
 
             Color color;
