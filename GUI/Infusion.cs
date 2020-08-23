@@ -26,38 +26,42 @@ namespace StarlightRiver.GUI
 
         public override void OnInitialize()
         {
-            InfusionSlot slot;
+            // "StarlightRiver/GUI/Assets/Infusions" is 64x58
+            // The texture is centered at 100, 300 so its top-left is 68, 272
+            // The top slot's top-left corner is at 20, 4 on the texture
+            // So the top-left slot should be positioned at 88, 276 in screenspace. (Add top-left of texture and top-left corner of top slot)
 
-            slot = new InfusionSlot(0);
-            slots[slot.TargetSlot] = slot;
-            slot.Width.Set(20, 0);
-            slot.Height.Set(22, 0);
-            slot.Left.Set(90, 0);
-            slot.Top.Set(276, 0);
-            Append(slot);
+            const float width = 20;
+            const float height = 22;
+            const float topSlotLeft = 90;
+            const float topSlotTop = 276;
 
-            slot = new InfusionSlot(1);
-            slots[slot.TargetSlot] = slot;
-            slot.Width.Set(20, 0);
-            slot.Height.Set(22, 0);
-            slot.Left.Set(78, 0);
-            slot.Top.Set(294, 0);
-            Append(slot);
+            int targetSlot = 0;
+            void InitSlot(float left, float top)
+            {
+                InfusionSlot slot = new InfusionSlot(targetSlot);
+                slots[targetSlot] = slot;
+                slot.Width.Set(width, 0);
+                slot.Height.Set(height, 0);
+                slot.Left.Set(left, 0);
+                slot.Top.Set(top, 0);
+                Append(slot);
+                targetSlot++;
+            }
 
-            slot = new InfusionSlot(2);
-            slots[slot.TargetSlot] = slot;
-            slot.Width.Set(20, 0);
-            slot.Height.Set(22, 0);
-            slot.Left.Set(102, 0);
-            slot.Top.Set(294, 0);
-            Append(slot);
+            InitSlot(topSlotLeft, topSlotTop);
+            InitSlot(topSlotLeft - width / 2 - 4, topSlotTop + height);
+            InitSlot(topSlotLeft + width / 2 + 4, topSlotTop + height);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(GetTexture("StarlightRiver/GUI/Assets/Infusions"), new Vector2(100 - 26, 300 - 26), Color.White);
+            Texture2D texture = GetTexture("StarlightRiver/GUI/Assets/Infusions");
+            spriteBatch.Draw(texture, new Vector2(68, 272), Color.White);
 
             base.Draw(spriteBatch);
+            RemoveAllChildren();
+            Initialize();
             Recalculate();
         }
     }
@@ -73,44 +77,40 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             var mp = Main.LocalPlayer.GetHandler();
-            var hover = mp.GetInfusion(TargetSlot)?.item;
-
+            var equipped = mp.GetInfusion(TargetSlot);
 
             if (!Unlocked) //draw a lock instead for locked slots
             {
                 Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionLock");
-                spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White, 0f, tex.Frame().Center(), 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
             }
 
             //Draws the slot
-            else if (hover != null)
+            else if (equipped != null)
             {
                 //Draws the item itself
-                Texture2D tex2 = GetTexture(hover.modItem.Texture);
-                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0f, tex2.Frame().Center(), 1, SpriteEffects.None, 0);
+                equipped.Draw(spriteBatch, GetInnerDimensions().Center(), 1, false);
 
                 if (IsMouseHovering && Main.mouseItem.IsAir)
                 {
                     //Grabs the items tooltip
-                    string ToolTip = "";
-                    for (int k = 0; k < hover.ToolTip.Lines; k++)
+                    System.Text.StringBuilder ToolTip = new System.Text.StringBuilder();
+                    for (int k = 0; k < equipped.item.ToolTip.Lines; k++)
                     {
-                        ToolTip += hover.ToolTip.GetLine(k);
-                        ToolTip += "\n";
+                        ToolTip.AppendLine(equipped.item.ToolTip.GetLine(k));
                     }
 
                     //Draws the name and tooltip at the mouse
-                    Utils.DrawBorderStringBig(spriteBatch, hover.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(hover.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
-                    Utils.DrawBorderStringBig(spriteBatch, ToolTip, Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
+                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
+                    Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
                 }
             }
 
             // Draws the transparent visual
             else if (Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
             {
-                float opacity = 0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
-                Texture2D tex2 = GetTexture(mouseItem.Texture);
-                spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White * opacity, 0f, tex2.Frame().Center(), 1, SpriteEffects.None, 0);
+                float opacity = 0.33f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+                mouseItem.Draw(spriteBatch, GetDimensions().Center(), opacity, false);
             }
         }
 
