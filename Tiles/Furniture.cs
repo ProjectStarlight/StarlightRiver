@@ -166,7 +166,7 @@ namespace StarlightRiver.Tiles
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
             TileObjectData.addAlternate(1);
 
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 4, 0);
             QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
         }
     }
@@ -184,7 +184,7 @@ namespace StarlightRiver.Tiles
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
             TileObjectData.addAlternate(1);
 
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 4, 0);
             QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
         }
     }
@@ -196,7 +196,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 3, 0);
             TileObjectData.newTile.Origin = new Point16(0, 4);
             QuickBlock.QuickSetFurniture(this, 3, 4, dust, SoundID.Dig, false, color);
         }
@@ -210,7 +210,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             Main.tileLighted[Type] = true;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
         }
@@ -247,7 +247,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             Main.tileLighted[Type] = true;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 1, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
         }
@@ -278,7 +278,7 @@ namespace StarlightRiver.Tiles
             TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
             TileObjectData.addAlternate(1);
 
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
@@ -327,7 +327,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 2, 0);
             TileObjectData.newTile.Origin = new Point16(0, 5);
             QuickBlock.QuickSetFurniture(this, 2, 5, dust, SoundID.Dig, false, color);
         }
@@ -455,7 +455,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
         }
     }
@@ -468,7 +468,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             Main.tileLighted[Type] = true;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 3, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
         }
@@ -533,7 +533,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
         }
     }
@@ -545,7 +545,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color, true);
             adjTiles = new int[] { TileID.Tables };
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
@@ -559,7 +559,7 @@ namespace StarlightRiver.Tiles
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 1, dust, SoundID.Dig, false, color);
             adjTiles = new int[] { TileID.WorkBenches };
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);

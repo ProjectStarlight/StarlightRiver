@@ -22,4 +22,16 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
         public DoorVerticalItem() : base("Vertical Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorVertical>(), ItemRarityID.Blue) { }
     }
+
+    class DoorHorizontal : ModTile
+    {
+        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+    }
+
+    class DoorHorizontalItem : QuickTileItem
+    {
+        public override string Texture => "StarlightRiver/MarioCumming";
+
+        public DoorHorizontalItem() : base("Horizontal Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorHorizontal>(), ItemRarityID.Blue) { }
+    }
 }

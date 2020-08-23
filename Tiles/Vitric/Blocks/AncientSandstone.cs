@@ -55,8 +55,22 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
     internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", TileType<AncientSandstonePlatform>(), 0) { } }
 
     internal class AncientSandstoneWall : ModWall
-    { public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(62, 68, 55)); }
+    {
+        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(71, 46, 41));
+    }
 
-    internal class AncientSandstoneWallItem : QuickWallItem { public AncientSandstoneWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstoneWall>(), 0) { } }
+    internal class AncientSandstoneWallItem : QuickWallItem
+    {
+        public AncientSandstoneWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstoneWall>(), 0) { }
+    }
 
+    internal class AncientSandstonePillarWall : ModWall
+    {
+        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<AncientSandstonePillarWallItem>(), false, new Color(75, 48, 44));
+    }
+
+    internal class AncientSandstonePillarWallItem : QuickWallItem
+    {
+        public AncientSandstonePillarWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstonePillarWall>(), 0) { }
+    }
 }
