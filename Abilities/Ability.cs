@@ -36,27 +36,13 @@ namespace StarlightRiver.Abilities
 
         public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
-        public virtual void OnActivateEffects() { }
         public virtual void Reset() { }
         public virtual void UpdateActiveEffects() { }
         public virtual void UpdateFixed() { }
-        public virtual void OnExitEffects() { }
 
-        public virtual void OnActivate()
-        {
-            if (Main.netMode != 2)
-                OnActivateEffects();
-        }
-        public virtual void UpdateActive()
-        {
-            if (Main.netMode != 2)
-                UpdateActiveEffects();
-        }
-        public virtual void OnExit()
-        {
-            if (Main.netMode != 2)
-                OnExitEffects();
-        }
+        public virtual void OnActivate() { }
+        public virtual void UpdateActive() { }
+        public virtual void OnExit() { }
 
         public float ActivationCost(AbilityHandler handler) => (ActivationCostDefault + ActivationCostBonus) * handler.StaminaCostMultiplier + handler.StaminaCostBonus;
         public void Activate(AbilityHandler user)

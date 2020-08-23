@@ -300,40 +300,6 @@ namespace StarlightRiver.Abilities
             }
         }
 
-        private void UpdateActiveAbility()
-        {
-            if (ReferenceEquals(nextAbility, activeAbility))
-                return;
-
-            // Call the current ability's deactivation hooks
-            if (activeAbility != null)
-            {
-                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                    infusion.OnExit();
-                else
-                    activeAbility.OnExit();
-                activeAbility.Reset();
-            }
-
-            // Set new active ability
-            activeAbility = nextAbility;
-
-            // Call the new current ability's activation hooks, and apply stamina cost if new ability is real
-            if (activeAbility != null)
-            {
-                // Stamina cost
-                activeAbility.User = this;
-                Stamina -= activeAbility.ActivationCost(this);
-                activeAbility.ActivationCostBonus = 0;
-
-                // Hooks
-                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                    infusion.OnActivate();
-                else
-                    activeAbility.OnActivate();
-            }
-        }
-
         private void UpdateStaminaRegen()
         {
             const int cooldownSmoothing = 10;
@@ -368,6 +334,8 @@ namespace StarlightRiver.Abilities
                     if (infusion.AbilityType == ActiveAbility?.GetType())
                     {
                         infusion.UpdateActive();
+                        if (Main.netMode != NetmodeID.Server)
+                            infusion.UpdateActiveEffects();
                     }
                     called.Add(infusion.Ability);
                 }
@@ -386,6 +354,42 @@ namespace StarlightRiver.Abilities
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
                 ActiveAbility.UpdateActive();
+                if (Main.netMode != NetmodeID.Server)
+                    ActiveAbility.UpdateActiveEffects();
+            }
+        }
+
+        private void UpdateActiveAbility()
+        {
+            if (ReferenceEquals(nextAbility, activeAbility))
+                return;
+
+            // Call the current ability's deactivation hooks
+            if (activeAbility != null)
+            {
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnExit();
+                else
+                    activeAbility.OnExit();
+                activeAbility.Reset();
+            }
+
+            // Set new active ability
+            activeAbility = nextAbility;
+
+            // Call the new current ability's activation hooks, and apply stamina cost if new ability is real
+            if (activeAbility != null)
+            {
+                // Stamina cost
+                activeAbility.User = this;
+                Stamina -= activeAbility.ActivationCost(this);
+                activeAbility.ActivationCostBonus = 0;
+
+                // Hooks
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnActivate();
+                else
+                    activeAbility.OnActivate();
             }
         }
 
