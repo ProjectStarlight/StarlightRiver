@@ -49,6 +49,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<GlassweaverTown>());
             StarlightWorld.DesertOpen = true;
+            Main.NewText("The temple doors slide open...", new Color(200, 170, 80));
             return true;
         }
 
