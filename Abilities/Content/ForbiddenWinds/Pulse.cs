@@ -18,7 +18,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pulse");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by a short, frequent, and potent burst of speed\nDecreases Dash stamina cost by 0.25");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by a short, frequent, and potent burst of speed\nDecreases stamina cost by 0.25");
         }
 
         public override void SetDefaults()
@@ -36,8 +36,17 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             Ability.Boost = 0.35f;
             base.OnActivate();
 
-            // Allow cumulative velocity
-            Player.velocity += Ability.Vel;
+            // Controls how fast the player can get before they get diminishing returns, in a 1:1 ratio to their max run speed.
+            // v = 3 means they can be 3x faster than their normal max speed, etc
+            const float v = 3f;
+
+            // Calculate how fast the player is going compared to their max run speed.
+            // Allow div by zero here. With floats, it'll just return Infinity, which is fine.
+            float velocityPercent = Player.velocity.Length() / (Player.maxRunSpeed * v);
+
+            // Add to player velocity, allowing cumulative velocity.
+            // The amount of speed gained reduces in proportion to the velocityPercent. This is to prevent infinite velocity gain.
+            Player.velocity += Ability.Vel / Math.Max(1, velocityPercent);
         }
 
         public override void UpdateActive()

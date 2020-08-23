@@ -31,32 +31,35 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time -= 2;
+            Ability.Time = 4;
             Ability.StartCooldown();
-            
         }
 
         public override void UpdateActive()
         {
-            const int tpTime = 2;
-
-            Ability.Time--;
-
-            if (Ability.Time == tpTime)
+            if (Ability.Time == 4)
             {
                 Teleport();
             }
 
             if (Ability.Time <= 0)
                 Ability.Deactivate();
+
+            Ability.Time--;
         }
 
         private void Teleport()
         {
+            // Set up values for line collision calculation
             Vector2 travelVector = Ability.Dir * Ability.Speed * Ability.Time;
-            Vector2 collisionVector = Collision.AnyCollision(Player.position, travelVector, Player.width, Player.height);
+            float collisionPoint = 1;
+            //float travelVectorLineWidth = Math.Abs(Player.Size.RotatedBy(Ability.Dir.ToRotation()).Y
+
+            // TODO perform collision checks
+
+            // Update position
             Player.oldPosition = Player.position;
-            Player.position += collisionVector;
+            Player.position += travelVector * collisionPoint;
 
             if (Main.netMode != NetmodeID.Server)
             {
