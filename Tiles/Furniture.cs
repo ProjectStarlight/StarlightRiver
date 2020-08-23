@@ -19,7 +19,7 @@ namespace StarlightRiver.Tiles
         private readonly int dust = DustID.Dirt;
         private readonly int material = ItemID.DirtBlock;
 
-        protected AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
+        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
         {
             this.name = name;
             this.path = path;
@@ -197,7 +197,6 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
-            TileObjectData.newTile.Origin = new Point16(0, 4);
             QuickBlock.QuickSetFurniture(this, 3, 4, dust, SoundID.Dig, false, color);
         }
     }
@@ -300,17 +299,21 @@ namespace StarlightRiver.Tiles
 
         public override void HitWire(int i, int j)
         {
-            Tile tile = Framing.GetTileSafely(i, j);
+            Tile tile = Framing.GetTileSafely(i, j); //Initial tile
 
-            int newX = i - tile.frameX % 54 / 18;
+            int newX = i - tile.frameX % 54 / 18; //Adjustments
             int newY = j - tile.frameY % 54 / 18;
 
-            for (int k = 0; k < 3; k++)
+            tile = Framing.GetTileSafely(newX, newY); //Top-left tile
+
+            for (int k = 0; k < 3; k++) //Changes frames properly
+            {
                 for (int l = 0; l < 3; ++l)
                 {
                     Main.tile[newX + k, newY + l].frameX += (short)(tile.frameX >= 54 ? -54 : 54);
                     Wiring.SkipWire(newX + k, newY + l);
                 }
+            }
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
@@ -328,8 +331,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            TileObjectData.newTile.Origin = new Point16(0, 5);
-            QuickBlock.QuickSetFurniture(this, 2, 5, dust, SoundID.Dig, false, color);
+            QuickBlock.QuickSetFurniture(this, 2, 4, dust, SoundID.Dig, false, color);
         }
     }
 
@@ -479,6 +481,8 @@ namespace StarlightRiver.Tiles
 
             int newY = j - tile.frameY % 54 / 18;
 
+            tile = Framing.GetTileSafely(i, newY);
+
             for (int l = 0; l < 3; ++l)
             {
                 Main.tile[i, newY + l].frameX += (short)(tile.frameX >= 18 ? -18 : 18);
@@ -512,11 +516,17 @@ namespace StarlightRiver.Tiles
 
             int newY = j - tile.frameY % 36 / 18;
 
-            for (int l = 0; l < 2; ++l)
+            tile = Framing.GetTileSafely(i, newY);
+
+            Main.NewText("G: " + tile.frameX);
+
+            for (int l = 0; l < 2; --l)
             {
                 Main.tile[i, newY + l].frameX += (short)(tile.frameX >= 18 ? -18 : 18);
                 Wiring.SkipWire(i, newY + l);
             }
+
+            Main.NewText("G: " + tile.frameX);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
