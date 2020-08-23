@@ -13,7 +13,11 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 {
     class DoorVertical : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+        public override void SetDefaults()
+        {
+            TileID.Sets.DrawsWalls[Type] = true;
+            QuickBlock.QuickSetFurniture(this, 1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+        }
     }
 
     class DoorVerticalItem : QuickTileItem
@@ -25,7 +29,11 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class DoorHorizontal : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+        public override void SetDefaults()
+        {
+            TileID.Sets.DrawsWalls[Type] = true;
+            QuickBlock.QuickSetFurniture(this, 7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+        }
     }
 
     class DoorHorizontalItem : QuickTileItem

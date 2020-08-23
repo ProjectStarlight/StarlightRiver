@@ -20,7 +20,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
         public override void SetDefaults()
         {
-            //minPick = int.MaxValue;
+            minPick = int.MaxValue;
             QuickBlock.QuickSetFurniture(this, 11, 11, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
         }
     }

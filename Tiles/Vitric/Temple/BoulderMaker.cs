@@ -15,7 +15,11 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 {
     class BoulderMaker : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 6, 1, DustType<Dusts.Sand>(), SoundID.Tink, false, new Color(100, 80, 10));
+        public override void SetDefaults()
+        {
+            minPick = int.MaxValue;
+            QuickBlock.QuickSetFurniture(this, 6, 1, DustType<Dusts.Sand>(), SoundID.Tink, false, new Color(100, 80, 10));
+        }
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
