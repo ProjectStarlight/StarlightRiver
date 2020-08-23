@@ -56,7 +56,7 @@ namespace StarlightRiver.Abilities
 
         // Internal-only information.
 
-        private InfusionItem[] infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
+        private InfusionItem[] infusions = new InfusionItem[Infusion.InfusionSlots];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;

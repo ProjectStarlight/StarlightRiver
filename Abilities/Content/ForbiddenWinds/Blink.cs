@@ -29,12 +29,16 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time = 3;
+            Ability.Time -= 2;
+            Ability.StartCooldown();
+            
         }
 
         public override void UpdateActive()
         {
             const int tpTime = 2;
+
+            Ability.Time--;
 
             if (Ability.Time == tpTime)
             {

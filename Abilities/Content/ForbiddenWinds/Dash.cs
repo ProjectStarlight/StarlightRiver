@@ -14,6 +14,20 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {
+        public static float SignedLesserBound(float limit, float other)
+        {
+            if (limit < 0) return Math.Min(limit, other);
+            if (limit > 0) return Math.Max(limit, other);
+
+            return other;
+            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
+        }
+
+        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+        {
+            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
+        }
+
         public int Time;
 
         public override float ActivationCostDefault => 1;
@@ -29,6 +43,11 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public float Speed { get; set; }
         public float Boost { get; set; }
 
+        public void SetVelocity()
+        {
+            Vel = SignedLesserBound(Dir * Speed * Boost, Player.velocity); // "conservation of momentum" (lol)
+        }
+
         public override void Reset()
         {
             Boost = 0.1f;
@@ -39,14 +58,19 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
-            return abilityKeys.Get<Dash>().JustPressed && (Dir = triggers.DirectionsRaw) != default;
+            if (abilityKeys.Get<Dash>().JustPressed && triggers.DirectionsRaw != default)
+            {
+                Dir = Vector2.Normalize(triggers.DirectionsRaw);
+                return true;
+            }
+            return false;
         }
 
         public override void OnActivate()
         {
             base.OnActivate();
 
-            Vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
+            SetVelocity();
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
@@ -56,7 +80,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         {
             base.UpdateActive();
 
-            Player.velocity = SignedLesserBound(GetDashBoost(), Player.velocity); // "conservation of momentum"
+            Player.velocity = SignedLesserBound(Dir * Speed, Player.velocity); // "conservation of momentum"
 
             Player.frozen = true;
             Player.gravity = 0;
@@ -75,26 +99,6 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             //   - you can tech a jump if you hold jump during the ability (I like this, very celeste-y)
             // - old:
             //   - you can double-jump mid dash and f*ck up your dash
-        }
-
-        public Vector2 GetDashBoost()
-        {
-            return Vector2.Normalize(Dir) * Speed;
-        }
-
-        public static float SignedLesserBound(float limit, float other)
-        {
-            if (limit < 0) return Math.Min(limit, other);
-            if (limit > 0) return Math.Max(limit, other);
-
-            return other;
-            // TODO show modification of Dash
-            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
-        }
-
-        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
-        {
-            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
         }
 
         public override void UpdateActiveEffects()
