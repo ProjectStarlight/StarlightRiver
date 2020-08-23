@@ -88,7 +88,7 @@ namespace StarlightRiver.NPCs.Hostile
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
+            return (spawnInfo.player.GetHandler().Unlocked<Abilities.Content.ForbiddenWinds.Dash>() && spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
         }
 
         public override void NPCLoot()

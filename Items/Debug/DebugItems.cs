@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using StarlightRiver.Abilities;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -82,6 +83,7 @@ namespace StarlightRiver.Items.Debug
         public override bool UseItem(Player player)
         {
             StarlightWorld.DesertOpen = true;
+            player.GetHandler().Lock<Abilities.Content.ForbiddenWinds.Dash>();
             return true;
         }
 

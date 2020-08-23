@@ -103,6 +103,7 @@ namespace StarlightRiver.Pickups
             player.GetHandler().Unlock<Dash>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
+            player.GetModPlayer<StarlightPlayer>().inTutorial = true;
             player.AddBuff(BuffID.Featherfall, 580);
         }
     }

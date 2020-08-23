@@ -79,6 +79,8 @@ namespace StarlightRiver.Abilities
             return infusion != null;
         }
 
+        public void Lock<T>() where T : Ability => unlockedAbilities.Remove(typeof(T));
+
         /// <summary>
         /// Unlocks the ability type for the player.
         /// </summary>
