@@ -45,7 +45,7 @@ namespace StarlightRiver.Tiles
             Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod, 15);
             Add("Sink", new GenericSink(color, dust, name + "Sink"), mod, 6);
             Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod, 5);
-            Add("SolidWithTop", new GenericSolidWithTop(color, dust, name + "SolidWithTop"), mod, 8);
+            Add("Table", new GenericSolidWithTop(color, dust, name + "Table"), mod, 8);
             Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod, 10);
 
             //special stuff for the door
