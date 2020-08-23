@@ -129,7 +129,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 float angle = projectile.velocity.ToRotation()+MathHelper.ToRadians(Main.rand.Next(40, 140));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y+Main.rand.Next(-30,90)), projectile.width, projectile.height, mod.DustType("VitricDust"), 0f, 0f, 50, default(Color), ((10f - num315) / 5f)*(float)projectile.timeLeft/20f);
+                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y+Main.rand.Next(-30,90)), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, ((10f - num315) / 5f)*(float)projectile.timeLeft/20f);
                 Main.dust[num316].noGravity = true;
                 Main.dust[num316].velocity = vecangle;
                 Main.dust[num316].fadeIn = 0.5f;
@@ -193,19 +193,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
             Point16 point = new Point16((int)(projectile.Center.X / 16), Math.Min(Main.maxTilesY, (int)(projectile.Center.Y / 16) + 1));
             Tile tile = Framing.GetTileSafely(point.X, point.Y);
-            int dusttype = mod.DustType("VitricDust");
+            int dusttype = mod.DustType("Glass2");
 
             //hard coded dust ids in worldgen.cs, ew
-            if (tile != null)
+            if (tile != null && WorldGen.InWorld(point.X, point.Y, 1))
             {
+                if (tile.active())
                 DustHelper.TileDust(tile, ref dusttype);
             }
 
             for (float num315 = 0.2f; num315 < 8; num315 += 0.50f)
             {
-                float angle = MathHelper.ToRadians(-Main.rand.Next(70, 120));
+                float angle = MathHelper.ToRadians(-Main.rand.Next(60, 120));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y), projectile.width, projectile.height, dusttype, 0f, 0f, 50, default(Color), (10f - num315) / 5f);
+                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y), projectile.width, projectile.height, dusttype, 0f, 0f, 50, default, (10f - num315) / 5f);
                 Main.dust[num316].noGravity = true;
                 Main.dust[num316].velocity = vecangle;
                 Main.dust[num316].fadeIn = 0.5f;

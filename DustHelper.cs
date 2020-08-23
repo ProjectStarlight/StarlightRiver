@@ -53,10 +53,11 @@ namespace StarlightRiver
             switch (tile.type)
             {
                 case TileID.Stone: dusttype = DustID.Stone; break;
-                case TileID.Sand: case TileID.Sandstone: dusttype = DustID.Sandstorm; break;
+                case TileID.Sand: case TileID.Sandstone: dusttype = 32; break;
                 case TileID.Granite: dusttype = DustID.Granite; break;
                 case TileID.Marble: dusttype = DustID.Marble; break;
-                case TileID.Grass: dusttype = DustID.Grass; break;
+                case TileID.Grass: case TileID.JungleGrass: dusttype = DustID.Grass; break;
+                case TileID.MushroomGrass: case TileID.MushroomBlock: dusttype = 96; break;
 
                 default:
                     if (TileID.Sets.Crimson[tile.type])

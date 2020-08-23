@@ -15,9 +15,9 @@ namespace StarlightRiver.Items.Vitric
             item.height = 34;
             item.useStyle = ItemUseStyleID.HoldingOut;
             Item.staff[item.type] = true;
-            item.useAnimation = 20;
-            item.useTime = 20;
-            item.reuseDelay = 60;
+            item.useAnimation = 10;
+            item.useTime = 10;
+            item.reuseDelay = 20;
             item.autoReuse = true;
             item.shootSpeed = 12f;
             item.knockBack = 0f;
@@ -48,7 +48,7 @@ namespace StarlightRiver.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Book");
-            Tooltip.SetDefault("Summons waves that leave behind traps on nearby ground, with spacing between them\nThese traps rapidly spike enemies who step on them");
+            Tooltip.SetDefault("Summons waves that leave behind broken glass traps on nearby ground, with spacing between them\nThese rapidly spike enemies who step on them");
         }
     }
 }
