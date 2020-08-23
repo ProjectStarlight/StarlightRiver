@@ -16,9 +16,14 @@ namespace StarlightRiver.Abilities
 
         public override void OnActivate()
         {
+            StartCooldown();
+            base.OnActivate();
+        }
+
+        public void StartCooldown()
+        {
             Cooldown = CooldownMax + CooldownBonus;
             CooldownBonus = 0;
-            base.OnActivate();
         }
 
         public override void UpdateFixed()

@@ -31,10 +31,14 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 
         private const int size = 10; // TODO make constant in release build
 
+        public override void Reset()
+        {
+            Speed = 5;
+        }
+
         public override void OnActivate()
         {
             Player.mount.Dismount(Player);
-            Speed = 5;
             for (int k = 0; k <= 50; k++)
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-20, 20), Main.rand.Next(-20, 20), 0, default, 1.2f);
         }

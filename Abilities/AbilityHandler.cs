@@ -31,13 +31,16 @@ namespace StarlightRiver.Abilities
             get => staminaMaxBonus;
             set
             {
-                staminaMaxBonus = Math.Max(value, -StaminaMaxDefault); // Can't have less than 0 max hp...
-                Stamina = stamina; // Update Stamina property setter safely
+                // Can't have less than 0 max hp.
+                staminaMaxBonus = Math.Max(value, -StaminaMaxDefault);
+                // Call the Stamina.set internal method, to make sure Stamina is less than StaminaMax.
+                Stamina = stamina;
             }
         }
         public float Stamina
         {
             get => stamina;
+            // Can't have less than 0 or more than max stamina.
             set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
         }
         public float StaminaRegenRate { get; set; }
@@ -56,7 +59,7 @@ namespace StarlightRiver.Abilities
 
         // Internal-only information.
 
-        private InfusionItem[] infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
+        private InfusionItem[] infusions = new InfusionItem[Infusion.InfusionSlots];
         private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;
@@ -142,8 +145,8 @@ namespace StarlightRiver.Abilities
             // General use case
             var newItem = item.item.Clone();
             newItem.SetDefaults(item.item.type);
+            newItem.owner = player.whoAmI;
             infusions[slot] = newItem.modItem as InfusionItem;
-            infusions[slot].Player = player;
 
             return true;
         }
@@ -158,8 +161,9 @@ namespace StarlightRiver.Abilities
             if (item == null) 
                 return true;
 
-            foreach (var infusion in infusions)
+            for (int i = 0; i < infusions.Length; i++)
             {
+                InfusionItem infusion = infusions[i];
                 if (infusion is null) continue;
 
                 if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
@@ -213,8 +217,6 @@ namespace StarlightRiver.Abilities
                 for (int i = 0; i < infusionsTemp.Count; i++)
                 {
                     infusions[i] = infusionsTemp[i].modItem as InfusionItem;
-                    if (infusions[i] != null)
-                        infusions[i].Player = player;
                 }
 
                 // Load max infusions
@@ -287,56 +289,35 @@ namespace StarlightRiver.Abilities
             }
 
             UpdateActiveAbility();
-        }
 
-        private void UpdateActiveAbility()
-        {
-            if (ReferenceEquals(nextAbility, activeAbility))
-                return;
-
-            if (activeAbility != null)
+            // To ensure fusions always have their owner set to a valid player.
+            for (int i = 0; i < infusions.Length; i++)
             {
-                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                    infusion.OnExit();
-                else
-                    activeAbility.OnExit();
-                activeAbility.Reset();
-            }
-
-            activeAbility = nextAbility;
-
-            // Fire more ability hooks and update stamina
-            if (activeAbility != null)
-            {
-                // Stamina
-                activeAbility.User = this;
-                Stamina -= activeAbility.ActivationCost(this);
-                activeAbility.ActivationCostBonus = 0;
-
-                // Hooks
-                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
-                    infusion.OnActivate();
-                else
-                    activeAbility.OnActivate();
+                if (infusions[i] != null)
+                {
+                    infusions[i].item.owner = player.whoAmI;
+                }
             }
         }
 
         private void UpdateStaminaRegen()
         {
-            const int regenSmoothing = 10;
+            const int cooldownSmoothing = 10;
 
             // Faster regen while not moving much
             if (player.velocity.LengthSquared() > 1)
             {
-                SetStaminaRegenCD(regenSmoothing);
+                SetStaminaRegenCD(cooldownSmoothing);
             }
 
-            // Regen stamina
+            // Decrement cooldown
             if (staminaRegenCD > 0)
             {
                 staminaRegenCD--;
             }
-            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)regenSmoothing) + 1);
+
+            // Regen stamina at a speed inversely proportional to the smoothed cooldown
+            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)cooldownSmoothing) + 1);
         }
 
         private void UpdateAbilities()
@@ -363,7 +344,7 @@ namespace StarlightRiver.Abilities
             // Cut out previously called abilities
             called.SymmetricExceptWith(unlockedAbilities.Values);
 
-            // Iterate abilities unaffected by infusions
+            // Update abilities unaffected by infusions
             foreach (var ability in called)
             {
                 ability.UpdateFixed();
@@ -375,6 +356,40 @@ namespace StarlightRiver.Abilities
                 ActiveAbility.UpdateActive();
                 if (Main.netMode != NetmodeID.Server)
                     ActiveAbility.UpdateActiveEffects();
+            }
+        }
+
+        private void UpdateActiveAbility()
+        {
+            if (ReferenceEquals(nextAbility, activeAbility))
+                return;
+
+            // Call the current ability's deactivation hooks
+            if (activeAbility != null)
+            {
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnExit();
+                else
+                    activeAbility.OnExit();
+                activeAbility.Reset();
+            }
+
+            // Set new active ability
+            activeAbility = nextAbility;
+
+            // Call the new current ability's activation hooks, and apply stamina cost if new ability is real
+            if (activeAbility != null)
+            {
+                // Stamina cost
+                activeAbility.User = this;
+                Stamina -= activeAbility.ActivationCost(this);
+                activeAbility.ActivationCostBonus = 0;
+
+                // Hooks
+                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                    infusion.OnActivate();
+                else
+                    activeAbility.OnActivate();
             }
         }
 

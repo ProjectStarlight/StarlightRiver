@@ -49,6 +49,7 @@ namespace StarlightRiver.Items.Debug
         {
             //NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             var ah = player.GetModPlayer<Abilities.AbilityHandler>();
+            ah.InfusionLimit = 1;
             return true;
         }
 

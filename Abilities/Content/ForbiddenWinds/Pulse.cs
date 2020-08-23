@@ -13,12 +13,12 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Pulse : InfusionItem<Dash>
     {
-        protected float sizeMult;
+        public override InfusionTier Tier => InfusionTier.Untiered;
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Pulse I");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDashes become short, frequent, and potent pulses\nDecreases Dash stamina cost by 0.15");
+            DisplayName.SetDefault("Pulse");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by a short, frequent, and potent burst of speed\nDecreases stamina cost by 0.25");
         }
 
         public override void SetDefaults()
@@ -30,13 +30,35 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time = 4;
-            Ability.Speed -= 3;
-            Ability.CooldownBonus -= 10;
-            Ability.ActivationCostBonus -= 0.15f;
-            Ability.Boost += 0.2f;
+            Ability.Time = 2;
+            Ability.CooldownBonus -= 20;
+            Ability.ActivationCostBonus -= 0.25f;
+            Ability.Boost = 0.35f;
             base.OnActivate();
-            sizeMult = 0.33f;
+
+            // Controls how fast the player can get before they get diminishing returns, in a 1:1 ratio to their max run speed.
+            // v = 3 means they can be 3x faster than their normal max speed, etc
+            const float v = 3f;
+
+            // Calculate how fast the player is going compared to their max run speed.
+            // Allow div by zero here. With floats, it'll just return Infinity, which is fine.
+            float velocityPercent = Player.velocity.Length() / (Player.maxRunSpeed * v);
+
+            // Add to player velocity, allowing cumulative velocity.
+            // The amount of speed gained reduces in proportion to the velocityPercent. This is to prevent infinite velocity gain.
+            Player.velocity += Ability.Vel / Math.Max(1, velocityPercent);
+        }
+
+        public override void UpdateActive()
+        {
+            if (Ability.Time-- <= 0) 
+                Ability.Deactivate();
+        }
+
+        public override void OnExit()
+        {
+            Player.fallStart = (int)(Player.position.Y / 16);
+            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         public override void UpdateActiveEffects()
@@ -46,10 +68,13 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
 
-            float maxSize = 1.4f;
-            float numCircles = 10 * sizeMult;
+            const float sizeMult = 0.3f;
+            const float maxSize = 1.4f;
+            const float numCircles = 3.3f;
 
+            // Iterate circle sizes
             for (var size = maxSize; size > 0; size -= maxSize / numCircles)
+                // Iterate dust particle in a circle
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
                     float ovalScale = size / (1 + Ability.Time) * sizeMult;
@@ -60,44 +85,6 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
                     d.noGravity = true;
                     d.noLight = true;
                 }
-        }
-
-        class Pulse2 : Pulse
-        {
-            public override void SetStaticDefaults()
-            {
-                DisplayName.SetDefault("Pulse II");
-                Tooltip.SetDefault("Forbidden Winds Infusion\nDashes become even shorter, more frequent, and more potent pulses\nDecreases Dash stamina cost by 0.25");
-            }
-
-            public override void OnActivate()
-            {
-                Ability.Time -= 2;
-                Ability.CooldownBonus -= 10;
-                Ability.ActivationCostBonus -= 0.1f;
-                Ability.Boost += 0.15f;
-                base.OnActivate();
-                sizeMult = 0.5f;
-            }
-        }
-
-        class Pulse3 : Pulse2
-        {
-            public override void SetStaticDefaults()
-            {
-                DisplayName.SetDefault("Pulse III");
-                Tooltip.SetDefault("Forbidden Winds Infusion\nDashes become strong rapid-fire pulses\nDecreases Dash stamina cost by 0.5");
-            }
-
-            public override void OnActivate()
-            {
-                Ability.Time -= 1;
-                Ability.CooldownBonus -= 10;
-                Ability.ActivationCostBonus -= 0.25f;
-                Ability.Boost += 0.15f;
-                base.OnActivate();
-                sizeMult = 0.66f;
-            }
         }
     }
 }

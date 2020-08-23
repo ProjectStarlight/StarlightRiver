@@ -16,32 +16,30 @@ namespace StarlightRiver.Abilities
     {
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            DrawInventory(spriteBatch, position, 1);
+            Draw(spriteBatch, position + GetTexture(Texture).Size() / 2, 1, true);
             return false;
         }
 
-        public void DrawInventory(SpriteBatch spriteBatch, Vector2 position, float opacity)
+        public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity, bool glow)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
-            Texture2D tex2 = GetTexture(Texture);
+            Texture2D outlineTex = GetTexture("StarlightRiver/Abilities/Content/Infusions/Tier" + (int)Tier);
+            spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, 1, 0, 0);
+            Texture2D mainTex = GetTexture(Texture);
+            spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, 1, 0, 0);
 
-            Color color;
-
-            if (AbilityType == null) color = Color.Gray;
-            else
+            if (glow)
             {
-                if (Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability))
-                    color = ability.Color;
+                Texture2D glowTex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
+                Color color;
+
+                if (AbilityType == null || Ability == null)
+                    color = Color.Gray;
                 else
-                    return;
+                    color = Ability.Color;
+
+                float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+                spriteBatch.Draw(glowTex, position, null, color * sin * opacity, 0, glowTex.Size() / 2, 1, 0, 0);
             }
-
-            float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
-            Vector2 pos = position + tex2.Size() / 2 - Vector2.One;
-
-            spriteBatch.Draw(tex, pos, null, color * sin * opacity, 0, tex.Size() / 2, 1, 0, 0);
-
-            spriteBatch.Draw(tex2, pos, null, Color.White * opacity, 0, tex2.Size() / 2, 1, 0, 0);
         }
 
         public override void Update(ref float gravity, ref float maxFallSpeed)
@@ -63,24 +61,7 @@ namespace StarlightRiver.Abilities
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
-            Texture2D tex2 = GetTexture(Texture);
-
-            Color color;
-
-            if (AbilityType == null) color = Color.Gray;
-            else
-            {
-                if (!Main.LocalPlayer.GetHandler().GetAbility(AbilityType, out Ability ability)) return false;
-                color = ability.Color;
-            }
-
-            float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
-            Vector2 pos = item.Center - Main.screenPosition;
-
-            spriteBatch.Draw(tex, pos, null, color * sin, 0, tex.Size() / 2, 1, 0, 0);
-
-            spriteBatch.Draw(tex2, pos, null, Color.White, 0, tex2.Size() / 2, 1, 0, 0);
+            Draw(spriteBatch, item.Center - Main.screenPosition, 1, true);
             return false;
         }
 
