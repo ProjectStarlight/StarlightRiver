@@ -12,6 +12,7 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
     {
         public override void SetDefaults()
         {
+            minPick = int.MaxValue;
             QuickBlock.QuickSet(this, 200, DustID.Copper, SoundID.Tink, new Color(150, 105, 65), ItemType<AncientSandstoneItem>());
             Main.tileMerge[Type][TileType<AncientSandstoneTile>()] = true;
         }
@@ -24,6 +25,7 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
     {
         public override void SetDefaults()
         {
+            minPick = int.MaxValue;
             QuickBlock.QuickSet(this, 200, DustID.Copper, SoundID.Tink, new Color(160, 115, 75), ItemType<AncientSandstoneTileItem>());
             Main.tileMerge[Type][TileType<AncientSandstone>()] = true;
         }

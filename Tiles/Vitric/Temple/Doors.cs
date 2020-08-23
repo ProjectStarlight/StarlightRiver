@@ -15,6 +15,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
     {
         public override void SetDefaults()
         {
+            minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             QuickBlock.QuickSetFurniture(this, 1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
@@ -31,6 +32,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
     {
         public override void SetDefaults()
         {
+            minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             QuickBlock.QuickSetFurniture(this, 7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
