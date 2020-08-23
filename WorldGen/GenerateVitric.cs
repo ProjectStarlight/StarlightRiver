@@ -620,8 +620,9 @@ namespace StarlightRiver
 
             for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
             {
-                if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100)) return false; //Crystal found, can't place here
-                if (Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100)) return false; //Crystal found, can't place here
+                //TODO: fix this and uncomment
+                //if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100)) return false; //Crystal found, can't place here
+                //if (Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100)) return false; //Crystal found, can't place here
                 if (GetHeight(x + i) - 30 > GetHeight(x - wid) || GetHeight(x + i) - 30 > GetHeight(x + wid)) return false; //Large height differencial found, can't place
                 if (GetDepth(x + i) + 30 < GetDepth(x - wid) || GetDepth(x + i) + 30 < GetDepth(x + wid)) return false; //Large height differencial found, can't place
             }
