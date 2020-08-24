@@ -19,6 +19,7 @@ namespace StarlightRiver
         private static readonly List<Rectangle> Halls = new List<Rectangle>();
         private static Rectangle wispRoom = Rectangle.Empty;
         private static Rectangle bossRoom = Rectangle.Empty;
+        private static int roomAttempts;
 
         public static void OvergrowGen(GenerationProgress progress)
         {
@@ -30,7 +31,7 @@ namespace StarlightRiver
             progress.Message = "Generating The Overgrowth...";
 
             int attempts = 0;
-            int roomAttempts = 0;
+            roomAttempts = 0;
 
             while (attempts < 100) //try 100 possible overgrowths for a given world
             {
@@ -215,6 +216,8 @@ namespace StarlightRiver
         private static void WormFromRoom(Rectangle parent, byte initialDirection = 5, bool verticalOnly = false, byte maxRooms = 30)
         {
             if (Rooms.Count >= maxRooms) return;
+
+            roomAttempts++;
 
             byte direction = initialDirection >= 5 ? (byte)WorldGen.genRand.Next(4) : initialDirection;
             Rectangle hall;
