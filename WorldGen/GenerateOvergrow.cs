@@ -14,7 +14,7 @@ namespace StarlightRiver
     {
         private const int RoomHeight = 32;
         private const int HallWidth = 16;
-        private const int HallThickness = 2;
+        //private const int HallThickness = 2;
         private static readonly List<Rectangle> Rooms = new List<Rectangle>();
         private static readonly List<Rectangle> Halls = new List<Rectangle>();
         private static Rectangle wispRoom = Rectangle.Empty;
@@ -216,7 +216,6 @@ namespace StarlightRiver
         {
             if (Rooms.Count >= maxRooms) return;
 
-            roomAttempts++;
             byte direction = initialDirection >= 5 ? (byte)WorldGen.genRand.Next(4) : initialDirection;
             Rectangle hall;
             Rectangle room;
