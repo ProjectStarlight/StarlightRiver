@@ -30,7 +30,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Time = 2;
+            Ability.Time = 6;
             Ability.CooldownBonus -= 20;
             Ability.ActivationCostBonus -= 0.25f;
             Ability.Boost = 0.35f;
@@ -47,6 +47,10 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             // Add to player velocity, allowing cumulative velocity.
             // The amount of speed gained reduces in proportion to the velocityPercent. This is to prevent infinite velocity gain.
             Player.velocity += Ability.Vel / Math.Max(1, velocityPercent);
+
+            // Reset fall
+            Player.fallStart = (int)(Player.position.Y / 16);
+            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         public override void UpdateActive()
@@ -57,13 +61,11 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnExit()
         {
-            Player.fallStart = (int)(Player.position.Y / 16);
-            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         public override void UpdateActiveEffects()
         {
-            if (Ability.Time > 0)
+            if (Ability.Time != 5)
                 return;
 
             Vector2 vel = Vector2.Normalize(Player.velocity) * -1;
@@ -77,7 +79,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
                 // Iterate dust particle in a circle
                 for (float k = 0; k < 6.28f; k += 0.02f)
                 {
-                    float ovalScale = size / (1 + Ability.Time) * sizeMult;
+                    float ovalScale = size / 1 * sizeMult;
                     float offset = (size / maxSize) * 30 + 10;
                     Vector2 pos = Player.Center + vel * offset + (new Vector2((float)Math.Cos(k) * 20, (float)Math.Sin(k) * 40) * ovalScale).RotatedBy(Player.velocity.ToRotation());
 
