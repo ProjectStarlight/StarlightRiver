@@ -312,6 +312,8 @@ namespace StarlightRiver
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
         {
             orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+            if (Main.gameMenu) return;
+
             for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)
                 for (int j = (int)Main.screenPosition.Y / 16; j < (int)Main.screenPosition.Y / 16 + Main.screenWidth / 16; j++)
                 {
@@ -320,6 +322,12 @@ namespace StarlightRiver
                         GrassOvergrow.CustomDraw(i, j, Main.spriteBatch);
                     }
                 }
+
+            //Temple shroud, TODO: move this somewhere more sane later. Imcrunched for time rn.
+            if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.DesertOpen || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
+            {
+                Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + Vector2.UnitX * 7) * 16 - Main.screenPosition, Color.Black);
+            }
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)

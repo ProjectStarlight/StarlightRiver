@@ -36,6 +36,8 @@ namespace StarlightRiver.Core
         public int MaxPickupTimer = 0;
         public NPC PickupTarget;
 
+        public bool inTutorial;
+
         public float GuardDamage;
         public int GuardCrit;
         public float GuardBuff;
@@ -207,6 +209,7 @@ namespace StarlightRiver.Core
         public override void OnEnterWorld(Player player)
         {
             Collection.ShouldReset = true;
+            inTutorial = false;
         }
 
         public override float UseTimeMultiplier(Item item) => itemSpeed;

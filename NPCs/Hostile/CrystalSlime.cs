@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -51,8 +52,10 @@ namespace StarlightRiver.NPCs.Hostile
                 {
                     shielded = false;
                     npc.velocity += player.velocity * 0.5f;
+
                     mp.ActiveAbility?.Deactivate();
-                    player.velocity *= (player.velocity.X == 0) ? -0.4f : -0.2f;
+                    player.velocity = Vector2.Normalize(player.velocity) * -10f;
+
                     player.immune = true;
                     player.immuneTime = 10;
 
@@ -88,7 +91,7 @@ namespace StarlightRiver.NPCs.Hostile
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
+            return (spawnInfo.player.GetHandler().Unlocked<Abilities.Content.ForbiddenWinds.Dash>() && spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
         }
 
         public override void NPCLoot()

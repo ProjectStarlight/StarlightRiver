@@ -22,7 +22,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Electric>(), Vector2.Zero);
+            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Electric>(), Vector2.Zero, 0, default, 0.5f);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)

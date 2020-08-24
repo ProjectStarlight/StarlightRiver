@@ -51,10 +51,12 @@ namespace StarlightRiver.Tiles
 
         private void WindForce(int index)//wind
         {
-            float sin = (float)System.Math.Sin(StarlightWorld.rottime - index / 3f);
+            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+
+            float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
             float cos = (float)System.Math.Cos(projectile.ai[0]);
-            float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + cos);
+            float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
 

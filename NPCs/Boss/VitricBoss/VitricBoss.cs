@@ -331,6 +331,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         {
                             if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox)) //boss should be dashable now, when dashed:
                             {
+                                player.immune = true;
+                                player.immuneTime = 60;
                                 SetFrameX(2);
                                 ChangePhase(AIStates.SecondPhase, true); //go on to the next phase
                                 ResetAttack(); //reset attack

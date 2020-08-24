@@ -15,6 +15,7 @@ namespace StarlightRiver
     public class BiomeHandler : ModPlayer
     {
         public bool ZoneGlass = false;
+        public bool ZoneGlassTemple = false;
         public bool GlassBG = false;
         public bool ZoneVoidPre = false;
         public bool ZoneJungleCorrupt = false;
@@ -29,9 +30,12 @@ namespace StarlightRiver
         public bool FountainJungleBloody = false;
         public bool FountainJungleHoly = false;
 
+        public static Rectangle GlassTempleZone => new Rectangle(StarlightWorld.VitricBiome.Center.X - 50, StarlightWorld.VitricBiome.Center.Y - 4, 101, 400);
+
         public override void UpdateBiomes()
         {
             ZoneGlass = StarlightWorld.glassTiles > 50 || StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
+            ZoneGlassTemple = GlassTempleZone.Contains((player.Center / 16).ToPoint()) && Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall != Terraria.ID.WallID.None;
             GlassBG = StarlightWorld.VitricBiome.Contains((player.Center / 16).ToPoint()) && ZoneGlass;
             ZoneVoidPre = (StarlightWorld.voidTiles > 50);
             ZoneJungleCorrupt = (StarlightWorld.corruptJungleTiles > 50);

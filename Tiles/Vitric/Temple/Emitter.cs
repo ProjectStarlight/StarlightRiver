@@ -9,7 +9,11 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 {
     class Emitter : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Light Emitter");
+        public override void SetDefaults()
+        {
+            minPick = int.MaxValue;
+            QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Light Emitter");
+        }
 
         public override bool NewRightClick(int i, int j)
         {
