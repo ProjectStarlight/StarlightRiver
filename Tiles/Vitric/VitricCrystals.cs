@@ -21,6 +21,8 @@ namespace StarlightRiver.Tiles.Vitric
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
+
+            Main.tileMerge[Type][TileType<Blocks.VitricSpike>()] = true;
         }
 
         public override bool CanExplode(int i, int j)
@@ -58,6 +60,8 @@ namespace StarlightRiver.Tiles.Vitric
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
+
+            Main.tileMerge[Type][TileType<Blocks.VitricSpike>()] = true;
         }
 
         public override bool CanExplode(int i, int j)

@@ -158,8 +158,10 @@ namespace StarlightRiver
             GenRuins();
             GenForge();
             GenDecoration();
-            GenMoss();
+            //GenMoss();
             GenTemple();
+
+            VitricBiome.Y -= 7; //Adjust a bit
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
