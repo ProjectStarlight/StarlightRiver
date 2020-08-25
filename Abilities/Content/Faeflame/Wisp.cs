@@ -29,7 +29,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 
         private Rectangle oldHitbox;
 
-        private const int size = 10; // TODO make constant in release build
+        private const int size = 10;
 
         public override void Reset()
         {

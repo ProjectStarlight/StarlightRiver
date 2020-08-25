@@ -336,10 +336,11 @@ namespace StarlightRiver
 
         public static bool ScanForTypeDown(int startX, int startY, int type, int maxDown = 50)
         {
-            for (int k = 0; k >= 0; k++)
+            for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
-                if (Main.tile[startX, startY + k].type == type) return true;
-                if (k > maxDown || startY + k >= Main.maxTilesY) break;
+                Tile tile = Framing.GetTileSafely(startX, startY + k);
+                if (tile.active() && tile?.type == type) 
+                    return true;
             }
             return false;
         }

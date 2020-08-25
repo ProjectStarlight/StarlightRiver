@@ -91,7 +91,7 @@ namespace StarlightRiver
             StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowWispRoom", wispRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
             StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowGateRoom", Rooms[0].TopLeft().ToPoint16(), StarlightRiver.Instance);
 
-            //TODO:
+            //TODO: gen
             //      hallway prefabs
             //      special rooms
         }

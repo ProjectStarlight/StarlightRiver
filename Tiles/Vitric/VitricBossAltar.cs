@@ -48,7 +48,7 @@ namespace StarlightRiver.Tiles.Vitric
             if (Helper.HasItem(player, ItemType<Items.Vitric.GlassIdol>(), 1))
             {
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
-                Helper.TryTakeItem(player, ItemType<Items.Vitric.GlassIdol>(), 1);
+                player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>());
                 return true;
             }
             return false;
