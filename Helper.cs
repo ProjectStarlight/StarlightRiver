@@ -20,6 +20,8 @@ namespace StarlightRiver
         private static int tiltTime;
         private static float tiltMax;
 
+        public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0,0,(int)vector.X, (int)vector.Y);
+
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
 
         public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;

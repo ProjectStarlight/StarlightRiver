@@ -22,16 +22,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		public int max;
 		public float rotation = 0;
 		public int direction = 1;
-		internal VKnife(int index,int max)
+		internal VKnife(int index, int max)
 		{
 			this.index = index;
 			this.max = max;
 		}
-		public void Update(float rotation,Player owner)
+		public void Update(float rotation, Player owner)
 		{
-			float angle = MathHelper.ToRadians(((float)index / (float)max) * (360f))* direction;
-			pos = new Vector2((float)Math.Cos(rotation+angle)*8, (float)Math.Sin(rotation+angle)*16);
-			this.rotation = (float)Math.Sin(rotation+angle)/2f;
+			float angle = MathHelper.ToRadians(((float)index / (float)max) * (360f)) * direction;
+			pos = new Vector2((float)Math.Cos(rotation + angle) * 8, (float)Math.Sin(rotation + angle) * 16);
+			this.rotation = (float)Math.Sin(rotation + angle) / 2f;
 		}
 
 
@@ -42,9 +42,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		private float movementlerp = 0;
 		private float startchase = 0;
 		private float reversechase = 0;
+		private float moltenglowanim = 0f;
 		private List<VKnife> knives;
-		public static readonly Vector2[] swordlocs = { new Vector2(4,4), new Vector2(4, 9), new Vector2(4, 5), new Vector2(4, 38) };
-		public static readonly Vector2[] holdweaponsoffset = { new Vector2(-96, -96), new Vector2(96, 0), new Vector2(-96, -96), new Vector2(180, -80) };
+		public static readonly Vector2[] swordlocs = { new Vector2(4, 4), new Vector2(4, 9), new Vector2(4, 5), new Vector2(4, 38) };
+		public static readonly Vector2[] holdweaponsoffset = { new Vector2(-32, -24), new Vector2(10, -6), new Vector2(-32, -16), new Vector2(30, -32) };
 
 
 		public VitricSummonOrb()
@@ -53,6 +54,60 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			for (int i = 0; i < 3; i += 1)
 				knives.Add(new VKnife(i, 3));
 
+		}
+
+		public int NextWeapon
+		{
+			get
+			{
+				int projcount = 0;
+				List<int> findweapon = new List<int>();
+				for (int i = 0; i < 4; i++)
+					findweapon.Add(i);
+
+				for (int i = 0; i < Main.maxProjectiles; i++)
+				{
+					Projectile currentProjectile = Main.projectile[i];
+					if (currentProjectile.active
+					&& currentProjectile.owner == projectile.owner
+					&& currentProjectile.type == projectile.type)
+					{
+						if (i == currentProjectile.whoAmI)
+						{
+							projcount += 1;
+							for (int j = 0; j < 20; j++)
+								findweapon.Add((int)currentProjectile.ai[0]);
+						}
+					}
+				}
+
+				if (projcount < 3)
+				{
+					for (int i = 0; i < 4; i++)
+						for (int j = (int)projectile.ai[0]; j >= 0; j--)
+							findweapon.Add(j);
+				}
+
+				//Find least common
+				return (findweapon.ToArray().GroupBy(i => i).OrderBy(g => g.Count()).Select(g => g.Key).ToList()).First();
+			}
+
+		}
+
+
+		public static Rectangle WhiteFrame(Rectangle tex,bool white)
+		{
+			return new Rectangle(white ? tex.Width / 2 : 0, tex.Y, tex.Width / 2, tex.Height);
+		}
+
+		public static Color MoltenGlow(float time)
+		{
+			Color MoltenGlowc = Color.White;
+			if (time > 30 && time < 60)
+				MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f,1f));
+			else if (time >= 60)
+				MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red,Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f,1f));
+			return MoltenGlowc;
 		}
 
 		public override void SetStaticDefaults()
@@ -95,14 +150,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.timeLeft = 2;
 			}
 			bool toplayer = true;
-			Vector2 gothere = player.Center+new Vector2(player.direction*(projectile.ai[0]%2==0 ? -40 : 10),-12);
+			Vector2 gothere = player.Center+new Vector2(player.direction*(holdweaponsoffset[(int)projectile.ai[0]].X), holdweaponsoffset[(int)projectile.ai[0]].Y);
 			if ((int)projectile.ai[1] > 0)
 			{
 				projectile.Center = player.Center;
 				projectile.localAI[0] = 0f;
 				projectile.spriteDirection = player.direction;
+				moltenglowanim = 0;
+				if ((int)projectile.ai[1]==1)
+				projectile.ai[0] = NextWeapon;
 			}
 			projectile.localAI[0] += 1;
+			moltenglowanim += 1f;
 			projectile.ai[1] -= 1;
 
 			List<NPC> closestnpcs = new List<NPC>();
@@ -115,7 +174,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					closestnpcs.Add(Main.npc[i]);
 			}
 
-			//int it=player.grappling.OrderBy(n => (Main.projectile[n].active ? 0 : 999999) + Main.projectile[n].timeLeft).ToArray()[0];
 			NPC them = closestnpcs.Count<1 ? null : closestnpcs.ToArray().OrderBy(npc => projectile.Distance(npc.Center)).ToList()[0];
 			NPC oldthem = null;
 
@@ -123,7 +181,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			{
 				oldthem = them;
 				them = Main.npc[player.MinionAttackTargetNPC];
-				gothere = them.Center + new Vector2(them.direction * holdweaponsoffset[(int)projectile.ai[0]].X, holdweaponsoffset[(int)projectile.ai[0]].Y);
+				gothere = them.Center + new Vector2(them.direction * 120,-64);
 			}
 
 			if (them != null && them.active && projectile.localAI[0]>15)
@@ -216,6 +274,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Player player = Main.player[projectile.owner];
 
 			float scale = Math.Min(projectile.localAI[0] / 15f, 1f);
+			Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
+			Rectangle Rect2 = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true);
 
 
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition));
@@ -223,21 +283,24 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Vector2 drawOrigin;
 			if ((int)projectile.ai[0] == 0 || (int)projectile.ai[0] == 3)
 			{
-				drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
-				spriteBatch.Draw(tex, drawPos, null, color, (projectile.rotation+ (projectile.ai[0] == 3 ? MathHelper.ToRadians(90f) : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale*scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				drawOrigin = new Vector2(tex.Width/2f, tex.Height) / 2f;
+				spriteBatch.Draw(tex, drawPos, Rect, color, (projectile.rotation+ (projectile.ai[0] == 3 ? MathHelper.ToRadians(90f) : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale*scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, Rect2, MoltenGlow(moltenglowanim), (projectile.rotation+ (projectile.ai[0] == 3 ? MathHelper.ToRadians(90f) : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale*scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			}
 			if ((int)projectile.ai[0] == 1)
 			{
-				drawOrigin = new Vector2(projectile.spriteDirection<0 ? tex.Width-swordlocs[1].X : swordlocs[1].X, swordlocs[1].Y);
-				spriteBatch.Draw(tex, drawPos, new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				drawOrigin = new Vector2((projectile.spriteDirection<0 ? tex.Width-swordlocs[1].X : swordlocs[1].X)/2f, swordlocs[1].Y);
+				spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),true), MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			}
 			if ((int)projectile.ai[0] == 2)
 			{
 				foreach (VKnife knife in knives)
 				{
-					drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+					drawOrigin = new Vector2(tex.Width/2f, tex.Height) / 2f;
 					float rotoffset = projectile.rotation + MathHelper.ToRadians(45f)+ knife.rotation;
-					spriteBatch.Draw(tex, drawPos+ knife.pos * scale, null, color, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+					spriteBatch.Draw(tex, drawPos+ knife.pos * scale, Rect, color, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+					spriteBatch.Draw(tex, drawPos+ knife.pos * scale, Rect2, MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 				}
 			}
 
@@ -254,7 +317,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					proj.ai[0] = projectile.rotation + (projectile.spriteDirection>0 ? 0 : 1000);
 					proj.ai[1] = target.whoAmI;
 					projectile.ai[1] = 80;
-					proj.netUpdate = true; projectile.netUpdate = true;
+					(proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+					proj.netUpdate = true;
 				}
 
 				if (attack == 1 && target.Distance(projectile.Center) < 80)
@@ -263,7 +327,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					proj.ai[0] = projectile.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
 					proj.ai[1] = target.whoAmI;
 					projectile.ai[1] = 80;
-					proj.netUpdate = true; projectile.netUpdate = true;
+					(proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+					proj.netUpdate = true;
 				}
 
 				if (attack == 2 && target.Distance(projectile.Center) < 300)
@@ -276,6 +341,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						proj.ai[1] = target.whoAmI;
 						(proj.modProjectile as VitricSummonKnife).offset = new Vector2(0, -10 + (index * 10));
 						projectile.ai[1] = 80;
+						(proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
 						proj.netUpdate = true;
 						index += 1;
 					}
@@ -286,11 +352,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						proj.ai[0] = (projectile.rotation) + (projectile.spriteDirection > 0 ? 0 : 1000);
 						proj.ai[1] = target.whoAmI;
 						projectile.ai[1] = 80;
+						(proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
 						proj.netUpdate = true;
 				}
-				projectile.netUpdate = true;
-				if (projectile.ai[1]>0)
-				projectile.ai[0] = 3;
 			}
 		}
 
@@ -349,7 +413,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.netUpdate = true;
 			}
 
-			if (enemy != null && enemy.active) { strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y * 4); enemysize = new Vector2(enemy.width, enemy.height); }
+			if (enemy != null && enemy.active)
+			{
+				strikewhere = enemy.Center + enemy.velocity*4;
+				enemysize = new Vector2(enemy.width, enemy.height);
+			}
+
 			if (offset.X < 1)
 			{
 
@@ -380,7 +449,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						{
 							float angle = MathHelper.ToRadians(-Main.rand.Next(-10, 10));
 							Vector2 velo = Vector2.Normalize((((projectile.rotation) + angle) + (float)Math.PI).ToRotationVector2()) * ((i + 82f) / 40f);
-							Dust.NewDustPerfect(projectile.Center + Vector2.Normalize(projectile.velocity)*(i * 1.5f) + new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-12, 0)), ModContent.DustType<Dusts.Gold2>(), 
+							Dust.NewDustPerfect(projectile.Center + Vector2.Normalize(projectile.velocity)*(i * 1.5f) + new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-6, 6)), DustID.LavaMoss, 
 								new Vector2(velo.X*projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
 						}
 					}
@@ -423,16 +492,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Main.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
 			return true;
 		}
-		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor)
+		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor,float aimframe)
 		{
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon4");
-			Texture2D glow = ModContent.GetTexture("StarlightRiver/Keys/Glow");
 
-			Vector2 drawOrigin = tex.Size() / 2f;
+			Vector2 drawOrigin = new Vector2(tex.Width/2f,tex.Height)/2f;
+			Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
+			Rectangle Rect2 = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true);
 			float rotoffset = projectile.rotation + MathHelper.ToRadians(90f);
 			float themath = Math.Min((projectile.localAI[0] - 200f) / 300f, 1f);
-			spriteBatch.Draw(glow, drawpos - Main.screenPosition, null, (lightColor* themath * 0.50f)*((float)projectile.penetrate/(float)projectile.maxPenetrate), rotoffset * projectile.spriteDirection, glow.Size()/2f, projectile.scale*new Vector2(0.5f,2f), SpriteEffects.None, 0f);
-			spriteBatch.Draw(tex, drawpos - Main.screenPosition, null, Color.Lerp(lightColor,Color.Orange, themath), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect, lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+
 		}
 	}
 
@@ -500,7 +571,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.netUpdate = true;
 			}
 
-			if (enemy != null && enemy.active) { strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y*4); enemysize = new Vector2(enemy.width, enemy.height); }
+			if (enemy != null && enemy.active)
+			{ 
+				strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y*4);
+				enemysize = new Vector2(enemy.width, enemy.height);
+			}
 			if (offset.X < 1)
 			{
 
@@ -547,13 +622,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
 			return true;
 		}
-		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor)
+		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
 		{
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon3");
 
-		Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
-		float rotoffset = projectile.rotation + MathHelper.ToRadians(45f);
-		spriteBatch.Draw(tex, drawpos - Main.screenPosition, null, lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+		Vector2 drawOrigin = new Vector2(tex.Width/2, tex.Height) / 2f;
+			float rotoffset = projectile.rotation + MathHelper.ToRadians(45f);
+		spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+		spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 		}
 	}
 
@@ -611,7 +687,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.netUpdate = true;
 			}
 
-			if (enemy != null && enemy.active) { strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 12, enemy.velocity.Y); enemysize = new Vector2(enemy.width, enemy.height); }
+			if (enemy != null && enemy.active)
+			{
+				strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 12, enemy.velocity.Y);
+				enemysize = new Vector2(enemy.width, enemy.height); 
+			}
 
 			Vector2 gothere;
 			if (projectile.localAI[0] < 30)//Prepare to swing
@@ -757,15 +837,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			int[] hitboxframe = { 0, (int)(projectile.height / 2f), (int)(projectile.height / 2f), (int)(projectile.height) };
 			return base.Colliding(new Rectangle((int)projectile.Center.X, -16+(int)projectile.position.Y+ hitboxframe[(int)projectile.localAI[1]], projectile.width,projectile.height+32), targetHitbox);
 		}
-		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor)
+		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
 		{
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon2");
 
 			Vector2 pos = VitricSummonOrb.swordlocs[(int)projectile.localAI[1]];
-			Vector2 drawOrigin = drawOrigin = new Vector2(projectile.spriteDirection < 0 ? tex.Width - pos.X : pos.X, pos.Y);
+			Vector2 drawOrigin = new Vector2((projectile.spriteDirection < 0 ? tex.Width - pos.X : pos.X)/2f, pos.Y);
 			Vector2 drawPos = ((drawpos - Main.screenPosition));
 			Color color = lightColor*Math.Min(1f,1f-((projectile.localAI[0]-140f)/30f));
-			spriteBatch.Draw(tex, drawPos, new Rectangle(0, (int)projectile.localAI[1]*(tex.Height / 4), tex.Width,tex.Height/4), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0, (int)projectile.localAI[1]*(tex.Height / 4), tex.Width,tex.Height/4),false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0, (int)projectile.localAI[1]*(tex.Height / 4), tex.Width,tex.Height/4),true), VitricSummonOrb.MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 		}
 	}
 
@@ -776,6 +857,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		protected Player player;
 		protected NPC enemy;
 		protected Vector2 oldhitbox;
+		internal float moltenglowanim=0f;
 
 		public override void SetStaticDefaults()
 		{
@@ -813,6 +895,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 			projectile.localAI[0] += 1;
 			enemy = Main.npc[(int)projectile.ai[1]];
+			moltenglowanim += 1f / (1f+(float)projectile.extraUpdates);
 			DoAI();
 		}
 
@@ -841,7 +924,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 70)//Swing up
 			{
 				float lerpval = Math.Min(projectile.localAI[0] / 50f, 1f);
-				if (enemy != null && enemy.active) { strikewhere = enemy.Center+new Vector2(enemy.velocity.X, enemy.velocity.Y/2f); enemysize = new Vector2(enemy.width, enemy.height); }
+				if (enemy != null && enemy.active)
+				{
+					strikewhere = enemy.Center+new Vector2(enemy.velocity.X, enemy.velocity.Y/2f);
+					enemysize = new Vector2(enemy.width, enemy.height);
+				}
 
 				projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(-45), 0.075f* lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(75+ (float)Math.Pow(projectile.localAI[0]*2f,0.80) + enemysize.X/2f), -200));
@@ -879,6 +966,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 							DustHelper.TileDust(tile, ref dusttype);
 
 							Projectile.NewProjectile(new Vector2(point.X, point.Y-1)*16,Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(projectile.damage*0.25), 0, Main.myPlayer, (int)tile.type, 16*projectile.spriteDirection);
+						Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
 
 						for (float num315 = 2f; num315 < 15; num315 += 0.50f)
 						{
@@ -920,19 +1008,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			for (float xx = Math.Min(1f,(projectile.velocity.Length() - 4f) / 2f); xx > 0 ; xx -= 0.10f)
 			{
 				Vector2 drawPos = (pos) - ((projectile.velocity*6f) * xx);
-				Draw(spriteBatch, drawPos, lightColor* (1f-xx)*0.5f);
+				Draw(spriteBatch, drawPos, lightColor* (1f-xx)*0.5f,xx);
 			}
-			Draw(spriteBatch, projectile.Center, lightColor);
+			Draw(spriteBatch, projectile.Center, lightColor,0);
 			return false;
 		}
-	public virtual void Draw(SpriteBatch spriteBatch,Vector2 drawpos, Color lightColor)
+	public virtual void Draw(SpriteBatch spriteBatch,Vector2 drawpos, Color lightColor, float aimframe)
 		{
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon1");
 
-			Vector2 drawOrigin = new Vector2(tex.Width, tex.Height) / 2f;
+			Vector2 drawOrigin = new Vector2(tex.Width/2f, tex.Height) / 2f;
 			Vector2 drawPos = ((drawpos - Main.screenPosition));
 			Color color = lightColor;
-			spriteBatch.Draw(tex, drawPos, null, color, projectile.rotation* projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), color, projectile.rotation* projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 		}
 	}
 

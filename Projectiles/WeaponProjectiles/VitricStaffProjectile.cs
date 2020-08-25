@@ -93,13 +93,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
-            for (float num315 = 0.2f; num315 < 8; num315 += 0.25f)
+            for (float num315 = 0.2f; num315 < 5; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle))* num315;
                 int num316 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, (10f- num315)/5f);
                 Main.dust[num316].noGravity = true;
-                Main.dust[num316].velocity = vecangle;
+                Main.dust[num316].velocity = vecangle/3f;
                 Main.dust[num316].fadeIn = 0.5f;
             }
         }

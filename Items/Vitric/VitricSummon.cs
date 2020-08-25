@@ -43,7 +43,7 @@ namespace StarlightRiver.Items.Vitric
 				{
 					if (i == currentProjectile.whoAmI)
 						index += 1;
-					index %= 2;
+					index %= 4;
 				}
 			}
 
