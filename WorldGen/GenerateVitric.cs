@@ -176,8 +176,10 @@ namespace StarlightRiver
             GenRuins();
             GenForge();
             GenDecoration();
-            GenMoss();
+            //GenMoss();
             GenTemple();
+
+            VitricBiome.Y -= 7; //Adjust a bit
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
@@ -579,7 +581,8 @@ namespace StarlightRiver
                         cY--;
                     cY = FindType(cX, cY, -1, ValidGround);
                     //PlaceObject(cX, cY - 3, TileType<VitricOre>(), true, 0, 0);
-                    Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
+                    if (ScanRectangle(cX, cY - 3, 2, 3) < 4)
+                        Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
                 }
             }
         }
