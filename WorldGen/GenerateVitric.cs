@@ -90,7 +90,7 @@ namespace StarlightRiver
                 CreateIsland(x, y); //Adds island pos to list and places island
             }
 
-            for (int i = 0; i < 6; ++i) //Mini islands v2, outer only
+            for (int i = 0; i < 8; ++i) //Mini islands v2, outer only
             {
                 int x = i <= 2 ? VitricBiome.X + 6 + genRand.Next((int)(VitricSlopeOffset * 1.3f)) : VitricBiome.Right - 6 - genRand.Next((int)(VitricSlopeOffset * 1.3f));
                 if (i <= 2 && forgeSide == 0) x += 10;
@@ -592,7 +592,7 @@ namespace StarlightRiver
                     // Success! Halve the spawnAttempts count so we don't spam crystals.
                     PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).type, true, true);
                     Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
-                    spawnAttempts /= 2;
+                    spawnAttempts /= 4;
                 }
             }
         }

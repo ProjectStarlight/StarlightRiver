@@ -203,7 +203,7 @@ namespace StarlightRiver.Items.Aluminum
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<AluminumBar>(), 15);
-            recipe.AddIngredient(ItemType<Debug.DebugPotion>());
+            //recipe.AddIngredient(ItemType<Debug.DebugPotion>());
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
