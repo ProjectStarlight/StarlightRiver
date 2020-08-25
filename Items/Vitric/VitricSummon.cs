@@ -17,11 +17,10 @@ namespace StarlightRiver.Items.Vitric
 			item.useTime = 36;
 			item.useAnimation = 36;
 			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.value = Item.buyPrice(0, 4, 0, 0);
+			item.value = Item.buyPrice(0, 5, 0, 0);
 			item.rare = ItemRarityID.Green;
 			item.UseSound = SoundID.Item44;
 
-			// These below are needed for a minion weapon
 			item.noMelee = true;
 			item.summon = true;
 			item.buffType = mod.BuffType("VitricSummonBuff");
@@ -31,7 +30,26 @@ namespace StarlightRiver.Items.Vitric
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			player.AddBuff(item.buffType, 2);
-			return true;
+			position = player.Center - new Vector2(player.direction * 64,16);
+
+			int index = 0;
+
+			for (int i = 0; i < Main.maxProjectiles; i++)
+			{
+				Projectile currentProjectile = Main.projectile[i];
+				if (currentProjectile.active
+				&& currentProjectile.owner == player.whoAmI
+				&& currentProjectile.type == type)
+				{
+					if (i == currentProjectile.whoAmI)
+						index += 1;
+					index %= 2;
+				}
+			}
+
+			Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockBack, player.whoAmI, index);
+
+			return false;
 		}
 
 		public override void SetStaticDefaults()
