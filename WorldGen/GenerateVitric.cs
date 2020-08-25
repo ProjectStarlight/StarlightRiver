@@ -437,6 +437,7 @@ namespace StarlightRiver
             FloorCrystal(miniIslandX, yVal);
         }
 
+        // TODO remove? fix?
         /// <summary>Generates Vitric Moss at 7-11 random positions throughout the biome.</summary>
         private static void GenMoss()
         {
@@ -479,7 +480,7 @@ namespace StarlightRiver
         private static void CreateIsland(int x, int y, bool small = false)
         {
             int wid = genRand.Next(32, 42);
-            if (small) wid = genRand.Next(9, 14);
+            if (small) wid = genRand.Next(10, 18);
             int top = 5;
             int depth = 2;
 
@@ -568,37 +569,30 @@ namespace StarlightRiver
             }
             else if (small)
             {
-                if (genRand.Next(5) > 0)
+                // Input variables
+                int spawnAttempts = 30;
+                int cX, cY;
+
+                // Perform several checks
+                while (spawnAttempts-- > 0)
                 {
-                    // Input variables
-                    int spawnAttempts = 15;
-                    int cX, cY, cY2;
+                    cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
+                    cY = y - 5;
+                    cY = FindType(cX, cY, -1, ValidGround);
+                    // If the left side of the crystal isn't valid,
+                    // or if the right side is occupied,
+                    // skip.
+                    if (cY == -1)
+                        continue;
 
-                    // Perform several checks
-                    do
-                    {
-                        cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
-                        cY = y - 5;
-                        cY = FindType(cX, cY, -1, ValidGround);
-                        // If the left side of the crystal isn't even valid, skip.
-                        if (cY == -1)
-                            goto next;
+                    // If there are solid tiles in the way, skip.
+                    if (ScanRectangle(cX, cY - 3, 2, 3) > 1)
+                        continue;
 
-                        // If the left/right side of the crystals are uneven, skip.
-                        cY2 = FindType(cX + 1, cY, -1, ValidGround);
-                        if (cY != cY2) 
-                            goto next;
-
-                        // If there are solid tiles in the way, skip.
-                        if (Collision.SolidTiles(cX, cX + 1, cY - 3, cY - 1))
-                            goto next;
-                        next:;
-                    }
-                    while (spawnAttempts-- > 0);
-
-                    // Success if there are any extra spawn attempts
-                    if (spawnAttempts > 0)
-                        Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
+                    // Success! Halve the spawnAttempts count so we don't spam crystals.
+                    PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).type, true, true);
+                    Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
+                    spawnAttempts /= 2;
                 }
             }
         }
