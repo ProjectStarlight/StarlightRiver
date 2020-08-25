@@ -161,7 +161,7 @@ namespace StarlightRiver
             //GenMoss();
             GenTemple();
 
-            VitricBiome.Y -= 7; //Adjust a bit
+            VitricBiome.Y -= 8; //Adjust a bit
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
@@ -193,7 +193,7 @@ namespace StarlightRiver
                 if (xDif < VitricSlopeOffset) //Start curve
                 {
                     layers["CEILING"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + xDif))); //17f is the constant that goes to the roof
-                    layers["TOP"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + (xDif + 12)))) - 8;
+                    layers["TOP"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + (xDif + 12)))) - 12;
 
                     if (xDif < 10) layers["CEILING"] = VitricBiome.Y + VitricBiome.Height / 2;
                     else if (xDif < 17) layers["CEILING"] += genRand.Next(-1, 2);
@@ -201,7 +201,7 @@ namespace StarlightRiver
                     if (layers["TOP"] < VitricBiome.Y) layers["TOP"] = VitricBiome.Y; //Caps off top
 
                     layers["FLOOR"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + xDif))) + (VitricBiome.Height / 2); //Curves down towards floor
-                    layers["BOTTOM"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + (xDif + 12)))) + (VitricBiome.Height / 2) + 28;
+                    layers["BOTTOM"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + (xDif + 12)))) + (VitricBiome.Height / 2) + 32;
 
                     if (xDif < 10) layers["FLOOR"] = VitricBiome.Y + VitricBiome.Height / 2;
                     else if (xDif < 17) layers["FLOOR"] += genRand.Next(-1, 2);
@@ -235,7 +235,7 @@ namespace StarlightRiver
                 else //End curve
                 {
                     layers["CEILING"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + adjXDif)));
-                    layers["TOP"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + (adjXDif + 12)))) - 8;
+                    layers["TOP"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + (adjXDif + 12)))) - 12;
 
                     if (layers["TOP"] < VitricBiome.Y) layers["TOP"] = VitricBiome.Y; //Caps off top
 
@@ -243,7 +243,7 @@ namespace StarlightRiver
                     else if (xDif > VitricBiome.Width - 17) layers["CEILING"] += genRand.Next(-1, 2);
 
                     layers["FLOOR"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + adjXDif))) + (VitricBiome.Height / 2);
-                    layers["BOTTOM"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + (adjXDif + 12)))) + (VitricBiome.Height / 2) + 23;
+                    layers["BOTTOM"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + (adjXDif + 12)))) + (VitricBiome.Height / 2) + 27;
 
                     if (xDif < 10) layers["FLOOR"] = VitricBiome.Center.Y;
                     else if (xDif < 17) layers["FLOOR"] += genRand.Next(-1, 2);
@@ -540,7 +540,7 @@ namespace StarlightRiver
             }
 
             //Place crystal if needed
-            if (crystalsPlaced <= (VitricBiome.Width / 240) + 1 && !small) //2 on a small world
+            if (crystalsPlaced <= (VitricBiome.Width / 240) + 2 && !small)
             {
                 int tries = 0;
                 while (true)
@@ -586,7 +586,7 @@ namespace StarlightRiver
                         continue;
 
                     // If there are solid tiles in the way, skip.
-                    if (ScanRectangle(cX, cY - 3, 2, 3) > 1)
+                    if (ScanRectangle(cX, cY - 3, 2, 3) > 2)
                         continue;
 
                     // Success! Halve the spawnAttempts count so we don't spam crystals.
