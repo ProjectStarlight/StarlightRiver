@@ -14,24 +14,24 @@ namespace StarlightRiver
     {
         private const int RoomHeight = 32;
         private const int HallWidth = 16;
-        private const int HallThickness = 2;
+        //private const int HallThickness = 2;
         private static readonly List<Rectangle> Rooms = new List<Rectangle>();
         private static readonly List<Rectangle> Halls = new List<Rectangle>();
         private static Rectangle wispRoom = Rectangle.Empty;
         private static Rectangle bossRoom = Rectangle.Empty;
-        private static int attempts = 0;
-        private static int roomAttempts = 0;
+        private static int roomAttempts;
 
         public static void OvergrowGen(GenerationProgress progress)
         {
-            attempts = 0;
-
             bossRoom = Rectangle.Empty;
             wispRoom = Rectangle.Empty;
             Rooms.Clear();
             Halls.Clear();
 
             progress.Message = "Generating The Overgrowth...";
+
+            int attempts = 0;
+            roomAttempts = 0;
 
             while (attempts < 100) //try 100 possible overgrowths for a given world
             {
@@ -86,6 +86,7 @@ namespace StarlightRiver
                 PopulateHall(Halls[k], k > 7);
             }
 
+            // TODO update these structures? they throw.
             StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowBossRoom", bossRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
             StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowWispRoom", wispRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
             StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowGateRoom", Rooms[0].TopLeft().ToPoint16(), StarlightRiver.Instance);
@@ -217,6 +218,7 @@ namespace StarlightRiver
             if (Rooms.Count >= maxRooms) return;
 
             roomAttempts++;
+
             byte direction = initialDirection >= 5 ? (byte)WorldGen.genRand.Next(4) : initialDirection;
             Rectangle hall;
             Rectangle room;
