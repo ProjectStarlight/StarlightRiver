@@ -7,7 +7,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.Content
+namespace StarlightRiver.Abilities.Content.Purify
 {
     public class Pure : Ability
     {

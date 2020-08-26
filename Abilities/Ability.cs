@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
+using StarlightRiver.Abilities.Content.GaiasFist;
+using StarlightRiver.Abilities.Content.Purify;
 using StarlightRiver.Dragons;
 using StarlightRiver.Dusts;
 using System.Collections.Generic;
@@ -15,6 +18,11 @@ namespace StarlightRiver.Abilities
 {
     public abstract class Ability
     {
+        protected Ability()
+        {
+            Reset();
+        }
+
         public AbilityHandler User { get; internal set; }
         public Player Player => User.player;
         public float ActivationCostBonus { get; set; }
@@ -28,10 +36,12 @@ namespace StarlightRiver.Abilities
 
         public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
-        public virtual void OnActivate() { }
-        public virtual void UpdateActive() { }
+        public virtual void Reset() { }
         public virtual void UpdateActiveEffects() { }
         public virtual void UpdateFixed() { }
+
+        public virtual void OnActivate() { }
+        public virtual void UpdateActive() { }
         public virtual void OnExit() { }
 
         public float ActivationCost(AbilityHandler handler) => (ActivationCostDefault + ActivationCostBonus) * handler.StaminaCostMultiplier + handler.StaminaCostBonus;

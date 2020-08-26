@@ -9,7 +9,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.Content
+namespace StarlightRiver.Abilities.Content.GaiasFist
 {
     public class Smash : Ability
     {
@@ -32,7 +32,6 @@ namespace StarlightRiver.Abilities.Content
         {
             var held = StarlightRiver.Instance.AbilityKeys.Get<Smash>().Current;
             if (Timer < ChargeTime)
-            {
                 if (held)
                 {
                     Player.frozen = true;
@@ -40,15 +39,11 @@ namespace StarlightRiver.Abilities.Content
                     Player.velocity.Y = 0;
                     Timer++;
                     if (Timer == ChargeTime)
-                    {
                         Main.PlaySound(SoundID.MaxMana, Player.Center);
-                    }
                 }
                 else Deactivate();
-            }
 
             if (Timer == ChargeTime)
-            {
                 if (held)
                 {
                     Player.frozen = true;
@@ -63,7 +58,6 @@ namespace StarlightRiver.Abilities.Content
                     Player.velocity.Y -= 20;
                     Timer++;
                 }
-            }
 
             if (Timer > ChargeTime)
             {
@@ -76,9 +70,7 @@ namespace StarlightRiver.Abilities.Content
                 else Player.velocity.Y = 35;
 
                 if (Timer % 10 == 0)
-                {
                     Main.PlaySound(SoundID.DD2_BookStaffCast.WithVolume(0.25f + (Timer - 60) / 30f), Player.Center);
-                }
 
                 if (Timer > ChargeTime + 2 && Player.position.Y - Player.oldPosition.Y == 0)
                 {
@@ -92,8 +84,8 @@ namespace StarlightRiver.Abilities.Content
 
         private void Slam()
         {
-            int power = (Timer > 120) ? 12 : (int)(Timer / 120f * 12);
-            for (float k = 0; k <= 6.28; k += 0.1f - (power * 0.005f))
+            int power = Timer > 120 ? 12 : (int)(Timer / 120f * 12);
+            for (float k = 0; k <= 6.28; k += 0.1f - power * 0.005f)
             {
                 Dust.NewDust(Player.Center, 1, 1, DustType<Stone>(), (float)Math.Cos(k) * power, (float)Math.Sin(k) * power, 0, default, 0.5f + power / 7f);
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, -32), Player.height, Player.height, DustType<Grass>(), (float)Math.Cos(k) * power * 0.75f, (float)Math.Sin(k) * power * 0.75f, 0, default, 0.5f + power / 7f);
@@ -120,7 +112,7 @@ namespace StarlightRiver.Abilities.Content
                     d2.customData = Player;
                     d3.customData = Player;
                 }
-                Lighting.AddLight(Player.Center, new Vector3(0.3f, 0.6f, 0.2f) * (Timer / (float)ChargeTime));
+                Lighting.AddLight(Player.Center, new Vector3(0.3f, 0.6f, 0.2f) * (Timer / ChargeTime));
             }
 
             if (Timer == ChargeTime)
@@ -130,7 +122,6 @@ namespace StarlightRiver.Abilities.Content
             }
 
             if (Timer > ChargeTime)
-            {
                 for (int k = 0; k <= 5; k++)
                 {
                     Dust.NewDustPerfect(Player.Center + new Vector2(0, 64), DustType<Grass>(), new Vector2(0, -k).RotatedByRandom(0.5f), 0, default, 2);
@@ -138,7 +129,6 @@ namespace StarlightRiver.Abilities.Content
                     Dust.NewDustPerfect(Player.Center + Vector2.Normalize(Player.velocity) * 8 * k, DustType<JungleEnergy>(), new Vector2(0, -1).RotatedBy(-1), 200);
                     Dust.NewDustPerfect(Player.Center + Vector2.Normalize(Player.velocity) * 8 * k, DustType<JungleEnergy>(), new Vector2(0, -1).RotatedBy(1), 200);
                 }
-            }
             else
             {
                 //float rot = Main.rand.NextFloat(6.28f);

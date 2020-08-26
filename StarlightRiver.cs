@@ -273,7 +273,7 @@ namespace StarlightRiver
             if (MouseTextIndex != -1)
             {
                 AddLayer(layers, StaminaUserInterface, stamina, MouseTextIndex, Stamina.visible);
-                AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex, Collection.visible);
+                AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex - 1, Collection.visible);
                 AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
                 AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
                 AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, Cooking.Visible);

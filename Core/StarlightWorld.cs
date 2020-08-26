@@ -190,43 +190,49 @@ namespace StarlightRiver
         public override TagCompound Save()
         {
             TagCompound tag = new TagCompound();
-            foreach (var pair in TownUpgrades.ToList())  // ToList so it doesnt crash for some reason
+            foreach (var pair in TownUpgrades)
                 tag.Add(pair.Key, pair.Value);
 
-            return new TagCompound
-            {
-                ["VitricBiomePos"] = VitricBiome.TopLeft(),
-                ["VitricBiomeSize"] = VitricBiome.Size(),
+            // TODO why the hell is this throwing Collection was modified?
+            while (true)
+                try
+                {
+                    return new TagCompound
+                    {
+                        ["VitricBiomePos"] = VitricBiome.TopLeft(),
+                        ["VitricBiomeSize"] = VitricBiome.Size(),
 
-                ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
-                ["SquidBossArenaSize"] = SquidBossArena.Size(),
+                        ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
+                        ["SquidBossArenaSize"] = SquidBossArena.Size(),
 
-                [nameof(SquidBossOpen)] = SquidBossOpen,
-                [nameof(SquidBossDowned)] = SquidBossDowned,
+                        [nameof(SquidBossOpen)] = SquidBossOpen,
+                        [nameof(SquidBossDowned)] = SquidBossDowned,
 
-                [nameof(DesertOpen)] = DesertOpen,
-                [nameof(GlassBossOpen)] = GlassBossOpen,
-                [nameof(GlassBossDowned)] = GlassBossDowned,
+                        [nameof(DesertOpen)] = DesertOpen,
+                        [nameof(GlassBossOpen)] = GlassBossOpen,
+                        [nameof(GlassBossDowned)] = GlassBossDowned,
 
-                [nameof(OvergrowBossOpen)] = OvergrowBossOpen,
-                [nameof(OvergrowBossFree)] = OvergrowBossFree,
-                [nameof(OvergrowBossDowned)] = OvergrowBossDowned,
+                        [nameof(OvergrowBossOpen)] = OvergrowBossOpen,
+                        [nameof(OvergrowBossFree)] = OvergrowBossFree,
+                        [nameof(OvergrowBossDowned)] = OvergrowBossDowned,
 
-                [nameof(SealOpen)] = SealOpen,
+                        [nameof(SealOpen)] = SealOpen,
 
-                [nameof(AluminumMeteors)] = AluminumMeteors,
+                        [nameof(AluminumMeteors)] = AluminumMeteors,
 
-                [nameof(TownUpgrades)] = tag,
+                        [nameof(TownUpgrades)] = tag,
 
-                [nameof(PureTiles)] = PureTiles,
+                        [nameof(PureTiles)] = PureTiles,
 
-                [nameof(BookSP)] = BookSP,
-                [nameof(DashSP)] = DashSP,
+                        [nameof(BookSP)] = BookSP,
+                        [nameof(DashSP)] = DashSP,
 
-                [nameof(RiftLocation)] = RiftLocation,
+                        [nameof(RiftLocation)] = RiftLocation,
 
-                ["Chungus"] = Chungus
-            };
+                        ["Chungus"] = Chungus
+                    };
+                }
+                catch { }
         }
 
         public override void Load(TagCompound tag)

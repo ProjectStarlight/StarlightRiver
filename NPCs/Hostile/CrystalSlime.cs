@@ -37,7 +37,7 @@ namespace StarlightRiver.NPCs.Hostile
             return Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.75f;
         }
 
-        private bool shielded { get => npc.ai[0] == 0; set => npc.ai[0] = value ? 0 : 1; }
+        private bool shielded { get => npc.ai[1] == 0; set => npc.ai[1] = value ? 0 : 1; }
 
         public override void AI()
         {
