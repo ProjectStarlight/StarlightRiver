@@ -8,9 +8,10 @@ namespace StarlightRiver.Projectiles.Dummies
         private readonly int ValidType;
         private readonly int Width;
         private readonly int Height;
-        public Tile Parent { get => Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16]; }
-        public int ParentX { get => (int)projectile.Center.X / 16; }
-        public int ParentY { get => (int)projectile.Center.Y / 16; }
+
+        public Tile Parent => Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16]; 
+        public int ParentX => (int)projectile.Center.X / 16; 
+        public int ParentY => (int)projectile.Center.Y / 16; 
 
         public Dummy(int validType, int width, int height)
         {
@@ -18,6 +19,8 @@ namespace StarlightRiver.Projectiles.Dummies
             Width = width;
             Height = height;
         }
+
+        public virtual bool ValidTile(Tile tile) => tile.type == ValidType;
 
         public override string Texture => "StarlightRiver/Invisible";
 
@@ -45,7 +48,7 @@ namespace StarlightRiver.Projectiles.Dummies
 
         public sealed override void AI()
         {
-            if (Parent.type == ValidType) projectile.timeLeft = 2;
+            if (ValidTile(Parent)) projectile.timeLeft = 2;
             Update();
         }
 

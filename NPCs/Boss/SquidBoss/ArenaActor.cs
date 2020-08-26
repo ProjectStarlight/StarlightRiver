@@ -77,6 +77,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             for (int k = 0; k < 45; k++)
             {
                 Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
+                if (!WorldGen.InWorld((int)target.X, (int)target.Y)) return;
 
                 if (Framing.GetTileSafely(target).wall == whitelistID)
                 {

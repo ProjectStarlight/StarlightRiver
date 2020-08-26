@@ -35,7 +35,7 @@ namespace StarlightRiver.Items.Debug
             item.useTime = 10;
             item.rare = ItemRarityID.Green;
             item.autoReuse = true;
-            item.createTile = TileType<NPCs.Vitric.FlyingSentinelTile>();
+            item.createTile = TileType<Tiles.Permafrost.VFX.CaveVFX>();
         }
 
         public override string Texture => "StarlightRiver/MarioCumming";
