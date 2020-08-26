@@ -4,9 +4,9 @@ using Terraria.ID;
 
 namespace StarlightRiver.Food.Content.Mains
 {
-    internal class MonsterSteak : Ingredient
+    internal class FaceSteak : Ingredient
     {
-        public MonsterSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
+        public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)
         {
