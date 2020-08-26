@@ -24,6 +24,63 @@ namespace StarlightRiver
 
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
 
+        /// <summary>
+        /// Consumes the items specified by a predicate.
+        /// </summary>
+        /// <param name="inventory">The pool of items to consume items from.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="count">The number of items to consume.</param>
+        /// <returns>If successful, true; otherwise, false.</returns>
+        public static bool ConsumeItems(this Item[] inventory, Predicate<Item> predicate, int count)
+        {
+            var items = inventory.GetItems(predicate, count);
+
+            // If the sum of items is less than the required amount, don't bother.
+            if (items.Sum(i => inventory[i].stack) < count)
+                return false;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                Item item = inventory[items[i]];
+
+                // If we're at the last item stack, and we're not going to consume the whole thing, just decrease its count by the amount needed.
+                if (i == items.Count - 1 && count < item.stack)
+                {
+                    item.stack -= count;
+                }
+                // Otherwise, delete the item and decrement count as needed.
+                else
+                {
+                    count -= item.stack;
+                    item.TurnToAir();
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a list of item indeces from an inventory matching a predicate.
+        /// </summary>
+        /// <param name="inventory">The pool of items to search.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="stopCountingAt">The number of items to search before stopping.</param>
+        /// <returns>The items matching the predicate.</returns>
+        public static List<int> GetItems(this Item[] inventory, Predicate<Item> predicate, int stopCountingAt = int.MaxValue)
+        {
+            var indeces = new List<int>();
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                if (stopCountingAt <= 0)
+                    break;
+                if (predicate(inventory[i]))
+                {
+                    indeces.Add(i);
+                    stopCountingAt -= inventory[i].stack;
+                }
+            }
+            return indeces;
+        }
+
         public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;
 
         public static bool OnScreen(Vector2 pos) => (pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16);

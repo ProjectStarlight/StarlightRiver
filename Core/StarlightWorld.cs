@@ -28,6 +28,7 @@ namespace StarlightRiver
         public static bool AluminumMeteors = false;
 
         //Boss Flags
+        public static bool GlassweaverGift { get; internal set; }
         public static bool DesertOpen = false;
 
         public static bool SquidBossOpen = false;

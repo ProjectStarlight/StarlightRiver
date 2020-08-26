@@ -4,10 +4,12 @@ using StarlightRiver.GUI;
 using StarlightRiver.Items.Armor;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.Tiles.Permafrost;
+using StarlightRiver.Tiles.Vitric.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -101,6 +103,13 @@ namespace StarlightRiver.Core
                 player.velocity.X *= 0.8f;
             }
             DarkSlow = false;
+
+            if (!player.immune) 
+            {
+                VitricSpike.CollideWithSpikes(player, out int damage);
+                if (damage > 0)
+                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was impaled by glass shards."), damage, 0);
+            }
         }
 
         public delegate void ResetEffectsDelegate(StarlightPlayer player);

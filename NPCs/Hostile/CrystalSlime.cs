@@ -31,6 +31,7 @@ namespace StarlightRiver.NPCs.Hostile
             npc.value = 10f;
             npc.knockBackResist = 0.6f;
             npc.aiStyle = 1;
+            npc.immortal = true;
         }
 
         public override Color? GetAlpha(Color drawColor)
@@ -80,6 +81,13 @@ namespace StarlightRiver.NPCs.Hostile
             }
         }
 
+        public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
+        {
+            if (shielded)
+                damage = 0;
+            return base.StrikeNPC(ref damage, defense, ref knockback, hitDirection, ref crit);
+        }
+
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
             if (AbilityHelper.CheckDash(target, npc.Hitbox))
@@ -104,7 +112,7 @@ namespace StarlightRiver.NPCs.Hostile
         {
             if (shielded)
             {
-                Color color = new Color(255, 255, 255) * (float)Math.Sin(StarlightWorld.rottime);
+                Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
                 spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Hostile/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));
                 spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Hostile/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
             }
