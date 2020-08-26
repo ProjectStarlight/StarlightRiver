@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\references\tModLoader.targets" />
   <PropertyGroup>
@@ -18,5 +18,8 @@
     <Reference Include="StructureHelper">
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Food\Content\Seasoning\" />
   </ItemGroup>
 </Project>

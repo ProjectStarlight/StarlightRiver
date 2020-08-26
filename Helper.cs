@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -482,6 +483,23 @@ namespace StarlightRiver
                     player = Main.player[k];
             }
             return player;
+        }
+
+        public static Texture2D GetItemTexture(Item item)
+        {
+            if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
+            else return GetTexture(item.modItem.Texture);
+        }
+
+        public static Texture2D GetItemTexture(int type)
+        {
+            if (type < Main.maxItemTypes) return Main.itemTexture[type];
+            else
+            {
+                Item item = new Item();
+                item.SetDefaults(type);
+                return GetTexture(item.modItem.Texture);
+            }
         }
     }
 }
