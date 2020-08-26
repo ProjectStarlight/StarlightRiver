@@ -34,6 +34,20 @@ namespace StarlightRiver
 
         public static Vector3 ScreenCoord(this Vector3 vector) => new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
 
+        public static void BoostAllDamage(this Player player,float damage, int crit=0)
+        {
+            player.meleeDamage += damage;
+            player.rangedDamage += damage;
+            player.magicDamage += damage;
+            player.minionDamage += damage;
+            player.thrownDamage += damage;
+
+            player.thrownCrit += crit;
+            player.rangedCrit += crit;
+            player.meleeCrit += crit;
+            player.magicCrit += crit;
+        }
+
         public static bool HasItem(Player player, int type, int count)
         {
             int items = 0;
