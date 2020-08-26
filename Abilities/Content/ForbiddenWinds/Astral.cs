@@ -30,7 +30,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 
         public override void OnActivate()
         {
-            Ability.Speed *= 0.7f;
+            Ability.Speed *= 0.75f;
             Ability.Boost = 0.5f;
             Ability.ActivationCostBonus += 0.3f;
 
@@ -73,7 +73,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override void OnActivate()
         {
             Ability.ActivationCostBonus += 0.3f;
-            Ability.Speed *= 1.2f;
+            Ability.Speed *= 1.25f;
             base.OnActivate();
         }
     }

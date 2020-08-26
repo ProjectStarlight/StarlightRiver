@@ -109,7 +109,11 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             for (int k = 0; k < 60; k++)
             {
                 float rot = 0.1f * k * direction;
-                Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f), DustType<AirDash>());
+                Dust dus = Dust.NewDustPerfect(
+                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f), 
+                    DustType<AirDash>(), 
+                    Vector2.UnitX.RotatedByRandom(Math.PI) / 3f
+                    );
                 dus.fadeIn = k - Time * 3;
             }
         }
