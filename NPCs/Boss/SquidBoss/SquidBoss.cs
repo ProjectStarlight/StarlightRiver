@@ -63,7 +63,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public override void NPCLoot()
         {
-            StarlightWorld.SquidBossDowned = true;
+            StarlightWorld.Flag(WorldFlags.SquidBossDowned);
         }
 
         public void DrawUnderWater(SpriteBatch spriteBatch)

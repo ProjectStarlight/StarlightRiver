@@ -44,7 +44,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
              * 3:
              */
 
-            if (StarlightWorld.GlassBossOpen && npc.ai[1] == 0) npc.ai[1] = 1; //when the altar is hit, make the BG rise out of the ground
+            if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && npc.ai[1] == 0) npc.ai[1] = 1; //when the altar is hit, make the BG rise out of the ground
 
             if (npc.ai[1] == 1)
             {

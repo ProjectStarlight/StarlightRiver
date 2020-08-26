@@ -214,7 +214,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
             spriteBatch.Draw(tex, npc.Center + new Vector2(off.X * 16, off.Y * 16) + Vector2.One.RotatedBy(npc.ai[1] * 2) * 2 - Main.screenPosition, null, new Color(70, 95, 125), 0, tex.Size() / 2, 1, 0, 0);
 
-            if (!Main.npc.Any(n => n.active && n.modNPC is SquidBoss) && !StarlightWorld.SquidBossDowned)
+            if (!Main.npc.Any(n => n.active && n.modNPC is SquidBoss) && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
             {
                 if (off.X == 0)
                 {

@@ -97,7 +97,7 @@ namespace StarlightRiver.Tiles.Overgrow
                 }
             }
 
-            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.OvergrowBossFree)
+            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
             {
                 NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 250, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>());
 
@@ -107,7 +107,7 @@ namespace StarlightRiver.Tiles.Overgrow
                 NPC.NewNPC((int)projectile.Center.X + 300, (int)projectile.Center.Y + 600, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
             }
 
-            if (StarlightWorld.OvergrowBossFree && projectile.ai[0] <= 360) projectile.ai[0]++;
+            if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && projectile.ai[0] <= 360) projectile.ai[0]++;
         }
 
         private static Vector2 FindOffset(Vector2 basepos, float factor, bool noVertical = false)

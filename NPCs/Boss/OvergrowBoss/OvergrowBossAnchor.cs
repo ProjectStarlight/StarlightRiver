@@ -28,11 +28,13 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void AI()
         {
-            if (!StarlightWorld.OvergrowBossOpen) npc.dontTakeDamage = true;
+            if (!StarlightWorld.HasFlag(WorldFlags.OvergrowBossOpen)) 
+                npc.dontTakeDamage = true;
             else npc.dontTakeDamage = false;
 
-            if (!(Main.npc.Any(n => n.active && n.type == NPCType<OvergrowBoss>()))) return;
             NPC boss = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<OvergrowBoss>());
+            if (boss == null) 
+                return;
 
             if (npc.immortal) npc.ai[0]++;
             if (npc.ai[0] >= 30) npc.active = false;

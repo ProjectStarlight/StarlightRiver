@@ -33,9 +33,9 @@ namespace StarlightRiver.Projectiles.Dummies
             {
                 if (AbilityHelper.CheckSmash(player, projectile.Hitbox))
                 {
-                    if (!StarlightWorld.SealOpen)
+                    if (!StarlightWorld.HasFlag(WorldFlags.SealOpen))
                     {
-                        StarlightWorld.SealOpen = true;
+                        StarlightWorld.Flag(WorldFlags.SealOpen);
                         player.GetHandler().ActiveAbility?.Deactivate();
                         player.GetModPlayer<StarlightPlayer>().Shake = 80;
 

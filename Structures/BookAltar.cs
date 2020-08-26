@@ -13,7 +13,6 @@ namespace StarlightRiver.Structures
 
             Vector2 spawn = FindSand();
             StructureHelper.StructureHelper.GenerateStructure("Structures/CodexTemple", spawn.ToPoint16(), StarlightRiver.Instance);
-            StarlightWorld.BookSP = spawn * 16 + new Vector2(312, 530);
         }
 
         private static Vector2 FindSand()

@@ -161,7 +161,7 @@ namespace StarlightRiver
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 80;
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
-            if (StarlightWorld.AluminumMeteors)
+            if (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors))
             {
                 Point16 target = new Point16();
 
@@ -366,9 +366,6 @@ namespace StarlightRiver
                         }
                     }
             }
-
-            //TODO: remove
-            //lightingTest.DebugDraw2();
 
             Main.spriteBatch.End();
             try

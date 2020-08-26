@@ -108,7 +108,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeMedium;
                 }
 
-                if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.SquidBossDowned)
+                if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
                     priority = MusicPriority.BiomeHigh;
