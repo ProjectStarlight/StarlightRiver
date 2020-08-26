@@ -161,7 +161,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.ai[0] = NextWeapon;
 			}
 			projectile.localAI[0] += 1;
-			moltenglowanim += 1f;
+			moltenglowanim += projectile.ai[0]==2 ? 2f : 1f;
 			projectile.ai[1] -= 1;
 
 			List<NPC> closestnpcs = new List<NPC>();
@@ -425,21 +425,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				Vector2 gothere = projectile.Center;
 				Vector2 aimvector = strikewhere - projectile.Center;
 				float animlerp = Math.Min(projectile.localAI[0] / 200f, 1f);
+				float turnto = aimvector.ToRotation();
 
 				if (projectile.localAI[0] < 200)
 				{
 					gothere = strikewhere - new Vector2(projectile.spriteDirection * 96, 0);
 					projectile.velocity += ((gothere - projectile.Center) / 80f) * animlerp;
 					projectile.velocity *= 0.65f;
-					float turnto = aimvector.ToRotation();
-					projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * 0.01f);
 				}
 				else
 				{
 					projectile.velocity -= (projectile.rotation * projectile.spriteDirection).ToRotationVector2()* 0.40f * projectile.spriteDirection;
 					projectile.velocity *= 0.95f/(1f+ (projectile.localAI[0] - 200f)/150f);
-
 				}
+				projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * (projectile.localAI[0]<200 ? 0.01f : 0.005f));
 
 				if ((int)projectile.localAI[0] == 400)
 				{
@@ -554,7 +553,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			oldhitbox = new Vector2(projectile.width, projectile.height);
 			projectile.tileCollide = offset.X>0;
 
-			if (projectile.localAI[0] > 300)
+			if (projectile.localAI[0] > 600)
 				projectile.Kill();
 
 
@@ -571,16 +570,17 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.netUpdate = true;
 			}
 
-			if (enemy != null && enemy.active)
+			if (Helper.IsTargetValid(enemy))
 			{ 
 				strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y*4);
 				enemysize = new Vector2(enemy.width, enemy.height);
 			}
+			Vector2 aimvector = strikewhere - projectile.Center;
+			float turnto = aimvector.ToRotation();
 			if (offset.X < 1)
 			{
 
 				Vector2 gothere = projectile.Center;
-				Vector2 aimvector = strikewhere - projectile.Center;
 				float animlerp = Math.Min(projectile.localAI[0] / 40f, 1f);
 
 				if (closetoplayer)
@@ -595,7 +595,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					projectile.velocity *= 0.92f;
 				}
 
-				float turnto = aimvector.ToRotation();
 				projectile.rotation = projectile.rotation.AngleTowards(turnto* projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * 0.04f);
 
 				if ((int)projectile.localAI[0] == 120 + (int)offset.Y)
@@ -603,8 +602,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					offset.X = 1;
 					projectile.velocity = (projectile.rotation*projectile.spriteDirection).ToRotationVector2() * 10f*projectile.spriteDirection;
 					Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 1, 0.75f,-0.5f);
+					projectile.localAI[0] = 300;
 				}
 
+			}
+			else
+			{
+				projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), 0.04f/(1f+(projectile.localAI[0]-300f)/60f));
+				projectile.velocity = (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * projectile.velocity.Length() * projectile.spriteDirection;
 			}
 
 		}
@@ -835,7 +840,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			int[] hitboxframe = { 0, (int)(projectile.height / 2f), (int)(projectile.height / 2f), (int)(projectile.height) };
-			return base.Colliding(new Rectangle((int)projectile.Center.X, -16+(int)projectile.position.Y+ hitboxframe[(int)projectile.localAI[1]], projectile.width,projectile.height+32), targetHitbox);
+			return base.Colliding(new Rectangle((int)projectile.Center.X-12, -16+(int)projectile.position.Y - hitboxframe[(int)projectile.localAI[1]], projectile.width+24,projectile.height+32), targetHitbox);
 		}
 		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
 		{
@@ -895,7 +900,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 			projectile.localAI[0] += 1;
 			enemy = Main.npc[(int)projectile.ai[1]];
-			moltenglowanim += 1f / (1f+(float)projectile.extraUpdates);
+			float cooloffrate = (GetType() == typeof(VitricSummonSword) ? 1.50f : (GetType() == typeof(VitricSummonKnife) ? 2f : 1f));
+			 moltenglowanim += cooloffrate / (1f+(float)projectile.extraUpdates);
 			DoAI();
 		}
 
@@ -924,7 +930,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 70)//Swing up
 			{
 				float lerpval = Math.Min(projectile.localAI[0] / 50f, 1f);
-				if (enemy != null && enemy.active)
+				if (Helper.IsTargetValid(enemy))
 				{
 					strikewhere = enemy.Center+new Vector2(enemy.velocity.X, enemy.velocity.Y/2f);
 					enemysize = new Vector2(enemy.width, enemy.height);
@@ -940,6 +946,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			}
 			if (projectile.localAI[0] >= 70)//Swing Down
 			{
+				if (Helper.IsTargetValid(enemy))
+					strikewhere.X = enemy.Center.X + enemy.velocity.X*1.50f;
+
+				projectile.velocity.X += Math.Min(Math.Abs(projectile.velocity.X),0) * projectile.spriteDirection;
 
 				float lerpval = Math.Min((projectile.localAI[0]-70f) / 30f, 1f);
 

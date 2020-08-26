@@ -55,7 +55,7 @@ namespace StarlightRiver.Items.Vitric
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Glassweaver's Staff");
-            Tooltip.SetDefault("Summons a glass orb");
+            Tooltip.SetDefault("Summons the Glassweaver's arsonal");
         }
     }
 }
