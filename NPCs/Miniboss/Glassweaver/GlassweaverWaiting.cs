@@ -29,7 +29,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override string GetChat()
         {
             // If pre-EOW, warn the player.
-            if (NPC.downedBoss2)
+            if (!NPC.downedBoss2)
             {
                 return Main.rand.Next(new[]
                 {
@@ -40,7 +40,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
 
             // If post-EOW, they're on-par.
-            if (!Main.hardMode)
+            else if (!Main.hardMode)
             {
                 return Main.rand.Next(new[]
                 {
@@ -51,7 +51,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
 
             // If they're in hardmode, they're more than ready.
-            return Main.rand.Next(new[]
+            else return Main.rand.Next(new[]
             {
                 "Adventurer, prove yourself in combat. It would be an honor to sell you my vitric gear.",
                 "Defeat me in battle and I will gladly offer my glasswork.",
