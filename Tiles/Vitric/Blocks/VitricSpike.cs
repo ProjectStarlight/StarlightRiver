@@ -15,11 +15,13 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
             minPick = int.MaxValue;
             QuickBlock.QuickSet(this, 200, DustType<Dusts.Glass3>(), SoundID.Tink, new Color(95, 162, 138), -1);
             Main.tileMerge[Type][TileType<VitricSand>()] = true;
+            Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
+            Main.tileMerge[Type][TileType<VitricSmallCrystal>()] = true;
         }
 
         public override bool Dangersense(int i, int j, Player player) => true;
 
-        public override void FloorVisuals(Player player)
+        public static void CollideWithSpikes(Entity entity, out int damage)
         {
             damage = 0;
             var points = Collision.GetEntityEdgeTiles(entity);

@@ -43,12 +43,12 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override bool NewRightClick(int i, int j)
         {
+            Tile tile = Framing.GetTileSafely(i, j);
             Player player = Main.LocalPlayer;
 
-            if (Helper.HasItem(player, ItemType<Items.Vitric.GlassIdol>(), 1))
+            if (tile.frameX >= 90 && player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()))
             {
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
-                Helper.TryTakeItem(player, ItemType<Items.Vitric.GlassIdol>(), 1);
                 return true;
             }
             return false;

@@ -47,6 +47,8 @@ namespace StarlightRiver.NPCs.Hostile
                     {
                         npc.ai[0] = 1;
                         npc.noGravity = true;
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            npc.netUpdate = true;
                     }
                     break;
 
@@ -74,6 +76,9 @@ namespace StarlightRiver.NPCs.Hostile
                         }
 
                         npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            npc.netUpdate = true;
                     }
                     break;
 
@@ -90,7 +95,11 @@ namespace StarlightRiver.NPCs.Hostile
             }
         }
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo) => (Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY].active() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 0.75f : 0f;
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
+            return tile.active() && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 0.75f : 0f;
+        }
 
         public override void NPCLoot()
         {

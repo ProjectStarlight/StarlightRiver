@@ -50,11 +50,6 @@ namespace StarlightRiver.Tiles.StarJuice
                 (player.HeldItem.modItem as StarjuiceStoringItem).Refuel(entity);
             }
 
-            if (player.HeldItem.modItem is Items.Debug.DebugPlacer1) //debug code, remove later
-            {
-                entity.charge += 1000;
-            }
-
             return true;
         }
 

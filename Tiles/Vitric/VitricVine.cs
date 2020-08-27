@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Tiles.Vitric.Blocks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -19,11 +20,12 @@ namespace StarlightRiver.Tiles.Vitric
             drop = 0;
             AddMapEntry(new Color(199, 224, 190));
             dustType = DustType<Dusts.Air>();
+            soundType = SoundID.CoinPickup;
         }
 
         public override void NumDust(int i, int j, bool fail, ref int num)
         {
-            num = 3;
+            num = 1;
         }
 
         public override void RandomUpdate(int i, int j)

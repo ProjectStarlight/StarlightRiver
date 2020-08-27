@@ -380,7 +380,11 @@ namespace StarlightRiver
             //lightingTest.DebugDraw2();
 
             Main.spriteBatch.End();
-            orig(self, gameTime);
+            try
+            {
+                orig(self, gameTime);
+            }
+            catch { }
         }
 
         private void DrawProto(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_refItem_int_Vector2_Color orig, SpriteBatch spriteBatch, ref Item inv, int context, Vector2 position, Color lightColor)

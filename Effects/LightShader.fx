@@ -27,9 +27,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 Fragment(VertexShaderOutput input) : COLOR
 {
-	float2 st = input.coord * screenSize / fullBufferSize + offset;
+	float2 uv = input.coord * screenSize / fullBufferSize + offset;
 
-	float3 color = tex2D(samplerTex, st).xyz;
+	float3 color = tex2D(samplerTex, uv).rgb;
 
 	return float4(color, 1);
 }

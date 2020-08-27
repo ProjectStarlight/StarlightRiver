@@ -57,7 +57,7 @@ namespace StarlightRiver.Structures
             };//blocks that should give a stone wall
 
             //TODO change generation step, this may generate after the crimson/corruption does, making it never spawn there
-            //TODO spawn boulder and pressure plate
+            //also: spawn boulder and pressure plate
 
             for (int k = 0; k < (int)((Main.maxTilesX * Main.maxTilesY) * .000015); k++) //too common atm, add another zero to reduce it to (likely) reasonable levels
             {

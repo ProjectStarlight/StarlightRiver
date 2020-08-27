@@ -46,14 +46,6 @@ namespace StarlightRiver
 
             GenerateBase(minCeilingDepth, maxCeilingDepth, minFloorDepth);
 
-            for (int x = VitricBiome.Center.X - 40; x < VitricBiome.Center.X + 40; x++) //Flat part of the centre - Ceiros's Arena
-            {
-                int xRel = x - (VitricBiome.Center.X - 40);
-                for (int y = VitricBiome.Y + VitricBiome.Height - 76; y < VitricBiome.Y + VitricBiome.Height; y++) PlaceTile(x, y, TileType<VitricSand>(), false, true);
-
-                if (xRel == 38) Helper.PlaceMultitile(new Point16(x, VitricBiome.Y + 57), TileType<VitricBossAltar>());
-            }
-
             for (int x = VitricBiome.Center.X - 35; x <= VitricBiome.Center.X + 36; x++) //Entrance from Desert 
             {
                 for (int y = VitricBiome.Y - 6; y < VitricBiome.Y + 20; y++)
@@ -68,16 +60,6 @@ namespace StarlightRiver
                 PlaceTile(VitricBiome.X + VitricBiome.Width / 2 - 40, y, TileType<VitricBossBarrier>(), false, false);
                 PlaceTile(VitricBiome.X + VitricBiome.Width / 2 + 41, y, TileType<VitricBossBarrier>(), false, false);
             }
-
-            for (int x = VitricBiome.Center.X - 51; x <= VitricBiome.Center.X + 52; x++) //Sandstone Cubes (Pillar Ground)
-            {
-                int xRel = x - (VitricBiome.Center.X - 51);
-                if (xRel < 16 || xRel > 87)
-                {
-                    for (int y = VitricBiome.Y + VitricBiome.Height - 77; y < VitricBiome.Y + VitricBiome.Height - 67; y++) PlaceTile(x, y, TileType<AncientSandstone>(), false, true);
-                    for (int y = VitricBiome.Y - 1; y < VitricBiome.Y + 9; y++) PlaceTile(x, y, TileType<AncientSandstone>(), false, true);
-                }
-            } //Adjusted from prior code
 
             VitricIslandLocations = new List<Point>(); //List for island positions
             int fail = 0;
@@ -108,7 +90,7 @@ namespace StarlightRiver
                 CreateIsland(x, y); //Adds island pos to list and places island
             }
 
-            for (int i = 0; i < 6; ++i) //Mini islands v2, outer only
+            for (int i = 0; i < 8; ++i) //Mini islands v2, outer only
             {
                 int x = i <= 2 ? VitricBiome.X + 6 + genRand.Next((int)(VitricSlopeOffset * 1.3f)) : VitricBiome.Right - 6 - genRand.Next((int)(VitricSlopeOffset * 1.3f));
                 if (i <= 2 && forgeSide == 0) x += 10;
@@ -176,8 +158,10 @@ namespace StarlightRiver
             GenRuins();
             GenForge();
             GenDecoration();
-            GenMoss();
+            //GenMoss();
             GenTemple();
+
+            VitricBiome.Y -= 8; //Adjust a bit
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
@@ -209,7 +193,7 @@ namespace StarlightRiver
                 if (xDif < VitricSlopeOffset) //Start curve
                 {
                     layers["CEILING"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + xDif))); //17f is the constant that goes to the roof
-                    layers["TOP"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + (xDif + 12)))) - 8;
+                    layers["TOP"] = (int)((VitricBiome.Center.Y) - (17f * Math.Log(-8 + (xDif + 12)))) - 12;
 
                     if (xDif < 10) layers["CEILING"] = VitricBiome.Y + VitricBiome.Height / 2;
                     else if (xDif < 17) layers["CEILING"] += genRand.Next(-1, 2);
@@ -217,7 +201,7 @@ namespace StarlightRiver
                     if (layers["TOP"] < VitricBiome.Y) layers["TOP"] = VitricBiome.Y; //Caps off top
 
                     layers["FLOOR"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + xDif))) + (VitricBiome.Height / 2); //Curves down towards floor
-                    layers["BOTTOM"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + (xDif + 12)))) + (VitricBiome.Height / 2) + 28;
+                    layers["BOTTOM"] = (int)(VitricBiome.Y + (leftCurveConst * Math.Log(-8 + (xDif + 12)))) + (VitricBiome.Height / 2) + 32;
 
                     if (xDif < 10) layers["FLOOR"] = VitricBiome.Y + VitricBiome.Height / 2;
                     else if (xDif < 17) layers["FLOOR"] += genRand.Next(-1, 2);
@@ -251,7 +235,7 @@ namespace StarlightRiver
                 else //End curve
                 {
                     layers["CEILING"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + adjXDif)));
-                    layers["TOP"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + (adjXDif + 12)))) - 8;
+                    layers["TOP"] = (int)(VitricBiome.Center.Y - (17f * Math.Log(-8 + (adjXDif + 12)))) - 12;
 
                     if (layers["TOP"] < VitricBiome.Y) layers["TOP"] = VitricBiome.Y; //Caps off top
 
@@ -259,7 +243,7 @@ namespace StarlightRiver
                     else if (xDif > VitricBiome.Width - 17) layers["CEILING"] += genRand.Next(-1, 2);
 
                     layers["FLOOR"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + adjXDif))) + (VitricBiome.Height / 2);
-                    layers["BOTTOM"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + (adjXDif + 12)))) + (VitricBiome.Height / 2) + 23;
+                    layers["BOTTOM"] = (int)(VitricBiome.Y + (rightCurveConst * Math.Log(-8 + (adjXDif + 12)))) + (VitricBiome.Height / 2) + 27;
 
                     if (xDif < 10) layers["FLOOR"] = VitricBiome.Center.Y;
                     else if (xDif < 17) layers["FLOOR"] += genRand.Next(-1, 2);
@@ -386,7 +370,13 @@ namespace StarlightRiver
 
         private static void GenTemple()
         {
-            StructureHelper.StructureHelper.GenerateStructure("Structures/VitricTemple", new Point16(VitricBiome.Center.X - 43, VitricBiome.Center.Y - 6), StarlightRiver.Instance);
+            const int X_OFFSET = 59;
+            const int Y_OFFSET = 71;
+            StructureHelper.StructureHelper.GenerateStructure(
+                "Structures/VitricTemple", 
+                new Point16(VitricBiome.Center.X - X_OFFSET, VitricBiome.Center.Y - Y_OFFSET),
+                StarlightRiver.Instance
+                );
             DashSP = new Vector2(VitricBiome.Center.X * 16, VitricBiome.Center.Y * 16 + 200);
         }
 
@@ -447,6 +437,7 @@ namespace StarlightRiver
             FloorCrystal(miniIslandX, yVal);
         }
 
+        // TODO remove? fix?
         /// <summary>Generates Vitric Moss at 7-11 random positions throughout the biome.</summary>
         private static void GenMoss()
         {
@@ -489,7 +480,7 @@ namespace StarlightRiver
         private static void CreateIsland(int x, int y, bool small = false)
         {
             int wid = genRand.Next(32, 42);
-            if (small) wid = genRand.Next(9, 14);
+            if (small) wid = genRand.Next(10, 18);
             int top = 5;
             int depth = 2;
 
@@ -549,7 +540,7 @@ namespace StarlightRiver
             }
 
             //Place crystal if needed
-            if (crystalsPlaced <= (VitricBiome.Width / 240) + 1 && !small) //2 on a small world
+            if (crystalsPlaced <= (VitricBiome.Width / 240) + 2 && !small)
             {
                 int tries = 0;
                 while (true)
@@ -558,10 +549,17 @@ namespace StarlightRiver
                     int cY = y - 5;
                     while (Main.tile[cX, cY].active())
                         cY--;
-                    cY = FindType(cX, cY, -1, ValidGround);
+                    cY = Math.Max(
+                        FindType(cX, cY, -1, ValidGround),
+                        FindType(cX + 1, cY, -1, ValidGround)
+                        );
                     if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].type) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].type) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
                     {
-                        StructureHelper.StructureHelper.GenerateStructure("Structures/Vitric/VitricSmallCrystal_" + genRand.Next(2), new Point16(cX, cY - 6), StarlightRiver.Instance);
+                        StructureHelper.StructureHelper.GenerateStructure(
+                            "Structures/Vitric/VitricSmallCrystal_" + genRand.Next(2), 
+                            new Point16(cX, cY - 6), 
+                            StarlightRiver.Instance
+                            );
                         crystalsPlaced++;
                         break;
                     }
@@ -571,15 +569,30 @@ namespace StarlightRiver
             }
             else if (small)
             {
-                if (genRand.Next(5) > 0)
+                // Input variables
+                int spawnAttempts = 30;
+                int cX, cY;
+
+                // Perform several checks
+                while (spawnAttempts-- > 0)
                 {
-                    int cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
-                    int cY = y - 5;
-                    while (Main.tile[cX, cY].active())
-                        cY--;
+                    cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
+                    cY = y - 5;
                     cY = FindType(cX, cY, -1, ValidGround);
-                    //PlaceObject(cX, cY - 3, TileType<VitricOre>(), true, 0, 0);
+                    // If the left side of the crystal isn't valid,
+                    // or if the right side is occupied,
+                    // skip.
+                    if (cY == -1)
+                        continue;
+
+                    // If there are solid tiles in the way, skip.
+                    if (ScanRectangle(cX, cY - 3, 2, 3) > 2)
+                        continue;
+
+                    // Success! Halve the spawnAttempts count so we don't spam crystals.
+                    PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).type, true, true);
                     Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
+                    spawnAttempts /= 4;
                 }
             }
         }
@@ -615,14 +628,13 @@ namespace StarlightRiver
             if (height < 7 || height > 50) return false; //If it's too short or too tall
             int wid = genRand.Next(3, 6); //Width of pillar
 
-            int GetHeight(int xPos) { return Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, TileType<VitricSand>(), TileType<VitricSoftSand>())); }
-            int GetDepth(int xPos) { return Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, TileType<VitricSand>(), TileType<VitricSoftSand>())); }
+            int GetHeight(int xPos) => Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, TileType<VitricSand>(), TileType<VitricSoftSand>()));
+            int GetDepth(int xPos) => Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, TileType<VitricSand>(), TileType<VitricSoftSand>()));
 
             for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
             {
-                //TODO: fix this and uncomment
-                //if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100)) return false; //Crystal found, can't place here
-                //if (Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100)) return false; //Crystal found, can't place here
+                if (Helper.ScanForTypeDown(x + i, y, TileType<VitricLargeCrystal>(), 100) || Helper.ScanForTypeDown(x + i, y, TileType<VitricSmallCrystal>(), 100)) 
+                    return false; //Crystal found, can't place here
                 if (GetHeight(x + i) - 30 > GetHeight(x - wid) || GetHeight(x + i) - 30 > GetHeight(x + wid)) return false; //Large height differencial found, can't place
                 if (GetDepth(x + i) + 30 < GetDepth(x - wid) || GetDepth(x + i) + 30 < GetDepth(x + wid)) return false; //Large height differencial found, can't place
             }

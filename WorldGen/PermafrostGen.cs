@@ -13,7 +13,7 @@ namespace StarlightRiver
     {
         private void PermafrostGen(GenerationProgress progress)
         {
-            progress.Message = "Titty";
+            progress.Message = "Permafrost generation";
 
             int iceLeft = 0;
             int iceRight = 0;

@@ -1,4 +1,7 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Items.Vitric;
+using System.Runtime.InteropServices;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
@@ -32,18 +35,63 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override string GetChat()
         {
-            return "Cum.";
+            return Main.rand.Next(new[]
+            {
+                "I am happy to sell you what you need, adventurer.",
+                "It takes incredible delicacy to forge equipment from vitric ore. Don't take my offers for granted.",
+                "My craft is honed and perfected for users like yourself. Handle it with care.",
+                "My Upgrade Weapon and Quest buttons don't do anything yet. This is still a demo, after all."
+            });
         }
 
         public override void SetChatButtons(ref string button, ref string button2)
         {
             button = "Upgrade Weapon";
-            button2 = "Quest";
+            button2 = "Altar?";
         }
+
+        // Unsynced on purpose.
+        private int altarIndex;
+        private readonly string[] altarChat = new[]
+        {
+            "That altar is an ancient structure, far older than my stay here.",
+            "While my knowledge of it is limited, I know of idols used for worshiping great and forgotten entities.",
+            "I have found some of them, scattered across the desert. They're rare, and whoever made them seems long gone.",
+            "I haven't bothered disturbing that ominous altar myself, though.",
+            "If you wish, I could give you an idol..."
+        };
 
         public override void OnChatButtonClicked(bool firstButton, ref bool shop)
         {
-
+            if (!firstButton)
+            {
+                if (altarIndex < altarChat.Length - 1)
+                {
+                    Main.npcChatText = altarChat[altarIndex++];
+                }
+                else
+                {
+                    int idol = ModContent.ItemType<GlassIdol>();
+                    int type = ModContent.ItemType<VitricOre>();
+                    if (StarlightWorld.GlassweaverGift)
+                    {
+                        StarlightWorld.GlassweaverGift = false;
+                        Main.LocalPlayer.QuickSpawnItem(idol);
+                        Main.npcChatText = "I trust you'll take care with this.";
+                    }
+                    else if (Main.LocalPlayer.inventory.ConsumeItems(i => i.type == type, 6))
+                    {
+                        Main.LocalPlayer.QuickSpawnItem(idol);
+                        Main.npcChatText = "Take care. They are remarkably fragile.";
+                    }
+                    else
+                    {
+                        Main.npcChatText = "Adventurer, my supply of idols is limited. " +
+                            "If you bring me some vitric ore, I'll make a replica and give you one. " +
+                            "Six ore should suffice.";
+                    }
+                }
+            }
         }
     }
 }
