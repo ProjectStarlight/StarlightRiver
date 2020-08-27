@@ -20,8 +20,9 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
         public override void SetDefaults()
         {
-            minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 11, 11, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
+            //minPick = int.MaxValue;
+            TileID.Sets.DrawsWalls[Type] = true;
+            QuickBlock.QuickSetFurniture(this, 10, 10, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
         }
     }
 
@@ -30,7 +31,8 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         public override void SetDefaults()
         {
             //minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 11, 5, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
+            TileID.Sets.DrawsWalls[Type] = true;
+            QuickBlock.QuickSetFurniture(this, 10, 4, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
         }
     }
 
