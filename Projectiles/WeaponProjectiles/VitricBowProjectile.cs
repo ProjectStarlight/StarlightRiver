@@ -127,7 +127,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         {
                             float rot = MathHelper.ToRadians(((1f-((timeleft) / projectile.ai[1])) * maxdelta / 2f)) * i;
                             float chargefloat = (1f - ((timeleft) / projectile.ai[1]));
-                            Projectile.NewProjectile(projectile.Center, new Vector2(4f+ percent*(3f+chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot), ModContent.ProjectileType<GlassVolleyShardPlayer>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI
+                            Projectile.NewProjectile(projectile.Center, new Vector2(4f+ percent*(3f+chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot), ModContent.ProjectileType<VitricBowShardProjectile>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI
                                 ,percent, 0f); //fire the flurry of projectiles
                             if (i>0)
                             Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
