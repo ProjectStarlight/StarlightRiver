@@ -12,7 +12,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     class ArenaActor : ModNPC
     {
-        static readonly int whitelistID = WallType<AuroraBrickWall>();
+        int whitelistID = WallType<AuroraBrickWall>();
         public float WaterLevel { get => npc.Center.Y + 35 * 16 - npc.ai[0]; }
 
         public override string Texture => "StarlightRiver/Invisible";
@@ -77,7 +77,6 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             for (int k = 0; k < 45; k++)
             {
                 Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
-                if (!WorldGen.InWorld((int)target.X, (int)target.Y)) return;
 
                 if (Framing.GetTileSafely(target).wall == whitelistID)
                 {
@@ -95,11 +94,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 Lighting.AddLight(npc.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
             }
 
-            for(int k = 0; k < 100; k++)
+            for (int k = 0; k < 100; k++)
             {
                 int x = (int)(npc.Center.X / 16) - 50 + k;
                 int y = (int)(npc.Center.Y / 16) + 29;
-                if(WorldGen.InWorld(x, y)) WorldGen.KillTile(x, y);
+                if (WorldGen.InWorld(x, y)) WorldGen.KillTile(x, y);
             }
 
             foreach (Player player in Main.player.Where(n => n.active && n.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)npc.ai[0])))) //water collision
@@ -171,8 +170,6 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
-            // TODO add pre-draw check here! this is lots of drawcode
-
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
             Texture2D backdrop = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Window");
@@ -220,7 +217,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 if (off.X == 0)
                 {
                     Vector2 tentaclePos = new Vector2(off.X * 16 + (float)Math.Cos(npc.ai[1] + off.X * 0.2f) * 5, off.Y * 16 + (float)Math.Sin(npc.ai[1] + off.X * 0.2f) * 2);
-                    spriteBatch.Draw(tex5, npc.Center + tentaclePos + new Vector2(0, 210) - Main.screenPosition, new Rectangle(26, 0, 128, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
+                    spriteBatch.Draw(tex5, npc.Center + tentaclePos + new Vector2(-4, 214) - Main.screenPosition, new Rectangle(22, 0, 136, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
                 }
                 else
                 {
