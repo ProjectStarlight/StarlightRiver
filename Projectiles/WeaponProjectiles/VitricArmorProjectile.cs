@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
@@ -29,15 +31,72 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             Main.PlaySound(SoundID.Item27);
         }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            return false;
+        }
 
-        private float timer = 0;
+        public override bool CanDamage()
+        {
+            return false;
+        }
+
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
+        {
+            projectile.localAI[0] = (float)reader.ReadDouble();
+        }
+
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
+        {
+            writer.Write((double)projectile.localAI[0]);
+        }
+
+        public bool Regenerate()
+        {
+            if (projectile.ai[0] == 1)
+            {
+                Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 30, 0.65f, Main.rand.NextFloat(0.15f, 0.25f));
+            }
+            return projectile.ai[0]<1;
+        }
+
+        public void Shatter()
+        {
+            for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
+            {
+                float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
+                Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
+                Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), mod.DustType("Glass2"), vari, 100, default, num315 / 3f);
+            }
+
+            Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f,-Main.rand.NextFloat(0.15f,0.75f));
+            projectile.ai[0] = 600;
+            projectile.netUpdate = true;
+        }
+
+        public DrawData Draw(Vector2 offset)
+        {
+            Vector2 rightthere = projectile.Center;
+            float scale = MathHelper.Clamp(1f-projectile.ai[0] / 15f,0,1);
+            return new DrawData(Main.projectileTexture[projectile.type], rightthere - Main.screenPosition, null, Lighting.GetColor((int)(rightthere.X/16f), (int)(rightthere.Y/16f)), projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
+        }
 
         public override void AI()
         {
+            projectile.ai[0] = Math.Max(projectile.ai[0] - 1, 0);
             int pos = (int)projectile.localAI[0];
             Player player = Main.player[projectile.owner];
+            if (player.dead)
+            {
+                Shatter();
+                projectile.Kill();
+            }
 
-            Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
+            if (Regenerate())
+            {
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
+                player.AddBuff(ModContent.BuffType<Buffs.ProtectiveShard>(), 2);
+            }
             if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos)
             {
                 projectile.position += Vector2.Normalize(player.Center - projectile.Center) * 5;
@@ -51,10 +110,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             else
             {
                 projectile.timeLeft = 30;
-                timer += (0.05f - pos * 0.005f) * (pos % 2 == 0 ? -1 : 1);
-                if (timer >= 6.28) { timer = 0; }
-                projectile.position = player.position + new Vector2((float)Math.Cos(timer), (float)Math.Sin(timer)) * (5 - pos) * 32;
-                projectile.rotation = timer * 3;
+                projectile.localAI[1] += (0.05f - pos * 0.005f) * (pos % 2 == 0 ? -1 : 1);
+                if (projectile.localAI[1] >= 6.28) { projectile.localAI[1] = 0; }
+                projectile.position = player.Center - new Vector2(0,player.height/3f) + new Vector2((float)Math.Cos(projectile.localAI[1])*2f, (float)Math.Sin(projectile.localAI[1])/1.5f) * (((5 - pos) * 6)+10);
+                projectile.rotation = projectile.localAI[1];
             }
         }
     }

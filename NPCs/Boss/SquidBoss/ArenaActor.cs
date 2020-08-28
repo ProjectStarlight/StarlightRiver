@@ -219,7 +219,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 if (off.X == 0)
                 {
                     Vector2 tentaclePos = new Vector2(off.X * 16 + (float)Math.Cos(npc.ai[1] + off.X * 0.2f) * 5, off.Y * 16 + (float)Math.Sin(npc.ai[1] + off.X * 0.2f) * 2);
-                    spriteBatch.Draw(tex5, npc.Center + tentaclePos + new Vector2(0, 210) - Main.screenPosition, new Rectangle(26, 0, 128, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
+                    spriteBatch.Draw(tex5, npc.Center + tentaclePos + new Vector2(-4, 214) - Main.screenPosition, new Rectangle(22, 0, 136, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
                 }
                 else
                 {

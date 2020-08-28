@@ -1,6 +1,9 @@
 using Microsoft.Xna.Framework;
 using System;
 using Terraria;
+using Terraria.ID;
+
+
 
 namespace StarlightRiver
 {
@@ -43,6 +46,37 @@ namespace StarlightRiver
                 float y = (float)Math.Sin(k + rand) * RatioY;
                 Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mainSize, 0, default, dustSize);
             }
+        }
+
+        public static int TileDust(Tile tile,ref int dusttype)
+        {
+            switch (tile.type)
+            {
+                case TileID.Stone: dusttype = DustID.Stone; break;
+                case TileID.Sand: case TileID.Sandstone: dusttype = 32; break;
+                case TileID.Granite: dusttype = DustID.Granite; break;
+                case TileID.Marble: dusttype = DustID.Marble; break;
+                case TileID.Grass: case TileID.JungleGrass: dusttype = DustID.Grass; break;
+                case TileID.MushroomGrass: case TileID.MushroomBlock: dusttype = 96; break;
+
+                default:
+                    if (TileID.Sets.Crimson[tile.type])
+                        dusttype = DustID.Blood;
+                    if (TileID.Sets.Corrupt[tile.type])
+                        dusttype = 14;
+                    if (TileID.Sets.Ices[tile.type] || TileID.Sets.IcesSnow[tile.type])
+                        dusttype = DustID.Ice;
+                    if (TileID.Sets.Snow[tile.type] || tile.type == TileID.Cloud || tile.type == TileID.RainCloud)
+                        dusttype = 51;
+
+                    Terraria.ModLoader.ModTile modtile = Terraria.ModLoader.TileLoader.GetTile(tile.type);
+                    if (modtile != null)
+                        dusttype = modtile.dustType;
+                    break;
+            }
+
+            return dusttype;
+
         }
     }
 }
