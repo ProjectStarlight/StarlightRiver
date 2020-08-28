@@ -21,6 +21,8 @@ namespace StarlightRiver
         private static int tiltTime;
         private static float tiltMax;
 
+        public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0,0,(int)vector.X, (int)vector.Y);
+
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
 
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
@@ -91,6 +93,20 @@ namespace StarlightRiver
         public static Vector3 Vec3(this Vector2 vector) => new Vector3(vector.X, vector.Y, 0);
 
         public static Vector3 ScreenCoord(this Vector3 vector) => new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
+
+        public static void BoostAllDamage(this Player player,float damage, int crit=0)
+        {
+            player.meleeDamage += damage;
+            player.rangedDamage += damage;
+            player.magicDamage += damage;
+            player.minionDamage += damage;
+            player.thrownDamage += damage;
+
+            player.thrownCrit += crit;
+            player.rangedCrit += crit;
+            player.meleeCrit += crit;
+            player.magicCrit += crit;
+        }
 
         public static bool HasItem(Player player, int type, int count)
         {

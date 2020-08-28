@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -8,6 +9,7 @@ namespace StarlightRiver.NPCs
     {
         public override bool InstancePerEntity => true;
         public int frozenTime = 0;
+        internal int impaled = 0;
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
@@ -26,6 +28,15 @@ namespace StarlightRiver.NPCs
                 }
                 npc.velocity *= 0.2f;
             }
+
+            if (impaled > 0)
+            {
+                if (npc.lifeRegen > 0) npc.lifeRegen = 0;
+                npc.lifeRegen -= impaled;
+                    damage = Math.Max(impaled/4,damage);
+            }
+            //ResetEffects seems to be called after projectile AI it seems, but this works, for now
+            impaled = 0;
         }
 
         public override void ResetEffects(NPC npc)
