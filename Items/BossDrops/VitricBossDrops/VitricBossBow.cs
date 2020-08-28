@@ -15,7 +15,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Greatbow");
-            Tooltip.SetDefault("Charges a volley cystal shards that fire in an arc\nCharging for longer grows, speeds up, and adds more piercing per shot");
+            Tooltip.SetDefault("Charges a volley of cystal shards that fire in an arc\nCharging for longer grows, speeds up, and adds more piercing per shot");
         }
         public override void SetDefaults()
         {
