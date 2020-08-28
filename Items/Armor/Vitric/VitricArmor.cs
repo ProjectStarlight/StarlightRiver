@@ -46,7 +46,7 @@ namespace StarlightRiver.Items.Armor.Vitric
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "Gain 5% attack strength, lose 3 defense, and releaee protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
+            player.setBonus = "Gain 5% attack strength, lose 3 defense, and release protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
 
             for (float k = 0.2f; k <= 0.8f; k += 0.2f)
             {
