@@ -15,12 +15,15 @@ namespace StarlightRiver.Tiles.Permafrost
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            int off = i + j;
+            float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
 
-            float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.2f * 0.2f);
-            float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.2f);
-            drawColor = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
-            Lighting.AddLight(new Vector2(i, j) * 16, drawColor.ToVector3() * 0.02f);
+            float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.01f * 0.2f);
+            float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.01f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+            float mult = Lighting.Brightness(i, j);
+            //if (mult > 0.1f) mult = 0.1f;
+
+            drawColor = color.MultiplyRGB(Color.White * mult);
         }
     }
 

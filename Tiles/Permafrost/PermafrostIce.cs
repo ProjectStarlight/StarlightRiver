@@ -29,7 +29,7 @@ namespace StarlightRiver.Tiles.Permafrost
             float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.01f);
             Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
             float mult = Lighting.Brightness(i, j);
-            if (mult > 0.1f) mult = 0.1f;
+            //if (mult > 0.1f) mult = 0.1f;
 
             drawColor = color * mult;
         }

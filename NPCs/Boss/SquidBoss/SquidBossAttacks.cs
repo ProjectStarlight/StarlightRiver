@@ -19,6 +19,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             }
             if (possible.Count == 0) { npc.active = false; return; }
             npc.target = possible[Main.rand.Next(possible.Count - 1)];
+
+            npc.netUpdate = true;
         }
 
         private void ResetAttack() => AttackTimer = 0;
@@ -40,6 +42,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         private void TentacleSpike()
         {
             RandomizeTarget();
+
             for (int k = 0; k < 4; k++)
             {
                 Tentacle tentacle = tentacles[k].modNPC as Tentacle;
@@ -50,6 +53,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     tentacles[k].Center = new Vector2(Main.player[npc.target].Center.X + adj, tentacles[k].Center.Y);
                     tentacle.SavedPoint = tentacles[k].Center;
                     tentacle.MovePoint = tentacles[k].Center + new Vector2(0, -1000);
+                    tentacle.npc.netUpdate = true;
 
                     for (int n = 0; n < 50; n++)
                     {
@@ -101,6 +105,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     tentacles[k].Center = new Vector2(platforms[k].Center.X, tentacles[k].Center.Y);
                     tentacle.SavedPoint = tentacles[k].Center;
                     tentacle.MovePoint = platforms[k].Center + new Vector2(0, -70);
+                    tentacle.npc.netUpdate = true;
                 }
                 Main.PlaySound(SoundID.Drown, npc.Center);
             }
@@ -410,6 +415,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).Center.X + (k % 2 == 0 ? -600 : 600), npc.Center.Y + Main.rand.Next(-200, 200));
                     tentacle.SavedPoint = tentacles[k].Center;
                     tentacle.MovePoint = Main.player[npc.target].Center;
+                    tentacle.npc.netUpdate = true;
 
                     for (int n = 0; n < 50; n++)
                         Dust.NewDustPerfect(Vector2.Lerp(Main.player[npc.target].Center, tentacle.SavedPoint, n / 50f), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
@@ -488,6 +494,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 Tentacle tentacle = tentacles[0].modNPC as Tentacle;
                 tentacles[0].Center = new Vector2(platforms[0].Center.X, spawnPoint.Y - 100);
                 tentacle.SavedPoint = tentacles[0].Center;
+                tentacle.npc.netUpdate = true;
             }
 
             if (AttackTimer < 90)

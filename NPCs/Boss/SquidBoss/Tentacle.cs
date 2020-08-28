@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -158,6 +159,21 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             npc.ai[1]++;
 
             if (npc.ai[1] >= 60 && npc.ai[1] < 120) npc.Center = Vector2.SmoothStep(SavedPoint, MovePoint, (npc.ai[1] - 60) / 60f); //Spawn animation
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(SavedPoint.X);
+            writer.Write(SavedPoint.Y);
+
+            writer.Write(MovePoint.X);
+            writer.Write(MovePoint.Y);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            SavedPoint = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            MovePoint = new Vector2(reader.ReadSingle(), reader.ReadSingle());
         }
     }
 }

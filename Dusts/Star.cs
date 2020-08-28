@@ -36,6 +36,10 @@ namespace StarlightRiver.Dusts
 
             if (dust.fadeIn <= 0) dust.active = false;
 
+            if(dust.dustIndex % 5 == 0)
+                for(int k = 0; k < 8; k++)
+                    Lighting.AddLight(dust.position + new Vector2(5 * k, 50 * k), GetAlpha(dust, Color.White).Value.ToVector3() * 0.5f);
+
             return false;
         }
     }

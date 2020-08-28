@@ -78,6 +78,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             {
                 Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
 
+                if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16)) return;
+
                 if (Framing.GetTileSafely(target).wall == whitelistID)
                 {
                     float sin = (float)Math.Sin(npc.ai[1] + k);

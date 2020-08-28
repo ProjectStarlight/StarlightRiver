@@ -34,7 +34,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             FirstPhase = 2,
             FirstPhaseTwo = 3,
             SecondPhase = 4,
-            ThirdPhase = 5
+            ThirdPhase = 5,
+            DeathAnimation = 6
         }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
@@ -44,6 +45,27 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         public override bool CheckActive() => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+
+        public override bool CheckDead()
+        {
+            if (Phase != (int)AIStates.DeathAnimation)
+            {
+                Phase = (int)AIStates.DeathAnimation;
+                npc.life = 1;
+                npc.dontTakeDamage = true;
+                GlobalTimer = 0;
+
+                foreach (var tentacle in tentacles) tentacle.Kill();
+
+                return false;
+            }
+
+            else
+            {
+                Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
+                return true;
+            }
+        }
 
         public override void SetDefaults()
         {
@@ -73,9 +95,6 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
             Texture2D body = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyUnder");
 
-            Texture2D headBlob = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOver");
-            Texture2D headBlobGlow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOverGlow");
-
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
                 Vector2 pos = npc.Center + new Vector2(0, 70 + k * 35).RotatedBy(npc.rotation) - Main.screenPosition;
@@ -86,13 +105,28 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-                if (Phase == (int)AIStates.ThirdPhase) color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
+                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation)
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
 
                 spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.7f, npc.rotation, ring.Size() / 2, 0, 0);
                 spriteBatch.Draw(ringGlow, rect, ring.Frame(), color, npc.rotation, ring.Size() / 2, 0, 0);
             }
 
             spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), Color.White, npc.rotation, body.Size() / 2, 1, 0, 0);
+
+            DrawHeadBlobs(spriteBatch);
+
+            if (Phase >= (int)AIStates.SecondPhase)
+            {
+                Texture2D sore = GetTexture(Texture);
+                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), Color.White, npc.rotation, sore.Size() / 2, 1, 0, 0);
+            }
+        }
+
+        private void DrawHeadBlobs(SpriteBatch spriteBatch)
+        {
+            Texture2D headBlob = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOver");
+            Texture2D headBlobGlow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOverGlow");
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {
@@ -115,19 +149,26 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-                if (Phase == (int)AIStates.ThirdPhase) color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red jelly in last phases
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+
+                if (Phase == (int)AIStates.DeathAnimation) //Unique drawing for death animation
+                {
+                    sin = 1 + (float)Math.Sin(GlobalTimer / 5f - (k * 0.5f)); //faster pulsing
+                    scale = 1 + sin * 0.08f; //bigger pulsing
+
+                    if (GlobalTimer == (k + 1) * 20) //dust explosion
+                        for (int n = 0; n < 100; n++)
+                            Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+
+                    if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
+                }               
 
                 spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.8f, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
 
-                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color, npc.rotation, 
+                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
-            }
-
-            if (Phase >= (int)AIStates.SecondPhase)
-            {
-                Texture2D sore = GetTexture(Texture);
-                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), Color.White, npc.rotation, sore.Size() / 2, 1, 0, 0);
             }
         }
 
@@ -326,6 +367,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         if (AttackPhase == 4 && Main.expertMode) variantAttack = Main.rand.NextBool();
 
                         if (AttackPhase > 4) AttackPhase = 1;
+
+                        npc.netUpdate = true;
                     }
 
                     switch (AttackPhase)
@@ -384,6 +427,21 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         case 3: InkBurst2(); break;
                     }
                 }
+            }
+
+            if(Phase == (int)AIStates.DeathAnimation)
+            {
+                if(GlobalTimer == 1)
+                {
+                    npc.velocity *= 0;
+                    npc.rotation = 0;
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 240;
+                }
+
+                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
+
+                if (GlobalTimer >= 200) npc.life = 0;
             }
         }
 
