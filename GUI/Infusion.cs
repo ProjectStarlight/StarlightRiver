@@ -116,7 +116,7 @@ namespace StarlightRiver.GUI
 
         public override void Update(GameTime gameTime)
         {
-            if (Unlocked && IsMouseHovering && ItemSlot.ShiftInUse)
+            if (Unlocked && IsMouseHovering && ItemSlot.ShiftInUse && Main.LocalPlayer.GetHandler().GetInfusion(TargetSlot) != null)
             {
                 // Set cursor to the little chest icon
                 Main.cursorOverride = 9;
