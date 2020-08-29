@@ -34,7 +34,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
         public override Color Color => new Color(188, 255, 246);
 
-        public override int CooldownMax => CooldownBonus + 90;
+        public override int CooldownMax => 90;
 
         public const int defaultTime = 7;
 
