@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using StarlightRiver.NPCs;
 using StarlightRiver.Core;
 using StarlightRiver.Buffs.Summon;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 {
@@ -22,19 +23,19 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		public int max;
 		public float rotation = 0;
 		public int direction = 1;
+
 		internal VKnife(int index, int max)
 		{
 			this.index = index;
 			this.max = max;
 		}
+
 		public void Update(float rotation, Player owner)
 		{
-			float angle = MathHelper.ToRadians(((float)index / (float)max) * (360f)) * direction;
+            float angle = MathHelper.ToRadians((float)index / max * 360f * direction);
 			pos = new Vector2((float)Math.Cos(rotation + angle) * 8, (float)Math.Sin(rotation + angle) * 16);
 			this.rotation = (float)Math.Sin(rotation + angle) / 2f;
 		}
-
-
 	}
 
 	public class VitricSummonOrb : ModProjectile
@@ -46,7 +47,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		private List<VKnife> knives;
 		public static readonly Vector2[] swordlocs = { new Vector2(4, 4), new Vector2(4, 9), new Vector2(4, 5), new Vector2(4, 38) };
 		public static readonly Vector2[] holdweaponsoffset = { new Vector2(-32, -24), new Vector2(10, -6), new Vector2(-32, -16), new Vector2(30, -32) };
-
 
 		public VitricSummonOrb()
 		{
@@ -94,7 +94,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		}
 
-
 		public static Rectangle WhiteFrame(Rectangle tex,bool white)
 		{
 			return new Rectangle(white ? tex.Width / 2 : 0, tex.Y, tex.Width / 2, tex.Height);
@@ -110,7 +109,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			return MoltenGlowc;
 		}
 
-		public override void SetStaticDefaults()
+        public override bool CanDamage() => false;
+
+        public override bool MinionContactDamage() => false;
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Vitric Weapons");
 			Main.projFrames[projectile.type] = 1;
@@ -119,6 +122,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
 			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
+
 		public sealed override void SetDefaults()
 		{
 			projectile.width = 16;
@@ -131,26 +135,23 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			projectile.penetrate = -1;
 			projectile.timeLeft = 60;
 		}
-		public override bool CanDamage() => false;
-		public override bool MinionContactDamage() => false;
 
 		public override void AI()
 		{
 			//if (projectile.owner == null || projectile.owner < 0)
 			//return;
 
-
 			Player player = projectile.Owner();
+
 			if (player.dead || !player.active)
-			{
 				player.ClearBuff(ModContent.BuffType<VitricSummonBuff>());
-			}
+
 			if (player.HasBuff(ModContent.BuffType<VitricSummonBuff>()))
-			{
 				projectile.timeLeft = 2;
-			}
+
 			bool toplayer = true;
 			Vector2 gothere = player.Center+new Vector2(player.direction*(holdweaponsoffset[(int)projectile.ai[0]].X), holdweaponsoffset[(int)projectile.ai[0]].Y);
+
 			if ((int)projectile.ai[1] > 0)
 			{
 				projectile.Center = player.Center;
@@ -160,15 +161,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				if ((int)projectile.ai[1]==1)
 				projectile.ai[0] = NextWeapon;
 			}
+
 			projectile.localAI[0] += 1;
 			moltenglowanim += projectile.ai[0]==2 ? 2f : 1f;
 			projectile.ai[1] -= 1;
 
 			List<NPC> closestnpcs = new List<NPC>();
+
 			for(int i = 0; i < Main.maxNPCs; i += 1)
 			{
 				bool colcheck= Collision.CheckAABBvLineCollision(Main.npc[i].position, new Vector2(Main.npc[i].width, Main.npc[i].height), Main.npc[i].Center,projectile.Center)
 					&& Collision.CanHit(Main.npc[i].Center,0,0, projectile.Center,0,0);
+
 				if (Main.npc[i].active && !Main.npc[i].friendly && !Main.npc[i].townNPC && !Main.npc[i].dontTakeDamage && Main.npc[i].CanBeChasedBy() && colcheck
 					&& (Main.npc[i].Center-player.Center).Length()<300)
 					closestnpcs.Add(Main.npc[i]);
@@ -191,15 +195,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				gothere = them.Center + Vector2.Normalize(projectile.Center- them.Center) *64f;
 
 				DoAttack((byte)projectile.ai[0], them);
-
 			}
 			
-			float us = 0f;
+			float us = 0f; //These names are completely nondescript. Please change them.
 			float maxus = 0f;
 
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
-				Projectile currentProjectile = Main.projectile[i];
+				Projectile currentProjectile = Main.projectile[i]; //Smells like there should be a helper method for checking this validity.
 				if (currentProjectile.active
 				&& currentProjectile.owner == player.whoAmI
 				&& currentProjectile.type == projectile.type)
@@ -209,13 +212,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					maxus += 1f;
 				}
 			}
-			Vector2 there = player.Center;
+
+			Vector2 there = player.Center; //wat
 
 			int timer = player.GetModPlayer<StarlightPlayer>().Timer * 2;
-			double angles = MathHelper.ToRadians(((float)((us / maxus) * 360.00) - 90f)+ (timer*projectile.spriteDirection));
+			double angles = MathHelper.ToRadians((float)(us / maxus * 360.00) - 90f+ (timer*projectile.spriteDirection)); //again, please work in radians.
 			float dist = 16f;
-			float aval = (float)timer+ (us*83f)*projectile.spriteDirection;
+			float aval = timer+ us * 83f * projectile.spriteDirection;
 			Vector2 here;
+
 			if (!toplayer)
 			{
 				here = (new Vector2((float)Math.Sin(aval / 60f) * 6f, 20f * ((float)Math.Sin(aval / 70f)))).RotatedBy((them.Center - gothere).ToRotation());
@@ -227,10 +232,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.rotation = projectile.rotation.AngleTowards(((player.direction * 0) + anglz) - (movementlerp * projectile.spriteDirection) * 0.07f, 0.05f);
 				here = new Vector2((float)Math.Cos(angles) / 2f, (float)Math.Sin(angles)) * dist;
 			}
+
 			foreach(VKnife knife in knives)
-			{
 				knife.Update(MathHelper.ToRadians(aval), player);
-			}
 
 			Vector2 where = gothere + here;
 			Vector2 difference = where - projectile.Center;
@@ -238,6 +242,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if ((where - projectile.Center).Length() > 0f)
 			{
 				Vector2 diff = where - projectile.Center;
+
 				if (toplayer)
 				{
 					startchase = 0f;
@@ -260,7 +265,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			projectile.velocity *= maxspeed;
 
 			movementlerp += (projectile.velocity.X - movementlerp)/20f;
-
 		}
 
 		public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
@@ -270,28 +274,33 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 			if (projectile.localAI[0] < 0 || projectile.ai[1] > 0)
 				return false;
+
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon"+((int)projectile.ai[0]+1));
 
 			float scale = Math.Min(projectile.localAI[0] / 15f, 1f);
-			Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
-			Rectangle Rect2 = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true);
+			Rectangle Rect = WhiteFrame(tex.Size().ToRectangle(), false);
+			Rectangle Rect2 = WhiteFrame(tex.Size().ToRectangle(), true);
 
 
 			Vector2 drawPos = ((projectile.Center - Main.screenPosition));
 			Color color = lightColor * scale;
 			Vector2 drawOrigin;
+
+            //Local variables. Use them. Please.
 			if ((int)projectile.ai[0] == 0 || (int)projectile.ai[0] == 3)
 			{
 				drawOrigin = new Vector2(tex.Width/2f, tex.Height) / 2f;
 				spriteBatch.Draw(tex, drawPos, Rect, color, (projectile.rotation+ (projectile.ai[0] == 3 ? MathHelper.ToRadians(90f) : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale*scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 				spriteBatch.Draw(tex, drawPos, Rect2, MoltenGlow(moltenglowanim), (projectile.rotation+ (projectile.ai[0] == 3 ? MathHelper.ToRadians(90f) : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale*scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			}
+
 			if ((int)projectile.ai[0] == 1)
 			{
 				drawOrigin = new Vector2((projectile.spriteDirection<0 ? tex.Width-swordlocs[1].X : swordlocs[1].X)/2f, swordlocs[1].Y);
-				spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-				spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),true), MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+				spriteBatch.Draw(tex, drawPos, WhiteFrame(new Rectangle(0,tex.Height / 4,tex.Width, tex.Height/4),true), MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			}
+
 			if ((int)projectile.ai[0] == 2)
 			{
 				foreach (VKnife knife in knives)
@@ -303,11 +312,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				}
 			}
 
-
 			return false;
 		}
+
 		public void DoAttack(byte attack, NPC target)
 		{
+            //something tells me attack should be an enum type here. Or at the very least commented
 			if (projectile.ai[1] < 1 && projectile.localAI[0]>15)
 			{
 				if (attack == 0 && target.Distance(projectile.Center) < 72)
@@ -345,6 +355,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						index += 1;
 					}
 				}
+
 				if (attack == 3 && target.Distance(projectile.Center) < 300)
 				{
 						Projectile proj = Main.projectile[Projectile.NewProjectile(projectile.Center, projectile.velocity * -5f, ModContent.ProjectileType<VitricSummonJavelin>(), projectile.damage, projectile.knockBack, projectile.owner)];
@@ -361,34 +372,38 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 	public class VitricSummonJavelin : VitricSummonHammer
 	{
-		private bool closetoplayer = false;
 		internal Vector2 offset;
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Enchanted Vitric Weapons");
-			Main.projFrames[projectile.type] = 1;
-			ProjectileID.Sets.Homing[projectile.type] = true;
-		}
-		public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
-		public sealed override void SetDefaults()
-		{
-			projectile.width = 24;
-			projectile.height = 24;
-			projectile.tileCollide = false;
-			projectile.friendly = true;
-			projectile.hostile = false;
-			projectile.minion = true;
-			projectile.penetrate = 100;
-			projectile.timeLeft = 60;
-			projectile.extraUpdates = 3;
-		}
+
 		public VitricSummonJavelin()
 		{
 			strikewhere = projectile.Center;
 			enemysize = Vector2.One;
 			Vector2 offset = Vector2.Zero;
 		}
-		public override bool CanDamage() => offset.X > 0;
+
+        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave"; //why were these before the ctor?
+
+        public override bool CanDamage() => offset.X > 0;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Enchanted Vitric Weapons");
+            Main.projFrames[projectile.type] = 1;
+            ProjectileID.Sets.Homing[projectile.type] = true;
+        }
+
+        public sealed override void SetDefaults()
+        {
+            projectile.width = 24;
+            projectile.height = 24;
+            projectile.tileCollide = false;
+            projectile.friendly = true;
+            projectile.hostile = false;
+            projectile.minion = true;
+            projectile.penetrate = 100;
+            projectile.timeLeft = 60;
+            projectile.extraUpdates = 3;
+        }
 
 		public override void DoAI()
 		{
@@ -399,16 +414,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] > 1000)
 				projectile.Kill();
 
-
 			if (projectile.localAI[0] == 1)
 			{
 				projectile.localAI[1] = 1;
 				projectile.rotation = projectile.ai[0];
 				projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+
 				if (projectile.rotation > 500)
 					projectile.rotation -= 1000;
-				if (player.Distance(projectile.Center) < 96)
-					closetoplayer = true;
+
 				projectile.netUpdate = true;
 			}
 
@@ -420,7 +434,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 			if (offset.X < 1)
 			{
-
 				Vector2 gothere = projectile.Center;
 				Vector2 aimvector = strikewhere - projectile.Center;
 				float animlerp = Math.Min(projectile.localAI[0] / 200f, 1f);
@@ -437,6 +450,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					projectile.velocity -= (projectile.rotation * projectile.spriteDirection).ToRotationVector2()* 0.40f * projectile.spriteDirection;
 					projectile.velocity *= 0.95f/(1f+ (projectile.localAI[0] - 200f)/150f);
 				}
+
 				projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * (projectile.localAI[0]<200 ? 0.01f : 0.005f));
 
 				if ((int)projectile.localAI[0] == 400)
@@ -447,7 +461,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						{
 							float angle = MathHelper.ToRadians(-Main.rand.Next(-10, 10));
 							Vector2 velo = Vector2.Normalize((((projectile.rotation) + angle) + (float)Math.PI).ToRotationVector2()) * ((i + 82f) / 40f);
-							Dust.NewDustPerfect(projectile.Center + Vector2.Normalize(projectile.velocity)*(i * 1.5f) + new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-6, 6)), DustID.LavaMoss, 
+							Dust.NewDustPerfect(projectile.Center + Vector2.Normalize(projectile.velocity)*(i * 1.5f) + new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-6, 6)), DustID.LavaMoss, //local varrsss
 								new Vector2(velo.X*projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
 						}
 					}
@@ -463,7 +477,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			projectile.penetrate -= 10;
+			projectile.penetrate -= 10; //10?
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -475,7 +489,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override bool PreKill(int timeLeft)
 		{
-			int dusttype = mod.DustType("Glass2");
+			int dusttype = DustType<Dusts.Glass2>();
 			for (float num315 = 0.75f; num315 < 8; num315 += 2f)
 			{
 				for (float i = -80; i < 41; i += 8f)
@@ -490,9 +504,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Main.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
 			return true;
 		}
+
 		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor,float aimframe)
 		{
-			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon4");
+			Texture2D tex = GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon4");
 
 			Vector2 drawOrigin = new Vector2(tex.Width/2f,tex.Height)/2f;
 			Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
@@ -501,7 +516,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			float themath = Math.Min((projectile.localAI[0] - 200f) / 300f, 1f);
 			spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect, lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
 			spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-
 		}
 	}
 
@@ -509,13 +523,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 	{
 		private bool closetoplayer = false;
 		internal Vector2 offset;
-		public override void SetStaticDefaults()
+
+        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
+        public override bool CanDamage() => offset.X > 0;
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Vitric Weapons");
 			Main.projFrames[projectile.type] = 1;
 			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
-		public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
 		public sealed override void SetDefaults()
 		{
 			projectile.width = 24;
@@ -528,23 +547,24 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			projectile.timeLeft = 60;
 			projectile.extraUpdates = 1;
 		}
+
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write((int)offset.X);
 			writer.Write((int)offset.Y);
 		}
+
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			offset.X = reader.ReadInt32();
 			offset.Y = reader.ReadInt32();
 		}
+
 		public VitricSummonKnife()
 		{
 			strikewhere = projectile.Center;
 			enemysize = Vector2.One;
-			Vector2 offset = Vector2.Zero;
 		}
-		public override bool CanDamage() => offset.X>0;
 
 		public override void DoAI()
 		{
@@ -555,17 +575,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] > 600)
 				projectile.Kill();
 
-
 			if (projectile.localAI[0] == 1)
 			{
 				projectile.localAI[1] = 1;
 				projectile.rotation = projectile.ai[0];
 				projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+
 				if (projectile.rotation > 500)
 					projectile.rotation -= 1000;
+
 				projectile.ai[0] = Main.rand.NextFloat(MathHelper.ToRadians(-20), MathHelper.ToRadians(20));
+
 				if (player.Distance(projectile.Center) < 96)
 					closetoplayer = true;
+
 				projectile.netUpdate = true;
 			}
 
@@ -574,12 +597,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y*4);
 				enemysize = new Vector2(enemy.width, enemy.height);
 			}
+
 			Vector2 aimvector = strikewhere - projectile.Center;
 			float turnto = aimvector.ToRotation();
+
 			if (offset.X < 1)
 			{
-
-				Vector2 gothere = projectile.Center;
+				Vector2 gothere;
 				float animlerp = Math.Min(projectile.localAI[0] / 40f, 1f);
 
 				if (closetoplayer)
@@ -615,7 +639,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override bool PreKill(int timeLeft)
 		{
-			int dusttype = mod.DustType("Glass2");
+			int dusttype = DustType<Dusts.Glass2>(); //use the generics my dude.
+
 			for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
 			{
 				float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
@@ -626,28 +651,39 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
 			return true;
 		}
-		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
-		{
-			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon3");
 
-		Vector2 drawOrigin = new Vector2(tex.Width/2, tex.Height) / 2f;
-			float rotoffset = projectile.rotation + MathHelper.ToRadians(45f);
-		spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-		spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-		}
+        public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
+        {
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon3");
+
+            Vector2 drawOrigin = new Vector2(tex.Width / 2, tex.Height) / 2f;
+            float rotoffset = projectile.rotation + MathHelper.ToRadians(45f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+        }
 	}
 
 	public class VitricSummonSword : VitricSummonHammer
 	{
+        private bool dodamage = false; //wat
 
-		public override void SetStaticDefaults()
+        public VitricSummonSword()
+        {
+            strikewhere = projectile.Center;
+            enemysize = Vector2.One;
+        }
+
+        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
+        public override bool CanDamage() => dodamage;
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Vitric Weapons");
 			Main.projFrames[projectile.type] = 1;
 			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
-		private bool dodamage=false;
-		public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
 		public sealed override void SetDefaults()
 		{
 			projectile.width = 64;
@@ -662,12 +698,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			projectile.idStaticNPCHitCooldown = 5;
 			projectile.usesIDStaticNPCImmunity = true;
 		}
-		public VitricSummonSword()
-		{
-			strikewhere = projectile.Center;
-			enemysize = Vector2.One;
-		}
-		public override bool CanDamage() => dodamage;
 
 		public override void DoAI()
 		{
@@ -679,14 +709,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 			dodamage = false;
 
-
 			if (projectile.localAI[0] == 1)
 			{
 				projectile.localAI[1] = 1;
 				projectile.rotation = projectile.ai[0];
 				projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+
 				if (projectile.rotation > 500)
 					projectile.rotation -= 1000;
+
 				projectile.ai[0] = 0;
 				projectile.netUpdate = true;
 			}
@@ -698,17 +729,17 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			}
 
 			Vector2 gothere;
+
 			if (projectile.localAI[0] < 30)//Prepare to swing
 			{
 				if (projectile.localAI[0] == 15)
-				{
 					projectile.localAI[1] = 0;
-				}
 
 				float lerpval = Math.Min(projectile.localAI[0] / 10f, 1f);
 				projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(20), 0.075f * lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -((72 - projectile.localAI[0]) + (enemysize.X / 2f)), projectile.localAI[0] * 3));
 				projectile.velocity += ((gothere - projectile.Center) / 100f);
+
 				if (projectile.velocity.Length() > 2f + (10f * lerpval))
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * (2f + (10f * lerpval));
 
@@ -718,26 +749,24 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 70 && projectile.localAI[0] >= 30)//Upper Cut swing
 			{
 				if (projectile.localAI[0] == 36)
-				{
 					projectile.localAI[1] = 1;
-				}
+
 				if (projectile.localAI[0] == 42)
 				{
 					dodamage = true;
 					projectile.localAI[1] = 2;
 					Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
 				}
-				if (projectile.localAI[0] == 50)
-				{
-					projectile.localAI[1] = 3;
-				}
 
+				if (projectile.localAI[0] == 50)
+					projectile.localAI[1] = 3;
 
 				float offset = (60 - projectile.localAI[0]) * 2f + (enemysize.X / 10f);
 				float lerpval = Math.Min((projectile.localAI[0] - 30) / 10f, 1f);
 				projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(-80), 0.075f * lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * (-32 + offset), -64));
 				projectile.velocity += ((gothere - projectile.Center) / 50f);
+
 				if (projectile.velocity.Length() > 14f * lerpval)
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
 
@@ -747,33 +776,27 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 100 && projectile.localAI[0] >= 70)//Down Slash
 			{
 				if (projectile.localAI[0] == 82)
-				{
 					projectile.localAI[1] = 3;
-				}
+
 				if (projectile.localAI[0] == 86)
 				{
 					dodamage = true;
 					projectile.localAI[1] = 2;
 					Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
 				}
-				if (projectile.localAI[0] == 90)
-				{
-					projectile.localAI[1] = 2;
-				}
-				if (projectile.localAI[0] == 98)
-				{
-					projectile.localAI[1] = 1;
-				}
-				if (projectile.localAI[0] == 114)
-				{
-					projectile.localAI[1] = 0;
-				}
+
+                //format like this when things line up
+				if (projectile.localAI[0] == 90) projectile.localAI[1] = 2;
+				if (projectile.localAI[0] == 98) projectile.localAI[1] = 1;
+				if (projectile.localAI[0] == 114) projectile.localAI[1] = 0;
+
 
 				float offset = (80 - projectile.localAI[0]) * 12f;
 				float lerpval = Math.Min((projectile.localAI[0] - 70) / 10f, 1f);
 				projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(80), 0.06f * lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * (-36 + offset - (enemysize.X / 2f)), 72));
 				projectile.velocity += ((gothere - projectile.Center) / 50f);
+
 				if (projectile.velocity.Length() > 14f * lerpval)
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
 
@@ -783,21 +806,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 200 && projectile.localAI[0] >= 100)//Big Upper Cut swing
 			{
 				if (projectile.localAI[0] == 136)
-				{
 					projectile.localAI[1] = 1;
-				}
+
 				if (projectile.localAI[0] == 142)
 				{
 					dodamage = true;
 					projectile.localAI[1] = 2;
 					Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
 				}
+
 				if (projectile.localAI[0] == 150)
-				{
 					projectile.localAI[1] = 3;
-				}
 
 				float lerpval = Math.Min((projectile.localAI[0] - 100) / 40f, 1f);
+
 				if (projectile.localAI[0] < 130)
 				{
 					projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(100), 0.075f * lerpval);
@@ -821,7 +843,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					}
 
 				}
+
 				projectile.velocity += ((gothere - projectile.Center) / 50f);
+
 				if (projectile.velocity.Length() > 2 + (14f * lerpval))
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * (2f + (14 * lerpval));
 
@@ -829,18 +853,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			}
 		}
 
-			public override bool PreKill(int timeLeft)
-		{
-			if (projectile.localAI[0] < 150)
-				return base.PreKill(timeLeft);
-			return true;
-		}
+        public override bool PreKill(int timeLeft)
+        {
+            if (projectile.localAI[0] < 150)
+                return base.PreKill(timeLeft);
+
+            return true;
+        }
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			int[] hitboxframe = { 0, (int)(projectile.height / 2f), (int)(projectile.height / 2f), (int)(projectile.height) };
 			return base.Colliding(new Rectangle((int)projectile.Center.X-12, -16+(int)projectile.position.Y - hitboxframe[(int)projectile.localAI[1]], projectile.width+24,projectile.height+32), targetHitbox);
 		}
+
 		public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
 		{
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon2");
@@ -863,13 +889,21 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		protected Vector2 oldhitbox;
 		internal float moltenglowanim=0f;
 
-		public override void SetStaticDefaults()
+        public VitricSummonHammer()
+        {
+            strikewhere = projectile.Center;
+            enemysize = Vector2.One;
+        }
+
+        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Vitric Weapons");
 			Main.projFrames[projectile.type] = 1;
 			ProjectileID.Sets.Homing[projectile.type] = true;
 		}
-		public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+
 		public override void SetDefaults()
 		{
 			projectile.width = 48;
@@ -882,45 +916,43 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			projectile.timeLeft = 60;
 			projectile.extraUpdates = 1;
 		}
-		public VitricSummonHammer()
-		{
-			strikewhere = projectile.Center;
-			enemysize = Vector2.One;
-		}
+
 		public override bool CanDamage() => projectile.localAI[0]>60;
 
 		public override void AI()
 		{
+
 			player = projectile.Owner();
+
 			if (player.HasBuff(ModContent.BuffType<VitricSummonBuff>()))
-			{
 				projectile.timeLeft = 2;
-			}
 
 			projectile.localAI[0] += 1;
 			enemy = Main.npc[(int)projectile.ai[1]];
 			float cooloffrate = (GetType() == typeof(VitricSummonSword) ? 1.50f : (GetType() == typeof(VitricSummonKnife) ? 2f : 1f));
 			 moltenglowanim += cooloffrate / (1f+(float)projectile.extraUpdates);
+
 			DoAI();
 		}
 
 		public virtual void DoAI()
 		{
-
 			if (projectile.localAI[0] > 300)
 			{
 				projectile.Kill();
 				return;
 			}
-			oldhitbox = new Vector2(projectile.width, projectile.height);
 
+			oldhitbox = new Vector2(projectile.width, projectile.height);
 
 			if (projectile.localAI[0] == 1)
 			{
 				projectile.rotation = projectile.ai[0];
 				projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+
 				if (projectile.rotation > 500)
 					projectile.rotation -= 1000;
+
 				projectile.ai[0] = 0;
 				projectile.netUpdate = true;
 			}
@@ -938,11 +970,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.rotation = projectile.rotation.AngleLerp(MathHelper.ToRadians(-45), 0.075f* lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(75+ (float)Math.Pow(projectile.localAI[0]*2f,0.80) + enemysize.X/2f), -200));
 				projectile.velocity += ((gothere-projectile.Center)/75f);
+
 				if (projectile.velocity.Length() > 14f * lerpval)
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
 
 				projectile.velocity /= 1.5f;
 			}
+
 			if (projectile.localAI[0] >= 70)//Swing Down
 			{
 				if (Helper.IsTargetValid(enemy))
@@ -955,7 +989,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				projectile.rotation = projectile.rotation.AngleTowards(MathHelper.ToRadians(45), 0.075f* lerpval);
 				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(32 + enemysize.X / 4f), -32));
 				projectile.velocity.X += (MathHelper.Clamp(gothere.X - projectile.Center.X,-80f,80f)) / 24f;
-					projectile.velocity.Y += 1f;
+				projectile.velocity.Y += 1f;
+
 				if (projectile.velocity.Length() > 10* lerpval)
 					projectile.velocity = Vector2.Normalize(projectile.velocity) * 10* lerpval;
 
@@ -966,38 +1001,40 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 					Point16 point = new Point16((int)((projectile.Center.X+ (projectile.width/3f)*projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)((projectile.Center.Y) / 16) + 1));
 					Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
-					//hard coded dust ids in worldgen.cs, still ew
-					//Tile hit!
-					if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.active() && Main.tileSolid[tile.type])
-					{
-						projectile.localAI[0] = 301;
-						int dusttype = mod.DustType("Glass2");
-							DustHelper.TileDust(tile, ref dusttype);
+                    //hard coded dust ids in worldgen.cs, still ew
+                    //Tile hit!
+                    if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.active() && Main.tileSolid[tile.type])
+                    {
+                        projectile.localAI[0] = 301;
+                        int dusttype = mod.DustType("Glass2");
+                        DustHelper.TileDust(tile, ref dusttype);
 
-							Projectile.NewProjectile(new Vector2(point.X, point.Y-1)*16,Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(projectile.damage*0.25), 0, Main.myPlayer, (int)tile.type, 16*projectile.spriteDirection);
-						Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+                        Projectile.NewProjectile(new Vector2(point.X, point.Y - 1) * 16, Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(projectile.damage * 0.25), 0, Main.myPlayer, (int)tile.type, 16 * projectile.spriteDirection);
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
 
-						for (float num315 = 2f; num315 < 15; num315 += 0.50f)
-						{
-							float angle = MathHelper.ToRadians(-Main.rand.Next(70, 130));
-							Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315*3f;
-							int num316 = Dust.NewDust(new Vector2(projectile.position.X+ (projectile.spriteDirection*(int)(projectile.width*0.60)), projectile.Center.Y- projectile.height/2f), projectile.width/2, projectile.height, dusttype, 0f, 0f, 50, default, (12f - num315) / 5f);
-							Main.dust[num316].noGravity = true;
-							Main.dust[num316].velocity = vecangle;
-							Main.dust[num316].fadeIn = 0.25f;
-						}
+                        for (float num315 = 2f; num315 < 15; num315 += 0.50f)
+                        {
+                            float angle = MathHelper.ToRadians(-Main.rand.Next(70, 130));
+                            Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315 * 3f;
+                            int num316 = Dust.NewDust(new Vector2(projectile.position.X + (projectile.spriteDirection * (int)(projectile.width * 0.60)), projectile.Center.Y - projectile.height / 2f), projectile.width / 2, projectile.height, dusttype, 0f, 0f, 50, default, (12f - num315) / 5f);
+                            Main.dust[num316].noGravity = true;
+                            Main.dust[num316].velocity = vecangle;
+                            Main.dust[num316].fadeIn = 0.25f;
+                        }
 
-						projectile.height += 32; projectile.position.Y -= 16;
-						projectile.width += 40; projectile.position.X -= 20;
-					}
+                        projectile.height += 32; projectile.position.Y -= 16;
+                        projectile.width += 40; projectile.position.X -= 20;
+                    }
 
 				}
 
 			}
 		}
+
 		public override bool PreKill(int timeLeft)
 		{
 			int dusttype = mod.DustType("Glass2");
+
 			for (float num315 = 2f; num315 < 12; num315 += 0.25f)
 			{
 				float angle = MathHelper.ToRadians(-Main.rand.Next(40, 140));
@@ -1011,27 +1048,31 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Main.PlaySound(SoundID.Shatter, projectile.Center);
 			return true;
 		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			Vector2 pos = projectile.Center;
+
 			for (float xx = Math.Min(1f,(projectile.velocity.Length() - 4f) / 2f); xx > 0 ; xx -= 0.10f)
 			{
 				Vector2 drawPos = (pos) - ((projectile.velocity*6f) * xx);
 				Draw(spriteBatch, drawPos, lightColor* (1f-xx)*0.5f,xx);
 			}
+
 			Draw(spriteBatch, projectile.Center, lightColor,0);
 			return false;
 		}
-	public virtual void Draw(SpriteBatch spriteBatch,Vector2 drawpos, Color lightColor, float aimframe)
-		{
-			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon1");
 
-			Vector2 drawOrigin = new Vector2(tex.Width/2f, tex.Height) / 2f;
-			Vector2 drawPos = ((drawpos - Main.screenPosition));
-			Color color = lightColor;
-			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), color, projectile.rotation* projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-			spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-		}
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
+        {
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon1");
+
+            Vector2 drawOrigin = new Vector2(tex.Width / 2f, tex.Height) / 2f;
+            Vector2 drawPos = ((drawpos - Main.screenPosition));
+            Color color = lightColor;
+            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+        }
 	}
 
 	class ShockwaveSummon : NPCs.Miniboss.Glassweaver.Shockwave
@@ -1067,7 +1108,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			{
 				projectile.velocity.Y = projectile.timeLeft <= 10 ? 1f : -1f;
 
-				if (projectile.timeLeft == 19 && Math.Abs(projectile.ai[1]) > 0)
+				if (projectile.timeLeft == 19 && Math.Abs(projectile.ai[1]) > 0) //what the fuck is this. Local vars. please.
 					Projectile.NewProjectile(new Vector2(((int)projectile.Center.X / 16) * 16 + 16*Math.Sign(projectile.ai[1])
 					, (((int)projectile.Center.Y / 16) * 16) - 32),
 					Vector2.Zero, projectile.type, projectile.damage, 0, Main.myPlayer, projectile.ai[0], projectile.ai[1] - Math.Sign(projectile.ai[1]));
@@ -1079,11 +1120,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		{
 			if (projectile.timeLeft < 21)
 				spriteBatch.Draw(Main.tileTexture[(int)projectile.ai[0]], projectile.position - Main.screenPosition, new Rectangle(18, 0, 16, 16), lightColor);
+
 			return false;
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (projectile.timeLeft > 800)
+			if (projectile.timeLeft > 800) //smells like boilerplate.
 			{
 				Point16 point = new Point16((int)((projectile.Center.X + (projectile.width / 3f) * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)((projectile.Center.Y) / 16) + 1));
 				Tile tile = Framing.GetTileSafely(point.X, point.Y);
@@ -1110,13 +1153,22 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 						Main.dust[num316].velocity = vecangle*2f;
 						Main.dust[num316].fadeIn = 0.25f;
 					}
-
 				}
-
 			}
 			return false;
 		}
 	}
-
-
 }
+
+/*Concluding comments:
+ * - Please try to minimize the amount of vars you use in projectiles, use the ai fields when possible. You also did not implement any netsync for the ones you did use. that needs to be done.
+ * - please use local vars over splitting a call into multiple lines, its very hard to read and looks abhorrently messy.
+ * - some of your var names are very nondescriptive, like "us". use VS rename tool to change this to something more appropriate for what it represents
+ * - fields => properties => ctor => lambda methods => lambda overrides => overrides and methods. please.
+ * - remove redundant parenthesis once you're done thinking through something, and please actually make an attempt to format things consistently. put whitespace lines between methods, before conditional statements, etc.
+ * - note that you can also re-type the closing parenthesis on a statement or definition to have VS auto-format the tabulation for you. You had alot of incorrect tabulation.
+ * - you have adapted vanilla code where you didnt re-name the local vars or comment that it was adapted vanilla code. dont do that.
+ * - each weapon here belongs in it's own file. a 1.1k line long file is not OK.
+ */
+
+    
