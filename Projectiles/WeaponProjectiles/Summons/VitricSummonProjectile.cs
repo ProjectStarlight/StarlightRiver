@@ -140,7 +140,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			//return;
 
 
-			Player player = Main.player[projectile.owner];
+			Player player = projectile.Owner();
 			if (player.dead || !player.active)
 			{
 				player.ClearBuff(ModContent.BuffType<VitricSummonBuff>());
@@ -271,7 +271,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			if (projectile.localAI[0] < 0 || projectile.ai[1] > 0)
 				return false;
 			Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon"+((int)projectile.ai[0]+1));
-			Player player = Main.player[projectile.owner];
 
 			float scale = Math.Min(projectile.localAI[0] / 15f, 1f);
 			Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
@@ -549,7 +548,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override void DoAI()
 		{
-			Player player = Main.player[projectile.owner];
+			Player player = projectile.Owner();
 			oldhitbox = new Vector2(projectile.width, projectile.height);
 			projectile.tileCollide = offset.X>0;
 
@@ -892,7 +891,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override void AI()
 		{
-			player = Main.player[projectile.owner];
+			player = projectile.Owner();
 			if (player.HasBuff(ModContent.BuffType<VitricSummonBuff>()))
 			{
 				projectile.timeLeft = 2;
