@@ -64,7 +64,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 case (int)PhaseEnum.SpawnEffects:
 
                     ResetAttack();
-                    targetRectangle = RegionCenter;
 
                     StarlightRiver.Instance.textcard.Display("Glassweaver", "the", null, 240, 1, true);
 
@@ -85,32 +84,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     break;
 
                 case (int)PhaseEnum.FirstPhase:
-
-                    if(npc.velocity.X != 0) npc.spriteDirection = npc.velocity.X < 0 ? 1 : -1;
-
-                    if (AttackTimer == 1)
-                    {
-                        AttackPhase++;
-                        if (AttackPhase > 7) AttackPhase = 0;
-                    }
-
-                    switch (AttackPhase)
-                    {
-                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SlashCombo(); break;
-                        case 1: PathToTarget(); break;
-
-                        case 2: ThrowSpear(); break;
-                        case 3: PathToTarget(); break;
-
-                        case 4: if (GetRegion(npc) == RegionPit) LavaWave(); else SlashCombo(); break;
-                        case 5: PathToTarget(); break;
-
-                        case 6: ThrowSpear(); break;
-                        case 7: PathToTarget(); break;
-                    }
-
-                    //pathing updates
-                    for (int k = 0; k < pads.Length; k++) pads[k].Update();
+                    Spears();
 
                     break;
             }
