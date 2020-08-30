@@ -1167,6 +1167,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
  * - remove redundant parenthesis once you're done thinking through something, and please actually make an attempt to format things consistently. put whitespace lines between methods, before conditional statements, etc.
  * - note that you can also re-type the closing parenthesis on a statement or definition to have VS auto-format the tabulation for you. You had alot of incorrect tabulation.
  * - you have adapted vanilla code where you didnt re-name the local vars or comment that it was adapted vanilla code. dont do that.
+ * - each weapon here belongs in it's own file. a 1.1k line long file is not OK.
  */
 
     
