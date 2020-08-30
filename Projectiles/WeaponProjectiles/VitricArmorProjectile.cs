@@ -85,7 +85,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             projectile.ai[0] = Math.Max(projectile.ai[0] - 1, 0);
             int pos = (int)projectile.localAI[0];
-            Player player = Main.player[projectile.owner];
+            Player player = projectile.Owner();
             if (player.dead)
             {
                 Shatter();

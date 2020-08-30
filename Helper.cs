@@ -22,9 +22,8 @@ namespace StarlightRiver
         private static float tiltMax;
 
         public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0,0,(int)vector.X, (int)vector.Y);
-
+        public static Player Owner(this Projectile proj) => Main.player[proj.owner];
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
-
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
 
         /// <summary>
