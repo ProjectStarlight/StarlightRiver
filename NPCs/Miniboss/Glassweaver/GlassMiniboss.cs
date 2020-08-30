@@ -84,7 +84,18 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     break;
 
                 case (int)PhaseEnum.FirstPhase:
-                    Spears();
+
+                    if (AttackTimer == 1)
+                    {
+                        AttackPhase++;
+                        if (AttackPhase > 1) AttackPhase = 0;
+                    }
+
+                    switch (AttackPhase)
+                    {
+                        case 0: Spears(); break;
+                        case 1: Knives(); break;
+                    }
 
                     break;
             }

@@ -25,7 +25,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         private void SpawnAnimation()
         {
             if (AttackTimer == 1) moveStart = npc.Center;
-            npc.Center = Vector2.SmoothStep(moveStart, spawnPos + new Vector2(0, -100), AttackTimer / 300f);
+            npc.Center = Vector2.SmoothStep(moveStart, spawnPos + new Vector2(0, -50), AttackTimer / 300f);
         }
 
         private void Hammer()
@@ -43,6 +43,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             if(AttackTimer == 1)
             {
+                npc.TargetClosest();
                 moveTarget = PickSide();
                 moveStart = npc.Center;
             }
@@ -60,7 +61,18 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 }
             }
 
-            if (AttackTimer >= 120) ResetAttack();
+            if (AttackTimer >= 240) ResetAttack();
+        }
+
+        private void Knives()
+        {
+            if (AttackTimer == 1)
+            {
+                for (int k = -1; k < 2; k++)
+                    Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, npc.target);
+            }
+
+            if (AttackTimer == 60) ResetAttack();
         }
 
     }
