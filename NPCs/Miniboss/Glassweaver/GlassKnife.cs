@@ -53,15 +53,13 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 spriteBatch.Draw(backTex, projectile.oldPos[k] + projectile.Size /2  - Main.screenPosition, null, Color.White * alpha, projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
             }
 
-            spriteBatch.Draw(backTex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, backTex.Size() / 2, 1, 0, 0);
-
             if (timer < 30)
             {
                 Color color = Projectiles.WeaponProjectiles.Summons.VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 4, 120));
                 Texture2D tex = GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/Weapon3");
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, color, projectile.rotation, frame.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, projectile.oldPos[0] + projectile.Size / 2 - Main.screenPosition, frame, color, projectile.rotation, frame.Size() / 2, 1, 0, 0);
             }
 
             return false;
