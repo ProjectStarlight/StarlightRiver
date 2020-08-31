@@ -130,7 +130,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 return;
             }
             projectile.timeLeft -= 1;
-
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
@@ -190,6 +189,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
+
             for (float num315 = 0.2f; num315 < 2+ projectile.scale*1.5f; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
@@ -202,8 +202,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/GlassSpikeGlow");
-            spriteBatch.Draw(tex, projectile.Center + Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
-                new Color(150, 255, 255) * Math.Min(projectile.timeLeft / 100f,0.5f), projectile.velocity.ToRotation()+MathHelper.ToRadians(-135), tex.Size() / 2, 1.8f+projectile.scale, 0, 0);
+            Vector2 pos = projectile.Center + Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
+            Color color = new Color(150, 255, 255) * Math.Min(projectile.timeLeft / 100f, 0.5f);
+            float rot = projectile.velocity.ToRotation() + MathHelper.ToRadians(-135);
+
+            spriteBatch.Draw(tex, pos, tex.Frame(), color, rot, tex.Size() / 2, 1.8f + projectile.scale, 0, 0);
         }
     }
 
