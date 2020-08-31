@@ -141,7 +141,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			//if (projectile.owner == null || projectile.owner < 0)
 			//return;
 
-			Player player = Main.player[projectile.owner];
+			Player player = projectile.Owner();
 
 			if (player.dead || !player.active)
 				player.ClearBuff(ModContent.BuffType<VitricSummonBuff>());
@@ -568,7 +568,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override void DoAI()
 		{
-			Player player = Main.player[projectile.owner];
+			Player player = projectile.Owner();
 			oldhitbox = new Vector2(projectile.width, projectile.height);
 			projectile.tileCollide = offset.X>0;
 
@@ -921,7 +921,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
 		public override void AI()
 		{
-			player = Main.player[projectile.owner];
+
+			player = projectile.Owner();
 
 			if (player.HasBuff(ModContent.BuffType<VitricSummonBuff>()))
 				projectile.timeLeft = 2;

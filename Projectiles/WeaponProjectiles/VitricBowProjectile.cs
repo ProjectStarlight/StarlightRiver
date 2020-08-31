@@ -58,10 +58,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 		public override void AI()
 		{
 
-			//int DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"), projectile.velocity.X * 1f, projectile.velocity.Y * 1f, 20, default(Color), 1f);
+            //int DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"), projectile.velocity.X * 1f, projectile.velocity.Y * 1f, 20, default(Color), 1f);
 
-            Player player = Main.player[projectile.owner];
-			if (player.dead)
+            Player player = projectile.Owner();
+            if (player.dead)
 			{
 				projectile.Kill();
 			}
