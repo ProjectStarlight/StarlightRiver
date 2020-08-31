@@ -39,7 +39,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
         }
 
-        private void Spears()
+        private void Spears() //summon a wall of spears on one side of the arena
         {
             if(AttackTimer == 1)
             {
@@ -48,10 +48,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 moveStart = npc.Center;
             }
 
-            if (AttackTimer < 60)
+            if (AttackTimer < 60) //go to the side away from the target
                 npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
 
-            if(AttackTimer == 90)
+            if(AttackTimer == 90) //spawn the projectiles
             {
                 int exclude = Main.rand.Next(3);
                 for(int k = 0; k < 6; k++)
@@ -64,16 +64,20 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer >= 240) ResetAttack();
         }
 
-        private void Knives()
+        private void Knives() //Summon 3 knives that float up and home-in on the target. Target is passed to the knives as ai[0].
         {
             if (AttackTimer == 1)
             {
-                for (int k = -1; k < 2; k++)
+                for (int k = -1; k < 2; k++) //spawn projectiles
                     Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, npc.target);
             }
 
-            if (AttackTimer == 60) ResetAttack();
+            if (AttackTimer == 60) ResetAttack(); //TODO: May need to leave more time? unsure
         }
 
+        private void Greatsword()
+        {
+
+        }
     }
 }

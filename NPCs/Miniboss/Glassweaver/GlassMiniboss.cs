@@ -7,7 +7,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
     internal partial class GlassMiniboss : ModNPC
     {
-        internal ref float PathingTimer => ref npc.ai[0];
+        internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
@@ -51,7 +51,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             StarlightWorld.DesertOpen = true;
             Main.NewText("The temple doors slide open...", new Color(200, 170, 80));
             return true;
-            //dee2dd8926497739b24ddc267ebfa22f
         }
 
         private void SetPhase(PhaseEnum phase) => Phase = (float)phase;
@@ -90,12 +89,16 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     {
                         AttackPhase++;
                         if (AttackPhase > 1) AttackPhase = 0;
+
+                        if (npc.life < npc.lifeMax / 3f) AttackPhase = 4;
                     }
 
                     switch (AttackPhase)
                     {
                         case 0: Spears(); break;
                         case 1: Knives(); break;
+
+                        case 4: Greatsword(); break;
                     }
 
                     break;
