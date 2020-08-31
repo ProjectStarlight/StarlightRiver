@@ -10,12 +10,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class VitricBowProjectile : ModProjectile,IDrawAdditive
     {
-        internal int MaxCharge=100;
-        internal int ChargeNeededToFire = 30;
-        private float maxangle = 45f;
-        private int MaxFireTime = 30;
-        private int AddedFireBuffer = 15;
-        
+        internal const int MaxCharge = 100;
+        internal const int ChargeNeededToFire = 30;
+        private const float maxangle = 45f;
+        private const int MaxFireTime = 30;
+        private const int AddedFireBuffer = 15;
+
+        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VolleyTell";
+
+        public override bool? CanHitNPC(NPC target) => false;
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Enchanted Glass");
+
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -29,20 +37,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.ignoreWater = true;
         }
 
-        //Kek
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VolleyTell";
-        public override bool? CanHitNPC(NPC target) => false;
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Enchanted Glass");
-        }
-
-
-
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
+
             for (float num315 = 0.2f; num315 < 5; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
@@ -54,27 +52,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
         }
 
-
 		public override void AI()
 		{
-
-            //int DustID2 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("AcidDust"), projectile.velocity.X * 1f, projectile.velocity.Y * 1f, 20, default(Color), 1f);
-
             Player player = projectile.Owner();
-            if (player.dead)
-			{
-				projectile.Kill();
-			}
+
+            if (player.dead) projectile.Kill();		
 			else
 			{
 				if (projectile.localAI[1] > 0 || !player.channel)
-				{
-                    LetGo(player);
-				}
+                    LetGo(player);		
 				else
-				{
                     Charging(player);
-				}
+
                 Holding(player);
                 projectile.Center = player.Center;
             }
@@ -92,21 +81,22 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             player.itemRotation = (float)Math.Atan2(distz.Y * dir, distz.X * dir);
         }
 
-            public void Charging(Player player)
-            {
-                projectile.ai[0] = Math.Min(projectile.ai[0]+1, MaxCharge);
-                Vector2 mousePos = Main.MouseWorld;
-                if (projectile.owner == Main.myPlayer && mousePos != projectile.Center)
-                {
-                    Vector2 diff2 = mousePos - player.Center;
-                    diff2.Normalize();
-                    projectile.velocity = diff2 * 20f;
-                    projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
-                    projectile.netUpdate = true;
-                }
+        public void Charging(Player player)
+        {
+            projectile.ai[0] = Math.Min(projectile.ai[0] + 1, MaxCharge);
+            Vector2 mousePos = Main.MouseWorld;
 
-                projectile.ai[1] = MaxFireTime-10;
-                projectile.timeLeft = MaxFireTime+ AddedFireBuffer;
+            if (projectile.owner == Main.myPlayer && mousePos != projectile.Center)
+            {
+                Vector2 diff2 = mousePos - player.Center;
+                diff2.Normalize();
+                projectile.velocity = diff2 * 20f;
+                projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
+                projectile.netUpdate = true;
+            }
+
+            projectile.ai[1] = MaxFireTime - 10;
+            projectile.timeLeft = MaxFireTime + AddedFireBuffer;
         }
 
         public void LetGo(Player player)
@@ -116,21 +106,24 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 if (projectile.timeLeft <= MaxFireTime)
                 {
                     projectile.localAI[1] += 1;
-                    float percent = Math.Max((projectile.ai[0] - ChargeNeededToFire) / (MaxCharge-ChargeNeededToFire),0f);
+                    float percent = Math.Max((projectile.ai[0] - ChargeNeededToFire) / (MaxCharge-ChargeNeededToFire), 0f);
                     int timeleft = projectile.timeLeft - 10;
-                    float maxdelta = (maxangle * (projectile.ai[0] / MaxCharge));
+                    float maxdelta = maxangle * (projectile.ai[0] / MaxCharge);
 
                     for (int i = -1; i < 2; i += 2)
                     {
                         bool first = (projectile.timeLeft == MaxFireTime);
+
                         if ((projectile.localAI[1] % 8 == 0 && timeleft > 0) || (first && i > 0))
                         {
-                            float rot = MathHelper.ToRadians(((1f-((timeleft) / projectile.ai[1])) * maxdelta / 2f)) * i;
-                            float chargefloat = (1f - ((timeleft) / projectile.ai[1]));
-                            Projectile.NewProjectile(projectile.Center, new Vector2(4f+ percent*(3f+chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot), ModContent.ProjectileType<VitricBowShardProjectile>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI
-                                ,percent, 0f); //fire the flurry of projectiles
-                            if (i>0)
-                            Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                            float rot = MathHelper.ToRadians(1f - timeleft / projectile.ai[1] * maxdelta / 2f) * i;
+                            float chargefloat = 1f - (timeleft / projectile.ai[1]);
+                            var pos = new Vector2(4f + percent * (3f + chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot);
+
+                            Projectile.NewProjectile(projectile.Center, pos, ModContent.ProjectileType<VitricBowShardProjectile>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
+
+                            if (i > 0)
+                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                         }
                     }
                 }
@@ -146,12 +139,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             float maxalpha = MathHelper.Clamp((projectile.ai[0] - ChargeNeededToFire) / 20f, 0.25f, 0.5f);
             float alpha = Math.Min(projectile.ai[0] / 60f, maxalpha)*Math.Min((float)projectile.timeLeft/8,1f);
             Vector2 maxspread = new Vector2(Math.Min(projectile.ai[0] / MaxCharge, 1) * 0.5f,0.4f);
+
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
         }
 
     }
     //Hey, the boss's attack is 2 projectiles in one file, let me do it here too please?
-    public class VitricBowShardProjectile : ModProjectile,IDrawAdditive
+    public class VitricBowShardProjectile : ModProjectile, IDrawAdditive
     {
         public override void SetDefaults()
         {
@@ -165,6 +159,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.localNPCHitCooldown = -1;
             projectile.extraUpdates = 2;
         }
+
         public override void AI()
         {
             for (int k = 0; k <= 1; k++)
@@ -172,9 +167,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Dust d = Dust.NewDustPerfect(projectile.Center + projectile.velocity, 264, (projectile.velocity * (Main.rand.NextFloat(-0.25f, -0.1f))).RotatedBy((k == 0) ? 0.4f : -0.4f), 0, default, 1f);
                 d.noGravity = true;
             }
-            projectile.velocity.Y += 0.025f;
 
+            projectile.velocity.Y += 0.025f;
             projectile.localAI[0] += 1;
+
             if (projectile.localAI[0] == 1)
             {
                 projectile.scale = 0.5f+projectile.ai[0]/3f;
@@ -183,12 +179,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 projectile.penetrate = 1+((int)(projectile.ai[0]*4f));
             }
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = Main.projectileTexture[projectile.type];
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.velocity.ToRotation()-MathHelper.ToRadians(90), tex.Size()/2f, projectile.scale, 0, 0);
             return false;
         }
+
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
@@ -200,6 +198,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 num316.fadeIn = 0.5f;
             }
         }
+
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/GlassSpikeGlow");
