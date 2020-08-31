@@ -54,8 +54,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
 
                 if (held.modProjectile != null && held.modProjectile is VitricBowProjectile)
                 {
-                    VitricBowProjectile modproj = held.modProjectile as VitricBowProjectile;
-                    float fraction = held.ai[0] / (float)modproj.MaxCharge;
+                    float fraction = held.ai[0] / VitricBowProjectile.MaxCharge;
                     Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction)*Math.Min(held.timeLeft/20f,1f);
                     var data2 = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
                     Main.playerDrawData.Add(data2);
