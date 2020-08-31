@@ -51,6 +51,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             StarlightWorld.DesertOpen = true;
             Main.NewText("The temple doors slide open...", new Color(200, 170, 80));
             return true;
+            //dee2dd8926497739b24ddc267ebfa22f
         }
 
         private void SetPhase(PhaseEnum phase) => Phase = (float)phase;
