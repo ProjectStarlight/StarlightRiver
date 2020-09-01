@@ -47,6 +47,7 @@ namespace StarlightRiver.Items.Armor.Vitric
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = "Gain 5% attack strength, lose 3 defense, and release protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
+            player.GetModPlayer<VitricArmorPlayer>().setBonus = true;
 
             for (float k = 0.2f; k <= 0.8f; k += 0.2f)
             {
@@ -54,13 +55,13 @@ namespace StarlightRiver.Items.Armor.Vitric
                 {
                     player.statDefense -= 3;
                     player.BoostAllDamage(0.05f, 0);
-                }
-                if ((float)player.statLife / player.statLifeMax2 < k)
-                {
-                    if (!Main.projectile.Any(projectile => projectile.type == ProjectileType<VitricArmorProjectile>() && projectile.active && projectile.localAI[0] == (int)(k * 5) && projectile.owner == player.whoAmI))
+
+                    int index = (int)(k * 5);
+
+                    if (!Main.projectile.Any(projectile => projectile.type == ProjectileType<VitricArmorProjectile>() && projectile.active && projectile.localAI[0] == index && projectile.owner == player.whoAmI))
                     {
                         int proj = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectile>(), 0, 0);
-                        Main.projectile[proj].localAI[0] = (int)(k * 5);
+                        Main.projectile[proj].localAI[0] = index;
                         Main.projectile[proj].ai[0] = 30;
                         Main.projectile[proj].owner = player.whoAmI;
                         Main.projectile[proj].netUpdate = true;
@@ -148,10 +149,9 @@ namespace StarlightRiver.Items.Armor.Vitric
         }
     }
 
-    public class VitricPlayer : ModPlayer
+    public class VitricArmorPlayer : ModPlayer
     {
-        public float counter = 0;
-        public int[] tablets = new int[3];
+        public bool setBonus = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
@@ -165,6 +165,10 @@ namespace StarlightRiver.Items.Armor.Vitric
                 }
             }
             return true;
+        }
+        public override void ResetEffects()
+        {
+            setBonus = false;
         }
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
