@@ -151,7 +151,7 @@ namespace StarlightRiver.Items.Armor.Vitric
 
     public class VitricArmorPlayer : ModPlayer
     {
-        public bool setBonus = false;
+        internal bool setBonus = false;
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))

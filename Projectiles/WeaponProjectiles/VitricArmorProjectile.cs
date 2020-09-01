@@ -86,6 +86,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.ai[0] = Math.Max(projectile.ai[0] - 1, 0);
             int pos = (int)projectile.localAI[0];
             Player player = projectile.Owner();
+
             if (player.dead)
             {
                 Shatter();
@@ -97,11 +98,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
                 player.AddBuff(ModContent.BuffType<Buffs.ProtectiveShard>(), 2);
             }
-            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos)
+
+            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || !player.GetModPlayer<Items.Armor.Vitric.VitricArmorPlayer>().setBonus)
             {
                 projectile.position += Vector2.Normalize(player.Center - projectile.Center) * 5;
                 projectile.rotation += 0.4f;
                 projectile.friendly = false;
+
                 if (Vector2.Distance(player.Center, projectile.Center) <= 16)
                 {
                     projectile.timeLeft = 0;
