@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using System.Collections.Generic;
 using StarlightRiver.Abilities;
 using Terraria;
 using Terraria.ID;
@@ -57,6 +58,12 @@ namespace StarlightRiver.Items.Debug
                     player.inventory[i].TurnToAir();
             }
             return true;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            TooltipLine line = new TooltipLine(mod, "Titties", GetHashCode().ToString());
+            tooltips.Add(line);
         }
 
         public override void HoldItem(Player player)

@@ -39,7 +39,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
         }
 
-        private void Spears()
+        private void Spears() //summon a wall of spears on one side of the arena
         {
             if(AttackTimer == 1)
             {
@@ -48,10 +48,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 moveStart = npc.Center;
             }
 
-            if (AttackTimer < 60)
+            if (AttackTimer < 60) //go to the side away from the target
                 npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
 
-            if(AttackTimer == 90)
+            if(AttackTimer == 90) //spawn the projectiles
             {
                 int exclude = Main.rand.Next(3);
                 for(int k = 0; k < 6; k++)
@@ -64,16 +64,70 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer >= 240) ResetAttack();
         }
 
-        private void Knives()
+        private void Knives() //Summon 3 knives that float up and home-in on the target. Target is passed to the knives as ai[0].
         {
             if (AttackTimer == 1)
             {
-                for (int k = -1; k < 2; k++)
+                for (int k = -1; k < 2; k++) //spawn projectiles
                     Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, npc.target);
             }
 
-            if (AttackTimer == 60) ResetAttack();
+            if (AttackTimer == 60) ResetAttack(); //TODO: May need to leave more time? unsure
         }
 
+        private void Greatsword()
+        {
+
+        }
+
+        private void UppercutGlide() //its just the other two methods put together because I re-use uppercut. Suck my cock.
+        {
+            if (AttackTimer <= 55) Uppercut(0);
+            else if(AttackTimer <= 215) Helicopter(55);
+
+            if (AttackTimer >= 230) ResetAttack();
+        }
+
+        private void Uppercut(int startTime)
+        {
+            if (AttackTimer == startTime + 30) //this is so fucking basic it just spawns a stupipd ass hitbox projectile and launches him up how fucking DUMB do you have to be to have to read this comment
+            {
+                npc.velocity.Y = -14;
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassUppercut>(), 40, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection);
+            }
+        }
+
+        private void Helicopter(int startTime) //roflcopter
+        {
+            if(AttackTimer == startTime + 1)
+            {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 40, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
+                npc.noGravity = true;
+                npc.TargetClosest();
+            }
+
+            npc.velocity.Y = 0.7f + Target.Center.Y > npc.Center.Y ? 1.2f : -0.3f; //still fall slowly
+            npc.spriteDirection = (int)AttackTimer / 4 % 2 == 0 ? -1 : 1; //brain moment
+
+            if (AttackTimer <= startTime + 120)
+            {
+                npc.velocity.X += Target.Center.X > npc.Center.X ? 0.1f : -0.1f; //go towards the target
+                if (npc.velocity.LengthSquared() > 36) //cap speed
+                    npc.velocity = Vector2.Normalize(npc.velocity) * 6;
+            }
+            else
+                npc.velocity.X *= 0.98f;
+
+            if (AttackTimer == startTime + 150) //let him fall again after this shit is over
+            {
+                npc.noGravity = false;
+                npc.velocity *= 0;
+            }
+        }
+
+        private void Slash()
+        {
+
+        }
     }
 }
