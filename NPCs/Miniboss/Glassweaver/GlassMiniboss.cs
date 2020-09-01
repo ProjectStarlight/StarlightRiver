@@ -88,7 +88,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
-                        if (AttackPhase > 1) AttackPhase = 0;
+                        if (AttackPhase > 2) AttackPhase = 0;
 
                         if (npc.life < npc.lifeMax / 3f) AttackPhase = 4;
                     }
@@ -97,6 +97,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                     {
                         case 0: Spears(); break;
                         case 1: Knives(); break;
+                        case 2: UppercutGlide(); break;
 
                         case 4: Greatsword(); break;
                     }
