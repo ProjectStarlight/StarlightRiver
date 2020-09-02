@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using StarlightRiver.Dusts;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
@@ -62,19 +63,22 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public void Shatter()
         {
-            for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
+            if (projectile.ai[0] < 1)
             {
-                float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
-                Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
-                Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), mod.DustType("Glass2"), vari, 100, default, num315 / 3f);
+                for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
+                {
+                    float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
+                    Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
+                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<Glass2>(), vari, 100, default, num315 / 3f);
+                }
+                Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f, -Main.rand.NextFloat(0.15f, 0.75f));
             }
 
-            Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f,-Main.rand.NextFloat(0.15f,0.75f));
             projectile.ai[0] = 600;
             projectile.netUpdate = true;
         }
 
-        public DrawData Draw(Vector2 offset)
+        public DrawData Draw()
         {
             Vector2 rightthere = projectile.Center;
             float scale = MathHelper.Clamp(1f-projectile.ai[0] / 15f,0,1);
@@ -90,16 +94,18 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (player.dead)
             {
                 Shatter();
-                projectile.Kill();
+                projectile.timeLeft = 0;
             }
 
             if (Regenerate())
             {
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Air>(), 0, 0, 0, default, 0.35f);
                 player.AddBuff(ModContent.BuffType<Buffs.ProtectiveShard>(), 2);
             }
 
-            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || !player.GetModPlayer<Items.Armor.Vitric.VitricArmorPlayer>().setBonus)
+            projectile.ai[1] -= 1;
+
+            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || projectile.ai[1]<1)
             {
                 projectile.position += Vector2.Normalize(player.Center - projectile.Center) * 5;
                 projectile.rotation += 0.4f;
@@ -114,8 +120,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 projectile.timeLeft = 30;
                 projectile.localAI[1] += (0.05f - pos * 0.005f) * (pos % 2 == 0 ? -1 : 1);
-                if (projectile.localAI[1] >= 6.28) { projectile.localAI[1] = 0; }
-                projectile.position = player.Center - new Vector2(0,player.height/3f) + new Vector2((float)Math.Cos(projectile.localAI[1])*2f, (float)Math.Sin(projectile.localAI[1])/1.5f) * (((5 - pos) * 6)+10);
+
+                if (Math.Abs(projectile.localAI[1]) >= 6.28)
+                    projectile.localAI[1] = 0;
+
+                float movex = (float)Math.Cos(projectile.localAI[1]) * 2f;
+                float movey = ((float)Math.Sin(projectile.localAI[1]) / 1.5f);
+                projectile.position = player.Center - new Vector2(0,player.height/3f) + new Vector2(movex, movey) * (((5 - pos) * 6) + 10);
                 projectile.rotation = projectile.localAI[1];
             }
         }

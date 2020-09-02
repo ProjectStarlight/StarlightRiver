@@ -33,6 +33,12 @@ namespace StarlightRiver.Items.Armor.Vitric
             item.rare = ItemRarityID.Green;
             item.defense = 4;
         }
+        
+        public override bool Autoload(ref string name)
+        {
+            StarlightPlayer.PreHurtEvent += SetBonusPrehurt;
+            return true;
+        }
 
         public override void UpdateEquip(Player player)
         {
@@ -47,7 +53,6 @@ namespace StarlightRiver.Items.Armor.Vitric
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = "Gain 5% attack strength, lose 3 defense, and release protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
-            player.GetModPlayer<VitricArmorPlayer>().setBonus = true;
 
             for (float k = 0.2f; k <= 0.8f; k += 0.2f)
             {
@@ -58,13 +63,19 @@ namespace StarlightRiver.Items.Armor.Vitric
 
                     int index = (int)(k * 5);
 
-                    if (!Main.projectile.Any(projectile => projectile.type == ProjectileType<VitricArmorProjectile>() && projectile.active && projectile.localAI[0] == index && projectile.owner == player.whoAmI))
+                    Projectile findproj = Main.projectile.FirstOrDefault(projectile => projectile.type == ProjectileType<VitricArmorProjectile>() && projectile.active && projectile.localAI[0] == index && projectile.owner == player.whoAmI);
+
+                    if (findproj == default)
                     {
                         int proj = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectile>(), 0, 0);
                         Main.projectile[proj].localAI[0] = index;
                         Main.projectile[proj].ai[0] = 30;
                         Main.projectile[proj].owner = player.whoAmI;
                         Main.projectile[proj].netUpdate = true;
+                    }
+                    else
+                    {
+                        findproj.ai[1] = 3;
                     }
                 }
             }
@@ -79,6 +90,25 @@ namespace StarlightRiver.Items.Armor.Vitric
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
+
+        private bool SetBonusPrehurt(Player player,bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            if (player.armor[0].type == ItemType<VitricHead>() && player.armor[1].type == ItemType<VitricChest>() && player.armor[2].type == ItemType<VitricLegs>())//Better way to do this?
+            {
+            foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
+                {
+                    VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
+                    if (moddedproj.projectile.ai[0] < 1)
+                    {
+                        moddedproj.Shatter();
+                        damage = (int)(damage * 0.750f);
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -151,25 +181,7 @@ namespace StarlightRiver.Items.Armor.Vitric
 
     public class VitricArmorPlayer : ModPlayer
     {
-        internal bool setBonus = false;
-        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        {
-            foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
-            {
-                VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
-                if (moddedproj.projectile.ai[0] < 1)
-                {
-                    moddedproj.Shatter();
-                    damage = (int)(damage*0.750f);
-                    break;
-                }
-            }
-            return true;
-        }
-        public override void ResetEffects()
-        {
-            setBonus = false;
-        }
+
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             Action<PlayerDrawInfo> backTarget = s => DrawShards(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
@@ -182,21 +194,22 @@ namespace StarlightRiver.Items.Armor.Vitric
 
             void DrawShards(PlayerDrawInfo info, bool back)
             {
-                List<VitricArmorProjectile> allshard = new List<VitricArmorProjectile>();
+                List<VitricArmorProjectile> allshards = new List<VitricArmorProjectile>();
 
                 foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
                 {
                     VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
-                    allshard.Add(moddedproj);
+                    allshards.Add(moddedproj);
                 }
-                allshard = allshard.OrderBy((x) => x.projectile.Center.Y).ToList();
 
-                foreach (VitricArmorProjectile modshard in allshard)
+                allshards = allshards.OrderBy((x) => x.projectile.Center.Y).ToList();
+
+                foreach (VitricArmorProjectile modshard in allshards)
                 {
                     double angle = Math.Sin(-modshard.projectile.localAI[1]);
                     if ((angle > 0 && !back) ||
                         (angle <= 0 && back))
-                    Main.playerDrawData.Add(modshard.Draw(player.Center));
+                    Main.playerDrawData.Add(modshard.Draw());
                 }
             }
         }

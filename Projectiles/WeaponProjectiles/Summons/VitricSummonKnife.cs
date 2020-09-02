@@ -126,7 +126,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			}
 			else
 			{
-				projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), 0.04f / (1f + (projectile.localAI[0] - 300f) / 60f));
+				float turnspeed = 0.04f / (1f + (projectile.localAI[0] - 300f) / 60f);
+				projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), turnspeed);
 				projectile.velocity = (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * projectile.velocity.Length() * projectile.spriteDirection;
 			}
 
@@ -140,7 +141,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			{
 				float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
 				Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
-				Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), mod.DustType("Glass2"), ((projectile.velocity + vari) / num315).RotatedBy(angle), 100, default, num315 / 4f);
+				Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), dusttype, ((projectile.velocity + vari) / num315).RotatedBy(angle), 100, default, num315 / 4f);
 			}
 
 			Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
