@@ -117,11 +117,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         if ((projectile.localAI[1] % 8 == 0 && timeleft > 0) || (first && i > 0))
                         {
                             float rot = MathHelper.ToRadians(1f - timeleft / projectile.ai[1] * maxdelta / 2f) * i;
+                            if (first)
+                                rot = 0;
+
                             float chargefloat = 1f - (timeleft / projectile.ai[1]);
                             var pos = new Vector2(4f + percent * (3f + chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot);
 
                             Projectile.NewProjectile(projectile.Center, pos, ModContent.ProjectileType<VitricBowShardProjectile>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
 
+                            //Play the sound only once
                             if (i > 0)
                                 Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                         }
