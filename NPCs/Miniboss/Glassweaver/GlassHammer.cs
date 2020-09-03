@@ -31,8 +31,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (projectile.timeLeft == 60)
             {
                 origin = projectile.Center; //sets origin when spawned
-                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 10, 0, Main.myPlayer); //Shockwave spawners
-                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 10, 0, Main.myPlayer);
+                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer); //Shockwave spawners
+                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer);
             }
 
             if (projectile.timeLeft >= 30)
@@ -90,7 +90,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             projectile.width = 16;
             projectile.height = 16;
-            projectile.timeLeft = 90;
+            projectile.timeLeft = 150;
             projectile.aiStyle = -1;
             projectile.penetrate = -1;
         }
@@ -99,19 +99,27 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void AI()
         {
-            projectile.velocity.Y += 100;
+            Tile tile = Framing.GetTileSafely((int)projectile.Center.X / 16 + (projectile.velocity.X > 0 ? 1 : -1), (int)projectile.Center.Y / 16);
+            Main.NewText(tile.type);
 
-            Tile tile = Framing.GetTileSafely((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 + 1);
-            if (projectile.timeLeft < 80 && !tile.active()) projectile.position.Y -= 128;
+            if (projectile.timeLeft < 140 && tile.type == TileType<Tiles.Vitric.Blocks.VitricGlass>())
+                projectile.position.Y -= 128;
             
-            if (projectile.timeLeft < 90 && projectile.timeLeft % 10 == 0)
+            if (projectile.timeLeft < 150 && projectile.velocity.Y == 0 && projectile.timeLeft % 10 == 0)
                 Projectile.NewProjectile(projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), projectile.damage, 0, projectile.owner);
+
+            if (projectile.velocity.X == 0)
+                projectile.Kill();
+
+            projectile.velocity.Y = 50;
         }
     }
 
     class ShockwaveSpike : ModProjectile, IDrawAdditive
     {
         public override string Texture => "StarlightRiver/Invisible";
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Stone Pillar");
 
         public override void SetDefaults()
         {
@@ -130,7 +138,15 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             if (projectile.ai[0] == 1) projectile.ai[1] = projectile.position.Y;
 
-            if (projectile.ai[0] == 50) projectile.hostile = true; //when this projectile goes off
+            if (projectile.ai[0] == 50)
+            {
+                projectile.hostile = true; //when this projectile goes off
+
+                for (int k = 0; k < 20; k++)
+                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitY * -4, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-4, -2));
+
+                Main.PlaySound(SoundID.Item70, projectile.Center);
+            }
 
             if (projectile.ai[0] >= 50 && projectile.ai[0] <= 55)
             {

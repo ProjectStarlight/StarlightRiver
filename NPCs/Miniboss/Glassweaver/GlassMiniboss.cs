@@ -2,11 +2,14 @@
 using Terraria.ModLoader;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
+using System.IO;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
     internal partial class GlassMiniboss : ModNPC
     {
+        bool attackVariant = false;
+
         internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
         internal ref float AttackPhase => ref npc.ai[2];
@@ -30,7 +33,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             npc.width = 64;
             npc.height = 64;
-            npc.lifeMax = 3000;
+            npc.lifeMax = 1500;
             npc.damage = 20;
             npc.aiStyle = -1;
             npc.noGravity = true;
@@ -42,7 +45,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(4000 * bossLifeScale);
+            npc.lifeMax = (int)(2000 * bossLifeScale);
         }
 
         public override bool CheckDead()
@@ -85,12 +88,15 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
                 case (int)PhaseEnum.FirstPhase:
 
+                    npc.spriteDirection = npc.Center.X > Target.Center.X ? 1 : -1;
+
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
-                        if (AttackPhase > 2) AttackPhase = 0;
+                        if (AttackPhase > 8) AttackPhase = 0;
 
-                        if (npc.life < npc.lifeMax / 3f) AttackPhase = 4;
+                        attackVariant = Main.rand.NextBool();
+                        npc.netUpdate = true;
                     }
 
                     switch (AttackPhase)
@@ -98,12 +104,28 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                         case 0: Spears(); break;
                         case 1: Knives(); break;
                         case 2: UppercutGlide(); break;
+                        case 3: Idle(60); break;
+                        case 4: Hammer(); break;
+                        case 5: Knives(); break;
+                        case 6: SlashUpSlash(); break;
+                        case 7: Idle(90); break;
+                        case 8: if (attackVariant) SlashUpSlash(); else UppercutGlide(); break;
 
-                        case 4: Greatsword(); break;
+                        case 12: Greatsword(); break;
                     }
 
                     break;
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(attackVariant);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            attackVariant = reader.ReadBoolean();
         }
     }
 }

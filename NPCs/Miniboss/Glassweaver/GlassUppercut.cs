@@ -17,8 +17,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void SetDefaults()
         {
-            projectile.width = 80;
-            projectile.height = 80;
+            projectile.width = 120;
+            projectile.height = 120;
             projectile.hostile = true;
             projectile.timeLeft = 20;
             projectile.tileCollide = false;
@@ -29,7 +29,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override void AI()
         {
             if (projectile.timeLeft == 20) Main.PlaySound(SoundID.Item65, projectile.Center);
-            if (parent != null) projectile.Center = parent.Center + new Vector2(projectile.ai[1] == 0 ? -23 : 23, 40 - projectile.timeLeft * 2);
+            if (parent != null) projectile.Center = parent.Center + new Vector2(projectile.ai[1] == -1 ? 70 : -70, 40 - projectile.timeLeft * 2);
         }
     }
 }

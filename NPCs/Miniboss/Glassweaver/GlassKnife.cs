@@ -13,7 +13,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailingMode[projectile.type] = 2;
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
         }
 
         public override void SetDefaults()
@@ -21,12 +21,16 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             projectile.width = 24;
             projectile.height = 24;
             projectile.timeLeft = 120;
+            projectile.hostile = true;
         }
 
         public override void AI()
         {
             Player target = Main.player[(int)projectile.ai[0]];
             int timer = 120 - projectile.timeLeft;
+
+            if (timer == 1)
+                projectile.velocity.Y -= 5;
 
             //rotation control
             if (timer <= 30)
@@ -39,7 +43,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 projectile.velocity *= 0.98f;
 
             if (timer == 30)
-                projectile.velocity = Vector2.Normalize(projectile.Center - target.Center) * -15;
+                projectile.velocity = Vector2.Normalize(projectile.Center - target.Center) * -17;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

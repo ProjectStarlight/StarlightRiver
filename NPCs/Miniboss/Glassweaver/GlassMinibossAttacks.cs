@@ -14,7 +14,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void ResetAttack() => AttackTimer = 0;
 
-        private Vector2 PickSide() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-532, 60) : spawnPos + new Vector2(532, 60); //picks the opposite side of the player.
+        private Vector2 PickSide() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-532, 260) : spawnPos + new Vector2(532, 260); //picks the opposite side of the player.
 
         private Vector2 PickSideClose() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-160, 60) : spawnPos + new Vector2(144, 60); //picks the same side of the player.
 
@@ -28,6 +28,17 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             npc.Center = Vector2.SmoothStep(moveStart, spawnPos + new Vector2(0, -50), AttackTimer / 300f);
         }
 
+        private void Idle(int duration)
+        {
+            npc.TargetClosest();
+            npc.velocity.X += Target.Center.X > npc.Center.X ? 0.25f : -0.25f;
+            if (System.Math.Abs(npc.velocity.X) >= 16) npc.velocity.X = npc.velocity.X > 0 ? 4 : -4;
+
+            if (npc.collideX && npc.velocity.Y == 0) npc.velocity.Y -= 10;
+
+            if (AttackTimer == duration) ResetAttack();
+        }
+
         private void Hammer()
         {
             if (AttackTimer < 10) npc.velocity *= 0.9f; //decelerate into position
@@ -37,6 +48,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 npc.velocity *= 0;
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, npc.direction);
             }
+
+            if (AttackTimer >= 90) ResetAttack();
         }
 
         private void Spears() //summon a wall of spears on one side of the arena
@@ -57,7 +70,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 for(int k = 0; k < 6; k++)
                 {
                     if((k / 2) != exclude) //leave an opening!
-                        Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 20, 1, Main.myPlayer, k * 60, Direction);
+                        Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
                 }
             }
 
@@ -69,7 +82,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer == 1)
             {
                 for (int k = -1; k < 2; k++) //spawn projectiles
-                    Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, npc.target);
+                    Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 20, 1, Main.myPlayer, npc.target);
             }
 
             if (AttackTimer == 60) ResetAttack(); //TODO: May need to leave more time? unsure
@@ -88,6 +101,31 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer >= 230) ResetAttack();
         }
 
+        private void SlashUpSlash() //slash up slash combo
+        {
+            if (AttackTimer <= 20) Slash(0);
+            if (AttackTimer <= 50 && AttackTimer > 20) Uppercut(20);
+            if (AttackTimer <= 90 && AttackTimer > 70) Slash(70);
+            if (AttackTimer >= 120) ResetAttack();
+        }
+
+        private void Slash(int startTime)
+        {
+            if (AttackTimer == startTime + 1) //spawn projectile and set velcoity, along with targeting
+            {
+                npc.TargetClosest();
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 34, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection); 
+
+                npc.velocity.X += npc.Center.X > Target.Center.X ? -10 : 10;
+            }
+
+            if (AttackTimer < startTime + 20) //decelerate
+                npc.velocity.X *= 0.98f;
+
+            if (AttackTimer == startTime + 20) //stop
+                npc.velocity.X = 0;
+        }
+
         private void Uppercut(int startTime)
         {
             if (AttackTimer == startTime + 30) //this is so fucking basic it just spawns a stupipd ass hitbox projectile and launches him up how fucking DUMB do you have to be to have to read this comment
@@ -101,12 +139,12 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             if(AttackTimer == startTime + 1)
             {
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 40, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 30, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
                 npc.noGravity = true;
                 npc.TargetClosest();
             }
 
-            npc.velocity.Y = 0.7f + Target.Center.Y > npc.Center.Y ? 1.2f : -0.3f; //still fall slowly
+            npc.velocity.Y = 0.7f + Target.Center.Y > npc.Center.Y ? 1.2f : -0.6f; //still fall slowly
             npc.spriteDirection = (int)AttackTimer / 4 % 2 == 0 ? -1 : 1; //brain moment
 
             if (AttackTimer <= startTime + 120)
@@ -123,11 +161,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 npc.noGravity = false;
                 npc.velocity *= 0;
             }
-        }
-
-        private void Slash()
-        {
-
         }
     }
 }
