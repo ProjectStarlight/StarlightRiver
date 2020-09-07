@@ -111,7 +111,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                         case 7: Idle(90); break;
                         case 8: if (attackVariant) SlashUpSlash(); else UppercutGlide(); break;
 
-                        case 12: Greatsword(); break;
+                        //case 12: Greatsword(); break;
                     }
 
                     break;
