@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Abilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Projectiles.Ability
@@ -39,42 +40,41 @@ namespace StarlightRiver.Projectiles.Ability
 
         public override void AI()
         {
-            if (projectile.timeLeft == 900)
+            if(projectile.timeLeft <= 800 && projectile.ai[1] == 0 && StarlightRiver.Instance.AbilityKeys.Get<Abilities.Content.Purify.Pure>().JustPressed) //recall logic
             {
+                projectile.ai[1] = 1;
+                projectile.timeLeft = 150;
+                projectile.extraUpdates = 2;
+                projectile.netUpdate = true;
+            }
+
+            if (projectile.timeLeft == 900) //activate shader on start
                 Filters.Scene.Activate("PurityFilter", projectile.position).GetShader().UseDirection(new Vector2(0.1f, 0.1f));
-            }
-            else if (projectile.timeLeft >= 750)
-            {
-                projectile.ai[0] += 2;
-            }
-            else if (projectile.timeLeft < 150)
-            {
-                projectile.ai[0] -= 2;
-            }
+            
+            else if (projectile.timeLeft >= 800) //grow       
+                projectile.ai[0] += 3;
+            
+            else if (projectile.timeLeft < 150) //shrink          
+                projectile.ai[0] -= 2;         
 
             Filters.Scene["PurityFilter"].GetShader().UseProgress((projectile.ai[0] / 255) * 0.125f).UseIntensity((projectile.ai[0] / 255) * 0.006f);
 
-            Dust.NewDust(projectile.Center - Vector2.One * 32, 32, 32, DustType<Dusts.Purify>());
+            Dust.NewDust(projectile.Center - Vector2.One * 32, 32, 32, DustType<Dusts.Purify>()); //dusts around crown
 
-            for (int x = -40; x < 40; x++)
+            for (int x = -40; x < 40; x++) //tile transformation
             {
                 for (int y = -40; y < 40; y++)
                 {
                     Vector2 check = (projectile.position / 16) + new Vector2(x, y);
+
                     if (Vector2.Distance((check * 16), projectile.Center) <= projectile.ai[0] - 2)
-                    {
                         TransformTile((int)check.X, (int)check.Y);
-                    }
                     else
-                    {
                         RevertTile((int)check.X, (int)check.Y);
-                    }
 
                     //just in case
                     if (projectile.timeLeft == 1)
-                    {
                         RevertTile((int)check.X, (int)check.Y);
-                    }
                 }
             }
 
@@ -147,8 +147,8 @@ namespace StarlightRiver.Projectiles.Ability
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(cirTex, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(projectile.timeLeft / 900f), cirTex.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
-            spriteBatch.Draw(cirTex2, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, projectile.timeLeft / 900f, cirTex2.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
+            spriteBatch.Draw(cirTex, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(projectile.ai[0] / 300f), cirTex.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
+            spriteBatch.Draw(cirTex2, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, projectile.ai[0] / 300f, cirTex2.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
 
             Texture2D tex = GetTexture("StarlightRiver/Pickups/PureCrown");
             spriteBatch.Draw(tex, projectile.Center + new Vector2(-16, -16 + (float)Math.Sin(StarlightWorld.rottime) * 2) - Main.screenPosition, tex.Frame(),

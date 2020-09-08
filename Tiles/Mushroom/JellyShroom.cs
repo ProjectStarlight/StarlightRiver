@@ -12,7 +12,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarlightRiver.Tiles.Misc
+namespace StarlightRiver.Tiles.Mushroom
 {
     class JellyShroom : DummyTile
     {
@@ -75,11 +75,11 @@ namespace StarlightRiver.Tiles.Misc
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var back = GetTexture("StarlightRiver/Tiles/Misc/JellyShroomBack");
-            var blob0 = GetTexture("StarlightRiver/Tiles/Misc/JellyShroom0");
-            var blob1 = GetTexture("StarlightRiver/Tiles/Misc/JellyShroom1");
-            var blob2 = GetTexture("StarlightRiver/Tiles/Misc/JellyShroom2");
-            var blob3 = GetTexture("StarlightRiver/Tiles/Misc/JellyShroom3");
+            var back = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroomBack");
+            var blob0 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom0");
+            var blob1 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom1");
+            var blob2 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom2");
+            var blob3 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom3");
 
             var pos = projectile.position - Main.screenPosition;
 
@@ -113,6 +113,6 @@ namespace StarlightRiver.Tiles.Misc
     {
         public override string Texture => "StarlightRiver/MarioCumming";
 
-        public JellyShroomItem() : base("Vibeshroom", "Your own personal shroom to vibe to.", TileType<JellyShroom>(), 0) { }
+        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", TileType<JellyShroom>(), 0) { }
     }
 }
