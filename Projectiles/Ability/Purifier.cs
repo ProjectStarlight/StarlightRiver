@@ -48,8 +48,8 @@ namespace StarlightRiver.Projectiles.Ability
                 projectile.netUpdate = true;
             }
 
-            if (projectile.timeLeft == 900) //activate shader on start
-                Filters.Scene.Activate("PurityFilter", projectile.position).GetShader().UseDirection(new Vector2(0.1f, 0.1f));
+            //if (projectile.timeLeft == 900) //activate shader on start
+                //Filters.Scene.Activate("PurityFilter", projectile.position).GetShader().UseDirection(new Vector2(0.1f, 0.1f));
             
             else if (projectile.timeLeft >= 800) //grow       
                 projectile.ai[0] += 3;
@@ -57,7 +57,7 @@ namespace StarlightRiver.Projectiles.Ability
             else if (projectile.timeLeft < 150) //shrink          
                 projectile.ai[0] -= 2;         
 
-            Filters.Scene["PurityFilter"].GetShader().UseProgress((projectile.ai[0] / 255) * 0.125f).UseIntensity((projectile.ai[0] / 255) * 0.006f);
+            //Filters.Scene["PurityFilter"].GetShader().UseProgress((projectile.ai[0] / 255) * 0.125f).UseIntensity((projectile.ai[0] / 255) * 0.006f);
 
             Dust.NewDust(projectile.Center - Vector2.One * 32, 32, 32, DustType<Dusts.Purify>()); //dusts around crown
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Projectiles.Ability
             {
                 if (Filters.Scene["PurityFilter"].IsActive())
                 {
-                    Filters.Scene.Deactivate("PurityFilter");
+                    //Filters.Scene.Deactivate("PurityFilter");
                 }
             }
         }
@@ -112,6 +112,8 @@ namespace StarlightRiver.Projectiles.Ability
                 //walls
                 if (target.wall == WallID.Stone || target.wall == WallID.EbonstoneUnsafe || target.wall == WallID.CrimstoneUnsafe || target.wall == WallID.PearlstoneBrickUnsafe) { target.wall = (ushort)WallType<WallStonePure>(); SpawnDust(x, y); }
                 if (target.wall == WallID.GrassUnsafe || target.wall == WallID.CorruptGrassUnsafe || target.wall == WallID.CrimsonGrassUnsafe || target.wall == WallID.HallowedGrassUnsafe) { target.wall = (ushort)WallType<WallGrassPure>(); SpawnDust(x, y); }
+
+                WorldGen.TileFrame(x, y);
             }
         }
 
@@ -130,6 +132,8 @@ namespace StarlightRiver.Projectiles.Ability
                 //walls
                 if (target.wall == WallType<WallStonePure>()) { target.wall = WallID.Stone; SpawnDust(x, y); }
                 if (target.wall == WallType<WallGrassPure>()) { target.wall = WallID.GrassUnsafe; SpawnDust(x, y); }
+
+
             }
         }
 

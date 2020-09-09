@@ -58,7 +58,7 @@ namespace StarlightRiver
         private void LoadVitricBGSystems()
         {
             ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
-            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateBackground, 3);
+            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackground, 1);
         }
 
         private static void UpdateForegroundBody(Particle particle)
@@ -68,10 +68,9 @@ namespace StarlightRiver
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.25f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 20;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
-            int factor = (int)(particle.Timer / 1800f * 100f);
-            particle.Color = new Color(155 + factor, 155 + factor, 255) * (particle.Timer / 1800f * 0.8f);
-            particle.Scale = (particle.Timer / 1800f * 1.2f);
-            particle.Rotation += 0.02f;
+            particle.Color = new Color(155 , 200 + (particle.GetHashCode() % 2 == 0 ? 55 : 0), 255) * (particle.Timer / 1800f * 0.8f);
+            particle.Scale = (particle.Timer / 1800f * 1.1f);
+            particle.Rotation += 0.015f;
         }
 
         private static void UpdateBackgroundBody(Particle particle)
@@ -80,7 +79,7 @@ namespace StarlightRiver
             particle.StoredPosition += particle.Velocity;
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 10;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
-            particle.Color = Color.White * (particle.Timer / 1800f * 0.5f);
+            particle.Color = Color.Lerp(Color.Red, Color.White, particle.Timer / 1800f);
             particle.Scale = (particle.Timer / 1800f * 0.8f);
             particle.Rotation += 0.02f;
         }
@@ -130,11 +129,11 @@ namespace StarlightRiver
                 for (int k = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f); k += 30)
                 {
                     Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(8000), 1800);
-                    if (Main.rand.Next(1200) == 0)
-                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1550), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
+                    if (Main.rand.Next(600) == 0)
+                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
 
-                    if (Main.rand.Next(1000) == 0)
-                        ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1550), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
+                    if (Main.rand.Next(1400) == 0)
+                        ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
                 }
 
                 Main.spriteBatch.End();

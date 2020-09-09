@@ -35,10 +35,10 @@ namespace StarlightRiver.Items.Vitric
 
         public override bool UseItem(Player player)
         {
-            foreach (Item item in Main.item.Where(item => Vector2.Distance(item.Center, player.Center) <= 120 && item.active))
+            foreach (Item item in Main.item.Where(item => Vector2.Distance(item.Center, player.Center) <= 200 && item.active))
             {
-                item.velocity = Vector2.Normalize(item.Center - player.Center) * -2;
-                Dust.NewDust(item.Center, 4, 4, DustType<Dusts.Air>());
+                item.velocity = Vector2.Normalize(item.Center - player.Center) * -6;
+                Dust.NewDustPerfect(item.Center, DustType<Dusts.Air>(), Vector2.Normalize(item.Center - player.Center) * -1);
             }
             return true;
         }

@@ -97,8 +97,6 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            StarlightWorld.DesertOpen = true;
-            player.GetHandler().Lock<Abilities.Content.ForbiddenWinds.Dash>();
             return true;
         }
 
