@@ -356,15 +356,15 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
                 case (int)AIStates.SecondPhase:
 
-                    npc.dontTakeDamage = false; //damagable again
-                    npc.friendly = false;
+                    if (GlobalTimer == 60)
+                    {
+                        npc.dontTakeDamage = false; //damagable again
+                        npc.friendly = false;
+                    }
 
                     if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
-
                     if (GlobalTimer == 2) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossTransition");
-
                     if (GlobalTimer == 701) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy");
-
                     if (GlobalTimer == 702) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
 
                     if (GlobalTimer > 702 && GlobalTimer < 760) //no fadein
