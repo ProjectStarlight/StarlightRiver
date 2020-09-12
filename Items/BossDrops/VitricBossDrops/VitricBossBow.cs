@@ -15,7 +15,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Greatbow");
-            Tooltip.SetDefault("Charges a volley of cystal shards that fire in an arc\nCharging for longer grows, speeds up, and adds more piercing per shot");
+            Tooltip.SetDefault("Charges a volley of cystal shards that fire in an arc\nCharging increases the arc size, shot count, and overall power of shots");
         }
 
         public override void SetDefaults()
@@ -33,13 +33,14 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
             item.rare = ItemRarityID.Orange;
             item.channel = true;
             item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.VitricBowProjectile>();
+            item.shootSpeed = 1f;
             item.useAmmo = AmmoID.Arrow;
             item.useTurn = true;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Projectile.NewProjectile(position, new Vector2(speedX, speedY),item.shoot,damage,knockBack,player.whoAmI);
+            Projectile.NewProjectile(position, new Vector2(speedX, speedY)/4f,item.shoot,damage,knockBack,player.whoAmI);
             return false;
         }
 

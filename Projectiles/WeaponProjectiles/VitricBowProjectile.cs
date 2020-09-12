@@ -10,11 +10,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class VitricBowProjectile : ModProjectile,IDrawAdditive
     {
-        internal const int MaxCharge = 100;
-        internal const int ChargeNeededToFire = 30;
-        private const float maxangle = 45f;
-        private const int MaxFireTime = 30;
-        private const int AddedFireBuffer = 15;
+        internal static int MaxCharge { get; set; } = 100;
+        internal static int ChargeNeededToFire => 30;
+        private float MaxAngle => MathHelper.Pi/8f;
+        private int MaxFireTime { get; set; } = 20;
+        private int AddedFireBuffer { get; set; } = 0;
+        private int FireRate => 6;
+        private float ItemFirerate { get; set; } = default;
 
         public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VolleyTell";
 
@@ -56,6 +58,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 		{
             Player player = projectile.Owner();
 
+            if (ItemFirerate == default)
+                ItemFirerate = (float)player.itemTime / 30f;
+
             if (player.dead) projectile.Kill();		
 			else
 			{
@@ -71,69 +76,82 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public void Holding(Player player)
         {
-            int dir = projectile.direction;
-            player.ChangeDir(projectile.direction);
+
             player.itemTime = 3;
             player.itemAnimation = 3;
             player.heldProj = projectile.whoAmI;
 
-            Vector2 distz = projectile.Center - player.Center;
-            player.itemRotation = (float)Math.Atan2(distz.Y * dir, distz.X * dir);
-        }
-
-        public void Charging(Player player)
-        {
-            projectile.ai[0] = Math.Min(projectile.ai[0] + 1, MaxCharge);
             Vector2 mousePos = Main.MouseWorld;
 
             if (projectile.owner == Main.myPlayer && mousePos != projectile.Center)
             {
                 Vector2 diff2 = mousePos - player.Center;
                 diff2.Normalize();
-                projectile.velocity = diff2 * 20f;
+                projectile.velocity = diff2 * projectile.velocity.Length();
                 projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
                 projectile.netUpdate = true;
             }
 
-            projectile.ai[1] = MaxFireTime - 10;
+            int dir = projectile.direction;
+            player.ChangeDir(projectile.direction);
+
+            Vector2 distz = projectile.Center - player.Center;
+            player.itemRotation = (float)Math.Atan2(distz.Y * dir, distz.X * dir);
+
+        }
+
+        public void Charging(Player player)
+        {
+            projectile.ai[0] = Math.Min(projectile.ai[0] + (1f / ItemFirerate), MaxCharge);
+            MaxFireTime = 6 + (int)(projectile.ai[0] / 8f);
+
+            projectile.ai[1] = MaxFireTime;
             projectile.timeLeft = MaxFireTime + AddedFireBuffer;
         }
 
+
+        //This is really gross and this weapon is giving me a headache as is, I'm sorry
         public void LetGo(Player player)
         {
-            if (projectile.ai[0] > ChargeNeededToFire)
+            bool dofire = (projectile.ai[0] < ChargeNeededToFire && projectile.localAI[1] == 1)
+                || (projectile.ai[0] >= ChargeNeededToFire && projectile.localAI[1] % FireRate == 0);
+
+
+            bool precharge = projectile.ai[0] < ChargeNeededToFire;
+            float percent = Math.Max((projectile.ai[0] - ChargeNeededToFire) / (MaxCharge - ChargeNeededToFire), 0f);
+
+            int timeleft = projectile.timeLeft - AddedFireBuffer;
+
+            float partialchargepercent = (projectile.ai[0] / MaxCharge);
+            float maxdelta = MaxAngle * partialchargepercent;
+            float anglerot = maxdelta * (1f-(timeleft / projectile.ai[1]));
+
+            projectile.localAI[1] += 1;
+
+            if ((projectile.timeLeft <= MaxFireTime || precharge) && dofire)
             {
-                if (projectile.timeLeft <= MaxFireTime)
+                for (int i = -1; i < 2; i += 2)
                 {
-                    projectile.localAI[1] += 1;
-                    float percent = Math.Max((projectile.ai[0] - ChargeNeededToFire) / (MaxCharge-ChargeNeededToFire), 0f);
-                    int timeleft = projectile.timeLeft - 10;
-                    float maxdelta = maxangle * (projectile.ai[0] / MaxCharge);
-
-                    for (int i = -1; i < 2; i += 2)
+                    if (i > 0 || !projectile.ignoreWater)
                     {
-                        bool first = (projectile.timeLeft == MaxFireTime);
 
-                        if ((projectile.localAI[1] % 8 == 0 && timeleft > 0) || (first && i > 0))
+                        float chargefloat = 1f - (timeleft / projectile.ai[1]);
+                        float speed = 4f + percent * (2f + chargefloat);
+                        Vector2 pos = new Vector2(speed*projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (anglerot * (projectile.ignoreWater ? 0f : i)));
+
+                        Projectile.NewProjectile(projectile.Center, pos, ModContent.ProjectileType<VitricBowShardProjectile>(), (int)((float)projectile.damage*(1f+ percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
+
+                        if (i > 0)
+                        Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+
+                        if (projectile.ignoreWater)
                         {
-                            float rot = MathHelper.ToRadians(1f - timeleft / projectile.ai[1] * maxdelta / 2f) * i;
-                            if (first)
-                                rot = 0;
-
-                            float chargefloat = 1f - (timeleft / projectile.ai[1]);
-                            var pos = new Vector2(4f + percent * (3f + chargefloat), 0).RotatedBy(projectile.velocity.ToRotation() + rot);
-
-                            Projectile.NewProjectile(projectile.Center, pos, ModContent.ProjectileType<VitricBowShardProjectile>(), projectile.damage, projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
-
-                            //Play the sound only once
-                            if (i > 0)
-                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                            projectile.ignoreWater = false;
+                            break;
                         }
                     }
                 }
-                return;
             }
-            projectile.timeLeft -= 1;
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
