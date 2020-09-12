@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Food;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -12,10 +13,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class Cooking : UIState
+    public class CookingUI : UIState
     {
         public static bool Visible = false;
         private static bool Moving = false;
+        private static int scrollStart = 0;
+        private static int lineCount = 0;
+
         private readonly CookingSlot MainSlot = new CookingSlot(IngredientType.Main);
         private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
@@ -24,6 +28,7 @@ namespace StarlightRiver.GUI
         private readonly UIImageButton ExitButton = new UIImageButton(GetTexture("StarlightRiver/GUI/Assets/CookExit"));
         private readonly UIImage StatBack = new UIImage(GetTexture("StarlightRiver/GUI/Assets/CookStatWindow"));
         private readonly UIImage TopBar = new UIImage(GetTexture("StarlightRiver/GUI/Assets/CookTop"));
+
         private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
         public override void OnInitialize()
@@ -32,6 +37,8 @@ namespace StarlightRiver.GUI
             CookButton.SetVisibility(1, 1);
             ExitButton.OnClick += Exit;
             ExitButton.SetVisibility(1, 1);
+
+            this.OnScrollWheel += ScrollStats;
         }
 
         public override void Update(GameTime gameTime)
@@ -44,7 +51,7 @@ namespace StarlightRiver.GUI
             if (Basepos.Y < 20) Basepos.Y = 20;
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
             if (Basepos.Y > Main.screenHeight - 20 - 244) Basepos.Y = Main.screenHeight - 20 - 244;
-
+          
             Main.isMouseLeftConsumedByUI = true;
             SetPosition(MainSlot, 44, 44);
             SetPosition(SideSlot0, 10, 112);
@@ -55,15 +62,13 @@ namespace StarlightRiver.GUI
             SetPosition(ExitButton, 314, 0);
             SetPosition(TopBar, 0, 2);
 
-            Append(MainSlot);
-            Append(SideSlot0);
-            Append(SideSlot1);
-            Append(SeasonSlot);
-            Append(CookButton);
-            Append(ExitButton);
-            Append(StatBack);
-            Append(TopBar);
             base.Update(gameTime);
+        }
+
+        private void ScrollStats(UIScrollWheelEvent evt, UIElement listeningElement)
+        {
+            scrollStart -= evt.ScrollWheelValue > 0 ? 1 : -1;
+            scrollStart = (int)MathHelper.Clamp(scrollStart, 0, lineCount - 5);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -75,23 +80,56 @@ namespace StarlightRiver.GUI
 
             int drawY = 0;
             if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.modItem as Ingredient).ThisType == IngredientType.Main))
-            {
                 Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
-            }
+            
             else
             {
                 int duration = 0;
                 int cooldown = 0;
+                List<(string, Color)> lines = new List<(string, Color)>();
+
+                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
+                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
+
                 foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
                 {
                     Ingredient ingredient = (element as CookingSlot).Item.modItem as Ingredient;
-                    Utils.DrawBorderString(spriteBatch, ingredient.ItemTooltip, Basepos + new Vector2(186, 54 + drawY), ingredient.GetColor(), 0.7f);
+
+                    var strings = ingredient.ItemTooltip.Split('\n');
+
+                    for (int k = 0; k < strings.Count(); k++)
+                    {
+                        string text = "~" + Helper.WrapString(strings[k], 100, Main.fontItemStack, 0.65f);
+                        string[] substrings = text.Split('\n');
+
+                        for (int n = 0; n < substrings.Length; n++)
+                            lines.Add((substrings[n], ingredient.GetColor()));
+                    }
+
                     duration += ingredient.Fill;
                     cooldown += (int)(ingredient.Fill * 1.5f);
-                    drawY += 16;
                 }
+
+                int max = (int)MathHelper.Clamp(scrollStart + 5, 0, lines.Count());
+                lineCount = lines.Count();
+
+                for (int k = scrollStart; k < max; k++)
+                {
+                    var line = lines[k];                  
+                    Utils.DrawBorderString(spriteBatch, line.Item1, Basepos + new Vector2(186, 54 + drawY), line.Item2, 0.65f);
+                    drawY += (int)(Main.fontItemStack.MeasureString(line.Item1).Y * 0.65f) + 2;
+                }
+
                 Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
                 Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
+
+                if(lineCount > 5)
+                {
+                    var tex = GetTexture("StarlightRiver/GUI/Assets/Arrow");
+
+                    spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 358, (int)Basepos.Y + 60, 4, 80), new Color(120, 80, 60));
+                    spriteBatch.Draw(tex, Basepos + new Vector2(360, 60 + (scrollStart / (float)(lineCount - 5)) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+                }
             }
         }
 
@@ -99,6 +137,7 @@ namespace StarlightRiver.GUI
         {
             element.Left.Set(Basepos.X + x, 0);
             element.Top.Set(Basepos.Y + y, 0);
+            Append(element);
         }
 
         private void CookFood(UIMouseEvent evt, UIElement listeningElement)

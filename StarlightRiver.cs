@@ -26,7 +26,7 @@ namespace StarlightRiver
         public Collection collection;
         public ParticleOverlay overlay;
         public Infusion infusion;
-        public Cooking cooking;
+        public CookingUI cooking;
         public KeyInventory keyinventory;
         public TextCard textcard;
         public GUI.Codex codex;
@@ -218,7 +218,7 @@ namespace StarlightRiver
                 collection = new Collection();
                 overlay = new ParticleOverlay();
                 infusion = new Infusion();
-                cooking = new Cooking();
+                cooking = new CookingUI();
                 keyinventory = new KeyInventory();
                 textcard = new TextCard();
                 codex = new GUI.Codex();
@@ -276,7 +276,7 @@ namespace StarlightRiver
                 AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex - 1, Collection.visible);
                 AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
                 AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
-                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, Cooking.Visible);
+                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, CookingUI.Visible);
                 AddLayer(layers, KeyInventoryUserInterface, keyinventory, MouseTextIndex, KeyInventory.visible);
                 AddLayer(layers, TextCardUserInterface, textcard, MouseTextIndex, TextCard.Visible);
                 AddLayer(layers, CodexUserInterface, codex, MouseTextIndex, GUI.Codex.ButtonVisible);

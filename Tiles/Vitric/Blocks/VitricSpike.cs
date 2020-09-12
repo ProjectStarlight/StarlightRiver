@@ -32,6 +32,7 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
                 // If any edge tiles are spikes, collide
                 var tile = Framing.GetTileSafely(p);
                 var vector = new Vector2();
+
                 if (tile.active() && tile.type == TileType<VitricSpike>())
                 {
                     // ech, necessary
@@ -46,12 +47,27 @@ namespace StarlightRiver.Tiles.Vitric.Blocks
                     // Damage
                     damage = 25;
                 }
+
                 if (vector != default)
                 {
                     vector.Normalize();
-                    vector *= 15;
+                    vector *= 10;
                     entity.velocity.X = vector.X == 0 ? entity.velocity.X : vector.X;
                     entity.velocity.Y = vector.Y == 0 ? entity.velocity.Y : vector.Y;
+
+                    if(entity is Player)
+                    {
+                        var player = entity as Player;
+
+                        player.wingTime = player.wingTimeMax; //thanks for making me manually set all of these vanilla.
+                        player.rocketTime = player.rocketTimeMax;
+                        player.jumpAgainCloud = true;
+                        player.jumpAgainBlizzard = true;
+                        player.jumpAgainFart = true;
+                        player.jumpAgainSandstorm = true;
+                        player.jumpAgainSail = true;
+                        player.jumpAgainUnicorn = true;
+                    }
                 }
             }
         }

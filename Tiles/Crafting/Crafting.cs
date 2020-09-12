@@ -31,8 +31,8 @@ namespace StarlightRiver.Tiles.Crafting
 
         public override bool NewRightClick(int i, int j)
         {
-            if (!Cooking.Visible) { Cooking.Visible = true; Main.PlaySound(SoundID.MenuOpen); }
-            else { Cooking.Visible = false; Main.PlaySound(SoundID.MenuClose); }
+            if (!CookingUI.Visible) { CookingUI.Visible = true; Main.PlaySound(SoundID.MenuOpen); }
+            else { CookingUI.Visible = false; Main.PlaySound(SoundID.MenuClose); }
             return true;
         }
     }

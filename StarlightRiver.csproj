@@ -22,7 +22,4 @@
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Food\Content\Seasoning\" />
-  </ItemGroup>
 </Project>

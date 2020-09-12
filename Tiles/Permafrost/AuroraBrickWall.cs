@@ -8,7 +8,7 @@ namespace StarlightRiver.Tiles.Permafrost
 {
     class AuroraBrickWall : ModWall
     {
-        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallItem>(), false, new Color(50, 155, 155));
+        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Ice, SoundID.Tink, ItemType<AuroraBrickWallItem>(), true, new Color(50, 155, 155));
     }
 
     class AuroraBrickWallItem : QuickWallItem
