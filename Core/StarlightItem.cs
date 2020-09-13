@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using StarlightRiver.Prefixes;
 using Terraria.Utilities;
+using StarlightRiver.Abilities;
 
 namespace StarlightRiver.Core
 {
@@ -25,10 +26,7 @@ namespace StarlightRiver.Core
         {
             base.UpdateAccessory(item, player, hideVisual);
 
-            //prefix updates for accessoies
-            player.GetModPlayer<Abilities.AbilityHandler>().StaminaRegenRate -= staminaRegenUp;
-
-            // TODO what is this class
+            player.GetHandler().StaminaRegenRate += staminaRegenUp;
         }
 
         public override int ChoosePrefix(Item item, UnifiedRandom rand)

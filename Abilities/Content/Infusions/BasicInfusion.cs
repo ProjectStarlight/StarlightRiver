@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 
-namespace StarlightRiver.Abilities.Infusion
+namespace StarlightRiver.Abilities.Content.Infusions
 {
     class BasicInfusion : InfusionItem
     {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+
         public override Type AbilityType => null;
 
         public override void SetStaticDefaults()
@@ -26,9 +28,7 @@ namespace StarlightRiver.Abilities.Infusion
 
         public override void UpdateFixed()
         {
-            base.UpdateFixed();
-
-
+            Player.GetHandler().StaminaRegenRate += 0.2f;
         }
     }
 }

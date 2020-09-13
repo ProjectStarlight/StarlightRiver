@@ -73,7 +73,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
                 foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena
-                StarlightWorld.GlassBossDowned = true;
+                StarlightWorld.Flag(WorldFlags.GlassBossDowned);
                 return true;
             }
 

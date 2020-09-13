@@ -93,7 +93,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         {
             if (npc.ai[0] == 0) npc.ai[0] = npc.position.Y;
 
-            if (Main.player.Any(player => player.active && player.Hitbox.Intersects(npc.Hitbox)) && StarlightWorld.SquidBossOpen)
+            if (Main.player.Any(player => player.active && player.Hitbox.Intersects(npc.Hitbox)) && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
             {
                 if (npc.velocity.Y < 1.5f) npc.velocity.Y += 0.02f;
 

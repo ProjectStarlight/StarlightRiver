@@ -585,7 +585,6 @@ namespace StarlightRiver
         private static void GenTemple()
         {
             StructureHelper.StructureHelper.GenerateStructure("Structures/VitricTemple", new Point16(VitricBiome.Center.X - 43, VitricBiome.Center.Y - 6), StarlightRiver.Instance);
-            DashSP = new Vector2(VitricBiome.Center.X * 16, VitricBiome.Center.Y * 16 + 200);
         }
 
         /// <summary>Generates decor of every type throughout the biome</summary>

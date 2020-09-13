@@ -101,7 +101,7 @@ namespace StarlightRiver
         }
 
         int thetimer = 0;
-        public void DebugDraw(GameTime timer)
+        public void DebugDraw()
         {
             thetimer++;
             if(thetimer % 5 == 0) PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * padding * 16);

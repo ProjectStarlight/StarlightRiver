@@ -78,18 +78,4 @@ namespace StarlightRiver.Codex.Entries
             RequiresUpgradedBook = true;
         }
     }
-
-    internal class CloakEntry : CodexEntry
-    {
-        public CloakEntry()
-        {
-            Category = Categories.Abilities;
-            Title = "Zzelera's Cloak";
-            Body = "NO TEXT";
-            Hint = "PENIS";
-            Image = GetTexture("StarlightRiver/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Pickups/Cloak1");
-            RequiresUpgradedBook = true;
-        }
-    }
 }

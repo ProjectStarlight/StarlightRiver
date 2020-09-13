@@ -10,7 +10,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
     {
         public override string Texture => "StarlightRiver/NPCs/Boss/SquidBoss/SpewBlob";
 
-        public override void GoodEffects() => StarlightWorld.SquidBossOpen = true;
+        public override void GoodEffects() => StarlightWorld.Flag(WorldFlags.SquidBossOpen);
 
         public override void SetDefaults()
         {

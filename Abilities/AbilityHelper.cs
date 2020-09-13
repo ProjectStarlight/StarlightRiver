@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.Content.ForbiddenWinds;
+using StarlightRiver.Abilities.Content.GaiasFist;
 using Terraria;
 
 namespace StarlightRiver.Abilities

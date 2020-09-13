@@ -123,6 +123,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     break;
 
                 case 1: //nuke attack
+                    npc.velocity *= 0; //make sure we dont fall into oblivion
                     if (npc.ai[0] == 0) npc.friendly = true; //vulnerable crystal shouldnt do damage
                     if (npc.rotation != 0) //normalize rotation
                     {

@@ -17,34 +17,13 @@ namespace StarlightRiver
 {
     public partial class StarlightWorld : ModWorld
     {
-        public static Vector2 BookSP;
-        public static Vector2 DashSP;
-        public static Vector2 WispSP;
-        public static Vector2 PureSP;
-        public static Vector2 SmashSP;
-
+        private static WorldFlags flags;
+        
         public static Vector2 RiftLocation;
 
-        public static bool AluminumMeteors = false;
+        public static float rottime;
 
-        //Boss Flags
-        public static bool DesertOpen = false;
-
-        public static bool SquidBossOpen = false;
-        public static bool SquidBossDowned = false;
-
-        public static bool GlassBossOpen = false;
-        public static bool GlassBossDowned = false;
-
-        public static bool OvergrowBossOpen = false;
-        public static bool OvergrowBossFree = false;
-        public static bool OvergrowBossDowned = false;
-
-        public static bool SealOpen = false;
-
-        public static float Chungus = 0;
-
-        public static float rottime = 0;
+        public static float Chungus;
 
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
@@ -60,23 +39,12 @@ namespace StarlightRiver
 
         public static List<Key> KeyInventory = new List<Key>();
 
+        public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
+        public static void Flag(WorldFlags flag) => flags |= flag;
+
         public override void NetSend(BinaryWriter writer)
         {
-            writer.Write(AluminumMeteors);
-
-            writer.Write(DesertOpen);
-
-            writer.Write(SquidBossOpen);
-            writer.Write(SquidBossDowned);
-
-            writer.Write(GlassBossOpen);
-            writer.Write(GlassBossDowned);
-
-            writer.Write(OvergrowBossOpen);
-            writer.Write(OvergrowBossFree);
-            writer.Write(OvergrowBossDowned);
-
-            writer.Write(SealOpen);
+            writer.Write((int)flags);
 
             WriteRectangle(writer, VitricBiome);
             WriteRectangle(writer, SquidBossArena);       
@@ -84,21 +52,7 @@ namespace StarlightRiver
 
         public override void NetReceive(BinaryReader reader)
         {
-            AluminumMeteors = reader.ReadBoolean();
-
-            DesertOpen = reader.ReadBoolean();
-
-            SquidBossOpen = reader.ReadBoolean();
-            SquidBossDowned = reader.ReadBoolean();
-
-            GlassBossOpen = reader.ReadBoolean();
-            GlassBossDowned = reader.ReadBoolean();
-
-            OvergrowBossOpen = reader.ReadBoolean();
-            OvergrowBossFree = reader.ReadBoolean();
-            OvergrowBossDowned = reader.ReadBoolean();
-
-            SealOpen = reader.ReadBoolean();
+            flags = (WorldFlags)reader.ReadInt32();
 
             VitricBiome = ReadRectangle(reader);
             SquidBossArena = ReadRectangle(reader);
@@ -154,20 +108,7 @@ namespace StarlightRiver
             VitricBiome.X = 0;
             VitricBiome.Y = 0;
 
-            SquidBossOpen = false;
-            SquidBossDowned = false;
-
-            DesertOpen = false;
-            GlassBossOpen = false;
-            GlassBossDowned = false;
-
-            OvergrowBossDowned = false;
-            OvergrowBossFree = false;
-            OvergrowBossOpen = false;
-
-            SealOpen = false;
-
-            AluminumMeteors = false;
+            flags = default;
 
             TownUpgrades = new Dictionary<string, bool>();
 
@@ -182,51 +123,38 @@ namespace StarlightRiver
             }
 
             PureTiles = new List<Vector2>();
-
-            BookSP = Vector2.Zero;
-            DashSP = Vector2.Zero;
         }
 
         public override TagCompound Save()
         {
             TagCompound tag = new TagCompound();
-            foreach (var pair in TownUpgrades.ToList())  // ToList so it doesnt crash for some reason
+            foreach (var pair in TownUpgrades)
                 tag.Add(pair.Key, pair.Value);
 
-            return new TagCompound
-            {
-                ["VitricBiomePos"] = VitricBiome.TopLeft(),
-                ["VitricBiomeSize"] = VitricBiome.Size(),
+            // TODO why the hell is this throwing Collection was modified?
+            while (true)
+                try
+                {
+                    return new TagCompound
+                    {
+                        ["VitricBiomePos"] = VitricBiome.TopLeft(),
+                        ["VitricBiomeSize"] = VitricBiome.Size(),
 
-                ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
-                ["SquidBossArenaSize"] = SquidBossArena.Size(),
+                        ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
+                        ["SquidBossArenaSize"] = SquidBossArena.Size(),
 
-                [nameof(SquidBossOpen)] = SquidBossOpen,
-                [nameof(SquidBossDowned)] = SquidBossDowned,
+                        [nameof(flags)] = (int)flags,
 
-                [nameof(DesertOpen)] = DesertOpen,
-                [nameof(GlassBossOpen)] = GlassBossOpen,
-                [nameof(GlassBossDowned)] = GlassBossDowned,
+                        [nameof(TownUpgrades)] = tag,
 
-                [nameof(OvergrowBossOpen)] = OvergrowBossOpen,
-                [nameof(OvergrowBossFree)] = OvergrowBossFree,
-                [nameof(OvergrowBossDowned)] = OvergrowBossDowned,
+                        [nameof(PureTiles)] = PureTiles,
 
-                [nameof(SealOpen)] = SealOpen,
+                        [nameof(RiftLocation)] = RiftLocation,
 
-                [nameof(AluminumMeteors)] = AluminumMeteors,
-
-                [nameof(TownUpgrades)] = tag,
-
-                [nameof(PureTiles)] = PureTiles,
-
-                [nameof(BookSP)] = BookSP,
-                [nameof(DashSP)] = DashSP,
-
-                [nameof(RiftLocation)] = RiftLocation,
-
-                ["Chungus"] = Chungus
-            };
+                        ["Chungus"] = Chungus
+                    };
+                }
+                catch { }
         }
 
         public override void Load(TagCompound tag)
@@ -241,20 +169,7 @@ namespace StarlightRiver
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
 
-            SquidBossOpen = tag.GetBool(nameof(SquidBossOpen));
-            SquidBossDowned = tag.GetBool(nameof(SquidBossDowned));
-
-            DesertOpen = tag.GetBool(nameof(DesertOpen));
-            GlassBossOpen = tag.GetBool(nameof(GlassBossOpen));
-            GlassBossDowned = tag.GetBool(nameof(GlassBossDowned));
-
-            OvergrowBossOpen = tag.GetBool(nameof(OvergrowBossOpen));
-            OvergrowBossFree = tag.GetBool(nameof(OvergrowBossFree));
-            OvergrowBossDowned = tag.GetBool(nameof(OvergrowBossDowned));
-
-            SealOpen = tag.GetBool(nameof(SealOpen));
-
-            AluminumMeteors = tag.GetBool(nameof(AluminumMeteors));
+            flags = (WorldFlags)tag.GetInt(nameof(flags));
 
             TagCompound tag1 = tag.GetCompound(nameof(TownUpgrades));
             Dictionary<string, bool> targetDict = new Dictionary<string, bool>();
@@ -265,9 +180,6 @@ namespace StarlightRiver
             TownUpgrades = targetDict;
 
             PureTiles = (List<Vector2>)tag.GetList<Vector2>(nameof(PureTiles));
-
-            BookSP = tag.Get<Vector2>(nameof(BookSP));
-            DashSP = tag.Get<Vector2>(nameof(DashSP));
 
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 

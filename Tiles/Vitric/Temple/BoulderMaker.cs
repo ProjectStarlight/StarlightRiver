@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Items;
 
-namespace StarlightRiver.Tiles.Vitric.Puzzle
+namespace StarlightRiver.Tiles.Vitric.Temple
 {
     class BoulderMaker : ModTile
     {

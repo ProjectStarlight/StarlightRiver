@@ -33,7 +33,7 @@ namespace StarlightRiver.Tiles.Permafrost
 
     class AuroraBrickDoor : AuroraBrick
     {
-        public override void NearbyEffects(int i, int j, bool closer) => Main.tile[i, j].inActive(StarlightWorld.SquidBossOpen);
+        public override void NearbyEffects(int i, int j, bool closer) => Main.tile[i, j].inActive(StarlightWorld.HasFlag(WorldFlags.SquidBossOpen));
     }
 
     class AuroraBrickItem : QuickTileItem

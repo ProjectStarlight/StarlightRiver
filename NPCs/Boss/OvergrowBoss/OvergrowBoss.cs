@@ -59,7 +59,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
             if (npc.ai[0] == (int)OvergrowBossPhase.Struggle) //when the boss is trapped before spawning the first time
             {
-                if (spawnPoint == Vector2.Zero) spawnPoint = npc.Center; //sets the boss' home
+                if (spawnPoint == Vector2.Zero) 
+                    spawnPoint = npc.Center; //sets the boss' home
 
                 npc.velocity.Y = (float)Math.Sin((GlobalTimer % 120) / 120f * 6.28f) * 0.6f;
 
@@ -84,7 +85,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
                 if (GlobalTimer <= 120) npc.position.Y--;
 
-                if (GlobalTimer == 120) StarlightWorld.OvergrowBossFree = true;
+                if (GlobalTimer == 120) 
+                    StarlightWorld.Flag(WorldFlags.OvergrowBossFree);
 
                 if (GlobalTimer == 500)
                 {
@@ -226,7 +228,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override bool CheckDead()
         {
-            StarlightWorld.OvergrowBossDowned = true;
+            StarlightWorld.Flag(WorldFlags.OvergrowBossDowned);
             return true;
         }
     }

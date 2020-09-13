@@ -38,7 +38,7 @@ namespace StarlightRiver.Tiles.Void
             {
                 Projectile.NewProjectile(new Vector2(i + 5.5f, j) * 16, Vector2.Zero, ProjectileType<Projectiles.Dummies.SealDummy>(), 0, 0);
             }
-            if (StarlightWorld.SealOpen)
+            if (StarlightWorld.HasFlag(WorldFlags.SealOpen))
             {
                 Main.tileSolid[Type] = false;
                 Main.tileSolidTop[Type] = true;
@@ -54,7 +54,7 @@ namespace StarlightRiver.Tiles.Void
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
                 Vector2 Seal = new Vector2((i + 12) * 16, (j + 12) * 16);
-                if (!StarlightWorld.SealOpen)
+                if (!StarlightWorld.HasFlag(WorldFlags.SealOpen))
                 {
                     spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Void/SealClosed"), Seal - Main.screenPosition, drawColor);
                 }

@@ -93,7 +93,7 @@ namespace StarlightRiver
 
         private void TestLighting(GameTime obj)
         {
-            if (!Main.gameMenu) lightingTest.DebugDraw(obj);
+            if (!Main.gameMenu) lightingTest.DebugDraw();
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
@@ -161,7 +161,7 @@ namespace StarlightRiver
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 80;
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
-            if (StarlightWorld.AluminumMeteors)
+            if (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors))
             {
                 Point16 target = new Point16();
 
@@ -367,11 +367,12 @@ namespace StarlightRiver
                     }
             }
 
-            //TODO: remove
-            //lightingTest.DebugDraw2();
-
             Main.spriteBatch.End();
-            orig(self, gameTime);
+            try
+            {
+                orig(self, gameTime);
+            }
+            catch { }
         }
 
         private void DrawProto(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_refItem_int_Vector2_Color orig, SpriteBatch spriteBatch, ref Item inv, int context, Vector2 position, Color lightColor)

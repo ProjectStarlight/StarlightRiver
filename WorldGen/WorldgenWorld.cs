@@ -39,7 +39,8 @@ namespace StarlightRiver
 
         public override void PostWorldGen()
         {
-            AluminumMeteors = WorldGen.genRand.NextBool();
+            if (WorldGen.genRand.NextBool())
+                Flag(WorldFlags.AluminumMeteors);
         }
     }
 }

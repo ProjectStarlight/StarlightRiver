@@ -16,13 +16,13 @@ namespace StarlightRiver.Tiles.Permafrost
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (!StarlightWorld.SquidBossOpen && !Main.projectile.Any(n => n.active && n.type == ProjectileType<DoorBomb>()))
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossOpen) && !Main.projectile.Any(n => n.active && n.type == ProjectileType<DoorBomb>()))
                 Projectile.NewProjectile(new Vector2(i + 1, j + 0.5f) * 16, new Vector2(1, 0), ProjectileType<DoorBomb>(), 0, 0);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.SquidBossOpen)
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
             {
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(18, -42);
                 Utils.DrawBorderString(spriteBatch, "Place blocks on", pos, Color.White, 0.7f);

@@ -10,16 +10,25 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Abilities.Content
+namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {
-        public Dash()
+        public static float SignedLesserBound(float limit, float other)
         {
-            ResetStats();
+            if (limit < 0) return Math.Min(limit, other);
+            if (limit > 0) return Math.Max(limit, other);
+
+            return other;
+            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
         }
 
-        public int time;
+        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+        {
+            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
+        }
+
+        public int Time;
 
         public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
@@ -27,31 +36,41 @@ namespace StarlightRiver.Abilities.Content
 
         public override int CooldownMax => 90;
 
-        public Vector2 dir;
-        public Vector2 vel;
         public const int defaultTime = 7;
 
+        public Vector2 Dir { get; private set; }
+        public Vector2 Vel { get; private set; }
         public float Speed { get; set; }
         public float Boost { get; set; }
 
-        private void ResetStats()
+        public void SetVelocity()
         {
-            Boost = 0.15f;
+            Vel = SignedLesserBound(Dir * Speed * Boost, Player.velocity); // "conservation of momentum" (lol)
+        }
+
+        public override void Reset()
+        {
+            Boost = 0.1f;
             Speed = 28;
-            time = defaultTime;
+            Time = defaultTime;
+            CooldownBonus = 0;
         }
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
-            return abilityKeys.Get<Dash>().JustPressed && (dir = triggers.DirectionsRaw) != default;
+            if (abilityKeys.Get<Dash>().JustPressed && triggers.DirectionsRaw != default)
+            {
+                Dir = Vector2.Normalize(triggers.DirectionsRaw);
+                return true;
+            }
+            return false;
         }
 
         public override void OnActivate()
         {
             base.OnActivate();
 
-            vel = SignedLesserBound(GetDashBoost() * Boost, Player.velocity); // "conservation of momentum" (lol)
-            ResetStats();
+            SetVelocity();
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
@@ -61,13 +80,13 @@ namespace StarlightRiver.Abilities.Content
         {
             base.UpdateActive();
 
-            Player.velocity = SignedLesserBound(GetDashBoost(), Player.velocity); // "conservation of momentum"
+            Player.velocity = SignedLesserBound(Dir * Speed, Player.velocity); // "conservation of momentum"
 
             Player.frozen = true;
             Player.gravity = 0;
-            Player.maxFallSpeed = Speed;
+            Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
-            if (time-- <= 0) Deactivate();
+            if (Time-- <= 0) Deactivate();
 
             // Notable differences with new Ability:
             // - you can tech building momentum
@@ -82,36 +101,20 @@ namespace StarlightRiver.Abilities.Content
             //   - you can double-jump mid dash and f*ck up your dash
         }
 
-        public Vector2 GetDashBoost()
-        {
-            return Vector2.Normalize(dir) * Speed;
-        }
-
-        public static float SignedLesserBound(float limit, float other)
-        {
-            if (limit < 0) return Math.Min(limit, other);
-            if (limit > 0) return Math.Max(limit, other);
-
-            return other;
-            // TODO show modification of Dash
-            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
-        }
-
-        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
-        {
-            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
-        }
-
         public override void UpdateActiveEffects()
         {
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
-            int direction = time % 2 == 0 ? -1 : 1;
+            int direction = Time % 2 == 0 ? -1 : 1;
 
             for (int k = 0; k < 60; k++)
             {
-                float rot = (0.1f * k) * direction;
-                Dust dus = Dust.NewDustPerfect(prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + time / 8f), DustType<AirDash>());
-                dus.fadeIn = k - time * 3;
+                float rot = 0.1f * k * direction;
+                Dust dus = Dust.NewDustPerfect(
+                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f), 
+                    DustType<AirDash>(), 
+                    Vector2.UnitX.RotatedByRandom(Math.PI) / 3f
+                    );
+                dus.fadeIn = k - Time * 3;
             }
         }
 
@@ -129,8 +132,9 @@ namespace StarlightRiver.Abilities.Content
 
         public override void OnExit()
         {
-            Player.velocity = vel;
-            Player.fallStart = (int)Player.position.Y;
+            Player.velocity = Vel;
+            Player.fallStart = (int)(Player.position.Y / 16);
+            Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
         //public override void OnCastDragon()
