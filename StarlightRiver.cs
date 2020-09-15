@@ -184,6 +184,10 @@ namespace StarlightRiver
                 Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
                 Filters.Scene["Pixelation"].Load();
 
+                Ref<Effect> screenRefCrystal = new Ref<Effect>(GetEffect("Effects/CrystalRefraction"));
+                Filters.Scene["Crystal"] = new Filter(new ScreenShaderData(screenRefCrystal, "CrystalPass"), EffectPriority.High);
+                Filters.Scene["Crystal"].Load();
+
                 lightingTest = new RenderTest();
             }
 

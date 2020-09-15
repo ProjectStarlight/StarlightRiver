@@ -50,14 +50,7 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            /*NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
-            player.statLifeMax = 100;
-            StarlightWorld.OvergrowBossFree = true;
-            for (int i = 0; i < player.inventory.Length; i++)
-            {
-                if (player.inventory[i].type == ItemType<Dragons.Egg>())
-                    player.inventory[i].TurnToAir();
-            }*/
+            NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             return true;
         }
 

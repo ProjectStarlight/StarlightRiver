@@ -55,20 +55,17 @@ namespace StarlightRiver
                     break;
                 }
 
+            int center = iceLeft + (iceRight - iceLeft) / 2;
 
-            for (int x = iceLeft; x < iceRight; x++) //hey look the ice biome!
-                for (int y = iceBottom - 150; y < iceBottom + 50; y++)
-                {
-                    Main.tile[x, y].active(true);
-                    Main.tile[x, y].slope(0);
-                    Main.tile[x, y].halfBrick(false);
-                    Main.tile[x, y].type = (ushort)TileType<PermafrostIce>();
-                }
+            Circle bigCircle = new Circle(new Point16(center + 15, iceBottom - 70), 110);
+            circles.Add(bigCircle);
+            DigCircle(bigCircle, 30, 2400);
 
             for (int k = 0; k < 150; k++)
             {
-                Point16 pos = new Point16(WorldGen.genRand.Next(iceLeft, iceRight), WorldGen.genRand.Next(iceBottom - 150, iceBottom + 50));
-                int rad = WorldGen.genRand.Next(15, 30);
+                Point16 pos = new Point16(WorldGen.genRand.Next(center - 400, center + 400), WorldGen.genRand.Next(iceBottom - 150, iceBottom + 50));
+                int dist = (int)((800 - Vector2.Distance(pos.ToVector2(), bigCircle.position.ToVector2())) / 800f * 30);
+                int rad = WorldGen.genRand.Next(3 + dist, 9 + dist);
                 Circle circle = new Circle(pos, rad);
 
                 if (!circles.Any(n => n.Colliding(circle)))
@@ -78,32 +75,31 @@ namespace StarlightRiver
                 }
             }
 
-            for(int k = 0; k < circles.Count; k++)
-            {
-
-            }
-
-            int center = iceLeft + (iceRight - iceLeft) / 2;
-
             SquidBossArena = new Rectangle(center - 40, iceBottom - 100, 80, 200);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
         }
 
-        private void DigCircle(Circle circle)
+        private void DigCircle(Circle circle, int maxOff = 0, int speed = 1800)
         {
             Point16 pos = circle.position;
-            int rad = circle.radius;
-            int row = WorldGen.genRand.Next(10000);
+            int rad = circle.radius + 7;
+            int row = WorldGen.genRand.Next(1000);
 
             for (int x = -rad; x < rad; x++)
                 for (int y = -rad; y < rad; y++)
                 {
                     float angleOff = new Vector2(x, y).ToRotation();
-                    float off = genNoise.GetPerlin(angleOff / 6.28f * 1500, row) * rad / 30f * 5;
-                    if (Vector2.DistanceSquared(pos.ToVector2() + new Vector2(x, y), pos.ToVector2()) <= (int)Math.Pow(rad - Math.Abs(off), 2))
-                        Framing.GetTileSafely(pos.X + x, pos.Y + y).ClearEverything();
-                }
+                    float off = genNoise.GetPerlin(angleOff / 6.28f * speed, row) * (maxOff == 0 ? rad / 30f * 5 : maxOff);
+                    float distSquared = Vector2.DistanceSquared(pos.ToVector2() + new Vector2(x, y), pos.ToVector2());
 
+                    if (distSquared <= (int)Math.Pow(rad - Math.Abs(off), 2))
+                    {
+                        if (distSquared <= (int)Math.Pow(rad - Math.Abs(off) - 7, 2))
+                            Framing.GetTileSafely(pos.X + x, pos.Y + y).ClearEverything();
+                        else
+                            WorldGen.PlaceTile(pos.X + x, pos.Y + y, TileType<PermafrostIce>(), true, true);
+                    }
+                }
         }
     }
 
@@ -120,7 +116,7 @@ namespace StarlightRiver
 
         public bool Colliding(Circle compare)
         {
-            if (Vector2.DistanceSquared(position.ToVector2(), compare.position.ToVector2()) <= (float)Math.Pow(radius + compare.radius, 2))
+            if (Vector2.DistanceSquared(position.ToVector2(), compare.position.ToVector2()) <= (float)Math.Pow(radius + compare.radius + 14, 2))
                 return true;
             else return false;
         }

@@ -32,7 +32,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             npc.TargetClosest();
             npc.velocity.X += Target.Center.X > npc.Center.X ? 0.25f : -0.25f;
-            if (System.Math.Abs(npc.velocity.X) >= 16) npc.velocity.X = npc.velocity.X > 0 ? 4 : -4;
+            if (System.Math.Abs(npc.velocity.X) >= 6) npc.velocity.X = npc.velocity.X > 0 ? 6 : -6;
 
             if (npc.collideX && npc.velocity.Y == 0) npc.velocity.Y -= 10;
 
