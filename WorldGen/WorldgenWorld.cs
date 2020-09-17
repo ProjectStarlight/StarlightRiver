@@ -40,6 +40,9 @@ namespace StarlightRiver
         public override void PostWorldGen()
         {
             AluminumMeteors = WorldGen.genRand.NextBool();
+
+            StarlightRiver.FIllChests();
+
         }
     }
 }

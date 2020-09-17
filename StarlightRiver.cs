@@ -348,6 +348,7 @@ namespace StarlightRiver
         public override void PostSetupContent()
         {
             NetEasy.NetEasy.Register(this);
+            InitWorldGenChests();
             CallBossChecklist();
         }
 
