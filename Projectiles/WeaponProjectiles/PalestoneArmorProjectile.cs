@@ -68,10 +68,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Slam();
                 return;
             }
-            else
-            {
-                projectile.Center = LastLocation;
-            }
 
             if (Helper.IsTargetValid(target) && projectile.ai[0] >= 0)
             {
@@ -83,6 +79,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 projectile.Kill();
             }
 
+            projectile.Center = LastLocation;
 
             void Slam()
             {
