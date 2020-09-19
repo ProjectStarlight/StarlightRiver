@@ -85,7 +85,7 @@ namespace StarlightRiver.Items.Debug
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Potion of Debugging 2");
-            Tooltip.SetDefault("Effects vary");
+            Tooltip.SetDefault("Effects varyy");
         }
 
         public override bool UseItem(Player player)

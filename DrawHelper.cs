@@ -131,11 +131,21 @@ namespace StarlightRiver
         {
             if (Main.dedServ || !OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
 
-            //Main.NewText(Main.GameViewMatrix.Zoom);
+            Matrix zoom = //Main.GameViewMatrix.ZoomMatrix;
+                new Matrix
+                (
+                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                );
+
+
             ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
             ApplyEffect.Parameters["offset"].SetValue(pos / new Vector2(Main.screenWidth, Main.screenHeight));
-            ApplyEffect.Parameters["zoom"].SetValue(Main.GameViewMatrix.Zoom);
+            ApplyEffect.Parameters["zoom"].SetValue(zoom);
+
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
             ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
          
