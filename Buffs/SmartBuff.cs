@@ -20,7 +20,6 @@ namespace StarlightRiver.Buffs
             ThisTooltip = tooltip;
             Debuff = debuff;
             Summon = summon;
-
         }
 
         public override void SetDefaults()

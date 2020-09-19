@@ -4,11 +4,11 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.StarwoodWeapons
+namespace StarlightRiver.Items.Starwood
 {
     public class StarwoodStaff : StarwoodItem
     {
-        public StarwoodStaff() : base(ModContent.GetTexture("StarlightRiver/Items/StarwoodWeapons/StarwoodSlingshot_Alt")) { }
+        public StarwoodStaff() : base(ModContent.GetTexture("StarlightRiver/Items/Starwood/StarwoodSlingshot_Alt")) { }
 
         public override void SetStaticDefaults()
         {
