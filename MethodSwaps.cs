@@ -114,8 +114,6 @@ namespace StarlightRiver
             BackgroundBanner.DrawStrip(Main.screenPosition + new Vector2(0, 50));
 
             graphics.SetRenderTarget(null);
-
-            PrepareVitricTarget();
         }
 
         #region hooks
