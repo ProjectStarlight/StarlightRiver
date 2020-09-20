@@ -175,6 +175,18 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             }
         }
 
+        public static ParticleSystem.Update updateBubbles => UpdateBubblesBody;
+        ParticleSystem system = new ParticleSystem("StarlightRiver/Tiles/Bubble", updateBubbles);
+
+        private static void UpdateBubblesBody(Particle particle)
+        {
+            particle.Timer--;
+
+            particle.StoredPosition.Y += particle.Velocity.Y;
+            particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.5f;
+            particle.Position = particle.StoredPosition - Main.screenPosition;
+        }
+
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
             var drawCheck = new Rectangle(StarlightWorld.SquidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.SquidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.SquidBossArena.Width * 16, StarlightWorld.SquidBossArena.Height * 16);
@@ -183,15 +195,20 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             //parallax background
             Texture2D layer0 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background0");
             Texture2D layer1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
+            Texture2D layer2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background2");
 
             Vector2 pos = npc.Center;
             Vector2 dpos = pos - Main.screenPosition;
             Rectangle target = new Rectangle((int)dpos.X - 630, (int)dpos.Y - 595 + 60, 1260, 1020);
-            Color color = new Color(10, 50, 80);
+            Color color = new Color(120, 130, 150);
 
-            spriteBatch.Draw(Main.magicPixel, target, color);
-            spriteBatch.Draw(layer0, target, GetSource(0.1f, layer0), color, 0, Vector2.Zero, 0, 0);
-            spriteBatch.Draw(layer1, target, GetSource(0.2f, layer1), color, 0, Vector2.Zero, 0, 0);
+            spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
+            spriteBatch.Draw(layer1, target, GetSource(0.15f, layer1), color, 0, Vector2.Zero, 0, 0);
+
+            system.DrawParticles(spriteBatch);
+            if (Main.rand.Next(3) == 0) system.AddParticle(new Particle(Vector2.Zero, Vector2.UnitY * -Main.rand.NextFloat(1, 2), 0, Main.rand.NextFloat(0.2f, 0.4f), Color.White * Main.rand.NextFloat(0.3f, 0.6f), 500, pos + new Vector2(Main.rand.Next(-600, 600), 500)));
+
+            spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
