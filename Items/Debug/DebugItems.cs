@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using System.Collections.Generic;
+using System.Linq;
 using StarlightRiver.Abilities;
 using Terraria;
 using Terraria.ID;
@@ -90,6 +91,7 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
+            StarlightWorld.SquidBossDowned = false;
             return true;
         }
 

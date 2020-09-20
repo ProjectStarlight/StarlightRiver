@@ -94,9 +94,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 for (int k = 0; k < 10; k++)
                 {
-                    Lighting.AddLight(npc.Center + new Vector2(0, -200 + k * 60), new Vector3(1, 1, 1) * 0.4f);
-                    Lighting.AddLight(npc.Center + new Vector2(-400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
-                    Lighting.AddLight(npc.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
+                    Lighting.AddLight(npc.Center + new Vector2(0, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.4f);
+                    Lighting.AddLight(npc.Center + new Vector2(-400, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.2f);
+                    Lighting.AddLight(npc.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.2f);
                 }
             }
 
@@ -224,10 +224,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
             for (int k = 0; k < 4; k++)
             {
-                spriteBatch.Draw(ray, npc.Center + new Vector2(450, -250) - Main.screenPosition, null, Color.White * 0.5f, 0.9f + (float)Math.Sin(npc.ai[2] * 2 + k) * 0.13f, Vector2.Zero, 1.5f, 0, 0);
-                spriteBatch.Draw(ray, npc.Center + new Vector2(-450, -250) - Main.screenPosition, null, Color.White * 0.5f, 0.45f + (float)Math.Sin(npc.ai[2] * 2 + k) * 0.13f, Vector2.Zero, 1.5f, 0, 0);
+                Color lightColor = new Color(120, 210, 255);
+                spriteBatch.Draw(ray, npc.Center + new Vector2(450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.9f + (float)Math.Sin((npc.ai[2] + k) * 2 ) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
+                spriteBatch.Draw(ray, npc.Center + new Vector2(-450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.45f + (float)Math.Sin((npc.ai[2] + k) * 2) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
 
-                spriteBatch.Draw(ray, npc.Center + new Vector2(0, -450) - Main.screenPosition, null, Color.White * 0.5f, 0.68f + (float)Math.Sin(npc.ai[2] * 2 + (k / 4f * 6.28f)) * 0.13f, Vector2.Zero, 1.9f, 0, 0);
+                spriteBatch.Draw(ray, npc.Center + new Vector2(0, -450) - Main.screenPosition, null, lightColor * 0.5f, 0.68f + (float)Math.Sin(npc.ai[2] * 2 + (k / 4f * 6.28f)) * 0.13f, Vector2.Zero, 1.9f, 0, 0);
             }
 
             spriteBatch.End();
