@@ -75,7 +75,7 @@ namespace StarlightRiver
                 }
             }
 
-            SquidBossArena = new Rectangle(center - 40, iceBottom - 100, 80, 200);
+            SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
         }
 

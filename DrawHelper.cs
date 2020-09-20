@@ -127,9 +127,10 @@ namespace StarlightRiver
 
         private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
 
-        public static void DrawWithLighting(Vector2 pos, Texture2D tex)
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default)
         {
             if (Main.dedServ || !OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
+            if (color == default) color = Color.White;
 
             Matrix zoom = //Main.GameViewMatrix.ZoomMatrix;
                 new Matrix
@@ -140,11 +141,11 @@ namespace StarlightRiver
                     0, 0, 0, 1
                 );
 
-
             ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
             ApplyEffect.Parameters["offset"].SetValue(pos / new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["zoom"].SetValue(zoom);
+            ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
             ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);

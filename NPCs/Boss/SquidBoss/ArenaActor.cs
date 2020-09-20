@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
+using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.NPCs.Boss.SquidBoss
@@ -74,28 +75,32 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             Vector2 pos = npc.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -npc.ai[0]);
 
             //Lighting
-            for (int k = 0; k < 45; k++)
+            if (StarlightWorld.cathedralOverlay.fade)
             {
-                Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
-
-                if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16)) return;
-
-                if (Framing.GetTileSafely(target).wall == whitelistID)
+                for (int k = 0; k < 45; k++)
                 {
-                    float sin = (float)Math.Sin(npc.ai[1] + k);
-                    float sin2 = (float)Math.Sin(npc.ai[2] + k * 0.2f);
-                    float cos = (float)Math.Cos(npc.ai[2] + k);
-                    Lighting.AddLight(target, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f));
+                    Vector2 target = pos + new Vector2(k / 45f * 3200, 0);
+
+                    if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16)) return;
+
+                    if (Framing.GetTileSafely(target).wall == whitelistID)
+                    {
+                        float sin = (float)Math.Sin(npc.ai[1] + k);
+                        float sin2 = (float)Math.Sin(npc.ai[2] + k * 0.2f);
+                        float cos = (float)Math.Cos(npc.ai[2] + k);
+                        Lighting.AddLight(target, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f));
+                    }
+                }
+
+                for (int k = 0; k < 10; k++)
+                {
+                    Lighting.AddLight(npc.Center + new Vector2(0, -200 + k * 60), new Vector3(1, 1, 1) * 0.4f);
+                    Lighting.AddLight(npc.Center + new Vector2(-400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
+                    Lighting.AddLight(npc.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
                 }
             }
 
-            for (int k = 0; k < 10; k++)
-            {
-                Lighting.AddLight(npc.Center + new Vector2(0, -200 + k * 60), new Vector3(1, 1, 1) * 0.4f);
-                Lighting.AddLight(npc.Center + new Vector2(-400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
-                Lighting.AddLight(npc.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1, 1) * 0.2f);
-            }
-
+            //Not Lighting
             for (int k = 0; k < 100; k++)
             {
                 int x = (int)(npc.Center.X / 16) - 50 + k;
@@ -172,6 +177,22 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
+            var drawCheck = new Rectangle(StarlightWorld.SquidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.SquidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.SquidBossArena.Width * 16, StarlightWorld.SquidBossArena.Height * 16);
+            if (!Helper.OnScreen(drawCheck)) return;
+
+            //parallax background
+            Texture2D layer0 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background0");
+            Texture2D layer1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
+
+            Vector2 pos = npc.Center;
+            Vector2 dpos = pos - Main.screenPosition;
+            Rectangle target = new Rectangle((int)dpos.X - 630, (int)dpos.Y - 595 + 60, 1260, 1020);
+            Color color = new Color(10, 50, 80);
+
+            spriteBatch.Draw(Main.magicPixel, target, color);
+            spriteBatch.Draw(layer0, target, GetSource(0.1f, layer0), color, 0, Vector2.Zero, 0, 0);
+            spriteBatch.Draw(layer1, target, GetSource(0.2f, layer1), color, 0, Vector2.Zero, 0, 0);
+
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
             Texture2D backdrop = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Window");
@@ -237,7 +258,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
             spriteBatch.Draw(tex, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, color * 0.5f, 0, tex.Size() / 2, 1, 0, 0);
 
-            for (int k = 0; k < 5; k++) Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -100 + k * 50), color.ToVector3() * 0.5f);
+            if (StarlightWorld.cathedralOverlay.fade)
+            {
+                for (int k = 0; k < 5; k++)
+                    Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -100 + k * 50), color.ToVector3() * 0.5f);
+            }
 
             Texture2D tex6 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindow");
 
@@ -256,6 +281,22 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         {
             if (small) NPC.NewNPC((int)(npc.Center.X + x), (int)(npc.Center.Y + y), NPCType<IcePlatformSmall>());
             else NPC.NewNPC((int)(npc.Center.X + x), (int)(npc.Center.Y + y), NPCType<IcePlatform>());
+        }
+
+        private Rectangle GetSource(float offset, Texture2D tex)
+        {
+            int x = tex.Width / 2 - 640;
+            int y = tex.Height / 2 - 595;
+            Vector2 pos = new Vector2(x, y) - FindOffset(npc.Center, offset);
+            return new Rectangle((int)pos.X, (int)pos.Y, 1280, 1190);
+        }
+
+        private static Vector2 FindOffset(Vector2 basepos, float factor, bool noVertical = false)
+        {
+            Vector2 origin = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
+            float x = (origin.X - basepos.X) * factor;
+            float y = (origin.Y - basepos.Y) * factor * 0.4f;
+            return new Vector2(x, noVertical ? 0 : y);
         }
     }
 }

@@ -1,6 +1,7 @@
 float2 offset;
 float2 screenSize;
 float2 texSize;
+float4 drawColor;
 float4x4 zoom;
 
 texture sampleTexture;
@@ -34,7 +35,7 @@ float4 Fragment(VertexShaderOutput input) : COLOR
 
 	float3 color = tex2D(samplerTex, st).xyz * tex2D(targetTex, input.coord).xyz;
 
-	return float4(color, tex2D(targetTex, input.coord).w);
+	return float4(color, tex2D(targetTex, input.coord).w) * drawColor;
 }
 
 technique Technique1
