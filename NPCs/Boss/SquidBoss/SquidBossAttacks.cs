@@ -13,11 +13,21 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         private void RandomizeTarget()
         {
             List<int> possible = new List<int>();
-            foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, npc.Center) < 1500))
+
+            for(int k = 0; k < Main.maxPlayers; k++)
             {
-                possible.Add(player.whoAmI);
+                Player player = Main.player[k];
+
+                if(player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
+                    possible.Add(player.whoAmI);
             }
-            if (possible.Count == 0) { npc.active = false; return; }
+
+            if (possible.Count == 0)
+            {
+                npc.active = false;
+                return;
+            }
+
             npc.target = possible[Main.rand.Next(possible.Count - 1)];
 
             npc.netUpdate = true;
