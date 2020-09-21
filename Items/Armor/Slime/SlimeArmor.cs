@@ -17,7 +17,7 @@ namespace StarlightRiver.Items.Armor.Slime
         {
             item.width = 18;
             item.height = 18;
-            item.value = item.value = Item.sellPrice(0, 0, 10, 0);//todo
+            item.value = Item.sellPrice(0, 0, 10, 0);//todo
             item.rare = ItemRarityID.Green;
             item.defense = 2;
         }
@@ -44,7 +44,7 @@ namespace StarlightRiver.Items.Armor.Slime
         {
             item.width = 18;
             item.height = 18;
-            item.value = item.value = Item.sellPrice(0, 0, 10, 0);//todo
+            item.value = Item.sellPrice(0, 0, 10, 0);//todo
             item.rare = ItemRarityID.Green;
             item.defense = 3;
         }
@@ -76,7 +76,7 @@ namespace StarlightRiver.Items.Armor.Slime
         {
             item.width = 18;
             item.height = 18;
-            item.value = item.value = Item.sellPrice(0, 0, 10, 0);//todo
+            item.value = Item.sellPrice(0, 0, 10, 0);//todo
             item.rare = ItemRarityID.Green;
             item.defense = 2;
         }
