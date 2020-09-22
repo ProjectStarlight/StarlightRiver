@@ -30,7 +30,7 @@ namespace StarlightRiver.Items.Slime
             item.UseSound = SoundID.Item43;
             item.knockBack = 0f;
             item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.Slime.SlimeStaffProjectile>();
-            item.shootSpeed = 15f;
+            item.shootSpeed = 5f;
             item.noMelee = true;
             item.autoReuse = true;
         }
