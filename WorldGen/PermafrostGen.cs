@@ -114,8 +114,7 @@ namespace StarlightRiver
                 for (int j = k + 1; j < circles.Count; j++)
                 {
                     var line = new Vector4(circles[k].position.X, circles[k].position.Y, circles[j].position.X, circles[j].position.Y);
-                    var lineVector = new Vector2(line.X - line.Z, line.Y - line.W);
-                    var normal = lineVector.RotatedBy(Math.PI / 2);
+                    var lineVector = new Vector2(line.Z - line.X, line.W - line.Y);
 
                     var colliding = false;
 
@@ -126,16 +125,14 @@ namespace StarlightRiver
 
                         var off = check.position.ToVector2() - line.XY();
 
-                        var dot = Math.Abs(Vector2.Dot(off, normal));
-                        var angle = Math.Acos(dot / (off.Length() * normal.Length()));
+                        var dot = Vector2.Dot(off, lineVector);
+                        var distAlong = dot / lineVector.LengthSquared();
 
-                        var perp = Math.Cos(angle) * off.Length();
-
-                        if (Math.Abs(perp) < check.radius) //we've passed the check against the infinite line
+                        if (distAlong > 0 && distAlong < 1) //we've passed the check against the infinite line
                         {
-                            var distAlong = off.Length() * Math.Sin(angle);
-                            //var closestPoint = Vector2.Lerp(line.XY(), line.ZW(), distAlong / lineVector.Length()); -- this would find the exact point, which is useless to us. We jsut need to know if its on, so if the fractino is between 0 and 1
-                            if (distAlong > 0 || distAlong < 1)
+                            float dist = Vector2.Distance(line.XY() + lineVector * distAlong, check.position.ToVector2());
+
+                            if(dist < check.radius)
                             {
                                 colliding = true;
                                 break;
@@ -157,7 +154,13 @@ namespace StarlightRiver
             for (float k = 0; k < 1; k += 1 / length)
             {
                 Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
-                WorldGen.PlaceTile(pos.X, pos.Y, type, false, true);
+                for(int x = pos.X - 4; x < pos.X + 4; x++)
+                {
+                    for (int y = pos.Y - 4; y < pos.Y + 4; y++)
+                    {
+                        WorldGen.KillTile(x, y);
+                    }
+                }
             }
         }
     }
