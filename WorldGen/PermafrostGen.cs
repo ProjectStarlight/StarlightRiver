@@ -75,6 +75,9 @@ namespace StarlightRiver
                 }
             }
 
+            var caves = GenerateLines(circles);
+            caves.ForEach(n => DigTunnel(n));
+
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
         }
@@ -100,6 +103,62 @@ namespace StarlightRiver
                             WorldGen.PlaceTile(pos.X + x, pos.Y + y, TileType<PermafrostIce>(), true, true);
                     }
                 }
+        }
+
+        private List<Vector4> GenerateLines(List<Circle> circles)
+        {
+            List<Vector4> output = new List<Vector4>();
+
+            for (int k = 0; k < circles.Count; k++)
+            {
+                for (int j = k + 1; j < circles.Count; j++)
+                {
+                    var line = new Vector4(circles[k].position.X, circles[k].position.Y, circles[j].position.X, circles[j].position.Y);
+                    var lineVector = new Vector2(line.X - line.Z, line.Y - line.W);
+                    var normal = lineVector.RotatedBy(Math.PI / 2);
+
+                    var colliding = false;
+
+                    for (int n = 0; n < circles.Count; n++)
+                    {
+                        Circle check = circles[n];
+                        if (n == k || n == j) continue;
+
+                        var off = check.position.ToVector2() - line.XY();
+
+                        var dot = Math.Abs(Vector2.Dot(off, normal));
+                        var angle = Math.Acos(dot / (off.Length() * normal.Length()));
+
+                        var perp = Math.Cos(angle) * off.Length();
+
+                        if (Math.Abs(perp) < check.radius) //we've passed the check against the infinite line
+                        {
+                            var distAlong = off.Length() * Math.Sin(angle);
+                            //var closestPoint = Vector2.Lerp(line.XY(), line.ZW(), distAlong / lineVector.Length()); -- this would find the exact point, which is useless to us. We jsut need to know if its on, so if the fractino is between 0 and 1
+                            if (distAlong > 0 || distAlong < 1)
+                            {
+                                colliding = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!colliding)
+                        output.Add(line);
+                }
+            }
+
+            return output;
+        }
+
+        private void DigTunnel(Vector4 line, int type = TileID.EmeraldGemspark)
+        {
+            var length = (line.XY() - line.ZW()).Length();
+            for (float k = 0; k < 1; k += 1 / length)
+            {
+                Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
+                WorldGen.PlaceTile(pos.X, pos.Y, type, false, true);
+            }
         }
     }
 

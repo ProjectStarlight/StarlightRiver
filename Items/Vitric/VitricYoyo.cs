@@ -11,7 +11,6 @@ namespace StarlightRiver.Items.Vitric
 			Tooltip.SetDefault("Splits");
 		}
 
-
 		public override void SetDefaults()
 		{
 			item.width = 30;
