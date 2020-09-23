@@ -82,6 +82,7 @@ namespace StarlightRiver
             circles.ForEach(n => DigCircle(n));
 
             caves.ForEach(n => DigTunnel(n, row, true));
+            caves.ForEach(n => DecorateTunnel(n));
 
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
@@ -97,7 +98,14 @@ namespace StarlightRiver
                     Tile above = Framing.GetTileSafely(x, y - 1);
 
                     if (floor.type == TileType<PermafrostIce>() && !above.active())
+                    {
                         floor.type = (ushort)TileType<PermafrostSnow>();
+
+                        for(int k  = 0; k <  WorldGen.genRand.Next(4); k++)
+                        {
+                            WorldGen.PlaceTile(x, y - k, TileType<Tiles.Permafrost.Decoration.SnowGrass>());
+                        }
+                    }
                 }
         }
 
@@ -208,7 +216,7 @@ namespace StarlightRiver
 
             if (!digOnly)
             {
-                for (float k = 0; k < 1; k += 1 / length)
+                for (float k = 0; k < 1; k += 3 / length)
                 {
                     Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
                     int off = 7 + (int)Math.Abs(genNoise.GetPerlin(k * 1000, row) * 5);
@@ -218,6 +226,7 @@ namespace StarlightRiver
                         for (int y = pos.Y - off; y < pos.Y + off; y++)
                         {
                             WorldGen.PlaceTile(x, y, TileType<PermafrostIce>(), true, true);
+                            WorldGen.SlopeTile(x, y);
                         }
                     }
                 }
@@ -233,6 +242,10 @@ namespace StarlightRiver
                     for (int y = pos.Y - off; y < pos.Y + off; y++)
                     {
                         WorldGen.KillTile(x, y);
+                        Framing.GetTileSafely(x, y).liquid = 0;
+
+                        if(!digOnly)
+                            Framing.GetTileSafely(x, y).wall = WallID.SnowWallUnsafe;
                     }
                 }
             }
@@ -257,10 +270,81 @@ namespace StarlightRiver
                             Framing.GetTileSafely(pos.X + x, pos.Y + y).ClearEverything();
                         else
                             WorldGen.PlaceTile(pos.X + x, pos.Y + y, TileType<PermafrostIce>(), true, true);
+                        WorldGen.SlopeTile(pos.X + x, pos.Y + y);
                     }
                 }
         }
 
+        private void DecorateTunnel(Vector4 line)
+        {
+            var length = (line.XY() - line.ZW()).Length();
+            var row = WorldGen.genRand.Next(1000);
+
+            int pillarCD = 0;
+
+            for (float k = 30 / length; k < 1 - 30 / length; k += 5 / length)
+            {
+                Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
+                int off = 10;
+
+                //spike banks and walls
+                for (int x = pos.X - off; x < pos.X + off; x++)
+                {
+                    for (int y = pos.Y - off; y < pos.Y + off; y++)
+                    {
+                        Tile floor = Framing.GetTileSafely(x, y);
+                        Tile above = Framing.GetTileSafely(x, y - 1);
+                        Tile under = Framing.GetTileSafely(x, y + 1);
+
+                        if (floor.type == TileType<PermafrostIce>() && !above.active())
+                        {
+                            var up = Math.Abs(genNoise.GetPerlin(x * 20, 100) * 6);
+
+                            if (up >= 2)
+                                for (int n = 0; n < up; n++)
+                                {
+                                    if(Framing.GetTileSafely(x, y - n).wall == WallID.SnowWallUnsafe)
+                                        WorldGen.PlaceTile(x, y - n, TileType<IceSpike>());
+                                }
+                        }
+
+                        if (floor.type == TileType<PermafrostIce>() && !under.active())
+                        {
+                            var up = Math.Abs(genNoise.GetPerlin(x * 20, 230) * 6);
+
+                            if (up >= 2)
+                                for (int n = 0; n < up; n++)
+                                {
+                                    if (Framing.GetTileSafely(x, y + n).wall == WallID.SnowWallUnsafe)
+                                        WorldGen.PlaceTile(x, y + n, TileType<IceSpike>());
+                                }
+                        }
+                    }
+                }
+
+                //photoreactive pillars
+                if (pillarCD > 0) pillarCD--;
+
+                if (pillarCD == 0 && WorldGen.genRand.Next(7) == 0)
+                {
+                    pillarCD = 4;
+
+                    var pillar = Vector2.Normalize(line.XY() - line.ZW()).RotatedBy(Math.PI / 2 + WorldGen.genRand.NextFloat(-0.5f, 0.5f));
+
+                    for (int n = -10; n < 10; n++)
+                    {
+                        Point16 point = (pos.ToVector2() + pillar * n).ToPoint16();
+
+                        for (int x = point.X - 1; x < point.X + 1; x++)
+                            for (int y = point.Y - 1; y < point.Y + 1; y++)
+                            {
+                                if (Framing.GetTileSafely(x, y).wall == WallID.SnowWallUnsafe)
+                                    WorldGen.PlaceTile(x, y, TileType<PhotoreactiveIce>());
+                            }
+                    }
+                }
+            }
+        }
     }
 
     public struct Circle

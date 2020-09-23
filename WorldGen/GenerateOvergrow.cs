@@ -53,7 +53,7 @@ namespace StarlightRiver
 
                 WormFromRoom(wispRoom, 5, true, 15);
 
-                while (Rooms.Count < 25 && roomAttempts < 500) WormFromRoom(Rooms[WorldGen.genRand.Next(6, Rooms.Count)], 5, false, 25);
+                while (Rooms.Count < 25 && roomAttempts < 500) WormFromRoom(Rooms[WorldGen.genRand.Next(5, Rooms.Count)], 5, false, 25);
 
                 for (int k = Rooms.Count - 1; k > 5; k--)
                 {
