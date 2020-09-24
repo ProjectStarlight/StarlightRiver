@@ -59,7 +59,6 @@ namespace StarlightRiver
 
             Circle bigCircle = new Circle(new Point16(center + 15, iceBottom - 70), 110);
             circles.Add(bigCircle);
-            //DigCircle(bigCircle, 30, 2400);
 
             for (int k = 0; k < 150; k++)
             {
@@ -69,9 +68,7 @@ namespace StarlightRiver
                 Circle circle = new Circle(pos, rad);
 
                 if (!circles.Any(n => n.Colliding(circle)))
-                {
                     circles.Add(circle);
-                }
             }
 
             int row = WorldGen.genRand.Next(1000);
@@ -83,6 +80,8 @@ namespace StarlightRiver
 
             caves.ForEach(n => DigTunnel(n, row, true));
             caves.ForEach(n => DecorateTunnel(n));
+
+            circles.ForEach(n => DecorateCircle(n));
 
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
@@ -169,7 +168,6 @@ namespace StarlightRiver
         }
 
         //Zoinked from https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
-
         private bool SegmentsColliding(Vector4 line1, Vector4 line2)
         {
             var p1 = line1.XY();
@@ -303,7 +301,7 @@ namespace StarlightRiver
                             if (up >= 2)
                                 for (int n = 0; n < up; n++)
                                 {
-                                    if(Framing.GetTileSafely(x, y - n).wall == WallID.SnowWallUnsafe)
+                                    if (Framing.GetTileSafely(x, y - n).wall == WallID.SnowWallUnsafe)
                                         WorldGen.PlaceTile(x, y - n, TileType<IceSpike>());
                                 }
                         }
@@ -344,6 +342,55 @@ namespace StarlightRiver
                     }
                 }
             }
+        }
+
+        private void DecorateCircle(Circle circle)
+        {
+            var under = new Rectangle(circle.position.X - circle.radius - 1, circle.position.Y + 18, circle.radius * 2 + 2, circle.radius - 12);
+            if (circle.radius > 22 && !CheckForTunnel(under)) //no tunnels under this circle
+            {
+                WorldGen.PlaceTile(circle.position.X - 15, circle.position.Y - 15, TileType<Tiles.Permafrost.VFX.CaveVFX>()); //aurora VFX actor
+                Helper.PlaceMultitile(circle.position - new Point16(8, 0), TileType<BigTree>()); //tree
+
+                for (int x = -4; x <= 4; x++) //island under the tree
+                    for (int y = 0; y < 2; y++)
+                    {
+                        WorldGen.PlaceTile(circle.position.X + x, circle.position.Y + 17 + y, TileType<PermafrostSnow>());
+                    }
+
+                FloodRectangle(under); //water under the tree
+
+                for (int x = -circle.radius; x <= circle.radius; x++) //layer of ice over the water
+                {
+                    WorldGen.PlaceTile(circle.position.X + x, circle.position.Y + 17, TileType<PhotoreactiveIce>());
+                }
+            }
+        }
+
+        private bool CheckForTunnel(Rectangle rect)
+        {
+            for(int x = rect.X; x < rect.X + rect.Width; x++)
+                for (int y = rect.Y; y < rect.Y + rect.Height; y++)
+                {
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    if (tile.wall == WallID.SnowWallUnsafe) return true;
+                }
+
+            return false;
+        }
+
+        private void FloodRectangle(Rectangle rect)
+        {
+            for (int x = rect.X; x < rect.X + rect.Width; x++)
+                for (int y = rect.Y; y < rect.Y + rect.Height; y++)
+                {
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    if (!tile.active())
+                    {
+                        tile.liquid = 255;
+                        tile.liquidType(0);
+                    }
+                }
         }
     }
 
