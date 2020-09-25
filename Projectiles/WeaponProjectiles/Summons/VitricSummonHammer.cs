@@ -92,48 +92,63 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			}
 
 			Vector2 gothere;
-			if (projectile.localAI[0] < 70)//Swing up
+
+			SwingUp();
+			SwingDown();
+
+			void SwingUp()
 			{
-				float lerpval = Math.Min(projectile.localAI[0] / 50f, 1f);
-				if (Helper.IsTargetValid(enemy))
+				if (projectile.localAI[0] < 70)//Swing up
 				{
-					strikewhere = enemy.Center + new Vector2(enemy.velocity.X, enemy.velocity.Y / 2f);
-					enemysize = new Vector2(enemy.width, enemy.height);
+					float lerpval = Math.Min(projectile.localAI[0] / 50f, 1f);
+					if (Helper.IsTargetValid(enemy))
+					{
+						strikewhere = enemy.Center + new Vector2(enemy.velocity.X, enemy.velocity.Y / 2f);
+						enemysize = new Vector2(enemy.width, enemy.height);
+					}
+
+					projectile.rotation = projectile.rotation.AngleLerp(-MathHelper.Pi / 4f, 0.075f * lerpval);
+					gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(75 + (float)Math.Pow(projectile.localAI[0] * 2f, 0.80) + enemysize.X / 2f), -200));
+					projectile.velocity += ((gothere - projectile.Center) / 75f);
+
+					if (projectile.velocity.Length() > 14f * lerpval)
+						projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
+
+					projectile.velocity /= 1.5f;
 				}
-
-				projectile.rotation = projectile.rotation.AngleLerp(-MathHelper.Pi / 4f, 0.075f * lerpval);
-				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(75 + (float)Math.Pow(projectile.localAI[0] * 2f, 0.80) + enemysize.X / 2f), -200));
-				projectile.velocity += ((gothere - projectile.Center) / 75f);
-
-				if (projectile.velocity.Length() > 14f * lerpval)
-					projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
-
-				projectile.velocity /= 1.5f;
 			}
 			
-
-			if (projectile.localAI[0] >= 70)//Swing Down
+			void SwingDown()
 			{
-				if (Helper.IsTargetValid(enemy))
-					strikewhere.X = enemy.Center.X + enemy.velocity.X*1.50f;
 
-				projectile.velocity.X += Math.Min(Math.Abs(projectile.velocity.X),0) * projectile.spriteDirection;
+				if (projectile.localAI[0] >= 70)//Swing Down
+				{
+					if (Helper.IsTargetValid(enemy))
+						strikewhere.X = enemy.Center.X + enemy.velocity.X * 1.50f;
 
-				float lerpval = Math.Min((projectile.localAI[0]-70f) / 30f, 1f);
+					projectile.velocity.X += Math.Min(Math.Abs(projectile.velocity.X), 0) * projectile.spriteDirection;
 
-				projectile.rotation = projectile.rotation.AngleTowards(MathHelper.Pi / 4f, 0.075f* lerpval);
-				gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(32 + enemysize.X / 4f), -32));
-				projectile.velocity.X += (MathHelper.Clamp(gothere.X - projectile.Center.X,-80f,80f)) / 24f;
-				projectile.velocity.Y += 1f;
+					float lerpval = Math.Min((projectile.localAI[0] - 70f) / 30f, 1f);
 
-				if (projectile.velocity.Length() > 10* lerpval)
-					projectile.velocity = Vector2.Normalize(projectile.velocity) * 10* lerpval;
+					projectile.rotation = projectile.rotation.AngleTowards(MathHelper.Pi / 4f, 0.075f * lerpval);
+					gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(32 + enemysize.X / 4f), -32));
+					projectile.velocity.X += (MathHelper.Clamp(gothere.X - projectile.Center.X, -80f, 80f)) / 24f;
+					projectile.velocity.Y += 1f;
 
-				projectile.velocity.X /= 1.20f;
+					if (projectile.velocity.Length() > 10 * lerpval)
+						projectile.velocity = Vector2.Normalize(projectile.velocity) * 10 * lerpval;
 
+					projectile.velocity.X /= 1.20f;
+
+					Smash();
+				}
+			}
+
+			void Smash()
+			{
 				if (projectile.Center.Y > gothere.Y)//Smashing!
 				{
-					int tiley = (int)(projectile.Center.Y / 16)+1;
+					int tiley = (int)(projectile.Center.Y / 16) + 1;
 					Point16 point = new Point16((int)((projectile.Center.X + (projectile.width / 3f) * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, tiley));
 					Tile tile = Framing.GetTileSafely(point.X, point.Y);
 

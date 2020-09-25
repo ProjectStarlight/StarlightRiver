@@ -107,6 +107,13 @@ namespace StarlightRiver
             player.magicCrit += crit;
         }
 
+        public static bool IsValidDebuff(Player player,int buffindex)
+        {
+            int bufftype = player.buffType[buffindex];
+            return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype];
+
+        }
+
         public static bool HasItem(Player player, int type, int count)
         {
             int items = 0;
@@ -347,7 +354,8 @@ namespace StarlightRiver
 
         public static bool HasEquipped(Player player, int ItemID)
         {
-            for (int k = 3; k < 7 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
+            //This needs to be one more: 8, not 7, or <= instead of < -IDG
+            for (int k = 3; k < 8 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
             return false;
         }
 

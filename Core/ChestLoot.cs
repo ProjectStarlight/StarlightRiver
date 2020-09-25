@@ -12,11 +12,10 @@ namespace StarlightRiver
     internal class ChestLootData
     {
         internal int type;
-        internal int stack;
+        internal Func<Chest, int> stack;
         internal Func<Chest, bool> condition;
 
-
-        internal ChestLootData(int type,int stack, Func<Chest, bool> condition)
+        internal ChestLootData(int type, Func<Chest, int> stack, Func<Chest, bool> condition)
         {
             this.type = type;
             this.stack = stack;
@@ -30,7 +29,7 @@ namespace StarlightRiver
 
         static internal List<ChestLootData> ChestLoots;
 
-        static public void AddToGeneratedChests(int type, int stack, Func<Chest, bool> condition)
+        static public void AddToGeneratedChests(int type, Func<Chest, int> stack, Func<Chest, bool> condition)
         {
             ChestLoots.Add(new ChestLootData(type, stack, condition));
         }
@@ -44,7 +43,7 @@ namespace StarlightRiver
                 ModItem modItem = ItemLoader.GetItem(i);
                 if (modItem!=null && modItem is IChestItem iChestItem)
                 {
-                    AddToGeneratedChests(modItem.item.type, iChestItem.ItemStack(), iChestItem.GenerateCondition);
+                    AddToGeneratedChests(modItem.item.type, iChestItem.ItemStack, iChestItem.GenerateCondition);
                     Instance.Logger.Warn("Chestloot: " + modItem.item.type + " found");
                 }
             }
@@ -64,7 +63,7 @@ namespace StarlightRiver
                     {
 
                         int item = lootindachest.type;
-                        int stack = lootindachest.stack;
+                        int stack = lootindachest.stack(chest);
 
                         for (int inventoryIndex = 0; inventoryIndex < 40; inventoryIndex++)
                         {

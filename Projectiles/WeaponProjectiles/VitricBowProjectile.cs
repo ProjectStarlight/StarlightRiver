@@ -165,6 +165,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         }
 
     }
+
+
     //Hey, the boss's attack is 2 projectiles in one file, let me do it here too please?
     public class VitricBowShardProjectile : ModProjectile, IDrawAdditive
     {

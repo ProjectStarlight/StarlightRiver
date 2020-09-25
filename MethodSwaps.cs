@@ -6,6 +6,8 @@ using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Items.CursedAccessories;
 using StarlightRiver.Items.Prototypes;
+using StarlightRiver.Items.Accessories;
+using StarlightRiver.Items.Accessories.EarlyPreHardmode;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
@@ -75,6 +77,8 @@ namespace StarlightRiver
             On.Terraria.Player.dropItemCheck += SoulboundPriority;
             On.Terraria.Player.ItemFitsItemFrame += NoSoulboundFrame;
             On.Terraria.Player.ItemFitsWeaponRack += NoSoulboundRack;
+            //For the cough drops
+            On.Terraria.Player.DelBuff += PlayerDelBuff;
             //Additive Batching
             On.Terraria.Main.DrawDust += DrawAdditive;
             //Particle System Batching for Inventory
@@ -281,7 +285,13 @@ namespace StarlightRiver
             if (self.inventory[self.selectedItem].modItem is Items.SoulboundItem || Main.mouseItem.modItem is Items.SoulboundItem) return;
             else orig(self);
         }
+        private void PlayerDelBuff(On.Terraria.Player.orig_DelBuff orig, Player self,int buffid)
+        {
+            if (Helper.IsValidDebuff(self, buffid))
+                CoughDrops.ProcEffect(self);
 
+            orig(self, buffid);
+        }
         private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
         {
             // TODO this needs synced somehow

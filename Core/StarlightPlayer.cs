@@ -136,7 +136,13 @@ namespace StarlightRiver.Core
             LastHit = Timer;
         }
 
-        public override void PostUpdateEquips() => JustHit = false;
+        public delegate void PostUpdateEquipsDelegate(StarlightPlayer player);
+        public static event PostUpdateEquipsDelegate PostUpdateEquipsEvent;
+        public override void PostUpdateEquips()
+        {
+            PostUpdateEquipsEvent?.Invoke(this);
+            JustHit = false;
+        }
 
         public override void ModifyScreenPosition()
         {
