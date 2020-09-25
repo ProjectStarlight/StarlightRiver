@@ -13,11 +13,21 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         private void RandomizeTarget()
         {
             List<int> possible = new List<int>();
-            foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, npc.Center) < 1500))
+
+            for(int k = 0; k < Main.maxPlayers; k++)
             {
-                possible.Add(player.whoAmI);
+                Player player = Main.player[k];
+
+                if(player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
+                    possible.Add(player.whoAmI);
             }
-            if (possible.Count == 0) { npc.active = false; return; }
+
+            if (possible.Count == 0)
+            {
+                npc.active = false;
+                return;
+            }
+
             npc.target = possible[Main.rand.Next(possible.Count - 1)];
 
             npc.netUpdate = true;
@@ -41,14 +51,13 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         #region phase 1
         private void TentacleSpike()
         {
-            RandomizeTarget();
-
             for (int k = 0; k < 4; k++)
             {
-                Tentacle tentacle = tentacles[k].modNPC as Tentacle;
-
                 if (AttackTimer == k * 100 || (k == 0 && AttackTimer == 1)) //teleport where needed
                 {
+                    RandomizeTarget();
+                    Tentacle tentacle = tentacles[k].modNPC as Tentacle;
+
                     int adj = (int)Main.player[npc.target].velocity.X * 60; if (adj > 200) adj = 200;
                     tentacles[k].Center = new Vector2(Main.player[npc.target].Center.X + adj, tentacles[k].Center.Y);
                     tentacle.SavedPoint = tentacles[k].Center;
@@ -64,6 +73,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 if (AttackTimer > k * 100 + 30 && AttackTimer < k * 100 + 90) //shooting up, first 30 frames are for tell
                 {
+                    Tentacle tentacle = tentacles[k].modNPC as Tentacle;
+
                     if (AttackTimer == k * 100 + 40)
                     {
                         Main.PlaySound(SoundID.Splash, npc.Center);
@@ -76,6 +87,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 if (AttackTimer > k * 100 + 90 && AttackTimer < k * 100 + 300) //retracting
                 {
+                    Tentacle tentacle = tentacles[k].modNPC as Tentacle;
+
                     int time = (int)AttackTimer - (k * 100 + 90);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovePoint, tentacle.SavedPoint, time / 210f);
                 }
@@ -99,6 +112,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             if (AttackTimer == 1) //start by randomizing the platform order and assigning targets
             {
                 ShufflePlatforms();
+
                 for (int k = 0; k < 4; k++)
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
@@ -107,6 +121,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     tentacle.MovePoint = platforms[k].Center + new Vector2(0, -70);
                     tentacle.npc.netUpdate = true;
                 }
+
                 Main.PlaySound(SoundID.Drown, npc.Center);
             }
 
@@ -406,12 +421,14 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         #region phase 3
         private void TentacleSpike2()
         {
-            RandomizeTarget();
             for (int k = 0; k < 4; k++)
             {
                 Tentacle tentacle = tentacles[k].modNPC as Tentacle;
+
                 if (AttackTimer == k * 80 || (k == 0 && AttackTimer == 1)) //teleport where needed
                 {
+                    RandomizeTarget();
+
                     tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).Center.X + (k % 2 == 0 ? -600 : 600), npc.Center.Y + Main.rand.Next(-200, 200));
                     tentacle.SavedPoint = tentacles[k].Center;
                     tentacle.MovePoint = Main.player[npc.target].Center;

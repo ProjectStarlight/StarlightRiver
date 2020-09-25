@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
@@ -49,6 +51,9 @@ namespace StarlightRiver
 
         //Players have a timer, can't the world get one synced one too?
         public static int Timer;
+
+        //Im so sorry for putting these here.  TODO: Move it later
+        public static Cutaway cathedralOverlay; 
 
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
@@ -152,10 +157,20 @@ namespace StarlightRiver
 
             //SquidBoss arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-                NPC.NewNPC(SquidBossArena.Center.X * 16 + 232, SquidBossArena.Center.Y * 16 - 64, NPCType<ArenaActor>());
+                NPC.NewNPC(SquidBossArena.Center.X * 16, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 
             //Keys
             foreach (Key key in Keys) key.Update();
+        }
+
+        public override void PostDrawTiles()
+        {
+
+
+            Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
+            cathedralOverlay.fade = tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>();
+
+            cathedralOverlay.Draw();
         }
 
         public override void Initialize()
@@ -302,6 +317,9 @@ namespace StarlightRiver
             {
                 GUI.KeyInventory.keys.Add(new GUI.KeyIcon(key, false));
             }
+
+            //setup overlays
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
         }
     }
 }

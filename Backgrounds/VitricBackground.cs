@@ -88,38 +88,6 @@ namespace StarlightRiver
             particle.Rotation += 0.02f;
         }
 
-        private static RenderTarget2D vitricBGTarget = Main.dedServ ? null : new RenderTarget2D(Main.graphics.GraphicsDevice, 2956, 1528, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-
-        private void PrepareVitricTarget()
-        {
-            GraphicsDevice graphics = Main.graphics.GraphicsDevice;
-
-            graphics.SetRenderTarget(vitricBGTarget);
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-            Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
-
-            DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
-
-            DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
-            DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-            float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
-            float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
-            DrawBanner(Main.spriteBatch, new Vector2(x, y) + new Vector2(1200, 1100));
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-            BackgroundParticles.DrawParticles(Main.spriteBatch);
-
-            graphics.SetRenderTarget(null);
-            Main.spriteBatch.End();
-        }
-
         private void DrawVitricBackground(On.Terraria.Main.orig_DrawBackgroundBlackFill orig, Main self)
         {
             orig(self);
@@ -131,16 +99,31 @@ namespace StarlightRiver
 
             if (player != null && StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16)))
             {
-                Main.spriteBatch.Draw(vitricBGTarget, Vector2.Zero, Color.White);
-
                 Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
+
+                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
+
+                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
+                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
+                float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
+                DrawBanner(Main.spriteBatch, new Vector2(x, y) + new Vector2(1200, 1100));
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                BackgroundParticles.DrawParticles(Main.spriteBatch);
 
                 for (int k = 4; k >= 0; k--)
                 {
                     int off = 140 + (440 - k * 110);
                     if (k == 4) off = 400;
 
-                    DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false, k > 1); //the crystal layers and front sand
+                    DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
 
                     if (k == 0) DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
                     if (k == 2) ForegroundParticles.DrawParticles(Main.spriteBatch);
@@ -201,24 +184,8 @@ namespace StarlightRiver
                     }
         }
 
-        private static void DrawLayer(Vector2 basepoint, Texture2D texture, float parallax, int offY = 0, Color color = default, bool flip = false, bool refract = false)
+        private static void DrawLayer(Vector2 basepoint, Texture2D texture, float parallax, int offY = 0, Color color = default, bool flip = false)
         {
-            if (false) //Id like to find some way to batch this to optimize it later, but im not entirely sure if thats possible because it needs recursive textures passed to it :/
-            {
-                float xOff = basepoint.X + GetParallaxOffset(basepoint.X, parallax * 0.1f) - (int)Main.screenPosition.X;
-                float yOff = basepoint.Y + offY - (int)Main.screenPosition.Y + GetParallaxOffsetY(basepoint.Y + StarlightWorld.VitricBiome.Height * 8, parallax * 0.04f);
-
-                crystalEffect.Parameters["draw"].SetValue(texture);
-                crystalEffect.Parameters["behind"].SetValue(vitricBGTarget);
-                crystalEffect.Parameters["map"].SetValue(texture);
-                crystalEffect.Parameters["RefractionStrength"].SetValue(0f);
-                crystalEffect.Parameters["screen"].SetValue(new Vector4(xOff, yOff, Main.screenWidth, Main.screenHeight));
-                crystalEffect.Parameters["drawSize"].SetValue(texture.Size());
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, crystalEffect, Main.GameViewMatrix.ZoomMatrix);
-            }
-
             if (color == default) color = Color.White;
 
             for (int k = 0; k <= 5; k++)
@@ -228,12 +195,6 @@ namespace StarlightRiver
 
                 if (x > -texture.Width && x < Main.screenWidth + 30)
                     Main.spriteBatch.Draw(texture, new Vector2(x, y), new Rectangle(0, 0, 2956, 1528), color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
-            }
-
-            if (false)
-            {
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
         }
 

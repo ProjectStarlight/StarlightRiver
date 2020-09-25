@@ -16,24 +16,6 @@ namespace StarlightRiver
             {
                 if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2) //inner part of the world
                 {
-                    if ( k % 50 == 0 && WorldGen.genRand.Next(3) == 0) //Starlight groves
-                    {
-                        int max = WorldGen.genRand.Next(30, 50);
-
-                        for (int x = 0; x < max; x++)
-                        {
-                            bool shouldPlace = (x < 5 || x > max - 5) ? WorldGen.genRand.NextBool() : true;
-
-                            if (shouldPlace)
-                                for (int y = 10; y < Main.worldSurface; y++)
-                                {
-                                    if (Main.tile[k + x, y].type == TileID.Grass) WorldGen.PlaceTile(k + x, y, TileType<Tiles.Forest.Sod>(), true, true);    
-                                }
-                        }
-
-                        k += max + 5;
-                    }
-
                     if (WorldGen.genRand.Next(16) == 0) //Berry Bushes
                     {
                         for (int y = 10; y < Main.worldSurface; y++)

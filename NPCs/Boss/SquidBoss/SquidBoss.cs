@@ -63,6 +63,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             else
             {
                 Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
+
+                for(int k = 0; k < 7; k++)
+                {
+                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), mod.GetGoreSlot("Gores/SquidGore" + k));
+                }
                 return true;
             }
         }
@@ -441,7 +446,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
 
-                if (GlobalTimer >= 200) npc.life = 0;
+                if (GlobalTimer >= 200) npc.Kill();
             }
         }
 

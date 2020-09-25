@@ -37,13 +37,18 @@ namespace StarlightRiver.Projectiles
         {
             SafeAI();
 
-            int realDuration = (int)(Duration * Main.player[projectile.owner].meleeSpeed);
+            Player player = Main.player[projectile.owner];
+
+            player.heldProj = projectile.whoAmI;
+            player.itemTime = player.itemAnimation;
+
+            int realDuration = (int)(Duration * player.meleeSpeed);
             if (projectile.timeLeft == Duration) projectile.timeLeft = realDuration;
             projectile.velocity = Vector2.Normalize(projectile.velocity);
 
-            projectile.rotation = 3.14f + projectile.velocity.ToRotation() - 1.57f / 2;
+            projectile.rotation = MathHelper.Pi * (3/4f) + projectile.velocity.ToRotation();
             float progress = projectile.timeLeft > (realDuration / 2f) ? (realDuration - projectile.timeLeft) / (realDuration / 2f) : projectile.timeLeft / (realDuration / 2f);
-            projectile.Center = Main.player[projectile.owner].MountedCenter + Vector2.SmoothStep(projectile.velocity * Min, projectile.velocity * Max, progress);
+            projectile.Center = player.MountedCenter + Vector2.SmoothStep(projectile.velocity * Min, projectile.velocity * Max, progress);
         }
     }
 }
