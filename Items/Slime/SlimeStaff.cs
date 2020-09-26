@@ -1,9 +1,8 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Projectiles.WeaponProjectiles.Slime;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using StarlightRiver.Projectiles.WeaponProjectiles.Slime;
 
 namespace StarlightRiver.Items.Slime
 {
@@ -16,12 +15,13 @@ namespace StarlightRiver.Items.Slime
             Item.staff[item.type] = true;
         }
 
-        public int projectileCount;
+        public int projectileCountMax;
         public int[] projIndexArray;
+        private const int distanceFromPlayer = 40;
 
         public override void SetDefaults()
         {
-            projectileCount = 3;
+            projectileCountMax = 3;
 
             item.damage = 20;
             item.magic = true;
@@ -40,25 +40,64 @@ namespace StarlightRiver.Items.Slime
             item.noMelee = true;
             item.autoReuse = true;
 
-            projIndexArray = new int[projectileCount];
+            projIndexArray = new int[projectileCountMax];
+        }
+
+        //public override void UpdateInventory(Player player)//debug
+        //{
+        //    int interCount = 3;
+        //    for (int k = 0; k < interCount; k++)
+        //    {
+        //        //Vector2 direction = new Vector2(0, -1).RotatedBy((((float)(k - (interCount / 2)) + (interCount % 2 != 0 ? 0 : 0.5f)) / 3) * System.Math.PI * 1.75f);
+        //        //Vector2 spawnPoint = player.Center + (direction * distanceFromPlayer);
+        //        //Vector2 velocity = Vector2.Normalize(spawnPoint - (player.Bottom + new Vector2(0, 20))) * item.shootSpeed;
+        //        //Dust.NewDustPerfect(spawnPoint, 20, Vector2.Zero, 0, Color.White, 1f);
+        //    }
+        //}
+        public override bool CanUseItem(Player player)
+        {
+            int activeProjScore = ActiveProjectileScore(player);
+
+            return (activeProjScore >= 0 && activeProjScore < projectileCountMax) ? base.CanUseItem(player) : false;
+        }
+
+        private int ActiveProjectileScore(Player player)
+        {
+            int activeProjScore = 0;
+
+            foreach (int index in projIndexArray)//adds up the score for all active projectiles in the list
+            {
+                Projectile curProj = Main.projectile[index];//variable for cleanliness
+                if (curProj.active && curProj.type == ModContent.ProjectileType<SlimeStaffProjectile>() && curProj.owner == player.whoAmI)//active, correct type, and correct owner
+                {
+                    SlimeStaffProjectile curSlimeProj = curProj.modProjectile as SlimeStaffProjectile;//variable for cleanliness (only used once so...)
+                    activeProjScore += curSlimeProj.globSize;
+                }
+            }
+
+            return activeProjScore;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            for (int k = 0; k < projectileCount; k++)//checks for alreacy actives projectiles and sizes
-            {
-                //TODO, this should spawn in set points around the player
-                Vector2 newVelocity = new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-1.5f, 1.5f)) * Main.rand.NextFloat(0.5f, 3f);
-                projIndexArray[k] = Projectile.NewProjectile(position, newVelocity, type, damage, knockBack, player.whoAmI);
-            }
+            int activeProjScore = ActiveProjectileScore(player);//if the item shoots, this is run twice, no way to use this once for both places
 
-            foreach (int index in projIndexArray)
+            //this check is kinda redundant, but may as well be here in case of changes in CanUseItem
+            if (activeProjScore >= 0 && activeProjScore < projectileCountMax)//if the score is lower than the max amount of projectiles, then spawn new ones to fill up the difference
             {
-                if (Main.projectile[index].active && Main.projectile[index].type == ModContent.ProjectileType<SlimeStaffProjectile>())
+                int toSpawn = projectileCountMax - activeProjScore;//the amount to spawn
+                for (int k = 0; k < toSpawn; k++)//checks for already active projectiles and sizes
                 {
-                    (Main.projectile[index].modProjectile as SlimeStaffProjectile).parentItem = this;
+                    Vector2 direction = new Vector2(0, -1).RotatedBy((((float)(k - (toSpawn / 2)) + (toSpawn % 2 != 0 ? 0 : 0.5f)) / 3) * System.Math.PI * 1.75f);
+                    Vector2 spawnPoint = player.Center + (direction * distanceFromPlayer);
+                    Vector2 velocity = Vector2.Normalize(spawnPoint - (player.Bottom + new Vector2(0, 20))) * item.shootSpeed;
+
+                    projIndexArray[k] = Projectile.NewProjectile(spawnPoint, velocity, type, damage, knockBack, player.whoAmI);
+
+                    (Main.projectile[projIndexArray[k]].modProjectile as SlimeStaffProjectile).parentItem = this;//setting the item reference on the projectile's side
                 }
             }
+
             return false;
         }
     }
