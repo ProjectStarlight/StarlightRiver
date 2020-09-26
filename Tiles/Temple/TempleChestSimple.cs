@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria.ID;
 using StarlightRiver.Items.Herbology.Materials;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Items;
 
 namespace StarlightRiver.Tiles.Temple
 {
@@ -34,5 +35,12 @@ namespace StarlightRiver.Tiles.Temple
         }
 
         public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+    }
+
+    class TempleChestPlacer : QuickTileItem
+    {
+        public override string Texture => "StarlightRiver/MarioCumming";
+
+        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0) { }
     }
 }
