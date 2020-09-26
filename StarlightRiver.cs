@@ -72,6 +72,12 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
+                if (player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+                {
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
+                    priority = MusicPriority.BiomeHigh;
+                }
+
                 if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
