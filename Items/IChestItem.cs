@@ -5,7 +5,7 @@ namespace StarlightRiver.Items
 {
     internal interface IChestItem
     {
-        int ItemStack();
+        int ItemStack(Chest chest);
         bool GenerateCondition(Chest chest);
     }
 }

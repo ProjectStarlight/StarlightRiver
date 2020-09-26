@@ -31,9 +31,4 @@
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Update="Terraria">
-      <HintPath>D:\Program Files (x86)\Steam\steamapps\common\tModLoader\tModLoader.exe</HintPath>
-    </Reference>
-  </ItemGroup>
 </Project>

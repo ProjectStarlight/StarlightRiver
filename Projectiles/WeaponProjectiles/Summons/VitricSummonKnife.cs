@@ -47,12 +47,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 		{
 			writer.Write((int)offset.X);
 			writer.Write((int)offset.Y);
+			writer.Write(closetoplayer);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			offset.X = reader.ReadInt32();
 			offset.Y = reader.ReadInt32();
+			closetoplayer = reader.ReadBoolean();
 		}
 
 		public VitricSummonKnife()
@@ -109,7 +111,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				}
 				else
 				{
-					projectile.velocity -= Vector2.Normalize(strikewhere - projectile.Center).RotatedBy(MathHelper.ToRadians(offset.Y * 9f * projectile.spriteDirection)) * animlerp * 0.10f;
+					projectile.velocity -= Vector2.Normalize(strikewhere - projectile.Center).RotatedBy(offset.Y * 0.2f * projectile.spriteDirection) * animlerp * 0.10f;
 					projectile.velocity *= 0.92f;
 				}
 
