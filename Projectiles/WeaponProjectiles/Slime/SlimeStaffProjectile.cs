@@ -29,7 +29,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
             projectile.height = 20;
             projectile.friendly = true;
             projectile.ranged = true;
-            projectile.penetrate = 2;
+            projectile.penetrate = 3;
             projectile.aiStyle = -1;
             projectile.tileCollide = true;
             projectile.ignoreWater = true;
@@ -114,7 +114,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
             //Main.NewText(projectile.velocity.Length());
 
             //vfx
-            //projectile.rotation += 0.1f;
+            projectile.rotation += 0.15f;
             Dust.NewDustPerfect(projectile.Center, 264, Vector2.Zero, 0, new Color(globSize * 50, globSize * 50, globSize * 50), 0.4f);
         }
 
