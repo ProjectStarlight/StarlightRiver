@@ -19,13 +19,13 @@ namespace StarlightRiver.Tiles.Temple
 
     internal class DashBarrierDummy : Dummy
     {
-        public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 32) { }
+        public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
         public override void Collision(Player player)
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                Main.PlaySound(SoundID.Shatter, projectile.Center);
+                Main.PlaySound(SoundID.Tink, projectile.Center);
             }
         }
     }
