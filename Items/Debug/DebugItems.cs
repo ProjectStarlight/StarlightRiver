@@ -105,8 +105,7 @@ namespace StarlightRiver.Items.Debug
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            RichTextBox box = new RichTextBox();
-            box.Draw(spriteBatch);
+
         }
     }
 }

@@ -12,7 +12,7 @@ namespace StarlightRiver.Core
 {
     static class Markdown
     {
-        public static float GetMarkdownHeight(string message, float scale, int wrapWidth)
+        public static float GetHeight(string message, float scale, int wrapWidth)
         {
             List<string> messages;
             List<string> mods;
