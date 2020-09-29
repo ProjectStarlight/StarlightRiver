@@ -165,12 +165,13 @@ namespace StarlightRiver
 
         public override void PostDrawTiles()
         {
+            if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
+            {
+                Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
+                cathedralOverlay.fade = tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>();
 
-
-            Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-            cathedralOverlay.fade = tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>();
-
-            cathedralOverlay.Draw();
+                cathedralOverlay.Draw();
+            }
         }
 
         public override void Initialize()

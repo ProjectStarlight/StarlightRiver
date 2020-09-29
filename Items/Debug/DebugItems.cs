@@ -1,7 +1,10 @@
 ﻿#if DEBUG
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.GUI;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -96,6 +99,11 @@ namespace StarlightRiver.Items.Debug
         }
 
         public override void HoldItem(Player player)
+        {
+
+        }
+
+        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
 
         }

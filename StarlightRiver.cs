@@ -34,6 +34,7 @@ namespace StarlightRiver
         public LootUI lootUI;
         public ChatboxOverUI Chatbox;
         public UIState ExtraNPCState;
+        public RichTextBox RichText;
 
         public UserInterface StaminaUserInterface;
         public UserInterface CollectionUserInterface;
@@ -47,6 +48,7 @@ namespace StarlightRiver
         public UserInterface LootUserInterface;
         public UserInterface ChatboxUserInterface;
         public UserInterface ExtraNPCInterface;
+        public UserInterface RichTextInterface;
 
         public AbilityHotkeys AbilityKeys { get; private set; }
 
@@ -69,6 +71,12 @@ namespace StarlightRiver
                 if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
+                    priority = MusicPriority.BiomeHigh;
+                }
+
+                if (player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+                {
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
                     priority = MusicPriority.BiomeHigh;
                 }
 
@@ -217,6 +225,7 @@ namespace StarlightRiver
                 LootUserInterface = new UserInterface();
                 ChatboxUserInterface = new UserInterface();
                 ExtraNPCInterface = new UserInterface();
+                RichTextInterface = new UserInterface();
 
                 stamina = new Stamina();
                 collection = new Collection();
@@ -229,6 +238,7 @@ namespace StarlightRiver
                 codexpopup = new CodexPopup();
                 lootUI = new LootUI();
                 Chatbox = new ChatboxOverUI();
+                RichText = new RichTextBox();
 
                 StaminaUserInterface.SetState(stamina);
                 CollectionUserInterface.SetState(collection);
@@ -241,6 +251,7 @@ namespace StarlightRiver
                 CodexPopupUserInterface.SetState(codexpopup);
                 LootUserInterface.SetState(lootUI);
                 ChatboxUserInterface.SetState(Chatbox);
+                RichTextInterface.SetState(RichText);
             }
 
             //particle systems
@@ -288,6 +299,7 @@ namespace StarlightRiver
                 AddLayer(layers, LootUserInterface, lootUI, MouseTextIndex, LootUI.Visible);
                 AddLayer(layers, ChatboxUserInterface, Chatbox, NPCChatIndex, Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu);
                 AddLayer(layers, ExtraNPCInterface, ExtraNPCState, MouseTextIndex, ExtraNPCState != null);
+                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, true);
             }
         }
 
@@ -323,6 +335,7 @@ namespace StarlightRiver
                 LootUserInterface = null;
                 ChatboxUserInterface = null;
                 ExtraNPCInterface = null;
+                RichTextInterface = null;
 
                 stamina = null;
                 collection = null;
@@ -335,6 +348,7 @@ namespace StarlightRiver
                 lootUI = null;
                 Chatbox = null;
                 ExtraNPCState = null;
+                RichText = null;
 
                 Instance = null;
                 AbilityKeys.Unload();

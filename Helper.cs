@@ -226,6 +226,12 @@ namespace StarlightRiver
             }
         }
 
+        /// <summary>
+        /// returns true if every tile in a rectangle is air
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public static bool CheckAirRectangle(Point16 position, Point16 size)
         {
             if (position.X + size.X > Main.maxTilesX || position.X < 0) return false; //make sure we dont check outside of the world!
@@ -236,6 +242,26 @@ namespace StarlightRiver
                 for (int y = position.Y; y < position.Y + size.Y; y++)
                 {
                     if (Main.tile[x, y].active()) return false; //if any tiles there are active, return false!
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// returns true if any tile in a rectanlge is air
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static bool CheckAnyAirRectangle(Point16 position, Point16 size)
+        {
+            if (position.X + size.X > Main.maxTilesX || position.X < 0) return false; //make sure we dont check outside of the world!
+            if (position.Y + size.Y > Main.maxTilesY || position.Y < 0) return false;
+
+            for (int x = position.X; x < position.X + size.X; x++)
+            {
+                for (int y = position.Y; y < position.Y + size.Y; y++)
+                {
+                    if (!Main.tile[x, y].active()) return true; //if any tiles there are inactive, return true!
                 }
             }
             return true;
