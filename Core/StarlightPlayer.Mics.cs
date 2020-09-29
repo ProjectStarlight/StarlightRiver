@@ -19,5 +19,6 @@ namespace StarlightRiver.Core
     public partial class StarlightPlayer : ModPlayer
     {
         public short FiftyFiveLeafClover = 0;
+        public short DisinfectCooldown = 0;
     }
 }
