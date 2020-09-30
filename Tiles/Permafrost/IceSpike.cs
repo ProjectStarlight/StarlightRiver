@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Buffs;
 using StarlightRiver.Items;
 using System;
 using Terraria;
@@ -25,7 +26,8 @@ namespace StarlightRiver.Tiles.Permafrost
 
         public override void FloorVisuals(Player player)
         {
-            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
+            if(!player.HasBuff(BuffType<SpikeImmuneBuff>()))
+                player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

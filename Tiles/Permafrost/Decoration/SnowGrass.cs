@@ -48,7 +48,7 @@ namespace StarlightRiver.Tiles.Permafrost.Decoration
                         Tile tile = Framing.GetTileSafely(i, j + k);
                         if (tile.type != Type)
                         {
-                            WorldGen.PlaceTile(i, j - 1, TileType<SnowGrass>());
+                            WorldGen.PlaceTile(i, j - 1, TileType<SnowGrass>(), true);
                             break;
                         }
                     }

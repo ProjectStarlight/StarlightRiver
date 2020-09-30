@@ -131,11 +131,15 @@ namespace StarlightRiver
 
         private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
         {
-            if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked) && unlocked)
+            if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked))
             {
-                Instance.Chatbox.SetState(TownUpgrade.FromString(self.TypeName));
+                if(unlocked)
+                    Instance.Chatbox.SetState(TownUpgrade.FromString(self.TypeName));
+                else
+                    Instance.Chatbox.SetState(new LockedUpgrade());
             }
-            else Instance.Chatbox.SetState(new LockedUpgrade());
+            else
+                Instance.Chatbox.SetState(null);
 
             return orig(self);
         }

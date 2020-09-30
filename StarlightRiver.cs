@@ -299,7 +299,7 @@ namespace StarlightRiver
                 AddLayer(layers, LootUserInterface, lootUI, MouseTextIndex, LootUI.Visible);
                 AddLayer(layers, ChatboxUserInterface, Chatbox, NPCChatIndex, Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu);
                 AddLayer(layers, ExtraNPCInterface, ExtraNPCState, MouseTextIndex, ExtraNPCState != null);
-                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, true);
+                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, RichTextBox.visible);
             }
         }
 

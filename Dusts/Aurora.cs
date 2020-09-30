@@ -24,11 +24,12 @@ namespace StarlightRiver.Dusts
 
         public override bool Update(Dust dust)
         {
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale);
-            dust.rotation += 0.02f;
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 0.1f);
+            dust.rotation += 0.06f;
 
-            dust.scale = dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f;
-            dust.fadeIn--;
+            dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * 0.5f;
+            dust.fadeIn -= 4;
+            dust.position += dust.velocity * 0.25f;
 
             if (dust.fadeIn <= 0) dust.active = false;
             return false;

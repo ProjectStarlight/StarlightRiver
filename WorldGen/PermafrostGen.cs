@@ -279,6 +279,7 @@ namespace StarlightRiver
             var row = WorldGen.genRand.Next(1000);
 
             int pillarCD = 0;
+            int orbCD = 0;
 
             for (float k = 30 / length; k < 1 - 30 / length; k += 5 / length)
             {
@@ -337,9 +338,18 @@ namespace StarlightRiver
                             for (int y = point.Y - 1; y < point.Y + 1; y++)
                             {
                                 if (Framing.GetTileSafely(x, y).wall == WallID.SnowWallUnsafe)
-                                    WorldGen.PlaceTile(x, y, TileType<PhotoreactiveIce>());
+                                    WorldGen.PlaceObject(x, y, TileType<PhotoreactiveIce>());
                             }
                     }
+                }
+
+                //orbs
+                if (orbCD > 0) orbCD--;
+
+                if (orbCD == 0)
+                {
+                    WorldGen.PlaceTile(pos.X, pos.Y, TileType<SpikeImmuneOrb>());
+                    orbCD = 4;
                 }
             }
         }

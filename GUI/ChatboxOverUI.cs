@@ -30,8 +30,16 @@ namespace StarlightRiver.GUI
         public void SetState(TownUpgrade state)
         {
             activeUpgrade = state;
-            button.displayString = state._buttonName;
+
+            if(state != null)
+                button.displayString = state._buttonName;
+
             OnInitialize();
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            if (activeUpgrade != null) base.Draw(spriteBatch);
         }
     }
 
@@ -48,7 +56,7 @@ namespace StarlightRiver.GUI
 
             float x = Main.fontItemStack.MeasureString(displayString).X;
             float scale = x < 70 ? 1 : 70 / x;
-            Utils.DrawBorderString(spriteBatch, displayString, GetDimensions().ToRectangle().Center()+ new Vector2(0, 3), Color.White * (locked ? 0.4f : 1), scale, 0.5f, 0.5f);
+            Utils.DrawBorderString(spriteBatch, displayString, GetDimensions().ToRectangle().Center() + new Vector2(0, 3), Color.White * (locked ? 0.4f : 1), scale, 0.5f, 0.5f);
         }
 
         public override void Click(UIMouseEvent evt)
