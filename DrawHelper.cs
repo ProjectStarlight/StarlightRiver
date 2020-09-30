@@ -69,6 +69,8 @@ namespace StarlightRiver
 
         private void RenderLightingQuad()
         {
+            if (UpscaleEffect is null) return;
+
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
             VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
 

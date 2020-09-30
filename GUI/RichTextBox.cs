@@ -55,14 +55,10 @@ namespace StarlightRiver.GUI
             string title = "Glassweaver";
             float width = Main.fontMouseText.MeasureString(title).X;
             DrawBox(spriteBatch, new Rectangle(Main.screenWidth / 2 - (int)(width / 2) - 20, 160, (int)width + 40, 36));
-            Utils.DrawBorderString(spriteBatch, title, new Vector2(Main.screenWidth / 2, 182), Color.White, 1, 0.5f, 0.5f);
-
-
-
-            
+            Utils.DrawBorderString(spriteBatch, title, new Vector2(Main.screenWidth / 2, 182), Color.White, 1, 0.5f, 0.5f);            
         }
 
-        private void DrawBox(SpriteBatch sb, Rectangle target)
+        public static void DrawBox(SpriteBatch sb, Rectangle target)
         {
             Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/FancyBox");
             Color color = Color.White * 0.8f;
@@ -85,6 +81,14 @@ namespace StarlightRiver.GUI
             sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y, 6, 6), sourceCorner, color, (float)Math.PI * 0.5f, Vector2.Zero, 0, 0);
             sb.Draw(tex, new Rectangle(target.X + target.Width, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI, Vector2.Zero, 0, 0);
             sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI * 1.5f, Vector2.Zero, 0, 0);
+        }
+    }
+
+    class RichTextButton : UIElement
+    {
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            RichTextBox.DrawBox(spriteBatch, GetDimensions().ToRectangle());
         }
     }
 }
