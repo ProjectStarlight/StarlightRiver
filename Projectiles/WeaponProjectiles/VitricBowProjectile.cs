@@ -87,7 +87,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 Vector2 diff2 = mousePos - player.Center;
                 diff2.Normalize();
-                projectile.velocity = diff2 * projectile.velocity.Length();
+                projectile.velocity = diff2 * (player.HasBuff(BuffID.Archery) ? 1.20f : 1f);
                 projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
                 projectile.netUpdate = true;
             }
@@ -137,9 +137,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
                         float chargefloat = 1f - (timeleft / projectile.ai[1]);
                         float speed = 4f + percent * (2f + chargefloat);
-                        Vector2 pos = new Vector2(speed*projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (anglerot * (projectile.ignoreWater ? 0f : i)));
+                        Vector2 velo = new Vector2(speed*projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (anglerot * (projectile.ignoreWater ? 0f : i)));
 
-                        Projectile.NewProjectile(projectile.Center, pos, ModContent.ProjectileType<VitricBowShardProjectile>(), (int)((float)projectile.damage*(1f+ percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
+                        Projectile.NewProjectile(projectile.Center, velo, ModContent.ProjectileType<VitricBowShardProjectile>(), (int)((float)projectile.damage*(1f+ percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
 
                         if (i > 0)
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);

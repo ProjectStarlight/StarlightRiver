@@ -108,12 +108,11 @@ namespace StarlightRiver
             player.meleeCrit += crit;
             player.magicCrit += crit;
         }
-
         public static bool IsValidDebuff(Player player,int buffindex)
         {
             int bufftype = player.buffType[buffindex];
-            return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype];
-
+            bool vitalbuff = (bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState);
+            return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
         }
 
         public static bool HasItem(Player player, int type, int count)

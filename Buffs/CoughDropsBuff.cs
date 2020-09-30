@@ -19,7 +19,7 @@ namespace StarlightRiver.Buffs
                 }
                 else
                 {
-                    time = (int)MathHelper.Clamp(time + 100, 0, 60 * 20);
+                    time = (int)MathHelper.Clamp(time + 180, 0, 60 * 20);
                 }
 
             }

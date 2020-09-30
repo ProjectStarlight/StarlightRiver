@@ -51,6 +51,13 @@ namespace StarlightRiver.Core
                 OnHitNPCWithProjEvent?.Invoke(player, proj, target, damage, knockback, crit);
         }
 
+        public delegate void NaturalLifeRegenDelegate(Player player, ref float regen);
+        public static event NaturalLifeRegenDelegate NaturalLifeRegenEvent;
+        public override void NaturalLifeRegen(ref float regen)
+        {
+            NaturalLifeRegenEvent?.Invoke(player, ref regen);
+        }
+
         //this is the grossest one. I am sorry, little ones.
         public delegate bool PreHurtDelegate(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource);
         /// <summary>
