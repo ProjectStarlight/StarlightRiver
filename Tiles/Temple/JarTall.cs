@@ -21,6 +21,7 @@ namespace StarlightRiver.Tiles.Temple
             Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
             if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
         }
+
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
@@ -44,6 +45,7 @@ namespace StarlightRiver.Tiles.Temple
     internal class JarDummy : Dummy, IDrawAdditive
     {
         public JarDummy() : base(TileType<JarTall>(), 32, 32) { }
+
         public override void Collision(Player player)
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
