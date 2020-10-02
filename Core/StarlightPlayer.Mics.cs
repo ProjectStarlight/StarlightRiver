@@ -20,5 +20,6 @@ namespace StarlightRiver.Core
     {
         public short FiftyFiveLeafClover = 0;
         public short DisinfectCooldown = 0;
+        public short EngineerTransform = 0;
     }
 }
