@@ -186,6 +186,9 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+
             Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/CookSlotY");
             switch (Type)
             {

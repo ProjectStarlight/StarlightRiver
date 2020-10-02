@@ -113,6 +113,9 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if(IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+
             RichTextBox.DrawBox(spriteBatch, GetDimensions().ToRectangle());
             Markdown.DrawMessage(spriteBatch, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), message, 1);
 
