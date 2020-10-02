@@ -178,17 +178,18 @@ namespace StarlightRiver.Items.Armor.Engineer
 
                         if (touchpoint != default)
                         {
-                            if (i < 9)
+                            if (i < 8 && Main.rand.Next(2,8)>i)
                             {
-                                Dust dust = Dust.NewDustPerfect((touchpoint.ToVector2() * 16f) + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<Starlight>(), new Vector2(Main.rand.NextFloat(-16, 16) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 150, Color.Gray, (10f - i) / 3f);
-                                dust.color = Color.Gray;
+                                float scale = (8f - i);
+                                Dust dust = Dust.NewDustPerfect((touchpoint.ToVector2() * 16f) + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<StarlightSmoke>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                dust.color = new Color(196, 179, 143);
                             }
                             if (i < 7)
                             {
                                 float velocityammount = 15f / (((float)touchpoint.Y * 16f) - ((float)player.Center.Y));
                                 player.velocity.Y -= (velocityammount + 0.2f);
                             }
-                            //if (player.velocity.Y<0)
+
                             if (player.velocity.Y>0)
                             player.velocity.Y /= 1.05f;
 
@@ -285,7 +286,6 @@ namespace StarlightRiver.Items.Armor.Engineer
                     rotationangles[1] -= (float)Math.Pow(Math.Abs(EaseXVel / 16), 0.70);
 
                     //Vertical movement
-
                     rotationangles[0] += (float)Math.Pow(Math.Abs(EaseYVel / 40), 0.60) * Math.Sign(EaseYVel);
                     rotationangles[1] -= (float)Math.Pow(Math.Abs(EaseYVel / 32), 0.70) * Math.Sign(EaseYVel);
 
@@ -320,13 +320,12 @@ namespace StarlightRiver.Items.Armor.Engineer
                         Vector2 spriteoriginlocal = new Vector2(XOffset(ShoulderMounts[isjetpack], (int)spriteorigins[isjetpack].X), spriteorigins[isjetpack].Y);
                         for (int i = 0; i < 3; i += 1)
                         {
-                            //if (i == 2 && isjetpack == 3)
-                                //i = 3;
-
                             GLOffset += (partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X);
                         }
+
                         Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + (GLOffset);
                         DrawData drawGL;
+
                         if (isjetpack == 3)
                         {
                             int maxframes = 4;
