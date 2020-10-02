@@ -27,6 +27,14 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+
+            //temporary debug stuff
+            icon = Main.screenTarget;
+
+            talking = Main.npc.FirstOrDefault(n => n.modNPC is NPCs.Miniboss.Glassweaver.GlassweaverWaiting);
+            if (talking == null)
+                talking = new NPC();
+
             if (talking is null) return;
 
             icon = Main.screenTarget;
