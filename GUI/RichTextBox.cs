@@ -23,10 +23,13 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            return;
             //temporary debug stuff
             icon = Main.screenTarget;
 
             talking = Main.npc.FirstOrDefault(n => n.modNPC is NPCs.Miniboss.Glassweaver.GlassweaverWaiting);
+            if (talking == null)
+                talking = new NPC();
 
             Vector2 pos = talking.Center - Main.screenPosition;
             iconFrame = new Rectangle((int)pos.X - 44, (int)pos.Y - 44, 88, 88);
