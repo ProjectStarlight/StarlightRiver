@@ -21,6 +21,11 @@ namespace StarlightRiver.Core
             return  (1 + messages.Count(n => n == "\n")) * Main.fontMouseText.MeasureString("A").Y * scale;
         }
 
+        public static float GetWidth(string message, float scale)
+        {
+            return Main.fontMouseText.MeasureString(NeuterString(message)).X * scale;
+        }
+
         public static void DrawMessage(SpriteBatch sb, Vector2 pos, string message, float scale, int wrapWidth = 0)
         {
             List<string> messages;

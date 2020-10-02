@@ -22,6 +22,9 @@ namespace StarlightRiver.GUI
         private static Rectangle iconFrame;
         public static NPC talking;
 
+        public static float HeightOff => 224 + Markdown.GetHeight(message, 1, 500);
+        private static float widthOff = 0;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (talking is null) return;
@@ -77,13 +80,49 @@ namespace StarlightRiver.GUI
             title = newTitle;
             message = newMessage;
         }
+
+        public static void ClearButtons()
+        {
+            widthOff = 0;
+            StarlightRiver.Instance.RichText.Elements.Clear();
+        }
+
+        public static void AddButton(string message, Action onClick)
+        {
+            RichTextButton add = new RichTextButton(message, onClick);
+            add.Top.Set(HeightOff, 0);
+            add.Left.Set(50 + Main.screenWidth / 2 - 260 + widthOff, 0);
+            add.Width.Set(Markdown.GetWidth(message, 1) + 20, 0);
+            add.Height.Set(32, 0);
+
+            widthOff += Markdown.GetWidth(message, 1) + 24;
+            StarlightRiver.Instance.RichText.Append(add);
+        }
     }
 
     class RichTextButton : UIElement
     {
+        string message;
+        Action onClick;
+
+        public RichTextButton(string message, Action onClick)
+        {
+            this.message = message;
+            this.onClick = onClick;
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             RichTextBox.DrawBox(spriteBatch, GetDimensions().ToRectangle());
+            Markdown.DrawMessage(spriteBatch, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), message, 1);
+
+            Top.Set(RichTextBox.HeightOff, 0);
+            Recalculate();
+        }
+
+        public override void Click(UIMouseEvent evt)
+        {
+            onClick.Invoke();
         }
     }
 }

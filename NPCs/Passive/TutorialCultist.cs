@@ -15,13 +15,15 @@ namespace StarlightRiver.NPCs.Passive
 {
     public class TutorialCultist : ModNPC
     {
+        int textState = 0;
+
         public override void SetDefaults()
         {
             npc.townNPC = true;
             npc.friendly = true;
             npc.width = 18;
             npc.height = 40;
-            npc.aiStyle = 7;
+            npc.aiStyle = -1;
             npc.damage = 10;
             npc.defense = 15;
             npc.lifeMax = 250;
@@ -34,16 +36,45 @@ namespace StarlightRiver.NPCs.Passive
 
         public override string GetChat()
         {
+            textState = 0;
             RichTextBox.visible = true;
-            RichTextBox.SetData(npc, "", "");
+            RichTextBox.ClearButtons();
+
+            SetData();
+            RichTextBox.AddButton("[]Next", Debug);
 
             return "";
+        }
+
+        private void Debug()
+        {
+            textState++;
+
+            if(textState == 1)
+            {
+                RichTextBox.ClearButtons();
+            }
         }
 
         public override void AI()
         {
             if (RichTextBox.talking == npc)
             {
+                SetData();
+
+                if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
+                {
+                    RichTextBox.visible = false;
+                    RichTextBox.SetData(null, "", "");
+                }
+            }
+        }
+
+        private void SetData()
+        {
+            switch (textState)
+            {
+                case 0:
                 RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
                     "[]Something soemthing clever lore something." +
                     "[]You can pick up those" +
@@ -51,15 +82,15 @@ namespace StarlightRiver.NPCs.Passive
                     "[]To shield yourself from" +
                     "[<color:255, 80, 80>]spikes" +
                     "[]. Be careful though, they wont come back untill the" +
-                    "[<color:120, 160, 255>]next night"
+                    "[<color:120, 160, 255>]next night" +
+                    "[]Here have alot more text in able to test the wrapping and to make sure that the height measurement works correctly for button placement. la da dada a adada dasij oaiwhapo afhqwhpfjn aoihjaw oihjw ijna"
+                ); break;
 
-                    );
+                case 1:
+                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                        "[]This is what I would say next if I had more dialogue"
+                    ); break;
 
-                if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
-                {
-                    RichTextBox.visible = false;
-                    RichTextBox.SetData(null, "", "");
-                }
             }
         }
 
