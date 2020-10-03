@@ -4,24 +4,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Buffs;
 using StarlightRiver.Core;
 using StarlightRiver.GUI;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.NPCs.Passive
 {
     public class TutorialCultist : ModNPC
     {
+        int textState = 0;
+
         public override void SetDefaults()
         {
             npc.townNPC = true;
             npc.friendly = true;
             npc.width = 18;
             npc.height = 40;
-            npc.aiStyle = 7;
+            npc.aiStyle = -1;
             npc.damage = 10;
             npc.defense = 15;
             npc.lifeMax = 250;
@@ -34,32 +38,82 @@ namespace StarlightRiver.NPCs.Passive
 
         public override string GetChat()
         {
+            textState = 0;
             RichTextBox.visible = true;
-            RichTextBox.SetData(npc, "", "");
+            RichTextBox.ClearButtons();
+
+            SetData();
+            RichTextBox.AddButton("[]Next", Debug);
 
             return "";
+        }
+
+        private void Debug()
+        {
+            textState++;
+
+            if(textState == 3)
+            {
+                RichTextBox.ClearButtons();
+                RichTextBox.AddButton("[]Recieve Blessing", Bless);
+            }
+        }
+
+        private void Bless()
+        {
+            RichTextBox.visible = false;
+            RichTextBox.SetData(null, "", "");
+            Main.player[Main.myPlayer].talkNPC = -1;
+
+            Main.LocalPlayer.AddBuff(BuffType<SpikeImmuneBuff>(), 3600); //TODO: this may need manual sync later? not sure (Remember this is really being called from a UI)
         }
 
         public override void AI()
         {
             if (RichTextBox.talking == npc)
             {
-                RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
-                    "[]Something soemthing clever lore something." +
-                    "[]You can pick up those" +
-                    MakeAuroraText("Magical Orbs ") +
-                    "[]To shield yourself from" +
-                    "[<color:255, 80, 80>]spikes" +
-                    "[]. Be careful though, they wont come back untill the" +
-                    "[<color:120, 160, 255>]next night"
-
-                    );
+                SetData();
 
                 if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
                 {
                     RichTextBox.visible = false;
                     RichTextBox.SetData(null, "", "");
                 }
+            }
+        }
+
+        private void SetData()
+        {
+            switch (textState)
+            {
+                case 0:
+                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                        "[]Hello hello generic greeting message thing"
+                    ); break;
+
+                case 1:
+                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                        "[]You can pick up those" +
+                        MakeAuroraText("Magical Orbs ") +
+                        "[]To shield yourself from" +
+                        "[<color:255, 80, 80>]spikes" +
+                        "[]. Be careful though, they wont come back untill the" +
+                        "[<color:120, 160, 255>]next night"
+                    ); break;
+
+                case 2:
+                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                        "[]Something Something scary ominous" +
+                        "[<color:255,0,0>]WARNING!!!" +
+                        "[]something something dont touch squigga"
+                    ); break;
+
+                case 3:
+                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                        "[]Ooohh let me give you magic no spike spell!" +
+                        MakeAuroraText("OohhHhhhh gimmie them tiddies bitch!")
+                    ); break;
+
             }
         }
 
