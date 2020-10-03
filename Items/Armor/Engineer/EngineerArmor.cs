@@ -21,19 +21,14 @@ namespace StarlightRiver.Items.Armor.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Helmet");
-            Tooltip.SetDefault("2% increased ranged critial strike change");
         }
 
         public override void SetDefaults()
         {
             item.width = 28;
             item.height = 28;
-            item.value = 8000;
-            item.defense = 2;
-        }
-        public override void UpdateEquip(Player player)
-        {
-            player.rangedCrit += 2;
+            item.value = 0;
+            item.vanity = true;
         }
         public override void AddRecipes()
         {
@@ -51,7 +46,6 @@ namespace StarlightRiver.Items.Armor.Engineer
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Chestplate");
-            Tooltip.SetDefault("2% increased ranged critial strike change");
         }
         public override bool Autoload(ref string name)
         {
@@ -63,12 +57,8 @@ namespace StarlightRiver.Items.Armor.Engineer
         {
             item.width = 34;
             item.height = 20;
-            item.value = 6000;
-            item.defense = 4;
-        }
-        public override void UpdateEquip(Player player)
-        {
-            player.rangedCrit += 2;
+            item.value = 0;
+            item.vanity = true;
         }
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
@@ -76,7 +66,7 @@ namespace StarlightRiver.Items.Armor.Engineer
         }
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "After five (5) seconds of not taking damage, your next attack will ensnare and cause bleeding.";
+            player.setBonus = "Hold space to enter hover mode!";
             //starlightPlayer.ivyArmorComplete = true;
         }
         public override void AddRecipes()
@@ -106,13 +96,8 @@ namespace StarlightRiver.Items.Armor.Engineer
         {
             item.width = 30;
             item.height = 20;
-            item.value = 4000;
-            item.defense = 2;
-        }
-
-        public override void UpdateEquip(Player player)
-        {
-            player.moveSpeed += 0.2f;
+            item.value = 0;
+            item.vanity = true;
         }
         public override void AddRecipes()
         {
@@ -147,6 +132,38 @@ namespace StarlightRiver.Items.Armor.Engineer
         {
             return (player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>());//Really is there a better way?
         }
+        private void RaycastTile(int z, int zz, ref int highest, ref int middleheight, ref int middletouch, ref int average, Point16 playerpos, ref Vector2 touchpoint)
+        {
+            for (int i = 0; i < 16; i += 1)
+            {
+                int offset = zz * z;
+                Tile tile = Framing.GetTileSafely(playerpos.X + offset, playerpos.Y + i);
+                if (WorldGen.InWorld(playerpos.X + offset, playerpos.Y + i))
+                {
+                    if ((tile.active() && Main.tileSolid[tile.type]) || tile.liquid >= 32)
+                    {
+                        if (touchpoint == default)
+                        {
+                            touchpoint = new Vector2(playerpos.X, playerpos.Y + i) * 16;
+                            middleheight = i;
+                            highest = (int)touchpoint.Y;
+                            middletouch = (int)touchpoint.Y;
+                        }
+                        else
+                        {
+                            float valuetoadd = (playerpos.Y + i) * 16;
+                            if (valuetoadd < highest)
+                                highest = (int)valuetoadd;
+                            touchpoint.Y += valuetoadd;
+                        }
+
+                        //Dust.NewDustPerfect((new Vector2((playerpos.X + offset), playerpos.Y + i) * 16)+new Vector2(Main.rand.Next(0, 16),0), ModContent.DustType<FireDust2>(), Vector2.Zero, 120, Color.Red, 4f);
+                        average += 1;
+                        break;
+                    }
+                }
+            }
+        }
         public void HandleEngineerArmor()
         {
             EaseXVel += (player.velocity.X - EaseXVel) / 15f;
@@ -161,32 +178,32 @@ namespace StarlightRiver.Items.Armor.Engineer
                     if (TransformActive)
                     {
                         Point16 playerpos = new Point16((int)player.Center.X / 16, (int)player.Center.Y / 16);
-                        Point16 touchpoint = default;
-                        int i;
-                        for (i = 0; i < 12; i += 1)
+                        Vector2 touchpoint = default;
+                        int middleheight = 0;
+                        int average = 0;
+                        int middletouch = 0;
+                        int highest = 0;
+                        for (int z = 0; z <= 2; z += 1)
                         {
-                            Tile tile = Framing.GetTileSafely(playerpos.X, playerpos.Y + i);
-                            if (WorldGen.InWorld(playerpos.X, playerpos.Y + i))
+                            for (int zz = -1; zz <= 1; zz += 2) 
                             {
-                                if (tile.active() && Main.tileSolid[tile.type])
-                                {
-                                    touchpoint = new Point16(playerpos.X, playerpos.Y + i);
-                                    break;
-                                }
+                                RaycastTile(z, zz,ref highest, ref middleheight,ref middletouch, ref average, playerpos, ref touchpoint);
                             }
                         }
 
                         if (touchpoint != default)
                         {
-                            if (i < 8 && Main.rand.Next(2,8)>i)
+                            touchpoint.Y = ((touchpoint.Y / average) + highest) / 2f;
+                            //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
+                            if (middleheight < 8 && Main.rand.Next(2,8)> middleheight)
                             {
-                                float scale = (8f - i);
-                                Dust dust = Dust.NewDustPerfect((touchpoint.ToVector2() * 16f) + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<StarlightSmoke>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                float scale = (8f - middleheight);
+                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<StarlightSmoke>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
                                 dust.color = new Color(196, 179, 143);
                             }
-                            if (i < 7)
+                            if (middleheight < 7)
                             {
-                                float velocityammount = 15f / (((float)touchpoint.Y * 16f) - ((float)player.Center.Y));
+                                float velocityammount = 15f / (((float)touchpoint.Y) - ((float)player.Center.Y));
                                 player.velocity.Y -= (velocityammount + 0.2f);
                             }
 
@@ -196,7 +213,7 @@ namespace StarlightRiver.Items.Armor.Engineer
                         }
 
                             player.fallStart = (int)(player.position.Y / 16f);
-                        player.maxFallSpeed /= 2f;
+                        player.maxRunSpeed += 10;
                         player.runAcceleration /= 3f;
                     }
                     return;
