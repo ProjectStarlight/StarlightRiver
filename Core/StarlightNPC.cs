@@ -10,6 +10,9 @@ namespace StarlightRiver.Core
     {
         public int DoT;
 
+        //TODO: Make a better system for this, stacking DoTs
+        public int AuroraDiscDoT;
+
         public override bool InstancePerEntity => true;
 
         public override bool CloneNewInstances => true;

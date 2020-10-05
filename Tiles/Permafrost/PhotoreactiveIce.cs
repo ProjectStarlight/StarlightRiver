@@ -34,6 +34,8 @@ namespace StarlightRiver.Tiles.Permafrost
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
+            if (Main.gameMenu) return; //so worldgen dosent crash
+
             Tile tile = Main.tile[i, j];
             tile.inActive(Lighting.Brightness(i, j) > 0.25f);
         }
