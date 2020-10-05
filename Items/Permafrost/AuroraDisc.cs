@@ -139,10 +139,10 @@ namespace StarlightRiver.Items.Permafrost
             {
                 int timer = 1200 - projectile.timeLeft;
 
-                if (timer < 30)
+                if (timer <= 30)
                     projectile.Center = Vector2.SmoothStep(Owner.Center, savedPos, timer / 30f);
 
-                if(timer >= 30 && timer < 90) //funny visuals
+                if(timer > 30 && timer < 90) //funny visuals
                 {
                     for (int k = 0; k < 10; k++)
                     {
