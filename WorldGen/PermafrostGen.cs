@@ -81,10 +81,15 @@ namespace StarlightRiver
             caves.ForEach(n => DigTunnel(n, row, true));
             caves.ForEach(n => DecorateTunnel(n));
 
+            PlaceDisc(circles);
+            PlaceTeleporters(circles, center);
+
             circles.ForEach(n => DecorateCircle(n));
 
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
+
+            MakeCenterGates(bigCircle, caves);
 
             //entrances
             for(int k = 0; k < 4; k++)
@@ -375,6 +380,8 @@ namespace StarlightRiver
 
         private void DecorateCircle(Circle circle)
         {
+            if (circle.decorated) return;
+
             var under = new Rectangle(circle.position.X - circle.radius - 1, circle.position.Y + 18, circle.radius * 2 + 2, circle.radius - 12);
             if (circle.radius > 22 && !CheckForTunnel(under)) //no tunnels under this circle
             {
@@ -421,12 +428,133 @@ namespace StarlightRiver
                     }
                 }
         }
+
+        private void MakeCenterGates(Circle circle, List<Vector4> lines)
+        {
+            List<Vector4> importantLines = new List<Vector4>();
+
+            foreach (Vector4 line in lines.Where(n => n.XY() == circle.position.ToVector2() || n.ZW() == circle.position.ToVector2()))
+                importantLines.Add(line);
+
+            foreach(Vector4 line in importantLines)
+            {
+                int windup = 0;
+
+                if(line.XY() == circle.position.ToVector2())
+                {
+                    for (float k = 0; k < 1; k += 5 / Vector2.Distance(line.XY(), line.ZW()))
+                    {
+                        Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
+                        Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
+                        if(tile.wall == WallID.SnowWallUnsafe)
+                        {
+                            windup++;
+                            if (windup >= 2)
+                            {
+                                MakeGate(pos, line);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (float k = 1; k > 0; k -= 5 / Vector2.Distance(line.XY(), line.ZW()))
+                    {
+                        Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
+                        Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
+                        if (tile.wall == WallID.SnowWallUnsafe)
+                        {
+                            windup++;
+                            if (windup >= 2)
+                            {
+                                MakeGate(pos, line);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void MakeGate(Point16 pos, Vector4 line)
+        {
+            var pillar = Vector2.Normalize(line.XY() - line.ZW()).RotatedBy(Math.PI / 2);
+
+            for (int n = -10; n < 10; n++)
+            {
+                Point16 point = pos + (pillar * n).ToPoint16();
+
+                for (int x = point.X - 2; x < point.X + 2; x++)
+                    for (int y = point.Y - 2; y < point.Y + 2; y++)
+                    {
+                        Tile tile = Framing.GetTileSafely(x, y);
+
+                        if (tile.wall == WallID.SnowWallUnsafe)
+                            WorldGen.PlaceTile(x, y, TileType<DiscGate>());
+                    }
+
+                for (int x = point.X - 7; x < point.X + 7; x++)
+                    for (int y = point.Y - 7; y < point.Y + 7; y++)
+                    {
+                        Tile tile = Framing.GetTileSafely(x, y);
+
+                        if (tile.active() && tile.wall == WallID.SnowWallUnsafe && tile.type != TileType<PermafrostIce>() && tile.type != TileType<DiscGate>())
+                            tile.active(false);
+                    }
+
+                WorldGen.PlaceTile(pos.X, pos.Y, TileType<DiscHole>(), false, true);
+            }
+        }
+
+        private void PlaceDisc(List<Circle> circles)
+        {
+            List<Circle> sorted = circles;
+            sorted.Sort((i, j) => i.position.X > j.position.X ? 1 : -1);
+
+            var index = WorldGen.genRand.NextBool() ? 0 : sorted.Count - 1;
+            var circle = sorted[index];
+
+            WorldGen.PlaceObject(circle.position.X, circle.position.Y, TileType<Tiles.Misc.AuroraDiscTile>()); //TODO: Replace with full structure    
+            circle.decorated = true;
+        }
+
+        private void PlaceTeleporters(List<Circle> circles, int center)
+        {
+            List<Circle> lefts = new List<Circle>();
+            List<Circle> rights = new List<Circle>();
+
+            foreach(Circle circle in circles)
+            {
+                if (circle.position.X < center) lefts.Add(circle);
+                else rights.Add(circle);
+            }
+
+            lefts.Sort((i, j) => i.position.X < j.position.X ? 1 : -1);
+            rights.Sort((i, j) => i.position.X > j.position.X ? 1 : -1);
+
+            PlaceTeleporter(lefts[1].position, rights[1].position);
+            PlaceTeleporter(rights[1].position, lefts[1].position);
+
+            lefts[1].decorated = true;
+            rights[1].decorated = true;
+        }
+
+        private void PlaceTeleporter(Point16 pos, Point16 target)
+        {
+            Helper.PlaceMultitile(pos, TileType<PermafrostTeleporter>());
+            TileEntity.PlaceEntityNet(pos.X, pos.Y, TileEntityType<PermafrostTeleporterEntity>());
+
+            var entity = TileEntity.ByPosition[pos] as PermafrostTeleporterEntity;
+            entity.target = target.ToVector2() * 16;
+        }
     }
 
-    public struct Circle
+    public class Circle
     {
         public Point16 position;
         public int radius;
+        public bool decorated = false;
 
         public Circle(Point16 position, int radius)
         {

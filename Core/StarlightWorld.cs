@@ -166,7 +166,10 @@ namespace StarlightRiver
             if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
             {
                 Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-                cathedralOverlay.fade = tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>();
+
+                cathedralOverlay.fade = 
+                    tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>() &&
+                    !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
 
                 cathedralOverlay.Draw();
             }
@@ -290,7 +293,7 @@ namespace StarlightRiver
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 
             Chungus = tag.GetFloat("Chungus");
-            Chungus++;
+            Chungus += 0.01f;
 
             knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 

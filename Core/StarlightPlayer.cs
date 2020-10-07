@@ -21,6 +21,7 @@ namespace StarlightRiver.Core
 
         public bool JustHit = false;
         public int LastHit = 0;
+        public bool trueInvisible = false;
 
         public bool DarkSlow = false;
 
@@ -122,6 +123,8 @@ namespace StarlightRiver.Core
             GuardBuff = 1;
             GuardRad = 0;
             itemSpeed = 1;
+
+            trueInvisible = false;
         }
 
         public override void PostUpdate()

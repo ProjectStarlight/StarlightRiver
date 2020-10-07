@@ -13,7 +13,7 @@ namespace StarlightRiver.Tiles.Permafrost
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(134, 252, 237), ItemType<PermafrostIceItem>());
+            QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(90, 208, 232), ItemType<PermafrostIceItem>());
             Main.tileMerge[Type][TileID.SnowBlock] = true;
             Main.tileMerge[TileID.SnowBlock][Type] = true;
 

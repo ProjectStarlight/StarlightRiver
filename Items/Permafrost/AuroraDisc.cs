@@ -20,7 +20,7 @@ namespace StarlightRiver.Items.Permafrost
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("[PH]Aurora Disc");
-            Tooltip.SetDefault("Grows frost spikes when striking an enemy or tiles\nEnemies struck by these spikes lose health over time if struck by minions\nRepeated minion strikes increase the intensity up to 10\nCan be re-used to recall the disc");
+            Tooltip.SetDefault("Can open gates in the permafrost\nGrows frost spikes when striking an enemy or tiles\nEnemies struck by these spikes lose health over time if struck by minions\nRepeated minion strikes increase the intensity up to 10\nCan be re-used to recall the disc");
         }
 
         public override void SetDefaults()
@@ -31,6 +31,7 @@ namespace StarlightRiver.Items.Permafrost
             item.height = 32;
             item.useTime = 25;
             item.noUseGraphic = true;
+            item.rare = ItemRarityID.Green;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.shootSpeed = 20f;
             item.knockBack = 1f;
@@ -190,7 +191,7 @@ namespace StarlightRiver.Items.Permafrost
         {
             var rect = projectile.Hitbox;
             rect.Inflate(28, 28);
-            if(State == 0 && projectile.CanHit(target) && rect.Intersects(target.Hitbox)) Extend();
+            if(State == 0 && Helper.IsTargetValid(target) && rect.Intersects(target.Hitbox)) Extend();
             return null;
         }
 
@@ -260,6 +261,8 @@ namespace StarlightRiver.Items.Permafrost
                         var progress = (timer - 120) / 10f;
                         spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * ((3 - progress) / 3f), 0, tex2.Size() / 2, 1 + progress, 0, 0);
                     }
+
+                    Lighting.AddLight(projectile.Center, color.ToVector3() * Math.Min((timer - 30) / 10f, 1));
                 }
             }
         }
