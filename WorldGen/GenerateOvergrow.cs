@@ -299,7 +299,7 @@ namespace StarlightRiver
 
                     //keeps us from running into blacklisted tiles.
                     if (tile.type == TileID.BlueDungeonBrick || tile.type == TileID.GreenDungeonBrick || tile.type == TileID.PinkDungeonBrick || tile.type == TileType<BrickOvergrow>() ||
-                        tile.type == TileID.LihzahrdBrick || tile.type == TileType<Tiles.Vitric.Blocks.VitricSand>() || tile.type == TileType<Tiles.Permafrost.AuroraBrick>())
+                        tile.type == TileID.LihzahrdBrick || tile.type == TileType<Tiles.Vitric.Blocks.VitricSand>() || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
                         return false;
                 }
             }

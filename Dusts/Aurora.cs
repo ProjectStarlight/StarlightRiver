@@ -19,7 +19,7 @@ namespace StarlightRiver.Dusts
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             Vector3 col = Vector3.Lerp(dust.color.ToVector3(), Color.White.ToVector3(), dust.scale);
-            return new Color(col.X, col.Y, col.Z);
+            return new Color(col.X, col.Y, col.Z) * ((255 - dust.alpha) / 255f);
         }
 
         public override bool Update(Dust dust)

@@ -86,6 +86,15 @@ namespace StarlightRiver
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
 
+            //entrances
+            for(int k = 0; k < 4; k++)
+            {
+                int y = iceBottom - 200;
+                int x = center - 400 + (int)(800 * (k / 3f));
+
+                DigCircle(new Circle(new Point16(x, y), 10));
+            }
+
             //uses some perlin noise to place snow/grass where there is air above ice.
             for(int x = center - 400; x < center + 400; x++)
                 for(int y = iceBottom - 200; y < iceBottom + 100; y++)
@@ -338,7 +347,7 @@ namespace StarlightRiver
                             for (int y = point.Y - 1; y < point.Y + 1; y++)
                             {
                                 if (Framing.GetTileSafely(x, y).wall == WallID.SnowWallUnsafe)
-                                    WorldGen.PlaceObject(x, y, TileType<PhotoreactiveIce>());
+                                    WorldGen.PlaceTile(x, y, TileType<PhotoreactiveIce>());
                             }
                     }
                 }
@@ -348,7 +357,17 @@ namespace StarlightRiver
 
                 if (orbCD == 0)
                 {
-                    WorldGen.PlaceTile(pos.X, pos.Y, TileType<SpikeImmuneOrb>());
+                    //I have to do this because PlaceTile and PlaceObject crash for some ungodly reason. Dont ask.
+                    Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
+
+                    if(!tile.active())
+                    {
+                        tile.active(true);
+                        tile.type = (ushort)TileType<SpikeImmuneOrb>();
+                        tile.frameX = 0;
+                        tile.frameY = 0;
+                    }
+
                     orbCD = 4;
                 }
             }

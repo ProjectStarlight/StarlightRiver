@@ -6,9 +6,9 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
-    public class SojournersSash : SmartAccessory, IChestItem
+    public class SojournersScarf : SmartAccessory, IChestItem
     {
-        public SojournersSash() : base("Sojourner's Sash", "20% increased max movement speed, with halved life regeneration while stationary") { }
+        public SojournersScarf() : base("Sojourner's Scarf", "20% increased max movement speed, with halved life regeneration while stationary") { }
 
         public override bool Autoload(ref string name)
         {
@@ -16,7 +16,6 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             return true;
         }
 
-        //This one is gonna require IL Editing due to how hardcoded af ManaRegen is, and that's above my level rn, sorry
         public override void SafeUpdateEquip(Player player)
         {
             player.maxRunSpeed *= 1.20f;
