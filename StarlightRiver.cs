@@ -196,6 +196,10 @@ namespace StarlightRiver
                 Filters.Scene["Crystal"] = new Filter(new ScreenShaderData(screenRefCrystal, "CrystalPass"), EffectPriority.High);
                 Filters.Scene["Crystal"].Load();
 
+                Ref<Effect> screenRefIceCrystal = new Ref<Effect>(GetEffect("Effects/IceCrystal"));
+                Filters.Scene["IceCrystal"] = new Filter(new ScreenShaderData(screenRefIceCrystal, "IcePass"), EffectPriority.High);
+                Filters.Scene["IceCrystal"].Load();
+
                 lightingTest = new RenderTest();
             }
 
