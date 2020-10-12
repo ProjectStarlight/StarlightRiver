@@ -17,14 +17,9 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
 {
+    //Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
     public partial class StarlightWorld : ModWorld
     {
-        public static Vector2 BookSP;
-        public static Vector2 DashSP;
-        public static Vector2 WispSP;
-        public static Vector2 PureSP;
-        public static Vector2 SmashSP;
-
         public static Vector2 RiftLocation;
 
         public static bool AluminumMeteors = false;
@@ -49,6 +44,9 @@ namespace StarlightRiver
 
         public static float rottime = 0;
 
+        //Recipe """database""" TODO: More robust system for this? do we really need one?
+        public static List<string> knownRecipies = new List<string>();
+
         //Players have a timer, can't the world get one synced one too?
         public static int Timer;
 
@@ -58,7 +56,7 @@ namespace StarlightRiver
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
 
-        public static List<Vector2> PureTiles = new List<Vector2> { };
+        public static List<Vector2> PureTiles = new List<Vector2>();
 
         public static Rectangle VitricBiome = new Rectangle();
 
@@ -168,7 +166,10 @@ namespace StarlightRiver
             if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
             {
                 Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-                cathedralOverlay.fade = tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>();
+
+                cathedralOverlay.fade = 
+                    tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>() &&
+                    !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
 
                 cathedralOverlay.Draw();
             }
@@ -195,6 +196,7 @@ namespace StarlightRiver
             AluminumMeteors = false;
 
             TownUpgrades = new Dictionary<string, bool>();
+            knownRecipies = new List<string>();
 
             //Autoload NPC upgrades
             Mod mod = StarlightRiver.Instance;
@@ -207,9 +209,6 @@ namespace StarlightRiver
             }
 
             PureTiles = new List<Vector2>();
-
-            BookSP = Vector2.Zero;
-            DashSP = Vector2.Zero;
         }
 
         public override TagCompound Save()
@@ -219,45 +218,39 @@ namespace StarlightRiver
                 tag.Add(pair.Key, pair.Value);
 
             // TODO why the hell is this throwing Collection was modified?
-            while (true)
-                try
-                {
-                    return new TagCompound
-                    {
-                        ["VitricBiomePos"] = VitricBiome.TopLeft(),
-                        ["VitricBiomeSize"] = VitricBiome.Size(),
+            return new TagCompound
+            {
+                ["VitricBiomePos"] = VitricBiome.TopLeft(),
+                ["VitricBiomeSize"] = VitricBiome.Size(),
 
-                        ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
-                        ["SquidBossArenaSize"] = SquidBossArena.Size(),
+                ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
+                ["SquidBossArenaSize"] = SquidBossArena.Size(),
 
-                        [nameof(SquidBossOpen)] = SquidBossOpen,
-                        [nameof(SquidBossDowned)] = SquidBossDowned,
+                [nameof(SquidBossOpen)] = SquidBossOpen,
+                [nameof(SquidBossDowned)] = SquidBossDowned,
 
-                        [nameof(DesertOpen)] = DesertOpen,
-                        [nameof(GlassBossOpen)] = GlassBossOpen,
-                        [nameof(GlassBossDowned)] = GlassBossDowned,
+                [nameof(DesertOpen)] = DesertOpen,
+                [nameof(GlassBossOpen)] = GlassBossOpen,
+                [nameof(GlassBossDowned)] = GlassBossDowned,
 
-                        [nameof(OvergrowBossOpen)] = OvergrowBossOpen,
-                        [nameof(OvergrowBossFree)] = OvergrowBossFree,
-                        [nameof(OvergrowBossDowned)] = OvergrowBossDowned,
+                [nameof(OvergrowBossOpen)] = OvergrowBossOpen,
+                [nameof(OvergrowBossFree)] = OvergrowBossFree,
+                [nameof(OvergrowBossDowned)] = OvergrowBossDowned,
 
-                        [nameof(SealOpen)] = SealOpen,
+                [nameof(SealOpen)] = SealOpen,
 
-                        [nameof(AluminumMeteors)] = AluminumMeteors,
+                [nameof(AluminumMeteors)] = AluminumMeteors,
 
-                        [nameof(TownUpgrades)] = tag,
+                [nameof(TownUpgrades)] = tag,
 
-                        [nameof(PureTiles)] = PureTiles,
+                [nameof(PureTiles)] = PureTiles,
 
-                        [nameof(BookSP)] = BookSP,
-                        [nameof(DashSP)] = DashSP,
+                [nameof(RiftLocation)] = RiftLocation,
 
-                        [nameof(RiftLocation)] = RiftLocation,
+                ["Chungus"] = Chungus,
 
-                        ["Chungus"] = Chungus
-                    };
-                }
-                catch { }
+                ["Recipies"] = knownRecipies
+            };
         }
 
         public override void Load(TagCompound tag)
@@ -297,12 +290,12 @@ namespace StarlightRiver
 
             PureTiles = (List<Vector2>)tag.GetList<Vector2>(nameof(PureTiles));
 
-            BookSP = tag.Get<Vector2>(nameof(BookSP));
-            DashSP = tag.Get<Vector2>(nameof(DashSP));
-
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 
-            Chungus = Main.rand.NextFloat();
+            Chungus = tag.GetFloat("Chungus");
+            Chungus += 0.01f;
+
+            knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 
             for (int k = 0; k <= PureTiles.Count - 1; k++)
                 for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
@@ -312,7 +305,6 @@ namespace StarlightRiver
                     }              
 
             PureTiles.Clear();
-            PureTiles = new List<Vector2> { };
 
             foreach (Key key in KeyInventory)
             {
@@ -321,6 +313,16 @@ namespace StarlightRiver
 
             //setup overlays
             cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+        }
+
+        public static void LearnRecipie(string key)
+        {
+            //this is set up in a way where the stored key should be the same as the display name, there is no real reason to differentiate as the entirety of the data stored is a string list.
+            if (!knownRecipies.Contains(key))
+            {
+                knownRecipies.Add(key);
+                CombatText.NewText(Main.LocalPlayer.Hitbox, Color.Tan, "Learned Recipie: " + key);
+            }
         }
     }
 }

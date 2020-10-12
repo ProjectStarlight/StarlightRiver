@@ -126,6 +126,7 @@ namespace StarlightRiver.GUI
         public override void Click(UIMouseEvent evt)
         {
             onClick.Invoke();
+            Main.PlaySound(Terraria.ID.SoundID.MenuTick);
         }
     }
 }

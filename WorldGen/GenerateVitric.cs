@@ -377,7 +377,6 @@ namespace StarlightRiver
                 new Point16(VitricBiome.Center.X - X_OFFSET, VitricBiome.Center.Y - Y_OFFSET),
                 StarlightRiver.Instance
                 );
-            DashSP = new Vector2(VitricBiome.Center.X * 16, VitricBiome.Center.Y * 16 + 200);
         }
 
         /// <summary>Generates decor of every type throughout the biome</summary>
