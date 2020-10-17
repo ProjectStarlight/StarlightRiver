@@ -17,8 +17,16 @@ namespace StarlightRiver.Tiles.Permafrost
             Main.tileMerge[Type][TileID.SnowBlock] = true;
             Main.tileMerge[TileID.SnowBlock][Type] = true;
 
+            Main.tileMerge[Type][TileID.IceBlock] = true;
+            Main.tileMerge[TileID.IceBlock][Type] = true;
+
             Main.tileMerge[Type][TileType<PermafrostSnow>()] = true;
             Main.tileMerge[TileType<PermafrostSnow>()][Type] = true;
+        }
+
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+        {
+            return base.TileFrame(i, j, ref resetFrame, ref noBreak);
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -28,10 +36,9 @@ namespace StarlightRiver.Tiles.Permafrost
             float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.01f * 0.2f);
             float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.01f);
             Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
-            float mult = Lighting.Brightness(i, j);
-            //if (mult > 0.1f) mult = 0.1f;
+            Color light = Lighting.GetColor(i, j);
 
-            drawColor = color * mult;
+            drawColor = new Color(light.R + (int)(color.R * 0.1f), light.G + (int)(color.G * 0.1f), light.B + (int)(color.B * 0.1f));
         }
     }
 

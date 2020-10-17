@@ -87,12 +87,35 @@ namespace StarlightRiver
             On.Terraria.WorldGen.meteor += AluminumMeteor;
             //Nobuild
             On.Terraria.Player.PlaceThing += PlacementRestriction;
-            //NPC Upgrade 
+            //NPC Upgrade  
             On.Terraria.NPC.GetChat += SetUpgradeUI;
+            //Tile merge spoofing
+            //On.Terraria.WorldGen.TileMergeAttemptFrametest_int_int_int_int_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32 += SpoofTileMerge;
+            //On.Terraria.WorldGen.tilemer
             //Testing Lighting
             Main.OnPreDraw += TestLighting;
 
             ForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells); //TODO: Move this later
+        }
+
+        private void SpoofTileMerge(On.Terraria.WorldGen.orig_TileMergeAttemptFrametest_int_int_int_int_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32 orig, int i, int j, int myType, int lookfor, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight) //AAAAAAA TERRARIAHOOKS NAMES WHYYYY
+        {
+            var a = (ushort)ModContent.TileType<PermafrostIce>();
+            var b = (ushort)ModContent.TileType<AuroraIce>();
+            if (myType == a)
+            {
+                if (up == b) up = a;
+                if (down == b) down = a;
+                if (left == b) left = a;
+                if (right == b) right = a;
+
+                if (upLeft == b) upLeft = a;
+                if (upRight == b) upRight = a;
+                if (downLeft == b) downLeft = a;
+                if (downRight == b) downRight = a;
+            }
+
+            orig(i, j, myType, lookfor, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
         }
 
         private void TestLighting(GameTime obj)
