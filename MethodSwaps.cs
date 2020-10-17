@@ -343,6 +343,12 @@ namespace StarlightRiver
                     }
                 }
             }
+
+            var mp = self.GetModPlayer<NPCs.GravityPlayer>();
+            if (mp.controller != null && mp.controller.npc.active)
+            {
+                self.velocity.Y = 0;
+            }
             orig(self);
         }
 
