@@ -1,18 +1,68 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Text;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Dusts;
+using StarlightRiver.Gores;
+using StarlightRiver.Items;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.NPCs
 {
+    public class BleedStack
+    {
+        public int timeLeft;
+
+        public BleedStack(int timeleft)
+        {
+            timeLeft = timeleft;
+        }
+        public void Update(List<BleedStack> stack, int thisisme)
+        {
+            timeLeft -= 1;
+            if (timeLeft < 1)
+                stack.RemoveAt(thisisme);
+        }
+        public static bool ApplyBleedStack(NPC npc,int time,bool refresh = true)
+        {
+            DebuffHandler dbh = npc.GetGlobalNPC<DebuffHandler>();
+
+            void refreshStacks()
+            {
+                for (int i = 0; i < dbh.BarbedBleeds.Count; i += 1)
+                {
+                    int stacktime = dbh.BarbedBleeds[i].timeLeft;
+                    dbh.BarbedBleeds[i].timeLeft = Math.Max(time, stacktime);
+                }
+            }
+
+            if (dbh.BarbedBleeds.Count < 5)
+            {
+                dbh.BarbedBleeds.Add(new BleedStack(time));
+                return true;
+            }
+
+            if (refresh)
+            refreshStacks();
+
+            return false;
+        }
+    }
     public class DebuffHandler : GlobalNPC
     {
         public override bool InstancePerEntity => true;
         public int frozenTime = 0;
         internal int impaled = 0;
+        public List<BleedStack> BarbedBleeds = new List<BleedStack>();
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
+            for(int i=0;i<BarbedBleeds.Count;i+=1)
+            {
+                impaled += 15;
+                BarbedBleeds[i].Update(BarbedBleeds, i);
+            }
             if (frozenTime != 0)
             {
                 frozenTime -= 1;
@@ -46,6 +96,21 @@ namespace StarlightRiver.NPCs
 
         public override void DrawEffects(NPC npc, ref Color drawColor)
         {
+            if (BarbedBleeds.Count > 0)
+            {
+                int count = BarbedBleeds.Count;
+                for (int i = 0; i < count; i += 1)
+                {
+                    Vector2 location = npc.position + new Vector2((npc.width / 2) + ((i * 16) - ((count - 1) * 8)), -8);
+                    Dust dust2 = Dust.NewDustPerfect(location, Terraria.ID.DustID.Blood, npc.velocity, 200, Color.Red, 1f);
+                    dust2.noGravity = true;
+                    if (Main.rand.Next(0, 10) == 0)
+                    {
+                        Dust dust = Dust.NewDustPerfect(location, ModContent.DustType<BloodyJungleSplash>(), new Vector2(Main.rand.NextFloat(-1, 1), 0), 50, Color.Red, 1f);
+                        dust.noGravity = true;
+                    }
+                }
+            }
             if (frozenTime != 0)
             {
                 Dust dust = Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, 15, 0f, 0f, 255, default, 1f)];
