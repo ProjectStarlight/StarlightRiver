@@ -56,6 +56,7 @@ namespace StarlightRiver
                 }
 
             int center = iceLeft + (iceRight - iceLeft) / 2;
+            int width = iceRight - iceLeft;
 
             Circle bigCircle = new Circle(new Point16(center + 15, iceBottom - 70), 110);
             circles.Add(bigCircle);
@@ -90,6 +91,18 @@ namespace StarlightRiver
             StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
 
             MakeCenterGates(bigCircle, caves);
+
+            for(int x = 0; x < 50; x++)
+                for(int y = 0; y < 40; y++)
+                {
+                    if (Main.rand.Next(2) != 0) continue;
+
+                    Point16 point = new Point16((center- 400) + (int)(x / 50f * 800), iceBottom + 50 - (int)(y / 40f * 200));
+                    point += new Point16(WorldGen.genRand.Next(-10, 10), WorldGen.genRand.Next(-10, 10));
+
+                    Tile tile = Framing.GetTileSafely(point.X, point.Y);
+                    if (tile.type == TileType<PermafrostIce>()) PlaceOre(point, WorldGen.genRand.Next(2, 5));
+                }
 
             //entrances
             for(int k = 0; k < 4; k++)
@@ -547,6 +560,42 @@ namespace StarlightRiver
 
             var entity = TileEntity.ByPosition[pos] as PermafrostTeleporterEntity;
             entity.target = target.ToVector2() * 16;
+        }
+
+        private void PlaceOre(Point16 center, int radius) //this is a total joke of optimization but who cares its worldgen in funny pixel game hahaaaaaa kill me
+        {
+            bool stayAlive = false;
+
+            for (int x = center.X; x < center.X + radius; x++) //again im just brute forcing this at this point lmao
+                for (int y = center.Y; y < center.Y + radius; y++)
+                {
+                    if (Framing.GetTileSafely(x, y).wall == WallID.SnowWallUnsafe) stayAlive = true;
+                    if (!(Framing.GetTileSafely(x, y).type == TileType<PermafrostIce>() || Framing.GetTileSafely(x, y).type == TileID.Dirt)) return; //uh oh were trying to generate over something invalid
+                }
+
+            if (!stayAlive) return;
+
+            int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0; //im lazy and really dont feel like doing math right now. And this is probably faster for the extremely limited use case of this. Is it expansibile? no, but it probably wont need to be and if it needs to be tahts a problem for future me
+            int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
+
+            for (int x = center.X; x < center.X + radius; x++)
+                for (int y = center.Y; y < center.Y + radius; y++)
+                {
+                    int xRel = x - center.X;
+                    int yRel = y - center.Y;
+
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    tile.active(true);
+                    tile.type = (ushort)TileType<AuroraIce>();
+                    tile.frameX = (short)((frameStartX + xRel) * 18);
+                    tile.frameY = (short)((frameStartY + yRel) * 18);
+
+                    int r = radius - 1;
+                    if (xRel == 0 && yRel == 0) tile.slope(2);
+                    if (xRel == 0 && yRel == r) tile.slope(4);
+                    if (xRel == r && yRel == 0) tile.slope(1);
+                    if (xRel == r && yRel == r) tile.slope(3);
+                }
         }
     }
 

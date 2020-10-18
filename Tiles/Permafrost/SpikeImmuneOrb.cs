@@ -25,24 +25,28 @@ namespace StarlightRiver.Tiles.Permafrost
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             Tile tile = Framing.GetTileSafely(i, j);
+            float time = Main.GameUpdateCount / 200f * 6.28f;
 
             if (tile.frameX == 0)
             {
-                float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
-                float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.01f * 0.2f);
-                float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.01f);
+                float off = i + j;
+                float sin2 = (float)Math.Sin(time + off * 0.01f * 0.2f);
+                float cos = (float)Math.Cos(time + off * 0.01f);
 
                 drawColor = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
-                if(Main.rand.Next(2) == 0)
-                    Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustType<Dusts.Aurora>(), 0, 0, 0, drawColor);
-
-                Lighting.AddLight(new Vector2(i, j) * 16, drawColor.ToVector3() * 0.4f);
+                Lighting.AddLight(new Vector2(i, j) * 16, drawColor.ToVector3() * 0.2f);
             }
             else
             {
                 drawColor = Color.Black * 0;
             }
+
+            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One.RotatedBy(time) * 3f - Main.screenPosition, drawColor * 0.7f);
+            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One.RotatedBy(time + 1) * 3f - Main.screenPosition, drawColor * 0.6f);
+            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One.RotatedBy(time + 2) * 3f - Main.screenPosition, drawColor * 0.5f);
+            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One.RotatedBy(time + 3) * 3f - Main.screenPosition, drawColor * 0.3f);
+            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One.RotatedBy(time + 4) * 3f - Main.screenPosition, drawColor * 0.25f);
         }
     }
 
