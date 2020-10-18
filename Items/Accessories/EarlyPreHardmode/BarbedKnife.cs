@@ -24,7 +24,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         {
             if (Equipped(player) && crit)
             {
-                BleedStack.ApplyBleedStack(target, 300);
+                BleedStack.ApplyBleedStack(target, 300, true);
             }
         }
 

@@ -213,7 +213,7 @@ namespace StarlightRiver.Items.Armor.Engineer
                         }
 
                             player.fallStart = (int)(player.position.Y / 16f);
-                        player.maxRunSpeed += 10;
+                        player.maxRunSpeed += 5; //Only a bit faster run speed
                         player.runAcceleration /= 3f;
                     }
                     return;
