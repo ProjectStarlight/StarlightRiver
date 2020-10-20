@@ -24,11 +24,6 @@ namespace StarlightRiver.Tiles.Permafrost
             Main.tileMerge[TileType<PermafrostSnow>()][Type] = true;
         }
 
-        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-        {
-            return base.TileFrame(i, j, ref resetFrame, ref noBreak);
-        }
-
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;

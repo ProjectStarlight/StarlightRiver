@@ -268,7 +268,7 @@ namespace StarlightRiver
         private void DrawAdditive(On.Terraria.Main.orig_DrawDust orig, Main self)
         {
             orig(self);
-            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             for (int k = 0; k < Main.maxProjectiles; k++) //projectiles
                 if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive)

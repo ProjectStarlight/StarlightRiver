@@ -27,7 +27,7 @@ namespace StarlightRiver.Tiles.Permafrost.VFX
         public override void SetDefaults() => QuickBlock.QuickSet(this, 200, 0, SoundID.Tink, new Color(255, 255, 255), 0);
     }
 
-    class CaveVFXDummy : Dummy, IDrawAdditive
+    class CaveVFXDummy : Dummy
     {
         public CaveVFXDummy() : base(TileType<CaveVFX>(), 16, 16) { }
 
@@ -47,12 +47,6 @@ namespace StarlightRiver.Tiles.Permafrost.VFX
                     Dust.NewDustPerfect(projectile.Center + new Vector2(x, y) + Vector2.One.RotatedByRandom(0.1f) * (k), DustType<Dusts.Star>());
                 }
             }
-        }
-
-        public void DrawAdditive(SpriteBatch spriteBatch)
-        {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Permafrost/VFX/Aurora");
-            //spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, Color.White * 0.2f);
         }
     }
 }

@@ -75,6 +75,7 @@ namespace StarlightRiver.GUI
     {
         float fade;
         int time;
+        public static Texture2D overrideTexture = null;
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
@@ -83,7 +84,7 @@ namespace StarlightRiver.GUI
             AbilityHandler mp = player.GetHandler();
 
             Texture2D emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaEmpty");
-            Texture2D fillTex = GetTexture("StarlightRiver/GUI/Assets/Stamina");
+            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/GUI/Assets/Stamina") : overrideTexture;
 
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
@@ -126,13 +127,15 @@ namespace StarlightRiver.GUI
                 fade += 0.1f;
                 time--;
             }
-            else     
+            else
                 fade -= 0.1f;
-            
+
 
             fade = MathHelper.Clamp(fade, 0, 1);
 
-                DrawOverhead(spriteBatch);
+            DrawOverhead(spriteBatch);
+
+            overrideTexture = null;
         }
 
         private void DrawOverhead(SpriteBatch spriteBatch)

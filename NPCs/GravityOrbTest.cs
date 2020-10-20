@@ -121,8 +121,7 @@ namespace StarlightRiver.NPCs
                 if (angleTimer > 0) angleTimer -= 3;
                 if (cooldown > 0) cooldown--;
                 controller = null;
-            }
-            
+            }           
         }
     }
 }

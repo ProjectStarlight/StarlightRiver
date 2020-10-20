@@ -15,6 +15,7 @@ namespace StarlightRiver.Tiles.Permafrost
         {
             QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(100, 255, 255), ItemType<PhotoreactiveIceItem>());
             Main.tileBlockLight[Type] = false;
+            TileID.Sets.DrawsWalls[Type] = true;
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
