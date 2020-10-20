@@ -24,18 +24,20 @@ namespace StarlightRiver.NPCs
             if (timeLeft < 1)
                 stack.RemoveAt(thisisme);
         }
-        public static bool ApplyBleedStack(NPC npc,int time,bool refresh = true)
+        public static void RefreshStacks(NPC npc, int time)
         {
             DebuffHandler dbh = npc.GetGlobalNPC<DebuffHandler>();
 
-            void refreshStacks()
+            for (int i = 0; i < dbh.BarbedBleeds.Count; i += 1)
             {
-                for (int i = 0; i < dbh.BarbedBleeds.Count; i += 1)
-                {
-                    int stacktime = dbh.BarbedBleeds[i].timeLeft;
-                    dbh.BarbedBleeds[i].timeLeft = Math.Max(time, stacktime);
-                }
+                int stacktime = dbh.BarbedBleeds[i].timeLeft;
+                dbh.BarbedBleeds[i].timeLeft = Math.Max(time, stacktime);
             }
+        }
+
+        public static bool ApplyBleedStack(NPC npc, int time, bool refresh = true)
+        {
+            DebuffHandler dbh = npc.GetGlobalNPC<DebuffHandler>();
 
             if (dbh.BarbedBleeds.Count < 5)
             {
@@ -44,7 +46,7 @@ namespace StarlightRiver.NPCs
             }
 
             if (refresh)
-            refreshStacks();
+                RefreshStacks(npc, time);
 
             return false;
         }

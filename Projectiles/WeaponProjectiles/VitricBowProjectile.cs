@@ -178,6 +178,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.width = 24;
             projectile.height = 24;
             projectile.arrow = true;
+            projectile.ranged = true;//Whoops, now it is ranged-IDG
             projectile.usesLocalNPCImmunity = true;
             projectile.localNPCHitCooldown = -1;
             projectile.extraUpdates = 2;
