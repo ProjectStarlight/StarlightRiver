@@ -23,7 +23,7 @@ namespace StarlightRiver.NPCs.Hostile
             npc.width = 50;
             npc.height = 42;
             npc.knockBackResist = 0.8f;
-            npc.lifeMax = 80;
+            npc.lifeMax = 120;
             npc.noGravity = false;
             npc.noTileCollide = false;
             npc.damage = 10;
