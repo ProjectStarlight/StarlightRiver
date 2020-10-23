@@ -14,6 +14,8 @@ namespace StarlightRiver
 {
     public partial class StarlightWorld : ModWorld
     {
+        public static int permafrostCenter;
+
         private void PermafrostGen(GenerationProgress progress)
         {
             progress.Message = "Permafrost generation";
@@ -133,6 +135,8 @@ namespace StarlightRiver
                         }
                     }
                 }
+
+            permafrostCenter = center; //set this for use in the ash hell generation
         }
 
         private List<Vector4> GenerateLines(List<Circle> circles)
@@ -300,7 +304,22 @@ namespace StarlightRiver
                 }
         }
 
-        private void DecorateTunnel(Vector4 line)
+        private void DecorateTunnel(Vector4 line) //randomly picks a style of tunnel to generate
+        {
+            var style = Main.rand.Next(1);
+
+            switch (style)
+            {
+                case 0: DecorateTunnelSpikes(line); break;
+            }
+        }
+
+        private void DecorateTunnelMist(Vector4 line)
+        {
+
+        }
+
+        private void DecorateTunnelSpikes(Vector4 line)
         {
             var length = (line.XY() - line.ZW()).Length();
             var row = WorldGen.genRand.Next(1000);
@@ -595,6 +614,9 @@ namespace StarlightRiver
                     if (xRel == 0 && yRel == r) tile.slope(4);
                     if (xRel == r && yRel == 0) tile.slope(1);
                     if (xRel == r && yRel == r) tile.slope(3);
+
+                    bool dummy = false; //this really shouldn't matter for anything but if something goes catastrophic here tell me
+                    GetInstance<AuroraIce>().TileFrame(x, y, ref dummy, ref dummy);
                 }
         }
     }

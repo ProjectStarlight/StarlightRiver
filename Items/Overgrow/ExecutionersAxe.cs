@@ -27,7 +27,7 @@ namespace StarlightRiver.Items.Overgrow
             item.noMelee = true;
             item.knockBack = 12;
             item.useTurn = false;
-            item.value = Terraria.Item.sellPrice(0, 1, 42, 0);
+            item.value = Item.sellPrice(0, 1, 42, 0);
             item.rare = ItemRarityID.Orange;
             item.autoReuse = false;
             item.shoot = ModContent.ProjectileType<AxeHead>();

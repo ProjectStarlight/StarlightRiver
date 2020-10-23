@@ -30,7 +30,7 @@ namespace StarlightRiver.Core
                 {
                     Particle particle = Particles[k];
 
-                    UpdateDelegate(particle);
+                    if(!Main.gameInactive) UpdateDelegate(particle);
                     if (Helper.OnScreen(particle.Position))
                     {
                         int height = Texture.Height / Styles;
@@ -42,7 +42,7 @@ namespace StarlightRiver.Core
 
         public void AddParticle(Particle particle)
         {
-            if (GetInstance<Config>().Active)
+            if (GetInstance<Config>().Active && !Main.gameInactive)
                 Particles.Add(particle);
         }
 
