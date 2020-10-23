@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Codex;
+using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,13 @@ namespace StarlightRiver
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
+
+        /// <summary>
+        /// Updates the value used for flipping rotation on the player. Should be reset to 0 when not in use.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="value"></param>
+        public static void UpdateRotation(this Player player, float value) => player.GetModPlayer<StarlightPlayer>().rotation = value;
 
         /// <summary>
         /// Consumes the items specified by a predicate.

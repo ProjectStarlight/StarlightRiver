@@ -54,8 +54,9 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
-            StarlightWorld.knownRecipies.Clear();
+            //NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
+            //StarlightWorld.knownRecipies.Clear();
+            StarlightWorld.AshHellGen(new Terraria.World.Generation.GenerationProgress());
             return true;
         }
 
@@ -67,7 +68,8 @@ namespace StarlightRiver.Items.Debug
 
         public override void HoldItem(Player player)
         {
-            player.GetHandler().StaminaMaxBonus = 10;
+            //player.GetHandler().StaminaMaxBonus = 10;
+            Main.time += 60;
         }
 
         Effect theEffect;

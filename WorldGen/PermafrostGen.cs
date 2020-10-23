@@ -14,6 +14,8 @@ namespace StarlightRiver
 {
     public partial class StarlightWorld : ModWorld
     {
+        public static int permafrostCenter;
+
         private void PermafrostGen(GenerationProgress progress)
         {
             progress.Message = "Permafrost generation";
@@ -133,6 +135,8 @@ namespace StarlightRiver
                         }
                     }
                 }
+
+            permafrostCenter = center; //set this for use in the ash hell generation
         }
 
         private List<Vector4> GenerateLines(List<Circle> circles)

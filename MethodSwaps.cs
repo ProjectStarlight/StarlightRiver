@@ -89,33 +89,78 @@ namespace StarlightRiver
             On.Terraria.Player.PlaceThing += PlacementRestriction;
             //NPC Upgrade  
             On.Terraria.NPC.GetChat += SetUpgradeUI;
-            //Tile merge spoofing
-            //On.Terraria.WorldGen.TileMergeAttemptFrametest_int_int_int_int_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32 += SpoofTileMerge;
-            //On.Terraria.WorldGen.tilemer
+            //Hell BG Shenanigans
+            On.Terraria.Main.DrawUnderworldBackground += DrawAltBackground;
             //Testing Lighting
             Main.OnPreDraw += TestLighting;
 
             ForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells); //TODO: Move this later
+            AshForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/Fire", UpdateAshParticles);
         }
 
-        private void SpoofTileMerge(On.Terraria.WorldGen.orig_TileMergeAttemptFrametest_int_int_int_int_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32_refInt32 orig, int i, int j, int myType, int lookfor, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight) //AAAAAAA TERRARIAHOOKS NAMES WHYYYY
+        private void DrawAltBackground(On.Terraria.Main.orig_DrawUnderworldBackground orig, Main self, bool flat)
         {
-            var a = (ushort)ModContent.TileType<PermafrostIce>();
-            var b = (ushort)ModContent.TileType<AuroraIce>();
-            if (myType == a)
+            orig(self, flat);
+
+            if(Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
             {
-                if (up == b) up = a;
-                if (down == b) down = a;
-                if (left == b) left = a;
-                if (right == b) right = a;
+                //just a vanilla zoing for now to test 
+                if (Main.screenPosition.Y + Main.screenHeight < (Main.maxTilesY - 220) * 16f) return;
 
-                if (upLeft == b) upLeft = a;
-                if (upRight == b) upRight = a;
-                if (downLeft == b) downLeft = a;
-                if (downRight == b) downRight = a;
+                Vector2 vector = Main.screenPosition + new Vector2((Main.screenWidth >> 1), (Main.screenHeight >> 1));
+                float num = (Main.GameViewMatrix.Zoom.Y - 1f) * 0.5f * 200f;
+
+                for (int i = 3; i >= 0; i--)
+                {
+                    Texture2D tex = ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell" + i);
+                    Vector2 vector2 = new Vector2(tex.Width, tex.Height) * 0.5f;
+                    float num2 = flat ? 1f : (i * 2 + 3f);
+                    Vector2 vector3 = new Vector2(1f / num2);
+                    Rectangle rectangle = new Rectangle(0, 0, tex.Width, tex.Height);
+                    float num3 = 1.3f;
+                    Vector2 zero = Vector2.Zero;
+
+                    switch (i)
+                    {
+                        case 1:
+                            {
+                                int num4 = (int)(Main.GlobalTime * 8f) % 4;
+                                rectangle = new Rectangle((num4 >> 1) * (tex.Width >> 1), num4 % 2 * (tex.Height >> 1), tex.Width >> 1, tex.Height >> 1);
+                                vector2 *= 0.5f;
+                                zero.Y += 75f;
+                                break;
+                            }
+
+                        case 2:
+                        case 3: zero.Y += 75f; break;
+
+                        case 4:
+                            num3 = 0.5f;
+                            zero.Y -= 25f;
+                            break;
+                    }
+
+                    if (flat) num3 *= 1.5f;
+
+                    vector2 *= num3;
+                    if (flat) zero.Y += (ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell0").Height >> 1) * 1.3f - vector2.Y;
+
+                    zero.Y -= num;
+                    float num5 = num3 * rectangle.Width;
+                    int num6 = (int)((vector.X * vector3.X - vector2.X + zero.X - (Main.screenWidth >> 1)) / num5);
+                    for (int j = num6 - 2; j < num6 + 4 + (int)(Main.screenWidth / num5); j++)
+                    {
+                        Vector2 vector4 = (new Vector2(j * num3 * (rectangle.Width / vector3.X), (Main.maxTilesY - 200) * 16f) + vector2 - vector) * vector3 + vector - Main.screenPosition - vector2 + zero;
+                        Main.spriteBatch.Draw(tex, vector4, new Rectangle?(rectangle), Color.White, 0f, Vector2.Zero, num3, SpriteEffects.None, 0f);
+
+                        if (i == 0)
+                        {
+                            int num7 = (int)(vector4.Y + rectangle.Height * num3);
+                            Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle((int)vector4.X, num7, (int)(rectangle.Width * num3), Math.Max(0, Main.screenHeight - num7)), new Color(11, 3, 7));
+                        }
+                    }
+                }
             }
-
-            orig(i, j, myType, lookfor, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
         }
 
         private void TestLighting(GameTime obj)
@@ -398,13 +443,38 @@ namespace StarlightRiver
             particle.Timer--;
         }
 
+        internal static ParticleSystem.Update UpdateAshParticles => UpdateAshParticlesBody;
+
+        internal ParticleSystem AshForegroundSystem;
+            
+        private static void UpdateAshParticlesBody(Particle particle)
+        {
+            particle.Position = particle.StoredPosition - Main.screenPosition + (Main.screenPosition - new Vector2(StarlightWorld.permafrostCenter * 16, (Main.maxTilesY - 100) * 16)) * (particle.Scale * -0.2f);
+            particle.StoredPosition += particle.Velocity;
+            particle.Velocity.Y += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.01f;
+
+            float progress = particle.Timer / 1500f;
+            float opacity = progress > 0.5f ? 0.8f : progress < 0.4f ? 0.5f : 0.5f + (progress - 0.4f) / 0.1f * 0.3f;
+
+            Color color;
+            if (progress > 0.7f) color = Color.Lerp(Color.White, Color.Orange, 1 - (progress - 0.7f) / 0.3f);
+            else if (progress > 0.5f) color = Color.Lerp(Color.Orange, Color.DarkRed, 1 - (progress - 0.5f) / 0.2f);
+            else if (progress > 0.4f) color = Color.Lerp(Color.DarkRed, Color.Gray, 1 - (progress - 0.4f) / 0.1f);
+            else color = Color.Gray;
+
+            particle.Color = color * opacity;
+
+            particle.Timer--;
+        }
+
         private void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
         {
             Main.spriteBatch.Begin();
             ForegroundSystem.DrawParticles(Main.spriteBatch);
+            AshForegroundSystem.DrawParticles(Main.spriteBatch);
 
             //Overgrow magic wells
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneAshHell)
             {
                 int direction = Main.dungeonX > Main.spawnTileX ? -1 : 1;
                 if (StarlightWorld.rottime == 0)
@@ -421,8 +491,12 @@ namespace StarlightRiver
                     }
             }
 
-            //TODO: remove
-            //lightingTest.DebugDraw2();
+            //Ash hell particles TODO: Move this out? this stuff is getting gross
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
+            {
+                AshForegroundSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White, 
+                    1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40)  )));
+            }
 
             Main.spriteBatch.End();
             try

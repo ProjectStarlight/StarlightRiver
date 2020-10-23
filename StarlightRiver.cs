@@ -122,7 +122,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+                if (player.GetModPlayer<BiomeHandler>().ZoneAshHell)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;

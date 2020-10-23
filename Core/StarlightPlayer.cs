@@ -47,6 +47,7 @@ namespace StarlightRiver.Core
         public int GuardRad;
 
         public float itemSpeed;
+        public float rotation;
 
         public override void PreUpdate()
         {
