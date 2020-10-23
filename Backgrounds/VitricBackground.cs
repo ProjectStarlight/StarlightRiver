@@ -4,21 +4,23 @@ using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
 namespace StarlightRiver
 {
     public partial class StarlightRiver : Mod
     {
+        private static Effect crystalEffect;
         static ParticleSystem.Update UpdateForeground => UpdateForegroundBody;
         static ParticleSystem.Update UpdateBackground => UpdateBackgroundBody;
 
         internal ParticleSystem ForegroundParticles;
         internal ParticleSystem BackgroundParticles;
 
-        static readonly RenderTarget2D vitricBackgroundBannerTarget = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        static readonly RenderTarget2D vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-        static readonly VerletChainInstance BackgroundBanner = new VerletChainInstance(true)
+        static readonly VerletChainInstance BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
         {
             segmentCount = 35,
             segmentDistance = 24,
@@ -58,7 +60,9 @@ namespace StarlightRiver
         private void LoadVitricBGSystems()
         {
             ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
-            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateBackground, 3);
+            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackground, 1);
+
+            crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
         }
 
         private static void UpdateForegroundBody(Particle particle)
@@ -68,10 +72,9 @@ namespace StarlightRiver
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.25f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 20;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
-            int factor = (int)(particle.Timer / 1800f * 100f);
-            particle.Color = new Color(155 + factor, 155 + factor, 255) * (particle.Timer / 1800f * 0.8f);
-            particle.Scale = (particle.Timer / 1800f * 1.2f);
-            particle.Rotation += 0.02f;
+            particle.Color = new Color(155 , 200 + (particle.GetHashCode() % 2 == 0 ? 55 : 0), 255) * (particle.Timer / 1800f * 0.8f);
+            particle.Scale = (particle.Timer / 1800f * 1.1f);
+            particle.Rotation += 0.015f;
         }
 
         private static void UpdateBackgroundBody(Particle particle)
@@ -80,7 +83,7 @@ namespace StarlightRiver
             particle.StoredPosition += particle.Velocity;
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 10;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
-            particle.Color = Color.White * (particle.Timer / 1800f * 0.5f);
+            particle.Color = Color.Lerp(Color.Red, Color.White, particle.Timer / 1800f);
             particle.Scale = (particle.Timer / 1800f * 0.8f);
             particle.Rotation += 0.02f;
         }
@@ -89,7 +92,7 @@ namespace StarlightRiver
         {
             orig(self);
 
-            if (Main.gameMenu) return;
+            if (Main.gameMenu || Main.dedServ) return;
 
             Player player = null;
             if (Main.playerLoaded) { player = Main.LocalPlayer; }
@@ -120,7 +123,7 @@ namespace StarlightRiver
                     int off = 140 + (440 - k * 110);
                     if (k == 4) off = 400;
 
-                    DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off); //the crystal layers and front sand
+                    DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
 
                     if (k == 0) DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
                     if (k == 2) ForegroundParticles.DrawParticles(Main.spriteBatch);
@@ -130,11 +133,11 @@ namespace StarlightRiver
                 for (int k = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f); k += 30)
                 {
                     Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(8000), 1800);
-                    if (Main.rand.Next(1200) == 0)
-                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1550), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
+                    if (Main.rand.Next(600) == 0)
+                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
 
-                    if (Main.rand.Next(1000) == 0)
-                        ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1550), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
+                    if (Main.rand.Next(1400) == 0)
+                        ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
                 }
 
                 Main.spriteBatch.End();
@@ -184,6 +187,7 @@ namespace StarlightRiver
         private static void DrawLayer(Vector2 basepoint, Texture2D texture, float parallax, int offY = 0, Color color = default, bool flip = false)
         {
             if (color == default) color = Color.White;
+
             for (int k = 0; k <= 5; k++)
             {
                 float x = basepoint.X + (k * 739 * 4) + GetParallaxOffset(basepoint.X, parallax * 0.1f) - (int)Main.screenPosition.X;

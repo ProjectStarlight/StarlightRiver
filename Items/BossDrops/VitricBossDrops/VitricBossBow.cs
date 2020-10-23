@@ -5,17 +5,22 @@ using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
 using Terraria.ID;
 using Terraria.DataStructures;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Items.BossDrops.VitricBossDrops
 {
-    class VitricBossBow : ModItem, IGlowingItem
+    class VitricBossBow : ModItem,IGlowingItem
     {
-        int charge = 0; 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Vitric Greatbow");
+            Tooltip.SetDefault("Charges a volley of cystal shards that fire in an arc\nCharging increases the arc size, shot count, and overall power of shots");
+        }
 
         public override void SetDefaults()
         {
-            item.damage = 18;
+            item.damage = 15;
             item.ranged = true;
             item.width = 16;
             item.height = 64;
@@ -24,49 +29,42 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.noMelee = true;
             item.noUseGraphic = true;
-            item.knockBack = 2;
+            item.knockBack = 1;
             item.rare = ItemRarityID.Orange;
             item.channel = true;
+            item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.VitricBowProjectile>();
+            item.shootSpeed = 1f;
             item.useAmmo = AmmoID.Arrow;
             item.useTurn = true;
         }
 
-        public override void HoldItem(Player player)
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (player.channel)
-            {
-                if(charge < 60) charge++;
-            }
-
-            if (!player.channel)
-            {
-                if(charge > 15)
-                {
-                    Vector2 velocity = Vector2.Normalize(Main.MouseWorld - player.Center) * charge / 4f;
-                    Projectile.NewProjectile(player.Center, velocity, ProjectileID.WoodenArrowFriendly, charge, charge / 30f, player.whoAmI);
-                }
-
-                charge = 0;
-            }
+            Projectile.NewProjectile(position, new Vector2(speedX, speedY)/4f,item.shoot,damage,knockBack,player.whoAmI);
+            return false;
         }
 
         public void DrawGlowmask(PlayerDrawInfo info)
         {
             Player player = info.drawPlayer;
 
-            if (player.channel)
+            if (player.heldProj > -1 && Main.projectile[player.heldProj].type==mod.ProjectileType("VitricBowProjectile"))
             {
-                Vector2 off = Vector2.Normalize(Main.MouseWorld - player.Center) * 16;
+                Projectile held = Main.projectile[player.heldProj];
+                Vector2 off = Vector2.Normalize(held.velocity) * 16;
 
                 var data = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), off.ToRotation(), item.Size / 2, 1, 0, 0);
                 Main.playerDrawData.Add(data);
 
-                Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/ConeTell");
-                float rotOff = (1 - charge / 60f) * 0.3f;
-                var data2 = new DrawData(tex, player.Center - Main.screenPosition, null, Color.White * (charge / 360f), off.ToRotation() + (float)Math.PI / 2 + rotOff, new Vector2(tex.Width / 2, tex.Height), 0.5f, 0, 0);
-                var data3 = new DrawData(tex, player.Center - Main.screenPosition, null, Color.White * (charge / 360f), off.ToRotation() + (float)Math.PI / 2 - rotOff, new Vector2(tex.Width / 2, tex.Height), 0.5f, 0, 0);
-                Main.playerDrawData.Add(data2);
-                Main.playerDrawData.Add(data3);
+                if (held.modProjectile != null && held.modProjectile is VitricBowProjectile)
+                {
+                    float fraction = held.ai[0] / VitricBowProjectile.MaxCharge;
+                    Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction)*Math.Min(held.timeLeft/20f,1f);
+
+                    var data2 = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
+                    Main.playerDrawData.Add(data2);
+                }
+                
             }
         }
     }

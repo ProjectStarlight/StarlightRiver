@@ -4,10 +4,12 @@ using StarlightRiver.GUI;
 using StarlightRiver.Items.Armor;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.Tiles.Permafrost;
+using StarlightRiver.Tiles.Vitric.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -19,6 +21,7 @@ namespace StarlightRiver.Core
 
         public bool JustHit = false;
         public int LastHit = 0;
+        public bool trueInvisible = false;
 
         public bool DarkSlow = false;
 
@@ -36,12 +39,15 @@ namespace StarlightRiver.Core
         public int MaxPickupTimer = 0;
         public NPC PickupTarget;
 
+        public bool inTutorial;
+
         public float GuardDamage;
         public int GuardCrit;
         public float GuardBuff;
         public int GuardRad;
 
         public float itemSpeed;
+        public float rotation;
 
         public override void PreUpdate()
         {
@@ -99,6 +105,13 @@ namespace StarlightRiver.Core
                 player.velocity.X *= 0.8f;
             }
             DarkSlow = false;
+
+            if (!player.immune) 
+            {
+                VitricSpike.CollideWithSpikes(player, out int damage);
+                if (damage > 0)
+                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was impaled by glass shards."), damage, 0);
+            }
         }
 
         public delegate void ResetEffectsDelegate(StarlightPlayer player);
@@ -111,6 +124,8 @@ namespace StarlightRiver.Core
             GuardBuff = 1;
             GuardRad = 0;
             itemSpeed = 1;
+
+            trueInvisible = false;
         }
 
         public override void PostUpdate()
@@ -125,7 +140,13 @@ namespace StarlightRiver.Core
             LastHit = Timer;
         }
 
-        public override void PostUpdateEquips() => JustHit = false;
+        public delegate void PostUpdateEquipsDelegate(StarlightPlayer player);
+        public static event PostUpdateEquipsDelegate PostUpdateEquipsEvent;
+        public override void PostUpdateEquips()
+        {
+            PostUpdateEquipsEvent?.Invoke(this);
+            JustHit = false;
+        }
 
         public override void ModifyScreenPosition()
         {
@@ -207,6 +228,7 @@ namespace StarlightRiver.Core
         public override void OnEnterWorld(Player player)
         {
             Collection.ShouldReset = true;
+            inTutorial = false;
         }
 
         public override float UseTimeMultiplier(Item item) => itemSpeed;

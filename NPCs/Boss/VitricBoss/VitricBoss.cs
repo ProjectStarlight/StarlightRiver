@@ -331,6 +331,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         {
                             if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox)) //boss should be dashable now, when dashed:
                             {
+                                player.immune = true;
+                                player.immuneTime = 60;
                                 SetFrameX(2);
                                 ChangePhase(AIStates.SecondPhase, true); //go on to the next phase
                                 ResetAttack(); //reset attack
@@ -354,15 +356,15 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
                 case (int)AIStates.SecondPhase:
 
-                    npc.dontTakeDamage = false; //damagable again
-                    npc.friendly = false;
+                    if (GlobalTimer == 60)
+                    {
+                        npc.dontTakeDamage = false; //damagable again
+                        npc.friendly = false;
+                    }
 
                     if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
-
                     if (GlobalTimer == 2) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossTransition");
-
                     if (GlobalTimer == 701) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy");
-
                     if (GlobalTimer == 702) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
 
                     if (GlobalTimer > 702 && GlobalTimer < 760) //no fadein

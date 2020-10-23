@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using System;
 
 namespace StarlightRiver
 {
@@ -86,6 +87,7 @@ namespace StarlightRiver
 
 
         #region IL edits
+
         //Squash haha funni
         private void DrawPancake(ILContext il)
         {
@@ -100,8 +102,23 @@ namespace StarlightRiver
 
         private DrawData EmitDrawPancakeDelegate(DrawData input, Player player)
         {
-            if (player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
+            float rotation = player.GetModPlayer<StarlightPlayer>().rotation;
+
+            if (rotation != 0)
+            {
+                float sin = (float)Math.Sin(rotation + 1.57f * player.direction);
+                int off = Math.Abs((int)(input.texture.Width * sin));
+
+                SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                if (input.effect == SpriteEffects.FlipHorizontally) effect = effect == SpriteEffects.FlipHorizontally ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+                return new DrawData(input.texture, new Rectangle((int)input.position.X, (int)input.position.Y, off, input.useDestinationRectangle ? input.destinationRectangle.Height : input.sourceRect?.Height ?? input.texture.Height),
+                    input.sourceRect, input.color, input.rotation, input.origin, effect, 0);
+            }
+
+            else if (player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
                 return new DrawData(input.texture, new Rectangle((int)player.position.X - 20 - (int)Main.screenPosition.X, (int)player.position.Y + 20 - (int)Main.screenPosition.Y + 1, player.width + 40, player.height - 20), input.sourceRect, input.color, input.rotation, default, input.effect, 0);
+
             else return input;
         }
 
@@ -576,6 +593,14 @@ namespace StarlightRiver
                 g = 0;
                 b = (1500 / Vector2.Distance(Main.LocalPlayer.Center, StarlightWorld.RiftLocation) - 1) / 2;
                 if (b >= 0.8f) b = 0.8f;
+            }
+
+            //I really need to stop bloating this method so much
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell && !tileBlock && wallBlock)
+            {
+                r = 0.0f;
+                g = 0.4f;
+                b = 0.3f;
             }
 
             //waters, probably not the most amazing place to do this but it works and dosent melt people's PCs

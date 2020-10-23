@@ -76,6 +76,9 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+
             var mp = Main.LocalPlayer.GetHandler();
             var equipped = mp.GetInfusion(TargetSlot);
 

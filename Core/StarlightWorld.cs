@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
@@ -15,6 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
 {
+    //Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
     public partial class StarlightWorld : ModWorld
     {
         private static WorldFlags flags;
@@ -25,10 +28,19 @@ namespace StarlightRiver
 
         public static float Chungus;
 
+        //Recipe """database""" TODO: More robust system for this? do we really need one?
+        public static List<string> knownRecipies = new List<string>();
+
+        //Players have a timer, can't the world get one synced one too?
+        public static int Timer;
+
+        //Im so sorry for putting these here.  TODO: Move it later
+        public static Cutaway cathedralOverlay; 
+
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
 
-        public static List<Vector2> PureTiles = new List<Vector2> { };
+        public static List<Vector2> PureTiles = new List<Vector2>();
 
         public static Rectangle VitricBiome = new Rectangle();
 
@@ -86,6 +98,7 @@ namespace StarlightRiver
 
         public override void PreUpdate()
         {
+            Timer++;
             rottime += (float)Math.PI / 60;
             if (rottime >= Math.PI * 2) rottime = 0;
         }
@@ -97,10 +110,24 @@ namespace StarlightRiver
 
             //SquidBoss arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-                NPC.NewNPC(SquidBossArena.Center.X * 16 + 232, SquidBossArena.Center.Y * 16 - 64, NPCType<ArenaActor>());
+                NPC.NewNPC(SquidBossArena.Center.X * 16, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 
             //Keys
             foreach (Key key in Keys) key.Update();
+        }
+
+        public override void PostDrawTiles()
+        {
+            if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
+            {
+                Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
+
+                cathedralOverlay.fade = 
+                    tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>() &&
+                    !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
+
+                cathedralOverlay.Draw();
+            }
         }
 
         public override void Initialize()
@@ -111,6 +138,7 @@ namespace StarlightRiver
             flags = default;
 
             TownUpgrades = new Dictionary<string, bool>();
+            knownRecipies = new List<string>();
 
             //Autoload NPC upgrades
             Mod mod = StarlightRiver.Instance;
@@ -132,29 +160,26 @@ namespace StarlightRiver
                 tag.Add(pair.Key, pair.Value);
 
             // TODO why the hell is this throwing Collection was modified?
-            while (true)
-                try
-                {
-                    return new TagCompound
-                    {
-                        ["VitricBiomePos"] = VitricBiome.TopLeft(),
-                        ["VitricBiomeSize"] = VitricBiome.Size(),
+            return new TagCompound
+            {
+                ["VitricBiomePos"] = VitricBiome.TopLeft(),
+                ["VitricBiomeSize"] = VitricBiome.Size(),
 
-                        ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
-                        ["SquidBossArenaSize"] = SquidBossArena.Size(),
+                ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
+                ["SquidBossArenaSize"] = SquidBossArena.Size(),
 
-                        [nameof(flags)] = (int)flags,
+                [nameof(flags)] = (int)flags,
 
-                        [nameof(TownUpgrades)] = tag,
+                [nameof(TownUpgrades)] = tag,
 
-                        [nameof(PureTiles)] = PureTiles,
+                [nameof(PureTiles)] = PureTiles,
 
-                        [nameof(RiftLocation)] = RiftLocation,
+                [nameof(RiftLocation)] = RiftLocation,
 
-                        ["Chungus"] = Chungus
-                    };
-                }
-                catch { }
+                ["Chungus"] = Chungus,
+
+                ["Recipies"] = knownRecipies
+            };
         }
 
         public override void Load(TagCompound tag)
@@ -183,7 +208,10 @@ namespace StarlightRiver
 
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 
-            Chungus = Main.rand.NextFloat();
+            Chungus = tag.GetFloat("Chungus");
+            Chungus += 0.01f;
+
+            knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 
             for (int k = 0; k <= PureTiles.Count - 1; k++)
                 for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
@@ -193,11 +221,23 @@ namespace StarlightRiver
                     }              
 
             PureTiles.Clear();
-            PureTiles = new List<Vector2> { };
 
             foreach (Key key in KeyInventory)
             {
                 GUI.KeyInventory.keys.Add(new GUI.KeyIcon(key, false));
+            }
+
+            //setup overlays
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+        }
+
+        public static void LearnRecipie(string key)
+        {
+            //this is set up in a way where the stored key should be the same as the display name, there is no real reason to differentiate as the entirety of the data stored is a string list.
+            if (!knownRecipies.Contains(key))
+            {
+                knownRecipies.Add(key);
+                CombatText.NewText(Main.LocalPlayer.Hitbox, Color.Tan, "Learned Recipie: " + key);
             }
         }
     }

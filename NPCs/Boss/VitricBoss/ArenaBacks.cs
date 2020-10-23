@@ -88,7 +88,12 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             {
                 Texture2D tex = GetTexture(Texture);
                 int targetHeight = (int)(npc.ai[0] / Risetime * tex.Height);
-                Rectangle target = new Rectangle((int)(npc.position.X - Main.screenPosition.X), (int)(npc.position.Y - targetHeight - Main.screenPosition.Y), tex.Width, targetHeight);
+                const int yOffset = 3; // Fit perfectly in the gap
+                Rectangle target = new Rectangle(
+                    (int)(npc.position.X - Main.screenPosition.X), 
+                    (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset, 
+                    tex.Width, 
+                    targetHeight);
                 Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
                 Color color = new Color(180, 225, 255);
 
@@ -126,8 +131,10 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public void PlacePlatform(int x, int y, int type, bool rising)
         {
-            if (rising && npc.ai[0] == Risetime - (int)(y / 880f * Risetime)) NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - 2, type, 0, 0, Risetime - npc.ai[0]); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
-            else if (!rising) NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
+            if (rising && npc.ai[0] == Risetime - (int)(y / 880f * Risetime)) 
+                NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - 2, type, 0, 0, Risetime - npc.ai[0]); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
+            else if (!rising) 
+                NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
         }
     }
 

@@ -87,7 +87,11 @@ namespace StarlightRiver.GUI
                     Texture2D tex = BookButton.IsMouseHovering ? GetTexture("StarlightRiver/GUI/Assets/BookGlowOpen") : GetTexture("StarlightRiver/GUI/Assets/BookGlowClosed");
                     spriteBatch.Draw(tex, BookButton.GetDimensions().Position() + new Vector2(-1, 0), Color.White * (float)Math.Sin(StarlightWorld.rottime));
                 }
-                if (BookButton.IsMouseHovering) Utils.DrawBorderString(spriteBatch, player.CodexState == 0 ? "Found in the desert..." : "Starlight Codex", Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal, 0.95f);
+                if (BookButton.IsMouseHovering)
+                {
+                    Utils.DrawBorderString(spriteBatch, player.CodexState == 0 ? "Found in the desert..." : "Starlight Codex", Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal, 0.95f);
+                    Main.LocalPlayer.mouseInterface = true;
+                }
             }
 
             if (Open) base.Draw(spriteBatch);
@@ -163,6 +167,9 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if(ContainsPoint(Main.MouseScreen))
+                Main.LocalPlayer.mouseInterface = true;
+
             spriteBatch.Draw(Main.magicPixel, GetDimensions().ToRectangle(), Main.magicPixel.Frame(), Color.White * 0.1f);
             Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 50);
             Texture2D backTex = GetTexture("StarlightRiver/GUI/Assets/CodexBack");
@@ -210,7 +217,11 @@ namespace StarlightRiver.GUI
             CodexHandler player = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 
             Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            Color backColor = player.Entries.Any(n => n.New && n.Category == Category) ? new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) : Color.White; //yellow flashing background for new entries
+
+            Color backColor = player.Entries.Any(n => n.New && n.Category == Category) ? 
+                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) 
+                : Color.White; //yellow flashing background for new entries
+
             Texture2D backTex = GetTexture("StarlightRiver/GUI/Assets/CategoryButton");
             spriteBatch.Draw(backTex, pos, backColor * 0.8f);
             Vector2 textSize = Main.fontDeathText.MeasureString(Text) * 0.6f;
@@ -238,11 +249,16 @@ namespace StarlightRiver.GUI
             CodexBack parent = Parent.Parent.Parent.Parent as CodexBack;
 
             Vector2 pos = GetDimensions().ToRectangle().TopLeft();
-            Color backColor = Entry.New ? new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) : Color.White; //yellow flashing background for new entries
+
+            Color backColor = Entry.New ? 
+                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) 
+                : Color.White; //yellow flashing background for new entries
+
             Texture2D backTex = Entry.RequiresUpgradedBook ? GetTexture("StarlightRiver/GUI/Assets/EntryButton2") : GetTexture("StarlightRiver/GUI/Assets/EntryButton");
             spriteBatch.Draw(backTex, pos, backColor * 0.8f);
 
             Vector2 iconPos = pos + new Vector2(10, 14);
+
             if (!Entry.Locked) //draws the icon and name if the entry is unlocked
             {
                 spriteBatch.Draw(Entry.Icon, iconPos, Entry.Icon.Frame(), Color.White, 0, Entry.Icon.Size() / 2, 0.5f, 0, 0);

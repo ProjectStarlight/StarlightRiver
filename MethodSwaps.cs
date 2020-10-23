@@ -6,6 +6,8 @@ using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Items.CursedAccessories;
 using StarlightRiver.Items.Prototypes;
+using StarlightRiver.Items.Accessories;
+using StarlightRiver.Items.Accessories.EarlyPreHardmode;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
@@ -75,6 +77,8 @@ namespace StarlightRiver
             On.Terraria.Player.dropItemCheck += SoulboundPriority;
             On.Terraria.Player.ItemFitsItemFrame += NoSoulboundFrame;
             On.Terraria.Player.ItemFitsWeaponRack += NoSoulboundRack;
+            //For the cough drops
+            On.Terraria.Player.DelBuff += PlayerDelBuff;
             //Additive Batching
             On.Terraria.Main.DrawDust += DrawAdditive;
             //Particle System Batching for Inventory
@@ -83,16 +87,85 @@ namespace StarlightRiver
             On.Terraria.WorldGen.meteor += AluminumMeteor;
             //Nobuild
             On.Terraria.Player.PlaceThing += PlacementRestriction;
-            //NPC Upgrade 
+            //NPC Upgrade  
             On.Terraria.NPC.GetChat += SetUpgradeUI;
+            //Hell BG Shenanigans
+            On.Terraria.Main.DrawUnderworldBackground += DrawAltBackground;
             //Testing Lighting
             Main.OnPreDraw += TestLighting;
 
             ForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells); //TODO: Move this later
+            AshForegroundSystem = new ParticleSystem("StarlightRiver/GUI/Assets/Fire", UpdateAshParticles);
+        }
+
+        private void DrawAltBackground(On.Terraria.Main.orig_DrawUnderworldBackground orig, Main self, bool flat)
+        {
+            orig(self, flat);
+
+            if(Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
+            {
+                //just a vanilla zoing for now to test 
+                if (Main.screenPosition.Y + Main.screenHeight < (Main.maxTilesY - 220) * 16f) return;
+
+                Vector2 vector = Main.screenPosition + new Vector2((Main.screenWidth >> 1), (Main.screenHeight >> 1));
+                float num = (Main.GameViewMatrix.Zoom.Y - 1f) * 0.5f * 200f;
+
+                for (int i = 3; i >= 0; i--)
+                {
+                    Texture2D tex = ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell" + i);
+                    Vector2 vector2 = new Vector2(tex.Width, tex.Height) * 0.5f;
+                    float num2 = flat ? 1f : (i * 2 + 3f);
+                    Vector2 vector3 = new Vector2(1f / num2);
+                    Rectangle rectangle = new Rectangle(0, 0, tex.Width, tex.Height);
+                    float num3 = 1.3f;
+                    Vector2 zero = Vector2.Zero;
+
+                    switch (i)
+                    {
+                        case 1:
+                            {
+                                int num4 = (int)(Main.GlobalTime * 8f) % 4;
+                                rectangle = new Rectangle((num4 >> 1) * (tex.Width >> 1), num4 % 2 * (tex.Height >> 1), tex.Width >> 1, tex.Height >> 1);
+                                vector2 *= 0.5f;
+                                zero.Y += 75f;
+                                break;
+                            }
+
+                        case 2:
+                        case 3: zero.Y += 75f; break;
+
+                        case 4:
+                            num3 = 0.5f;
+                            zero.Y -= 25f;
+                            break;
+                    }
+
+                    if (flat) num3 *= 1.5f;
+
+                    vector2 *= num3;
+                    if (flat) zero.Y += (ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell0").Height >> 1) * 1.3f - vector2.Y;
+
+                    zero.Y -= num;
+                    float num5 = num3 * rectangle.Width;
+                    int num6 = (int)((vector.X * vector3.X - vector2.X + zero.X - (Main.screenWidth >> 1)) / num5);
+                    for (int j = num6 - 2; j < num6 + 4 + (int)(Main.screenWidth / num5); j++)
+                    {
+                        Vector2 vector4 = (new Vector2(j * num3 * (rectangle.Width / vector3.X), (Main.maxTilesY - 200) * 16f) + vector2 - vector) * vector3 + vector - Main.screenPosition - vector2 + zero;
+                        Main.spriteBatch.Draw(tex, vector4, new Rectangle?(rectangle), Color.White, 0f, Vector2.Zero, num3, SpriteEffects.None, 0f);
+
+                        if (i == 0)
+                        {
+                            int num7 = (int)(vector4.Y + rectangle.Height * num3);
+                            Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle((int)vector4.X, num7, (int)(rectangle.Width * num3), Math.Max(0, Main.screenHeight - num7)), new Color(11, 3, 7));
+                        }
+                    }
+                }
+            }
         }
 
         private void TestLighting(GameTime obj)
         {
+            if (Main.dedServ) return;
             if (!Main.gameMenu) lightingTest.DebugDraw();
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
@@ -126,11 +199,15 @@ namespace StarlightRiver
 
         private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
         {
-            if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked) && unlocked)
+            if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked))
             {
-                Instance.Chatbox.SetState(TownUpgrade.FromString(self.TypeName));
+                if(unlocked)
+                    Instance.Chatbox.SetState(TownUpgrade.FromString(self.TypeName));
+                else
+                    Instance.Chatbox.SetState(new LockedUpgrade());
             }
-            else Instance.Chatbox.SetState(new LockedUpgrade());
+            else
+                Instance.Chatbox.SetState(null);
 
             return orig(self);
         }
@@ -236,13 +313,15 @@ namespace StarlightRiver
         private void DrawAdditive(On.Terraria.Main.orig_DrawDust orig, Main self)
         {
             orig(self);
-            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             for (int k = 0; k < Main.maxProjectiles; k++) //projectiles
-                if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive) (Main.projectile[k].modProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+                if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive)
+                    (Main.projectile[k].modProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
 
             for (int k = 0; k < Main.maxNPCs; k++) //NPCs
-                if (Main.npc[k].active && Main.npc[k].modNPC is IDrawAdditive) (Main.npc[k].modNPC as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+                if (Main.npc[k].active && Main.npc[k].modNPC is IDrawAdditive)
+                    (Main.npc[k].modNPC as IDrawAdditive).DrawAdditive(Main.spriteBatch);
 
             Main.spriteBatch.End();
         }
@@ -276,7 +355,13 @@ namespace StarlightRiver
             if (self.inventory[self.selectedItem].modItem is Items.SoulboundItem || Main.mouseItem.modItem is Items.SoulboundItem) return;
             else orig(self);
         }
+        private void PlayerDelBuff(On.Terraria.Player.orig_DelBuff orig, Player self,int buffid)
+        {
+            if (Helper.IsValidDebuff(self, buffid))
+                CoughDrops.ProcEffect(self);
 
+            orig(self, buffid);
+        }
         private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
         {
             // TODO this needs synced somehow
@@ -303,6 +388,12 @@ namespace StarlightRiver
                     }
                 }
             }
+
+            var mp = self.GetModPlayer<NPCs.GravityPlayer>();
+            if (mp.controller != null && mp.controller.npc.active)
+            {
+                self.velocity.Y = 0;
+            }
             orig(self);
         }
 
@@ -311,6 +402,8 @@ namespace StarlightRiver
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
         {
             orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+            if (Main.gameMenu) return;
+
             for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)
                 for (int j = (int)Main.screenPosition.Y / 16; j < (int)Main.screenPosition.Y / 16 + Main.screenWidth / 16; j++)
                 {
@@ -319,6 +412,12 @@ namespace StarlightRiver
                         GrassOvergrow.CustomDraw(i, j, Main.spriteBatch);
                     }
                 }
+
+            //Temple shroud, TODO: move this somewhere more sane later. Im crunched for time rn.
+            if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.DesertOpen || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
+            {
+                Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
+            }
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
@@ -344,13 +443,38 @@ namespace StarlightRiver
             particle.Timer--;
         }
 
+        internal static ParticleSystem.Update UpdateAshParticles => UpdateAshParticlesBody;
+
+        internal ParticleSystem AshForegroundSystem;
+            
+        private static void UpdateAshParticlesBody(Particle particle)
+        {
+            particle.Position = particle.StoredPosition - Main.screenPosition + (Main.screenPosition - new Vector2(StarlightWorld.permafrostCenter * 16, (Main.maxTilesY - 100) * 16)) * (particle.Scale * -0.2f);
+            particle.StoredPosition += particle.Velocity;
+            particle.Velocity.Y += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.01f;
+
+            float progress = particle.Timer / 1500f;
+            float opacity = progress > 0.5f ? 0.8f : progress < 0.4f ? 0.5f : 0.5f + (progress - 0.4f) / 0.1f * 0.3f;
+
+            Color color;
+            if (progress > 0.7f) color = Color.Lerp(Color.White, Color.Orange, 1 - (progress - 0.7f) / 0.3f);
+            else if (progress > 0.5f) color = Color.Lerp(Color.Orange, Color.DarkRed, 1 - (progress - 0.5f) / 0.2f);
+            else if (progress > 0.4f) color = Color.Lerp(Color.DarkRed, Color.Gray, 1 - (progress - 0.4f) / 0.1f);
+            else color = Color.Gray;
+
+            particle.Color = color * opacity;
+
+            particle.Timer--;
+        }
+
         private void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
         {
             Main.spriteBatch.Begin();
             ForegroundSystem.DrawParticles(Main.spriteBatch);
+            AshForegroundSystem.DrawParticles(Main.spriteBatch);
 
             //Overgrow magic wells
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneAshHell)
             {
                 int direction = Main.dungeonX > Main.spawnTileX ? -1 : 1;
                 if (StarlightWorld.rottime == 0)
@@ -367,6 +491,12 @@ namespace StarlightRiver
                     }
             }
 
+            //Ash hell particles TODO: Move this out? this stuff is getting gross
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
+            {
+                AshForegroundSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White, 
+                    1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40)  )));
+            }
             Main.spriteBatch.End();
             try
             {

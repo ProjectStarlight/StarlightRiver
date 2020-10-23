@@ -73,6 +73,10 @@ namespace StarlightRiver.GUI
 
     internal class Stam : UIElement
     {
+        float fade;
+        int time;
+        public static Texture2D overrideTexture = null;
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             Rectangle dimensions = GetDimensions().ToRectangle();
@@ -80,7 +84,7 @@ namespace StarlightRiver.GUI
             AbilityHandler mp = player.GetHandler();
 
             Texture2D emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaEmpty");
-            Texture2D fillTex = GetTexture("StarlightRiver/GUI/Assets/Stamina");
+            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/GUI/Assets/Stamina") : overrideTexture;
 
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
@@ -112,6 +116,60 @@ namespace StarlightRiver.GUI
                 {
                     float scale = mp.Stamina - k;
                     spriteBatch.Draw(fillTex, pos + Vector2.One * 4 + fillTex.Size() / 2, fillTex.Frame(), Color.White, 0, fillTex.Size() / 2, scale, 0, 0);
+                }
+            }
+
+            if (mp.ActiveAbility != null)
+                time = 120;
+
+            if (time > 0)
+            {
+                fade += 0.1f;
+                time--;
+            }
+            else
+                fade -= 0.1f;
+
+
+            fade = MathHelper.Clamp(fade, 0, 1);
+
+            DrawOverhead(spriteBatch);
+
+            overrideTexture = null;
+        }
+
+        private void DrawOverhead(SpriteBatch spriteBatch)
+        {
+            Player player = Main.LocalPlayer;
+            AbilityHandler mp = player.GetHandler();
+            Vector2 basepos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - Vector2.UnitY * 64;
+
+            var flagTex = GetTexture("StarlightRiver/GUI/Assets/StaminaFlag");
+            var emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaSmallEmpty");
+            var fillTex = GetTexture("StarlightRiver/GUI/Assets/StaminaSmall");
+
+            var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
+
+            spriteBatch.Draw(flagTex, basepos + new Vector2(- width / 2 - 9, -3), Color.White * fade);
+
+            if(mp.StaminaMax % 2 == 1)
+                spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -3), Color.White * fade);
+            else
+                spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -5), null, Color.White * fade, 0, Vector2.Zero, 1, SpriteEffects.FlipVertically, 0);
+
+            for (int k = 0; k < mp.StaminaMax; k++)
+            {
+                var x = k * (fillTex.Width / 2 + 1) - width / 2;
+                var y = k % 2 == 0 ? -4 : 2;
+
+                var pos = basepos + new Vector2(x, y);
+
+                spriteBatch.Draw(emptyTex, pos, null, Color.White * fade, 0, fillTex.Size() / 2, 1, 0, 0);
+
+                if (mp.Stamina >= k)
+                {
+                    var scale = MathHelper.Clamp(mp.Stamina - k, 0, 1);
+                    spriteBatch.Draw(fillTex, pos, null, Color.White * scale * fade, 0, fillTex.Size() / 2, scale, 0, 0);
                 }
             }
         }

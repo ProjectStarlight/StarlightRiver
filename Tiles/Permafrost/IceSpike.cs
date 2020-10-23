@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Buffs;
 using StarlightRiver.Items;
 using System;
 using Terraria;
@@ -25,7 +26,8 @@ namespace StarlightRiver.Tiles.Permafrost
 
         public override void FloorVisuals(Player player)
         {
-            player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
+            if(!player.HasBuff(BuffType<SpikeImmuneBuff>()))
+                player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -33,12 +35,12 @@ namespace StarlightRiver.Tiles.Permafrost
             Tile tile = Main.tile[i, j];
             float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
 
-            float sin = (float)Math.Sin(StarlightWorld.rottime + off * 0.008f * 0.2f);
-            float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.008f);
+            float sin = 0.3f + (float)Math.Sin(StarlightWorld.rottime + off * 0.008f * 0.2f) * 0.7f;
+            float cos = 0.3f + (float)Math.Cos(StarlightWorld.rottime + off * 0.008f) * 0.7f;
             Color color = new Color(100 * (1 + sin) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
-            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.4f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/IceSpikeGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.2f);
+            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.35f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/IceSpikeGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.1f);
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.2f);
         }
     }

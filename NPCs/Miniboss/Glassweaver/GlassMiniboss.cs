@@ -2,12 +2,15 @@
 using Terraria.ModLoader;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
+using System.IO;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
     internal partial class GlassMiniboss : ModNPC
     {
-        internal ref float PathingTimer => ref npc.ai[0];
+        bool attackVariant = false;
+
+        internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
@@ -30,24 +33,28 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             npc.width = 64;
             npc.height = 64;
-            npc.lifeMax = 3000;
+            npc.lifeMax = 1500;
             npc.damage = 20;
             npc.aiStyle = -1;
             npc.noGravity = true;
             npc.knockBackResist = 0;
             npc.boss = true;
             npc.defense = 14;
+            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(4000 * bossLifeScale);
+            npc.lifeMax = (int)(2000 * bossLifeScale);
         }
 
         public override bool CheckDead()
         {
             NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<GlassweaverTown>());
+
             StarlightWorld.Flag(WorldFlags.DesertOpen);
+            Main.NewText("The temple doors slide open...", new Color(200, 170, 80));
+
             return true;
         }
 
@@ -62,7 +69,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 case (int)PhaseEnum.SpawnEffects:
 
                     ResetAttack();
-                    targetRectangle = RegionCenter;
 
                     StarlightRiver.Instance.textcard.Display("Glassweaver", "the", null, 240, 1, true);
 
@@ -84,34 +90,44 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
                 case (int)PhaseEnum.FirstPhase:
 
-                    if(npc.velocity.X != 0) npc.spriteDirection = npc.velocity.X < 0 ? 1 : -1;
+                    npc.spriteDirection = npc.Center.X > Target.Center.X ? 1 : -1;
 
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
-                        if (AttackPhase > 7) AttackPhase = 0;
+                        if (AttackPhase > 8) AttackPhase = 0;
+
+                        attackVariant = Main.rand.NextBool();
+                        npc.netUpdate = true;
                     }
 
                     switch (AttackPhase)
                     {
-                        case 0: if (GetRegion(npc) == RegionCenter) HammerSlam(); else SlashCombo(); break;
-                        case 1: PathToTarget(); break;
+                        case 0: Spears(); break;
+                        case 1: Knives(); break;
+                        case 2: UppercutGlide(); break;
+                        case 3: Idle(60); break;
+                        case 4: Hammer(); break;
+                        case 5: Knives(); break;
+                        case 6: SlashUpSlash(); break;
+                        case 7: Idle(90); break;
+                        case 8: if (attackVariant) SlashUpSlash(); else UppercutGlide(); break;
 
-                        case 2: ThrowSpear(); break;
-                        case 3: PathToTarget(); break;
-
-                        case 4: if (GetRegion(npc) == RegionPit) LavaWave(); else SlashCombo(); break;
-                        case 5: PathToTarget(); break;
-
-                        case 6: ThrowSpear(); break;
-                        case 7: PathToTarget(); break;
+                        //case 12: Greatsword(); break;
                     }
-
-                    //pathing updates
-                    for (int k = 0; k < pads.Length; k++) pads[k].Update();
 
                     break;
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(attackVariant);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            attackVariant = reader.ReadBoolean();
         }
     }
 }

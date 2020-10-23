@@ -20,7 +20,14 @@ namespace StarlightRiver.Abilities
         public Ability ActiveAbility
         {
             get => activeAbility;
-            set => nextAbility = value;
+            set
+            {
+                // Cache the next ability to be updated next update.
+                nextAbility = value;
+
+                // Call the ability update hooks immediately.
+                UpdateActiveAbilityHooks();
+            }
         }
 
         // The player's stamina stats.
@@ -78,6 +85,8 @@ namespace StarlightRiver.Abilities
             infusion = infusions.FirstOrDefault(i => i?.AbilityType == t);
             return infusion != null;
         }
+
+        public void Lock<T>() where T : Ability => unlockedAbilities.Remove(typeof(T));
 
         /// <summary>
         /// Unlocks the ability type for the player.
@@ -269,6 +278,9 @@ namespace StarlightRiver.Abilities
 
         public override void PreUpdate()
         {
+            // Set new active ability per-tick
+            activeAbility = nextAbility;
+
             UpdateAbilities();
 
             if (ActiveAbility != null)
@@ -287,8 +299,6 @@ namespace StarlightRiver.Abilities
             {
                 UpdateStaminaRegen();
             }
-
-            UpdateActiveAbility();
 
             // To ensure fusions always have their owner set to a valid player.
             for (int i = 0; i < infusions.Length; i++)
@@ -359,11 +369,8 @@ namespace StarlightRiver.Abilities
             }
         }
 
-        private void UpdateActiveAbility()
+        private void UpdateActiveAbilityHooks()
         {
-            if (ReferenceEquals(nextAbility, activeAbility))
-                return;
-
             // Call the current ability's deactivation hooks
             if (activeAbility != null)
             {
@@ -374,22 +381,19 @@ namespace StarlightRiver.Abilities
                 activeAbility.Reset();
             }
 
-            // Set new active ability
-            activeAbility = nextAbility;
-
             // Call the new current ability's activation hooks, and apply stamina cost if new ability is real
-            if (activeAbility != null)
+            if (nextAbility != null)
             {
                 // Stamina cost
-                activeAbility.User = this;
-                Stamina -= activeAbility.ActivationCost(this);
-                activeAbility.ActivationCostBonus = 0;
+                nextAbility.User = this;
+                Stamina -= nextAbility.ActivationCost(this);
+                nextAbility.ActivationCostBonus = 0;
 
                 // Hooks
-                if (TryMatchInfusion(activeAbility.GetType(), out var infusion))
+                if (TryMatchInfusion(nextAbility.GetType(), out var infusion))
                     infusion.OnActivate();
                 else
-                    activeAbility.OnActivate();
+                    nextAbility.OnActivate();
             }
         }
 

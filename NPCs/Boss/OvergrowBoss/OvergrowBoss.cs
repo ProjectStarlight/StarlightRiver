@@ -91,7 +91,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                 if (GlobalTimer == 500)
                 {
                     string message = "Faerie Guardian";
-                    if (Main.rand.Next(10000) == 0) message = "Titty Elongator";
+                    if (Main.rand.Next(10000) == 0) 
+                        message = "Titty Elongator"; // Yep
                     StarlightRiver.Instance.textcard.Display("Eggshells", message, null, 220);
                 }
 

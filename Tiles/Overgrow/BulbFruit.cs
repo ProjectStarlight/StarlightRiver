@@ -51,7 +51,8 @@ namespace StarlightRiver.Tiles.Overgrow
             }
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i * 16, j * 16), 32, 48, ItemType<Items.Debug.DebugPotion>());
+        // TODO scalie impl
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) { }
     }
 
     internal class BulbFruitDummy : Dummy

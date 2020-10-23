@@ -4,7 +4,7 @@ using StarlightRiver.Items.Armor.Starwood;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Items.StarwoodWeapons;
+using StarlightRiver.Items.Starwood;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Items.Armor.Starwood
@@ -18,12 +18,11 @@ namespace StarlightRiver.Items.Armor.Starwood
             DisplayName.SetDefault("Starwood Hat");
             Tooltip.SetDefault("5% increased magic damage");
         }
-
         public override void SetDefaults()
         {
             item.width = 42;
             item.height = 26;
-            item.value = 8000;
+            item.value = Item.sellPrice(0, 0, 10, 0);
             item.defense = 2;
         }
         public override void UpdateEquip(Player player)
@@ -32,13 +31,13 @@ namespace StarlightRiver.Items.Armor.Starwood
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
 
-        public void DrawArmorLayer(PlayerDrawInfo info)
+        public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat 
         {
             Color color = Lighting.GetColor((int)info.position.X / 16, (int)info.position.Y / 16);
-            ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat", color, 1, new Vector2(9, -1));
+            ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat_Worn", color, 1, new Vector2(10, 4));
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
             {
-                ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat_Alt", color, 1, new Vector2(9, -1));
+                ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
             }
         }
     }
@@ -47,7 +46,7 @@ namespace StarlightRiver.Items.Armor.Starwood
     public class StarwoodChest : StarwoodItem
     {
         public StarwoodChest() : base(GetTexture("StarlightRiver/Items/Armor/Starwood/StarwoodChest_Alt")) { }
-        public override bool Autoload(ref string name)
+        public override bool Autoload(ref string name)//adds method to Starlight player event
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHitNPCStarwood;
             return true;
@@ -61,7 +60,7 @@ namespace StarlightRiver.Items.Armor.Starwood
         {
             item.width = 38;
             item.height = 30;
-            item.value = 6000;
+            item.value = Item.sellPrice(0, 0, 12, 0);
             item.defense = 3;
         }
         public override void UpdateEquip(Player player)
@@ -69,7 +68,8 @@ namespace StarlightRiver.Items.Armor.Starwood
             player.statManaMax2 += 20;
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
-        public override bool IsArmorSet(Item head, Item body, Item legs)
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)//what items are required for set
         {
             return head.type == ItemType<StarwoodHat>() && legs.type == ItemType<StarwoodBoots>();
         }
@@ -80,7 +80,7 @@ namespace StarlightRiver.Items.Armor.Starwood
 
             if (mp.EmpowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, player)) //checks if complete to disable empowerment if set is removed
             {
-                for (int k = 0; k < 1; k++)//temp sfx
+                for (int k = 0; k < 1; k++)//temp gfx 
                 {
                     Dust.NewDustPerfect(player.position + new Vector2(Main.rand.Next(player.width), Main.rand.Next(player.height)), DustType<Dusts.BlueStamina>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1.0f, 1.4f), 0, default, 1.2f);
                 }
@@ -88,7 +88,7 @@ namespace StarlightRiver.Items.Armor.Starwood
             }
             else { mp.EmpowermentTimer = 0; mp.Empowered = false; }
         }
-        private void ModifyHitNPCStarwood(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        private void ModifyHitNPCStarwood(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)//sets bool on hit npcs
         {
             if (ArmorHelper.IsSetEquipped(this, player))
             {
@@ -103,18 +103,16 @@ namespace StarlightRiver.Items.Armor.Starwood
         public StarwoodBoots() : base(GetTexture("StarlightRiver/Items/Armor/Starwood/StarwoodBoots_Alt")) { }
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Starwood Boots");
-            Tooltip.SetDefault("5% increased magic critial strike change");
+            DisplayName.SetDefault("Starwood Leggings");
+            Tooltip.SetDefault("5% increased magic critial strike chance");
         }
-
         public override void SetDefaults()
         {
             item.width = 30;
             item.height = 18;
-            item.value = 4000;
+            item.value = Item.sellPrice(0, 0, 8, 0);
             item.defense = 2;
         }
-
         public override void UpdateEquip(Player player)
         {
             player.magicCrit += 5;
@@ -122,6 +120,7 @@ namespace StarlightRiver.Items.Armor.Starwood
         }
     }
 
+    //makes star items start starwood empowerment, starting it just doesn't do anything is the player does not have the set equiped
     internal class ManastarPickup : GlobalItem
     {
         public override bool OnPickup(Item item, Player player)
@@ -134,6 +133,8 @@ namespace StarlightRiver.Items.Armor.Starwood
             return base.OnPickup(item, player);
         }
     }
+
+    //makes npcs drop stars if the bool the armor-set sets is true
     internal class ManastarDrops : GlobalNPC
     {
         public bool DropStar = false;
@@ -147,6 +148,8 @@ namespace StarlightRiver.Items.Armor.Starwood
         }
     }
 }
+
+//modplayer to handle empowerment
 namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer

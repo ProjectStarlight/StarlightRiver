@@ -14,160 +14,153 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void ResetAttack() => AttackTimer = 0;
 
-        private Vector2 PickSide() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-160, 60) : spawnPos + new Vector2(144, 60); //picks the opposite side of the player.
+        private Vector2 PickSide() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-532, 260) : spawnPos + new Vector2(532, 260); //picks the opposite side of the player.
 
         private Vector2 PickSideClose() => Main.player[npc.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-160, 60) : spawnPos + new Vector2(144, 60); //picks the same side of the player.
+
+        private int Direction => npc.Center.X > spawnPos.X ? -1 : 1;
+
+        private int DirectionAway => Direction * -1;
 
         private void SpawnAnimation()
         {
             if (AttackTimer == 1) moveStart = npc.Center;
-            npc.Center = Vector2.SmoothStep(moveStart, spawnPos + new Vector2(0, -100), AttackTimer / 300f);
+            npc.Center = Vector2.SmoothStep(moveStart, spawnPos + new Vector2(0, -50), AttackTimer / 300f);
         }
 
-        private void HammerSlam()
+        private void Idle(int duration)
         {
-            if (AttackTimer == 1) //sets appropriate movement points
+            npc.TargetClosest();
+            npc.velocity.X += Target.Center.X > npc.Center.X ? 0.25f : -0.25f;
+            if (System.Math.Abs(npc.velocity.X) >= 6) npc.velocity.X = npc.velocity.X > 0 ? 6 : -6;
+
+            if (npc.collideX && npc.velocity.Y == 0) npc.velocity.Y -= 10;
+
+            if (AttackTimer == duration) ResetAttack();
+        }
+
+        private void Hammer()
+        {
+            if (AttackTimer < 10) npc.velocity *= 0.9f; //decelerate into position
+
+            if(AttackTimer == 10) //stop and spawn projectile
+            {
+                npc.velocity *= 0;
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, npc.direction);
+            }
+
+            if (AttackTimer >= 90) ResetAttack();
+        }
+
+        private void Spears() //summon a wall of spears on one side of the arena
+        {
+            if(AttackTimer == 1)
             {
                 npc.TargetClosest();
                 moveTarget = PickSide();
                 moveStart = npc.Center;
             }
 
-            if (AttackTimer < 60) npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f); //move into position
+            if (AttackTimer < 60) //go to the side away from the target
+                npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
 
-            if (AttackTimer == 60)
+            if(AttackTimer == 90) //spawn the projectiles
             {
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 0, Main.myPlayer, npc.Center.X > spawnPos.X ? -1 : 1); //spawn our hammer, see GlassHammer's AI for more information
-                npc.direction = npc.Center.X > spawnPos.X ? -1 : 1;
-                npc.spriteDirection = npc.direction;
+                int exclude = Main.rand.Next(3);
+                for(int k = 0; k < 6; k++)
+                {
+                    if((k / 2) != exclude) //leave an opening!
+                        Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
+                }
             }
 
+            if (AttackTimer >= 240) ResetAttack();
+        }
+
+        private void Knives() //Summon 3 knives that float up and home-in on the target. Target is passed to the knives as ai[0].
+        {
+            if (AttackTimer == 1)
+            {
+                for (int k = -1; k < 2; k++) //spawn projectiles
+                    Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(k) * -3, ProjectileType<GlassKnife>(), 20, 1, Main.myPlayer, npc.target);
+            }
+
+            if (AttackTimer == 60) ResetAttack(); //TODO: May need to leave more time? unsure
+        }
+
+        private void Greatsword()
+        {
+
+        }
+
+        private void UppercutGlide() //its just the other two methods put together because I re-use uppercut. Suck my cock.
+        {
+            if (AttackTimer <= 55) Uppercut(0);
+            else if(AttackTimer <= 215) Helicopter(55);
+
+            if (AttackTimer >= 230) ResetAttack();
+        }
+
+        private void SlashUpSlash() //slash up slash combo
+        {
+            if (AttackTimer <= 20) Slash(0);
+            if (AttackTimer <= 50 && AttackTimer > 20) Uppercut(20);
+            if (AttackTimer <= 90 && AttackTimer > 70) Slash(70);
             if (AttackTimer >= 120) ResetAttack();
         }
 
-        #region Slash Combo Attack
-        private void SlashCombo()
+        private void Slash(int startTime)
         {
-            if (GetRegion(npc) == RegionCenter) SlashComboCenter();
-            else if (GetRegion(npc) == RegionLeft) SlashComboLeft();
-            else if (GetRegion(npc) == RegionRight) SlashComboRight();
-            else if (GetRegion(npc) == RegionPit) SlashComboPit();
-        }
-
-        private void SlashComboCenter()
-        {
-            if (AttackTimer == 1)
-            {
-                moveTarget = PickSideClose();
-                moveStart = npc.Center;
-            }
-
-            if (AttackTimer < 60) npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f); //move into position
-
-            if (AttackTimer >= 60 && AttackTimer % 30 == 0)
-            {
-                npc.velocity.X += moveTarget.X > spawnPos.X ? -6 : 6; //burst forward
-                npc.direction = npc.velocity.X > 0 ? 1 : -1;
-
-                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, AttackTimer == 90 ? 1 : 0);
-                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
-
-
-            }
-
-            if (AttackTimer > 60) npc.velocity.X *= 0.95f; //decelerate
-
-            if (AttackTimer >= 140)
-            {
-                npc.velocity *= 0;
-                ResetAttack();
-            }
-        }
-
-        private void SlashComboLeft()
-        {
-            if (AttackTimer == 1)
+            if (AttackTimer == startTime + 1) //spawn projectile and set velcoity, along with targeting
             {
                 npc.TargetClosest();
-                npc.velocity.X += Target.Center.X > npc.Center.X ? 3 : -3;
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 34, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection); 
 
-                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 0);
-                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
+                npc.velocity.X += npc.Center.X > Target.Center.X ? -10 : 10;
             }
 
-            npc.velocity.X *= 0.96f;
-            if(npc.Center.X > spawnPos.X - 280 && npc.velocity.X > 0) npc.velocity *= 0;
+            if (AttackTimer < startTime + 20) //decelerate
+                npc.velocity.X *= 0.98f;
 
-            if (AttackTimer >= 60)
+            if (AttackTimer == startTime + 20) //stop
+                npc.velocity.X = 0;
+        }
+
+        private void Uppercut(int startTime)
+        {
+            if (AttackTimer == startTime + 30) //this is so fucking basic it just spawns a stupipd ass hitbox projectile and launches him up how fucking DUMB do you have to be to have to read this comment
             {
-                npc.velocity *= 0;
-                ResetAttack();
+                npc.velocity.Y = -14;
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassUppercut>(), 40, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection);
             }
         }
 
-        private void SlashComboRight()
+        private void Helicopter(int startTime) //roflcopter
         {
-            if (AttackTimer == 1)
+            if(AttackTimer == startTime + 1)
             {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 30, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
+                npc.noGravity = true;
                 npc.TargetClosest();
-                npc.velocity.X += Target.Center.X > npc.Center.X ? 3 : -3;
-
-                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 0);
-                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
             }
 
-            npc.velocity.X *= 0.96f;
-            if (npc.Center.X < spawnPos.X + 232 && npc.velocity.X < 0) npc.velocity *= 0;
+            npc.velocity.Y = 0.7f + Target.Center.Y > npc.Center.Y ? 1.2f : -0.6f; //still fall slowly
+            npc.spriteDirection = (int)AttackTimer / 4 % 2 == 0 ? -1 : 1; //brain moment
 
-            if (AttackTimer >= 60)
+            if (AttackTimer <= startTime + 120)
             {
+                npc.velocity.X += Target.Center.X > npc.Center.X ? 0.1f : -0.1f; //go towards the target
+                if (npc.velocity.LengthSquared() > 36) //cap speed
+                    npc.velocity = Vector2.Normalize(npc.velocity) * 6;
+            }
+            else
+                npc.velocity.X *= 0.98f;
+
+            if (AttackTimer == startTime + 150) //let him fall again after this shit is over
+            {
+                npc.noGravity = false;
                 npc.velocity *= 0;
-                ResetAttack();
             }
-        }
-
-        private void SlashComboPit()
-        {
-            if (AttackTimer == 1)
-            {
-                npc.TargetClosest();
-
-                int p = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 15, 1, Main.myPlayer, npc.direction == -1 ? 0 : 1, 1);
-                (Main.projectile[p].modProjectile as GlassSlash).parent = this;
-
-                npc.velocity.X += Target.Center.X > npc.Center.X ? 7 : -7;
-            }
-
-            if (AttackTimer < 60) npc.velocity.X *= 0.96f; //decelerate
-
-            if (AttackTimer >= 60)
-            {
-                npc.velocity *= 0;
-                ResetAttack();
-            }
-        }
-        #endregion
-
-        private void ThrowSpear()
-        {
-            if (AttackTimer == 30)
-            {
-                npc.TargetClosest();
-                Main.PlaySound(SoundID.Item1, npc.Center);
-                Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Target.Center) * -8, ProjectileType<GlassSpear>(), 10, 1, Main.myPlayer);
-            }
-
-            if (AttackTimer >= 45) ResetAttack();
-        }
-
-        private void LavaWave()
-        {
-            if(AttackTimer == 1)
-            {
-
-            }
-
-            if (AttackTimer >= 90) ResetAttack();
         }
     }
 }

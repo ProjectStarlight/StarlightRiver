@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Codex;
+using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -20,9 +22,74 @@ namespace StarlightRiver
         private static int tiltTime;
         private static float tiltMax;
 
+        public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0,0,(int)vector.X, (int)vector.Y);
+        public static Player Owner(this Projectile proj) => Main.player[proj.owner];
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
-
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
+
+        /// <summary>
+        /// Updates the value used for flipping rotation on the player. Should be reset to 0 when not in use.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="value"></param>
+        public static void UpdateRotation(this Player player, float value) => player.GetModPlayer<StarlightPlayer>().rotation = value;
+
+        /// <summary>
+        /// Consumes the items specified by a predicate.
+        /// </summary>
+        /// <param name="inventory">The pool of items to consume items from.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="count">The number of items to consume.</param>
+        /// <returns>If successful, true; otherwise, false.</returns>
+        public static bool ConsumeItems(this Item[] inventory, Predicate<Item> predicate, int count)
+        {
+            var items = inventory.GetItems(predicate, count);
+
+            // If the sum of items is less than the required amount, don't bother.
+            if (items.Sum(i => inventory[i].stack) < count)
+                return false;
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                Item item = inventory[items[i]];
+
+                // If we're at the last item stack, and we're not going to consume the whole thing, just decrease its count by the amount needed.
+                if (i == items.Count - 1 && count < item.stack)
+                {
+                    item.stack -= count;
+                }
+                // Otherwise, delete the item and decrement count as needed.
+                else
+                {
+                    count -= item.stack;
+                    item.TurnToAir();
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Gets a list of item indeces from an inventory matching a predicate.
+        /// </summary>
+        /// <param name="inventory">The pool of items to search.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <param name="stopCountingAt">The number of items to search before stopping.</param>
+        /// <returns>The items matching the predicate.</returns>
+        public static List<int> GetItems(this Item[] inventory, Predicate<Item> predicate, int stopCountingAt = int.MaxValue)
+        {
+            var indeces = new List<int>();
+            for (int i = 0; i < inventory.Length; i++)
+            {
+                if (stopCountingAt <= 0)
+                    break;
+                if (predicate(inventory[i]))
+                {
+                    indeces.Add(i);
+                    stopCountingAt -= inventory[i].stack;
+                }
+            }
+            return indeces;
+        }
 
         public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;
 
@@ -30,9 +97,31 @@ namespace StarlightRiver
 
         public static bool OnScreen(Rectangle rect) => rect.Intersects(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
 
+        public static bool OnScreen(Vector2 pos, Vector2 size) => OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y));
+
         public static Vector3 Vec3(this Vector2 vector) => new Vector3(vector.X, vector.Y, 0);
 
         public static Vector3 ScreenCoord(this Vector3 vector) => new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
+
+        public static void BoostAllDamage(this Player player,float damage, int crit=0)
+        {
+            player.meleeDamage += damage;
+            player.rangedDamage += damage;
+            player.magicDamage += damage;
+            player.minionDamage += damage;
+            player.thrownDamage += damage;
+
+            player.thrownCrit += crit;
+            player.rangedCrit += crit;
+            player.meleeCrit += crit;
+            player.magicCrit += crit;
+        }
+        public static bool IsValidDebuff(Player player,int buffindex)
+        {
+            int bufftype = player.buffType[buffindex];
+            bool vitalbuff = (bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState);
+            return player.buffTime[buffindex] > 2 && Main.debuff[bufftype] && !Main.buffNoTimeDisplay[bufftype] && !Main.vanityPet[bufftype] && !vitalbuff;
+        }
 
         public static bool HasItem(Player player, int type, int count)
         {
@@ -145,6 +234,12 @@ namespace StarlightRiver
             }
         }
 
+        /// <summary>
+        /// returns true if every tile in a rectangle is air
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public static bool CheckAirRectangle(Point16 position, Point16 size)
         {
             if (position.X + size.X > Main.maxTilesX || position.X < 0) return false; //make sure we dont check outside of the world!
@@ -155,6 +250,26 @@ namespace StarlightRiver
                 for (int y = position.Y; y < position.Y + size.Y; y++)
                 {
                     if (Main.tile[x, y].active()) return false; //if any tiles there are active, return false!
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// returns true if any tile in a rectanlge is air
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static bool CheckAnyAirRectangle(Point16 position, Point16 size)
+        {
+            if (position.X + size.X > Main.maxTilesX || position.X < 0) return false; //make sure we dont check outside of the world!
+            if (position.Y + size.Y > Main.maxTilesY || position.Y < 0) return false;
+
+            for (int x = position.X; x < position.X + size.X; x++)
+            {
+                for (int y = position.Y; y < position.Y + size.Y; y++)
+                {
+                    if (!Main.tile[x, y].active()) return true; //if any tiles there are inactive, return true!
                 }
             }
             return true;
@@ -274,7 +389,8 @@ namespace StarlightRiver
 
         public static bool HasEquipped(Player player, int ItemID)
         {
-            for (int k = 3; k < 7 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
+            //This needs to be one more: 8, not 7, or <= instead of < -IDG
+            for (int k = 3; k < 8 + player.extraAccessorySlots; k++) if (player.armor[k].type == ItemID) return true;
             return false;
         }
 
@@ -336,10 +452,11 @@ namespace StarlightRiver
 
         public static bool ScanForTypeDown(int startX, int startY, int type, int maxDown = 50)
         {
-            for (int k = 0; k >= 0; k++)
+            for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
-                if (Main.tile[startX, startY + k].type == type) return true;
-                if (k > maxDown || startY + k >= Main.maxTilesY) break;
+                Tile tile = Framing.GetTileSafely(startX, startY + k);
+                if (tile.active() && tile?.type == type) 
+                    return true;
             }
             return false;
         }
@@ -482,6 +599,23 @@ namespace StarlightRiver
                     player = Main.player[k];
             }
             return player;
+        }
+
+        public static Texture2D GetItemTexture(Item item)
+        {
+            if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
+            else return GetTexture(item.modItem.Texture);
+        }
+
+        public static Texture2D GetItemTexture(int type)
+        {
+            if (type < Main.maxItemTypes) return Main.itemTexture[type];
+            else
+            {
+                Item item = new Item();
+                item.SetDefaults(type);
+                return GetTexture(item.modItem.Texture);
+            }
         }
     }
 }

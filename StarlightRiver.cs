@@ -26,7 +26,7 @@ namespace StarlightRiver
         public Collection collection;
         public ParticleOverlay overlay;
         public Infusion infusion;
-        public Cooking cooking;
+        public CookingUI cooking;
         public KeyInventory keyinventory;
         public TextCard textcard;
         public GUI.Codex codex;
@@ -34,6 +34,7 @@ namespace StarlightRiver
         public LootUI lootUI;
         public ChatboxOverUI Chatbox;
         public UIState ExtraNPCState;
+        public RichTextBox RichText;
 
         public UserInterface StaminaUserInterface;
         public UserInterface CollectionUserInterface;
@@ -47,6 +48,7 @@ namespace StarlightRiver
         public UserInterface LootUserInterface;
         public UserInterface ChatboxUserInterface;
         public UserInterface ExtraNPCInterface;
+        public UserInterface RichTextInterface;
 
         public AbilityHotkeys AbilityKeys { get; private set; }
 
@@ -69,6 +71,12 @@ namespace StarlightRiver
                 if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
+                    priority = MusicPriority.BiomeHigh;
+                }
+
+                if (player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+                {
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
                     priority = MusicPriority.BiomeHigh;
                 }
 
@@ -114,7 +122,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+                if (player.GetModPlayer<BiomeHandler>().ZoneAshHell)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
@@ -184,6 +192,14 @@ namespace StarlightRiver
                 Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
                 Filters.Scene["Pixelation"].Load();
 
+                Ref<Effect> screenRefCrystal = new Ref<Effect>(GetEffect("Effects/CrystalRefraction"));
+                Filters.Scene["Crystal"] = new Filter(new ScreenShaderData(screenRefCrystal, "CrystalPass"), EffectPriority.High);
+                Filters.Scene["Crystal"].Load();
+
+                Ref<Effect> screenRefIceCrystal = new Ref<Effect>(GetEffect("Effects/IceCrystal"));
+                Filters.Scene["IceCrystal"] = new Filter(new ScreenShaderData(screenRefIceCrystal, "IcePass"), EffectPriority.High);
+                Filters.Scene["IceCrystal"].Load();
+
                 lightingTest = new RenderTest();
             }
 
@@ -213,18 +229,20 @@ namespace StarlightRiver
                 LootUserInterface = new UserInterface();
                 ChatboxUserInterface = new UserInterface();
                 ExtraNPCInterface = new UserInterface();
+                RichTextInterface = new UserInterface();
 
                 stamina = new Stamina();
                 collection = new Collection();
                 overlay = new ParticleOverlay();
                 infusion = new Infusion();
-                cooking = new Cooking();
+                cooking = new CookingUI();
                 keyinventory = new KeyInventory();
                 textcard = new TextCard();
                 codex = new GUI.Codex();
                 codexpopup = new CodexPopup();
                 lootUI = new LootUI();
                 Chatbox = new ChatboxOverUI();
+                RichText = new RichTextBox();
 
                 StaminaUserInterface.SetState(stamina);
                 CollectionUserInterface.SetState(collection);
@@ -237,6 +255,7 @@ namespace StarlightRiver
                 CodexPopupUserInterface.SetState(codexpopup);
                 LootUserInterface.SetState(lootUI);
                 ChatboxUserInterface.SetState(Chatbox);
+                RichTextInterface.SetState(RichText);
             }
 
             //particle systems
@@ -276,7 +295,7 @@ namespace StarlightRiver
                 AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex - 1, Collection.visible);
                 AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
                 AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
-                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, Cooking.Visible);
+                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, CookingUI.Visible);
                 AddLayer(layers, KeyInventoryUserInterface, keyinventory, MouseTextIndex, KeyInventory.visible);
                 AddLayer(layers, TextCardUserInterface, textcard, MouseTextIndex, TextCard.Visible);
                 AddLayer(layers, CodexUserInterface, codex, MouseTextIndex, GUI.Codex.ButtonVisible);
@@ -284,6 +303,7 @@ namespace StarlightRiver
                 AddLayer(layers, LootUserInterface, lootUI, MouseTextIndex, LootUI.Visible);
                 AddLayer(layers, ChatboxUserInterface, Chatbox, NPCChatIndex, Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu);
                 AddLayer(layers, ExtraNPCInterface, ExtraNPCState, MouseTextIndex, ExtraNPCState != null);
+                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, RichTextBox.visible);
             }
         }
 
@@ -319,6 +339,7 @@ namespace StarlightRiver
                 LootUserInterface = null;
                 ChatboxUserInterface = null;
                 ExtraNPCInterface = null;
+                RichTextInterface = null;
 
                 stamina = null;
                 collection = null;
@@ -331,6 +352,7 @@ namespace StarlightRiver
                 lootUI = null;
                 Chatbox = null;
                 ExtraNPCState = null;
+                RichText = null;
 
                 Instance = null;
                 AbilityKeys.Unload();
@@ -344,6 +366,7 @@ namespace StarlightRiver
         public override void PostSetupContent()
         {
             NetEasy.NetEasy.Register(this);
+            InitWorldGenChests();
             CallBossChecklist();
         }
 

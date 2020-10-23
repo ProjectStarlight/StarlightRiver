@@ -56,6 +56,9 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (IsMouseHovering)
+                Main.LocalPlayer.mouseInterface = true;
+
             Vector2 pos = GetDimensions().Center() - Vector2.One;
             Texture2D tex = !Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/GUI/Assets/blank") : GetTexture(ability.Texture);
 
