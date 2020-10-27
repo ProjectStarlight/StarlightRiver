@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Items.Permafrost
@@ -132,6 +127,21 @@ namespace StarlightRiver.Items.Permafrost
             }
 
             Lighting.AddLight(player.Center, color.ToVector3() * charge * 0.2f);
+        }
+
+        public override void AddRecipes()
+        {
+            ModRecipe r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.CopperAxe);
+            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
+            r.SetResult(this);
+            r.AddRecipe();
+
+            r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.TinAxe);
+            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
+            r.SetResult(this);
+            r.AddRecipe();
         }
     }
 
