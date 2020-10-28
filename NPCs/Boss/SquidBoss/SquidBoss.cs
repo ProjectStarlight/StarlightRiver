@@ -221,11 +221,22 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                             default: x = 0; y = 0; xb = 0; break;
                         }
 
-                        int i = NPC.NewNPC((int)npc.Center.X + x, (int)npc.Center.Y + 550, ModContent.NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
+                        int i = NPC.NewNPC((int)npc.Center.X + x, (int)npc.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
                         (Main.npc[i].modNPC as Tentacle).Parent = this;
                         (Main.npc[i].modNPC as Tentacle).MovePoint = new Vector2((int)npc.Center.X + x, (int)npc.Center.Y - y);
                         (Main.npc[i].modNPC as Tentacle).OffBody = xb;
                         tentacles.Add(Main.npc[i]);
+                    }
+
+                    if(GlobalTimer == 275 + k * 50)
+                    {
+                        for(int i = 0; i < 50; i++)
+                        {
+                            Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(12), 0, default, 2);
+                            Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
+                        }
+
+                        Main.PlaySound(SoundID.Splash, tentacles[k].Center, 0);
                     }
                 }
 

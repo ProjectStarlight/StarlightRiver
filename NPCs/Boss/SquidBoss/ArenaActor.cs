@@ -108,11 +108,12 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 if (WorldGen.InWorld(x, y)) WorldGen.KillTile(x, y);
             }
 
-            foreach (Player player in Main.player.Where(n => n.active && n.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)npc.ai[0])))) //water collision
+            for(int k = 0; k < Main.ActivePlayersCount; k++)
             {
-                player.wet = true;
-                player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
-                if (player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server) Main.musicFade[Main.curMusic] = 0.05f;
+                Player player = Main.player[k];
+
+                if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)npc.ai[0])))
+                    player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
             }
 
             for (int k = 0; k < Main.maxItems; k++)
@@ -134,45 +135,22 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     }
                 }
             }
+
+            if (Main.LocalPlayer.controlQuickHeal) npc.ai[0] += 5;
+            if (Main.LocalPlayer.controlQuickMana) npc.ai[0] -= 5;
         }
 
         public void DrawWater(SpriteBatch spriteBatch)
         {
-            Vector2 pos = npc.Center + new Vector2(-1600, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
+            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralWater");
+            Vector2 pos = npc.Center + new Vector2(-832, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
+            var source = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, (int)npc.ai[0] - 5 * 16);
 
-            pos += Main.screenPosition;
-            for (int x = (int)pos.X / 16; x < (int)pos.X / 16 + 200; x++)
-            {
-                for (int y = (int)pos.Y / 16; y <= (int)pos.Y / 16 + (int)npc.ai[0] / 16; y++)
-                {
-                    if (WorldGen.InWorld(x, y + 1) && Helper.OnScreen(new Vector2(x, y + 1) * 16 - Main.screenPosition))
-                    {
-                        if (Main.tile[x, y + 1].active() && Lighting.Brightness(x, y + 1) <= 0.4f)
-                        {
-                            Color color = Color.Black * (1 - Lighting.Brightness(x, y + 1) * 4);
-                            spriteBatch.Draw(Main.blackTileTexture, new Vector2(x, y + 1) * 16 - Main.screenPosition, color);
-                        }
+            Vector2 pos2 = npc.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
+            var source2 = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, 2);
 
-                        if (Main.tile[x, y + 1].wall == whitelistID)
-                        {
-                            Color color = Lighting.GetColor(x, y + 1).MultiplyRGB(new Color(100, 200, 255)) * (0.5f - Lighting.Brightness(x, y + 1) * 0.2f);
-                            spriteBatch.Draw(Main.blackTileTexture, new Vector2(x, y + 1) * 16 - Main.screenPosition, color);
-                        }
-
-                        if (Main.tile[x, y].wall == whitelistID && y == (int)pos.Y / 16)
-                        {
-                            Color color = Lighting.GetColor(x, y + 1).MultiplyRGB(new Color(100, 200, 255)) * (0.5f - Lighting.Brightness(x, y + 1) * 0.2f);
-
-                            float offset = npc.ai[0] % 16;
-                            if (offset == 0) offset = 16;
-                            offset += (float)Math.Sin(npc.ai[1] * (4) + x) * (2);
-
-                            spriteBatch.Draw(Main.blackTileTexture, new Rectangle((int)(x * 16 - Main.screenPosition.X), (int)((y + 1) * 16 - Main.screenPosition.Y - (offset) + 1), 16, (int)(offset)), color);
-                            spriteBatch.Draw(Main.magicPixel, new Rectangle((int)(x * 16 - Main.screenPosition.X), (int)((y + 1) * 16 - Main.screenPosition.Y - (offset) + 1), 16, 2), Main.magicPixel.Frame(), Color.White * 0.6f);
-                        }
-                    }
-                }
-            }
+            Helper.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);
+            spriteBatch.Draw(tex, pos2, source2, Color.White * 0.6f, 0, Vector2.Zero, 1, 0, 0);
         }
 
         public static ParticleSystem.Update updateBubbles => UpdateBubblesBody;

@@ -14,8 +14,20 @@ namespace StarlightRiver.Buffs
 
         public override void Update(Player player, ref int buffIndex)
         {
-            player.lifeRegen -= 60;
-            player.slow = true;
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
+            {
+                player.lifeRegen -= 60;
+                player.slow = true;
+                player.wet = true;
+
+                if (player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
+                    Main.musicFade[Main.curMusic] = 0.05f;
+            }
+            else
+            {
+                player.wet = true;
+                player.breath--;
+            }
         }
     }
 }

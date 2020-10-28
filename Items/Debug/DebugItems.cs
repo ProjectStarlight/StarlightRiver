@@ -76,6 +76,8 @@ namespace StarlightRiver.Items.Debug
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
+            return true; 
+
             if (theEffect is null) theEffect = Main.dedServ ? null : Filters.Scene["IceCrystal"].GetShader().Shader;
             if (theEffect is null) return true;
 

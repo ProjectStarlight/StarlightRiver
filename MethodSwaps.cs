@@ -163,6 +163,9 @@ namespace StarlightRiver
             }
         }
 
+        //TODO: Move this
+        RenderTarget2D CatherdalWaterTarget;
+
         private void TestLighting(GameTime obj)
         {
             if (Main.dedServ) return;
@@ -184,6 +187,26 @@ namespace StarlightRiver
             graphics.Clear(Color.Transparent);
 
             BackgroundBanner.DrawStrip(Main.screenPosition + new Vector2(0, 50));
+
+            graphics.SetRenderTarget(null);
+
+            //TODO: move all below
+            if (CatherdalWaterTarget is null || CatherdalWaterTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
+                CatherdalWaterTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
+
+            graphics.SetRenderTarget(CatherdalWaterTarget);
+
+            graphics.Clear(Color.Transparent);
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            for (int k = 0; k < Main.maxNPCs; k++)
+            {
+                NPC npc = Main.npc[k];
+                if (npc.active && npc.modNPC is ArenaActor)
+                    (npc.modNPC as ArenaActor).DrawWater(Main.spriteBatch);
+            }
+
+            Main.spriteBatch.End();
 
             graphics.SetRenderTarget(null);
         }
