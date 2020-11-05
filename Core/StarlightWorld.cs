@@ -53,6 +53,7 @@ namespace StarlightRiver
 
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
         public static void Flag(WorldFlags flag) => flags |= flag;
+        public static void FlipFlag(WorldFlags flag) => flags ^= flag;
 
         public override void NetSend(BinaryWriter writer)
         {

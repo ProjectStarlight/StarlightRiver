@@ -217,6 +217,43 @@ namespace StarlightRiver
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
+        private static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice);
+
+        public static void DrawTriangle(Texture2D tex, Vector2[] target, Vector2[] source)
+        {
+            if (basicEffect is null) return;
+
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = tex;
+            basicEffect.Alpha = 1;
+            basicEffect.View = new Matrix
+                (
+                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                );
+
+            var gd = Main.graphics.GraphicsDevice;
+            var points = new VertexPositionTexture[3];
+            var buffer = new VertexBuffer(gd, typeof(VertexPositionTexture), 3, BufferUsage.WriteOnly);
+
+            for(int k = 0; k < 3; k++)
+                points[k] = new VertexPositionTexture(new Vector3(ConvertX(target[k].X), ConvertY(target[k].Y), 0), source[k] / tex.Size());
+
+            buffer.SetData(points);
+
+            gd.SetVertexBuffer(buffer);
+
+            foreach(EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                gd.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+            }
+
+            gd.SetVertexBuffer(null);
+        }
+
         private static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
         private static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);

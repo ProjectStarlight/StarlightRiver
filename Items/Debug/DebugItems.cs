@@ -56,7 +56,10 @@ namespace StarlightRiver.Items.Debug
         {
             //NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             //StarlightWorld.knownRecipies.Clear();
-            StarlightWorld.AshHellGen(new Terraria.World.Generation.GenerationProgress());
+
+            //StarlightWorld.AshHellGen(new Terraria.World.Generation.GenerationProgress());
+
+            StarlightWorld.FlipFlag(WorldFlags.SquidBossDowned);
             return true;
         }
 

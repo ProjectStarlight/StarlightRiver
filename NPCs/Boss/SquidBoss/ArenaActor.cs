@@ -212,12 +212,12 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-            DrawWindow(spriteBatch, new Vector2(0, -70), new Color(255, 200, 255));
+            DrawWindow(spriteBatch, new Vector2(0, -70), new Color(200, 255, 255));
 
-            DrawWindow(spriteBatch, new Vector2(-20, -65), new Color(200, 255, 200));
+            DrawWindow(spriteBatch, new Vector2(-20, -65), new Color(200, 255, 255));
             DrawWindow(spriteBatch, new Vector2(-11, -105), new Color(200, 255, 255));
 
-            DrawWindow(spriteBatch, new Vector2(20, -65), new Color(200, 255, 200));
+            DrawWindow(spriteBatch, new Vector2(20, -65), new Color(200, 255, 255));
             DrawWindow(spriteBatch, new Vector2(11, -105), new Color(200, 255, 255));
 
             spriteBatch.End();
@@ -231,34 +231,93 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             DrawWindowLit(new Vector2(11, -105));
 
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            Texture2D texIn = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowIn");
+
+            DrawWindowGlass(spriteBatch, texIn, new Vector2(0, -70));
+
+            DrawWindowGlass(spriteBatch, texIn, new Vector2(-20, -65));
+            DrawWindowGlass(spriteBatch, texIn, new Vector2(-11, -105));
+
+            DrawWindowGlass(spriteBatch, texIn, new Vector2(20, -65));
+            DrawWindowGlass(spriteBatch, texIn, new Vector2(11, -105));
         }
 
         private void DrawWindowLit(Vector2 off)
         {
+            Texture2D background1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
+            Texture2D background2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background2");
+
+            var position = npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition;
+            position -= new Vector2(70, 220);
+            var target = new Rectangle((int)position.X, (int)position.Y + 105, 140, 428);
+
+            var sourcePos0 = new Vector2(500, 1500) + off * 16 + FindOffset(npc.Center, -0.15f);
+            var source0 = new Rectangle((int)sourcePos0.X, (int)sourcePos0.Y, 160, 668);
+
+            var sourcePos1 = new Vector2(500, 1800) + off * 16 + FindOffset(npc.Center, -0.1f);
+            var source1 = new Rectangle((int)sourcePos1.X, (int)sourcePos1.Y, 160, 668);
+
+            Helper.DrawTriangle(background1, new Vector2[]
+            {
+                target.TopLeft() + new Vector2(target.Width / 2, -200),
+                target.TopRight(),
+                target.TopLeft(),
+            }, new Vector2[]
+            {
+                source0.TopLeft() + new Vector2(source0.Width / 2, -200),
+                source0.TopRight(),
+                source0.TopLeft(),
+            }
+            );
+
+            Helper.DrawTriangle(background2, new Vector2[]
+            {
+                target.TopLeft() + new Vector2(target.Width / 2, -200),
+                target.TopRight(),
+                target.TopLeft(),
+
+            }, new Vector2[]
+            {
+               source1.TopLeft() + new Vector2(source1.Width / 2, -200),
+               source1.TopRight(),
+               source1.TopLeft(),
+            }
+            );
+
             Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindow");
 
             Vector2 pos = npc.Center - (texOver.Size() / 2) + off * 16;
-            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);
+            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);          
+        }
+
+        private void DrawWindowGlass(SpriteBatch spriteBatch, Texture2D tex, Vector2 off)
+        {
+            Vector2 pos = npc.Center - (tex.Size() / 2) + off * 16;
+            spriteBatch.Draw(tex, pos - Main.screenPosition, Color.White * 0.25f);
         }
 
         private void DrawWindow(SpriteBatch spriteBatch, Vector2 off, Color color)
-        {
-            
+        {          
             Texture2D background1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
             Texture2D background2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background2");
             Texture2D texUnder = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowUnder");
-            Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowIn");
-
+            
             spriteBatch.Draw(texUnder, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, new Color(24, 47, 45), 0, texUnder.Size() / 2, 1, 0, 0);
 
             var position = npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition;
+            position -= new Vector2(70, 220);
             var target = new Rectangle((int)position.X, (int)position.Y + 105, 140, 428);
 
-            var sourcePos = new Vector2(0, 400) + FindOffset(npc.Center, -0.1f);
-            var source = new Rectangle((int)sourcePos.X, (int)sourcePos.Y, 160, 668);
+            var sourcePos0 = new Vector2(500, 1500) + off * 16 + FindOffset(npc.Center, -0.15f);
+            var source0 = new Rectangle((int)sourcePos0.X, (int)sourcePos0.Y, 160, 668);
 
-            spriteBatch.Draw(background2, target, source, Color.White, 0, new Vector2(80, 334), 0, 0);
-            spriteBatch.Draw(background1, target, source, Color.White, 0, new Vector2(80, 334), 0, 0);          
+            spriteBatch.Draw(background1, target, source0, Color.White);
+
+            var sourcePos1 = new Vector2(500, 1800) + off * 16 + FindOffset(npc.Center, -0.1f);
+            var source1 = new Rectangle((int)sourcePos1.X, (int)sourcePos1.Y, 160, 668);
+
+            spriteBatch.Draw(background2, target, source1, Color.White);
 
             if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && !NPC.AnyNPCs(NPCType<SquidBoss>()))
             {
@@ -266,6 +325,10 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 Texture2D tentacleTop = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleTop");
                 Texture2D tentacleMid = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleBody");
                 Texture2D squidBody = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyPreview");
+
+                float sin = 1 + (float)Math.Sin(StarlightWorld.rottime);
+                float cos = 1 + (float)Math.Cos(StarlightWorld.rottime);
+                var glowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
                 if (off.X == 0)
                 {
@@ -283,17 +346,15 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         spriteBatch.Draw(tentacleMid, pos, null, Color.White, 0, tentacleMid.Size() / 2, 1, 0, 0);
                     }
 
-                    spriteBatch.Draw(tentacleGlow, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tentacleGlow.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(tentacleGlow, npc.Center + tentaclePos - Main.screenPosition, null, glowColor, tentacleRot, tentacleGlow.Size() / 2, 1, 0, 0);
                     spriteBatch.Draw(tentacleTop, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tentacleGlow.Size() / 2, 1, 0, 0);
                 }
             }
 
-            spriteBatch.Draw(texOver, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, Color.White * 0.25f, 0, texOver.Size() / 2, 1, 0, 0);
-
             if (StarlightWorld.cathedralOverlay.fade)
             {
-                for (int k = 0; k < 5; k++)
-                    Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -100 + k * 50), color.ToVector3() * 0.5f);
+                for (int k = 0; k < 7; k++)
+                    Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -80 + k * 50), color.ToVector3() * 0.5f);
             }
 
             Dust d = Dust.NewDustPerfect(npc.Center + off * 16 + new Vector2(Main.rand.Next(-60, 60), 300 - Main.rand.Next(400)), 257, new Vector2(0, -2), 200, color * 1.8f, 1);
