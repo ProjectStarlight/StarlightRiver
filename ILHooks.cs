@@ -358,7 +358,7 @@ namespace StarlightRiver
                 effect.Parameters["power"].SetValue(0.002f  + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
                 effect.Parameters["speed"].SetValue(50f);
 
-                Main.spriteBatch.Draw(CatherdalWaterTarget, Vector2.Zero, Color.White);
+                Main.spriteBatch.Draw(CatherdalWaterTarget, Vector2.Zero - Main.LocalPlayer.velocity, Color.White);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

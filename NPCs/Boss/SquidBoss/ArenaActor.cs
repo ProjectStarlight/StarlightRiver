@@ -210,7 +210,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             }
 
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             DrawWindow(spriteBatch, new Vector2(0, -70), new Color(255, 200, 255));
 
@@ -219,31 +219,58 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
             DrawWindow(spriteBatch, new Vector2(20, -65), new Color(200, 255, 200));
             DrawWindow(spriteBatch, new Vector2(11, -105), new Color(200, 255, 255));
+
+            spriteBatch.End();
+
+            DrawWindowLit(new Vector2(0, -70));
+
+            DrawWindowLit(new Vector2(-20, -65));
+            DrawWindowLit(new Vector2(-11, -105));
+
+            DrawWindowLit(new Vector2(20, -65));
+            DrawWindowLit(new Vector2(11, -105));
+
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        private void DrawWindowLit(Vector2 off)
+        {
+            Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindow");
+
+            Vector2 pos = npc.Center - (texOver.Size() / 2) + off * 16;
+            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);
         }
 
         private void DrawWindow(SpriteBatch spriteBatch, Vector2 off, Color color)
         {
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
+            
+            Texture2D background1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
+            Texture2D background2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background2");
+            Texture2D texUnder = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowUnder");
+            Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowIn");
+
+            spriteBatch.Draw(texUnder, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, new Color(24, 47, 45), 0, texUnder.Size() / 2, 1, 0, 0);
 
             var position = npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition;
-            var target = new Rectangle((int)position.X, (int)position.Y, 160, 668);
+            var target = new Rectangle((int)position.X, (int)position.Y + 105, 140, 428);
 
             var sourcePos = new Vector2(0, 400) + FindOffset(npc.Center, -0.1f);
             var source = new Rectangle((int)sourcePos.X, (int)sourcePos.Y, 160, 668);
 
-            spriteBatch.Draw(tex, target, source, Color.White, 0, new Vector2(80, 334), 0, 0);
+            spriteBatch.Draw(background2, target, source, Color.White, 0, new Vector2(80, 334), 0, 0);
+            spriteBatch.Draw(background1, target, source, Color.White, 0, new Vector2(80, 334), 0, 0);          
 
             if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && !NPC.AnyNPCs(NPCType<SquidBoss>()))
             {
-                Texture2D tex2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleGlow");
-                Texture2D tex3 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleTop");
-                Texture2D tex4 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleBody");
-                Texture2D tex5 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyPreview");
+                Texture2D tentacleGlow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleGlow");
+                Texture2D tentacleTop = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleTop");
+                Texture2D tentacleMid = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleBody");
+                Texture2D squidBody = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyPreview");
 
                 if (off.X == 0)
                 {
                     Vector2 tentaclePos = new Vector2(off.X * 16 + (float)Math.Cos(npc.ai[1] + off.X * 0.2f) * 5, off.Y * 16 + (float)Math.Sin(npc.ai[1] + off.X * 0.2f) * 2);
-                    spriteBatch.Draw(tex5, npc.Center + tentaclePos + new Vector2(-4, 214) - Main.screenPosition, new Rectangle(22, 0, 136, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
+                    spriteBatch.Draw(squidBody, npc.Center + tentaclePos + new Vector2(-4, 214) - Main.screenPosition, new Rectangle(22, 0, 136, 150), Color.White, 0, new Vector2(64, 50), 1, 0, 0);
                 }
                 else
                 {
@@ -253,31 +280,21 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     for (int k = 0; k < 32; k++)
                     {
                         var pos = npc.Center + Vector2.Lerp(tentaclePos, off * 16 + new Vector2((float)Math.Sin(npc.ai[1] + k * 0.5f) * 5, 200), k / 20f) - Main.screenPosition;
-                        spriteBatch.Draw(tex4, pos, null, Color.White, 0, tex4.Size() / 2, 1, 0, 0);
+                        spriteBatch.Draw(tentacleMid, pos, null, Color.White, 0, tentacleMid.Size() / 2, 1, 0, 0);
                     }
 
-                    spriteBatch.Draw(tex2, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tex2.Size() / 2, 1, 0, 0);
-                    spriteBatch.Draw(tex3, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tex2.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(tentacleGlow, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tentacleGlow.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(tentacleTop, npc.Center + tentaclePos - Main.screenPosition, null, Color.White, tentacleRot, tentacleGlow.Size() / 2, 1, 0, 0);
                 }
             }
 
-            Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowIn");
-            spriteBatch.Draw(texOver, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, color * 0.5f, 0, texOver.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(texOver, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, Color.White * 0.25f, 0, texOver.Size() / 2, 1, 0, 0);
 
             if (StarlightWorld.cathedralOverlay.fade)
             {
                 for (int k = 0; k < 5; k++)
                     Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -100 + k * 50), color.ToVector3() * 0.5f);
             }
-
-            Texture2D tex6 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindow");
-
-            for (int x = 0; x < tex6.Width / 16; x++)
-                for (int y = 0; y < tex6.Height / 16; y++)
-                {
-                    Vector2 pos = npc.Center - (tex6.Size() / 2) + new Vector2(x + off.X, y + off.Y) * 16;
-                    spriteBatch.Draw(tex6, pos - Main.screenPosition, new Rectangle(x * 16, y * 16, 16, 16), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), 0, Vector2.Zero, 1, 0, 0);
-                }
 
             Dust d = Dust.NewDustPerfect(npc.Center + off * 16 + new Vector2(Main.rand.Next(-60, 60), 300 - Main.rand.Next(400)), 257, new Vector2(0, -2), 200, color * 1.8f, 1);
             d.noGravity = true;
