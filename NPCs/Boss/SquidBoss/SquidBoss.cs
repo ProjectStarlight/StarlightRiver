@@ -163,8 +163,16 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     scale = 1 + sin * 0.08f; //bigger pulsing
 
                     if (GlobalTimer == (k + 1) * 20) //dust explosion
-                        for (int n = 0; n < 100; n++)
-                            Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+                    {
+                        for (int n = 0; n < 60; n++)
+                            Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
+
+                        for (int n = 0; n < 40; n++)
+                        {
+                            var vel = Vector2.Normalize(npc.Center + off - (npc.Center + Vector2.UnitY * 100)).RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 10);
+                            Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, Color.Lerp(color, Color.White, 0.5f), Main.rand.NextFloat(1, 1.5f));
+                        }
+                    }
 
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }               
@@ -180,6 +188,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         public override void AI()
         {
             GlobalTimer++;
+
+            Phase = 6;
 
             if (Phase == (int)AIStates.SpawnEffects)
             {
@@ -457,7 +467,23 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
 
-                if (GlobalTimer >= 200) npc.Kill();
+                if (GlobalTimer >= 200)
+                {
+                    npc.Kill();
+
+                    for (int n = 0; n < 100; n++)
+                    {
+                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+                        Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
+                    }
+
+                    for (int n = 0; n < 400; n++)
+                    {
+                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+                        var vel = Vector2.Normalize(new Vector2(off.X, -off.Y)).RotatedByRandom(0.3f) * Main.rand.NextFloat(14);
+                        Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f)), Main.rand.NextFloat(1, 1.4f));
+                    }
+                }
             }
         }
 
