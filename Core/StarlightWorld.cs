@@ -111,7 +111,7 @@ namespace StarlightRiver
 
             //SquidBoss arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-                NPC.NewNPC(SquidBossArena.Center.X * 16, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
+                NPC.NewNPC(SquidBossArena.Center.X * 16 + 8, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 
             //Keys
             foreach (Key key in Keys) key.Update();
@@ -168,6 +168,7 @@ namespace StarlightRiver
 
                 ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
                 ["SquidBossArenaSize"] = SquidBossArena.Size(),
+                ["PermafrostCenter"] = permafrostCenter,
 
                 [nameof(flags)] = (int)flags,
 
@@ -194,6 +195,7 @@ namespace StarlightRiver
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
+            permafrostCenter = tag.GetInt("PermafrostCenter");
 
             flags = (WorldFlags)tag.GetInt(nameof(flags));
 

@@ -143,10 +143,10 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         public void DrawWater(SpriteBatch spriteBatch)
         {
             Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralWater");
-            Vector2 pos = npc.Center + new Vector2(-832, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
+            Vector2 pos = npc.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
             var source = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, (int)npc.ai[0] - 5 * 16);
 
-            Vector2 pos2 = npc.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
+            Vector2 pos2 = npc.Center + new Vector2(-840, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
             var source2 = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, 2);
 
             Helper.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);

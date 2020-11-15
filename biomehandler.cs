@@ -22,7 +22,7 @@ namespace StarlightRiver
         public bool ZoneJungleCorrupt = false;
         public bool ZoneJungleBloody = false;
         public bool ZoneJungleHoly = false;
-        public bool ZoneAshHell = false;
+        public bool ZoneOvergrow = false;
         public bool zoneAluminum = false;
         public bool zonePermafrost = false;
         public bool zoneAshhell = false;
@@ -42,7 +42,7 @@ namespace StarlightRiver
             ZoneJungleCorrupt = (StarlightWorld.corruptJungleTiles > 50);
             ZoneJungleBloody = (StarlightWorld.bloodJungleTiles > 50);
             ZoneJungleHoly = (StarlightWorld.holyJungleTiles > 50);
-            ZoneAshHell = Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<Tiles.Overgrow.WallOvergrowGrass>() ||
+            ZoneOvergrow = Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<Tiles.Overgrow.WallOvergrowGrass>() ||
                 Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<Tiles.Overgrow.WallOvergrowBrick>() ||
                 Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<Tiles.Overgrow.WallOvergrowInvisible>();
             zoneAluminum = StarlightWorld.aluminumTiles > 50;
@@ -59,7 +59,7 @@ namespace StarlightRiver
             allMatch &= ZoneJungleCorrupt == modOther.ZoneJungleCorrupt;
             allMatch &= ZoneJungleBloody == modOther.ZoneJungleBloody;
             allMatch &= ZoneJungleHoly == modOther.ZoneJungleHoly;
-            allMatch &= ZoneAshHell == modOther.ZoneAshHell;
+            allMatch &= ZoneOvergrow == modOther.ZoneOvergrow;
             allMatch &= zoneAluminum == modOther.zoneAluminum;
             allMatch &= zonePermafrost == modOther.zonePermafrost;
             allMatch &= zoneAshhell == modOther.zoneAshhell;
@@ -74,7 +74,7 @@ namespace StarlightRiver
             modOther.ZoneJungleCorrupt = ZoneJungleCorrupt;
             modOther.ZoneJungleBloody = ZoneJungleBloody;
             modOther.ZoneJungleHoly = ZoneJungleHoly;
-            modOther.ZoneAshHell = ZoneAshHell;
+            modOther.ZoneOvergrow = ZoneOvergrow;
             modOther.zoneAluminum = zoneAluminum;
             modOther.zonePermafrost = zonePermafrost;
             modOther.zoneAshhell = zoneAshhell;
@@ -88,7 +88,7 @@ namespace StarlightRiver
             flags[2] = ZoneJungleCorrupt;
             flags[3] = ZoneJungleBloody;
             flags[4] = ZoneJungleHoly;
-            flags[5] = ZoneAshHell;
+            flags[5] = ZoneOvergrow;
             flags[6] = zoneAluminum;
             flags[7] = zonePermafrost;
             writer.Write(flags); //TODO add another BitsByte for moar biomes
@@ -102,7 +102,7 @@ namespace StarlightRiver
             ZoneJungleCorrupt = flags[2];
             ZoneJungleBloody = flags[3];
             ZoneJungleHoly = flags[4];
-            ZoneAshHell = flags[5];
+            ZoneOvergrow = flags[5];
             zoneAluminum = flags[6];
             zonePermafrost = flags[7];
         }
@@ -147,7 +147,7 @@ namespace StarlightRiver
                 ParticleOverlay.state = (int)OverlayState.HolyJungle;
             }
 
-            if (ZoneAshHell && Main.rand.Next(10) == 0)
+            if (ZoneOvergrow && Main.rand.Next(10) == 0)
             {
                 Dust.NewDustPerfect(Main.screenPosition - Vector2.One * 100 + new Vector2(Main.rand.Next(Main.screenWidth + 200), Main.rand.Next(Main.screenHeight + 200)),
                 DustType<Dusts.OvergrowDust>(), Vector2.Zero, 0, new Color(255, 255, 205) * 0.05f, 2);
@@ -157,7 +157,7 @@ namespace StarlightRiver
             if (ZoneGlass && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))
                 Helper.UnlockEntry<VitricEntry>(player);
 
-            if (ZoneAshHell && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
+            if (ZoneOvergrow && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
                 Helper.UnlockEntry<OvergrowEntry>(player);
 
             if (zonePermafrost && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))

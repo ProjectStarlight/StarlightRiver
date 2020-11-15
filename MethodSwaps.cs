@@ -497,7 +497,7 @@ namespace StarlightRiver
             AshForegroundSystem.DrawParticles(Main.spriteBatch);
 
             //Overgrow magic wells
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneAshHell)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow)
             {
                 int direction = Main.dungeonX > Main.spawnTileX ? -1 : 1;
                 if (StarlightWorld.rottime == 0)
@@ -520,6 +520,7 @@ namespace StarlightRiver
                 AshForegroundSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White, 
                     1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40)  )));
             }
+
             Main.spriteBatch.End();
             try
             {

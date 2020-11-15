@@ -55,7 +55,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 npc.dontTakeDamage = true;
                 GlobalTimer = 0;
 
-                foreach (var tentacle in tentacles) tentacle.Kill();
+                foreach (var tentacle in tentacles.Where(n => n.active)) tentacle.Kill();
 
                 return false;
             }
@@ -64,9 +64,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             {
                 Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
 
-                for(int k = 0; k < 7; k++)
+                for(int k = 0; k < 10; k++)
                 {
-                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), mod.GetGoreSlot("Gores/SquidGore" + k));
+                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Gores/SquidGore"));
                 }
                 return true;
             }
@@ -117,14 +117,15 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 spriteBatch.Draw(ringGlow, rect, ring.Frame(), color, npc.rotation, ring.Size() / 2, 0, 0);
             }
 
-            spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), Color.White, npc.rotation, body.Size() / 2, 1, 0, 0);
+            var lightColor = Lighting.GetColor((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
+            spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), lightColor, npc.rotation, body.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
             if (Phase >= (int)AIStates.SecondPhase)
             {
                 Texture2D sore = GetTexture(Texture);
-                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), Color.White, npc.rotation, sore.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), lightColor, npc.rotation, sore.Size() / 2, 1, 0, 0);
             }
         }
 
@@ -182,6 +183,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                 spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
+
+                Lighting.AddLight(npc.Center + off, color.ToVector3() * 0.5f);
             }
         }
 
@@ -463,6 +466,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     npc.rotation = 0;
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 240;
+
+                    for (int k = 0; k < tentacles.Count; k++)
+                        tentacles[k].Kill();
                 }
 
                 if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
@@ -477,11 +483,12 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
                     }
 
-                    for (int n = 0; n < 400; n++)
+                    for (int n = 0; n < 100; n++)
                     {
                         var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-                        var vel = Vector2.Normalize(new Vector2(off.X, -off.Y)).RotatedByRandom(0.3f) * Main.rand.NextFloat(14);
-                        Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f)), Main.rand.NextFloat(1, 1.4f));
+                        var vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
+                        var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
+                        Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 1.4f));
                     }
                 }
             }
