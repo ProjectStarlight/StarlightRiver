@@ -39,21 +39,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.ignoreWater = true;
         }
 
-        public override void Kill(int timeLeft)
-        {
-            Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
-
-            for (float num315 = 0.2f; num315 < 5; num315 += 0.25f)
-            {
-                float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
-                Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle))* num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, (10f- num315)/5f);
-                Main.dust[num316].noGravity = true;
-                Main.dust[num316].velocity = vecangle/3f;
-                Main.dust[num316].fadeIn = 0.5f;
-            }
-        }
-
 		public override void AI()
 		{
             Player player = projectile.Owner();
@@ -156,12 +141,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-            float maxalpha = MathHelper.Clamp((projectile.ai[0] - ChargeNeededToFire) / 20f, 0.25f, 0.5f);
-            float alpha = Math.Min(projectile.ai[0] / 60f, maxalpha)*Math.Min((float)projectile.timeLeft/8,1f);
-            Vector2 maxspread = new Vector2(Math.Min(projectile.ai[0] / MaxCharge, 1) * 0.5f,0.4f);
+            if (Main.LocalPlayer == Main.player[projectile.owner] || Main.netMode == NetmodeID.SinglePlayer)
+            {
+                Texture2D tex = Main.projectileTexture[projectile.type];
+                float maxalpha = MathHelper.Clamp((projectile.ai[0] - ChargeNeededToFire) / 20f, 0.25f, 0.5f);
+                float alpha = Math.Min(projectile.ai[0] / 60f, maxalpha) * Math.Min((float)projectile.timeLeft / 8, 1f);
+                Vector2 maxspread = new Vector2(Math.Min(projectile.ai[0] / MaxCharge, 1) * 0.5f, 0.4f);
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
+            }
         }
 
     }
@@ -182,6 +170,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.usesLocalNPCImmunity = true;
             projectile.localNPCHitCooldown = -1;
             projectile.extraUpdates = 2;
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
         }
 
         public override void AI()
@@ -195,6 +191,15 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.velocity.Y += 0.025f;
             projectile.localAI[0] += 1;
 
+            projectile.rotation = projectile.velocity.ToRotation();
+
+            for (int k = projectile.oldPos.Length-1; k >= 1; k-=1)
+            {
+                projectile.oldRot[k] = projectile.oldRot[k - 1];
+            }
+
+            projectile.oldRot[0] = projectile.rotation;
+
             if (projectile.localAI[0] == 1)
             {
                 projectile.scale = 0.5f+projectile.ai[0]/3f;
@@ -207,7 +212,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = Main.projectileTexture[projectile.type];
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.velocity.ToRotation()-MathHelper.ToRadians(90), tex.Size()/2f, projectile.scale, 0, 0);
+            for (int k = 0; k < projectile.oldPos.Length; k++)
+            {
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation - MathHelper.Pi/2f, tex.Size() / 2f, projectile.scale, 0, 0);
+            }
             return false;
         }
 
@@ -227,12 +235,37 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/GlassSpikeGlow");
-            Vector2 pos = projectile.Center + Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
-            Color color = new Color(150, 255, 255) * Math.Min(projectile.timeLeft / 100f, 0.5f);
-            float rot = projectile.velocity.ToRotation() + MathHelper.ToRadians(-135);
 
-            spriteBatch.Draw(tex, pos, tex.Frame(), color, rot, tex.Size() / 2, 1.8f + projectile.scale, 0, 0);
+            Vector2 offsets = Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
+
+            Color color2 = new Color(150, 255, 255) * Math.Min(projectile.timeLeft / 100f, 1f);
+
+            //Tried to do a thing but Additive doesn't want to play nicely with alpha, is there a way to blend with alpha?
+
+            /*for (float k = 0; k < projectile.oldPos.Length; k++)
+            {
+                if ((int)k % 4 == 0)
+                {
+                    float alpha = ((float)projectile.oldPos.Length - k) * 0.25f;
+
+                    Vector2 pos = projectile.oldPos[(int)k] + offsets;
+                    pos += new Vector2(projectile.width, projectile.height) / 2f;
+
+                    Color color = color2 * alpha;
+                    float rot = projectile.oldRot[(int)k] - MathHelper.TwoPi * 0.375f;
+
+                    spriteBatch.Draw(tex, pos, tex.Frame(), color, rot, tex.Size() / 2, projectile.scale*alpha, 0, 0);
+
+                }
+            }*/
+
+            Vector2 pos2 = projectile.Center + offsets;
+            float rot2 = projectile.rotation - MathHelper.TwoPi * 0.375f;
+
+            spriteBatch.Draw(tex, pos2, tex.Frame(), color2, rot2, tex.Size() / 2, 1.2f + projectile.scale, 0, 0);
+
         }
+
     }
 
 }

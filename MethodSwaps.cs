@@ -414,7 +414,7 @@ namespace StarlightRiver
                 }
 
             //Temple shroud, TODO: move this somewhere more sane later. Im crunched for time rn.
-            if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.DesertOpen || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
+            if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
             {
                 Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
             }

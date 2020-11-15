@@ -138,7 +138,7 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            StarlightWorld.SquidBossDowned = false;
+            StarlightWorld.Flag(WorldFlags.SquidBossDowned);
             return true;
         }
 
