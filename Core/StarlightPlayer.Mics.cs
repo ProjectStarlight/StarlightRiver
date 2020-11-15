@@ -18,8 +18,9 @@ namespace StarlightRiver.Core
     //I wanna put any of the accessory stats into a different file for tidiness-IDG
     public partial class StarlightPlayer : ModPlayer
     {
-        public short FiftyFiveLeafClover = 0;
-        public short DisinfectCooldown = 0;
-        public short EngineerTransform = 0;
+        public int FiftyFiveLeafClover = 0;
+        public int DisinfectCooldown = 0;
+        public int EngineerTransform = 0;
+        public int StoredFlares = 0;
     }
 }

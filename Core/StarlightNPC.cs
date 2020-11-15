@@ -33,5 +33,6 @@ namespace StarlightRiver.Core
             }
             return base.PreAI(npc);
         }
+
     }
 }
