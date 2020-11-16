@@ -254,8 +254,8 @@ namespace StarlightRiver
             gd.SetVertexBuffer(null);
         }
 
-        private static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
+        public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
-        private static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
+        public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
     }
 }

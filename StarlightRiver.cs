@@ -201,8 +201,12 @@ namespace StarlightRiver
                 Filters.Scene["IceCrystal"].Load();
 
                 Ref<Effect> screenRefWaves = new Ref<Effect>(GetEffect("Effects/Waves"));
-                Filters.Scene["Waves"] = new Filter(new ScreenShaderData(screenRefWaves, "IcePass"), EffectPriority.High);
+                Filters.Scene["Waves"] = new Filter(new ScreenShaderData(screenRefWaves, "WavesPass"), EffectPriority.High);
                 Filters.Scene["Waves"].Load();
+
+                Ref<Effect> screenRefWaterShine = new Ref<Effect>(GetEffect("Effects/WaterShine"));
+                Filters.Scene["WaterShine"] = new Filter(new ScreenShaderData(screenRefWaterShine, "WaterShinePass"), EffectPriority.High);
+                Filters.Scene["WaterShine"].Load();
 
                 lightingTest = new RenderTest();
             }

@@ -114,7 +114,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
 
                 spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.7f, npc.rotation, ring.Size() / 2, 0, 0);
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color, npc.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.04f, npc.rotation, ring.Size() / 2, 0, 0);
             }
 
             var lightColor = Lighting.GetColor((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
@@ -181,7 +181,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.8f, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
 
-                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color, npc.rotation,
+                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.4f, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
 
                 Lighting.AddLight(npc.Center + off, color.ToVector3() * 0.5f);
@@ -191,8 +191,6 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         public override void AI()
         {
             GlobalTimer++;
-
-            Phase = 6;
 
             if (Phase == (int)AIStates.SpawnEffects)
             {
