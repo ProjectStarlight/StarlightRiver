@@ -15,12 +15,6 @@ namespace StarlightRiver.Buffs
         {
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/MarioCumming";
-            return true;
-        }
-
         private int timer;
 
         public override void Update(Player player, ref int buffIndex)
