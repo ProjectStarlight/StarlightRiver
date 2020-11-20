@@ -79,7 +79,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 				for (int i = 0; i < 200; ++i)
 				{
 					NPC npc = Main.npc[i];
-					if (npc.active && npc.CanBeChasedBy(projectile) && !npc.friendly)
+					if (npc.active && npc.CanBeChasedBy(projectile) && !npc.friendly && !npc.noGravity)
 					{
 						float dist = projectile.Distance(npc.Center);
 						if (dist / 16 < range)
@@ -184,36 +184,39 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 			Player player = projectile.Owner();
 			Texture2D tex = mod.GetTexture("Projectiles/WeaponProjectiles/Summons/TentacleSummonTail2");
 			float dist = (projectile.position - player.Center).Length();
-			DrawBezier(spriteBatch, lightColor, tex, projectile.Center, player.Center, control1, control2, tex.Height / dist / 2, projectile.rotation);
+			TentacleDraw.DrawBezier(spriteBatch, lightColor, tex, projectile.Center, player.Center, control1, control2, tex.Height / dist / 2, projectile.rotation);
 			return true;
 		}
+	}
+	internal static class TentacleDraw 
+	{
 		public static void DrawBezier(SpriteBatch spriteBatch, Color lightColor, Texture2D texture, Vector2 endpoint, Vector2 startPoint, Vector2 c1, Vector2 c2, float chainsPerUse, float rotDis = 0f)
 		{
 			float width = texture.Width;
 			float length = (startPoint - endpoint).Length();
 			for (float i = 0; i <= 1; i += chainsPerUse)
 			{
+				float sin = 1 + (float)Math.Sin(i * length / 10);
+				float cos = 1 + (float)Math.Cos(i * length / 10);
+				Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 				Vector2 distBetween;
 				float projTrueRotation;
 				if (i != 0)
 				{
-					float x = TentacleDraw.EX(i, startPoint.X, c1.X, c2.X, endpoint.X);
-					float y = TentacleDraw.WHY(i, startPoint.Y, c1.Y, c2.Y, endpoint.Y);
+					float x = EX(i, startPoint.X, c1.X, c2.X, endpoint.X);
+					float y = WHY(i, startPoint.Y, c1.Y, c2.Y, endpoint.Y);
 					distBetween = new Vector2(x -
-				   TentacleDraw.EX(i - chainsPerUse, startPoint.X, c1.X, endpoint.X),
+				   EX(i - chainsPerUse, startPoint.X, c1.X, endpoint.X),
 				   y -
-				   TentacleDraw.WHY(i - chainsPerUse, startPoint.Y, c1.Y, endpoint.Y));
+				   WHY(i - chainsPerUse, startPoint.Y, c1.Y, endpoint.Y));
 					projTrueRotation = distBetween.ToRotation() - MathHelper.PiOver2 + rotDis;
 					Main.spriteBatch.Draw(texture, new Vector2(x - Main.screenPosition.X, y - Main.screenPosition.Y),
-				   new Rectangle(0, 0, texture.Width, texture.Height), lightColor, projTrueRotation,
+				   new Rectangle(0, 0, texture.Width, texture.Height), color, projTrueRotation,
 				   new Vector2(texture.Width * 0.5f, texture.Height * 0.5f), 1, SpriteEffects.None, 0);
 				}
 			}
 		}
-	}
-	internal static class TentacleDraw 
-	{ 
-			#region os's shit
+		#region os's shit
 		public static float EX(float t,
 		float x0, float x1, float x2, float x3)
 		{
