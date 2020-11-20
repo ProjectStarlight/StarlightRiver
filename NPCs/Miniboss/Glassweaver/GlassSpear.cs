@@ -75,6 +75,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
+
+            GlassMiniboss.SpawnShards(1, projectile.Center);
         }
     }
 }

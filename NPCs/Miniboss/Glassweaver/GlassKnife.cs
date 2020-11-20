@@ -46,6 +46,16 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 projectile.velocity = Vector2.Normalize(projectile.Center - target.Center) * -17;
         }
 
+        public override void Kill(int timeLeft)
+        {
+            Main.PlaySound(SoundID.Shatter, projectile.Center);
+
+            for (int k = 0; k < 5; k++)
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
+
+            GlassMiniboss.SpawnShards(1, projectile.Center);
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             int timer = 120 - projectile.timeLeft;
