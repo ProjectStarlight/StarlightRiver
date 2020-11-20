@@ -24,7 +24,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (StarlightWorld.DesertOpen) tile.inActive(true);
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen)) tile.inActive(true);
             else tile.inActive(false);
         }
     }

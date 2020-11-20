@@ -3,6 +3,8 @@ using Terraria.ModLoader;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -15,7 +17,15 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
-        Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2( -9.5f * 16, 76 * 16);
+        private float spinAngle = 0;
+
+        public static Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16);
+        private static Vector2 LeftForge => spawnPos + new Vector2(-350, 300);
+        private static Vector2 RightForge => spawnPos + new Vector2(350, 300);
+
+        //Tracking of the forges, if this ends up bloated i'll move it out to a seperate manager NPC but for now this is simpler
+        public int leftForgeCharge;
+        public int rightForgeCharge;
 
         public enum PhaseEnum
         {
@@ -31,8 +41,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void SetDefaults()
         {
-            npc.width = 64;
-            npc.height = 64;
+            npc.width = 56;
+            npc.height = 60;
             npc.lifeMax = 1500;
             npc.damage = 20;
             npc.aiStyle = -1;
@@ -112,8 +122,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                         case 6: SlashUpSlash(); break;
                         case 7: Idle(90); break;
                         case 8: if (attackVariant) SlashUpSlash(); else UppercutGlide(); break;
-
-                        //case 12: Greatsword(); break;
                     }
 
                     break;
@@ -128,6 +136,40 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             attackVariant = reader.ReadBoolean();
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            var glowTex = GetTexture("StarlightRiver/NPCs/Miniboss/Glassweaver/ForgeGlow");
+
+            for(int k = 0; k < leftForgeCharge; k++)
+            {
+                var pos = LeftForge - Main.screenPosition + new Vector2(-glowTex.Width / 2 + 2, -168 + k * -(glowTex.Height + 2));
+                spriteBatch.Draw(glowTex, pos, Color.Red * 0.3f);
+            }
+
+            for (int k = 0; k < rightForgeCharge; k++)
+            {
+                var pos = RightForge - Main.screenPosition + new Vector2(-glowTex.Width / 2 + 2, -168 + k * -(glowTex.Height + 2));
+                spriteBatch.Draw(glowTex, pos, Color.Red * 0.3f);
+            }
+
+            if (spinAngle != 0)
+            {
+                float sin = (float)Math.Sin(spinAngle + 1.57f * npc.direction);
+                int off = Math.Abs((int)(npc.frame.Width * sin));
+
+                SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                spriteBatch.Draw(GetTexture(Texture), new Rectangle((int)(npc.position.X - Main.screenPosition.X - off / 2 + npc.width / 2), (int)(npc.position.Y - Main.screenPosition.Y), off, npc.frame.Height), npc.frame, drawColor, 0, Vector2.Zero, effect, 0);
+            }
+
+            else
+            {
+                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, 0, npc.frame.Size() / 2, 1, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            }
+            
+            return false;
         }
     }
 }

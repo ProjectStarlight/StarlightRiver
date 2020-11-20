@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using System;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver
 {
@@ -337,7 +338,7 @@ namespace StarlightRiver
         {
             foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is ArenaActor))
             {
-                (Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+                (npc.modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
                 foreach (NPC npc2 in Main.npc.Where(n => n.active && n.modNPC is IUnderwater && !(n.modNPC is SquidBoss)))
                     (npc2.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
@@ -348,8 +349,20 @@ namespace StarlightRiver
                 foreach (NPC npc3 in Main.npc.Where(n => n.active && n.modNPC is SquidBoss))
                     (npc3.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
 
-                (Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).modNPC as ArenaActor).DrawWater(Main.spriteBatch);
-            }
+                var effect = Filters.Scene["Waves"].GetShader().Shader;
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+                effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
+                effect.Parameters["power"].SetValue(0.002f  + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
+                effect.Parameters["speed"].SetValue(50f);
+
+                Main.spriteBatch.Draw(CatherdalWaterTarget, Vector2.Zero - Main.LocalPlayer.velocity, Color.White);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }     
         }
 
         private delegate bool GrassConvertDelegate(int type, int x, int y);

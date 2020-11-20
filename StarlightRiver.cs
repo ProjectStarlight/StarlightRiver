@@ -122,7 +122,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneAshHell)
+                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
@@ -199,6 +199,14 @@ namespace StarlightRiver
                 Ref<Effect> screenRefIceCrystal = new Ref<Effect>(GetEffect("Effects/IceCrystal"));
                 Filters.Scene["IceCrystal"] = new Filter(new ScreenShaderData(screenRefIceCrystal, "IcePass"), EffectPriority.High);
                 Filters.Scene["IceCrystal"].Load();
+
+                Ref<Effect> screenRefWaves = new Ref<Effect>(GetEffect("Effects/Waves"));
+                Filters.Scene["Waves"] = new Filter(new ScreenShaderData(screenRefWaves, "WavesPass"), EffectPriority.High);
+                Filters.Scene["Waves"].Load();
+
+                Ref<Effect> screenRefWaterShine = new Ref<Effect>(GetEffect("Effects/WaterShine"));
+                Filters.Scene["WaterShine"] = new Filter(new ScreenShaderData(screenRefWaterShine, "WaterShinePass"), EffectPriority.High);
+                Filters.Scene["WaterShine"].Load();
 
                 lightingTest = new RenderTest();
             }

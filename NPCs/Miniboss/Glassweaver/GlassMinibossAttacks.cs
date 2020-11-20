@@ -90,7 +90,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void Greatsword()
         {
+            if(AttackTimer == 1)
+            {
 
+            }
         }
 
         private void UppercutGlide() //its just the other two methods put together because I re-use uppercut. Suck my cock.
@@ -145,7 +148,6 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             }
 
             npc.velocity.Y = 0.7f + Target.Center.Y > npc.Center.Y ? 1.2f : -0.6f; //still fall slowly
-            npc.spriteDirection = (int)AttackTimer / 4 % 2 == 0 ? -1 : 1; //brain moment
 
             if (AttackTimer <= startTime + 120)
             {
@@ -156,10 +158,29 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             else
                 npc.velocity.X *= 0.98f;
 
+            if(AttackTimer < startTime + 150) //rotate in air
+                spinAngle += 0.25f;
+
             if (AttackTimer == startTime + 150) //let him fall again after this shit is over
             {
                 npc.noGravity = false;
                 npc.velocity *= 0;
+                spinAngle = 0;
+            }
+        }
+
+        public static void SpawnShards(int amount, Vector2 pos)
+        {
+            for(int k = 0; k < amount; k++)
+            {
+                var spawnPos = pos + Vector2.One.RotatedByRandom(6.28f) * 10;
+                var proj = Projectile.NewProjectile(spawnPos, Vector2.Zero, ProjectileType<ChargeShard>(), 0, 0, Main.myPlayer);
+
+                var mp = Main.projectile[proj].modProjectile;
+                if (mp is ChargeShard)
+                {
+                    (mp as ChargeShard).target = pos.X > GlassMiniboss.spawnPos.X ? RightForge : LeftForge;
+                }
             }
         }
     }

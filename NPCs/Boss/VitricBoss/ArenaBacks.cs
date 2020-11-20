@@ -158,13 +158,13 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override void SpawnPlatforms(bool rising = true)
         {
-            PlacePlatform(176, 90, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(288, 330, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(208, 580, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(410, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(110, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(440, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(310, 760, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(160, 90, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(272, 330, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(192, 580, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(394, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(294, 760, NPCType<VitricBossPlatformDownSmall>(), rising);
         }
     }
 }

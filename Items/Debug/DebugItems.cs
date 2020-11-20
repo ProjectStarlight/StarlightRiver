@@ -42,6 +42,7 @@ namespace StarlightRiver.Items.Debug
             item.useTime = 10;
             item.rare = ItemRarityID.Green;
             item.autoReuse = true;
+            item.createTile = TileType<Tiles.Permafrost.BossGate>();
         }
 
         public override string Texture => "StarlightRiver/MarioCumming";
@@ -56,7 +57,10 @@ namespace StarlightRiver.Items.Debug
         {
             //NPC.NewNPC((StarlightWorld.VitricBiome.X - 10) * 16, (StarlightWorld.VitricBiome.Center.Y + 12) * 16, NPCType<NPCs.Miniboss.Glassweaver.GlassweaverWaiting>());
             //StarlightWorld.knownRecipies.Clear();
-            StarlightWorld.AshHellGen(new Terraria.World.Generation.GenerationProgress());
+
+            //StarlightWorld.AshHellGen(new Terraria.World.Generation.GenerationProgress());
+
+            StarlightWorld.FlipFlag(WorldFlags.SquidBossDowned);
             return true;
         }
 
@@ -76,6 +80,8 @@ namespace StarlightRiver.Items.Debug
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
+            return true; 
+
             if (theEffect is null) theEffect = Main.dedServ ? null : Filters.Scene["IceCrystal"].GetShader().Shader;
             if (theEffect is null) return true;
 
@@ -138,7 +144,6 @@ namespace StarlightRiver.Items.Debug
 
         public override bool UseItem(Player player)
         {
-            StarlightWorld.Flag(WorldFlags.SquidBossDowned);
             return true;
         }
 

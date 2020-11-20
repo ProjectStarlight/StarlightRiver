@@ -73,13 +73,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 {
                     int idol = ModContent.ItemType<GlassIdol>();
                     int type = ModContent.ItemType<VitricOre>();
-                    if (StarlightWorld.GlassweaverGift)
-                    {
-                        StarlightWorld.GlassweaverGift = false;
-                        Main.LocalPlayer.QuickSpawnItem(idol);
-                        Main.npcChatText = "I trust you'll take care with this.";
-                    }
-                    else if (Main.LocalPlayer.inventory.ConsumeItems(i => i.type == type, 6))
+
+                    if (Main.LocalPlayer.inventory.ConsumeItems(i => i.type == type, 6))
                     {
                         Main.LocalPlayer.QuickSpawnItem(idol);
                         Main.npcChatText = "Take care. They are remarkably fragile.";

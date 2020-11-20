@@ -173,8 +173,89 @@ namespace StarlightRiver
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
-        private static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) //just going to make this an overload for now. TODO: optional param conversion?
+        {
+            if (Main.dedServ || !OnScreen(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height))) return;
+            if (color == default) color = Color.White;
 
-        private static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
+            Matrix zoom = //Main.GameViewMatrix.ZoomMatrix;
+                new Matrix
+                (
+                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                );
+
+            ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
+            ApplyEffect.Parameters["offset"].SetValue(pos / new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["zoom"].SetValue(zoom);
+            ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
+
+            ApplyEffect.Parameters["targetTexture"].SetValue(tex);
+            ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
+
+            verticies[0] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X), ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
+            verticies[1] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X + source.Width), ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+            verticies[2] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X), ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+
+            verticies[3] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X + source.Width), ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+            verticies[4] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X + source.Width), ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
+            verticies[5] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + source.X), ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+
+            buffer.SetData(verticies);
+
+            Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
+
+            foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+            }
+
+            Main.instance.GraphicsDevice.SetVertexBuffer(null);
+        }
+
+        private static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice);
+
+        public static void DrawTriangle(Texture2D tex, Vector2[] target, Vector2[] source)
+        {
+            if (basicEffect is null) return;
+
+            basicEffect.TextureEnabled = true;
+            basicEffect.Texture = tex;
+            basicEffect.Alpha = 1;
+            basicEffect.View = new Matrix
+                (
+                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                );
+
+            var gd = Main.graphics.GraphicsDevice;
+            var points = new VertexPositionTexture[3];
+            var buffer = new VertexBuffer(gd, typeof(VertexPositionTexture), 3, BufferUsage.WriteOnly);
+
+            for(int k = 0; k < 3; k++)
+                points[k] = new VertexPositionTexture(new Vector3(ConvertX(target[k].X), ConvertY(target[k].Y), 0), source[k] / tex.Size());
+
+            buffer.SetData(points);
+
+            gd.SetVertexBuffer(buffer);
+
+            foreach(EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                gd.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+            }
+
+            gd.SetVertexBuffer(null);
+        }
+
+        public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
+
+        public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
     }
 }

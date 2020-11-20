@@ -105,6 +105,21 @@ namespace StarlightRiver.Items.Permafrost
             }
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.CopperPickaxe);
+            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
+            r.SetResult(this);
+            r.AddRecipe();
+
+            r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.TinPickaxe);
+            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
+            r.SetResult(this);
+            r.AddRecipe();
+        }
+
         public void DrawGlowmask(PlayerDrawInfo info)
         {
             Player player = info.drawPlayer;

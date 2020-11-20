@@ -33,13 +33,13 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            if (!StarlightWorld.DesertOpen || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
             Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(125, 162, 158) * 0.003f);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.DesertOpen || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
             Texture2D tex = GetTexture("StarlightRiver/RiftCrafting/Glow0");
             Texture2D tex2 = GetTexture("StarlightRiver/RiftCrafting/Glow1");
 

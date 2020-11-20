@@ -58,7 +58,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 if (Parent.npc.ai[0] != (int)SquidBoss.AIStates.SpawnAnimation)
                 {
                     NPC actor = Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor);
-                    underMax = (int)(actor.Center.Y - Parent.npc.Center.Y / 10f);
+                    underMax = (int)((actor.Center.Y - Parent.npc.Center.Y) / 10f) + 40;
                 }
 
                 if (Parent.npc.ai[0] == (int)SquidBoss.AIStates.ThirdPhase && Parent.npc.ai[1] > 240) underMax = 0;

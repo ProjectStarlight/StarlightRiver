@@ -75,11 +75,14 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
 
-                    if (AttackTimer == k * 100 + 40)
+                    if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 40 : 57))
                     {
                         Main.PlaySound(SoundID.Splash, npc.Center);
                         Main.PlaySound(SoundID.Item81, npc.Center);
+
+                        SplashDust(k);
                     }
+
                     int time = (int)AttackTimer - (k * 100 + 30);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.SavedPoint, tentacle.MovePoint, time / 60f);
                     tentacles[k].ai[1] += 5f; //make it squirm faster
@@ -91,6 +94,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                     int time = (int)AttackTimer - (k * 100 + 90);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovePoint, tentacle.SavedPoint, time / 210f);
+
+                    if(AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 260 : 205))
+                    {
+                        SplashDustSmall(k);
+                    }
                 }
             }
 
@@ -137,6 +145,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.SavedPoint, tentacle.MovePoint, (AttackTimer - 60) / 60f);
+
+                    if(AttackTimer == (Phase == (int)AIStates.FirstPhase ? 65 : 90))
+                    {
+                        SplashDust(k);
+                    }
                 }
             }
 
@@ -155,6 +168,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovePoint, tentacle.SavedPoint, (AttackTimer - 360) / 60f);
+
+                    if(AttackTimer == (Phase == (int)AIStates.FirstPhase ? 410 : 390))
+                    {
+                        SplashDustSmall(k);
+                    }
                 }
             }
 
@@ -292,6 +310,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
                     for (int n = 0; n < 40; n++)
                         Dust.NewDustPerfect(Vector2.Lerp(tentacle.SavedPoint, tentacle.MovePoint, n / 30f), DustID.Fireworks, Vector2.Zero);
+
                 }
             }
 
@@ -303,6 +322,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.SavedPoint, tentacle.MovePoint, AttackTimer / 120f);
+
+                    if (AttackTimer == 110)
+                        SplashDust(k);
                 }
             }
 
@@ -322,7 +344,6 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             {
                 for (int k = 0; k < 4; k++) //tentacles
                 {
-                    Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = new Vector2(tentacles[k].Center.X + (float)Math.Sin(AttackTimer / 10f + k) * 4f, tentacles[k].Center.Y + (float)Math.Cos(AttackTimer / 10f + k) * 2f);
                 }
             }
@@ -558,6 +579,27 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             }
 
             if (AttackTimer == 76) ResetAttack();
+        }
+        #endregion
+
+        #region visual helpers
+        private void SplashDustSmall(int k)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(4), 0, default, 2);
+                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(40), 0, default, Main.rand.NextFloat());
+            }
+            Main.PlaySound(SoundID.Splash, tentacles[k].Center);
+        }
+
+        private void SplashDust(int k)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(12), 0, default, 2);
+                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
+            }
         }
         #endregion
     }
