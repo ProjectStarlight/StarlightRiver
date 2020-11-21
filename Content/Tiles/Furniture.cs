@@ -7,7 +7,7 @@ using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
 
-namespace StarlightRiver.Tiles
+namespace StarlightRiver.Content.Tiles
 {
     public abstract class AutoFurniture
     {

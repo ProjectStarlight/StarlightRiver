@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow.Blocks
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class VineOvergrow : ModTile
     {
@@ -41,7 +41,7 @@ namespace StarlightRiver.Tiles.Overgrow.Blocks
             float sway = 0;
             float rot = StarlightWorld.rottime + i % 4 * 0.3f;
             for (int k = 1; k > 0; k++)
-                if (Main.tile[i, j - k].type == Type && sway <= 2.4f) sway += 0.3f; else break; spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Overgrow/VineOvergrowFlow"),
+                if (Main.tile[i, j - k].type == Type && sway <= 2.4f) sway += 0.3f; else break; spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Overgrow/VineOvergrowFlow"),
                     (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2((float)(1 + Math.Cos(rot * 2) + Math.Sin(rot)) * sway * sway, 0),
                     new Rectangle(Main.tile[i, j + 1].type != TileType<VineOvergrow>() ? 32 : j % 2 * 16, 0, 16, 16), Lighting.GetColor(i, j));
             return false;

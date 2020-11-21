@@ -2,7 +2,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Items.Starwood
+namespace StarlightRiver.Content.Items.Starwood.Weapons
 {
     public class StarwoodBoomerang : StarwoodItem
     {

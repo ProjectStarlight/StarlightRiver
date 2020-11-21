@@ -13,7 +13,7 @@ namespace StarlightRiver.Core.Loaders
 {
     public abstract class TileLoader : ILoadable
     {
-        Mod mod => StarlightRiver.Instance;
+        public Mod mod => StarlightRiver.Instance;
 
         public virtual string AssetRoot => "StarlightRiver/Assets/Unknown";
 

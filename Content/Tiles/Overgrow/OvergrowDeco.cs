@@ -9,7 +9,7 @@ using Terraria.ObjectData;
 using Microsoft.Xna.Framework;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow.Deco
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class Rock2x2 : ModTile
     {
@@ -24,7 +24,7 @@ namespace StarlightRiver.Tiles.Overgrow.Deco
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Deco/Rock2x2Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Rock2x2Glow");
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
             spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White);
@@ -36,6 +36,6 @@ namespace StarlightRiver.Tiles.Overgrow.Deco
     {
         public override string Texture => "StarlightRiver/MarioCumming";
 
-        public Rock2x2Item() : base("2x2 rock placer", "GOD FUCKIGN DAMNIT WHY CANT I JUST FUCK THE BIRD AAAAAAAA", TileType<Rock2x2>(), 7) { }
+        public Rock2x2Item() : base("2x2 rock placer", "It places... Rocks", TileType<Rock2x2>(), 7) { }
     }
 }

@@ -5,15 +5,22 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow.Blocks
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class GlowBrickOvergrow : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "GlowBrickOvergrow";
+            return true;
+        }
+
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 210, DustID.Stone, SoundID.Tink, new Color(79, 76, 71), ItemType<BrickOvergrowItem>(), true, true);
+            QuickBlock.QuickSet(this, 210, DustID.Stone, SoundID.Tink, new Color(79, 76, 71), ItemType<GlowBrickOvergrowItem>(), true, true);
             Main.tileMerge[Type][mod.GetTile("GrassOvergrow").Type] = true;
             Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
+            Main.tileMerge[Type][mod.GetTile("StoneOvergrow").Type] = true;
             Main.tileMerge[Type][mod.GetTile("LeafOvergrow").Type] = true;
 
             animationFrameHeight = 270;

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Items.Armor.Starwood;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Items.Starwood;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Items.Armor;
 
-namespace StarlightRiver.Items.Armor.Starwood
+namespace StarlightRiver.Content.Items.Starwood.Armors
 {
     [AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable

@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Items;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     // This class shows off a number of less common ModTile methods. These methods help our trap tile behave like vanilla traps.
     // In particular, hammer behavior is particularly tricky. The logic here is setup for multiple styles as well.
@@ -122,4 +123,6 @@ namespace StarlightRiver.Tiles.Overgrow
             }
         }
     }
+
+    public class DartOvergrowItem : QuickTileItem { public DartOvergrowItem() : base("Overgrow Dart Trap", "", TileType<DartTile>(), 0, OvergrowTileLoader.OvergrowItemDir + "DartOvergrowItem") { } }
 }

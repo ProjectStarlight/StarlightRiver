@@ -3,24 +3,31 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Items;
+using StarlightRiver.Tiles.Overgrow;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow.Blocks
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class GrassOvergrow : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "GrassOvergrow";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 210, DustType<Dusts.Leaf>(), SoundID.Tink, new Color(202, 157, 49), ItemType<BrickOvergrowItem>(), true, true);
-            Main.tileMerge[Type][TileType<BrickOvergrow>()] = true;
-            Main.tileMerge[Type][TileType<LeafOvergrow>()] = true;
-            Main.tileMerge[Type][mod.GetTile("CrusherTile").Type] = true;
+            Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
+            Main.tileMerge[Type][mod.GetTile("StoneOvergrow").Type] = true;
+            Main.tileMerge[Type][mod.GetTile("LeafOvergrow").Type] = true;
+            Main.tileMerge[Type][TileType<CrusherTile>()] = true;
             Main.tileMerge[Type][TileType<GlowBrickOvergrow>()] = true;
-
             TileID.Sets.Grass[Type] = true;
         }
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)

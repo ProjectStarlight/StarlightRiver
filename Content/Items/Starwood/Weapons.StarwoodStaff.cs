@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Starwood
+namespace StarlightRiver.Content.Items.Starwood.Weapons
 {
     public class StarwoodStaff : StarwoodItem
     {

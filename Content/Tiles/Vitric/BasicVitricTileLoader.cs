@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class BasicVitricTileLoader : TileLoader
 	{
