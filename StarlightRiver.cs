@@ -17,6 +17,7 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Content.Foregrounds;
 
 namespace StarlightRiver
 {
@@ -53,6 +54,8 @@ namespace StarlightRiver
         public AbilityHotkeys AbilityKeys { get; private set; }
 
         public List<RiftRecipe> RiftRecipes;
+
+        public List<Foreground> foregrounds;
 
         public static float Rotation;
 
@@ -210,6 +213,8 @@ namespace StarlightRiver
 
                 lightingTest = new RenderTest();
             }
+
+            foregrounds = new List<Foreground>();
 
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();

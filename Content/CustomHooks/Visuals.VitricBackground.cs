@@ -3,14 +3,35 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+namespace StarlightRiver.Content.CustomHooks
 {
-    public partial class StarlightRiver : Mod
+    class VitricBackground : HookGroup
     {
+        //Its just drawing, but its alot of drawing, and some questionable vanilla RenderBlack replication stuff that likely needs to be removed at some point.
+        public override SafetyLevel Safety => SafetyLevel.Questionable;
+
+        public override void Load()
+        {
+            ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
+            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackground, 1);
+
+            crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
+
+            On.Terraria.Main.DrawBackgroundBlackFill += DrawVitricBackground;
+            Main.OnPreDraw += BannerTarget;
+        }
+
+
+
         private static Effect crystalEffect;
         static ParticleSystem.Update UpdateForeground => UpdateForegroundBody;
         static ParticleSystem.Update UpdateBackground => UpdateBackgroundBody;
@@ -28,8 +49,8 @@ namespace StarlightRiver
             drag = 2.8f,
             forceGravity = new Vector2(0f, 0.20f),
             gravityStrengthMult = 1f
-        };     
-        
+        };
+
         private void DrawBanner(SpriteBatch spriteBatch, Vector2 pos)
         {
             bannerTimer += 0.01f;
@@ -57,12 +78,15 @@ namespace StarlightRiver
             BackgroundBanner.ropeSegments[index].color = color;
         }
 
-        private void LoadVitricBGSystems()
+        private void BannerTarget(GameTime obj)
         {
-            ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
-            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackground, 1);
+            var graphics = Main.graphics.GraphicsDevice;
+            graphics.SetRenderTarget(vitricBackgroundBannerTarget);
+            graphics.Clear(Color.Transparent);
 
-            crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
+            BackgroundBanner.DrawStrip(Main.screenPosition + new Vector2(0, 50));
+
+            graphics.SetRenderTarget(null);
         }
 
         private static void UpdateForegroundBody(Particle particle)
@@ -72,7 +96,7 @@ namespace StarlightRiver
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.25f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 20;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
-            particle.Color = new Color(155 , 200 + (particle.GetHashCode() % 2 == 0 ? 55 : 0), 255) * (particle.Timer / 1800f * 0.8f);
+            particle.Color = new Color(155, 200 + (particle.GetHashCode() % 2 == 0 ? 55 : 0), 255) * (particle.Timer / 1800f * 0.8f);
             particle.Scale = (particle.Timer / 1800f * 1.1f);
             particle.Rotation += 0.015f;
         }
@@ -101,10 +125,10 @@ namespace StarlightRiver
             {
                 Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
-                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
 
-                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
-                DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -123,9 +147,9 @@ namespace StarlightRiver
                     int off = 140 + (440 - k * 110);
                     if (k == 4) off = 400;
 
-                    DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
+                    DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
 
-                    if (k == 0) DrawLayer(basepoint, ModContent.GetTexture("StarlightRiver/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
+                    if (k == 0) DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
                     if (k == 2) ForegroundParticles.DrawParticles(Main.spriteBatch);
                 }
 
@@ -207,3 +231,4 @@ namespace StarlightRiver
         private static int GetParallaxOffsetY(float startpoint, float factor) => (int)((Main.screenPosition.Y + Main.screenHeight / 2 - startpoint) * factor);
     }
 }
+

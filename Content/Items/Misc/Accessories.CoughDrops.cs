@@ -16,9 +16,18 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 
         public override bool Autoload(ref string name)
         {
-            //StarlightPlayer.PreHurtEvent += PreHurtAccessory;
+            On.Terraria.Player.DelBuff += PlayerDelBuff;
             return true;
         }
+
+        private void PlayerDelBuff(On.Terraria.Player.orig_DelBuff orig, Player self, int buffid)
+        {
+            if (Helper.IsValidDebuff(self, buffid))
+                ProcEffect(self);
+
+            orig(self, buffid);
+        }
+
         public override void SafeUpdateEquip(Player player)
         {
             for (int i = 0; i < Player.MaxBuffs; i += 1)
