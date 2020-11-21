@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += WaterTarget;
         }
 
-        RenderTarget2D CatherdalWaterTarget;
+        public static RenderTarget2D CatherdalWaterTarget;
 
         private void WaterTarget(GameTime obj)
         {

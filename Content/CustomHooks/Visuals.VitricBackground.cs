@@ -30,8 +30,6 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += BannerTarget;
         }
 
-
-
         private static Effect crystalEffect;
         static ParticleSystem.Update UpdateForeground => UpdateForegroundBody;
         static ParticleSystem.Update UpdateBackground => UpdateBackgroundBody;

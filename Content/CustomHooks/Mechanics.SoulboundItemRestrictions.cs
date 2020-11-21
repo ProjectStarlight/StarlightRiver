@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
@@ -26,6 +28,13 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Player.dropItemCheck += SoulboundPriority;
             On.Terraria.Player.ItemFitsItemFrame += NoSoulboundFrame;
             On.Terraria.Player.ItemFitsWeaponRack += NoSoulboundRack;
+
+            IL.Terraria.UI.ChestUI.DepositAll += PreventSoulboundStack;
+        }
+
+        public override void Unload()
+        {
+            IL.Terraria.UI.ChestUI.DepositAll -= PreventSoulboundStack;
         }
 
         private bool NoSoulboundFrame(On.Terraria.Player.orig_ItemFitsItemFrame orig, Player self, Item i) => !(i.modItem is Items.SoulboundItem) && orig(self, i);
@@ -57,6 +66,29 @@ namespace StarlightRiver.Content.CustomHooks
         {
             if (self.inventory[self.selectedItem].modItem is Items.SoulboundItem || Main.mouseItem.modItem is Items.SoulboundItem) return;
             else orig(self);
+        }
+
+        //IL ----------------------------------------------------------------
+
+        private void PreventSoulboundStack(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+
+            c.TryGotoNext(i => i.MatchLdloc(1), i => i.MatchLdcI4(1), i => i.MatchSub());
+            Instruction target = c.Prev.Previous;
+
+            c.TryGotoPrev(n => n.MatchLdfld<Item>("favorited"));
+            c.Index++;
+
+            c.Emit(OpCodes.Ldloc_0);
+            c.EmitDelegate<SoulboundDelegate>(EmitSoulboundDel);
+            c.Emit(OpCodes.Brtrue_S, target);
+        }
+
+        private delegate bool SoulboundDelegate(int index);
+        private bool EmitSoulboundDel(int index)
+        {
+            return Main.LocalPlayer.inventory[index].modItem is Items.SoulboundItem;
         }
     }
 }
