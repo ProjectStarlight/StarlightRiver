@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Items.Permafrost
+namespace StarlightRiver.Content.Items.Permafrost.Weapons
 {
     public class TentacleSummon : ModItem
     {

@@ -6,12 +6,12 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 
-namespace StarlightRiver.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost
 {
     internal class BossGate : DummyTile
     {

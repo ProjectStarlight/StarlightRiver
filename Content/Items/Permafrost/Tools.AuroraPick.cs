@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Items.Permafrost
+namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
     class AuroraPick : ModItem, IGlowingItem
     {

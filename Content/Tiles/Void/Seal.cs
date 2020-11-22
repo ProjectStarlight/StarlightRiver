@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Void
+namespace StarlightRiver.Content.Tiles.Void
 {
     internal class Seal : ModTile
     {

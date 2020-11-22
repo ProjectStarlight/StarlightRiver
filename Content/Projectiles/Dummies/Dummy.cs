@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Projectiles.Dummies
+namespace StarlightRiver.Content.Projectiles.Dummies
 {
     internal abstract class Dummy : ModProjectile
     {

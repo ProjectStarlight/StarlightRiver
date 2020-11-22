@@ -38,5 +38,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             frameYOffset = 270 * ((j + Main.tileFrame[type]) % 6);
         }
     }
-    internal class GlowBrickOvergrowItem : QuickTileItem { public GlowBrickOvergrowItem() : base("Awoken Runic Bricks", "They have a pulse...", TileType<GlowBrickOvergrow>(), 1) { } }
+    internal class GlowBrickOvergrowItem : QuickTileItem { public GlowBrickOvergrowItem() : base("Awoken Runic Bricks", "They have a pulse...", TileType<GlowBrickOvergrow>(), 1, OvergrowTileLoader.OvergrowTileDir + "GlowBrickOvergrowItem") { } }
 }

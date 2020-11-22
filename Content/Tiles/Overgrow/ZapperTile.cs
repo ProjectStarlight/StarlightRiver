@@ -5,10 +5,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class ZapperTile : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "ZapperTile";
+            return true;
+        }
+
         public override void SetDefaults() { QuickBlock.QuickSetFurniture(this, 5, 2, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 80)); }
 
         public override void NearbyEffects(int i, int j, bool closer)

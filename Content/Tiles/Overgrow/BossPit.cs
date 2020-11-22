@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class BossPit : ModTile
     {

@@ -443,5 +443,6 @@ namespace StarlightRiver
         {
             return Main.LocalPlayer.inventory[index].modItem is Items.SoulboundItem;
         }
+        #endregion
     }
 }

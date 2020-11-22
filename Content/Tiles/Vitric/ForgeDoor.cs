@@ -10,7 +10,7 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     class ForgeDoor : ModTile
     {

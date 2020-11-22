@@ -1,14 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Overgrow.Blocks;
+using StarlightRiver.Content.Tiles.Overgrow;
+using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+namespace StarlightRiver.Content.WorldGeneration
 {
     public partial class StarlightWorld
     {
@@ -280,6 +282,7 @@ namespace StarlightRiver
         {
             if (!lenient && Rooms.Count > 20) return false; //limit to 20 rooms if not lenient
 
+            int typeBrickOvergrow = StarlightRiver.Instance.TileType("BrickOvergrow");
             for (int x = rect.X; x <= rect.X + rect.Width; x++)
             {
                 for (int y = rect.Y; y <= rect.Y + rect.Height; y++)
@@ -298,8 +301,8 @@ namespace StarlightRiver
                     Tile tile = Framing.GetTileSafely(x, y);
 
                     //keeps us from running into blacklisted tiles.
-                    if (tile.type == TileID.BlueDungeonBrick || tile.type == TileID.GreenDungeonBrick || tile.type == TileID.PinkDungeonBrick || tile.type == TileType<BrickOvergrow>() ||
-                        tile.type == TileID.LihzahrdBrick || tile.type == TileType<Tiles.Vitric.Blocks.VitricSand>() || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
+                    if (tile.type == TileID.BlueDungeonBrick || tile.type == TileID.GreenDungeonBrick || tile.type == TileID.PinkDungeonBrick || tile.type == typeBrickOvergrow ||
+                        tile.type == TileID.LihzahrdBrick || tile.type == TileType<VitricSand>() || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
                         return false;
                 }
             }
@@ -308,14 +311,15 @@ namespace StarlightRiver
 
         private static void PopulateHall(Rectangle hall, bool fancy)
         {
+            int typeBrickOvergrow = StarlightRiver.Instance.TileType("BrickOvergrow");
             for (int x = hall.X; x <= hall.X + hall.Width; x++)
             {
-                int xRel = x - hall.X;
+                //int xRel = x - hall.X;
                 for (int y = hall.Y; y <= hall.Y + hall.Height; y++)
                 {
-                    int yRel = y - hall.Y;
+                    //int yRel = y - hall.Y;
 
-                    WorldGen.PlaceTile(x, y, TileType<BrickOvergrow>(), true, true);
+                    WorldGen.PlaceTile(x, y, typeBrickOvergrow, true, true);
                 }
             }
         }
@@ -331,7 +335,8 @@ namespace StarlightRiver
             //bool left = false;
             //bool right = false;
 
-            int type = TileType<Tiles.Overgrow.MarkerGem>();
+            //int typeMarkerGem = TileType<Tiles.Overgrow.MarkerGem>();
+            int typeBrickOvergrow = StarlightRiver.Instance.TileType("BrickOvergrow");
 
             //for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y - 2).type == type) up = true;
             //for (int x = room.X; x <= room.X + room.Width; x++) if (Framing.GetTileSafely(x, room.Y + room.Height + 2).type == type) down = true;
@@ -340,12 +345,12 @@ namespace StarlightRiver
 
             for (int x = room.X; x <= room.X + room.Width; x++)
             {
-                int xRel = x - room.X;
+                //int xRel = x - room.X;
                 for (int y = room.Y; y <= room.Y + room.Height; y++)
                 {
-                    int yRel = y - room.Y;
+                    //int yRel = y - room.Y;
 
-                    WorldGen.PlaceTile(x, y, TileType<BrickOvergrow>(), true, true);
+                    WorldGen.PlaceTile(x, y, typeBrickOvergrow, true, true);
                 }
             }
             string path = fancy ? "Structures/OvergrowFancyRooms" : "Structures/OvergrowRooms";

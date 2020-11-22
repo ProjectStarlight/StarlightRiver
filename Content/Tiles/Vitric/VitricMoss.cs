@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Vitric.Blocks
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricMoss : ModTile
     {

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+namespace StarlightRiver.Content.WorldGeneration
 {
     public partial class StarlightWorld : ModWorld
     {

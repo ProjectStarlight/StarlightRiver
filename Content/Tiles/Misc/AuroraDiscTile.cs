@@ -2,14 +2,15 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Dusts;
 using StarlightRiver.Items;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Content.Items.Permafrost.Weapons;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Misc
+namespace StarlightRiver.Content.Tiles.Misc
 {
     internal class AuroraDiscTile : DummyTile
     {
@@ -29,7 +30,7 @@ namespace StarlightRiver.Tiles.Misc
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
             StarlightWorld.LearnRecipie("Aurora Disc");
-            Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Permafrost.AuroraDisc>());
+            Item.NewItem(new Vector2(i, j) * 16, ItemType<AuroraDisc>());
         }
     }
 

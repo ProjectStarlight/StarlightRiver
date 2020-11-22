@@ -11,9 +11,9 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Tiles.Permafrost;
+using StarlightRiver.Content.Tiles.Permafrost;
 
-namespace StarlightRiver.Items.Permafrost
+namespace StarlightRiver.Content.Items.Permafrost.Weapons
 {
     class AuroraDisc : ModItem
     {

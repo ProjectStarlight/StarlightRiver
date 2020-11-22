@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Items;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -9,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class DiscGate : ModTile
     {

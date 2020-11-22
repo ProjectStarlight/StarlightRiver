@@ -3,7 +3,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Tiles
+namespace StarlightRiver.Content.Tiles
 {
     internal abstract class DummyTile : ModTile
     {

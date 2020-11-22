@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class PermafrostTeleporter : ModTile
     {

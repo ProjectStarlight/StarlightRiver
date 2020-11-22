@@ -2,15 +2,21 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Items;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class WindowSmall : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "WindowSmall";
+            return true;
+        }
+
         public override int DummyType => ProjectileType<WindowSmallDummy>();
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 4, 6, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(255, 220, 0));
@@ -35,8 +41,8 @@ namespace StarlightRiver.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Window3");
-            Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Overgrow/WindowSmall");
+            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window3");
+            Texture2D tex2 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "WindowSmall");
 
             Rectangle target = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.position.Y - Main.screenPosition.Y), 4 * 16, 6 * 16);
 
@@ -62,7 +68,7 @@ namespace StarlightRiver.Tiles.Overgrow
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/PitGlow");
+            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "PitGlow");
 
             float off = (float)Math.Sin(projectile.ai[0]) * 0.05f;
 

@@ -7,12 +7,12 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using StarlightRiver.Items;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace StarlightRiver.Tiles.Permafrost.VFX
+namespace StarlightRiver.Content.Tiles.Permafrost.VFX
 {
     class CaveVFX : DummyTile
     {

@@ -10,7 +10,7 @@ using Terraria.Enums;
 using StarlightRiver.Items;
 using System;
 
-namespace StarlightRiver.Tiles.Permafrost.Decoration
+namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 {
     class SnowGrass : ModTile
     {

@@ -5,10 +5,16 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class MarkerGem : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "MarkerGem";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;

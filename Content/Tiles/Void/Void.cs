@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Void
+namespace StarlightRiver.Content.Tiles.Void
 {
     class VoidBrick : ModTile { public override void SetDefaults() => QuickBlock.QuickSet(this, 200, DustType<Dusts.Darkness>(), SoundID.Tink, new Color(45, 50, 30), ItemType<VoidBrickItem>()); }
     class VoidBrickItem : QuickTileItem { public VoidBrickItem() : base("Void Bricks", "", TileType<VoidBrick>(), 1) { } }

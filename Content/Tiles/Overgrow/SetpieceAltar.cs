@@ -2,7 +2,16 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class SetpieceAltar : ModTile { public override void SetDefaults() { QuickBlock.QuickSetFurniture(this, 10, 7, DustID.Stone, SoundID.Tink, true, new Color(100, 100, 80)); } }
+    internal class SetpieceAltar : ModTile 
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "SetpieceAltar";
+            return true;
+        }
+
+        public override void SetDefaults() { QuickBlock.QuickSetFurniture(this, 10, 7, DustID.Stone, SoundID.Tink, true, new Color(100, 100, 80)); } 
+    }
 }

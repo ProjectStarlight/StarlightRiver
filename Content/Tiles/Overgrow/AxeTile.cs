@@ -4,24 +4,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using Terraria.ID;
 using StarlightRiver.Items;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class AxeTile : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "BrickOvergrow";
+            return true;
+        }
+
         public override int DummyType => ProjectileType<AxeTileDummy>();
 
         public override void SetDefaults() => QuickBlock.QuickSet(this, 210, DustType<Dusts.Stone>(), SoundID.Tink, new Color(79, 76, 71), -1);
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Tiles/Overgrow/Blocks/BrickOvergrow";
-            return true;
-        }
     }
 
     class AxeTileDummy : Dummy
@@ -60,7 +60,7 @@ namespace StarlightRiver.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Items/Overgrow/ExecutionersAxe");
+            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowItemDir + "ExecutionersAxe");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Center.X / 16, (int)Center.Y / 16), Angle, new Vector2(0, tex.Height), 1.5f, 0, 0);
         }
     }

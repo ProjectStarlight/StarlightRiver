@@ -13,6 +13,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class Rock2x2 : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "Rock2x2";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
@@ -24,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Rock2x2Glow");
+            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Rock2x2Glow");
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
             spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White);

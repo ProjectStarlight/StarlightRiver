@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarlightRiver.Items.Permafrost
+namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
     class AuroraHammer
     {

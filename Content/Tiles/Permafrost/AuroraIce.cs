@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class AuroraIce : ModTile
     {

@@ -3,10 +3,12 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Projectiles
+namespace StarlightRiver.Content.Projectiles
 {
     public class DartShooter : ModProjectile
     {
+        public override string Texture => "StarlightRiver/Invisible";
+
         public Tile parent;
         public int direction;
 

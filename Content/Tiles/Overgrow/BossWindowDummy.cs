@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class BossWindowDummy : Dummy, IMoonlordLayerDrawable
     {
-        private readonly ParticleSystem particles = new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", update);
+        private readonly ParticleSystem particles = new ParticleSystem("StarlightRiver/Content/GUI/Assets/HolyBig", update);
 
         public BossWindowDummy() : base(TileType<BossWindow>(), 16, 16) { }
 
@@ -27,8 +27,8 @@ namespace StarlightRiver.Tiles.Overgrow
         {
             Vector2 dpos = projectile.Center - Main.screenPosition + Vector2.UnitY * 16;
 
-            Texture2D frametex = GetTexture("StarlightRiver/Tiles/Overgrow/WindowFrame");
-            Texture2D glasstex = GetTexture("StarlightRiver/Tiles/Overgrow/WindowGlass");
+            Texture2D frametex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "WindowFrame");
+            Texture2D glasstex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "WindowGlass");
 
             spriteBatch.Draw(glasstex, dpos, glasstex.Frame(), Color.White * 0.15f, 0, glasstex.Frame().Size() / 2, 1, 0, 0); //glass
             spriteBatch.Draw(frametex, dpos, frametex.Frame(), new Color(255, 255, 200), 0, frametex.Frame().Size() / 2, 1, 0, 0); //frame
@@ -133,15 +133,15 @@ namespace StarlightRiver.Tiles.Overgrow
             Rectangle target = new Rectangle((int)dpos.X - 564, (int)dpos.Y - 564, 1128, 1128);
 
             //background
-            Texture2D backtex1 = GetTexture("StarlightRiver/Tiles/Overgrow/Window4");
+            Texture2D backtex1 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window4");
             spriteBatch.Draw(backtex1, target, GetSource(0, backtex1), Color.White, 0, Vector2.Zero, 0, 0);
 
 
-            Texture2D backtex2 = GetTexture("StarlightRiver/Tiles/Overgrow/Window3");
+            Texture2D backtex2 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window3");
             spriteBatch.Draw(backtex2, target, GetSource(0.4f, backtex2), Color.White, 0, Vector2.Zero, 0, 0);
 
 
-            Texture2D backtex3 = GetTexture("StarlightRiver/Tiles/Overgrow/Window2");
+            Texture2D backtex3 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window2");
             spriteBatch.Draw(backtex3, target, GetSource(0.3f, backtex3), Color.White, 0, Vector2.Zero, 0, 0);
 
             //godbeams
@@ -154,7 +154,7 @@ namespace StarlightRiver.Tiles.Overgrow
 
             for (int k = -2; k < 3; k++)
             {
-                Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Overgrow/PitGlow");
+                Texture2D tex2 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "PitGlow");
                 float rot = (float)Main.time / 50 % 6.28f;
                 float sin = (float)Math.Sin(rot + k);
                 float sin2 = (float)Math.Sin(rot + k * 1.4f);
@@ -171,26 +171,26 @@ namespace StarlightRiver.Tiles.Overgrow
 
             for (int k = -9; k < 8; k++)// small waterfalls
             {
-                Texture2D watertex = GetTexture("StarlightRiver/Tiles/Overgrow/Waterfall");
+                Texture2D watertex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Waterfall");
                 int frame = (int)Main.time % 16 / 2;
                 spriteBatch.Draw(watertex, dpos + new Vector2(100, k * 64) + FindOffset(pos, 0.22f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 2, 0, 0);
             }
 
             //front row
-            Texture2D backtex4 = GetTexture("StarlightRiver/Tiles/Overgrow/Window1");
+            Texture2D backtex4 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window1");
                 spriteBatch.Draw(backtex4, target, GetSource(0.2f, backtex4), Color.White, 0, Vector2.Zero, 0, 0);
 
             for (int k = -6; k < 6; k++) //big waterfall
             {
-                Texture2D watertex = GetTexture("StarlightRiver/Tiles/Overgrow/Waterfall");
+                Texture2D watertex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Waterfall");
                 int frame = (int)Main.time % 16 / 2;
                 spriteBatch.Draw(watertex, dpos + new Vector2(300, k * 96) + FindOffset(pos, 0.1f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 3, 0, 0);
             }
 
             if (projectile.ai[0] <= 360) //wall
             {
-                Texture2D walltex = GetTexture("StarlightRiver/Tiles/Overgrow/Dor2");
-                Texture2D walltex2 = GetTexture("StarlightRiver/Tiles/Overgrow/Dor1");
+                Texture2D walltex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Dor2");
+                Texture2D walltex2 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Dor1");
                 Rectangle sourceRect = new Rectangle(0, 0, walltex.Width, walltex.Height - (int)(projectile.ai[0] / 360 * 764));
                 Rectangle sourceRect2 = new Rectangle(0, (int)(projectile.ai[0] / 360 * 564), walltex2.Width, walltex2.Height - (int)(projectile.ai[0] / 360 * 564));
 

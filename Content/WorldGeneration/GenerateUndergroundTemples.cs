@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Overgrow.Blocks;
+using StarlightRiver.Content.Tiles.Overgrow;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+namespace StarlightRiver.Content.WorldGeneration
 {
     public partial class StarlightWorld
     {

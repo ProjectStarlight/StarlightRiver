@@ -8,7 +8,7 @@ using Terraria.ObjectData;
 using System;
 using StarlightRiver.Projectiles;
 
-namespace StarlightRiver.Tiles.Permafrost
+namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	public class HostileIcicle : ModTile
 	{

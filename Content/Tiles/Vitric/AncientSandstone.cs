@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Vitric.Blocks
+namespace StarlightRiver.Tiles.Vitric
 {
     internal class AncientSandstone : ModTile
     {

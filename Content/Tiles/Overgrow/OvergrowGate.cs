@@ -6,10 +6,17 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class OvergrowGate : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "OvergrowGate";
+            return true;
+        }
+
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;

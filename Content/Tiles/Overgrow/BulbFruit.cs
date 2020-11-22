@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Items;
-using StarlightRiver.Projectiles.Dummies;
+using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class BulbFruit : DummyTile
     {
@@ -73,7 +73,7 @@ namespace StarlightRiver.Tiles.Overgrow
         {
             Tile tile = Main.tile[ParentX - 1, ParentY - 1];
 
-            Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Overgrow/BulbFruit"); //Draws the bulb itself
+            Texture2D tex2 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "BulbFruit"); //Draws the bulb itself
             Rectangle frame = new Rectangle((tile.frameX == 0 && tile.frameY == 0) ? 0 : 32, 0, 32, 32);
             float offset = (float)Math.Sin(StarlightWorld.rottime) * 3;
 
@@ -81,7 +81,7 @@ namespace StarlightRiver.Tiles.Overgrow
 
             if (tile.frameX == 0 && tile.frameY == 0) //Draws the glowing indicator
             {
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/BulbFruitGlow");
+                Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "BulbFruitGlow");
 
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(offset, 6) - Main.screenPosition, tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
                 Dust.NewDust(projectile.position, 32, 32, DustType<Dusts.Gold>(), 0, 0, 0, default, 0.3f);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Tiles.Overgrow
             for (int k = 2; k <= 30; k++) //Draws the vine
             {
                 if (Main.tile[ParentX, ParentY - k].active()) break;
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/VineOvergrowFlow");
+                Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "VineOvergrowFlow");
                 float sway = (float)Math.Sin(StarlightWorld.rottime + k * 0.2f) * 3;
 
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(sway - 8, k * -16) - Main.screenPosition, new Rectangle(16 * k % 3, 0, 16, 16), Lighting.GetColor(ParentX, ParentY - k));

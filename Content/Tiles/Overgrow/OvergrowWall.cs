@@ -7,10 +7,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     public class WallOvergrowGrass : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "WallOvergrowGrass";
+            return true;
+        }
+
         public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37)); }
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {

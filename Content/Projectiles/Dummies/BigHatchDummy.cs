@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using StarlightRiver.Content.Tiles.Overgrow;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Projectiles.Dummies
+namespace StarlightRiver.Content.Projectiles.Dummies
 {
     internal class BigHatchDummy : Dummy, IDrawAdditive
     {
-        public BigHatchDummy() : base(TileType<Tiles.Overgrow.BigHatchOvergrow>(), 16, 16) { }
+        public BigHatchDummy() : base(TileType<BigHatchOvergrow>(), 16, 16) { }
         public override void Update()
         {
             projectile.ai[0] += 0.01f;

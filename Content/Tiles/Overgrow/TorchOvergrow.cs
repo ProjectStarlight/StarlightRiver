@@ -7,10 +7,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class TorchOvergrow : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "TorchOvergrow";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Gold2>(), SoundID.Tink, false, Color.Yellow);
@@ -26,11 +32,17 @@ namespace StarlightRiver.Tiles.Overgrow
 
     public class TorchOvergrowItem : QuickTileItem
     {
-        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", TileType<TorchOvergrow>(), 0) { }
+        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", TileType<TorchOvergrow>(), 0, OvergrowTileLoader.OvergrowItemDir + "TorchOvergrowItem") { }
     }
 
     internal class BlueTorchOvergrow : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "BlueTorchOvergrow";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.BlueStamina>(), SoundID.Tink, false, Color.Teal);
@@ -46,6 +58,6 @@ namespace StarlightRiver.Tiles.Overgrow
 
     public class BlueTorchOvergrowItem : QuickTileItem
     {
-        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", TileType<BlueTorchOvergrow>(), 0) { }
+        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", TileType<BlueTorchOvergrow>(), 0, OvergrowTileLoader.OvergrowItemDir + "BlueTorchOvergrowItem") { }
     }
 }

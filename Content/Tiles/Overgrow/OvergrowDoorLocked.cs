@@ -4,10 +4,16 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class OvergrowDoorLocked : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = OvergrowTileLoader.OvergrowTileDir + "OvergrowDoorLocked";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;

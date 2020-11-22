@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Permafrost;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -7,10 +6,11 @@ using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 using System.Collections.Generic;
+using StarlightRiver.Content.Tiles.Permafrost;
 using System;
 using System.Linq;
 
-namespace StarlightRiver
+namespace StarlightRiver.Content.WorldGeneration
 {
     public partial class StarlightWorld : ModWorld
     {

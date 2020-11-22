@@ -1,6 +1,6 @@
 ﻿using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles.Overgrow
+namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class BossWindow : DummyTile
     {
