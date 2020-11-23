@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Tiles
 {
     abstract class LootBubble : DummyTile

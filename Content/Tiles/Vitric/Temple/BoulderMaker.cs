@@ -28,7 +28,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class BoulderMakerItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1) { }
     }

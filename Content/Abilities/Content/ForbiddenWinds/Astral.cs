@@ -11,7 +11,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
     class Astral : InfusionItem<Dash>
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
-        public override string Texture => "StarlightRiver/Abilities/Content/ForbiddenWinds/Astral";
+        public override string Texture => "StarlightRiver/Assets/Abilities/Content/ForbiddenWinds/Astral";
 
         public override void SetStaticDefaults()
         {

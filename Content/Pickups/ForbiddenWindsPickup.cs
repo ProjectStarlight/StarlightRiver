@@ -19,7 +19,7 @@ namespace StarlightRiver.Pickups
 {
     internal class ForbiddenWindsPickup : AbilityPickup
     {
-        public override string Texture => "StarlightRiver/Pickups/ForbiddenWinds";
+        public override string Texture => "StarlightRiver/Assets/Pickups/ForbiddenWinds";
 
         public override Color GlowColor => new Color(160, 230, 255);
 

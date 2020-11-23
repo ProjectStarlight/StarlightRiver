@@ -10,7 +10,7 @@ namespace StarlightRiver.Projectiles
 {
     public class Flamebolt : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults()
         {

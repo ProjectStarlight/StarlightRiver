@@ -14,6 +14,8 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
     [AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodHat";
+
         public StarwoodHat() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodHat_Alt")) { }
         public override void SetStaticDefaults()
         {
@@ -47,6 +49,8 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
     [AutoloadEquip(EquipType.Body)]
     public class StarwoodChest : StarwoodItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodChest";
+
         public StarwoodChest() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodChest_Alt")) { }
         public override bool Autoload(ref string name)//adds method to Starlight player event
         {
@@ -102,6 +106,8 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
     [AutoloadEquip(EquipType.Legs)]
     public class StarwoodBoots : StarwoodItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodBoots";
+
         public StarwoodBoots() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodBoots_Alt")) { }
         public override void SetStaticDefaults()
         {

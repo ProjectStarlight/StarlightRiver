@@ -16,7 +16,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
     internal class ArenaBottom : ModNPC
     {
         public VitricBoss Parent;
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -124,7 +124,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 {
                     Vector2 pos = npc.position + new Vector2(k, 32 - off) - Main.screenPosition; //actually draw the crystals lol
                     Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off) - Main.screenPosition; //actually draw the crystals lol
-                    Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/CrystalWave");
+                    Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave");
                     spriteBatch.Draw(tex, pos, Color.White);
                     spriteBatch.Draw(tex, pos2, Color.White);
                 }

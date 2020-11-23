@@ -85,17 +85,17 @@ namespace StarlightRiver.Backgrounds
 
         public override int ChooseFarTexture()
         {
-            return mod.GetBackgroundSlot("Backgrounds/CorruptJungleSurface1");
+            return mod.GetBackgroundSlot("Assets/Backgrounds/CorruptJungleSurface1");
         }
 
         public override int ChooseMiddleTexture()
         {
-            return mod.GetBackgroundSlot("Backgrounds/CorruptJungleSurface3");
+            return mod.GetBackgroundSlot("Assets/Backgrounds/CorruptJungleSurface3");
         }
 
         public override int ChooseCloseTexture(ref float scale, ref double parallax, ref float a, ref float b)
         {
-            return mod.GetBackgroundSlot("Backgrounds/CorruptJungleSurface2");
+            return mod.GetBackgroundSlot("Assets/Backgrounds/CorruptJungleSurface2");
         }
     }
 }

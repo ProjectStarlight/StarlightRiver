@@ -16,7 +16,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         public static int prismsPerSlot = 2;
 
         #region tml hooks
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ebony Prism");

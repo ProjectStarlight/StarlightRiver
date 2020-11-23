@@ -16,7 +16,7 @@ namespace StarlightRiver.Tiles.Vitric
         {
         }
 
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
     }
 
     internal class AncientSandstoneTorch : ModTile

@@ -112,7 +112,7 @@ namespace StarlightRiver.Projectiles.Ammo
             return base.CanHitNPC(target);
         }
 
-        public override string Texture => "StarlightRiver/Projectiles/Ammo/VitricArrowShattered";
+        public override string Texture => "StarlightRiver/Assets/Projectiles/Ammo/VitricArrowShattered";
 
         public override void SetStaticDefaults()
         {

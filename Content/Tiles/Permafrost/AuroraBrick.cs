@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class AuroraBrickDoorItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public AuroraBrickDoorItem() : base("Debug Brick Placer", "", TileType<AuroraBrickDoor>(), ItemRarityID.White) { }
     }

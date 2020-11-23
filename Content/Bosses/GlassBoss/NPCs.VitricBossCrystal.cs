@@ -16,6 +16,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         public Vector2 TargetPos;
         public VitricBoss Parent;
 
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBossCrystal";
+
         public override bool CheckActive() => npc.ai[2] == 4;
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
@@ -234,7 +236,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/CrystalGlow"); //glowy outline
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/CrystalGlow"); //glowy outline
             if (npc.ai[0] == 0)
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 

@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class PermafrostTeleporterItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public PermafrostTeleporterItem() : base("PermafrostTeleporter", "I came", TileType<PermafrostTeleporter>(), 1) { }
     }

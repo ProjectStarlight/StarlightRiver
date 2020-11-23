@@ -16,7 +16,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
     {
         public OvergrowBoss parent;
         public Player holder;
-        public override string Texture => "StarlightRiver/Projectiles/WeaponProjectiles/ShakerBall";
+        public override string Texture => "StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerBall";
 
         public override void SetStaticDefaults()
         {

@@ -8,7 +8,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
     internal class OvergrowBossVerticalPlatform : MovingPlatform
     {
-        public override string Texture => "StarlightRiver/NPCs/Boss/OvergrowBoss/OvergrowBossPlatform";
+        public override string Texture => "StarlightRiver/Assets/NPCs/Boss/OvergrowBoss/OvergrowBossPlatform";
 
         public override void SafeSetDefaults()
         {
@@ -26,7 +26,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
     internal class OvergrowBossCircularPlatform : MovingPlatform
     {
-        public override string Texture => "StarlightRiver/NPCs/Boss/OvergrowBoss/OvergrowBossPlatform";
+        public override string Texture => "StarlightRiver/Assets/NPCs/Boss/OvergrowBoss/OvergrowBossPlatform";
 
         public override void SafeSetDefaults()
         {

@@ -12,7 +12,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Backgrounds/Blank");
+            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/Blank");
         }
     }
 
@@ -22,7 +22,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Backgrounds/PermafrostBack");
+            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/PermafrostBack");
         }
     }
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Backgrounds/corruptjunglebackground");
+            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
         }
     }
 
@@ -42,7 +42,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 
@@ -52,7 +52,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 }

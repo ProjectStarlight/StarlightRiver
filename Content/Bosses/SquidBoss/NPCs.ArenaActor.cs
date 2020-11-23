@@ -19,7 +19,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         int whitelistID = WallType<AuroraBrickWall>();
         public float WaterLevel { get => npc.Center.Y + 35 * 16 - npc.ai[0]; }
 
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("");
 

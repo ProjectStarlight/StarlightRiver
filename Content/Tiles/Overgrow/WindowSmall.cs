@@ -7,8 +7,6 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class WindowSmall : DummyTile
@@ -32,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WindowSmallItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public WindowSmallItem() : base("Smol Window", "Titties", TileType<WindowSmall>(), 1) { }
     }

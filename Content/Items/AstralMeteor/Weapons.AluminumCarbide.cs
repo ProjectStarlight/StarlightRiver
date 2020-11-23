@@ -8,8 +8,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Items.Aluminum
 {
     class AluminumCarbide : ModItem, IGlowingItem
@@ -87,7 +85,7 @@ namespace StarlightRiver.Items.Aluminum
 
     class CarbideLaser : ModProjectile, IDrawAdditive
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults()
         {

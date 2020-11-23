@@ -18,8 +18,6 @@ using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver
 {
     public partial class StarlightRiver : Mod

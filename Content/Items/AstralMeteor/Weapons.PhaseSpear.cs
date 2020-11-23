@@ -25,7 +25,7 @@ namespace StarlightRiver.Items.Aluminum
             gemID = gem;
         }
 
-        public override string Texture => "StarlightRiver/Items/Aluminum/Phasespear";
+        public override string Texture => "StarlightRiver/Assets/Items/Aluminum/Phasespear";
 
         public override void SetStaticDefaults()
         {
@@ -87,7 +87,7 @@ namespace StarlightRiver.Items.Aluminum
 
         public PhasespearProjectile(Color color) : base(30, 40, 120) { glowColor = color; }
 
-        public override string Texture => "StarlightRiver/Items/Aluminum/PhasespearProjectile";
+        public override string Texture => "StarlightRiver/Assets/Items/Aluminum/PhasespearProjectile";
 
         public override void SafeAI()
         {
@@ -118,7 +118,7 @@ namespace StarlightRiver.Items.Aluminum
 
     internal class PhasespearNode : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
         public Color color;
 
         public override void SetDefaults()

@@ -6,8 +6,6 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria.ID;

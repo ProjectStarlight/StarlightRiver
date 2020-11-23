@@ -13,7 +13,7 @@ namespace StarlightRiver.Items
 {
     internal class StaminaPickup : ModItem
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override bool ItemSpace(Player player)
         {

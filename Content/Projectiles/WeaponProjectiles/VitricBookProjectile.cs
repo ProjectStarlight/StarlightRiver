@@ -28,7 +28,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.usesLocalNPCImmunity = true;
 
         }
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
 
         public override void SetStaticDefaults()
         {
@@ -107,7 +107,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.ignoreWater = true;
 
         }
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
 
         public override void SetStaticDefaults()
         {
@@ -156,7 +156,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.extraUpdates = 40;
 
         }
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
 
         public override void SetStaticDefaults()
         {

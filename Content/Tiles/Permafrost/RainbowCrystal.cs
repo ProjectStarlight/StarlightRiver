@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         class RainbowCrystalItem : QuickTileItem
         {
-            public override string Texture => "StarlightRiver/MarioCumming";
+            public override string Texture => "StarlightRiver/Assets/MarioCumming";
             public RainbowCrystalItem() : base("RainbowCrystal Placer", "", TileType<RainbowCrystal>(), ItemRarityID.White) { }
         }
     }

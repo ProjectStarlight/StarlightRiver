@@ -17,7 +17,7 @@ namespace StarlightRiver.Projectiles.Ability
 {
     internal class Purifier : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {
@@ -172,7 +172,7 @@ namespace StarlightRiver.Projectiles.Ability
 
     internal class PurifierReturn : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {

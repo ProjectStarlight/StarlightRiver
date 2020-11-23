@@ -13,7 +13,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     public class Tentacle : ModNPC, IUnderwater
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
         public SquidBoss Parent { get; set; }
         public Vector2 MovePoint;
         public Vector2 SavedPoint;

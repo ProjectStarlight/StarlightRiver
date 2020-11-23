@@ -10,7 +10,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Nanocomposite
 {
     internal class NanocompositeArrow : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {

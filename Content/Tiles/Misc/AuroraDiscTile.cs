@@ -9,8 +9,6 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Misc
 {
     internal class AuroraDiscTile : DummyTile
@@ -80,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
     class DebugDisc : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DebugDisc() : base("Debug Disc Placer", "Dragon Sex", TileType<AuroraDiscTile>(), 1) { }
     }

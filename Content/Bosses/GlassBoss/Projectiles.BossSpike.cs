@@ -10,7 +10,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class BossSpike : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {
@@ -56,7 +56,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             if (projectile.ai[0] > 90)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/BossSpike");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/BossSpike");
 
                 for (int k = 0; k < 4; k++)
                 {

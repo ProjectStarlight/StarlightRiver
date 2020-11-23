@@ -34,6 +34,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBoss";
 
         #region tml hooks
 
@@ -127,13 +128,13 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
             if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/Shield");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition, tex.Frame(), Color.White * (0.45f + ((float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f)), 0, tex.Size() / 2, 1, 0, 0);
             }
 
             if (Phase == (int)AIStates.FirstToSecond)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/TransitionPhaseGlow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/TransitionPhaseGlow");
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
             }
         }
@@ -461,7 +462,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (IconFrameCounter++ >= 5) { IconFrame++; IconFrameCounter = 0; }
             if (IconFrame > 3) IconFrame = 0;
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/VitricBoss_Head_Boss");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricBoss_Head_Boss");
             spriteBatch.Draw(tex, center, new Rectangle(0, IconFrame * 30, 30, 30), color, npc.rotation, Vector2.One * 15, scale, 0, 0);
         }
     }

@@ -82,7 +82,7 @@ namespace StarlightRiver.Pickups
 
     class StaminaShardTileItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Pickups/Stamina1";
+        public override string Texture => "StarlightRiver/Assets/Pickups/Stamina1";
 
         public StaminaShardTileItem() : base("Stamina Shard", "PENIS", TileType<StaminaShardTile>(), 1) { }
     }

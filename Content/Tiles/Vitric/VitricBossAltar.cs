@@ -147,7 +147,7 @@ namespace StarlightRiver.Tiles.Vitric
 
             //Barriers
             Vector2 center = projectile.Center + new Vector2(0, 56);
-            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/VitricBossBarrier");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricBossBarrier");
             Color color = new Color(180, 225, 255);
             int off = (int)(projectile.ai[0] / 120f * tex.Height);
 

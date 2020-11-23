@@ -8,8 +8,6 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Tiles.Temple
 {
     class JarTall : DummyTile
@@ -67,6 +65,6 @@ namespace StarlightRiver.Tiles.Temple
     public class JarTallItem : QuickTileItem
     {
         public JarTallItem() : base("Stamina Jar Placer (Tall)", "Places a stamina jar, for debugging.", TileType<JarTall>(), -12) { }
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
     }
 }

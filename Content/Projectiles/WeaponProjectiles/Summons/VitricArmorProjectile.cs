@@ -156,7 +156,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override string Texture
         {
-            get { return ("StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave"); }
+            get { return ("StarlightRiver/Bosses/GlassBoss/CrystalWave"); }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

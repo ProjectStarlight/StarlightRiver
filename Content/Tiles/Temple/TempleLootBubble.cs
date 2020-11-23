@@ -44,7 +44,7 @@ namespace StarlightRiver.Tiles.Temple
 
     class TestBubble : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Tiles/Bubble";
+        public override string Texture => "StarlightRiver/Assets/Tiles/Bubble";
 
         public TestBubble() : base("Bubble", "ngh", TileType<TempleLootBubble>(), 5) { }
     }

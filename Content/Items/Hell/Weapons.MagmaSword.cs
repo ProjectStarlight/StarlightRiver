@@ -9,8 +9,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Items.Hell
 {
     class MagmaSword : ModItem, IGlowingItem
@@ -128,7 +126,7 @@ namespace StarlightRiver.Items.Hell
 
     class MagmaSwordBurn : ModProjectile, IDrawAdditive
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 

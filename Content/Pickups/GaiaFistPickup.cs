@@ -15,7 +15,7 @@ namespace StarlightRiver.Pickups
 {
     internal class GaiaFistPickup : AbilityPickup
     {
-        public override string Texture => "StarlightRiver/Pickups/GaiaFist";
+        public override string Texture => "StarlightRiver/Assets/Pickups/GaiaFist";
         public override Color GlowColor => new Color(180, 220, 140);
 
         public override bool CanPickup(Player player)

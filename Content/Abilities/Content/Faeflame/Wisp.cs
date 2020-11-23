@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 {
     public class Wisp : Ability
     {
-        public override string Texture => "StarlightRiver/Pickups/Faeflame";
+        public override string Texture => "StarlightRiver/Assets/Pickups/Faeflame";
         public override float ActivationCostDefault => 0.5f;
         public override Color Color => new Color(255, 247, 126);
 

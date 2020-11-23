@@ -17,7 +17,7 @@ namespace StarlightRiver.NPCs.Pickups
 {
     internal class Purity : ModNPC
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults()
         {

@@ -85,7 +85,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
     class Shockwave : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
 
@@ -120,7 +120,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
     class ShockwaveSpike : ModProjectile, IDrawAdditive
     {
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Stone Pillar");
 

@@ -28,7 +28,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class EntranceDoorItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1) { }
     }

@@ -108,7 +108,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class JellyShroomItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", TileType<JellyShroom>(), 0) { }
     }

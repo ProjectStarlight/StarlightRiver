@@ -7,7 +7,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
     internal class VitricBossPlatformUp : MovingPlatform
     {
         public const int MaxHeight = 880;
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VitricBossPlatform";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBossPlatform";
 
         public override bool CheckActive()
         {
@@ -83,7 +83,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
     internal class VitricBossPlatformUpSmall : VitricBossPlatformUp
     {
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VitricBossPlatformSmall";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {
@@ -96,7 +96,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
     internal class VitricBossPlatformDownSmall : VitricBossPlatformDown
     {
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VitricBossPlatformSmall";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {

@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Projectiles.Dummies
             DisplayName.SetDefault("");
         }
 
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {

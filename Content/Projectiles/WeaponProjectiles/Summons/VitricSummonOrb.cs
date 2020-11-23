@@ -308,7 +308,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             MovementLerp += (projectile.velocity.X - MovementLerp) / 20f;
         }
 
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/CrystalWave";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave";
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {

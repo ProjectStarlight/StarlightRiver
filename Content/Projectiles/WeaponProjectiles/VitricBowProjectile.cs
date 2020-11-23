@@ -19,7 +19,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         private int FireRate => 6;
         private float ItemFirerate { get; set; } = default;
 
-        public override string Texture => "StarlightRiver/NPCs/Boss/VitricBoss/VolleyTell";
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VolleyTell";
 
         public override bool? CanHitNPC(NPC target) => false;
 

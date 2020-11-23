@@ -81,14 +81,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class DiscGateItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DiscGateItem() : base("Disc Gate", "Destroyed when opened with an aurora disc", TileType<DiscGate>(), ItemRarityID.White) { }
     }
 
     class DiscGateItem2 : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DiscGateItem2() : base("Disc Gate 2", "Le Hole", TileType<DiscHole>(), ItemRarityID.White) { }
     }

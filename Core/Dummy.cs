@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
 
         public virtual bool ValidTile(Tile tile) => tile.type == ValidType;
 
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public virtual void Update() { }
 

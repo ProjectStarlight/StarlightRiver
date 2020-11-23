@@ -8,8 +8,6 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
     class AuroraAxe : ModItem, IGlowingItem
@@ -152,7 +150,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
     {
         Color thisColor = Color.White;
 
-        public override string Texture => "StarlightRiver/Invisible";
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {

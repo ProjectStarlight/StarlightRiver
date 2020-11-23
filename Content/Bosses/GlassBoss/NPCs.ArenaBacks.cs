@@ -15,9 +15,15 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBackdropLeft";
+
         public override bool CheckActive() => false;
+
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
+
         public override bool? CanBeHitByItem(Player player, Item item) => false;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("");
@@ -142,6 +148,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
     {
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBackdropRight";
+
         public override void ScrollDraw(SpriteBatch sb)
         {
             Texture2D tex = GetTexture(Texture);

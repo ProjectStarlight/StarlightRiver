@@ -50,7 +50,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1) { }
     }
@@ -104,7 +104,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class TutorialDoor2Item : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1) { }
     }

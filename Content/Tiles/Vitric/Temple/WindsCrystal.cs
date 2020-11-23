@@ -57,7 +57,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class WindsCrystalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1) { }
     }

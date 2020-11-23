@@ -20,7 +20,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class DoorVerticalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DoorVerticalItem() : base("Vertical Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorVertical>(), ItemRarityID.Blue) { }
     }
@@ -37,7 +37,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class DoorHorizontalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DoorHorizontalItem() : base("Horizontal Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorHorizontal>(), ItemRarityID.Blue) { }
     }

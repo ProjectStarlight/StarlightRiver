@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class DoorBombShooterItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/MarioCumming";
+        public override string Texture => "StarlightRiver/Assets/MarioCumming";
 
         public DoorBombShooterItem() : base("Debug Shooter Placer", "", TileType<DoorBombShooter>(), ItemRarityID.White) { }
     }

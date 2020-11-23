@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-using StarlightRiver.Core;
-
-namespace StarlightRiver
+namespace StarlightRiver.Core
 {
     interface IDrawAdditive
     {

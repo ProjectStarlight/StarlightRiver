@@ -232,7 +232,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
     class ShockwaveSummon : NPCs.Miniboss.Glassweaver.Shockwave
     {
-        public override string Texture => "StarlightRiver/Tiles/Vitric/Blocks/AncientSandstone";
+        public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/Blocks/AncientSandstone";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
         private int TileType => (int)projectile.ai[0];

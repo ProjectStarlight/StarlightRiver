@@ -6,8 +6,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
@@ -107,7 +105,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
     class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
     {
-        public override string Texture => "StarlightRiver/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail";
+        public override string Texture => "StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Falling Star");
