@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.NPCs.Town
 {
@@ -75,8 +76,8 @@ namespace StarlightRiver.NPCs.Town
             if (firstButton) shop = true;
             else
             {
-                Helper.SetExtraNPCState(new TownQuestList());
-                (StarlightRiver.Instance.ExtraNPCState as TownQuestList).PopulateList();
+                UILoader.GetUIState<TownQuestList>().Visible = true;
+                UILoader.GetUIState<TownQuestList>().PopulateList();
             }
         }
 

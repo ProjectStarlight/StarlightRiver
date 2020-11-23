@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Food;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class CookingUI : UIState
+    public class CookingUI : SmartUIState
     {
-        public static bool Visible = false;
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         private static bool Moving = false;
         private static int scrollStart = 0;
         private static int lineCount = 0;

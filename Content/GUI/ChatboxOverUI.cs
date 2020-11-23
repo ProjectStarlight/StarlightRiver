@@ -4,14 +4,20 @@ using StarlightRiver.NPCs.TownUpgrade;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using System.Collections.Generic;
 
 namespace StarlightRiver.GUI
 {
-    public class ChatboxOverUI : UIState
+    public class ChatboxOverUI : SmartUIState
     {
         public TownUpgrade activeUpgrade;
 
         private readonly TownButton button = new TownButton();
+
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: NPC / Sign Dialog"));
+
+        public override bool Visible => Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu;
 
         public override void OnInitialize()
         {

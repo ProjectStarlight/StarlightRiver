@@ -17,39 +17,12 @@ using Terraria.Graphics.Effects;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver
 {
     public partial class StarlightRiver : Mod
     {
-        public Stamina stamina;
-        public Collection collection;
-        public ParticleOverlay overlay;
-        public Infusion infusion;
-        public CookingUI cooking;
-        public KeyInventory keyinventory;
-        public TextCard textcard;
-        public GUI.Codex codex;
-        public CodexPopup codexpopup;
-        public LootUI lootUI;
-        public ChatboxOverUI Chatbox;
-        public UIState ExtraNPCState;
-        public RichTextBox RichText;
-
-        public UserInterface StaminaUserInterface;
-        public UserInterface CollectionUserInterface;
-        public UserInterface OverlayUserInterface;
-        public UserInterface InfusionUserInterface;
-        public UserInterface CookingUserInterface;
-        public UserInterface KeyInventoryUserInterface;
-        public UserInterface TextCardUserInterface;
-        public UserInterface CodexUserInterface;
-        public UserInterface CodexPopupUserInterface;
-        public UserInterface LootUserInterface;
-        public UserInterface ChatboxUserInterface;
-        public UserInterface ExtraNPCInterface;
-        public UserInterface RichTextInterface;
-
         public AbilityHotkeys AbilityKeys { get; private set; }
 
         public List<RiftRecipe> RiftRecipes;
@@ -226,46 +199,6 @@ namespace StarlightRiver
                 //Hotkeys
                 AbilityKeys = new AbilityHotkeys(this);
                 AbilityKeys.LoadDefaults();
-
-                StaminaUserInterface = new UserInterface();
-                CollectionUserInterface = new UserInterface();
-                OverlayUserInterface = new UserInterface();
-                InfusionUserInterface = new UserInterface();
-                CookingUserInterface = new UserInterface();
-                KeyInventoryUserInterface = new UserInterface();
-                TextCardUserInterface = new UserInterface();
-                CodexUserInterface = new UserInterface();
-                CodexPopupUserInterface = new UserInterface();
-                LootUserInterface = new UserInterface();
-                ChatboxUserInterface = new UserInterface();
-                ExtraNPCInterface = new UserInterface();
-                RichTextInterface = new UserInterface();
-
-                stamina = new Stamina();
-                collection = new Collection();
-                overlay = new ParticleOverlay();
-                infusion = new Infusion();
-                cooking = new CookingUI();
-                keyinventory = new KeyInventory();
-                textcard = new TextCard();
-                codex = new GUI.Codex();
-                codexpopup = new CodexPopup();
-                lootUI = new LootUI();
-                Chatbox = new ChatboxOverUI();
-                RichText = new RichTextBox();
-
-                StaminaUserInterface.SetState(stamina);
-                CollectionUserInterface.SetState(collection);
-                OverlayUserInterface.SetState(overlay);
-                InfusionUserInterface.SetState(infusion);
-                CookingUserInterface.SetState(cooking);
-                KeyInventoryUserInterface.SetState(keyinventory);
-                TextCardUserInterface.SetState(textcard);
-                CodexUserInterface.SetState(codex);
-                CodexPopupUserInterface.SetState(codexpopup);
-                LootUserInterface.SetState(lootUI);
-                ChatboxUserInterface.SetState(Chatbox);
-                RichTextInterface.SetState(RichText);
             }
         }
 
@@ -287,39 +220,11 @@ namespace StarlightRiver
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-            int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-            int NPCChatIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: NPC / Sign Dialog"));
-            if (MouseTextIndex != -1)
+            for(int k = 0; k < UILoader.UIStates.Count; k++)
             {
-                AddLayer(layers, StaminaUserInterface, stamina, MouseTextIndex, Stamina.visible);
-                AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex - 1, Collection.visible);
-                AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
-                AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
-                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, CookingUI.Visible);
-                AddLayer(layers, KeyInventoryUserInterface, keyinventory, MouseTextIndex, KeyInventory.visible);
-                AddLayer(layers, TextCardUserInterface, textcard, MouseTextIndex, TextCard.Visible);
-                AddLayer(layers, CodexUserInterface, codex, MouseTextIndex, GUI.Codex.ButtonVisible);
-                AddLayer(layers, CodexPopupUserInterface, codexpopup, MouseTextIndex, codexpopup.Timer > 0);
-                AddLayer(layers, LootUserInterface, lootUI, MouseTextIndex, LootUI.Visible);
-                AddLayer(layers, ChatboxUserInterface, Chatbox, NPCChatIndex, Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu);
-                AddLayer(layers, ExtraNPCInterface, ExtraNPCState, MouseTextIndex, ExtraNPCState != null);
-                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, RichTextBox.visible);
+                var state = UILoader.UIStates[k];
+                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible);
             }
-        }
-
-        private void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible)
-        {
-            string name = state == null ? "Unknown" : state.ToString();
-            layers.Insert(index, new LegacyGameInterfaceLayer("StarlightRiver: " + name,
-                delegate
-                {
-                    if (visible)
-                    {
-                        userInterface.Update(Main._drawInterfaceGameTime);
-                        state.Draw(Main.spriteBatch);
-                    }
-                    return true;
-                }, InterfaceScaleType.UI));
         }
 
         public override void Unload()
@@ -333,32 +238,6 @@ namespace StarlightRiver
             if (!Main.dedServ)
             {
                 RiftRecipes = null;
-
-                StaminaUserInterface = null;
-                CollectionUserInterface = null;
-                OverlayUserInterface = null;
-                InfusionUserInterface = null;
-                CookingUserInterface = null;
-                TextCardUserInterface = null;
-                CodexUserInterface = null;
-                CodexPopupUserInterface = null;
-                LootUserInterface = null;
-                ChatboxUserInterface = null;
-                ExtraNPCInterface = null;
-                RichTextInterface = null;
-
-                stamina = null;
-                collection = null;
-                overlay = null;
-                infusion = null;
-                cooking = null;
-                textcard = null;
-                codex = null;
-                codexpopup = null;
-                lootUI = null;
-                Chatbox = null;
-                ExtraNPCState = null;
-                RichText = null;
 
                 Instance = null;
                 AbilityKeys.Unload();

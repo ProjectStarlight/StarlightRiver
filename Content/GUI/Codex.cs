@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex;
+using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
@@ -11,8 +13,11 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class Codex : UIState
+    public class Codex : SmartUIState
     {
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+        public override bool Visible => ButtonVisible;
+
         public static bool ButtonVisible = false;
         public static bool Open = false;
         private static bool Dragging = false;

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.NPCs.TownUpgrade;
 using StarlightRiver.Tiles;
 using System.Collections.Generic;
@@ -11,8 +13,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    class TownQuestList : UIState
+    class TownQuestList : SmartUIState
     {
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         private readonly UIList quests = new UIList();
         private readonly UIList itemList = new UIList();
         private readonly UIScrollbar questScroll = new UIScrollbar();
@@ -50,10 +54,7 @@ namespace StarlightRiver.GUI
         public override void Update(GameTime gameTime)
         {
             if (Main.LocalPlayer.talkNPC <= 0)
-            {
-                StarlightRiver.Instance.ExtraNPCState = null;
-                StarlightRiver.Instance.ExtraNPCInterface.SetState(null);
-            }
+                Visible = false;
         }
 
         internal void AddElement(UIElement element, int x, int y, float xPercent, float yPercent, int width, int height, UIElement appendTo)

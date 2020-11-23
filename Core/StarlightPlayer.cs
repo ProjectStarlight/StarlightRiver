@@ -70,33 +70,33 @@ namespace StarlightRiver.Core
             {
                 AbilityHandler mp = player.GetHandler();
 
-                Stamina.visible = false;
-                Infusion.visible = false;
+                Stamina.Visible = false;
+                Infusion.Visible = false;
 
-                if (mp.AnyUnlocked) Stamina.visible = true;
+                if (mp.AnyUnlocked) Stamina.Visible = true;
 
                 if (Main.playerInventory)
                 {
                     if (player.chest == -1 && Main.npcShop == 0)
                     {
-                        Collection.visible = true;
+                        Collection.Visible = true;
                         GUI.Codex.ButtonVisible = true;
-                        if (mp.AnyUnlocked) Infusion.visible = true;
+                        if (mp.AnyUnlocked) Infusion.Visible = true;
                     }
                     else
                     {
-                        Collection.visible = false;
+                        Collection.Visible = false;
                         GUI.Codex.ButtonVisible = false;
-                        if (mp.AnyUnlocked) Infusion.visible = false;
+                        if (mp.AnyUnlocked) Infusion.Visible = false;
                     }
                 }
                 else
                 {
-                    Collection.visible = false;
+                    Collection.Visible = false;
                     Collection.ActiveAbility = null;
                     GUI.Codex.ButtonVisible = false;
                     GUI.Codex.Open = false;
-                    Infusion.visible = false;
+                    Infusion.Visible = false;
                 }
             }
 

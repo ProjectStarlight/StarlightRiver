@@ -1,17 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Abilities.Content;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class Collection : UIState
+    public class Collection : SmartUIState
     {
-        public static bool visible = false;
-        //public static List<BootlegDust> dust = new List<BootlegDust>();
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         public static Ability ActiveAbility;
         public static bool ShouldReset = false;
 

@@ -39,7 +39,7 @@ namespace StarlightRiver.NPCs.Passive
         public override string GetChat()
         {
             textState = 0;
-            RichTextBox.visible = true;
+            RichTextBox.Visible = true;
             RichTextBox.ClearButtons();
 
             SetData();
@@ -61,7 +61,7 @@ namespace StarlightRiver.NPCs.Passive
 
         private void Bless()
         {
-            RichTextBox.visible = false;
+            RichTextBox.Visible = false;
             RichTextBox.SetData(null, "", "");
             Main.player[Main.myPlayer].talkNPC = -1;
 
@@ -76,7 +76,7 @@ namespace StarlightRiver.NPCs.Passive
 
                 if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
                 {
-                    RichTextBox.visible = false;
+                    RichTextBox.Visible = false;
                     RichTextBox.SetData(null, "", "");
                 }
             }

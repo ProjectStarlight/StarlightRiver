@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using System.Collections.Generic;
 using Terraria;
@@ -8,9 +9,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class KeyInventory : UIState
+    public class KeyInventory : SmartUIState
     {
-        public static bool visible = true;
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         public static List<KeyIcon> keys = new List<KeyIcon>();
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

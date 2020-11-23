@@ -2,15 +2,17 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class TextCard : UIState
+    public class TextCard : SmartUIState
     {
-        public static bool Visible = false;
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
         private Ability Thisability;
         private string Title;

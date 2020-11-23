@@ -10,12 +10,14 @@ using ReLogic.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.GUI
 {
-    public class RichTextBox : UIState
+    public class RichTextBox : SmartUIState
     {
-        public static bool visible = false;
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         private static string message;
         private static string title;
         private static Texture2D icon;
@@ -84,7 +86,7 @@ namespace StarlightRiver.GUI
         public static void ClearButtons()
         {
             widthOff = 0;
-            StarlightRiver.Instance.RichText.Elements.Clear();
+            UILoader.GetUIState<RichTextBox>().Elements.Clear();
         }
 
         public static void AddButton(string message, Action onClick)
@@ -96,7 +98,7 @@ namespace StarlightRiver.GUI
             add.Height.Set(32, 0);
 
             widthOff += Markdown.GetWidth(message, 1) + 24;
-            StarlightRiver.Instance.RichText.Append(add);
+            UILoader.GetUIState<RichTextBox>().Append(add);
         }
     }
 

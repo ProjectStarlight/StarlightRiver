@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI;
@@ -12,9 +14,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.GUI
 {
-    public class Infusion : UIState
+    public class Infusion : SmartUIState
     {
-        public static bool visible = false;
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+
         private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
 
         /// <summary>
