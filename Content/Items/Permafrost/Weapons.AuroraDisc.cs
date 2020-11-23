@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Buffs;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Permafrost;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Permafrost.Weapons
 {
@@ -61,10 +60,10 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            for(int k = 0; k < Main.maxProjectiles; k++)
+            for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 Projectile proj = Main.projectile[k];
-                if(proj.active && proj.modProjectile is DiscHoleDummy && Vector2.Distance(Main.MouseWorld, proj.Center) < 64)
+                if (proj.active && proj.modProjectile is DiscHoleDummy && Vector2.Distance(Main.MouseWorld, proj.Center) < 64)
                 {
                     int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, 3, 0);
                     Projectile disc = Main.projectile[i];
@@ -123,7 +122,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
 
         public override void AI()
         {
-            if(State != 1)
+            if (State != 1)
                 projectile.rotation += 0.2f;
 
             if (State == 2)
@@ -143,7 +142,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
                 if (timer <= 30)
                     projectile.Center = Vector2.SmoothStep(Owner.Center, savedPos, timer / 30f);
 
-                if(timer > 30 && timer < 90) //funny visuals
+                if (timer > 30 && timer < 90) //funny visuals
                 {
                     for (int k = 0; k < 10; k++)
                     {
@@ -174,7 +173,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            switch(State)
+            switch (State)
             {
                 case 1: //extended
                     target.AddBuff(BuffType<AuroraDoT>(), 600);
@@ -191,7 +190,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
         {
             var rect = projectile.Hitbox;
             rect.Inflate(28, 28);
-            if(State == 0 && Helper.IsTargetValid(target) && rect.Intersects(target.Hitbox)) Extend();
+            if (State == 0 && Helper.IsTargetValid(target) && rect.Intersects(target.Hitbox)) Extend();
             return null;
         }
 
@@ -256,7 +255,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
                     spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * (timer < 90 ? (timer - 30) / 60f : 1), 0, tex.Size() / 2, 1, 0, 0);
                     spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * (timer < 90 ? (timer - 30) / 60f : 1) * 0.65f, 0, tex2.Size() / 2, 1, 0, 0);
 
-                    if(timer > 120)
+                    if (timer > 120)
                     {
                         var progress = (timer - 120) / 10f;
                         spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * ((3 - progress) / 3f), 0, tex2.Size() / 2, 1 + progress, 0, 0);
@@ -333,7 +332,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
 
         private void SpecialMinionRecation(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if(npc.GetGlobalNPC<StarlightNPC>().AuroraDiscDoT < 10 && projectile.minion && npc.HasBuff(Type))
+            if (npc.GetGlobalNPC<StarlightNPC>().AuroraDiscDoT < 10 && projectile.minion && npc.HasBuff(Type))
             {
                 npc.GetGlobalNPC<StarlightNPC>().AuroraDiscDoT += 1;
             }

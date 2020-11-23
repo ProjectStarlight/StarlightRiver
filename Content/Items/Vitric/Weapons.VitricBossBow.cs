@@ -1,16 +1,18 @@
-﻿using System;
-using Terraria;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using Terraria.ID;
-using Terraria.DataStructures;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Projectiles.WeaponProjectiles;
-using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using StarlightRiver.Core;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.BossDrops.VitricBossDrops
 {
-    class VitricBossBow : ModItem,IGlowingItem
+    class VitricBossBow : ModItem, IGlowingItem
     {
         public override void SetStaticDefaults()
         {
@@ -40,7 +42,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Projectile.NewProjectile(position, new Vector2(speedX, speedY)/4f,item.shoot,damage,knockBack,player.whoAmI);
+            Projectile.NewProjectile(position, new Vector2(speedX, speedY) / 4f, item.shoot, damage, knockBack, player.whoAmI);
             return false;
         }
 
@@ -48,7 +50,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
         {
             Player player = info.drawPlayer;
 
-            if (player.heldProj > -1 && Main.projectile[player.heldProj].type==mod.ProjectileType("VitricBowProjectile"))
+            if (player.heldProj > -1 && Main.projectile[player.heldProj].type == mod.ProjectileType("VitricBowProjectile"))
             {
                 Projectile held = Main.projectile[player.heldProj];
                 Vector2 off = Vector2.Normalize(held.velocity) * 16;
@@ -59,12 +61,12 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
                 if (held.modProjectile != null && held.modProjectile is VitricBowProjectile)
                 {
                     float fraction = held.ai[0] / VitricBowProjectile.MaxCharge;
-                    Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction)*Math.Min(held.timeLeft/20f,1f);
+                    Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction) * Math.Min(held.timeLeft / 20f, 1f);
 
                     var data2 = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
                     Main.playerDrawData.Add(data2);
                 }
-                
+
             }
         }
     }

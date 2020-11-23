@@ -1,17 +1,12 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
-using StarlightRiver.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Terraria;
-using StarlightRiver.Items.CursedAccessories;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Items.CursedAccessories;
 using StarlightRiver.Items.Prototypes;
+using Terraria;
+using Terraria.ModLoader;
 using Terraria.UI;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -96,7 +91,7 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         //this is vanilla code. I cant be assed to try to change this. Only alternative I see is porting this all to IL.
-        private static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color) 
+        private static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
         {
             Item item = inv[slot];
             Vector2 scaleVector = back.Size() * Main.inventoryScale;

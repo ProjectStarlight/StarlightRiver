@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric
 {
@@ -14,7 +16,7 @@ namespace StarlightRiver.Tiles.Vitric
         {
             minPick = int.MaxValue;
             QuickBlock.QuickSet(this, 200, DustType<Dusts.Glass3>(), SoundID.Tink, new Color(95, 162, 138), -1);
-            Main.tileMerge[Type][TileType<VitricSand>()] = true;
+            Main.tileMerge[Type][mod.TileType("VitricSand")] = true;
             Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricSmallCrystal>()] = true;
         }
@@ -55,7 +57,7 @@ namespace StarlightRiver.Tiles.Vitric
                     entity.velocity.X = vector.X == 0 ? entity.velocity.X : vector.X;
                     entity.velocity.Y = vector.Y == 0 ? entity.velocity.Y : vector.Y;
 
-                    if(entity is Player)
+                    if (entity is Player)
                     {
                         var player = entity as Player;
 

@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Codex;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {

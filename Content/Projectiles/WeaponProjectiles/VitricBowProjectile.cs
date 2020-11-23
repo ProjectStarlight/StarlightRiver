@@ -1,18 +1,19 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.NPCs;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
-    internal class VitricBowProjectile : ModProjectile,IDrawAdditive
+    internal class VitricBowProjectile : ModProjectile, IDrawAdditive
     {
         internal static int MaxCharge { get; set; } = 100;
         internal static int ChargeNeededToFire => 30;
-        private float MaxAngle => MathHelper.Pi/8f;
+        private float MaxAngle => MathHelper.Pi / 8f;
         private int MaxFireTime { get; set; } = 20;
         private int AddedFireBuffer { get; set; } = 0;
         private int FireRate => 6;
@@ -39,25 +40,25 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.ignoreWater = true;
         }
 
-		public override void AI()
-		{
+        public override void AI()
+        {
             Player player = projectile.Owner();
 
             if (ItemFirerate == default)
                 ItemFirerate = (float)player.itemTime / 30f;
 
-            if (player.dead) projectile.Kill();		
-			else
-			{
-				if (projectile.localAI[1] > 0 || !player.channel)
-                    LetGo(player);		
-				else
+            if (player.dead) projectile.Kill();
+            else
+            {
+                if (projectile.localAI[1] > 0 || !player.channel)
+                    LetGo(player);
+                else
                     Charging(player);
 
                 Holding(player);
                 projectile.Center = player.Center;
             }
-		}
+        }
 
         public void Holding(Player player)
         {
@@ -109,7 +110,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             float partialchargepercent = (projectile.ai[0] / MaxCharge);
             float maxdelta = MaxAngle * partialchargepercent;
-            float anglerot = maxdelta * (1f-(timeleft / projectile.ai[1]));
+            float anglerot = maxdelta * (1f - (timeleft / projectile.ai[1]));
 
             projectile.localAI[1] += 1;
 
@@ -122,12 +123,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
                         float chargefloat = 1f - (timeleft / projectile.ai[1]);
                         float speed = 4f + percent * (2f + chargefloat);
-                        Vector2 velo = new Vector2(speed*projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (anglerot * (projectile.ignoreWater ? 0f : i)));
+                        Vector2 velo = new Vector2(speed * projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (anglerot * (projectile.ignoreWater ? 0f : i)));
 
-                        Projectile.NewProjectile(projectile.Center, velo, ModContent.ProjectileType<VitricBowShardProjectile>(), (int)((float)projectile.damage*(1f+ percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
+                        Projectile.NewProjectile(projectile.Center, velo, ModContent.ProjectileType<VitricBowShardProjectile>(), (int)((float)projectile.damage * (1f + percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
 
                         if (i > 0)
-                        Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                            Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
 
                         if (projectile.ignoreWater)
                         {
@@ -193,7 +194,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             projectile.rotation = projectile.velocity.ToRotation();
 
-            for (int k = projectile.oldPos.Length-1; k >= 1; k-=1)
+            for (int k = projectile.oldPos.Length - 1; k >= 1; k -= 1)
             {
                 projectile.oldRot[k] = projectile.oldRot[k - 1];
             }
@@ -202,10 +203,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             if (projectile.localAI[0] == 1)
             {
-                projectile.scale = 0.5f+projectile.ai[0]/3f;
+                projectile.scale = 0.5f + projectile.ai[0] / 3f;
                 projectile.width = (int)((float)projectile.width * projectile.scale);
                 projectile.height = (int)((float)projectile.height * projectile.scale);
-                projectile.penetrate = 1+((int)(projectile.ai[0]*4f));
+                projectile.penetrate = 1 + ((int)(projectile.ai[0] * 4f));
             }
         }
 
@@ -214,7 +215,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             Texture2D tex = Main.projectileTexture[projectile.type];
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation - MathHelper.Pi/2f, tex.Size() / 2f, projectile.scale, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation - MathHelper.Pi / 2f, tex.Size() / 2f, projectile.scale, 0, 0);
             }
             return false;
         }
@@ -223,11 +224,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
 
-            for (float num315 = 0.2f; num315 < 2+ projectile.scale*1.5f; num315 += 0.25f)
+            for (float num315 = 0.2f; num315 < 2 + projectile.scale * 1.5f; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
-                Vector2 vecangle = (new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315)+(projectile.velocity* num315);
-                Dust num316 = Dust.NewDustPerfect(new Vector2(projectile.position.X, projectile.position.Y)+new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), mod.DustType("Glass2"), vecangle / 3f, 50, default, (8f - num315) / 5f);
+                Vector2 vecangle = (new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315) + (projectile.velocity * num315);
+                Dust num316 = Dust.NewDustPerfect(new Vector2(projectile.position.X, projectile.position.Y) + new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), mod.DustType("Glass2"), vecangle / 3f, 50, default, (8f - num315) / 5f);
                 num316.fadeIn = 0.5f;
             }
         }

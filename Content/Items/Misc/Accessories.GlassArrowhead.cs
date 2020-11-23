@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using StarlightRiver.Projectiles.Ammo;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
@@ -27,7 +28,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             return true;
         }
 
-        private void OnHitNPCWithProjAccessory(Player player,Projectile proj, NPC target, int damage, float knockback, bool crit)
+        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
             if (Equipped(player) && proj.arrow && crit)
             {
@@ -44,7 +45,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                     }
                 }
             }
-            
+
         }
 
     }

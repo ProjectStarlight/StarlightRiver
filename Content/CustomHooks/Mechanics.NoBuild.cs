@@ -1,18 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.NPCs.Boss.SquidBoss;
-using StarlightRiver.Physics;
-using StarlightRiver.Tiles.Permafrost;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StarlightRiver.NPCs.Boss.SquidBoss;
 using Terraria;
-using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Permafrost;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -36,7 +27,7 @@ namespace StarlightRiver.Content.CustomHooks
                 {
                     Projectile proj = Main.projectile[k];
 
-                    if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(Player.tileTargetX, Player.tileTargetY)) 
+                    if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(Player.tileTargetX, Player.tileTargetY))
                     {
                         orig(self);
                         return;

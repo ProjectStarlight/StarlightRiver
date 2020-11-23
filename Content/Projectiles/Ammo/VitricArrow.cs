@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.Ammo
 {
     internal class VitricArrow : ModProjectile
@@ -36,7 +38,7 @@ namespace StarlightRiver.Projectiles.Ammo
         }
 
         //Ew Boiler Plate, fixing that-IDG
-        public static void MakeDusts(Projectile projectile,int dustcount = 10)
+        public static void MakeDusts(Projectile projectile, int dustcount = 10)
         {
             Mod mod = StarlightRiver.Instance;
             for (int k = 0; k <= dustcount; k++)
@@ -44,8 +46,8 @@ namespace StarlightRiver.Projectiles.Ammo
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType("Air"));
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType("Glass2"), projectile.velocity.X * Main.rand.NextFloat(0, 1), projectile.velocity.Y * Main.rand.NextFloat(0, 1));
             }
-            if (dustcount>5)
-            Main.PlaySound(SoundID.Item27);
+            if (dustcount > 5)
+                Main.PlaySound(SoundID.Item27);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -104,7 +106,7 @@ namespace StarlightRiver.Projectiles.Ammo
 
         public override bool? CanHitNPC(NPC target)
         {
-            if ((int)projectile.ai[0] == target.whoAmI+1000)
+            if ((int)projectile.ai[0] == target.whoAmI + 1000)
                 return false;
 
             return base.CanHitNPC(target);

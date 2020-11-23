@@ -1,17 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
-using StarlightRiver.GUI;
 using StarlightRiver.Tiles;
 using StarlightRiver.Tiles.AshHell;
-using StarlightRiver.Tiles.Permafrost;
 using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Permafrost;
+
+namespace StarlightRiver.Core
 {
     public class BiomeHandler : ModPlayer
     {
@@ -118,35 +119,6 @@ namespace StarlightRiver
                 //Lighting.brightness = 1 / val;
             }
 
-            if (ZoneVoidPre)
-            {
-                ParticleOverlay.state = 1;
-            }
-            else if (ZoneJungleCorrupt)
-            {
-                ParticleOverlay.state = 2;
-                if (player.wet)
-                {
-                    player.maxFallSpeed = 999f;
-                    if (player.breath != player.breathMax)
-                    {
-                        player.breath--;
-                    }
-                }
-            }
-            else if (ZoneJungleBloody)
-            {
-                ParticleOverlay.state = 3;
-                if (player.wet)
-                {
-                    player.AddBuff(Terraria.ID.BuffID.Ichor, 600);
-                }
-            }
-            else if (ZoneJungleHoly)
-            {
-                ParticleOverlay.state = (int)OverlayState.HolyJungle;
-            }
-
             if (ZoneOvergrow && Main.rand.Next(10) == 0)
             {
                 Dust.NewDustPerfect(Main.screenPosition - Vector2.One * 100 + new Vector2(Main.rand.Next(Main.screenWidth + 200), Main.rand.Next(Main.screenHeight + 200)),
@@ -178,8 +150,8 @@ namespace StarlightRiver
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            glassTiles = tileCounts[TileType<Tiles.Vitric.Blocks.VitricSand>()];
-            voidTiles = tileCounts[TileType<Tiles.Void.VoidBrick>()] + tileCounts[TileType<Tiles.Void.VoidStone>()];
+            glassTiles = tileCounts[mod.TileType("VitricSand")];
+            voidTiles = tileCounts[TileType<Content.Tiles.Void.VoidBrick>()] + tileCounts[TileType<Content.Tiles.Void.VoidStone>()];
             corruptJungleTiles = tileCounts[TileType<Tiles.JungleCorrupt.GrassJungleCorrupt>()];
             bloodJungleTiles = tileCounts[TileType<Tiles.JungleBloody.GrassJungleBloody>()];
             holyJungleTiles = tileCounts[TileType<Tiles.JungleHoly.GrassJungleHoly>()];
@@ -195,7 +167,10 @@ namespace StarlightRiver
             Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainJungleHoly = false;
         }
     }
+}
 
+namespace StarlightRiver
+{ 
     public partial class StarlightRiver : Mod
     {
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)

@@ -1,6 +1,8 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
     public class SquidBossSpawn : ModItem

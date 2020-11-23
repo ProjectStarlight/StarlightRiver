@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items
 {
     internal abstract class SoulboundItem : ModItem

@@ -1,7 +1,10 @@
-﻿using StarlightRiver.GUI;
+﻿using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles
 {
@@ -30,8 +33,8 @@ namespace StarlightRiver.Tiles
                 List<Loot> types = Helper.RandomizeList<Loot>(SmallLootPool);
                 for (int k = 0; k < 5; k++) smallLoot[k] = types[k];
 
-                StarlightRiver.Instance.lootUI.SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
-                LootUI.Visible = true;
+                UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
+                UILoader.GetUIState<LootUI>().Visible = true;
                 return true;
             }
             return false;

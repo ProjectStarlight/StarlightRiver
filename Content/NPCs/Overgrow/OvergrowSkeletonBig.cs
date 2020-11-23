@@ -2,6 +2,8 @@
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Hostile
 {
     internal class OvergrowSkeletonBig : ModNPC

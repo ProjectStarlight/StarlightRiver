@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using StarlightRiver.Items.BossDrops.VitricBossDrops;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
@@ -215,7 +219,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                     mp.ScreenMoveTarget = npc.Center + new Vector2(0, -850);
                     mp.ScreenMoveTime = 600;
-                    StarlightRiver.Instance.textcard.Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 500); //Screen pan + intro text
+                    UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 500); //Screen pan + intro text
 
                     for (int k = 0; k < Main.maxNPCs; k++) //finds all the large platforms to add them to the list of possible locations for the nuke attack
                     {

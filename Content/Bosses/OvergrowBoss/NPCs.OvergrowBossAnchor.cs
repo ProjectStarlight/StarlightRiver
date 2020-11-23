@@ -5,6 +5,8 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
     internal class OvergrowBossAnchor : ModNPC
@@ -28,12 +30,12 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void AI()
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.OvergrowBossOpen)) 
+            if (!StarlightWorld.HasFlag(WorldFlags.OvergrowBossOpen))
                 npc.dontTakeDamage = true;
             else npc.dontTakeDamage = false;
 
             NPC boss = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<OvergrowBoss>());
-            if (boss == null) 
+            if (boss == null)
                 return;
 
             if (npc.immortal) npc.ai[0]++;

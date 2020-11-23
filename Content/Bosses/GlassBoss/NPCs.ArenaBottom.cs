@@ -9,6 +9,8 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class ArenaBottom : ModNPC

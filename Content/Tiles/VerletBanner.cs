@@ -1,22 +1,23 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Physics;
 using Terraria;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Projectiles.Dummies;
-using Terraria.ID;
-using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using StarlightRiver.Physics;
+using Terraria.ID;
+using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles
 {
     class VerletBanner : DummyTile
-	{
+    {
         public override int DummyType => ProjectileType<VerletBannerDummy>();
 
-		public override void SetDefaults() 
-		{
+        public override void SetDefaults()
+        {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }

@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Prototypes
 {
     internal class PlasmaGattler : PrototypeWeapon

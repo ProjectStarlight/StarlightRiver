@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Dusts;
-using StarlightRiver.Gores;
-using StarlightRiver.Items;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs
 {
@@ -60,7 +59,7 @@ namespace StarlightRiver.NPCs
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            for(int i=0;i<BarbedBleeds.Count;i+=1)
+            for (int i = 0; i < BarbedBleeds.Count; i += 1)
             {
                 impaled += 15;
                 BarbedBleeds[i].Update(BarbedBleeds, i);
@@ -85,7 +84,7 @@ namespace StarlightRiver.NPCs
             {
                 if (npc.lifeRegen > 0) npc.lifeRegen = 0;
                 npc.lifeRegen -= impaled;
-                    damage = Math.Max(impaled/4,damage);
+                damage = Math.Max(impaled / 4, damage);
             }
             //ResetEffects seems to be called after projectile AI it seems, but this works, for now
             impaled = 0;

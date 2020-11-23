@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver
 {
-    public partial class StarlightRiver : Mod 
+    public partial class StarlightRiver : Mod
     {
         private void CallBossChecklist()
         {

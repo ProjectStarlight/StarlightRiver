@@ -1,14 +1,16 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using static Terraria.ModLoader.ModContent;
-using Terraria.ObjectData;
-using Terraria.DataStructures;
-using Terraria.Enums;
 using StarlightRiver.Items;
 using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 {
@@ -25,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if(WorldGen.InWorld(i, j - 1))
+            if (WorldGen.InWorld(i, j - 1))
             {
                 if (Framing.GetTileSafely(i, j - 1).type == Type) Framing.GetTileSafely(i, j).frameY = 18;
                 else Framing.GetTileSafely(i, j).frameY = 0;
@@ -43,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
                 {
                     int maxHeight = 3 + (int)(1 + Math.Sin(i) * 2);
 
-                    for(int k = 0; k <maxHeight; k++)
+                    for (int k = 0; k < maxHeight; k++)
                     {
                         Tile tile = Framing.GetTileSafely(i, j + k);
                         if (tile.type != Type)

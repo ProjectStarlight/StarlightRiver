@@ -1,60 +1,56 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Tiles.Overgrow;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-	class OvergrowTileLoader : TileLoader
-	{
-		public static string OvergrowTileDir = "StarlightRiver/Assets/Tiles/Overgrow";
-		public static string OvergrowItemDir = "StarlightRiver/Assets/Items/Overgrow";
-		public override string AssetRoot => OvergrowTileDir;
+    class OvergrowTileLoader : TileLoader
+    {
+        public static string OvergrowTileDir = "StarlightRiver/Assets/Tiles/Overgrow";
+        public static string OvergrowItemDir = "StarlightRiver/Assets/Items/Overgrow";
+        public override string AssetRoot => OvergrowTileDir;
 
-		public override void Load()
-		{
-			LoadTile(
-				"LeafOvergrow",
-				"Faerie Leaves",
-				new TileLoadData(
-					minPick: 210,
-					dustType: DustType<Dusts.Leaf>(),
-					soundType: SoundID.Grass,
-					mapColor: new Color(79, 76, 71),
-					dirtMerge: true,
-					stone: true
-					)
-				);
+        public override void Load()
+        {
+            LoadTile(
+                "LeafOvergrow",
+                "Faerie Leaves",
+                new TileLoadData(
+                    minPick: 210,
+                    dustType: DustType<Dusts.Leaf>(),
+                    soundType: SoundID.Grass,
+                    mapColor: new Color(79, 76, 71),
+                    dirtMerge: true,
+                    stone: true
+                    )
+                );
 
-			LoadTile(
-				"BrickOvergrow",
-				"Runic Bricks",
-				new TileLoadData(
-					minPick: 210,
-					dustType: DustID.Stone,
-					soundType: SoundID.Tink,
-					mapColor: new Color(221, 211, 67)
-					)
-				);
+            LoadTile(
+                "BrickOvergrow",
+                "Runic Bricks",
+                new TileLoadData(
+                    minPick: 210,
+                    dustType: DustID.Stone,
+                    soundType: SoundID.Tink,
+                    mapColor: new Color(221, 211, 67)
+                    )
+                );
 
-			LoadTile(
-				"StoneOvergrow",
-				"Uhhhhh... Runic Stone?",
-				new TileLoadData(
-					minPick: 210,
-					dustType: DustID.Stone,
-					soundType: SoundID.Tink,
-					mapColor: new Color(205, 200, 55)
-					)
-				);
-		}
+            LoadTile(
+                "StoneOvergrow",
+                "Uhhhhh... Runic Stone?",
+                new TileLoadData(
+                    minPick: 210,
+                    dustType: DustID.Stone,
+                    soundType: SoundID.Tink,
+                    mapColor: new Color(205, 200, 55)
+                    )
+                );
+        }
 
         public override void PostLoad()
         {

@@ -1,33 +1,35 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
-	public class AxeHead : ModProjectile
-	{
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Executioner's Axe");
-		}
+    public class AxeHead : ModProjectile
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Executioner's Axe");
+        }
 
-		public override void SetDefaults()
-		{
-			projectile.hostile = false;
-			projectile.magic = true;
-			projectile.width = 48;
-			projectile.height = 48;
-			projectile.aiStyle = -1;
-			projectile.friendly = false;
-			projectile.penetrate = -1;
-			projectile.tileCollide = false;
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.magic = true;
+            projectile.width = 48;
+            projectile.height = 48;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = -1;
+            projectile.tileCollide = false;
             projectile.alpha = 255;
-		}
+        }
         bool released = false;
         readonly int chargeTime = 60;
         float angularMomentum = 1;
@@ -60,8 +62,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
             Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y - 32, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage / 3, projectile.knockBack / 2, projectile.owner, 15, player.direction);
         }
-		public override bool PreAI()
-		{
+        public override bool PreAI()
+        {
             projectile.scale = projectile.ai[0] < 10 ? (projectile.ai[0] / 10f) : 1;
             Player player = Main.player[projectile.owner];
             int degrees = (int)(((player.itemAnimation) * -0.7) + 55) * player.direction;
@@ -167,6 +169,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 player.itemAnimation++;
             }
             return true;
-		}
-	}
+        }
+    }
 }

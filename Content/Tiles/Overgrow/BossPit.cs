@@ -6,10 +6,16 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+using Terraria.ID;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class BossPit : ModTile
+    internal class BossPit : DummyTile
     {
+        public override int DummyType => ProjectileType<BossPitDummy>();
+
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = "StarlightRiver/Invisible";
@@ -18,39 +24,81 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SetDefaults()
         {
-            Main.tileLavaDeath[Type] = false;
-            Main.tileFrameImportant[Type] = true;
-
-            TileObjectData.newTile.Width = 11;
-            TileObjectData.newTile.Height = 4;
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16, 16, 16 };
-            TileObjectData.newTile.UsesCustomCanPlace = true;
-            TileObjectData.newTile.CoordinateWidth = 16;
-            TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-
-            TileObjectData.addTile(Type);
-
-            drop = mod.ItemType("Bounce");
-            minPick = 9000;
-            AddMapEntry(new Color(50, 50, 50));
+            QuickBlock.QuickSetFurniture(this, 11, 4, DustID.Stone, SoundID.Tink, false, new Color(50, 50, 50));
         }
 
-        public override void NearbyEffects(int i, int j, bool closer)
+        public override void SafeNearbyEffects(int i, int j, bool closer)
         {
-            int dummyType = ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>();
-            Tile tile = Main.tile[i, j];
-            if (tile.frameX == 0 && tile.frameY == 0)
+            Main.tileSolid[Type] = Dummy.ai[1] == 0;
+        }
+    }
+
+    internal class BossPitDummy : Dummy, IDrawAdditive
+    {
+        public BossPitDummy() : base(TileType<BossPit>(), 11 * 16, 4 * 16) { }
+
+        public override void Update()
+        {
+            if (projectile.ai[1] == 1) //opening
             {
-                if (!Main.projectile.Any(proj => proj.active && proj.type == dummyType && proj.Hitbox.Contains(i * 16, j * 16)))
+                if (projectile.ai[0] < 88) projectile.ai[0] += 4;
+            }
+
+            if (projectile.ai[1] == 2) //closing
+            {
+                projectile.ai[0] -= 4;
+                if (projectile.ai[0] <= 0) projectile.ai[1] = 0;
+            }
+            if (projectile.ai[1] == 1 && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>())) projectile.ai[1] = 2;
+
+            Lighting.AddLight(projectile.position + new Vector2(88, 0), new Vector3(1, 1, 0.4f) * (projectile.ai[0] / 88f));
+            if (projectile.ai[0] > 0)
+            {
+                Dust.NewDustPerfect(new Vector2(projectile.position.X + (88 - projectile.ai[0] + Main.rand.NextFloat(projectile.ai[0] * 2)), projectile.position.Y + 56), DustType<Dusts.Gold2>(), new Vector2(0, Main.rand.NextFloat(-3, -1)));
+            }
+
+            //lightning
+            if (projectile.ai[0] == 88 && Main.rand.Next(8) == 0)
+            {
+                Helper.DrawElectricity(projectile.position + new Vector2(Main.rand.Next(176), 60), projectile.position + new Vector2(Main.rand.Next(2) == 0 ? 0 : 176, 0), DustType<Dusts.Gold>(), 0.5f);
+            }
+
+            if (projectile.ai[1] != 0)
+            {
+                //collision
+                foreach (Player player in Main.player.Where(p => p.Hitbox.Intersects(new Rectangle((int)projectile.position.X, (int)projectile.position.Y + 30, 176, 32))))
                 {
-                    Projectile.NewProjectile(new Vector2(i, j) * 16 + Vector2.One * 8, Vector2.Zero, dummyType, 0, 0);
+                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got cooked extra crispy..."), 120, 0);
+                    player.velocity.Y -= 30;
+                }
+
+                //flail zapping
+                foreach (NPC flail in Main.npc.Where(p => p.active && p.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossFlail>()
+                && p.Hitbox.Intersects(new Rectangle((int)projectile.position.X, (int)projectile.position.Y, 176, 32)) && p.life <= 1 && p.ai[2] == 0))
+                {
+                    flail.ai[2] = 1; //tells the flail it is zapped
+                    flail.ai[1] = 0; //resets the flail's timer
+                    flail.velocity *= 0; //freezes the flail
                 }
             }
-            Projectile dummy = Main.projectile.FirstOrDefault(proj => proj.active && proj.type == dummyType && proj.Hitbox.Contains(i * 16, j * 16));
-            if (dummy == null) return;
+        }
 
-            Main.tileSolid[Type] = dummy.ai[1] == 0;
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Vector2 pos = projectile.position - Main.screenPosition;
+            Texture2D tex1 = GetTexture("StarlightRiver/Tiles/Overgrow/PitCover");
+
+            spriteBatch.Draw(tex1, pos + new Vector2(88 + projectile.ai[0], 0), tex1.Frame(), lightColor);
+            spriteBatch.Draw(tex1, pos + new Vector2(-projectile.ai[0], 0), tex1.Frame(), lightColor, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Vector2 pos = projectile.position - Main.screenPosition;
+            Texture2D tex0 = GetTexture("StarlightRiver/Tiles/Overgrow/PitGlowBig");
+            Rectangle rect = new Rectangle((int)pos.X + 88 - (int)projectile.ai[0], (int)pos.Y - 52, (int)projectile.ai[0] * 2, 116);
+
+            spriteBatch.Draw(tex0, rect, tex0.Frame(), new Color(255, 255, 120) * (projectile.ai[0] / 88f));
         }
     }
 }

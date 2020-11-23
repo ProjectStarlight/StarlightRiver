@@ -2,6 +2,8 @@
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     class VitricFurniture : FurnitureLoader

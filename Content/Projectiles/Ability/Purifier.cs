@@ -8,8 +8,9 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Abilities;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.Ability
 {
@@ -40,7 +41,7 @@ namespace StarlightRiver.Projectiles.Ability
 
         public override void AI()
         {
-            if(projectile.timeLeft <= 800 && projectile.ai[1] == 0 && StarlightRiver.Instance.AbilityKeys.Get<Abilities.Content.Purify.Pure>().JustPressed) //recall logic
+            if (projectile.timeLeft <= 800 && projectile.ai[1] == 0 && StarlightRiver.Instance.AbilityKeys.Get<Abilities.Content.Purify.Pure>().JustPressed) //recall logic
             {
                 projectile.ai[1] = 1;
                 projectile.timeLeft = 150;
@@ -49,13 +50,13 @@ namespace StarlightRiver.Projectiles.Ability
             }
 
             //if (projectile.timeLeft == 900) //activate shader on start
-                //Filters.Scene.Activate("PurityFilter", projectile.position).GetShader().UseDirection(new Vector2(0.1f, 0.1f));
-            
+            //Filters.Scene.Activate("PurityFilter", projectile.position).GetShader().UseDirection(new Vector2(0.1f, 0.1f));
+
             else if (projectile.timeLeft >= 800) //grow       
                 projectile.ai[0] += 3;
-            
+
             else if (projectile.timeLeft < 150) //shrink          
-                projectile.ai[0] -= 2;         
+                projectile.ai[0] -= 2;
 
             //Filters.Scene["PurityFilter"].GetShader().UseProgress((projectile.ai[0] / 255) * 0.125f).UseIntensity((projectile.ai[0] / 255) * 0.006f);
 

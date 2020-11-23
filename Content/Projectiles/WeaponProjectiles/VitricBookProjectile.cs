@@ -1,11 +1,12 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
-using StarlightRiver.NPCs;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
@@ -81,8 +82,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         }
         public override void Kill(int timeLeft)
         {
-            for(int i=-3;i<7;i+=1)
-            Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y+i), projectile.width, 0, mod.DustType("VitricDust"), 0f, 0f, 75, default(Color), 0.85f);
+            for (int i = -3; i < 7; i += 1)
+                Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y + i), projectile.width, 0, mod.DustType("VitricDust"), 0f, 0f, 75, default(Color), 0.85f);
         }
         private void SpikeUp()
         {
@@ -127,16 +128,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (float num315 = 0.2f; num315 < 6; num315 += 0.25f)
             {
-                float angle = projectile.velocity.ToRotation()+MathHelper.ToRadians(Main.rand.Next(40, 140));
+                float angle = projectile.velocity.ToRotation() + MathHelper.ToRadians(Main.rand.Next(40, 140));
                 Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y+Main.rand.Next(-30,90)), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, ((10f - num315) / 5f)*(float)projectile.timeLeft/20f);
+                int num316 = Dust.NewDust(new Vector2(projectile.Center.X, projectile.Center.Y + Main.rand.Next(-30, 90)), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, ((10f - num315) / 5f) * (float)projectile.timeLeft / 20f);
                 Main.dust[num316].noGravity = true;
                 Main.dust[num316].velocity = vecangle;
                 Main.dust[num316].fadeIn = 0.5f;
             }
 
-            if (projectile.ai[0]%2==0)
-            Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 2, ModContent.ProjectileType<VitricBookProjectiletilecheck>(), projectile.damage, projectile.knockBack, projectile.owner);
+            if (projectile.ai[0] % 2 == 0)
+                Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 2, ModContent.ProjectileType<VitricBookProjectiletilecheck>(), projectile.damage, projectile.knockBack, projectile.owner);
             projectile.ai[0] += 1;
         }
     }
@@ -170,7 +171,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-           return false;
+            return false;
         }
 
         public override bool CanDamage()
@@ -179,13 +180,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (!Collision.CanHit(projectile.Center, 4, 4, projectile.Center - new Vector2(0,24), 0, 0))
+            if (!Collision.CanHit(projectile.Center, 4, 4, projectile.Center - new Vector2(0, 24), 0, 0))
                 return true;
 
             for (int zz = 0; zz < Main.maxProjectiles; zz += 1)
             {
                 Projectile proj = Main.projectile[zz];
-                if (proj.active && proj.type==ModContent.ProjectileType<VitricBookSpikeTrap>())
+                if (proj.active && proj.type == ModContent.ProjectileType<VitricBookSpikeTrap>())
                 {
                     if (proj.Distance(projectile.Center) < 24)
                         return true;
@@ -199,7 +200,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (tile != null && WorldGen.InWorld(point.X, point.Y, 1))
             {
                 if (tile.active())
-                DustHelper.TileDust(tile, ref dusttype);
+                    DustHelper.TileDust(tile, ref dusttype);
             }
 
             for (float num315 = 0.2f; num315 < 8; num315 += 0.50f)
@@ -212,7 +213,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Main.dust[num316].fadeIn = 0.5f;
             }
 
-            Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<VitricBookSpikeTrap>(), projectile.damage, 0, projectile.owner,12);
+            Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y, 0, 0, ModContent.ProjectileType<VitricBookSpikeTrap>(), projectile.damage, 0, projectile.owner, 12);
 
             return false;
         }

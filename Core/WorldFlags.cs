@@ -1,5 +1,7 @@
 ﻿using System;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver
 {
     [Flags]

@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Serialization;
 using StarlightRiver.GUI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Data.Odbc;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Abilities
 {
@@ -167,7 +166,7 @@ namespace StarlightRiver.Abilities
         /// <returns>Whether the item can be added.</returns>
         public bool CanSetInfusion(InfusionItem item)
         {
-            if (item == null) 
+            if (item == null)
                 return true;
 
             for (int i = 0; i < infusions.Length; i++)

@@ -1,8 +1,9 @@
 ﻿using StarlightRiver.Items.Vitric;
-using System.Runtime.InteropServices;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {

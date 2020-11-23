@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using Terraria.DataStructures;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
@@ -55,7 +58,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
                 if (charge < 1) charge += 1f / (item.useAnimation * 2f);
                 else
                 {
-                    if(!charged) Main.PlaySound(SoundID.MaxMana);
+                    if (!charged) Main.PlaySound(SoundID.MaxMana);
                     charged = true;
                     charge = 1;
                 }
@@ -65,7 +68,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
             }
             else if (charge > 0 && charged)
             {
-                if(charge == 1)
+                if (charge == 1)
                     Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<AuroraAxeVFX>(), 0, 0, player.whoAmI, player.direction);
 
                 charge -= 0.025f;
@@ -188,7 +191,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
             projectile.Center = player.Center + new Vector2((float)Math.Cos(time) * 58, (float)Math.Sin(time) * 16);
 
             player.UpdateRotation(time);
-            if(projectile.timeLeft <= 1) player.UpdateRotation(0);
+            if (projectile.timeLeft <= 1) player.UpdateRotation(0);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)

@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Codex
 {
     public class CodexEntry : TagSerializable

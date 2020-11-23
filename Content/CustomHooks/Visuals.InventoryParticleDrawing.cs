@@ -1,17 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Items.CursedAccessories;
-using StarlightRiver.Physics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StarlightRiver.Items.CursedAccessories;
 using Terraria;
-using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {

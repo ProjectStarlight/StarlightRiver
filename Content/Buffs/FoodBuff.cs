@@ -2,6 +2,8 @@
 using System.Linq;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Buffs
 {
     public class FoodBuff : SmartBuff

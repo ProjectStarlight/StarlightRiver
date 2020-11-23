@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Vitric
 {
     class VitricLootBox : LootChest

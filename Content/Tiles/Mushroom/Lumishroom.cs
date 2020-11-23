@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using StarlightRiver.Items;
-using static Terraria.ModLoader.ModContent;
-using Terraria.ID;
-using StarlightRiver.Projectiles.Dummies;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.ObjectData;
-using Terraria.Enums;
+using StarlightRiver.Core;
+using StarlightRiver.Items;
+using System;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Mushroom
 {

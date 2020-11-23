@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -66,7 +67,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if(projectile.timeLeft <= 30 && projectile.timeLeft >= 20)
+            if (projectile.timeLeft <= 30 && projectile.timeLeft >= 20)
             {
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
             }
@@ -104,9 +105,9 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             Tile tile = Framing.GetTileSafely((int)projectile.Center.X / 16 + (projectile.velocity.X > 0 ? 1 : -1), (int)projectile.Center.Y / 16);
             Main.NewText(tile.type);
 
-            if (projectile.timeLeft < 140 && tile.type == TileType<Tiles.Vitric.Blocks.VitricGlass>())
+            if (projectile.timeLeft < 140 && tile.type == mod.TileType("VitricGlass"))
                 projectile.position.Y -= 128;
-            
+
             if (projectile.timeLeft < 150 && projectile.velocity.Y == 0 && projectile.timeLeft % 10 == 0)
                 Projectile.NewProjectile(projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), projectile.damage, 0, projectile.owner);
 

@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricRock : ModTile
@@ -20,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.RandomStyleRange = 6;
-            TileObjectData.newTile.AnchorAlternateTiles = new int[] { TileType<VitricSand>(), mod.TileType("VitricSoftSand") };
+            TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
             TileObjectData.addTile(Type);
             soundType = SoundID.Shatter;
             dustType = DustType<Dusts.Glass2>();

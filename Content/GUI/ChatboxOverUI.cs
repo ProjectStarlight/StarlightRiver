@@ -1,11 +1,13 @@
-﻿using Terraria;
-using Terraria.UI;
-using StarlightRiver.NPCs.TownUpgrade;
-using static Terraria.ModLoader.ModContent;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using StarlightRiver.NPCs.TownUpgrade;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
@@ -37,7 +39,7 @@ namespace StarlightRiver.GUI
         {
             activeUpgrade = state;
 
-            if(state != null)
+            if (state != null)
                 button.displayString = state._buttonName;
 
             OnInitialize();
@@ -70,7 +72,7 @@ namespace StarlightRiver.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if(Parent is ChatboxOverUI)
+            if (Parent is ChatboxOverUI)
             {
                 (Parent as ChatboxOverUI).activeUpgrade?.ClickButton();
             }

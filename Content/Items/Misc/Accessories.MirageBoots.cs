@@ -1,6 +1,8 @@
 ﻿using Terraria;
 using Terraria.ID;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Accessories
 {
     public class MirageBoots : SmartAccessory

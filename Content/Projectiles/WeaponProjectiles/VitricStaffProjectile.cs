@@ -1,16 +1,18 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.NPCs;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.NPCs;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class VitricStaffProjectile : ModProjectile
     {
-        internal int maxImpale=6;
+        internal int maxImpale = 6;
         internal int impaletime = 300;
         private float appear = 0f;
         private float scaleup = 0;
@@ -47,11 +49,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     {
                         Vector2 drawPos = projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, projectile.gfxOffY);
                         Color color = alphacol * ((float)(projectile.oldPos.Length - k) / projectile.oldPos.Length);
-                        spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * appear, projectile.rotation, drawOrigin, sizer* scaleup, SpriteEffects.None, 0f);
+                        spriteBatch.Draw(Main.projectileTexture[projectile.type], drawPos, null, color * appear, projectile.rotation, drawOrigin, sizer * scaleup, SpriteEffects.None, 0f);
                     }
                 }
             }
-            spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center-Main.screenPosition + new Vector2(0f, projectile.gfxOffY), null, alphacol* appear, projectile.rotation, drawOrigin, projectile.scale* scaleup, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition + new Vector2(0f, projectile.gfxOffY), null, alphacol * appear, projectile.rotation, drawOrigin, projectile.scale * scaleup, SpriteEffects.None, 0f);
             return false;
         }
 
@@ -69,16 +71,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         if (Main.projectile[k].ai[0] == 1 && Main.projectile[k].ai[1] == target.whoAmI)
                         {
                             if (Main.projectile[k].timeLeft < firsttimeleft)
-                                {
+                            {
                                 firsttimeleft = Main.projectile[k].timeLeft;
                                 first = k;
-                                }
-                            countin+=1;
+                            }
+                            countin += 1;
                         }
                     }
                 }
             }
-            if (countin >= maxImpale && first>-1)
+            if (countin >= maxImpale && first > -1)
             {
                 Main.projectile[first].Kill();
             }
@@ -96,10 +98,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             for (float num315 = 0.2f; num315 < 5; num315 += 0.25f)
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
-                Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle))* num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, (10f- num315)/5f);
+                Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
+                int num316 = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("Glass3"), 0f, 0f, 50, default, (10f - num315) / 5f);
                 Main.dust[num316].noGravity = true;
-                Main.dust[num316].velocity = vecangle/3f;
+                Main.dust[num316].velocity = vecangle / 3f;
                 Main.dust[num316].fadeIn = 0.5f;
             }
         }
@@ -113,7 +115,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public override void AI()
         {
-            scaleup = MathHelper.Clamp(scaleup+0.10f, 0f, 1f);
+            scaleup = MathHelper.Clamp(scaleup + 0.10f, 0f, 1f);
             appear = Math.Min(appear + 0.05f, 1f);
             projectile.rotation = projectile.velocity.ToRotation() + 1.57079637f;
             if (projectile.ai[0] == 1)

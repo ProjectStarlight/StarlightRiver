@@ -1,21 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using StarlightRiver.NPCs.TownUpgrade;
-using StarlightRiver.Physics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -46,12 +40,12 @@ namespace StarlightRiver.Content.CustomHooks
             if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked))
             {
                 if (unlocked)
-                    StarlightRiver.Instance.Chatbox.SetState(TownUpgrade.FromString(self.TypeName));
+                    UILoader.GetUIState<ChatboxOverUI>().SetState(TownUpgrade.FromString(self.TypeName));
                 else
-                    StarlightRiver.Instance.Chatbox.SetState(new LockedUpgrade());
+                    UILoader.GetUIState<ChatboxOverUI>().SetState(new LockedUpgrade());
             }
             else
-                StarlightRiver.Instance.Chatbox.SetState(null);
+                UILoader.GetUIState<ChatboxOverUI>().SetState(null);
 
             return orig(self);
         }

@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using StarlightRiver.Items.Armor;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Items.Armor;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Starwood.Armors
 {
@@ -149,6 +151,7 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
 }
 
 //modplayer to handle empowerment
+
 namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer

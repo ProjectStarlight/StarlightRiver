@@ -1,6 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Dusts
 {
@@ -10,7 +11,7 @@ namespace StarlightRiver.Dusts
         {
             dust.noGravity = true;
             dust.noLight = false;
-          //  dust.color = new Color(200, 90, 40);
+            //  dust.color = new Color(200, 90, 40);
             // dust.alpha = 25;
         }
         public override bool Update(Dust dust)

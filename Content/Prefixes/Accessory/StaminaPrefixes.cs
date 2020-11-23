@@ -1,6 +1,8 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Prefixes.Accessory
 {
     internal abstract class StaminaPrefix : CustomTooltipPrefix

@@ -1,10 +1,12 @@
-﻿using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
-using Terraria.ID;
-using Microsoft.Xna.Framework;
-using Terraria.ObjectData;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Trophies
 {

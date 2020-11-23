@@ -3,6 +3,8 @@ using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Accessories.Expert
 {
     internal class CeirosExpert : ModItem

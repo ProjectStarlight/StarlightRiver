@@ -1,5 +1,7 @@
 ﻿using Terraria.ModLoader.Config;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Configs
 {
     public enum TitleScreenStyle

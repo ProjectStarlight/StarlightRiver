@@ -1,10 +1,10 @@
-﻿using static Terraria.ModLoader.ModContent;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using System.Linq;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -42,7 +42,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             Main.PlaySound(SoundID.Item73, projectile.Center);
 
-            if(Main.npc.Any(n => n.modNPC is GlassMiniboss))
+            if (Main.npc.Any(n => n.modNPC is GlassMiniboss))
             {
                 var parent = Main.npc.First(n => n.modNPC is GlassMiniboss).modNPC as GlassMiniboss;
 

@@ -6,6 +6,8 @@ using DECIMAL = System.Single;//using FN_DECIMAL = System.Double;
 
 #pragma warning disable IDE0051 // Remove unused private members
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Noise
 {
     public partial class FastNoise

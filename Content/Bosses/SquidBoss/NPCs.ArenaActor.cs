@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Items.Permafrost;
-using StarlightRiver.Tiles.Permafrost;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using static Terraria.ModLoader.ModContent;
 using Terraria.Graphics.Effects;
+using Terraria.ModLoader;
+using StarlightRiver.Content.Tiles.Permafrost;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
@@ -110,7 +111,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 if (WorldGen.InWorld(x, y)) WorldGen.KillTile(x, y);
             }
 
-            for(int k = 0; k < Main.ActivePlayersCount; k++)
+            for (int k = 0; k < Main.ActivePlayersCount; k++)
             {
                 Player player = Main.player[k];
 
@@ -368,7 +369,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             Texture2D texOver = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindow");
 
             Vector2 pos = npc.Center - (texOver.Size() / 2) + off * 16;
-            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);          
+            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);
         }
 
         private void DrawWindowGlass(SpriteBatch spriteBatch, Texture2D tex, Vector2 off)
@@ -378,11 +379,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         }
 
         private void DrawWindow(SpriteBatch spriteBatch, Vector2 off, Color color)
-        {          
+        {
             Texture2D background1 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background1");
             Texture2D background2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/Background2");
             Texture2D texUnder = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/SmallWindowUnder");
-            
+
             spriteBatch.Draw(texUnder, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, new Color(0, 5, 15), 0, texUnder.Size() / 2, 1, 0, 0);
 
             var position = npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition;

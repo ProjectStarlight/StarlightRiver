@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Vitric.Blocks;
+using StarlightRiver.Core;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric
 {
@@ -14,7 +16,7 @@ namespace StarlightRiver.Tiles.Vitric
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<VitricSand>(), TileType<VitricSoftSand>() };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
             TileObjectData.newTile.RandomStyleRange = 4;
             TileObjectData.newTile.StyleHorizontal = true;
 
@@ -27,7 +29,7 @@ namespace StarlightRiver.Tiles.Vitric
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<VitricSand>(), TileType<VitricSoftSand>() };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
             TileObjectData.newTile.RandomStyleRange = 6;
             TileObjectData.newTile.StyleHorizontal = true;
 

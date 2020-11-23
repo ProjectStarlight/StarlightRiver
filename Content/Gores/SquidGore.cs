@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Gores
 {
     internal class SquidGore : ModGore
@@ -12,7 +14,7 @@ namespace StarlightRiver.Gores
             gore.timeLeft = 90;
             gore.frame = (byte)Main.rand.Next(7);
             gore.numFrames = 7;
-        }        
+        }
 
         public override bool Update(Gore gore)
         {

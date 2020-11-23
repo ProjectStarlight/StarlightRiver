@@ -1,7 +1,9 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Starwood.Weapons

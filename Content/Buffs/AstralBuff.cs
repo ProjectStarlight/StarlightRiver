@@ -3,6 +3,8 @@ using StarlightRiver.Projectiles.WeaponProjectiles;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Buffs
 {
     class AstralBuff : SmartBuff

@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 {
@@ -25,7 +23,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                     boostCD = 0;
                     player.UpdateRotation(0);
                 }
-                return; 
+                return;
             }
 
             player.maxFallSpeed = 0;
@@ -68,7 +66,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
             if (player.controlJump && boostCD <= 0)
             {
-                boostCD = 90;              
+                boostCD = 90;
             }
 
             if (boostCD > 60)

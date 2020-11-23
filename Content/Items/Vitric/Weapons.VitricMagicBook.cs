@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Vitric
 {
     public class VitricMagicBook : ModItem
@@ -40,7 +42,7 @@ namespace StarlightRiver.Items.Vitric
                 }
                 Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 8, 1);
                 muzzleOffset.Normalize();
-                Projectile.NewProjectile(position.X, position.Y, muzzleOffset.X*16f, 0, item.shoot, damage, knockBack, player.whoAmI);
+                Projectile.NewProjectile(position.X, position.Y, muzzleOffset.X * 16f, 0, item.shoot, damage, knockBack, player.whoAmI);
             }
             return false;
         }

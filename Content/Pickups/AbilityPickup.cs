@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Pickups
 {

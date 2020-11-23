@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.GUI;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Crafting
 {
@@ -31,8 +35,9 @@ namespace StarlightRiver.Tiles.Crafting
 
         public override bool NewRightClick(int i, int j)
         {
-            if (!CookingUI.Visible) { CookingUI.Visible = true; Main.PlaySound(SoundID.MenuOpen); }
-            else { CookingUI.Visible = false; Main.PlaySound(SoundID.MenuClose); }
+            var state = UILoader.GetUIState<CookingUI>();
+            if (!state.Visible) { state.Visible = true; Main.PlaySound(SoundID.MenuOpen); }
+            else { state.Visible = false; Main.PlaySound(SoundID.MenuClose); }
             return true;
         }
     }

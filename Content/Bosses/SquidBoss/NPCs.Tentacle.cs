@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     public class Tentacle : ModNPC, IUnderwater
@@ -111,7 +113,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     int squish = (int)(Math.Sin(npc.ai[1] * 0.1f) * 5);
                     Rectangle rect = new Rectangle((int)(npc.Center.X - Main.screenPosition.X), (int)(npc.Center.Y - Main.screenPosition.Y) + 40, 34 - squish, 16 + (int)(squish * 0.4f));
 
-                    if(npc.ai[0] != 2) spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.6f, 0, ring.Size() / 2, 0, 0);
+                    if (npc.ai[0] != 2) spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.6f, 0, ring.Size() / 2, 0, 0);
                 }
             }
         }

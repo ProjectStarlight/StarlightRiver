@@ -9,6 +9,8 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Armor.Palestone
 {
     [AutoloadEquip(EquipType.Head)]
@@ -55,7 +57,7 @@ namespace StarlightRiver.Items.Armor.Palestone
         }
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
-            return head.type == ItemType<PalestoneHead>() && body.type==ItemType<PalestoneChest>() && legs.type == ItemType<PalestoneLegs>();
+            return head.type == ItemType<PalestoneHead>() && body.type == ItemType<PalestoneChest>() && legs.type == ItemType<PalestoneLegs>();
         }
         public override void UpdateArmorSet(Player player)
         {

@@ -4,6 +4,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Temple
 {
     class TempleWall : ModWall { public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustID.Stone, SoundID.Dig, ItemType<TempleWallItem>(), true, new Color(20, 20, 20)); } }

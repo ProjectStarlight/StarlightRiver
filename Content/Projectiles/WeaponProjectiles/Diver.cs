@@ -2,6 +2,8 @@
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     public class Diver : ModProjectile

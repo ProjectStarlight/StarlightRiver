@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Terraria;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using Terraria;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs
 {
@@ -31,7 +29,7 @@ namespace StarlightRiver.NPCs
 
         public override void AI()
         {
-            for(int k = 0; k < Main.maxPlayers; k++)
+            for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
                 if (!player.active) return;
@@ -57,13 +55,13 @@ namespace StarlightRiver.NPCs
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            for(int k = 0; k < 6; k++)
+            for (int k = 0; k < 6; k++)
             {
-                float time = ((Main.GameUpdateCount + (k / (6 /4f) * 200)) / 200f);
+                float time = ((Main.GameUpdateCount + (k / (6 / 4f) * 200)) / 200f);
 
                 var tex = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
                 float rad = (radius + attract) * 2 / (float)tex.Width;
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0 );
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
             }
         }
     }
@@ -77,7 +75,7 @@ namespace StarlightRiver.NPCs
 
         int angleTimer = 0;
         float realAngle => (angleTimer / 59f * angle);
-       
+
 
         public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
         {
@@ -95,7 +93,7 @@ namespace StarlightRiver.NPCs
 
         public override void PostUpdate()
         {
-            if(controller != null && controller.npc.active)
+            if (controller != null && controller.npc.active)
             {
                 player.MountedCenter = controller.npc.Center + Vector2.UnitX.RotatedBy(angle) * (controller.radius + player.height / 2 + (controller.attract - controller.attract * (angleTimer / 60f)));
                 angle += player.velocity.X / (controller.radius + player.height / 2);
@@ -121,7 +119,7 @@ namespace StarlightRiver.NPCs
                 if (angleTimer > 0) angleTimer -= 3;
                 if (cooldown > 0) cooldown--;
                 controller = null;
-            }           
+            }
         }
     }
 }

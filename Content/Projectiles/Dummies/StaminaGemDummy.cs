@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Projectiles.Dummies
+﻿using StarlightRiver.Core;
+
+namespace StarlightRiver.Content.Projectiles.Dummies
 {
 
 }

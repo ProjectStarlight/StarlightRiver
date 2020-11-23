@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Hostile
 {
@@ -43,14 +43,14 @@ namespace StarlightRiver.NPCs.Hostile
             switch (npc.ai[0])
             {
                 case 0: //bobbing in the water
-                    npc.ai[1]+= 0.1f;
-                    npc.ai[2]+= 0.03f;
+                    npc.ai[1] += 0.1f;
+                    npc.ai[2] += 0.03f;
                     if (!npc.wet)
                     {
                         npc.noGravity = false;
                         npc.velocity.Y += 0.3f;
                     }
-                    else 
+                    else
                     {
                         npc.noGravity = true;
                         if (Math.Abs(player.Center.X - npc.Center.X) < 100)
@@ -73,9 +73,9 @@ namespace StarlightRiver.NPCs.Hostile
                     }
                     else
                     {
-                        npc.velocity.Y+= (0.39f * jumpSpeed);
-                         npc.noTileCollide = false;
-                    }  
+                        npc.velocity.Y += (0.39f * jumpSpeed);
+                        npc.noTileCollide = false;
+                    }
                     if (npc.velocity.Y >= 0)
                     {
                         npc.ai[0] = 2;
@@ -91,8 +91,8 @@ namespace StarlightRiver.NPCs.Hostile
                     }
                     else
                     {
-                        npc.velocity.Y+= (0.39f * jumpSpeed);
-                    }  
+                        npc.velocity.Y += (0.39f * jumpSpeed);
+                    }
                     if (npc.collideX)
                     {
                         //explode

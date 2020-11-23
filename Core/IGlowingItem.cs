@@ -1,7 +1,9 @@
 ﻿using Terraria.ModLoader;
 
-namespace StarlightRiver.Items
-{
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
+{ 
     internal interface IGlowingItem
     {
         void DrawGlowmask(PlayerDrawInfo info);

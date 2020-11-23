@@ -8,6 +8,8 @@ using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.GUI
 {
     public class TextCard : SmartUIState
@@ -26,7 +28,7 @@ namespace StarlightRiver.GUI
         private int tempTime = 0;
         private int tempTimeMax = 0;
 
-        private Texture2D texture { get => GetTexture(texturePath); }
+        private Texture2D Texture { get => GetTexture(texturePath); }
 
         public void SetTexture(string path) => texturePath = path;
 
@@ -72,16 +74,16 @@ namespace StarlightRiver.GUI
                 spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
             }
 
-            spriteBatch.Draw(texture, new Rectangle(startX - (int)(Longest * 1.2f), startY + (int)(75 * textScale), (int)(Longest * 2.4f), 6), new Rectangle(94, 0, 8, 6), color);
+            spriteBatch.Draw(Texture, new Rectangle(startX - (int)(Longest * 1.2f), startY + (int)(75 * textScale), (int)(Longest * 2.4f), 6), new Rectangle(94, 0, 8, 6), color);
 
-            spriteBatch.Draw(texture, new Vector2(startX - (int)(Longest * 1.2f) - 46, startY + (int)(75 * textScale) - 34), new Rectangle(0, 0, 46, 46), color);
-            spriteBatch.Draw(texture, new Rectangle(startX + (int)(Longest * 1.2f), startY + (int)(75 * textScale) - 34, 46, 46), new Rectangle(46, 0, 46, 46), color);
+            spriteBatch.Draw(Texture, new Vector2(startX - (int)(Longest * 1.2f) - 46, startY + (int)(75 * textScale) - 34), new Rectangle(0, 0, 46, 46), color);
+            spriteBatch.Draw(Texture, new Rectangle(startX + (int)(Longest * 1.2f), startY + (int)(75 * textScale) - 34, 46, 46), new Rectangle(46, 0, 46, 46), color);
 
             if (Thisability != null)
             {
                 if (Thisability.Active) used = true;
 
-                if (used) Timer--; 
+                if (used) Timer--;
                 else if (Timer < 120) Timer++;
 
                 if (Timer == 0) Reset();
@@ -89,7 +91,7 @@ namespace StarlightRiver.GUI
             else
             {
                 if (tempTime < tempTimeMax) tempTime++;
-                if (tempTime >= tempTimeMax) Timer--; 
+                if (tempTime >= tempTimeMax) Timer--;
                 else if (Timer < 120) Timer++;
 
                 if (Timer == 0) Reset();

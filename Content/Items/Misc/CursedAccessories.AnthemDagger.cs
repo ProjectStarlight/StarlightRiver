@@ -4,6 +4,8 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.CursedAccessories
 {
     internal class AnthemDagger : CursedAccessory

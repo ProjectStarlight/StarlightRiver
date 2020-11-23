@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Terraria.ModLoader.ModContent;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities;
+using StarlightRiver.Core;
+using StarlightRiver.Items;
+using System;
 using Terraria;
 using Terraria.ID;
-using StarlightRiver.Projectiles.Dummies;
-using StarlightRiver.Items;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using static Terraria.ModLoader.ModContent;
+
 using StarlightRiver.Core;
-using StarlightRiver.Abilities;
 
 namespace StarlightRiver.Tiles.Vitric.Temple
 {
@@ -89,7 +86,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                     player.GetModPlayer<StarlightPlayer>().inTutorial = false;
                     Main.PlaySound(SoundID.Shatter, player.Center);
 
-                    for(int k = 0; k < 50; k++)
+                    for (int k = 0; k < 50; k++)
                         Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.Glass2>());
                 }
                 else player.velocity.X = -1;

@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class BossSpike : ModProjectile
@@ -33,7 +35,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
             if (projectile.ai[0] == 90) projectile.hostile = true; //when this projectile goes off
 
-            if(projectile.ai[0] >= 90 && projectile.ai[0] <= 100)
+            if (projectile.ai[0] >= 90 && projectile.ai[0] <= 100)
             {
                 int factor = (int)((projectile.ai[0] - 90) / 10f * 128);
 

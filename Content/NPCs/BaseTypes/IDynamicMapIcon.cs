@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs
 {
     internal interface IDynamicMapIcon

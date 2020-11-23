@@ -4,6 +4,8 @@ using System;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Keys
 {
     internal class OvergrowKey : Key

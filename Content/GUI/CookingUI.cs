@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Food;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -11,6 +10,8 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
@@ -53,7 +54,7 @@ namespace StarlightRiver.GUI
             if (Basepos.Y < 20) Basepos.Y = 20;
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
             if (Basepos.Y > Main.screenHeight - 20 - 244) Basepos.Y = Main.screenHeight - 20 - 244;
-          
+
             Main.isMouseLeftConsumedByUI = true;
             SetPosition(MainSlot, 44, 44);
             SetPosition(SideSlot0, 10, 112);
@@ -83,7 +84,7 @@ namespace StarlightRiver.GUI
             int drawY = 0;
             if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.modItem as Ingredient).ThisType == IngredientType.Main))
                 Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
-            
+
             else
             {
                 int duration = 0;
@@ -117,7 +118,7 @@ namespace StarlightRiver.GUI
 
                 for (int k = scrollStart; k < max; k++)
                 {
-                    var line = lines[k];                  
+                    var line = lines[k];
                     Utils.DrawBorderString(spriteBatch, line.Item1, Basepos + new Vector2(186, 54 + drawY), line.Item2, 0.65f);
                     drawY += (int)(Main.fontItemStack.MeasureString(line.Item1).Y * 0.65f) + 2;
                 }
@@ -125,7 +126,7 @@ namespace StarlightRiver.GUI
                 Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
                 Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
 
-                if(lineCount > 5)
+                if (lineCount > 5)
                 {
                     var tex = GetTexture("StarlightRiver/GUI/Assets/Arrow");
 

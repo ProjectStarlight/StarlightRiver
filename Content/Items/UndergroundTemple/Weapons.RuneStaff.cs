@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Temple.DashLocked
 {
     class RuneStaff : ModItem
@@ -39,11 +41,11 @@ namespace StarlightRiver.Items.Temple.DashLocked
         {
             if (player.channel)
             {
-                if(charge % 30 == 0 && charge < 90)
+                if (charge % 30 == 0 && charge < 90)
                 {
                     int index = charge / 30;
                     float rot = MathHelper.Pi / 3f * index - MathHelper.Pi / 3f;
-                    int i =  Projectile.NewProjectile(player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), item.damage, item.knockBack, player.whoAmI, 0, charge);
+                    int i = Projectile.NewProjectile(player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), item.damage, item.knockBack, player.whoAmI, 0, charge);
                     Main.projectile[i].frame = index;
 
                     Main.PlaySound(SoundID.Item8, player.Center);
@@ -93,7 +95,7 @@ namespace StarlightRiver.Items.Temple.DashLocked
             projectile.ai[1]++;
 
             if (projectile.ai[0] == 1)
-                for(int k = 0; k < 2; k++)
+                for (int k = 0; k < 2; k++)
                     Dust.NewDust(projectile.position + Vector2.One * 4, 8, 8, DustType<Dusts.Stamina>(), 0, 0, 0, default, 0.6f);
             else
             {
@@ -131,10 +133,10 @@ namespace StarlightRiver.Items.Temple.DashLocked
 
             if (projectile.ai[0] == 1)
             {
-                if(projectile.ai[1] < 15)
+                if (projectile.ai[1] < 15)
                 {
                     Color color = new Color(255, 230, 100) * (1 - projectile.ai[1] / 15f);
-                    for(int k = 0; k < 3; k++)
+                    for (int k = 0; k < 3; k++)
                         spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, projectile.ai[1] / 7.5f + k / 12f, 0, 0);
                 }
 

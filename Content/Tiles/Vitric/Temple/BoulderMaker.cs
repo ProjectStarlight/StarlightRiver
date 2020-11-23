@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Items;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Items;
-using Terraria.Audio;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric.Temple
 {
@@ -25,7 +22,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if(StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.frameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) NPC.NewNPC(i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.frameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) NPC.NewNPC(i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
         }
     }
 
@@ -55,7 +52,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
             npc.aiStyle = -1;
             npc.behindTiles = true;
         }
-       
+
         public override void AI()
         {
             if (npc.position.Y > npc.ai[0]) npc.noTileCollide = false;
@@ -69,7 +66,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
         public override void NPCLoot()
         {
-            for(int k = 0; k < 100; k++)
+            for (int k = 0; k < 100; k++)
             {
                 Dust.NewDust(npc.position, npc.width, npc.height, DustID.Stone);
             }

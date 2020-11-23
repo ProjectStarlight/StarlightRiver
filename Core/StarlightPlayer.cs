@@ -3,8 +3,7 @@ using StarlightRiver.Abilities;
 using StarlightRiver.GUI;
 using StarlightRiver.Items.Armor;
 using StarlightRiver.NPCs.Boss.SquidBoss;
-using StarlightRiver.Tiles.Permafrost;
-using StarlightRiver.Tiles.Vitric.Blocks;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,11 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Tiles.Vitric;
+using StarlightRiver.Content.Tiles.Permafrost;
 
 namespace StarlightRiver.Core
 {
@@ -68,35 +72,40 @@ namespace StarlightRiver.Core
 
             if (Main.netMode != NetmodeID.Server)
             {
+                var staminaState = UILoader.GetUIState<Stamina>();
+                var infusionState = UILoader.GetUIState<Infusion>();
+                var codexState = UILoader.GetUIState<GUI.Codex>();
+                var collectionState = UILoader.GetUIState<Collection>();
+
                 AbilityHandler mp = player.GetHandler();
 
-                Stamina.Visible = false;
-                Infusion.Visible = false;
+                staminaState.Visible = false;
+                infusionState.Visible = false;
 
-                if (mp.AnyUnlocked) Stamina.Visible = true;
+                if (mp.AnyUnlocked) staminaState.Visible = true;
 
                 if (Main.playerInventory)
                 {
                     if (player.chest == -1 && Main.npcShop == 0)
                     {
-                        Collection.Visible = true;
+                        collectionState.Visible = true;
                         GUI.Codex.ButtonVisible = true;
-                        if (mp.AnyUnlocked) Infusion.Visible = true;
+                        if (mp.AnyUnlocked) infusionState.Visible = true;
                     }
                     else
                     {
-                        Collection.Visible = false;
+                        collectionState.Visible = false;
                         GUI.Codex.ButtonVisible = false;
-                        if (mp.AnyUnlocked) Infusion.Visible = false;
+                        if (mp.AnyUnlocked) infusionState.Visible = false;
                     }
                 }
                 else
                 {
-                    Collection.Visible = false;
+                    collectionState.Visible = false;
                     Collection.ActiveAbility = null;
                     GUI.Codex.ButtonVisible = false;
                     GUI.Codex.Open = false;
-                    Infusion.Visible = false;
+                    infusionState.Visible = false;
                 }
             }
 
@@ -106,7 +115,7 @@ namespace StarlightRiver.Core
             }
             DarkSlow = false;
 
-            if (!player.immune) 
+            if (!player.immune)
             {
                 VitricSpike.CollideWithSpikes(player, out int damage);
                 if (damage > 0)
@@ -194,7 +203,7 @@ namespace StarlightRiver.Core
 
             void DrawGlowmasks(PlayerDrawInfo info)
             {
-                if (info.drawPlayer.HeldItem.modItem is Items.IGlowingItem) (info.drawPlayer.HeldItem.modItem as Items.IGlowingItem).DrawGlowmask(info);
+                if (info.drawPlayer.HeldItem.modItem is IGlowingItem) (info.drawPlayer.HeldItem.modItem as IGlowingItem).DrawGlowmask(info);
             }
             #region armor masks
             Action<PlayerDrawInfo> helmetTarget = DrawHelmetMask;

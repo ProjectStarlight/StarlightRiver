@@ -3,6 +3,8 @@ using System;
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Dusts
 {
     internal class BioLumen : ModDust

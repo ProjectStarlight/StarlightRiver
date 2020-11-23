@@ -6,6 +6,8 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     public abstract class InteractiveProjectile : ModProjectile

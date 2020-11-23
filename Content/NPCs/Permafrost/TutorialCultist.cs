@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Buffs;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.GUI;
+using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Passive
 {
@@ -39,7 +37,7 @@ namespace StarlightRiver.NPCs.Passive
         public override string GetChat()
         {
             textState = 0;
-            RichTextBox.Visible = true;
+            UILoader.GetUIState<RichTextBox>().Visible = true;
             RichTextBox.ClearButtons();
 
             SetData();
@@ -52,7 +50,7 @@ namespace StarlightRiver.NPCs.Passive
         {
             textState++;
 
-            if(textState == 3)
+            if (textState == 3)
             {
                 RichTextBox.ClearButtons();
                 RichTextBox.AddButton("[]Recieve Blessing", Bless);
@@ -61,7 +59,7 @@ namespace StarlightRiver.NPCs.Passive
 
         private void Bless()
         {
-            RichTextBox.Visible = false;
+            UILoader.GetUIState<RichTextBox>().Visible = false;
             RichTextBox.SetData(null, "", "");
             Main.player[Main.myPlayer].talkNPC = -1;
 
@@ -76,7 +74,7 @@ namespace StarlightRiver.NPCs.Passive
 
                 if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
                 {
-                    RichTextBox.Visible = false;
+                    UILoader.GetUIState<RichTextBox>().Visible = false;
                     RichTextBox.SetData(null, "", "");
                 }
             }

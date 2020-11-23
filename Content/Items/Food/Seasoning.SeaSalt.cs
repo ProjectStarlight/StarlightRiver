@@ -1,7 +1,7 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
+﻿using Terraria;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Food.Content.Seasoning
 {

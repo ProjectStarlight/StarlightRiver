@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
@@ -33,7 +35,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             if (npc.ai[0] % 60 == 0)
             {
                 npc.velocity = Vector2.Normalize(npc.Center - player.Center) * -6f;
-                for(int k = 0; k < 10; k++) Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Starlight>(), npc.velocity * Main.rand.NextFloat(-5, 5));
+                for (int k = 0; k < 10; k++) Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Starlight>(), npc.velocity * Main.rand.NextFloat(-5, 5));
             }
 
             npc.ai[0]++;

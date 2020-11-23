@@ -6,6 +6,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
     public partial class SquidBoss : ModNPC
@@ -14,11 +16,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         {
             List<int> possible = new List<int>();
 
-            for(int k = 0; k < Main.maxPlayers; k++)
+            for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
 
-                if(player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
+                if (player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
                     possible.Add(player.whoAmI);
             }
 
@@ -95,7 +97,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     int time = (int)AttackTimer - (k * 100 + 90);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovePoint, tentacle.SavedPoint, time / 210f);
 
-                    if(AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 260 : 205))
+                    if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 260 : 205))
                     {
                         SplashDustSmall(k);
                     }
@@ -146,7 +148,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.SavedPoint, tentacle.MovePoint, (AttackTimer - 60) / 60f);
 
-                    if(AttackTimer == (Phase == (int)AIStates.FirstPhase ? 65 : 90))
+                    if (AttackTimer == (Phase == (int)AIStates.FirstPhase ? 65 : 90))
                     {
                         SplashDust(k);
                     }
@@ -169,7 +171,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovePoint, tentacle.SavedPoint, (AttackTimer - 360) / 60f);
 
-                    if(AttackTimer == (Phase == (int)AIStates.FirstPhase ? 410 : 390))
+                    if (AttackTimer == (Phase == (int)AIStates.FirstPhase ? 410 : 390))
                     {
                         SplashDustSmall(k);
                     }
@@ -395,7 +397,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     tentacles[k].Center = spawnPoint + new Vector2(-600, -1100);
                     tentacle.SavedPoint = tentacles[k].Center;
                 }
-                for(int k = 2; k < 4; k++) //right
+                for (int k = 2; k < 4; k++) //right
                 {
                     Tentacle tentacle = tentacles[k].modNPC as Tentacle;
                     tentacles[k].Center = spawnPoint + new Vector2(600, -1100);
@@ -435,7 +437,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 }
             }
 
-            if(AttackTimer == 480) ResetAttack();
+            if (AttackTimer == 480) ResetAttack();
         }
         #endregion
 

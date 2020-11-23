@@ -5,6 +5,8 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Vitric.Temple
 {
     class LightBeam : ModProjectile
@@ -112,7 +114,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                     Wiring.TripWire(x, y, 1, 1);
                 }
 
-                if(tile.type == TileType<DoorVertical>() || tile.type == TileType<DoorHorizontal>())
+                if (tile.type == TileType<DoorVertical>() || tile.type == TileType<DoorHorizontal>())
                 {
                     WorldGen.KillTile(x, y);
                 }

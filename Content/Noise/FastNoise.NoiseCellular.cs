@@ -4,6 +4,8 @@
 using System;
 using DECIMAL = System.Single;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Noise
 {
     public partial class FastNoise

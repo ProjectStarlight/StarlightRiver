@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Buffs;
 using StarlightRiver.Dusts;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Terraria;
-using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Void = StarlightRiver.Dusts.Void;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Abilities.Content.Faeflame
 {
@@ -103,7 +102,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
                 Player.width = oldHitbox.Width;
                 Player.height = oldHitbox.Height;
             }
-            else if (!safe) 
+            else if (!safe)
                 Player.AddBuff(BuffType<Claustrophobia>(), 2);
         }
 

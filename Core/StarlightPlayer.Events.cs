@@ -2,6 +2,8 @@
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer
@@ -34,7 +36,7 @@ namespace StarlightRiver.Core
         public static event ModifyHitNPCWithProjDelegate ModifyHitNPCWithProjEvent;
         public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            ModifyHitNPCWithProjEvent?.Invoke(player, proj, target, ref damage, ref knockback, ref crit,ref hitDirection);
+            ModifyHitNPCWithProjEvent?.Invoke(player, proj, target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
         public delegate void OnHitNPCDelegate(Player player, Item item, NPC target, int damage, float knockback, bool crit);
@@ -48,7 +50,7 @@ namespace StarlightRiver.Core
         public static event OnHitNPCWithProjDelegate OnHitNPCWithProjEvent;
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-                OnHitNPCWithProjEvent?.Invoke(player, proj, target, damage, knockback, crit);
+            OnHitNPCWithProjEvent?.Invoke(player, proj, target, damage, knockback, crit);
         }
 
         public delegate void NaturalLifeRegenDelegate(Player player, ref float regen);

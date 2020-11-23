@@ -1,6 +1,8 @@
 ﻿//Based on https://github.com/Auburns/FastNoise_CSharp/blob/master/FastNoise.cs under MIT License
 //Copyright(c) 2017 Jordan Peck
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Noise
 {
     public partial class FastNoise

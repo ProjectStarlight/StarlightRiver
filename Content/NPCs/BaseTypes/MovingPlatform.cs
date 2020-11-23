@@ -3,6 +3,8 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs
 {
     internal abstract class MovingPlatform : ModNPC

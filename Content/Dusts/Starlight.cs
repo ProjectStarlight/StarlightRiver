@@ -2,6 +2,8 @@
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Dusts
 {
     public class Starlight : ModDust
@@ -44,7 +46,7 @@ namespace StarlightRiver.Dusts
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return dust.color*(dust.alpha/255f);
+            return dust.color * (dust.alpha / 255f);
         }
 
         public override bool Update(Dust dust)

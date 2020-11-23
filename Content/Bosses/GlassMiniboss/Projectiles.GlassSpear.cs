@@ -1,9 +1,11 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.ID;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -31,16 +33,16 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
             int timer = 150 - projectile.timeLeft;
 
-            if(timer == 0) //set vectors to move to / from on spawn
+            if (timer == 0) //set vectors to move to / from on spawn
             {
                 savedPoint = projectile.Center;
                 movePoint = projectile.Center + Vector2.UnitY * -projectile.ai[0];
             }
 
-            if(timer < 60) //Spreading upwards
+            if (timer < 60) //Spreading upwards
                 projectile.Center = Vector2.SmoothStep(savedPoint, movePoint, timer / 60f);
 
-            if(timer > 60 && timer < 80) //draw back
+            if (timer > 60 && timer < 80) //draw back
                 projectile.Center = Vector2.SmoothStep(movePoint, movePoint + Vector2.UnitX * -projectile.ai[1] * 45, (timer - 60) / 20f);
 
             if (timer == 80) //fire

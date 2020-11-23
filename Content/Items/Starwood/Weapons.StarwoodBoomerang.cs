@@ -2,6 +2,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Items.Starwood.Weapons
 {
     public class StarwoodBoomerang : StarwoodItem
@@ -35,7 +37,7 @@ namespace StarlightRiver.Content.Items.Starwood.Weapons
         {
             for (int k = 0; k <= Main.maxProjectiles; k++)
             {
-                if(Main.projectile[k].active && Main.projectile[k].owner == player.whoAmI && Main.projectile[k].type == ModContent.ProjectileType<Projectiles.WeaponProjectiles.StarwoodBoomerangProjectile>())
+                if (Main.projectile[k].active && Main.projectile[k].owner == player.whoAmI && Main.projectile[k].type == ModContent.ProjectileType<Projectiles.WeaponProjectiles.StarwoodBoomerangProjectile>())
                 {
                     return false;
                 }

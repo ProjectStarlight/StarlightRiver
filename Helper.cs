@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +12,11 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver
 {
@@ -22,7 +25,7 @@ namespace StarlightRiver
         private static int tiltTime;
         private static float tiltMax;
 
-        public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0,0,(int)vector.X, (int)vector.Y);
+        public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0, 0, (int)vector.X, (int)vector.Y);
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
@@ -103,7 +106,7 @@ namespace StarlightRiver
 
         public static Vector3 ScreenCoord(this Vector3 vector) => new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
 
-        public static void BoostAllDamage(this Player player,float damage, int crit=0)
+        public static void BoostAllDamage(this Player player, float damage, int crit = 0)
         {
             player.meleeDamage += damage;
             player.rangedDamage += damage;
@@ -116,7 +119,7 @@ namespace StarlightRiver
             player.meleeCrit += crit;
             player.magicCrit += crit;
         }
-        public static bool IsValidDebuff(Player player,int buffindex)
+        public static bool IsValidDebuff(Player player, int buffindex)
         {
             int bufftype = player.buffType[buffindex];
             bool vitalbuff = (bufftype == BuffID.PotionSickness || bufftype == BuffID.ManaSickness || bufftype == BuffID.ChaosState);
@@ -127,7 +130,7 @@ namespace StarlightRiver
         {
             int items = 0;
 
-            for(int k = 0; k < player.inventory.Length; k++)
+            for (int k = 0; k < player.inventory.Length; k++)
             {
                 Item item = player.inventory[k];
                 if (item.type == type) items += item.stack;
@@ -164,12 +167,6 @@ namespace StarlightRiver
                 return true;
             }
             else return false;
-        }
-
-        public static void SetExtraNPCState(UIState state)
-        {
-            StarlightRiver.Instance.ExtraNPCState = state;
-            StarlightRiver.Instance.ExtraNPCInterface.SetState(state);
         }
 
         public static void DrawLine(SpriteBatch spritebatch, Vector2 startPoint, Vector2 endPoint, Texture2D texture, Color color, Rectangle sourceRect = default)
@@ -296,7 +293,7 @@ namespace StarlightRiver
             if (entry.RequiresUpgradedBook && mp.CodexState != 2) return; //dont give the player void entries if they dont have the void book
             entry.Locked = false;
             entry.New = true;
-            if (mp.CodexState != 0) StarlightRiver.Instance.codexpopup.TripEntry(entry.Title);
+            if (mp.CodexState != 0) UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title);
             Main.PlaySound(SoundID.Item30);
         }
 
@@ -455,7 +452,7 @@ namespace StarlightRiver
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
                 Tile tile = Framing.GetTileSafely(startX, startY + k);
-                if (tile.active() && tile?.type == type) 
+                if (tile.active() && tile?.type == type)
                     return true;
             }
             return false;
@@ -484,7 +481,7 @@ namespace StarlightRiver
             string line = "";
             foreach (string str in words)
             {
-                if(str == "NEWBLOCK")
+                if (str == "NEWBLOCK")
                 {
                     output += ("\n\n");
                     line = ("");

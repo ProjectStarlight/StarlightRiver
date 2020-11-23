@@ -1,11 +1,13 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
-using StarlightRiver.Content.Projectiles.Dummies;
+using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -73,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             float off = (float)Math.Sin(projectile.ai[0]) * 0.05f;
 
             for (int k = -1; k < 2; k++)
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, 100), tex.Frame(), new Color(1, 0.9f, 0.6f) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex.Width / 2, 0), 0.7f, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, 100), tex.Frame(), new Color(1, 0.9f, 0.6f) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex.Width / 2, 0), 0.7f, 0, 0);
         }
     }
 }

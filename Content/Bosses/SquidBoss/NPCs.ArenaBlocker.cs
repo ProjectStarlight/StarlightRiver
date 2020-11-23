@@ -1,9 +1,11 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
@@ -30,7 +32,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public override void AI()
         {
-            if(npc.ai[1] == 1 && npc.ai[0] > 0) { npc.ai[0] -= 4; }
+            if (npc.ai[1] == 1 && npc.ai[0] > 0) { npc.ai[0] -= 4; }
             npc.friendly = false;
         }
 

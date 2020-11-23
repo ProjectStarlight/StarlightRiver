@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Projectiles.Dummies;
-using Terraria.ID;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
+using System;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -40,11 +42,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void Update()
         {
-            projectile.ai[0] ++;     
-            
+            projectile.ai[0]++;
+
             Rectangle hitbox = new Rectangle((int)Center.X - 32, (int)Center.Y - 32, 64, 64);
 
-            for(int k = 0; k < Main.maxPlayers; k++)
+            for (int k = 0; k < Main.maxPlayers; k++)
             {
                 Player player = Main.player[k];
                 if (player.active && !player.immune && player.Hitbox.Intersects(hitbox))

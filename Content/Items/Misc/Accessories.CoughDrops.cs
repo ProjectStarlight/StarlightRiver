@@ -1,12 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Buffs;
-using StarlightRiver.Core;
-using StarlightRiver.Projectiles.Ammo;
+﻿using StarlightRiver.Buffs;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
@@ -47,7 +44,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         {
             if (Helper.HasEquipped(ply, ModContent.ItemType<CoughDrops>()))
             {
-                Main.PlaySound(SoundID.DD2_BetsyHurt, ply.Center).Pitch = Main.rand.NextFloat(0.25f,0.6f);
+                Main.PlaySound(SoundID.DD2_BetsyHurt, ply.Center).Pitch = Main.rand.NextFloat(0.25f, 0.6f);
                 ply.AddBuff(ModContent.BuffType<CoughDropsBuff>(), 60 * 5);
             }
         }

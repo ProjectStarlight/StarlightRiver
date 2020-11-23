@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -35,7 +37,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             //rotation control
             if (timer <= 30)
                 projectile.rotation = (target.Center - projectile.Center).ToRotation() + (float)Math.PI / 4;
-            else 
+            else
                 projectile.rotation = projectile.velocity.ToRotation() + (float)Math.PI / 4;
 
             //motion
@@ -61,10 +63,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             int timer = 120 - projectile.timeLeft;
             Texture2D backTex = GetTexture(Texture);
 
-            for(int k = 0; k < ProjectileID.Sets.TrailCacheLength[projectile.type]; k++)
+            for (int k = 0; k < ProjectileID.Sets.TrailCacheLength[projectile.type]; k++)
             {
                 float alpha = k / (float)ProjectileID.Sets.TrailCacheLength[projectile.type];
-                spriteBatch.Draw(backTex, projectile.oldPos[k] + projectile.Size /2  - Main.screenPosition, null, Color.White * alpha, projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(backTex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, Color.White * alpha, projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
             }
 
             if (timer < 30)

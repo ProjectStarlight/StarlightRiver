@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
+
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
@@ -34,7 +36,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.aiStyle = -1;
             projectile.rotation = Main.rand.NextFloat(4f);
         }
-        
+
 
         public override void AI()
         {
@@ -61,7 +63,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             projectile.velocity = projectile.velocity.RotatedBy(Math.Sin(projectile.timeLeft * 0.2f) * projectile.ai[0]);
         }
 
-        public override void ModifyHitNPC(NPC target,ref int damage,ref float knockback,ref bool crit,ref int hitDirection)
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, projectile.owner, damage);
             //Main.NewText(knockback);
@@ -214,10 +216,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override bool InstancePerEntity => true;
         public override void PostAI(NPC npc)
         {
-            if(score > 0)
+            if (score > 0)
             {
                 resetCounter++;
-                if(score >= 3)
+                if (score >= 3)
                 {
                     float rotationAmount = Main.rand.NextFloat(-0.3f, 0.3f);
 
@@ -226,14 +228,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
                     Vector2 position = new Vector2(npc.Center.X, npc.Center.Y - 700).RotatedBy(rotationAmount, npc.Center);
                     Vector2 velocity = ((Vector2.Normalize((npc.Center + new Vector2(0, -20)) - position) * speed) + ((npc.velocity / (speed / 1.5f)) * 10f)) * (Math.Abs(rotationAmount) + 1f);
-                    
+
                     Projectile.NewProjectile(position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
-                    
+
                     score = 0;
                     resetCounter = 0;
                     //Main.NewText("reset spawn");
                 }
-                else if(resetCounter > 60)
+                else if (resetCounter > 60)
                 {
                     score = 0;
                     resetCounter = 0;

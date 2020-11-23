@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Core;
 using Terraria;
-using Terraria.ModLoader;
+
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
@@ -21,7 +20,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             player.maxRunSpeed *= 1.20f;
         }
 
-        private void HealthRegenLoss(Player player,ref float regen)
+        private void HealthRegenLoss(Player player, ref float regen)
         {
             if (Equipped(player))
             {

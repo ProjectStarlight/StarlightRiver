@@ -10,6 +10,8 @@ using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.StarJuice
 {
     internal sealed class Tank : ModTile

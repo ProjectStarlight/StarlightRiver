@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class PermafrostSnow : ModTile
@@ -13,9 +15,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void RandomUpdate(int i, int j)
         {
-            if(WorldGen.InWorld(i, j - 1))
+            if (WorldGen.InWorld(i, j - 1))
             {
-                if(!Framing.GetTileSafely(i, j-1).active()) WorldGen.PlaceTile(i, j-1, TileType<Decoration.SnowGrass>());
+                if (!Framing.GetTileSafely(i, j - 1).active()) WorldGen.PlaceTile(i, j - 1, TileType<Decoration.SnowGrass>());
             }
         }
     }

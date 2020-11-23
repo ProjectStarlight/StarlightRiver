@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.Graphics.Effects;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver
 {
     public class RenderTest
@@ -89,7 +91,7 @@ namespace StarlightRiver
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
             Vector2 offset = (Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2f - tileLightingCenter - Vector2.One * 64) / new Vector2(Main.screenWidth, Main.screenHeight);
-            
+
             UpscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             UpscaleEffect.Parameters["fullBufferSize"].SetValue(tileLightingTexture.Size() * 16);
             UpscaleEffect.Parameters["offset"].SetValue(offset);
@@ -106,7 +108,7 @@ namespace StarlightRiver
         public void DebugDraw()
         {
             thetimer++;
-            if(thetimer % 5 == 0) PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * padding * 16);
+            if (thetimer % 5 == 0) PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * padding * 16);
             PopulateScreenTexture();
         }
 
@@ -151,7 +153,7 @@ namespace StarlightRiver
 
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
             ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
-         
+
             verticies[0] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y), 0), Vector2.Zero);
             verticies[1] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y), 0), Vector2.UnitX);
             verticies[2] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y + tex.Height), 0), Vector2.UnitY);
@@ -159,7 +161,7 @@ namespace StarlightRiver
             verticies[3] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y), 0), Vector2.UnitX);
             verticies[4] = new VertexPositionTexture(new Vector3(ConvertX(pos.X + tex.Width), ConvertY(pos.Y + tex.Height), 0), Vector2.One);
             verticies[5] = new VertexPositionTexture(new Vector3(ConvertX(pos.X), ConvertY(pos.Y + tex.Height), 0), Vector2.UnitY);
-         
+
             buffer.SetData(verticies);
 
             Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
@@ -238,14 +240,14 @@ namespace StarlightRiver
             var points = new VertexPositionTexture[3];
             var buffer = new VertexBuffer(gd, typeof(VertexPositionTexture), 3, BufferUsage.WriteOnly);
 
-            for(int k = 0; k < 3; k++)
+            for (int k = 0; k < 3; k++)
                 points[k] = new VertexPositionTexture(new Vector3(ConvertX(target[k].X), ConvertY(target[k].Y), 0), source[k] / tex.Size());
 
             buffer.SetData(points);
 
             gd.SetVertexBuffer(buffer);
 
-            foreach(EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 gd.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);

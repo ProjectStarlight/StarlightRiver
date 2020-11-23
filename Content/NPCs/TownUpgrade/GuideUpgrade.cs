@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.TownUpgrade
 {
     class GuideUpgrade : TownUpgrade

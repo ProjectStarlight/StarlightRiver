@@ -1,10 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria.ModLoader;
-using Terraria;
-using static Terraria.ModLoader.ModContent;
-using System.IO;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using System;
+using System.IO;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -80,7 +84,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
                     ResetAttack();
 
-                    StarlightRiver.Instance.textcard.Display("Glassweaver", "the", null, 240, 1, true);
+                    UILoader.GetUIState<TextCard>().Display("Glassweaver", "the", null, 240, 1, true);
 
                     SetPhase(PhaseEnum.SpawnAnimation);
 
@@ -142,7 +146,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             var glowTex = GetTexture("StarlightRiver/NPCs/Miniboss/Glassweaver/ForgeGlow");
 
-            for(int k = 0; k < leftForgeCharge; k++)
+            for (int k = 0; k < leftForgeCharge; k++)
             {
                 var pos = LeftForge - Main.screenPosition + new Vector2(-glowTex.Width / 2 + 2, -168 + k * -(glowTex.Height + 2));
                 spriteBatch.Draw(glowTex, pos, Color.Red * 0.3f);
@@ -168,7 +172,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             {
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, 0, npc.frame.Size() / 2, 1, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
-            
+
             return false;
         }
     }

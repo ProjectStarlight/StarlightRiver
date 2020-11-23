@@ -8,6 +8,8 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.CustomHooks
 {
     class PlayerLayerManipulation : HookGroup

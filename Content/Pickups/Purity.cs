@@ -3,12 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Abilities.Content.Purify;
 using StarlightRiver.Codex.Entries;
-using StarlightRiver.Dusts;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Pickups
 {
@@ -82,7 +85,7 @@ namespace StarlightRiver.NPCs.Pickups
                 {
                     player.AddBuff(BuffID.Featherfall, 120);
                     mp.GetAbility<Pure>(out var purify);
-                    StarlightRiver.Instance.textcard.Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Pure>().GetAssignedKeys()[0] + " to purify nearby tiles", purify);
+                    UILoader.GetUIState<TextCard>().Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Pure>().GetAssignedKeys()[0] + " to purify nearby tiles", purify);
                     Helper.UnlockEntry<PureEntry>(player);
                 }
             }

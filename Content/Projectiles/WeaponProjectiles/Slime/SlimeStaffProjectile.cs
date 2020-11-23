@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Items.Slime;
+using System.IO;
 using Terraria;
-using System;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Items.Slime;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using System.IO;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
 {
@@ -74,7 +74,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
                 Projectile curProj = Main.projectile[index];
                 if (index != projectile.whoAmI && curProj.active && curProj.type == ProjectileType<SlimeStaffProjectile>())//if active, this type, and not this projectile
                 {
-                    if(Vector2.Distance(projectile.position, curProj.position) < size && projectile.timeLeft < maxTimeleft - 60)//if 60 seconds have passed, and the distance is less than size
+                    if (Vector2.Distance(projectile.position, curProj.position) < size && projectile.timeLeft < maxTimeleft - 60)//if 60 seconds have passed, and the distance is less than size
                     {
                         SlimeStaffProjectile curSlimeProj = curProj.modProjectile as SlimeStaffProjectile;
                         int nextSize = curSlimeProj.globSize + globSize;//this projectiles size added to the selected projectile's size
@@ -146,7 +146,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
                 {
                     projectile.velocity.X = -oldVelocity.X;
                 }
-                if (projectile.velocity.Y != oldVelocity.Y);
+                if (projectile.velocity.Y != oldVelocity.Y) ;
                 {
                     projectile.velocity.Y = -oldVelocity.Y;
                 }

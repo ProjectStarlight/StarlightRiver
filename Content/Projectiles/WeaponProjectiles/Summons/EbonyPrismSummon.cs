@@ -7,6 +7,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 {
     public class EbonyPrismSummon : ModProjectile

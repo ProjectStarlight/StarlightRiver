@@ -1,20 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.Overgrow;
-using System;
-using System.Collections.Generic;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.World.Generation;
-using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.WorldGeneration
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
 {
     public partial class StarlightWorld
     {
         public static void UndergroundTempleGen(GenerationProgress progress)
         {
-            for(int x = 0; x < Main.maxTilesX - 200; x+= WorldGen.genRand.Next(70, 130))
+            for (int x = 0; x < Main.maxTilesX - 200; x += WorldGen.genRand.Next(70, 130))
             {
                 int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, (int)Main.rockLayer);
 

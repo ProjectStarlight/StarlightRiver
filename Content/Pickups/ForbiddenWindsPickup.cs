@@ -3,6 +3,8 @@ using StarlightRiver.Abilities;
 using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using StarlightRiver.Items;
 using System;
 using Terraria;
@@ -10,6 +12,8 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Pickups
 {
@@ -89,7 +93,7 @@ namespace StarlightRiver.Pickups
                     "Press A/W/S/D + [Please Bind a Key] to dash.";
 
                 Main.LocalPlayer.GetHandler().GetAbility<Dash>(out var dash);
-                StarlightRiver.Instance.textcard.Display("Forbidden Winds", message, dash);
+                UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
                 Helper.UnlockEntry<WindsEntry>(Main.LocalPlayer);
                 Helper.UnlockEntry<StaminaEntry>(Main.LocalPlayer);
             }

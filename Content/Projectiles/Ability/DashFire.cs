@@ -3,6 +3,8 @@ using StarlightRiver.Items;
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.Ability
 {
     public class DashFire : ModProjectile

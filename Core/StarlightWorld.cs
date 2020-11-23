@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
@@ -15,13 +14,13 @@ using Terraria.ModLoader.IO;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver
+namespace StarlightRiver.Core
 {
     //Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
     public partial class StarlightWorld : ModWorld
     {
         private static WorldFlags flags;
-        
+
         public static Vector2 RiftLocation;
 
         public static float rottime;
@@ -35,7 +34,7 @@ namespace StarlightRiver
         public static int Timer;
 
         //Im so sorry for putting these here.  TODO: Move it later
-        public static Cutaway cathedralOverlay; 
+        public static Cutaway cathedralOverlay;
 
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
@@ -60,7 +59,7 @@ namespace StarlightRiver
             writer.Write((int)flags);
 
             WriteRectangle(writer, VitricBiome);
-            WriteRectangle(writer, SquidBossArena);       
+            WriteRectangle(writer, SquidBossArena);
         }
 
         public override void NetReceive(BinaryReader reader)
@@ -123,7 +122,7 @@ namespace StarlightRiver
             {
                 Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
 
-                cathedralOverlay.fade = 
+                cathedralOverlay.fade =
                     tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>() &&
                     !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
 
@@ -221,7 +220,7 @@ namespace StarlightRiver
                     for (int j = (int)PureTiles[k].Y - 16; j <= (int)PureTiles[k].Y + 16; j++)
                     {
                         Projectiles.Ability.Purifier.RevertTile(i, j);
-                    }              
+                    }
 
             PureTiles.Clear();
 

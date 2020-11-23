@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.Dummies;
-using StarlightRiver.Tiles;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -8,6 +7,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Vitric
 {
@@ -53,14 +54,14 @@ namespace StarlightRiver.NPCs.Vitric
 
         public override void Update()
         {
-            for(int k = 0; k < Main.maxProjectiles; k++)
+            for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 Projectile proj = Main.projectile[k];
-                if(proj.active && proj.type == ProjectileType<Tiles.Vitric.Temple.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
+                if (proj.active && proj.type == ProjectileType<Tiles.Vitric.Temple.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
                 {
                     WorldGen.KillTile(ParentX, ParentY);
                     NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<WalkingSentinel>());
-                }              
+                }
             }
         }
     }

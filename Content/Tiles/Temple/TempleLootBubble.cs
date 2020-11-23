@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Temple
 {

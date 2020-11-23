@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.UI;
-using Terraria;
-using ReLogic.Graphics;
-using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core.Loaders;
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
@@ -115,7 +113,7 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if(IsMouseHovering)
+            if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
             RichTextBox.DrawBox(spriteBatch, GetDimensions().ToRectangle());

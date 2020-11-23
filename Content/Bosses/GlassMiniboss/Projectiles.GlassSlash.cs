@@ -1,9 +1,9 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
+using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {

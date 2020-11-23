@@ -1,3 +1,5 @@
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Gores
 {
     public sealed class DropJungleCorrupt : QuickDrop { }

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Foregrounds
 {
-    class OvergrowForeground  : Foreground
+    class OvergrowForeground : Foreground
     {
         public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells);
 

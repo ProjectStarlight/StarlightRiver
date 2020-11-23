@@ -2,6 +2,8 @@
 using System;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Dusts
 {
     public class Leaf : Corrupt

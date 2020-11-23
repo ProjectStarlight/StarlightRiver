@@ -1,5 +1,7 @@
 ﻿using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Decoration
 {
     public class ChainBanner : SplineBanner

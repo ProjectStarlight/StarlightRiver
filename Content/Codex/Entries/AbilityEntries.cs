@@ -1,5 +1,7 @@
 ﻿using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Codex.Entries
 {
     internal class LoreEntry : CodexEntry

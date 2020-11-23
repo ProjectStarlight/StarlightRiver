@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Vitric
 {
     public class AncientSandstoneTorchItem : Items.QuickTileItem

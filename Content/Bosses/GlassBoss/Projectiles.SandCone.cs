@@ -8,6 +8,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class SandCone : ModProjectile, IDrawAdditive

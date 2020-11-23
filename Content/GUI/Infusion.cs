@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
@@ -11,6 +10,8 @@ using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
@@ -131,7 +132,7 @@ namespace StarlightRiver.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if (!Unlocked) 
+            if (!Unlocked)
             {
                 Main.PlaySound(SoundID.Unlock);
                 return;

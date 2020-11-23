@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.JungleHoly
 {
     public class GrassJungleHoly : ModTile

@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Projectiles.Dummies;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {

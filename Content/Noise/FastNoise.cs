@@ -4,6 +4,8 @@
 using System.Runtime.CompilerServices;
 using DECIMAL = System.Single;//using FN_DECIMAL = System.Double;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Noise
 {
     public partial class FastNoise

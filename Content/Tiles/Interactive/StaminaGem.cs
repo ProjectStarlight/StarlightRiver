@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
-using StarlightRiver.Projectiles.Dummies;
 using System;
-using System.Linq;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Interactive
 {

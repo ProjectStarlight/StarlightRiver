@@ -1,8 +1,10 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.TownUpgrade
 {
@@ -10,7 +12,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
     {
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
-            if(npc.townNPC && StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool upgraded) && upgraded)
+            if (npc.townNPC && StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool upgraded) && upgraded)
             {
                 Texture2D tex = GetTexture("StarlightRiver/NPCs/TownUpgrade/" + npc.TypeName + "Upgraded");
                 Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY - 4);

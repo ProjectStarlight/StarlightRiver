@@ -1,10 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric
 {
@@ -18,7 +21,7 @@ namespace StarlightRiver.Tiles.Vitric
         }
     }
 
-    public class AncientSandstoneItem : QuickTileItem { public AncientSandstoneItem() : base("Ancient Sandstone Brick", "", TileType<AncientSandstone>(), 0) { } }
+    public class AncientSandstoneItem : QuickTileItem { public AncientSandstoneItem() : base("Ancient Sandstone Brick", "", mod.TileType("AncientSandstone"), 0) { } }
 
 
     internal class AncientSandstoneTile : ModTile
@@ -27,7 +30,7 @@ namespace StarlightRiver.Tiles.Vitric
         {
             minPick = int.MaxValue;
             QuickBlock.QuickSet(this, 200, DustID.Copper, SoundID.Tink, new Color(160, 115, 75), ItemType<AncientSandstoneTileItem>());
-            Main.tileMerge[Type][TileType<AncientSandstone>()] = true;
+            Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -35,7 +38,7 @@ namespace StarlightRiver.Tiles.Vitric
             Tile tile = Main.tile[i, j];
             Color color = i % 2 == 0 ? Lighting.GetColor(i, j) * 1.5f : Lighting.GetColor(i, j) * 1.1f;
 
-            spriteBatch.Draw(Main.tileTexture[TileType<AncientSandstone>()], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Lighting.GetColor(i, j));
+            spriteBatch.Draw(Main.tileTexture[mod.TileType("AncientSandstone")], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Lighting.GetColor(i, j));
             spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color);
         }
     }

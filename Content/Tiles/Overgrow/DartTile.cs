@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
     // This class shows off a number of less common ModTile methods. These methods help our trap tile behave like vanilla traps.

@@ -1,17 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
-using StarlightRiver.GUI;
-using StarlightRiver.Items.Armor;
-using StarlightRiver.NPCs.Boss.SquidBoss;
-using StarlightRiver.Tiles.Permafrost;
-using StarlightRiver.Tiles.Vitric.Blocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core
 {

@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class VitricBossEye

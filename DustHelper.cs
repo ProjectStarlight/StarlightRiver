@@ -5,6 +5,8 @@ using Terraria.ID;
 
 
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver
 {
     public static class DustHelper
@@ -48,7 +50,7 @@ namespace StarlightRiver
             }
         }
 
-        public static int TileDust(Tile tile,ref int dusttype)
+        public static int TileDust(Tile tile, ref int dusttype)
         {
             switch (tile.type)
             {

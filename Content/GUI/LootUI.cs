@@ -11,6 +11,8 @@ using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.GUI
 {
     public class LootUI : SmartUIState

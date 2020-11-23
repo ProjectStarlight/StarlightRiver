@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using static Terraria.ModLoader.ModContent;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.Dummies;
-using Terraria.DataStructures;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric.Temple
 {

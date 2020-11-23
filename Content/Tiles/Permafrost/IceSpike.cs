@@ -9,6 +9,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
     internal class IceSpike : ModTile
@@ -26,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void FloorVisuals(Player player)
         {
-            if(!player.HasBuff(BuffType<SpikeImmuneBuff>()))
+            if (!player.HasBuff(BuffType<SpikeImmuneBuff>()))
                 player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
         }
 

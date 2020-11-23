@@ -1,12 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using StarlightRiver.Items;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Pickups
 {
@@ -44,7 +48,7 @@ namespace StarlightRiver.Pickups
             {
                 string message = "Open the codex from your inventory to learn about the world.";
 
-                StarlightRiver.Instance.textcard.Display("Starlight Codex", message, null, 240);
+                UILoader.GetUIState<TextCard>().Display("Starlight Codex", message, null, 240);
                 Helper.UnlockEntry<CodexEntry>(Main.LocalPlayer);
             }
         }

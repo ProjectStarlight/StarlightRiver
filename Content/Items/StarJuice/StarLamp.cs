@@ -2,6 +2,8 @@
 using Terraria;
 using Terraria.ID;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.StarJuice
 {
     internal class StarLamp : StarjuiceStoringItem

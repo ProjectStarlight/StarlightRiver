@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Keys
+﻿using StarlightRiver.Core;
+
+namespace StarlightRiver.Keys
 {
     internal class TestKey : Key
     {

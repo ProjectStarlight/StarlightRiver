@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content;
 using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {

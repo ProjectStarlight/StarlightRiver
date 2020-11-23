@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Dusts;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
-using StarlightRiver.Dusts;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
@@ -58,7 +60,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 30, 0.65f, Main.rand.NextFloat(0.15f, 0.25f));
             }
-            return projectile.ai[0]<1;
+            return projectile.ai[0] < 1;
         }
 
         public void Shatter()
@@ -81,8 +83,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public DrawData Draw()
         {
             Vector2 rightthere = projectile.Center;
-            float scale = MathHelper.Clamp(1f-projectile.ai[0] / 15f,0,1);
-            return new DrawData(Main.projectileTexture[projectile.type], rightthere - Main.screenPosition, null, Lighting.GetColor((int)(rightthere.X/16f), (int)(rightthere.Y/16f)), projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
+            float scale = MathHelper.Clamp(1f - projectile.ai[0] / 15f, 0, 1);
+            return new DrawData(Main.projectileTexture[projectile.type], rightthere - Main.screenPosition, null, Lighting.GetColor((int)(rightthere.X / 16f), (int)(rightthere.Y / 16f)), projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
         }
 
         public override void AI()
@@ -105,7 +107,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             projectile.ai[1] -= 1;
 
-            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || projectile.ai[1]<1)
+            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || projectile.ai[1] < 1)
             {
                 projectile.position += Vector2.Normalize(player.Center - projectile.Center) * 5;
                 projectile.rotation += 0.4f;
@@ -126,7 +128,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
                 float movex = (float)Math.Cos(projectile.localAI[1]) * 2f;
                 float movey = ((float)Math.Sin(projectile.localAI[1]) / 1.5f);
-                projectile.position = player.Center - new Vector2(0,player.height/3f) + new Vector2(movex, movey) * (((5 - pos) * 6) + 10);
+                projectile.position = player.Center - new Vector2(0, player.height / 3f) + new Vector2(movex, movey) * (((5 - pos) * 6) + 10);
                 projectile.rotation = projectile.localAI[1];
             }
         }

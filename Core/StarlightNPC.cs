@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Vitric.Blocks;
+﻿
+using StarlightRiver.Tiles.Vitric;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core
 {

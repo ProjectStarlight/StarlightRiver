@@ -1,13 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
-using StarlightRiver.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
 using Terraria;
+using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core.Loaders
 {
@@ -53,11 +49,11 @@ namespace StarlightRiver.Core.Loaders
         {
             this.QuickSet
                 (
-                data.minPick, 
+                data.minPick,
                 data.dustType,
                 data.soundType,
                 data.mapColor,
-                dropID, 
+                dropID,
                 data.dirtMerge,
                 data.stone,
                 data.mapName

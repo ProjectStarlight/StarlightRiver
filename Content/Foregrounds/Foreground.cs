@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Foregrounds
 {
     public abstract class Foreground : ILoadable

@@ -6,6 +6,8 @@ using Terraria.ModLoader;
 using static StarlightRiver.NPCs.Boss.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.VitricBoss
 {
     internal class VitricBossCrystal : ModNPC, IDrawAdditive
@@ -172,7 +174,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     {
                         npc.position.Y -= (30 - npc.ai[1]) / 3f;
                         break;
-                    }                
+                    }
 
                     npc.velocity.Y += 0.9f;
 

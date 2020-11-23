@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using StarlightRiver.Dusts;
-using StarlightRiver.Projectiles.Ammo;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
@@ -36,10 +33,10 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         {
             OnHit(player, target, damage, knockback, crit);
         }
-        public static bool SanitizeEnemies(Player player,int bufftype,int time,float range)
+        public static bool SanitizeEnemies(Player player, int bufftype, int time, float range)
         {
             bool triggered = false;
-            for(int i = 0; i < Main.maxNPCs; i += 1)
+            for (int i = 0; i < Main.maxNPCs; i += 1)
             {
                 NPC npc = Main.npc[i];
                 if ((npc.Center - player.Center).Length() < range)
@@ -48,7 +45,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                         continue;
 
                     npc.AddBuff(bufftype, time);
-                    DisinfectantWipes.MakeDusts(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), 2, Color.Red, ModContent.DustType<BioLumen>(),1.5f);
+                    DisinfectantWipes.MakeDusts(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), 2, Color.Red, ModContent.DustType<BioLumen>(), 1.5f);
                     triggered = true;
                 }
 
@@ -56,5 +53,5 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             return triggered;
         }
 
-    }    
+    }
 }

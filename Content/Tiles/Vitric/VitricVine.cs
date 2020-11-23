@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.Vitric.Blocks;
+
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric
 {
@@ -16,7 +18,7 @@ namespace StarlightRiver.Tiles.Vitric
             Main.tileCut[Type] = true;
             Main.tileMergeDirt[Type] = false;
             Main.tileBlockLight[Type] = false;
-            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<VitricSand>(), Type };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), Type };
             drop = 0;
             AddMapEntry(new Color(199, 224, 190));
             dustType = DustType<Dusts.Air>();

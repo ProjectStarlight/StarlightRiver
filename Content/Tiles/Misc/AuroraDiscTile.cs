@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Permafrost.Weapons;
+using StarlightRiver.Core;
 using StarlightRiver.Dusts;
 using StarlightRiver.Items;
-using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using StarlightRiver.Content.Items.Permafrost.Weapons;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             projectile.ai[0]++;
 
-            for(int k = 0; k < 10; k++)
+            for (int k = 0; k < 10; k++)
             {
                 float radius = 60 + (float)Math.Sin(projectile.ai[0] / 20f) * 40;
                 float angleOff = projectile.ai[0] / 40f;

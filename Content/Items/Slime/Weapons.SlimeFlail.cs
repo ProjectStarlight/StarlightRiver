@@ -1,7 +1,7 @@
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Slime

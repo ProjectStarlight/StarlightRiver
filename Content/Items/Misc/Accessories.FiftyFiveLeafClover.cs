@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.Ammo;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
@@ -23,16 +21,16 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         {
             StarlightPlayer slp = player.GetModPlayer<StarlightPlayer>();
             slp.FiftyFiveLeafClover = (short)MathHelper.Clamp(slp.FiftyFiveLeafClover + 1, 0, 600);
-            Helper.BoostAllDamage(player, 0, (int)(((float)slp.FiftyFiveLeafClover / 600f)*20f));
+            Helper.BoostAllDamage(player, 0, (int)(((float)slp.FiftyFiveLeafClover / 600f) * 20f));
         }
 
         private void ResetEffectsAccessory(StarlightPlayer slp)
         {
             if (!Equipped(slp.player))
-            slp.FiftyFiveLeafClover = 0;
+                slp.FiftyFiveLeafClover = 0;
         }
 
-        private bool PreHurtAccessory(Player player,bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        private bool PreHurtAccessory(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             player.GetModPlayer<StarlightPlayer>().FiftyFiveLeafClover = 0;
             return true;

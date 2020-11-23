@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Buffs
 {
     class Illuminant : SmartBuff

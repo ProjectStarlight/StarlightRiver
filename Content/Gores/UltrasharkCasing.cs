@@ -1,6 +1,8 @@
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Gores
 {
     public class UltrasharkCasing : ModGore

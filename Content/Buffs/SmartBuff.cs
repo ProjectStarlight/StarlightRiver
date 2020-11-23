@@ -1,6 +1,8 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Buffs
 {
     public abstract class SmartBuff : ModBuff
@@ -14,7 +16,7 @@ namespace StarlightRiver.Buffs
         public bool InflictedNPC(NPC npc) => npc.HasBuff(Type);
 
         public virtual void SafeSetDetafults() { }
-        protected SmartBuff(string name, string tooltip, bool debuff,bool summon=false)
+        protected SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
         {
             ThisName = name;
             ThisTooltip = tooltip;

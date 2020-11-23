@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.TownUpgrade
 {
     public abstract class TownUpgrade
@@ -25,7 +27,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
 
             icon = TextureExists("StarlightRiver/NPCs/TownUpgrade/" + npcName + "Icon") ?
                 GetTexture("StarlightRiver/NPCs/TownUpgrade/" + npcName + "Icon") :
-                Terraria.Main.sunTexture;         
+                Terraria.Main.sunTexture;
         }
 
         public bool Unlocked => StarlightWorld.TownUpgrades.TryGetValue(_npcName, out bool unlocked) && unlocked;

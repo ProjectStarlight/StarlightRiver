@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Projectiles.Dummies;
-using StarlightRiver.Tiles;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Vitric
 {
@@ -64,7 +65,7 @@ namespace StarlightRiver.NPCs.Vitric
                 {
                     WorldGen.KillTile(ParentX, ParentY);
                     NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<FlyingSentinel>());
-                }            
+                }
             }
         }
     }

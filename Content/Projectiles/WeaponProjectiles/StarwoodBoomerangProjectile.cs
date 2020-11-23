@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
@@ -119,7 +121,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         projectile.ai[1]++;
                         projectile.velocity *= 0.75f;
                         Lighting.AddLight(projectile.Center, lightColor * chargeMult);
-                        
+
 
                         if (projectile.ai[1] >= maxChargeTime + 3)//reset stats and start return phase
                         {

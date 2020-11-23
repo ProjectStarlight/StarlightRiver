@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles.AshHell;
-using StarlightRiver.Content.Tiles.Overgrow;
-using System;
-using System.Collections.Generic;
+﻿using StarlightRiver.Tiles.AshHell;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.WorldGeneration
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
 {
     public partial class StarlightWorld
     {

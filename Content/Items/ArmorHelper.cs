@@ -5,6 +5,8 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Armor
 {
     public static class ArmorHelper

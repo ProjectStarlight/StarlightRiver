@@ -1,5 +1,7 @@
 ﻿using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
 {
     class BossCrusher : ModProjectile

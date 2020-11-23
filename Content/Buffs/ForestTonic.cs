@@ -1,5 +1,7 @@
 ﻿using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Buffs
 {
     public class ForestTonic : SmartBuff

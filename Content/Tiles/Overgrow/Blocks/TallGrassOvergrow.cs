@@ -9,6 +9,8 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class TallgrassOvergrow : ModTile

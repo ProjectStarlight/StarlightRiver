@@ -1,12 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Projectiles.WeaponProjectiles;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 //Things left to do for L-clck
 //Make it held out, with dust properly coming off
 //-Add prims (or dust) to projectile while it's moving
@@ -16,6 +13,8 @@ using static Terraria.ModLoader.ModContent;
 //-Make flares embed in ground
 //-Add casing gores?
 //-glowmasks
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items
 {
     public class FlareBreacher : ModItem
@@ -35,7 +34,7 @@ namespace StarlightRiver.Items
             item.noMelee = true;
             item.autoReuse = true;
             item.useTurn = false;
-           // item.useAmmo = AmmoID.Flare;
+            // item.useAmmo = AmmoID.Flare;
             item.ranged = true;
             item.shoot = ModContent.ProjectileType<ExplosiveFlare>();
             item.shootSpeed = 17;
@@ -43,7 +42,7 @@ namespace StarlightRiver.Items
         }
         public override void HoldItem(Player player)
         {
-            
+
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)

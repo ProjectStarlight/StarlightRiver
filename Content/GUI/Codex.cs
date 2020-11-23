@@ -11,6 +11,8 @@ using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.GUI
 {
     public class Codex : SmartUIState
@@ -172,7 +174,7 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if(ContainsPoint(Main.MouseScreen))
+            if (ContainsPoint(Main.MouseScreen))
                 Main.LocalPlayer.mouseInterface = true;
 
             spriteBatch.Draw(Main.magicPixel, GetDimensions().ToRectangle(), Main.magicPixel.Frame(), Color.White * 0.1f);
@@ -223,8 +225,8 @@ namespace StarlightRiver.GUI
 
             Vector2 pos = GetDimensions().ToRectangle().TopLeft();
 
-            Color backColor = player.Entries.Any(n => n.New && n.Category == Category) ? 
-                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) 
+            Color backColor = player.Entries.Any(n => n.New && n.Category == Category) ?
+                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f))
                 : Color.White; //yellow flashing background for new entries
 
             Texture2D backTex = GetTexture("StarlightRiver/GUI/Assets/CategoryButton");
@@ -255,8 +257,8 @@ namespace StarlightRiver.GUI
 
             Vector2 pos = GetDimensions().ToRectangle().TopLeft();
 
-            Color backColor = Entry.New ? 
-                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f)) 
+            Color backColor = Entry.New ?
+                new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f))
                 : Color.White; //yellow flashing background for new entries
 
             Texture2D backTex = Entry.RequiresUpgradedBook ? GetTexture("StarlightRiver/GUI/Assets/EntryButton2") : GetTexture("StarlightRiver/GUI/Assets/EntryButton");

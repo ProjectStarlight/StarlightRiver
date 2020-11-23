@@ -1,7 +1,9 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Items.Herbology.Materials;
+using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Items.Herbology.Materials;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Crafting
 {

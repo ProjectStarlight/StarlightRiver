@@ -1,16 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.Permafrost;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
-using System.Collections.Generic;
 using StarlightRiver.Content.Tiles.Permafrost;
-using System;
-using System.Linq;
 
-namespace StarlightRiver.Content.WorldGeneration
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
 {
     public partial class StarlightWorld : ModWorld
     {
@@ -83,7 +86,6 @@ namespace StarlightRiver.Content.WorldGeneration
 
             caves.ForEach(n => DigTunnel(n, row, true));
             caves.ForEach(n => DecorateTunnel(n));
-
             PlaceDisc(circles);
             PlaceTeleporters(circles, center);
 
@@ -94,12 +96,12 @@ namespace StarlightRiver.Content.WorldGeneration
 
             MakeCenterGates(bigCircle, caves);
 
-            for(int x = 0; x < 50; x++)
-                for(int y = 0; y < 40; y++)
+            for (int x = 0; x < 50; x++)
+                for (int y = 0; y < 40; y++)
                 {
                     if (Main.rand.Next(2) != 0) continue;
 
-                    Point16 point = new Point16((center- 400) + (int)(x / 50f * 800), iceBottom + 50 - (int)(y / 40f * 200));
+                    Point16 point = new Point16((center - 400) + (int)(x / 50f * 800), iceBottom + 50 - (int)(y / 40f * 200));
                     point += new Point16(WorldGen.genRand.Next(-10, 10), WorldGen.genRand.Next(-10, 10));
 
                     Tile tile = Framing.GetTileSafely(point.X, point.Y);
@@ -107,7 +109,7 @@ namespace StarlightRiver.Content.WorldGeneration
                 }
 
             //entrances
-            for(int k = 0; k < 4; k++)
+            for (int k = 0; k < 4; k++)
             {
                 int y = iceBottom - 200;
                 int x = center - 400 + (int)(800 * (k / 3f));
@@ -116,8 +118,8 @@ namespace StarlightRiver.Content.WorldGeneration
             }
 
             //uses some perlin noise to place snow/grass where there is air above ice.
-            for(int x = center - 400; x < center + 400; x++)
-                for(int y = iceBottom - 200; y < iceBottom + 100; y++)
+            for (int x = center - 400; x < center + 400; x++)
+                for (int y = iceBottom - 200; y < iceBottom + 100; y++)
                 {
                     var noise = genNoise.GetPerlin(x, y);
                     if (Math.Abs(noise) > 0.5f) continue;
@@ -129,7 +131,7 @@ namespace StarlightRiver.Content.WorldGeneration
                     {
                         floor.type = (ushort)TileType<PermafrostSnow>();
 
-                        for(int k  = 0; k <  WorldGen.genRand.Next(4); k++)
+                        for (int k = 0; k < WorldGen.genRand.Next(4); k++)
                         {
                             WorldGen.PlaceTile(x, y - k, TileType<Tiles.Permafrost.Decoration.SnowGrass>());
                         }
@@ -166,7 +168,7 @@ namespace StarlightRiver.Content.WorldGeneration
                         {
                             float dist = Vector2.Distance(line.XY() + lineVector * distAlong, check.position.ToVector2());
 
-                            if(dist < check.radius)
+                            if (dist < check.radius)
                             {
                                 colliding = true;
                                 break;
@@ -174,7 +176,7 @@ namespace StarlightRiver.Content.WorldGeneration
                         }
                     }
 
-                    for(int n = 0; n < output.Count; n++) //next, check against the lines we already have to prevent intersections
+                    for (int n = 0; n < output.Count; n++) //next, check against the lines we already have to prevent intersections
                     {
                         var enemyLine = output[n];
 
@@ -219,7 +221,7 @@ namespace StarlightRiver.Content.WorldGeneration
             if (o3 == 0 && onSegment(p2, p1, q2)) return true;
             if (o4 == 0 && onSegment(p2, q1, q2)) return true;
 
-            return false; 
+            return false;
         }
 
         static bool onSegment(Vector2 p, Vector2 q, Vector2 r)
@@ -234,9 +236,9 @@ namespace StarlightRiver.Content.WorldGeneration
         static int orientation(Vector2 p, Vector2 q, Vector2 r)
         {
             int val = (int)((q.Y - p.Y) * (r.X - q.X) - (q.X - p.X) * (r.Y - q.Y));
-            if (val == 0) return 0;  
+            if (val == 0) return 0;
 
-            return (val > 0) ? 1 : 2; 
+            return (val > 0) ? 1 : 2;
         }
 
         private void DigTunnel(Vector4 line, int row, bool digOnly = false)
@@ -273,7 +275,7 @@ namespace StarlightRiver.Content.WorldGeneration
                         WorldGen.KillTile(x, y);
                         Framing.GetTileSafely(x, y).liquid = 0;
 
-                        if(!digOnly)
+                        if (!digOnly)
                             Framing.GetTileSafely(x, y).wall = WallID.SnowWallUnsafe;
                     }
                 }
@@ -397,7 +399,7 @@ namespace StarlightRiver.Content.WorldGeneration
                     //I have to do this because PlaceTile and PlaceObject crash for some ungodly reason. Dont ask.
                     Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
 
-                    if(!tile.active())
+                    if (!tile.active())
                     {
                         tile.active(true);
                         tile.type = (ushort)TileType<SpikeImmuneOrb>();
@@ -437,7 +439,7 @@ namespace StarlightRiver.Content.WorldGeneration
 
         private bool CheckForTunnel(Rectangle rect)
         {
-            for(int x = rect.X; x < rect.X + rect.Width; x++)
+            for (int x = rect.X; x < rect.X + rect.Width; x++)
                 for (int y = rect.Y; y < rect.Y + rect.Height; y++)
                 {
                     Tile tile = Framing.GetTileSafely(x, y);
@@ -468,17 +470,17 @@ namespace StarlightRiver.Content.WorldGeneration
             foreach (Vector4 line in lines.Where(n => n.XY() == circle.position.ToVector2() || n.ZW() == circle.position.ToVector2()))
                 importantLines.Add(line);
 
-            foreach(Vector4 line in importantLines)
+            foreach (Vector4 line in importantLines)
             {
                 int windup = 0;
 
-                if(line.XY() == circle.position.ToVector2())
+                if (line.XY() == circle.position.ToVector2())
                 {
                     for (float k = 0; k < 1; k += 5 / Vector2.Distance(line.XY(), line.ZW()))
                     {
                         Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
                         Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
-                        if(tile.wall == WallID.SnowWallUnsafe)
+                        if (tile.wall == WallID.SnowWallUnsafe)
                         {
                             windup++;
                             if (windup >= 2)
@@ -556,7 +558,7 @@ namespace StarlightRiver.Content.WorldGeneration
             List<Circle> lefts = new List<Circle>();
             List<Circle> rights = new List<Circle>();
 
-            foreach(Circle circle in circles)
+            foreach (Circle circle in circles)
             {
                 if (circle.position.X < center) lefts.Add(circle);
                 else rights.Add(circle);

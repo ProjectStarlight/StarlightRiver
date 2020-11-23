@@ -4,6 +4,8 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class OvergrowDoorLocked : ModTile
@@ -48,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                             Main.tile[x, y].frameX += 36;
 
                 CombatText.NewText(new Rectangle(i * 16, j * 16, 1, 1), new Color(255, 255, 200), Main.tile[i, j].frameX / 36 + "/3");
-                if (Main.tile[i, j].frameX > 100) 
+                if (Main.tile[i, j].frameX > 100)
                     StarlightWorld.Flag(WorldFlags.OvergrowBossOpen);
             }
             return true;

@@ -1,11 +1,13 @@
-﻿using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Items;
-using Terraria.ID;
-using Terraria.ObjectData;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core
 {
@@ -43,7 +45,7 @@ namespace StarlightRiver.Core
             Add("Clock", new GenericClock(color, dust, name + "Clock"), mod, 10);
             Add("Dresser", new Generic3x2(color, dust, name + "Dresser"), mod, 16);
             Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), mod, 3);
-            Add("Lantern", new GenericLantern(glowColor, dust,  name + "Lantern"), mod, 6);
+            Add("Lantern", new GenericLantern(glowColor, dust, name + "Lantern"), mod, 6);
             Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod, 15);
             Add("Sink", new GenericSink(color, dust, name + "Sink"), mod, 6);
             Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod, 5);
@@ -92,7 +94,7 @@ namespace StarlightRiver.Core
 
         public override void AddRecipes()
         {
-            if(craftingMaterial != ItemID.None)
+            if (craftingMaterial != ItemID.None)
             {
                 ModRecipe recipe = new ModRecipe(mod);
                 recipe.AddIngredient(craftingMaterial, craftingQuantity);
@@ -100,7 +102,7 @@ namespace StarlightRiver.Core
                 if (name.Contains("Candle") || name.Contains("Lamp") || name.Contains("Lantern") || name.Contains("Candelabra"))
                     recipe.AddIngredient(ItemID.Torch);
 
-                if (name.Contains("Candelabra")) 
+                if (name.Contains("Candelabra"))
                     recipe.AddIngredient(ItemID.Torch, 3);
 
                 if (name.Contains("Chandelier"))
@@ -221,9 +223,9 @@ namespace StarlightRiver.Core
 
         public override void HitWire(int i, int j)
         {
-            Tile tile = Framing.GetTileSafely(i, j); 
+            Tile tile = Framing.GetTileSafely(i, j);
 
-            int newX = i; 
+            int newX = i;
             int newY = j;
             if (tile.frameX % 36 == 18) newX = i - 1;
             if (tile.frameY % 36 == 18) newY = j - 1;
@@ -240,7 +242,7 @@ namespace StarlightRiver.Core
         {
             Tile tile = Framing.GetTileSafely(i, j);
             if (tile.frameX >= 36) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
-        }     
+        }
     }
 
     //Candle
@@ -435,7 +437,7 @@ namespace StarlightRiver.Core
             QuickBlock.QuickSetFurniture(this, 2, 3, dust, SoundID.Dig, false, color);
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-            TileID.Sets.HousingWalls[Type] = true; 
+            TileID.Sets.HousingWalls[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
 
             disableSmartCursor = true;

@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Items.Accessories
+﻿using StarlightRiver.Core;
+
+namespace StarlightRiver.Items.Accessories
 {
     public class PowerCell : SmartAccessory
     {

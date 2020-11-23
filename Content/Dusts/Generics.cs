@@ -1,6 +1,8 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Dusts
 {
     public class GenericFollow : ModDust

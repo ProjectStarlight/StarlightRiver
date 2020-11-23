@@ -9,7 +9,11 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
@@ -59,7 +63,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
             if (npc.ai[0] == (int)OvergrowBossPhase.Struggle) //when the boss is trapped before spawning the first time
             {
-                if (spawnPoint == Vector2.Zero) 
+                if (spawnPoint == Vector2.Zero)
                     spawnPoint = npc.Center; //sets the boss' home
 
                 npc.velocity.Y = (float)Math.Sin((GlobalTimer % 120) / 120f * 6.28f) * 0.6f;
@@ -81,19 +85,19 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
             if (Phase == (int)OvergrowBossPhase.spawnAnimation) //the boss' spawn animation.
             {
-                if(GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/OvergrowBoss");
+                if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/OvergrowBoss");
 
                 if (GlobalTimer <= 120) npc.position.Y--;
 
-                if (GlobalTimer == 120) 
+                if (GlobalTimer == 120)
                     StarlightWorld.Flag(WorldFlags.OvergrowBossFree);
 
                 if (GlobalTimer == 500)
                 {
                     string message = "Faerie Guardian";
-                    if (Main.rand.Next(10000) == 0) 
+                    if (Main.rand.Next(10000) == 0)
                         message = "Titty Elongator"; // Yep
-                    StarlightRiver.Instance.textcard.Display("Eggshells", message, null, 220);
+                    UILoader.GetUIState<TextCard>().Display("Eggshells", message, null, 220);
                 }
 
                 if (GlobalTimer >= 860) Phase = (int)OvergrowBossPhase.Setup;
@@ -149,11 +153,11 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
             if (Phase == (int)OvergrowBossPhase.Stun)
             {
-                if(GlobalTimer == 1)
+                if (GlobalTimer == 1)
                 {
                     npc.alpha = 255;
 
-                    for(int k = 0; k < 100; k++)
+                    for (int k = 0; k < 100; k++)
                     {
                         Dust d = Dust.NewDustPerfect(npc.Center, 1/*DustType<>()*/, Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(5));
                         d.customData = npc.Center;

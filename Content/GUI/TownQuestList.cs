@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
 using StarlightRiver.NPCs.TownUpgrade;
 using StarlightRiver.Tiles;
 using System.Collections.Generic;
@@ -10,6 +9,8 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
@@ -45,7 +46,7 @@ namespace StarlightRiver.GUI
             Texture2D panel = GetTexture("StarlightRiver/GUI/Assets/TownQuestPanel");
 
             spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
-            if(activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Main.fontDeathText, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+            if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Main.fontDeathText, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
             Recalculate();
             base.Draw(spriteBatch);
@@ -71,7 +72,7 @@ namespace StarlightRiver.GUI
             itemList.Clear();
 
             int offY = 0;
-            foreach(Loot loot in activeQuest.Requirements)
+            foreach (Loot loot in activeQuest.Requirements)
             {
                 UIElement element = new RequirementPreview(loot.Type, loot.Count);
                 element.Top.Set(16, 0);
@@ -88,7 +89,7 @@ namespace StarlightRiver.GUI
             quests.Clear();
 
             int offY = 0;
-            foreach(KeyValuePair<string, bool> pair in StarlightWorld.TownUpgrades)
+            foreach (KeyValuePair<string, bool> pair in StarlightWorld.TownUpgrades)
             {
                 if (TownUpgrade.FromString(pair.Key) != null) AddQuestButton(new TownQuestItem(TownUpgrade.FromString(pair.Key)), offY);
                 offY += 28 + 6;
@@ -109,7 +110,7 @@ namespace StarlightRiver.GUI
     {
         readonly TownUpgrade quest;
 
-        public TownQuestItem(TownUpgrade itemQuest) => quest = itemQuest; 
+        public TownQuestItem(TownUpgrade itemQuest) => quest = itemQuest;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -122,7 +123,7 @@ namespace StarlightRiver.GUI
             spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : (IsMouseHovering ? 0.7f : 0.5f)), 0, back.Size() / 2, 1, 0, 0);
             Utils.DrawBorderString(spriteBatch, quest._questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
 
-            if(quest.Unlocked) spriteBatch.Draw(check, pos + new Vector2(158, 0), back.Frame(), Color.White, 0, back.Size() / 2, 1, 0, 0);
+            if (quest.Unlocked) spriteBatch.Draw(check, pos + new Vector2(158, 0), back.Frame(), Color.White, 0, back.Size() / 2, 1, 0, 0);
         }
 
         public override void Click(UIMouseEvent evt)
@@ -156,14 +157,14 @@ namespace StarlightRiver.GUI
             Main.PlaySound(SoundID.MenuTick);
 
             if (Quest == null || Quest.Unlocked) return;
-            foreach(Loot loot in Quest.Requirements) if (!Helper.HasItem(Main.LocalPlayer, loot.Type, loot.Count)) return;
+            foreach (Loot loot in Quest.Requirements) if (!Helper.HasItem(Main.LocalPlayer, loot.Type, loot.Count)) return;
 
             foreach (Loot loot in Quest.Requirements) Helper.TryTakeItem(Main.LocalPlayer, loot.Type, loot.Count);
 
             StarlightWorld.TownUpgrades[Quest._npcName] = !StarlightWorld.TownUpgrades[Quest._npcName];
 
             Main.PlaySound(SoundID.Item82);
-        }      
+        }
     }
 
     class RequirementPreview : UIElement

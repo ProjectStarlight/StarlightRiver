@@ -3,7 +3,10 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Misc
 {
@@ -98,7 +101,7 @@ namespace StarlightRiver.Items.Misc
             Dust.NewDustPerfect(player.Center + off, DustType<Dusts.BlueStamina>(), off * 0.01f, 0, default, 2f);
             Dust.NewDustPerfect(player.Center + off, DustType<Dusts.BlueStamina>(), off * Main.rand.NextFloat(0.01f, 0.04f));
 
-            if(player.channel) player.UpdateRotation(rot);
+            if (player.channel) player.UpdateRotation(rot);
             else player.UpdateRotation(0);
 
             Lighting.AddLight(projectile.Center + off, new Vector3(0.1f, 0.25f, 0.6f));

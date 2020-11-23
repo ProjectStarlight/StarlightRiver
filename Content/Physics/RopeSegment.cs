@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Physics
 {
     public class RopeSegment

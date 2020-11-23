@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using StarlightRiver.Items;
-using static Terraria.ModLoader.ModContent;
-using Terraria.ID;
-using StarlightRiver.Projectiles.Dummies;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Items;
+using System;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Mushroom
 {
@@ -36,7 +33,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override void Collision(Player player)
         {
-            if(projectile.ai[1] == 0 && player.velocity.Y > 0)
+            if (projectile.ai[1] == 0 && player.velocity.Y > 0)
             {
                 projectile.ai[1] = 1;
                 player.velocity.Y *= -1;
@@ -52,7 +49,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override void Update()
         {
-            for(int k = 16; k < 96; k++)
+            for (int k = 16; k < 96; k++)
             {
                 if (Main.rand.Next(120) == 0)
                 {
@@ -66,7 +63,7 @@ namespace StarlightRiver.Tiles.Mushroom
             if (projectile.ai[1] == 1)
                 projectile.ai[0]++;
 
-            if(projectile.ai[0] >= 90)
+            if (projectile.ai[0] >= 90)
             {
                 projectile.ai[1] = 0;
                 projectile.ai[0] = 0;
@@ -106,7 +103,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
             Color color = projectile.ai[1] == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, projectile.ai[0] / 90f);
             spriteBatch.Draw(tex, target, null, color, 0, tex.Size() / 2, 0, 0);
-        }           
+        }
     }
 
     class JellyShroomItem : QuickTileItem

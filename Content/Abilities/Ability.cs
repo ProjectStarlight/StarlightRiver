@@ -1,17 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities.Content.Faeflame;
 using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Abilities.Content.GaiasFist;
 using StarlightRiver.Abilities.Content.Purify;
-using StarlightRiver.Dusts;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using Terraria;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Abilities
 {

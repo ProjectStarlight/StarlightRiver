@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.WorldGeneration
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
 {
     public partial class StarlightWorld
     {
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.WorldGeneration
                     Halls.Add(hall);
 
                     WormFromRoom(room, (byte)(direction + WorldGen.genRand.Next(2) == 0 ? 1 : -1), false, maxRooms); //try to wiggle if possible
-                    if(WorldGen.genRand.Next(3) == 0)WormFromRoom(room, (byte)(direction + 1 + WorldGen.genRand.Next(2) == 0 ? 1 : -1), false, maxRooms); //try to wiggle if possible
+                    if (WorldGen.genRand.Next(3) == 0) WormFromRoom(room, (byte)(direction + 1 + WorldGen.genRand.Next(2) == 0 ? 1 : -1), false, maxRooms); //try to wiggle if possible
                     break;
                 }
                 else //area is not clear, change direction and try again
@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.WorldGeneration
 
                     //keeps us from running into blacklisted tiles.
                     if (tile.type == TileID.BlueDungeonBrick || tile.type == TileID.GreenDungeonBrick || tile.type == TileID.PinkDungeonBrick || tile.type == typeBrickOvergrow ||
-                        tile.type == TileID.LihzahrdBrick || tile.type == TileType<VitricSand>() || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
+                        tile.type == TileID.LihzahrdBrick || tile.type == instance.TileType("VitricSand") || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
                         return false;
                 }
             }

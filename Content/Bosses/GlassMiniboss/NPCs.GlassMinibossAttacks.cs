@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 {
@@ -43,7 +44,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         {
             if (AttackTimer < 10) npc.velocity *= 0.9f; //decelerate into position
 
-            if(AttackTimer == 10) //stop and spawn projectile
+            if (AttackTimer == 10) //stop and spawn projectile
             {
                 npc.velocity *= 0;
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, npc.direction);
@@ -54,7 +55,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void Spears() //summon a wall of spears on one side of the arena
         {
-            if(AttackTimer == 1)
+            if (AttackTimer == 1)
             {
                 npc.TargetClosest();
                 moveTarget = PickSide();
@@ -64,12 +65,12 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer < 60) //go to the side away from the target
                 npc.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
 
-            if(AttackTimer == 90) //spawn the projectiles
+            if (AttackTimer == 90) //spawn the projectiles
             {
                 int exclude = Main.rand.Next(3);
-                for(int k = 0; k < 6; k++)
+                for (int k = 0; k < 6; k++)
                 {
-                    if((k / 2) != exclude) //leave an opening!
+                    if ((k / 2) != exclude) //leave an opening!
                         Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
                 }
             }
@@ -90,7 +91,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void Greatsword()
         {
-            if(AttackTimer == 1)
+            if (AttackTimer == 1)
             {
 
             }
@@ -99,7 +100,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         private void UppercutGlide() //its just the other two methods put together because I re-use uppercut. Suck my cock.
         {
             if (AttackTimer <= 55) Uppercut(0);
-            else if(AttackTimer <= 215) Helicopter(55);
+            else if (AttackTimer <= 215) Helicopter(55);
 
             if (AttackTimer >= 230) ResetAttack();
         }
@@ -117,7 +118,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (AttackTimer == startTime + 1) //spawn projectile and set velcoity, along with targeting
             {
                 npc.TargetClosest();
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 34, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection); 
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 34, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection);
 
                 npc.velocity.X += npc.Center.X > Target.Center.X ? -10 : 10;
             }
@@ -140,7 +141,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         private void Helicopter(int startTime) //roflcopter
         {
-            if(AttackTimer == startTime + 1)
+            if (AttackTimer == startTime + 1)
             {
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 30, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
                 npc.noGravity = true;
@@ -158,7 +159,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             else
                 npc.velocity.X *= 0.98f;
 
-            if(AttackTimer < startTime + 150) //rotate in air
+            if (AttackTimer < startTime + 150) //rotate in air
                 spinAngle += 0.25f;
 
             if (AttackTimer == startTime + 150) //let him fall again after this shit is over
@@ -171,7 +172,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public static void SpawnShards(int amount, Vector2 pos)
         {
-            for(int k = 0; k < amount; k++)
+            for (int k = 0; k < amount; k++)
             {
                 var spawnPos = pos + Vector2.One.RotatedByRandom(6.28f) * 10;
                 var proj = Projectile.NewProjectile(spawnPos, Vector2.Zero, ProjectileType<ChargeShard>(), 0, 0, Main.myPlayer);

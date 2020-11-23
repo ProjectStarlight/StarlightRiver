@@ -1,18 +1,20 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.GUI
 {
     public class CodexPopup : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-        public override bool Visible => Timer > 0; 
+        public override bool Visible => Timer > 0;
 
         private string Text;
         public int Timer;

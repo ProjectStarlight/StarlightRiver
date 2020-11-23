@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Items;
-using StarlightRiver.Content.Projectiles.Dummies;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
@@ -19,8 +20,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Framing.GetTileSafely(i, j).active(false); //to prevent recursion
 
-            for(int x = -1; x <= 1; x++)
-                for(int y = -1; y <= 1; y++)
+            for (int x = -1; x <= 1; x++)
+                for (int y = -1; y <= 1; y++)
                 {
                     Tile tile = Framing.GetTileSafely(i + x, j + y);
 

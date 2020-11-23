@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class VitricSwordProjectile : ModProjectile

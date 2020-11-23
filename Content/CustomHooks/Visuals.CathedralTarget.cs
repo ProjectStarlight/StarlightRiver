@@ -4,6 +4,8 @@ using StarlightRiver.NPCs.Boss.SquidBoss;
 using Terraria;
 
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.CustomHooks
 {
     class CathedralTarget : HookGroup
@@ -26,7 +28,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void WaterTarget(GameTime obj)
         {
             var graphics = Main.graphics.GraphicsDevice;
-            
+
             if (CatherdalWaterTarget is null || CatherdalWaterTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
                 CatherdalWaterTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
 

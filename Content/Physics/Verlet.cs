@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Microsoft.Xna.Framework.Graphics;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Physics
 {

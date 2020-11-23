@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Abilities;
+using StarlightRiver.Core;
+using StarlightRiver.Items.Vitric;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 using System;
 using System.Collections.Generic;
-using StarlightRiver.Core;
-using StarlightRiver.Abilities;
-using StarlightRiver.Projectiles.WeaponProjectiles;
-using StarlightRiver.Items.Vitric;
-using StarlightRiver.Tiles.Vitric.Blocks;
 using System.Linq;
 using Terraria;
-using Terraria.ID;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Armor.Vitric
 {
@@ -33,7 +33,7 @@ namespace StarlightRiver.Items.Armor.Vitric
             item.rare = ItemRarityID.Green;
             item.defense = 4;
         }
-        
+
         public override bool Autoload(ref string name)
         {
             StarlightPlayer.PreHurtEvent += SetBonusPrehurt;
@@ -85,17 +85,17 @@ namespace StarlightRiver.Items.Armor.Vitric
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(ItemType<VitricSandItem>(), 20);
+            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
 
-        private bool SetBonusPrehurt(Player player,bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        private bool SetBonusPrehurt(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             if (player.armor[0].type == ItemType<VitricHead>() && player.armor[1].type == ItemType<VitricChest>() && player.armor[2].type == ItemType<VitricLegs>())//Better way to do this?
             {
-            foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
+                foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
                 {
                     VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
                     if (moddedproj.projectile.ai[0] < 1)
@@ -138,7 +138,7 @@ namespace StarlightRiver.Items.Armor.Vitric
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(ItemType<VitricSandItem>(), 20);
+            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -172,7 +172,7 @@ namespace StarlightRiver.Items.Armor.Vitric
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(ItemType<VitricSandItem>(), 20);
+            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -184,11 +184,11 @@ namespace StarlightRiver.Items.Armor.Vitric
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            Action<PlayerDrawInfo> backTarget = s => DrawShards(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
+            void backTarget(PlayerDrawInfo s) => DrawShards(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
             PlayerLayer backLayer = new PlayerLayer("VitricLayer", "Vitric Armor Effect", backTarget); //Instantiate a new instance of PlayerLayer to insert into the list
             layers.Insert(layers.IndexOf(layers.First()), backLayer); //Insert the layer at the appropriate index. 
 
-            Action<PlayerDrawInfo> frontTarget = s => DrawShards(s, true); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
+            void frontTarget(PlayerDrawInfo s) => DrawShards(s, true); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
             PlayerLayer frontLayer = new PlayerLayer("VitricLayer", "Vitric Armor Effect", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
             layers.Insert(layers.IndexOf(layers.Last()), frontLayer); //Insert the layer at the appropriate index. 
 
@@ -209,7 +209,7 @@ namespace StarlightRiver.Items.Armor.Vitric
                     double angle = Math.Sin(-modshard.projectile.localAI[1]);
                     if ((angle > 0 && !back) ||
                         (angle <= 0 && back))
-                    Main.playerDrawData.Add(modshard.Draw());
+                        Main.playerDrawData.Add(modshard.Draw());
                 }
             }
         }

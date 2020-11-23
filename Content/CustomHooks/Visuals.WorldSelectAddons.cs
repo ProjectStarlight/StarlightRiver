@@ -1,14 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
-using StarlightRiver.Codex;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
@@ -16,6 +10,8 @@ using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {

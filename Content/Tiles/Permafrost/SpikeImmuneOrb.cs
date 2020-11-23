@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Projectiles.Dummies;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
@@ -61,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 player.AddBuff(BuffType<Buffs.SpikeImmuneBuff>(), 90);
                 Main.PlaySound(SoundID.DD2_DarkMageAttack.SoundId, (int)player.Center.X, (int)player.Center.Y, SoundID.DD2_DarkMageHealImpact.Style, 0.5f, 1);
 
-                for(int k = 0; k < 40; k++)
+                for (int k = 0; k < 40; k++)
                     Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(25), 0, Color.White, 0.5f);
 
                 Parent.frameX = 16;

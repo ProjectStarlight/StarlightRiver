@@ -1,7 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.GUI;
+using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using StarlightRiver.RiftCrafting;
 using System;
 using System.Collections.Generic;
@@ -10,14 +13,12 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Graphics;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Content.Foregrounds;
+
 using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver
 {
@@ -121,12 +122,12 @@ namespace StarlightRiver
 
         public override void Load()
         {
-            foreach(Type type in Code.GetTypes())
+            foreach (Type type in Code.GetTypes())
             {
                 if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
                 {
                     var instance = Activator.CreateInstance(type);
-                    loadCache.Add(instance  as ILoadable);
+                    loadCache.Add(instance as ILoadable);
                     (instance as ILoadable).Load();
                 }
             }
@@ -220,7 +221,7 @@ namespace StarlightRiver
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-            for(int k = 0; k < UILoader.UIStates.Count; k++)
+            for (int k = 0; k < UILoader.UIStates.Count; k++)
             {
                 var state = UILoader.UIStates[k];
                 UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible);
@@ -229,11 +230,11 @@ namespace StarlightRiver
 
         public override void Unload()
         {
-            foreach(var loadable in loadCache)
+            foreach (var loadable in loadCache)
             {
                 loadable.Unload();
             }
-            loadCache.Clear();
+            loadCache = null;
 
             if (!Main.dedServ)
             {

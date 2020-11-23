@@ -1,9 +1,12 @@
-﻿using System;
+﻿using StarlightRiver.Core.Loaders;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Codex
 {
@@ -57,8 +60,7 @@ namespace StarlightRiver.Codex
                     Entries.Add(ThisEntry);
                 }
             }
-            (mod as StarlightRiver).codex = new GUI.Codex();
-            (mod as StarlightRiver).CodexUserInterface.SetState((mod as StarlightRiver).codex);
+            UILoader.ReloadState<GUI.Codex>();
         }
     }
 }

@@ -9,6 +9,8 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.GUI
 {
     public class Stamina : SmartUIState
@@ -49,7 +51,7 @@ namespace StarlightRiver.GUI
                 Stam1.Left.Set(-306, 1);
                 Stam1.Top.Set(110, 0);
             }
-            
+
             float height = 30 * mp.StaminaMax; if (height > 30 * 7) height = 30 * 7;
 
             Stam1.Height.Set(height, 0f);
@@ -65,7 +67,7 @@ namespace StarlightRiver.GUI
                 var stamina = Math.Round(mp.Stamina, 1);
                 var staminaMax = Math.Round(mp.StaminaMax, 1);
                 string text = $"Stamina: {stamina}/{staminaMax}";
-                Vector2 pos = Main.MouseScreen + Vector2.One*16;
+                Vector2 pos = Main.MouseScreen + Vector2.One * 16;
                 pos.X = Math.Min(Main.screenWidth - Main.fontMouseText.MeasureString(text).X - 6, pos.X);
                 Utils.DrawBorderString(spriteBatch, text, pos, Main.mouseTextColorReal);
             }
@@ -153,9 +155,9 @@ namespace StarlightRiver.GUI
 
             var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
 
-            spriteBatch.Draw(flagTex, basepos + new Vector2(- width / 2 - 9, -3), Color.White * fade);
+            spriteBatch.Draw(flagTex, basepos + new Vector2(-width / 2 - 9, -3), Color.White * fade);
 
-            if(mp.StaminaMax % 2 == 1)
+            if (mp.StaminaMax % 2 == 1)
                 spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -3), Color.White * fade);
             else
                 spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -5), null, Color.White * fade, 0, Vector2.Zero, 1, SpriteEffects.FlipVertically, 0);

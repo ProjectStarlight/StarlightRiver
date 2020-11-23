@@ -4,6 +4,8 @@ using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Abilities.Content.GaiasFist;
 using Terraria;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Abilities
 {
     //This class serves to simplify implementing ability interactions

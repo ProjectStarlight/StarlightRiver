@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Vitric
 {
     class ForgeActor : ModTile
@@ -27,7 +29,7 @@ namespace StarlightRiver.Tiles.Vitric
 
             spriteBatch.Draw(backdrop, pos, Color.White);
 
-            if(boss is null || !boss.npc.active)
+            if (boss is null || !boss.npc.active)
             {
                 Vector2 forgeOff1 = new Vector2(36, 324);
                 Vector2 forgeOff2 = new Vector2(736, 324);

@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.NPCs.Town
 {
     [AutoloadHead]

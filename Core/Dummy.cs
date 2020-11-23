@@ -1,7 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Projectiles.Dummies
+using StarlightRiver.Core;
+
+namespace StarlightRiver.Core
 {
     internal abstract class Dummy : ModProjectile
     {
@@ -9,9 +11,9 @@ namespace StarlightRiver.Content.Projectiles.Dummies
         private readonly int Width;
         private readonly int Height;
 
-        public Tile Parent => Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16]; 
-        public int ParentX => (int)projectile.Center.X / 16; 
-        public int ParentY => (int)projectile.Center.Y / 16; 
+        public Tile Parent => Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16];
+        public int ParentX => (int)projectile.Center.X / 16;
+        public int ParentY => (int)projectile.Center.Y / 16;
 
         public Dummy(int validType, int width, int height)
         {

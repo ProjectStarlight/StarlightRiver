@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     class StarwoodSlingshotProjectile : ModProjectile, IDrawAdditive
@@ -13,7 +15,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shooting Star");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;   
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
             ProjectileID.Sets.TrailingMode[projectile.type] = 2;
         }
 

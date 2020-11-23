@@ -4,7 +4,8 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Hostile
 {
@@ -88,7 +89,7 @@ namespace StarlightRiver.NPCs.Hostile
             Dust.NewDustPerfect(projectile.position, 6).noGravity = true;
         }
     }
-        internal class StrangeTentacle : ModProjectile
+    internal class StrangeTentacle : ModProjectile
     {
         public override void SetStaticDefaults()
         {
@@ -153,16 +154,16 @@ namespace StarlightRiver.NPCs.Hostile
             {
                 projectile.ai[1] = 0;
             }
-            rotationCounter+= circleSpeed;
+            rotationCounter += circleSpeed;
             float speed = 0.5f;
-                Vector2 circle = new Vector2(circleX * (float)Math.Sin((double)rotationCounter), circleY * (float)Math.Cos((double)rotationCounter));
+            Vector2 circle = new Vector2(circleX * (float)Math.Sin((double)rotationCounter), circleY * (float)Math.Cos((double)rotationCounter));
             float angle = projectile.rotation;
             posToBe *= extend;
             posToBe += circle;
-                posToBe = posToBe.RotatedBy(angle + 1.57);
-                control1 = new Vector2(50 * (float)Math.Sin((double)rotationCounter * 1.1f), 50 * (float)Math.Cos((double)rotationCounter * 1.1f)) + parent.position;
-                control2 = posToBe.RotatedBy(Math.Sin(rotationCounter)) + parent.Center;
-                posToBe += parent.Center;
+            posToBe = posToBe.RotatedBy(angle + 1.57);
+            control1 = new Vector2(50 * (float)Math.Sin((double)rotationCounter * 1.1f), 50 * (float)Math.Cos((double)rotationCounter * 1.1f)) + parent.position;
+            control2 = posToBe.RotatedBy(Math.Sin(rotationCounter)) + parent.Center;
+            posToBe += parent.Center;
             Vector2 direction = posToBe - projectile.position;
             if (direction.Length() > 1000)
             {

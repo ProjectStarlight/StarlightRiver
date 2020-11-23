@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles.Dummies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -178,7 +179,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             //front row
             Texture2D backtex4 = GetTexture(OvergrowTileLoader.OvergrowTileDir + "Window1");
-                spriteBatch.Draw(backtex4, target, GetSource(0.2f, backtex4), Color.White, 0, Vector2.Zero, 0, 0);
+            spriteBatch.Draw(backtex4, target, GetSource(0.2f, backtex4), Color.White, 0, Vector2.Zero, 0, 0);
 
             for (int k = -6; k < 6; k++) //big waterfall
             {

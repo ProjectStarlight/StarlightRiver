@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Dusts;
-using Steamworks;
 using System;
-using System.Runtime.Serialization;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Abilities.Content.ForbiddenWinds
 {
@@ -110,8 +108,8 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
             {
                 float rot = 0.1f * k * direction;
                 Dust dus = Dust.NewDustPerfect(
-                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f), 
-                    DustType<AirDash>(), 
+                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f),
+                    DustType<AirDash>(),
                     Vector2.UnitX.RotatedByRandom(Math.PI) / 3f
                     );
                 dus.fadeIn = k - Time * 3;

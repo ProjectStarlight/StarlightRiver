@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using Terraria.DataStructures;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
@@ -72,14 +71,14 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
                 charge -= 0.1f;
                 player.itemAnimation = (int)(charge * player.itemAnimationMax);
 
-                if(charge > 0.69f && charge < 0.71f && inRange) //trigger VFX early so they line up
+                if (charge > 0.69f && charge < 0.71f && inRange) //trigger VFX early so they line up
                 {
                     Vector2 pos = new Vector2(Player.tileTargetX + 0.5f, Player.tileTargetY + 0.5f) * 16;
                     Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<AuroraPickVFX>(), 0, 0, player.whoAmI);
                     Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse.SoundId, (int)pos.X, (int)pos.Y, SoundID.DD2_WitherBeastAuraPulse.Style, 1.5f, 2f);
                 }
 
-                if(charge <= 0)
+                if (charge <= 0)
                 {
                     if (inRange)
                     {
@@ -89,7 +88,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
                                 int xReal = Player.tileTargetX + x;
                                 int yReal = Player.tileTargetY + y;
 
-                                if(Framing.GetTileSafely(xReal, yReal).type != TileID.Trees)
+                                if (Framing.GetTileSafely(xReal, yReal).type != TileID.Trees)
                                     player.PickTile(xReal, yReal, item.pick);
                             }
                     }
@@ -156,7 +155,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
 
             switch (Main.rand.Next(3))
             {
-                case 0: thisColor = new Color(150, 255, 255);  break;
+                case 0: thisColor = new Color(150, 255, 255); break;
                 case 1: thisColor = new Color(200, 150, 255); break;
                 case 2: thisColor = new Color(150, 255, 150); break;
             }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
+using System.Collections.Generic;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Projectiles.Dummies;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles
 {
@@ -31,7 +30,7 @@ namespace StarlightRiver.Tiles
         {
             //Main.PlaySound( , origin);
 
-            for(int k = 0; k < 50; k++)
+            for (int k = 0; k < 50; k++)
                 Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
         }
 

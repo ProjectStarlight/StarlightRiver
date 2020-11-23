@@ -1,8 +1,10 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Projectiles.WeaponProjectiles;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Projectiles.WeaponProjectiles;
-using Microsoft.Xna.Framework;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Overgrow
 {

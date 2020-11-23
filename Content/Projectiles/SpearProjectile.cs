@@ -2,6 +2,8 @@
 using Terraria;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Projectiles
 {
     public abstract class SpearProjectile : ModProjectile
@@ -46,7 +48,7 @@ namespace StarlightRiver.Projectiles
             if (projectile.timeLeft == Duration) projectile.timeLeft = realDuration;
             projectile.velocity = Vector2.Normalize(projectile.velocity);
 
-            projectile.rotation = MathHelper.Pi * (3/4f) + projectile.velocity.ToRotation();
+            projectile.rotation = MathHelper.Pi * (3 / 4f) + projectile.velocity.ToRotation();
             float progress = projectile.timeLeft > (realDuration / 2f) ? (realDuration - projectile.timeLeft) / (realDuration / 2f) : projectile.timeLeft / (realDuration / 2f);
             projectile.Center = player.MountedCenter + Vector2.SmoothStep(projectile.velocity * Min, projectile.velocity * Max, progress);
         }

@@ -1,6 +1,8 @@
 ﻿using StarlightRiver.Buffs;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Herbology.Potions
 {
     internal class RidersPotion : QuickPotion

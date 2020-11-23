@@ -8,7 +8,11 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.NPCs.Boss.SquidBoss
 {
@@ -64,7 +68,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
             {
                 Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
 
-                for(int k = 0; k < 10; k++)
+                for (int k = 0; k < 10; k++)
                 {
                     Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Gores/SquidGore"));
                 }
@@ -176,7 +180,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                     }
 
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
-                }               
+                }
 
                 spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.8f, npc.rotation,
                     new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
@@ -202,7 +206,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 spawnPoint = npc.Center;
 
                 string title = Main.rand.Next(10000) == 0 ? "Sentient Rainbow Sex Toy" : "Aurora Calamari";
-                StarlightRiver.Instance.textcard.Display("Auroracle", title, null, 600);
+                UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 600);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = npc.Center + new Vector2(0, -600);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 600;
@@ -239,9 +243,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         tentacles.Add(Main.npc[i]);
                     }
 
-                    if(GlobalTimer == 275 + k * 50)
+                    if (GlobalTimer == 275 + k * 50)
                     {
-                        for(int i = 0; i < 50; i++)
+                        for (int i = 0; i < 50; i++)
                         {
                             Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(12), 0, default, 2);
                             Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
@@ -390,7 +394,7 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                         AttackPhase++;
 
                         variantAttack = false;
-                        if(AttackPhase == 3) variantAttack = Main.rand.Next(3) >= 1;
+                        if (AttackPhase == 3) variantAttack = Main.rand.Next(3) >= 1;
                         if (AttackPhase == 4 && Main.expertMode) variantAttack = Main.rand.NextBool();
 
                         if (AttackPhase > 4) AttackPhase = 1;
@@ -456,9 +460,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
                 }
             }
 
-            if(Phase == (int)AIStates.DeathAnimation)
+            if (Phase == (int)AIStates.DeathAnimation)
             {
-                if(GlobalTimer == 1)
+                if (GlobalTimer == 1)
                 {
                     npc.velocity *= 0;
                     npc.rotation = 0;

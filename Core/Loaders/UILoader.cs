@@ -5,6 +5,8 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Core.Loaders
 {
     class UILoader : ILoadable
@@ -16,7 +18,7 @@ namespace StarlightRiver.Core.Loaders
         {
             Mod mod = StarlightRiver.Instance;
 
-            foreach(Type t in mod.Code.GetTypes())
+            foreach (Type t in mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(SmartUIState)))
                 {
@@ -52,5 +54,13 @@ namespace StarlightRiver.Core.Loaders
         }
 
         public static T GetUIState<T>() where T : SmartUIState => UIStates.FirstOrDefault(n => n is T) as T;
+
+        public static void ReloadState<T>() where T : SmartUIState
+        {
+            var index = UIStates.IndexOf(GetUIState<T>());
+            UIStates[index] = (T)Activator.CreateInstance(typeof(T), null);
+            UserInterfaces[index] = new UserInterface();
+            UserInterfaces[index].SetState(UIStates[index]);
+        }
     }
 }

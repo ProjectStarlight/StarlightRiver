@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using StarlightRiver.Dusts;
-using StarlightRiver.Projectiles.Ammo;
+using System;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
@@ -22,7 +22,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             StarlightPlayer.ResetEffectsEvent += ResetEffectsAccessory;
             return true;
         }
-        private void OnHit(Player player, NPC target, int damage, float knockback, bool crit,bool type)
+        private void OnHit(Player player, NPC target, int damage, float knockback, bool crit, bool type)
         {
             if (Equipped(player) && crit && Main.rand.Next(0, 100) < (type ? 50 : 100))
             {
@@ -31,7 +31,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         }
         private void OnHitNPCAccessory(Player player, Item item, NPC target, int damage, float knockback, bool crit)
         {
-            OnHit(player, target, damage, knockback, crit,false);
+            OnHit(player, target, damage, knockback, crit, false);
         }
         private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
@@ -39,25 +39,25 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         }
         private void ResetEffectsAccessory(StarlightPlayer slp)
         {
-                slp.DisinfectCooldown = (short)Math.Max(slp.DisinfectCooldown - 1,0);
+            slp.DisinfectCooldown = (short)Math.Max(slp.DisinfectCooldown - 1, 0);
         }
 
-        public static void MakeDusts(Rectangle rect, int dustcount = 5,Color color = default,int dust = DustID.Fire,float scale = 1f)
+        public static void MakeDusts(Rectangle rect, int dustcount = 5, Color color = default, int dust = DustID.Fire, float scale = 1f)
         {
             for (int k = 0; k <= dustcount; k++)
             {
-                Dust.NewDustPerfect(new Vector2(rect.Left, rect.Top) +new Vector2(Main.rand.NextFloat(0, rect.Width), Main.rand.NextFloat(0, rect.Height)), dust, Vector2.Zero,255, color, scale);
+                Dust.NewDustPerfect(new Vector2(rect.Left, rect.Top) + new Vector2(Main.rand.NextFloat(0, rect.Width), Main.rand.NextFloat(0, rect.Height)), dust, Vector2.Zero, 255, color, scale);
                 for (int i = 0; i <= 3; i++)
                 {
                     Vector2 velo = new Vector2(Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(-2, 2));
-                    Dust.NewDustPerfect(new Vector2(rect.Left, rect.Top) + new Vector2(Main.rand.NextFloat(0, rect.Width), Main.rand.NextFloat(0, rect.Height)), dust, velo, 100, color, scale*0.5f);
+                    Dust.NewDustPerfect(new Vector2(rect.Left, rect.Top) + new Vector2(Main.rand.NextFloat(0, rect.Width), Main.rand.NextFloat(0, rect.Height)), dust, velo, 100, color, scale * 0.5f);
                 }
             }
             if (dustcount > 5)
                 Main.PlaySound(SoundID.Item27);
         }
 
-        public static void CleanDebuff(Player player,int type)
+        public static void CleanDebuff(Player player, int type)
         {
             StarlightPlayer slp = player.GetModPlayer<StarlightPlayer>();
             short cooldown = slp.DisinfectCooldown;
@@ -89,7 +89,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                     if (buffs.Count > 0)
                     {
                         int buffid = Main.rand.Next(0, buffs.Count);
-                        if (SanitizerSpray.SanitizeEnemies(player, player.buffType[buffid], 60 * 5,300))
+                        if (SanitizerSpray.SanitizeEnemies(player, player.buffType[buffid], 60 * 5, 300))
                         {
                             player.buffTime[buffid] = (int)MathHelper.Max(player.buffTime[buffid] - (60 * 5), 5);
                             MakeDusts(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), 2, Color.Blue, ModContent.DustType<Air>());
@@ -99,12 +99,12 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                 else
                 {
                     slp.DisinfectCooldown = 20;
-                    MakeDusts(new Rectangle((int)player.position.X, (int)player.position.Y,player.width,player.height), 5, Color.White, ModContent.DustType<Air>());
+                    MakeDusts(new Rectangle((int)player.position.X, (int)player.position.Y, player.width, player.height), 5, Color.White, ModContent.DustType<Air>());
                 }
                 Main.PlaySound(SoundID.Item, (int)player.Center.X, (int)player.Center.Y, 100, 0.65f, -Main.rand.NextFloat(0.35f, 0.75f));
             }
 
         }
 
-    }    
+    }
 }

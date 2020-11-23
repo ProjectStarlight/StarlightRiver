@@ -1,15 +1,14 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 using StarlightRiver.NPCs;
-using StarlightRiver.Projectiles.Ammo;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {
-    public class BarbedKnife : SmartAccessory,IChestItem
+    public class BarbedKnife : SmartAccessory, IChestItem
     {
         public BarbedKnife() : base("Barbed Knife", "Critical hits apply a stacking bleeding debuff\nStacks up to 5 at once, additional Critical hits refresh all stacks") { }
 

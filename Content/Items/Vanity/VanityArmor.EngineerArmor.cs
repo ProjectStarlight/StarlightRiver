@@ -1,17 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Dusts;
+using StarlightRiver.Noise;
+using System;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Terraria.DataStructures;
 using static Terraria.WorldGen;
-using StarlightRiver.Noise;
-using StarlightRiver.Dusts;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Armor.Engineer
 {
@@ -185,9 +186,9 @@ namespace StarlightRiver.Items.Armor.Engineer
                         int highest = 0;
                         for (int z = 0; z <= 2; z += 1)
                         {
-                            for (int zz = -1; zz <= 1; zz += 2) 
+                            for (int zz = -1; zz <= 1; zz += 2)
                             {
-                                RaycastTile(z, zz,ref highest, ref middleheight,ref middletouch, ref average, playerpos, ref touchpoint);
+                                RaycastTile(z, zz, ref highest, ref middleheight, ref middletouch, ref average, playerpos, ref touchpoint);
                             }
                         }
 
@@ -195,7 +196,7 @@ namespace StarlightRiver.Items.Armor.Engineer
                         {
                             touchpoint.Y = ((touchpoint.Y / average) + highest) / 2f;
                             //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
-                            if (middleheight < 8 && Main.rand.Next(2,8)> middleheight)
+                            if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
                             {
                                 float scale = (8f - middleheight);
                                 Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<StarlightSmoke>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
@@ -207,12 +208,12 @@ namespace StarlightRiver.Items.Armor.Engineer
                                 player.velocity.Y -= (velocityammount + 0.2f);
                             }
 
-                            if (player.velocity.Y>0)
-                            player.velocity.Y /= 1.05f;
+                            if (player.velocity.Y > 0)
+                                player.velocity.Y /= 1.05f;
 
                         }
 
-                            player.fallStart = (int)(player.position.Y / 16f);
+                        player.fallStart = (int)(player.position.Y / 16f);
                         player.maxRunSpeed += 5; //Only a bit faster run speed
                         player.runAcceleration /= 3f;
                     }
@@ -255,23 +256,23 @@ namespace StarlightRiver.Items.Armor.Engineer
                 //GL/Jetpack
                 backTarget = s => DrawEngineerArm(s, 3, new Vector2(0, -8)); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
                 backLayer = new PlayerLayer("EngineerLayer", "Engineer Arm GL", backTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-                layers.Insert(layerlocation+2, backLayer); //Insert the layer at the appropriate index. 
+                layers.Insert(layerlocation + 2, backLayer); //Insert the layer at the appropriate index. 
 
                 frontTarget = s => DrawEngineerArm(s, 3, new Vector2(-22, -8)); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
                 frontLayer = new PlayerLayer("EngineerLayer", "Engineer Arm GL", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-                layers.Insert(layerlocationfront+2, frontLayer); //Insert the layer at the appropriate index. 
+                layers.Insert(layerlocationfront + 2, frontLayer); //Insert the layer at the appropriate index. 
 
 
                 void DrawEngineerArm(PlayerDrawInfo info, int part, Vector2 bodyoffset)
                 {
 
                     SpriteEffects direction = player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                    Vector2 facingdirection = new Vector2(player.direction,1f);
+                    Vector2 facingdirection = new Vector2(player.direction, 1f);
 
                     //Ugly guessing-game-coded bobber effect
-                    if ((player.bodyFrame.Y+ player.bodyFrame.Height*2) % (player.bodyFrame.Height*6) > player.bodyFrame.Height*3 && player.bodyFrame.Y > player.bodyFrame.Height*6)
+                    if ((player.bodyFrame.Y + player.bodyFrame.Height * 2) % (player.bodyFrame.Height * 6) > player.bodyFrame.Height * 3 && player.bodyFrame.Y > player.bodyFrame.Height * 6)
                         bodyoffset -= new Vector2(0, 2);
-                    
+
                     if (player.direction < 0)
                     {
                         bodyoffset *= facingdirection;
@@ -286,14 +287,14 @@ namespace StarlightRiver.Items.Armor.Engineer
                         new Vector2(4, ShoulderMounts[2].Height / 2),
                     new Vector2((ShoulderMounts[3].Width/4f)/2, 2) };
 
-                Vector2[] partoffsets = { Vector2.Zero,
+                    Vector2[] partoffsets = { Vector2.Zero,
                         new Vector2(-(ShoulderMounts[0].Width - 6), -(ShoulderMounts[0].Height - 8)),
                         new Vector2(ShoulderMounts[1].Width - 8,-(ShoulderMounts[1].Height - 4)),
                         new Vector2(4, (ShoulderMounts[2].Height/2)),
                     new Vector2((ShoulderMounts[3].Width/4) - 8,-(ShoulderMounts[3].Height - 4)) };
 
-                //Redefined angles and some gentle idle animations
-                float[] rotationangles = { (float)Math.Sin(Main.GlobalTime*0.75f)*0.04f, 
+                    //Redefined angles and some gentle idle animations
+                    float[] rotationangles = { (float)Math.Sin(Main.GlobalTime*0.75f)*0.04f,
                         (float)Math.Sin(Main.GlobalTime *1f) * 0.06f,
                         (float)Math.Sin(Main.GlobalTime * 1.33f) * 0.05f,
                         (float)Noise.GetNoise(SLP.Timer * (bodyoffset.X<-11 ? 1f : -1f),SLP.Timer)/5f};
@@ -309,10 +310,10 @@ namespace StarlightRiver.Items.Armor.Engineer
                     //Transformation angles
                     rotationangles[1] += ((float)SLP.EngineerTransform / (float)MaxTransform) * (MathHelper.Pi / 1.5f);
                     if (TransformActive)
-                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + (player.velocity.X/ 3f)) / 18f), 0.60) * Math.Sign(EaseXVel+(player.velocity.X / 3f)) *player.direction;
+                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + (player.velocity.X / 3f)) / 18f), 0.60) * Math.Sign(EaseXVel + (player.velocity.X / 3f)) * player.direction;
 
                     //Support Arms
-                    if (part %2 == 0)
+                    if (part % 2 == 0)
                     {
                         for (int i = 0; i < 2; i += 1)
                         {
@@ -353,8 +354,8 @@ namespace StarlightRiver.Items.Armor.Engineer
                         }
                         else
                         {
-                            float transformanimation = ((float)SLP.EngineerTransform / MaxTransform) * (MathHelper.Pi/2f);
-                            drawGL = new DrawData(ShoulderMounts[2], drawhere - Main.screenPosition, null, info.middleArmorColor, (rotationangles[2]+transformanimation) * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
+                            float transformanimation = ((float)SLP.EngineerTransform / MaxTransform) * (MathHelper.Pi / 2f);
+                            drawGL = new DrawData(ShoulderMounts[2], drawhere - Main.screenPosition, null, info.middleArmorColor, (rotationangles[2] + transformanimation) * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
                         }
 
                         Main.playerDrawData.Add(drawGL);

@@ -7,6 +7,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class AuroraIce : ModTile
@@ -78,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             //TODO: this is gross, change it later?
             if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
                 Framing.GetTileSafely(i, j).slope(0);
-         
+
             return false;
         }
 
@@ -119,7 +121,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.35f);
 
-            if(Main.rand.Next(24) == 0)
+            if (Main.rand.Next(24) == 0)
             {
                 Dust d = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.Aurora>(), Vector2.Zero, 100, color, 0);
                 d.customData = Main.rand.NextFloat(0.25f, 0.5f);

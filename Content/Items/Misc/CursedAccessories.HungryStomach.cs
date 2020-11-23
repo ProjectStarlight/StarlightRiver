@@ -1,10 +1,10 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Abilities;
+using StarlightRiver.Core;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Abilities;
-using System;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.CursedAccessories
 {

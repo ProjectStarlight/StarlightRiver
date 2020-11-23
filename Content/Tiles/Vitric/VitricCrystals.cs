@@ -5,6 +5,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+
 namespace StarlightRiver.Tiles.Vitric
 {
     internal class VitricLargeCrystal : ModTile
@@ -22,7 +24,7 @@ namespace StarlightRiver.Tiles.Vitric
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
 
-            Main.tileMerge[Type][TileType<Blocks.VitricSpike>()] = true;
+            Main.tileMerge[Type][TileType<VitricSpike>()] = true;
         }
 
         public override bool CanExplode(int i, int j)
@@ -62,7 +64,7 @@ namespace StarlightRiver.Tiles.Vitric
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
 
-            Main.tileMerge[Type][TileType<Blocks.VitricSpike>()] = true;
+            Main.tileMerge[Type][TileType<VitricSpike>()] = true;
         }
 
         public override bool CanExplode(int i, int j)

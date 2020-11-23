@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs.Boss.VitricBoss;
-using StarlightRiver.Projectiles.Dummies;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Vitric
 {
