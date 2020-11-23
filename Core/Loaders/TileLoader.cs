@@ -11,7 +11,7 @@ using Terraria;
 
 namespace StarlightRiver.Core.Loaders
 {
-    public abstract class TileLoader : ILoadable
+    public abstract class TileLoader : ILoadable, IPostLoadable
     {
         public Mod mod => StarlightRiver.Instance;
 
@@ -20,7 +20,7 @@ namespace StarlightRiver.Core.Loaders
         public void LoadTile(string internalName, string displayName, TileLoadData data)
         {
             mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", mod.TileType(internalName + "Tile"), 0, AssetRoot + "/" + internalName + "Item"));
-            mod.AddTile(internalName + "Tile", new LoaderTile(data, mod.ItemType(internalName + "Item")), AssetRoot + "/" + internalName);
+            mod.AddTile(internalName + "Tile", new LoaderTile(data, data.dropType == -1 ? mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + "/" + internalName);
         }
 
         public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
@@ -32,6 +32,10 @@ namespace StarlightRiver.Core.Loaders
         public virtual void Load() { }
 
         public virtual void Unload() { }
+
+        public virtual void PostLoad() { }
+
+        public void PostLoadUnload() { }
     }
 
     public class LoaderTile : ModTile
@@ -39,10 +43,10 @@ namespace StarlightRiver.Core.Loaders
         TileLoadData data;
         readonly int dropID;
 
-        public LoaderTile(TileLoadData data, int drop)
+        public LoaderTile(TileLoadData data, int dropID)
         {
             this.data = data;
-            this.dropID = drop;
+            this.dropID = dropID;
         }
 
         public override void SetDefaults()
@@ -103,8 +107,9 @@ namespace StarlightRiver.Core.Loaders
         public bool dirtMerge;
         public bool stone;
         public string mapName;
+        public int dropType;
 
-        public TileLoadData(int minPick, int dustType, int soundType, Color mapColor, bool dirtMerge = false, bool stone = false, string mapName = "")
+        public TileLoadData(int minPick, int dustType, int soundType, Color mapColor, bool dirtMerge = false, bool stone = false, string mapName = "", int dropType = -1)
         {
             this.minPick = minPick;
             this.dustType = dustType;
@@ -113,6 +118,7 @@ namespace StarlightRiver.Core.Loaders
             this.dirtMerge = dirtMerge;
             this.stone = stone;
             this.mapName = mapName;
+            this.dropType = dropType;
         }
     }
 

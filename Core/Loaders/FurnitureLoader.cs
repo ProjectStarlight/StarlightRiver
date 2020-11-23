@@ -7,9 +7,9 @@ using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
 
-namespace StarlightRiver.Content.Tiles
+namespace StarlightRiver.Core
 {
-    public abstract class AutoFurniture
+    public abstract class FurnitureLoader : ILoadable
     {
         private readonly string name = "Nameless";
         private readonly string path = "StarlightRiver/Tiles/Placeholders";
@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles
         private readonly int dust = DustID.Dirt;
         private readonly int material = ItemID.DirtBlock;
 
-        public AutoFurniture(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
+        public FurnitureLoader(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
         {
             this.name = name;
             this.path = path;
@@ -29,8 +29,10 @@ namespace StarlightRiver.Content.Tiles
             this.material = material;
         }
 
-        public void Load(Mod mod)
+        public void Load()
         {
+            var mod = StarlightRiver.Instance;
+
             Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), mod, 14);
             Add("Bed", new GenericBed(color, dust, name + "Bed"), mod, 15);
             Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), mod, 20);
@@ -53,6 +55,8 @@ namespace StarlightRiver.Content.Tiles
             mod.AddTile(name + "DoorOpen", new GenericDoorOpen(color, dust, name + "DoorOpen"), path + name + "DoorOpen");
             mod.AddItem(name + "Door", new GenericFurnitureItem(name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
         }
+
+        public void Unload() { }
 
         private void Add(string typename, ModTile tile, Mod mod, int craftingQuantity)
         {

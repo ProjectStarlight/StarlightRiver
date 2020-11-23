@@ -1,17 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.NPCs.Boss.SquidBoss;
-using StarlightRiver.Physics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
+
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -23,6 +14,11 @@ namespace StarlightRiver.Content.CustomHooks
         public override void Load()
         {
             Main.OnPreDraw += WaterTarget;
+        }
+
+        public override void Unload()
+        {
+            CatherdalWaterTarget = null;
         }
 
         public static RenderTarget2D CatherdalWaterTarget;

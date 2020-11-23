@@ -21,8 +21,8 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForeground, 3);
-            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackground, 1);
+            ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForegroundBody, 3);
+            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackgroundBody, 1);
 
             crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
 
@@ -30,16 +30,26 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += BannerTarget;
         }
 
+        public override void Unload()
+        {
+            crystalEffect = null;
+
+            ForegroundParticles = null;
+            BackgroundParticles = null;
+
+            vitricBackgroundBannerTarget = null;
+            BackgroundBanner = null;
+
+        }
+
         private static Effect crystalEffect;
-        static ParticleSystem.Update UpdateForeground => UpdateForegroundBody;
-        static ParticleSystem.Update UpdateBackground => UpdateBackgroundBody;
 
-        internal ParticleSystem ForegroundParticles;
-        internal ParticleSystem BackgroundParticles;
+        internal static ParticleSystem ForegroundParticles;
+        internal static ParticleSystem BackgroundParticles;
 
-        static readonly RenderTarget2D vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        static RenderTarget2D vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-        static readonly VerletChainInstance BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
+        static VerletChainInstance BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
         {
             segmentCount = 35,
             segmentDistance = 24,

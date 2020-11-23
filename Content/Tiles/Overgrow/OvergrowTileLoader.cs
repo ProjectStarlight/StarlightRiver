@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public static string OvergrowTileDir = "StarlightRiver/Assets/Tiles/Overgrow";
 		public static string OvergrowItemDir = "StarlightRiver/Assets/Items/Overgrow";
 		public override string AssetRoot => OvergrowTileDir;
+
 		public override void Load()
 		{
 			LoadTile(
@@ -53,28 +54,31 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					mapColor: new Color(205, 200, 55)
 					)
 				);
-
-			int typeLeafOvergrow = mod.TileType("LeafOvergrow");
-			int typeBrickOvergrow = mod.TileType("BrickOvergrow");
-			int typeStoneOvergrow = mod.TileType("StoneOvergrow");
-
-			Main.tileMerge[typeLeafOvergrow][typeBrickOvergrow] = true;
-			Main.tileMerge[typeLeafOvergrow][typeStoneOvergrow] = true;
-			Main.tileMerge[typeLeafOvergrow][TileType<GlowBrickOvergrow>()] = true;
-			Main.tileMerge[typeLeafOvergrow][TileType<GrassOvergrow>()] = true;
-
-			Main.tileMerge[typeBrickOvergrow][typeLeafOvergrow] = true;
-			Main.tileMerge[typeBrickOvergrow][typeStoneOvergrow] = true;
-			Main.tileMerge[typeBrickOvergrow][TileType<GlowBrickOvergrow>()] = true;
-			Main.tileMerge[typeBrickOvergrow][TileType<GrassOvergrow>()] = true;
-			Main.tileMerge[typeBrickOvergrow][mod.GetTile("CrusherTile").Type] = true;
-			Main.tileMerge[typeBrickOvergrow][TileID.BlueDungeonBrick] = true;
-			Main.tileMerge[typeBrickOvergrow][TileID.GreenDungeonBrick] = true;
-			Main.tileMerge[typeBrickOvergrow][TileID.PinkDungeonBrick] = true;
-
-			Main.tileMerge[typeStoneOvergrow][typeLeafOvergrow] = true;
-			Main.tileMerge[typeStoneOvergrow][typeBrickOvergrow] = true;
-			Main.tileMerge[typeStoneOvergrow][TileType<GrassOvergrow>()] = true;
 		}
-	}
+
+        public override void PostLoad()
+        {
+            int typeLeafOvergrow = mod.TileType("LeafOvergrow");
+            int typeBrickOvergrow = mod.TileType("BrickOvergrow");
+            int typeStoneOvergrow = mod.TileType("StoneOvergrow");
+
+            Main.tileMerge[typeLeafOvergrow][typeBrickOvergrow] = true;
+            Main.tileMerge[typeLeafOvergrow][typeStoneOvergrow] = true;
+            Main.tileMerge[typeLeafOvergrow][TileType<GlowBrickOvergrow>()] = true;
+            Main.tileMerge[typeLeafOvergrow][TileType<GrassOvergrow>()] = true;
+
+            Main.tileMerge[typeBrickOvergrow][typeLeafOvergrow] = true;
+            Main.tileMerge[typeBrickOvergrow][typeStoneOvergrow] = true;
+            Main.tileMerge[typeBrickOvergrow][TileType<GlowBrickOvergrow>()] = true;
+            Main.tileMerge[typeBrickOvergrow][TileType<GrassOvergrow>()] = true;
+            Main.tileMerge[typeBrickOvergrow][mod.GetTile("CrusherTile").Type] = true;
+            Main.tileMerge[typeBrickOvergrow][TileID.BlueDungeonBrick] = true;
+            Main.tileMerge[typeBrickOvergrow][TileID.GreenDungeonBrick] = true;
+            Main.tileMerge[typeBrickOvergrow][TileID.PinkDungeonBrick] = true;
+
+            Main.tileMerge[typeStoneOvergrow][typeLeafOvergrow] = true;
+            Main.tileMerge[typeStoneOvergrow][typeBrickOvergrow] = true;
+            Main.tileMerge[typeStoneOvergrow][TileType<GrassOvergrow>()] = true;
+        }
+    }
 }

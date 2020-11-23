@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.GUI;
 using StarlightRiver.RiftCrafting;
-using StarlightRiver.Tiles;
-using StarlightRiver.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +14,9 @@ using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.Graphics.Effects;
-using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Permafrost;
 
 namespace StarlightRiver
 {
@@ -56,6 +55,8 @@ namespace StarlightRiver
         public List<RiftRecipe> RiftRecipes;
 
         public List<Foreground> foregrounds;
+
+        private List<ILoadable> loadCache;
 
         public static float Rotation;
 
@@ -145,19 +146,18 @@ namespace StarlightRiver
             }
         }
 
-        public static void AutoloadFurniture()
-        {
-            if (Instance.Code != null)
-            {
-                foreach (Type type in Instance.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(AutoFurniture))))
-                {
-                    (Activator.CreateInstance(type) as AutoFurniture).Load(Instance);
-                }
-            }
-        }
-
         public override void Load()
         {
+            foreach(Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    loadCache.Add(instance  as ILoadable);
+                    (instance as ILoadable).Load();
+                }
+            }
+
             //Shaders
             if (!Main.dedServ)
             {
@@ -220,9 +220,6 @@ namespace StarlightRiver
             RiftRecipes = new List<RiftRecipe>();
             AutoloadRiftRecipes(RiftRecipes);
 
-            //Furniture
-            AutoloadFurniture();
-
             //UI
             if (!Main.dedServ)
             {
@@ -270,16 +267,6 @@ namespace StarlightRiver
                 ChatboxUserInterface.SetState(Chatbox);
                 RichTextInterface.SetState(RichText);
             }
-
-            //particle systems
-            if (!Main.dedServ)
-            {
-                LoadVitricBGSystems();
-            }
-
-            //Hooking
-            HookOn();
-            HookIL();
         }
 
         private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -337,6 +324,12 @@ namespace StarlightRiver
 
         public override void Unload()
         {
+            foreach(var loadable in loadCache)
+            {
+                loadable.Unload();
+            }
+            loadCache.Clear();
+
             if (!Main.dedServ)
             {
                 RiftRecipes = null;
@@ -370,9 +363,6 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
             }
-
-            UnhookIL();
-            Main.OnPreDraw -= TestLighting;
         }
 
         #region NetEasy

@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Content.Tiles
+namespace StarlightRiver.Core
 {
     internal static class QuickBlock
     {
