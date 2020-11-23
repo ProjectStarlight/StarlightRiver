@@ -64,8 +64,8 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            var tex = GetTexture("StarlightRiver/Keys/Glow");
-            var texDisc = GetTexture("StarlightRiver/Items/Permafrost/AuroraDisc");
+            var tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            var texDisc = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraDisc");
 
             float sin = 1 + (float)Math.Sin(-StarlightWorld.rottime);
             float cos = 1 + (float)Math.Cos(-StarlightWorld.rottime);

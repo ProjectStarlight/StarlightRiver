@@ -144,7 +144,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            var glowTex = GetTexture("StarlightRiver/NPCs/Miniboss/Glassweaver/ForgeGlow");
+            var glowTex = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/ForgeGlow");
 
             for (int k = 0; k < leftForgeCharge; k++)
             {

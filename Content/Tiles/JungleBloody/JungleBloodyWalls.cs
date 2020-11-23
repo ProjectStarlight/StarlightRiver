@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.JungleBloody
+namespace StarlightRiver.Content.Tiles.JungleBloody
 {
     public class WallJungleBloody : ModWall
     {

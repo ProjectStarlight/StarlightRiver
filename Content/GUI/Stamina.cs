@@ -88,8 +88,8 @@ namespace StarlightRiver.GUI
             Player player = Main.LocalPlayer;
             AbilityHandler mp = player.GetHandler();
 
-            Texture2D emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaEmpty");
-            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/GUI/Assets/Stamina") : overrideTexture;
+            Texture2D emptyTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaEmpty");
+            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina") : overrideTexture;
 
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
@@ -101,8 +101,8 @@ namespace StarlightRiver.GUI
 
                 if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
-                    Texture2D shard1 = GetTexture("StarlightRiver/Pickups/Stamina1");
-                    Texture2D shard2 = GetTexture("StarlightRiver/Pickups/Stamina2");
+                    Texture2D shard1 = GetTexture("StarlightRiver/Assets/Pickups/Stamina1");
+                    Texture2D shard2 = GetTexture("StarlightRiver/Assets/Pickups/Stamina2");
 
                     if (mp.ShardCount % 3 >= 1) spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                     if (mp.ShardCount % 3 >= 2) spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -149,9 +149,9 @@ namespace StarlightRiver.GUI
             AbilityHandler mp = player.GetHandler();
             Vector2 basepos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - Vector2.UnitY * 64;
 
-            var flagTex = GetTexture("StarlightRiver/GUI/Assets/StaminaFlag");
-            var emptyTex = GetTexture("StarlightRiver/GUI/Assets/StaminaSmallEmpty");
-            var fillTex = GetTexture("StarlightRiver/GUI/Assets/StaminaSmall");
+            var flagTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaFlag");
+            var emptyTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaSmallEmpty");
+            var fillTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaSmall");
 
             var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
 

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 for (int i = 3; i >= 0; i--)
                 {
-                    Texture2D tex = ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell" + i);
+                    Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Backgrounds/AshHell" + i);
                     Vector2 vector2 = new Vector2(tex.Width, tex.Height) * 0.5f;
                     float num2 = flat ? 1f : (i * 2 + 3f);
                     Vector2 vector3 = new Vector2(1f / num2);
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.CustomHooks
                     if (flat) num3 *= 1.5f;
 
                     vector2 *= num3;
-                    if (flat) zero.Y += (ModContent.GetTexture("StarlightRiver/Backgrounds/AshHell0").Height >> 1) * 1.3f - vector2.Y;
+                    if (flat) zero.Y += (ModContent.GetTexture("StarlightRiver/Assets/Backgrounds/AshHell0").Height >> 1) * 1.3f - vector2.Y;
 
                     zero.Y -= num;
                     float num5 = num3 * rectangle.Width;

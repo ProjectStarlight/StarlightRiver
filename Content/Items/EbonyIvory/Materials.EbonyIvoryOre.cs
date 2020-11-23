@@ -3,12 +3,13 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Items.EbonyIvory
 {
     public class OreEbonyItem : QuickTileItem
     {
-        public OreEbonyItem() : base("Ebony Ore", "Heavy and Impure", TileType<Tiles.OreEbony>(), 1) { }
+        public OreEbonyItem() : base("Ebony Ore", "Heavy and Impure", TileType<OreEbony>(), 1) { }
     }
 
     public class OreIvoryItem : QuickMaterial

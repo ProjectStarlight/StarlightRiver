@@ -45,11 +45,11 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         {
             if (Parent != null)
             {
-                Texture2D top = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleTop");
-                Texture2D glow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleGlow");
-                Texture2D glow2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleGlow2");
-                Texture2D body = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleBody");
-                Texture2D ring = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleRing");
+                Texture2D top = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleTop");
+                Texture2D glow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow");
+                Texture2D glow2 = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow2");
+                Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleBody");
+                Texture2D ring = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleRing");
 
                 float dist = npc.Center.X - Parent.npc.Center.X;
                 int underMax = 0;

@@ -61,7 +61,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
             if (!(Main.npc.Any(n => n.active && n.type == NPCType<OvergrowBoss>()))) return;
             NPC boss = Main.npc.FirstOrDefault(n => n.active && n.type == NPCType<OvergrowBoss>());
 
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/OvergrowBoss/Chain");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/OvergrowBoss/Chain");
             for (float k = 0; k < 1; k += tex.Height / Vector2.Distance(npc.Center, boss.Center + Vector2.Normalize(npc.Center - boss.Center) * 80))
             {
                 if (k > npc.ai[0] / 30f)

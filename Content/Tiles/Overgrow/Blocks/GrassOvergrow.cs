@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 210, DustType<Dusts.Leaf>(), SoundID.Tink, new Color(202, 157, 49), ItemType<BrickOvergrowItem>(), true, true);
+            QuickBlock.QuickSet(this, 210, DustType<Dusts.Leaf>(), SoundID.Tink, new Color(202, 157, 49), StarlightRiver.Instance.ItemType("BrickOvergrowItem"), true, true);
             Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
             Main.tileMerge[Type][mod.GetTile("StoneOvergrow").Type] = true;
             Main.tileMerge[Type][mod.GetTile("LeafOvergrow").Type] = true;

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.Boss.SquidBoss;
@@ -91,7 +93,7 @@ namespace StarlightRiver.Core
 
                 if (Main.tile[x, y].type == TileID.Dirt && Math.Abs(x - Main.maxTilesX / 2) >= Main.maxTilesX / 6)
                 {
-                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(10, 11), 1, TileType<Tiles.OreEbony>(), false, 0f, 0f, false, true);
+                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(10, 11), 1, TileType<OreEbony>(), false, 0f, 0f, false, true);
                 }
             }
         }
@@ -123,7 +125,7 @@ namespace StarlightRiver.Core
                 Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
 
                 cathedralOverlay.fade =
-                    tile.wall == WallType<Tiles.Permafrost.AuroraBrickWall>() &&
+                    tile.wall == WallType<AuroraBrickWall>() &&
                     !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
 
                 cathedralOverlay.Draw();
@@ -230,7 +232,7 @@ namespace StarlightRiver.Core
             }
 
             //setup overlays
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
         }
 
         public static void LearnRecipie(string key)

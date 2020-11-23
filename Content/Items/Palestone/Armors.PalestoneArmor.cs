@@ -148,7 +148,7 @@ namespace StarlightRiver.Items.Armor.Palestone
                     if ((back && rot % 6.28f < 3.14f || !back && rot % 6.28f >= 3.14f) && tablets[k] > 0)
                     {
                         Vector2 pos = getTabletPosition(k);
-                        Texture2D texture = GetTexture("StarlightRiver/Items/Armor/Palestone/Tablet");
+                        Texture2D texture = GetTexture("StarlightRiver/Assets/Items/Armor/Palestone/Tablet");
                         Main.playerDrawData.Add(new DrawData(
                             texture,
                             pos,  //position

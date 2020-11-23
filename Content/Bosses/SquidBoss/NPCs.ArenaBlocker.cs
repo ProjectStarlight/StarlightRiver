@@ -40,9 +40,9 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
         {
             if (npc.ai[0] > 150)
             {
-                Texture2D top = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleTop");
-                Texture2D glow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleGlow");
-                Texture2D body = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/TentacleBody");
+                Texture2D top = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleTop");
+                Texture2D glow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow");
+                Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleBody");
 
                 for (int k = 0; k < (npc.ai[0] - top.Height); k += (body.Height + 2))
                 {

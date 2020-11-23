@@ -10,7 +10,7 @@ namespace StarlightRiver.Items.CursedAccessories
 {
     internal class HungryStomach : CursedAccessory
     {
-        public HungryStomach() : base(GetTexture("StarlightRiver/Items/CursedAccessories/AnthemDaggerGlow")) { }
+        public HungryStomach() : base(GetTexture("StarlightRiver/Assets/Items/CursedAccessories/AnthemDaggerGlow")) { }
 
         public override void SetStaticDefaults()
         {
@@ -33,7 +33,7 @@ namespace StarlightRiver.Items.CursedAccessories
 
         public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            GUI.Stam.overrideTexture = GetTexture("StarlightRiver/GUI/Assets/StaminaBlood");
+            GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaBlood");
         }
 
         private void DisableRegen(StarlightPlayer player)

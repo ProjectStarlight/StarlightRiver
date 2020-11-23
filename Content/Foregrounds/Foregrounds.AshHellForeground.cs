@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class AshHellForeground : Foreground
     {
-        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/GUI/Assets/Fire", UpdateAshParticles);
+        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
 
         private void UpdateAshParticles(Particle particle)
         {

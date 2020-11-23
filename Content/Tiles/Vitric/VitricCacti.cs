@@ -24,7 +24,7 @@ namespace StarlightRiver.Tiles.Vitric
             QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Dusts.Glass3>(), SoundID.Dig, false, new Color(80, 131, 142));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<VitricCactusItem>(), Main.rand.Next(2, 5));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType("VitricCactusItem"), Main.rand.Next(2, 5));
     }
 
     public class VitricSmallCactus : ModTile
@@ -38,14 +38,14 @@ namespace StarlightRiver.Tiles.Vitric
             QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Glass3>(), SoundID.Dig, false, new Color(80, 131, 142));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<VitricCactusItem>(), 1);
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType("VitricCactusItem"), 1);
     }
 
     public class VitricCactus : ModCactus
     {
         public override Texture2D GetTexture()
         {
-            return ModContent.GetTexture("StarlightRiver/Tiles/Vitric/VitricCactus");
+            return ModContent.GetTexture("StarlightRiver/Assets/Tiles/Vitric/VitricCactus");
         }
     }
 }

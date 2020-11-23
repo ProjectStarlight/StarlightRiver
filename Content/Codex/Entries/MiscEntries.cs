@@ -14,8 +14,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Stamina";
             Body = "All of your abilities utilize stamina, a resource represented by the orange diamonds next to your mana bar. Your stamina will replenish itself over time. You can gain additional stamina by unlocking new abilities and having certain equipment.";
             Hint = "Unlock an ability...";
-            Image = GetTexture("StarlightRiver/GUI/Assets/Stamina");
-            Icon = GetTexture("StarlightRiver/GUI/Assets/Stamina");
+            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina");
         }
     }
 
@@ -27,8 +27,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Stamina Vessels";
             Body = "Shards of these intricate metal devices seem to be scattered around the world everywhere. By combining 3 of them, a completed stamina vessel can be made, allowing it's holder to store an extra unit of stamina. Unfortunately, the strange material and intricate tooling of these fragments makes it nigh impossible to re-create them on your own.";
             Hint = "Find a stamina vessel shard...";
-            Image = GetTexture("StarlightRiver/GUI/Assets/StaminaEmpty");
-            Icon = GetTexture("StarlightRiver/Pickups/Stamina1");
+            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaEmpty");
+            Icon = GetTexture("StarlightRiver/Assets/Pickups/Stamina1");
         }
     }
 

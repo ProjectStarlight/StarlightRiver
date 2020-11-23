@@ -234,7 +234,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/CrystalGlow"); //glowy outline
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/CrystalGlow"); //glowy outline
             if (npc.ai[0] == 0)
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
@@ -249,7 +249,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             if (npc.ai[2] == 1 && npc.ai[1] < 180) //tell line for going to a platform in the nuke attack
             {
-                Texture2D tex = GetTexture("StarlightRiver/Gores/TellBeam");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
                 for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)
                 {
                     spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,

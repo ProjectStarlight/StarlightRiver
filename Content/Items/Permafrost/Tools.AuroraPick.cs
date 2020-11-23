@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             float progress = projectile.timeLeft < 15 ? projectile.timeLeft / 15f : 1 - (projectile.timeLeft - 15) / 15f;
 
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, thisColor * progress * 0.7f, 0, tex.Size() / 2, 0.4f, 0, 0);

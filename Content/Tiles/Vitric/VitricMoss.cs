@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D moss = GetTexture("StarlightRiver/Tiles/Vitric/Blocks/VitricMoss_Glow");
+            Texture2D moss = GetTexture("StarlightRiver/Assets/Tiles/Vitric/Blocks/VitricMoss_Glow");
             Tile t = Main.tile[i, j];
             Color col = Lighting.GetColor(i, j);
             Color realCol = new Color(((col.R / 255f) * 1.4f) + 0.1f, ((col.G / 255f) * 1.4f) + 0.1f, ((col.B / 255f) * 1.4f) + 0.1f);

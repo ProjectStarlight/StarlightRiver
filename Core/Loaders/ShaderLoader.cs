@@ -19,11 +19,13 @@ namespace StarlightRiver.Core.Loaders
             MethodInfo info = typeof(Mod).GetProperty("File").GetGetMethod(true);
             var file = (TmodFile)info.Invoke(StarlightRiver.Instance, null);
 
-            var shaders = file.Where(n => n.Name.EndsWith(".xnb"));
+            var shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));
 
             foreach (FileEntry entry in shaders)
             {
-                LoadShader(entry.Name.Replace(".xnb", ""), "Effects/" + entry.Name.Replace(".xnb", ""));
+                var name = entry.Name.Replace(".xnb", "").Replace("Effects/", "");
+                var path = entry.Name.Replace(".xnb", "");
+                LoadShader(name, path);
             }
         }
 

@@ -130,7 +130,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Player player = Main.player[projectile.owner];
                 for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(player.Center, projectile.Center) / 16))
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/ShakerChain"), Vector2.Lerp(projectile.Center, player.Center, k) - Main.screenPosition,
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"), Vector2.Lerp(projectile.Center, player.Center, k) - Main.screenPosition,
                         new Rectangle(0, 0, 8, 16), lightColor, (projectile.Center - player.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
                 }
             }
@@ -143,13 +143,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 float colormult = projectile.ai[0] / 100f * 0.7f;
                 float scale = 1.2f - projectile.ai[0] / 100f * 0.5f;
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * colormult, 0, tex.Size() / 2, scale, 0, 0);
             }
 
             if (projectile.ai[0] == 100)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);

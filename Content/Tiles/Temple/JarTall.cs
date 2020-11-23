@@ -28,8 +28,8 @@ namespace StarlightRiver.Tiles.Temple
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Temple/JarTallGlow");
-                Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Temple/JarTallGlow2");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Temple/JarTallGlow");
+                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/Temple/JarTallGlow2");
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive);
@@ -59,7 +59,7 @@ namespace StarlightRiver.Tiles.Temple
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), Color.OrangeRed * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
         }
     }

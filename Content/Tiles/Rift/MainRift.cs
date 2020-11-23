@@ -34,7 +34,7 @@ namespace StarlightRiver.Tiles.Rift
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D riftTex = ModContent.GetTexture("StarlightRiver/Tiles/Rift/Rift");
+            Texture2D riftTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Rift/Rift");
             Color color = new Color(50, 10, 120);
 
             spriteBatch.Draw(riftTex, (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 4 - Main.screenPosition, riftTex.Frame(), color * 0.4f, 0, riftTex.Size() / 2,
@@ -257,8 +257,8 @@ namespace StarlightRiver.Tiles.Rift
                 spriteBatch.End();
                 spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
 
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/RiftCrafting/Glow0");
-                Texture2D tex2 = ModContent.GetTexture("StarlightRiver/RiftCrafting/Glow1");
+                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
+                Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
                 Color color = new Color(220 + (int)(Math.Sin(LegendWorld.rottime * 3) * 25), 140, 255) * 0.5f;
                 float baseScale = item.Hitbox.Size().Length() / tex.Frame().Size().Length() * 3;
 

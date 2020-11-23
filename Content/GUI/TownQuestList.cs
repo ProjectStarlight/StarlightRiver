@@ -43,7 +43,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = new Vector2(Main.screenWidth / 2 + 10, Main.screenHeight * 0.3f);
-            Texture2D panel = GetTexture("StarlightRiver/GUI/Assets/TownQuestPanel");
+            Texture2D panel = GetTexture("StarlightRiver/Assets/GUI/Assets/TownQuestPanel");
 
             spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
             if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Main.fontDeathText, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
@@ -117,8 +117,8 @@ namespace StarlightRiver.GUI
             TownQuestList parent = Parent.Parent.Parent as TownQuestList;
             Vector2 pos = GetDimensions().ToRectangle().Center();
 
-            Texture2D back = GetTexture("StarlightRiver/GUI/Assets/TownQuestBack");
-            Texture2D check = GetTexture("StarlightRiver/GUI/Assets/QuestCheck");
+            Texture2D back = GetTexture("StarlightRiver/Assets/GUI/Assets/TownQuestBack");
+            Texture2D check = GetTexture("StarlightRiver/Assets/GUI/Assets/QuestCheck");
 
             spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : (IsMouseHovering ? 0.7f : 0.5f)), 0, back.Size() / 2, 1, 0, 0);
             Utils.DrawBorderString(spriteBatch, quest._questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
@@ -145,7 +145,7 @@ namespace StarlightRiver.GUI
             if (Quest != null && !Quest.Unlocked)
             {
                 Vector2 pos = GetDimensions().ToRectangle().Center();
-                Texture2D back = GetTexture("StarlightRiver/GUI/Assets/NPCButton");
+                Texture2D back = GetTexture("StarlightRiver/Assets/GUI/Assets/NPCButton");
 
                 spriteBatch.Draw(back, pos, back.Frame(), Color.White * (IsMouseHovering ? 1 : 0.7f), 0, back.Size() / 2, 1, 0, 0);
                 Utils.DrawBorderString(spriteBatch, "Submit", pos, Color.White, 0.7f, 0.5f, 0.4f);

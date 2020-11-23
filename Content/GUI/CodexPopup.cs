@@ -22,7 +22,7 @@ namespace StarlightRiver.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             CodexHandler mp = Main.LocalPlayer.GetModPlayer<CodexHandler>();
-            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/GUI/Assets/Book1Closed") : GetTexture("StarlightRiver/GUI/Assets/Book2Closed");
+            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Assets/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Assets/Book2Closed");
             string str = "New Entry: " + Text;
             float xOff = Main.screenWidth / 2 - Main.fontDeathText.MeasureString(str).X / 4;
 

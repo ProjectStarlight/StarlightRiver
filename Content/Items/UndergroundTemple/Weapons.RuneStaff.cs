@@ -129,7 +129,7 @@ namespace StarlightRiver.Items.Temple.DashLocked
         {
             int time = 600 - projectile.timeLeft;
             float colorOff = time < 20 ? time / 20f : 1;
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
             if (projectile.ai[0] == 1)
             {

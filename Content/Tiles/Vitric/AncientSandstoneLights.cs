@@ -42,8 +42,8 @@ namespace StarlightRiver.Tiles.Vitric
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
-            Texture2D tex = GetTexture("StarlightRiver/RiftCrafting/Glow0");
-            Texture2D tex2 = GetTexture("StarlightRiver/RiftCrafting/Glow1");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive);

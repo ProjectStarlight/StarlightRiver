@@ -31,7 +31,7 @@ namespace StarlightRiver.Items.CursedAccessories
             particle.Timer--;
         }
 
-        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/GUI/Assets/Dark", UpdateCursed);
+        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/Dark", UpdateCursed);
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {

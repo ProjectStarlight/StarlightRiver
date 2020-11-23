@@ -46,23 +46,23 @@ namespace StarlightRiver.Content.CustomHooks
             Rectangle box = new Rectangle((int)(origin + new Vector2(86, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
             Rectangle box2 = new Rectangle((int)(origin + new Vector2(172, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
 
-            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/box"), box, Color.White); //Stamina box
-            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/box"), box2, Color.White); //Codex box
+            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/box"), box, Color.White); //Stamina box
+            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/box"), box2, Color.White); //Codex box
 
             if (mp.AnyUnlocked)//Draw stamina if any unlocked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/Stamina"), origin + new Vector2(91, 68), Color.White);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina"), origin + new Vector2(91, 68), Color.White);
                 Utils.DrawBorderString(spriteBatch, playerStamina + " SP", origin + new Vector2(118, 68), Color.White);
             }
             else//Myserious if locked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/Stamina3"), origin + new Vector2(91, 68), Color.White);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina3"), origin + new Vector2(91, 68), Color.White);
                 Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(118, 68), Color.White);
             }
 
             if (mp2.CodexState != 0)//Draw codex percentage if unlocked
             {
-                var bookTex = mp2.CodexState == 2 ? ("StarlightRiver/GUI/Assets/Book2Closed") : ("StarlightRiver/GUI/Assets/Book1Closed");
+                var bookTex = mp2.CodexState == 2 ? ("StarlightRiver/Assets/GUI/Book2Closed") : ("StarlightRiver/Assets/GUI/Book1Closed");
                 var drawTex = ModContent.GetTexture(bookTex);
                 int percent = (int)(mp2.Entries.Count(n => !n.Locked) / (float)mp2.Entries.Count * 100f);
                 spriteBatch.Draw(drawTex, origin + new Vector2(178, 60), Color.White);
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
             else//Mysterious if locked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/GUI/Assets/BookLocked"), origin + new Vector2(178, 60), Color.White * 0.4f);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/BookLocked"), origin + new Vector2(178, 60), Color.White * 0.4f);
                 Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(212, 68), Color.White);
             }
 

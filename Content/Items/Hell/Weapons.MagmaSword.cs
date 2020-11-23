@@ -55,8 +55,8 @@ namespace StarlightRiver.Items.Hell
 
             if (player.itemAnimation != 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Items/Hell/MagmaSwordHilt");
-                Texture2D tex2 = GetTexture("StarlightRiver/Items/Hell/MagmaSwordGlow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Hell/MagmaSwordHilt");
+                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Hell/MagmaSwordGlow");
                 Rectangle frame = new Rectangle(0, 0, 50, 50);
                 Color color = Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16);
                 Vector2 origin = new Vector2(player.direction == 1 ? 0 : frame.Width, frame.Height);
@@ -118,7 +118,7 @@ namespace StarlightRiver.Items.Hell
                 Color color = new Color(255, 175 + (int)(Math.Sin(StarlightWorld.rottime * 5 + (k / 2)) * 50), 50) * ((float)(projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.4f);
                 float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / projectile.oldPos.Length;
                 Texture2D tex = GetTexture(Texture);
-                Texture2D tex2 = GetTexture("StarlightRiver/Keys/Glow");
+                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                 spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
                 spriteBatch.Draw(tex2, projectile.oldPos[k] + projectile.Size - Main.screenPosition, null, Color.White, 0, tex2.Size() / 2, scale * 0.3f, default, default);
@@ -171,7 +171,7 @@ namespace StarlightRiver.Items.Hell
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             Color color = new Color(255, 100, 50) * 0.3f * (projectile.timeLeft / 180f);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (projectile.timeLeft / 180f), 0, 0);
         }

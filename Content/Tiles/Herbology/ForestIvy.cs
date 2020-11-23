@@ -48,7 +48,7 @@ namespace StarlightRiver.Tiles.Herbology
             tile.frameY = (short)(i % 3 * 18);
 
             Vector2 drawPos = (new Vector2(i, j) + Helper.TileAdj) * 16 + new Vector2(4, 20) - Main.screenPosition;
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Herbology/ForestIvyWild");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Herbology/ForestIvyWild");
 
             spriteBatch.Draw(tex, drawPos, new Rectangle(tile.frameX, tile.frameY, 16, 16), drawColor,
                 (float)Math.Sin(StarlightWorld.rottime + i % 6.28f) * 0.2f, new Vector2(8, 16), 1, SpriteEffects.FlipHorizontally, 0);

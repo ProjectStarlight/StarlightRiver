@@ -102,12 +102,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         }
 
-        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/glow");
-        private Texture2D GlowingTrail => ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail");
+        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/glow");
+        private Texture2D GlowingTrail => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail");
 
-        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Items/StarwoodBoomerang");
-        //private Texture2D GlowingTexture => ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/StarwoodSlingshotProjectile");
-        //private Texture2D AuraTexture => ModContent.GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Assets/Items/StarwoodBoomerang");
+        //private Texture2D GlowingTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotProjectile");
+        //private Texture2D AuraTexture => ModContent.GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -153,7 +153,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f;
-                Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                 spriteBatch.Draw(tex, (((projectile.oldPos[k] + projectile.Size / 2) + projectile.Center) * 0.50f) - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }

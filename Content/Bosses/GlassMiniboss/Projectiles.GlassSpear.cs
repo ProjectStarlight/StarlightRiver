@@ -62,7 +62,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             if (timer < 60)
             {
                 Color color = Projectiles.WeaponProjectiles.Summons.VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 2, 120)); //TODO, clean up the file this is from later
-                Texture2D tex = GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/VitricSummonJavelin");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/VitricSummonJavelin");
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, color, projectile.rotation, frame.Size() / 2, 1, 0, 0);

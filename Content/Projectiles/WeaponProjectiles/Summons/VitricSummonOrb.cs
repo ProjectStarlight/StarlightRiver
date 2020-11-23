@@ -316,7 +316,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             if (Weapon < 0 || DisabledTime > 0)
                 return false;
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/Summons/" + (WeaponSprite[Weapon]));
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/" + (WeaponSprite[Weapon]));
 
             float scale = Math.Min(AnimationTimer / 15f, 1f);
             Rectangle Rect = WhiteFrame(tex.Size().ToRectangle(), false);

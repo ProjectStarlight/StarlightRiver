@@ -36,7 +36,7 @@ namespace StarlightRiver.Items
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            spriteBatch.Draw(GetTexture("StarlightRiver/GUI/Assets/Stamina"), item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina"), item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
                 rotation, Vector2.One * 11, 0.9f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, 0, 0);
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Permafrost.Tools;
 
 namespace StarlightRiver
 {
@@ -15,8 +16,8 @@ namespace StarlightRiver
 
             List<int> SquidBossCollection = new List<int>();
             List<int> SquidBossLoot = new List<int>();
-            string SquidBossInfo = "Drop Auroracle Bait into the prismatic waters  of the permafrost shrine.";
-            bcl.Call("AddBoss", 2.6f, ModContent.NPCType<NPCs.Boss.SquidBoss.SquidBoss>(), this, "Auroracle", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned)), ModContent.ItemType<Items.Permafrost.SquidBossSpawn>(), SquidBossCollection, SquidBossLoot, SquidBossInfo, null, "StarlightRiver/NPCs/Boss/SquidBoss/BodyPreview");
+            string SquidBossInfo = "Drop Auroracle Bait into the prismatic waters of the permafrost shrine.";
+            bcl.Call("AddBoss", 2.6f, ModContent.NPCType<NPCs.Boss.SquidBoss.SquidBoss>(), this, "Auroracle", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned)), ModContent.ItemType<SquidBossSpawn>(), SquidBossCollection, SquidBossLoot, SquidBossInfo, null, "StarlightRiver/NPCs/Boss/SquidBoss/BodyPreview");
 
             List<int> vitricMiniBossCollection = new List<int>();
             List<int> vitricMiniBossLoot = new List<int>();

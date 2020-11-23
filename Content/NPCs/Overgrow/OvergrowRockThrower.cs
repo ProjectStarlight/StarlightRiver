@@ -123,7 +123,7 @@ namespace StarlightRiver.NPCs.Hostile
                 if (rot % 6.28f > 3.14f && npc.ai[2] >= k + 1)
                 {
                     drawpoints[k] = npc.Center + new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot) / 2) * 35 - Main.screenPosition;
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/OvergrowRockThrowerRock"), drawpoints[k], new Rectangle(0, 0, 18, 18), Color.White, 0, Vector2.One * 8, 1, 0, 0);
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/OvergrowRockThrowerRock"), drawpoints[k], new Rectangle(0, 0, 18, 18), Color.White, 0, Vector2.One * 8, 1, 0, 0);
                 }
             }
             return true;
@@ -137,7 +137,7 @@ namespace StarlightRiver.NPCs.Hostile
                 if (rot % 6.28f < 3.14f && npc.ai[2] >= k + 1)
                 {
                     drawpoints[k] = npc.Center + new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot) / 2) * 35 - Main.screenPosition;
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/OvergrowRockThrowerRock"), drawpoints[k], new Rectangle(0, 0, 18, 18), Color.White, 0, Vector2.One * 8, 1, 0, 0);
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/OvergrowRockThrowerRock"), drawpoints[k], new Rectangle(0, 0, 18, 18), Color.White, 0, Vector2.One * 8, 1, 0, 0);
                 }
             }
         }

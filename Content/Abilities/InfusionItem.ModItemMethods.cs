@@ -19,14 +19,14 @@ namespace StarlightRiver.Abilities
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity, bool glow)
         {
-            Texture2D outlineTex = GetTexture("StarlightRiver/Abilities/Content/Infusions/Tier" + (int)Tier);
+            Texture2D outlineTex = GetTexture("StarlightRiver/Assets/Abilities/Content/Infusions/Tier" + (int)Tier);
             spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, 1, 0, 0);
             Texture2D mainTex = GetTexture(Texture);
             spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, 1, 0, 0);
 
             if (glow)
             {
-                Texture2D glowTex = GetTexture("StarlightRiver/Abilities/Content/Infusions/InfusionGlow");
+                Texture2D glowTex = GetTexture("StarlightRiver/Assets/Abilities/Content/Infusions/InfusionGlow");
                 Color color;
 
                 if (AbilityType == null || Ability == null)

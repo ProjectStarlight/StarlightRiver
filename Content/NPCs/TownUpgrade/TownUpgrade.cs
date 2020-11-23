@@ -26,7 +26,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
             _title = title;
 
             icon = TextureExists("StarlightRiver/NPCs/TownUpgrade/" + npcName + "Icon") ?
-                GetTexture("StarlightRiver/NPCs/TownUpgrade/" + npcName + "Icon") :
+                GetTexture("StarlightRiver/Assets/NPCs/TownUpgrade/" + npcName + "Icon") :
                 Terraria.Main.sunTexture;
         }
 

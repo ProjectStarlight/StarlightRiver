@@ -72,11 +72,11 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var back = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroomBack");
-            var blob0 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom0");
-            var blob1 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom1");
-            var blob2 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom2");
-            var blob3 = GetTexture("StarlightRiver/Tiles/Mushroom/JellyShroom3");
+            var back = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/JellyShroomBack");
+            var blob0 = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom0");
+            var blob1 = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom1");
+            var blob2 = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom2");
+            var blob3 = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom3");
 
             var pos = projectile.position - Main.screenPosition;
 

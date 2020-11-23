@@ -99,10 +99,10 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
-            Texture2D ring = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyRing");
-            Texture2D ringGlow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyRingGlow");
+            Texture2D ring = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyRing");
+            Texture2D ringGlow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyRingGlow");
 
-            Texture2D body = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyUnder");
+            Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyUnder");
 
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
@@ -135,8 +135,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         private void DrawHeadBlobs(SpriteBatch spriteBatch)
         {
-            Texture2D headBlob = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOver");
-            Texture2D headBlobGlow = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/BodyOverGlow");
+            Texture2D headBlob = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyOver");
+            Texture2D headBlobGlow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyOverGlow");
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {

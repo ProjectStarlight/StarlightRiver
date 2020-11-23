@@ -56,7 +56,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             if (projectile.ai[0] > 90)
             {
-                Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/BossSpike");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/BossSpike");
 
                 for (int k = 0; k < 4; k++)
                 {

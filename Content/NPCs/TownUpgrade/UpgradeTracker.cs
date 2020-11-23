@@ -14,7 +14,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
         {
             if (npc.townNPC && StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool upgraded) && upgraded)
             {
-                Texture2D tex = GetTexture("StarlightRiver/NPCs/TownUpgrade/" + npc.TypeName + "Upgraded");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/TownUpgrade/" + npc.TypeName + "Upgraded");
                 Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY - 4);
 
                 spriteBatch.Draw(tex, pos, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, npc.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);

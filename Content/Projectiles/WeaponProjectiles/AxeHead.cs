@@ -38,7 +38,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Rectangle? sourceRectangle = null;
-            Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/AxeHead"), Main.player[projectile.owner].Center - Main.screenPosition, sourceRectangle, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/AxeHead"), Main.player[projectile.owner].Center - Main.screenPosition, sourceRectangle, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -46,7 +46,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             if (projectile.ai[0] >= 60)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);

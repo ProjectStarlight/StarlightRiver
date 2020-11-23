@@ -10,7 +10,7 @@ namespace StarlightRiver.Items.CursedAccessories
 {
     internal class AnthemDagger : CursedAccessory
     {
-        public AnthemDagger() : base(GetTexture("StarlightRiver/Items/CursedAccessories/AnthemDaggerGlow")) { }
+        public AnthemDagger() : base(GetTexture("StarlightRiver/Assets/Items/CursedAccessories/AnthemDaggerGlow")) { }
 
         public override void SetStaticDefaults()
         {

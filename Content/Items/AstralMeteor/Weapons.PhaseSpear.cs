@@ -64,8 +64,8 @@ namespace StarlightRiver.Items.Aluminum
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Items/Aluminum/PhasespearGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/Items/Aluminum/PhasespearGlow2");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearGlow");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearGlow2");
 
             spriteBatch.Draw(tex2, position, frame, Color.White, 0, origin, scale, 0, 0);
             spriteBatch.Draw(tex, position, frame, glowColor, 0, origin, scale, 0, 0);
@@ -73,8 +73,8 @@ namespace StarlightRiver.Items.Aluminum
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Items/Aluminum/PhasespearGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/Items/Aluminum/PhasespearGlow2");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearGlow");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearGlow2");
 
             spriteBatch.Draw(tex2, item.Center + Vector2.UnitY * -7 - Main.screenPosition, tex.Frame(), Color.White, rotation, tex2.Size() / 2, 1, 0, 0);
             spriteBatch.Draw(tex, item.Center + Vector2.UnitY * -7 - Main.screenPosition, tex.Frame(), glowColor, rotation, tex.Size() / 2, 1, 0, 0);
@@ -96,8 +96,8 @@ namespace StarlightRiver.Items.Aluminum
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Items/Aluminum/PhasespearProjectileGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/Items/Aluminum/PhasespearProjectileGlow2");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearProjectileGlow");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Aluminum/PhasespearProjectileGlow2");
 
             spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), Color.White, projectile.rotation, Vector2.Zero, 1, 0, 0);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), glowColor, projectile.rotation, Vector2.Zero, 1, 0, 0);

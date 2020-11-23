@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Vector2 pos = projectile.position - Main.screenPosition;
-            Texture2D tex1 = GetTexture("StarlightRiver/Tiles/Overgrow/PitCover");
+            Texture2D tex1 = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/PitCover");
 
             spriteBatch.Draw(tex1, pos + new Vector2(88 + projectile.ai[0], 0), tex1.Frame(), lightColor);
             spriteBatch.Draw(tex1, pos + new Vector2(-projectile.ai[0], 0), tex1.Frame(), lightColor, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Vector2 pos = projectile.position - Main.screenPosition;
-            Texture2D tex0 = GetTexture("StarlightRiver/Tiles/Overgrow/PitGlowBig");
+            Texture2D tex0 = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/PitGlowBig");
             Rectangle rect = new Rectangle((int)pos.X + 88 - (int)projectile.ai[0], (int)pos.Y - 52, (int)projectile.ai[0] * 2, 116);
 
             spriteBatch.Draw(tex0, rect, tex0.Frame(), new Color(255, 255, 120) * (projectile.ai[0] / 88f));

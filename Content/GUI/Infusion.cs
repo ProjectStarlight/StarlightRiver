@@ -30,7 +30,7 @@ namespace StarlightRiver.GUI
 
         public override void OnInitialize()
         {
-            // "StarlightRiver/GUI/Assets/Infusions" is 64x58
+            // "StarlightRiver/Assets/GUI/Infusions" is 64x58
             // The texture is centered at 100, 300 so its top-left is 68, 272
             // The top slot's top-left corner is at 20, 4 on the texture
             // So the top-left slot should be positioned at 88, 276 in screenspace. (Add top-left of texture and top-left corner of top slot)
@@ -60,7 +60,7 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture = GetTexture("StarlightRiver/GUI/Assets/Infusions");
+            Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Assets/Infusions");
             spriteBatch.Draw(texture, new Vector2(68, 272), Color.White);
 
             base.Draw(spriteBatch);
@@ -88,7 +88,7 @@ namespace StarlightRiver.GUI
 
             if (!Unlocked) //draw a lock instead for locked slots
             {
-                Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/InfusionLock");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/InfusionLock");
                 spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
             }
 

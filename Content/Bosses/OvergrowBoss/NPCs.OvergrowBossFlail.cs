@@ -78,7 +78,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                 if (npc.ai[1] == 80) //some things need to be on a delay
                 {
                     npc.ai[2] = 0; //no longer zapped!
-                    foreach (Projectile proj in Main.projectile.Where(p => p.type == ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>())) proj.ai[1] = 2; //closes the pits
+                    //foreach (Projectile proj in Main.projectile.Where(p => p.type == ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>())) proj.ai[1] = 2; //closes the pits
                 }
             }
 
@@ -146,7 +146,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                         pos += Vector2.Normalize(npc.Center - parent.npc.Center).RotatedBy(1.58f) * (float)Math.Sin(StarlightWorld.rottime + k * 20) * 10;
                     }
 
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/ShakerChain"), pos,
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"), pos,
                         new Rectangle(0, 0, 8, 16), drawColor, (npc.Center - parent.npc.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
                 }
             }
@@ -169,7 +169,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                 {
                     Color color = new Color(255, 255, 200) * 0.3f;
                     float scale = npc.scale * (float)(npc.oldPos.Length - k) / npc.oldPos.Length * 1.1f;
-                    Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+                    Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                     spriteBatch.Draw(tex, npc.oldPos[k] + npc.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
                 }

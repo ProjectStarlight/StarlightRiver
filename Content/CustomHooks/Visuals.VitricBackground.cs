@@ -18,8 +18,8 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            ForegroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/LightBig", UpdateForegroundBody, 3);
-            BackgroundParticles = new ParticleSystem("StarlightRiver/GUI/Assets/Holy", UpdateBackgroundBody, 1);
+            ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/LightBig", UpdateForegroundBody, 3);
+            BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, 1);
 
             crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
 
@@ -130,10 +130,10 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
-                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass5"), 0, 300); //the background
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass5"), 0, 300); //the background
 
-                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
-                DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass1"), 6, 170, new Color(150, 175, 190)); //the back sand
+                DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass1"), 6.5f, 400, new Color(120, 150, 170), true); //the back sand on top
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -152,9 +152,9 @@ namespace StarlightRiver.Content.CustomHooks
                     int off = 140 + (440 - k * 110);
                     if (k == 4) off = 400;
 
-                    DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
+                    DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
 
-                    if (k == 0) DrawLayer(basepoint, GetTexture("StarlightRiver/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
+                    if (k == 0) DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
                     if (k == 2) ForegroundParticles.DrawParticles(Main.spriteBatch);
                 }
 

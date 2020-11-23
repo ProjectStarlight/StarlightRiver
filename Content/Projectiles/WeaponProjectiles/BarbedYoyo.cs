@@ -74,7 +74,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Player player = Main.player[projectile.owner];
-            Texture2D tex = GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/BarbedYoyoChain");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/BarbedYoyoChain");
 
             if (targets.Count == 0) DrawBetween(spriteBatch, tex, player.Center, projectile.Center, lightColor);
             else

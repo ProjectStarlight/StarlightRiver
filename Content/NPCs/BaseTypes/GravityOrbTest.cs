@@ -59,7 +59,7 @@ namespace StarlightRiver.NPCs
             {
                 float time = ((Main.GameUpdateCount + (k / (6 / 4f) * 200)) / 200f);
 
-                var tex = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+                var tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 float rad = (radius + attract) * 2 / (float)tex.Width;
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
             }

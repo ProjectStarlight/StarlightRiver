@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class OvergrowForeground : Foreground
     {
-        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/GUI/Assets/HolyBig", UpdateOvergrowWells);
+        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
 
         private void UpdateOvergrowWells(Particle particle)
         {

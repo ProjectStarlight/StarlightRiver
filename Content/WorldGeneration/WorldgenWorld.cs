@@ -31,10 +31,6 @@ namespace StarlightRiver.Core
                 tasks.Insert(DesertIndex + 7, new PassLegacy("Starlight River Vines", VineGen));
 
                 tasks.Insert(ShiniesIndex + 1, new PassLegacy("Starlight River Ores", EbonyGen));
-                //tasks.Insert(ShiniesIndex + 2, new PassLegacy("Starlight River Caves", DolomiteGen));
-                tasks.Insert(HellIndex + 1, new PassLegacy("Starlight River Void Altar", GenHelper.VoidAltarGen));
-
-                //tasks.Insert(TrapsIndex + 1, new PassLegacy("Starlight Traps", GenHelper.BoulderSlope));
 
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Ruins", GenHelper.RuinsGen));
                 tasks.Insert(SurfaceIndex + 2, new PassLegacy("Starlight River Ivy", ForestHerbGen));

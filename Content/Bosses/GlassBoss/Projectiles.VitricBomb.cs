@@ -30,13 +30,13 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/VitricBombGlow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/VitricBombGlow");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex2 = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/BombTell");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/BombTell");
 
             float bright = ((300 - projectile.timeLeft) / 300f * 0.9f);
             if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.1f;

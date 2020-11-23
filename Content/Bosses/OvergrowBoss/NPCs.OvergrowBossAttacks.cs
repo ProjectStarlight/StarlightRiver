@@ -192,7 +192,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
         {
             float glow = AttackTimer > 90 ? (1 - (AttackTimer - 90) / 30f) : ((AttackTimer - 60) / 30f);
             Color color = new Color(255, 70, 70) * glow;
-            Texture2D tex = GetTexture("StarlightRiver/Gores/TellBeam");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
             sb.End();
             sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
             for (float k = 0; 1 == 1; k++)
@@ -241,7 +241,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
         {
             float glow = AttackTimer > 45 ? (1 - (AttackTimer - 45) / 45f) : ((AttackTimer) / 45f);
             Color color = new Color(255, 40, 40) * glow;
-            Texture2D tex = GetTexture("StarlightRiver/Gores/TellCircle");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellCircle");
 
             if (AttackTimer <= 90) sb.Draw(tex, targetPoint - Main.screenPosition, tex.Frame(), color, 0, tex.Frame().Size() / 2, 2, 0, 0);
             else if (AttackTimer <= 100) sb.Draw(tex, targetPoint - Main.screenPosition, tex.Frame(), new Color(255, 200, 30) * (1 - (AttackTimer - 90) / 10f), 0, tex.Frame().Size() / 2, 2, 0, 0);
@@ -328,7 +328,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
         {
             float glow = AttackTimer < 15 ? (AttackTimer) / 15f : (1 - (AttackTimer - 15) / 15f);
             Color color = new Color(255, 70, 70) * glow;
-            Texture2D tex = GetTexture("StarlightRiver/Gores/TellBeam");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
 
             sb.End();
             sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

@@ -41,8 +41,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/AuroralingGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/NPCs/Boss/SquidBoss/AuroralingGlow2");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/AuroralingGlow");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/AuroralingGlow2");
 
             float sin = 1 + (float)Math.Sin(npc.ai[0] / 10f);
             float cos = 1 + (float)Math.Cos(npc.ai[0] / 10f);

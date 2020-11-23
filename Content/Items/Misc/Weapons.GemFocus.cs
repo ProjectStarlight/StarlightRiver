@@ -49,9 +49,9 @@ namespace StarlightRiver.Items.Misc
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
-            Texture2D over = GetTexture("StarlightRiver/Items/Misc/GemFocusOver");
-            Texture2D under = GetTexture("StarlightRiver/Items/Misc/GemFocusUnder");
-            Texture2D glow = GetTexture("StarlightRiver/RiftCrafting/Glow0");
+            Texture2D over = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusOver");
+            Texture2D under = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusUnder");
+            Texture2D glow = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
 
             spriteBatch.Draw(under, position + frame.Size() / 2 * scale, under.Frame(), Color.White, 0, under.Size() / 2, scale, 0, 0);
 
@@ -73,9 +73,9 @@ namespace StarlightRiver.Items.Misc
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Texture2D over = GetTexture("StarlightRiver/Items/Misc/GemFocusOver");
-            Texture2D under = GetTexture("StarlightRiver/Items/Misc/GemFocusUnder");
-            Texture2D glow = GetTexture("StarlightRiver/RiftCrafting/Glow0");
+            Texture2D over = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusOver");
+            Texture2D under = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusUnder");
+            Texture2D glow = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
 
             Vector2 position = item.position - Main.screenPosition;
             Rectangle frame = item.Hitbox;

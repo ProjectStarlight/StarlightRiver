@@ -56,7 +56,7 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Interactive/BouncerGlow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow");
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
         }

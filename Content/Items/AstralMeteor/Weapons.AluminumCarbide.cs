@@ -133,7 +133,7 @@ namespace StarlightRiver.Items.Aluminum
                 Color color = new Color(130, 220, 255) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.2f * projectile.scale;
 
-                Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                 Vector2 off = Vector2.Normalize(projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(-StarlightWorld.rottime * 9 + (k * 0.5f)) * (k * 0.12f);
                 spriteBatch.Draw(tex, projectile.oldPos[k] + off + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);

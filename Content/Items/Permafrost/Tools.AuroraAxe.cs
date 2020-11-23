@@ -113,8 +113,8 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
 
             if (charge > 0 && charged)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Items/Permafrost/AuroraAxeOut");
-                Texture2D tex2 = GetTexture("StarlightRiver/Items/Permafrost/AuroraAxeOutGlow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOut");
+                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOutGlow");
 
                 DrawData data = new DrawData(tex, player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), 0, tex.Size() / 2, 1, info.spriteEffects, 0);
                 DrawData data2 = new DrawData(tex2, player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY), null, color * charge * 0.5f, 0, tex.Size() / 2, 1, info.spriteEffects, 0);
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             float progress = projectile.timeLeft < 120 ? projectile.timeLeft / 120f : 1 - (projectile.timeLeft - 120) / 120f;
 
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, thisColor * progress * 0.7f, 0, tex.Size() / 2, 0.1f, 0, 0);

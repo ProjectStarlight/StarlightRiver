@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.JungleCorrupt
+namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
     internal class TreeJungleCorrupt : ModTree
     {

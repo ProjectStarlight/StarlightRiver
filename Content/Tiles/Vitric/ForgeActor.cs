@@ -25,7 +25,7 @@ namespace StarlightRiver.Tiles.Vitric
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Vector2 pos = (new Vector2(i + 3, j + 3) + Helper.TileAdj) * 16 + new Vector2(-464, -336) - Main.screenPosition;
-            Texture2D backdrop = GetTexture("StarlightRiver/NPCs/Miniboss/Glassweaver/Backdrop");
+            Texture2D backdrop = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/Backdrop");
 
             spriteBatch.Draw(backdrop, pos, Color.White);
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.Tiles.Vitric
             {
                 Vector2 forgeOff1 = new Vector2(36, 324);
                 Vector2 forgeOff2 = new Vector2(736, 324);
-                var tex = GetTexture("StarlightRiver/NPCs/Miniboss/Glassweaver/Forge");
+                var tex = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/Forge");
 
                 spriteBatch.Draw(tex, pos + forgeOff1, Color.White);
                 spriteBatch.Draw(tex, pos + forgeOff2, Color.White);

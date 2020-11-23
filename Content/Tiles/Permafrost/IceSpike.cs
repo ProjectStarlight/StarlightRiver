@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             Color color = new Color(100 * (1 + sin) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
             spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.35f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/IceSpikeGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.1f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/IceSpikeGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.1f);
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.2f);
         }
     }

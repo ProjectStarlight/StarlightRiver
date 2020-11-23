@@ -52,7 +52,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (proj != null)
             {
                 Vector2 target = Vector2.Lerp(projectile.Center, proj.Center, 0.5f) - Main.screenPosition;
-                spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/WhipSegment1"), new Rectangle((int)target.X, (int)target.Y, 16, 12), new Rectangle(0, 0, 16, 12),
+                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/WhipSegment1"), new Rectangle((int)target.X, (int)target.Y, 16, 12), new Rectangle(0, 0, 16, 12),
                     Lighting.GetColor((int)projectile.position.X / 16, (int)projectile.position.Y / 16), projectile.rotation, new Vector2(8, 6), 0, 0);
             }
             return true;

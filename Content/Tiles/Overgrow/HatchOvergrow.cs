@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Vector2 pos = projectile.Center - Main.screenPosition;
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Shine");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Shine");
             Color col = new Color(160, 160, 120);
 
             for (int k = 0; k <= 5; k++)
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Vector2 pos = projectile.Center + new Vector2(24, -32) - Main.screenPosition;
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/Shine");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Shine");
             Color col = new Color(160, 160, 120);
 
             for (int k = 0; k <= 5; k++)

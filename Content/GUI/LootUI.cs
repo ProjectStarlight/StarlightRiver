@@ -53,7 +53,7 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/GUI/Assets/LootSlotOn");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/LootSlotOn");
 
             Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) - 2.2f * Main.fontItemStack.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.75f);
 
@@ -141,7 +141,7 @@ namespace StarlightRiver.GUI
             if (Parent is LootUI)
             {
                 LootUI parent = Parent as LootUI;
-                Texture2D tex = parent.Selections.Any(n => n == Item) ? GetTexture("StarlightRiver/GUI/Assets/LootSlotOn") : GetTexture("StarlightRiver/GUI/Assets/LootSlot");
+                Texture2D tex = parent.Selections.Any(n => n == Item) ? GetTexture("StarlightRiver/Assets/GUI/Assets/LootSlotOn") : GetTexture("StarlightRiver/Assets/GUI/Assets/LootSlot");
                 float opacity = IsMouseHovering ? 1 : 0.6f;
 
                 spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, 0, 0);

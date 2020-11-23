@@ -30,18 +30,18 @@ namespace StarlightRiver.Items.CursedAccessories
 
             if (Main.rand.Next(4) == 0)
             {
-                BootlegDust dus = new BlessDust(ModContent.GetTexture("StarlightRiver/GUI/Assets/Holy"), position + new Vector2(Main.rand.Next(0, frame.Width - 4), Main.rand.Next(0, frame.Height - 4)), new Vector2(0, 0.1f), Color.White * 0.1f, 1.5f, 120);
+                BootlegDust dus = new BlessDust(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Holy"), position + new Vector2(Main.rand.Next(0, frame.Width - 4), Main.rand.Next(0, frame.Height - 4)), new Vector2(0, 0.1f), Color.White * 0.1f, 1.5f, 120);
                 Bootlegdust.Add(dus);
             }
 
-            BootlegDust dus2 = new BlessDust2(ModContent.GetTexture("StarlightRiver/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + Vector2.One.RotatedBy(LegendWorld.rottime) * 13, Vector2.Zero, Color.White * 1f, 0.8f, 60);
+            BootlegDust dus2 = new BlessDust2(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + Vector2.One.RotatedBy(LegendWorld.rottime) * 13, Vector2.Zero, Color.White * 1f, 0.8f, 60);
             //Bootlegdust.Add(dus2);
 
-            BootlegDust dus3 = new BlessDust2(ModContent.GetTexture("StarlightRiver/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + new Vector2((float)Math.Cos(LegendWorld.rottime) / 2, (float)Math.Sin(LegendWorld.rottime)) * 16, Vector2.Zero, Color.White * 1f, 0.8f, 60);
+            BootlegDust dus3 = new BlessDust2(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + new Vector2((float)Math.Cos(LegendWorld.rottime) / 2, (float)Math.Sin(LegendWorld.rottime)) * 16, Vector2.Zero, Color.White * 1f, 0.8f, 60);
             if (LegendWorld.rottime > 3.14 / 2 && LegendWorld.rottime < 3.14 * 3 / 2) { Bootlegdust.Add(dus3); }
             else { Bootlegdust2.Add(dus3); }
 
-            BootlegDust dus4 = new BlessDust2(ModContent.GetTexture("StarlightRiver/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + new Vector2((float)Math.Cos(LegendWorld.rottime), (float)Math.Sin(LegendWorld.rottime) / 2) * 16, Vector2.Zero, Color.White * 1f, 0.8f, 60);
+            BootlegDust dus4 = new BlessDust2(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Holy"), position + new Vector2(-0.4f, -0.4f) + Vector2.One * frame.Width / 2 * scale + new Vector2((float)Math.Cos(LegendWorld.rottime), (float)Math.Sin(LegendWorld.rottime) / 2) * 16, Vector2.Zero, Color.White * 1f, 0.8f, 60);
             if (LegendWorld.rottime > 3.14) { Bootlegdust.Add(dus4); }
             else { Bootlegdust2.Add(dus4); }
             */
@@ -60,7 +60,7 @@ namespace StarlightRiver.Items.CursedAccessories
             Main.PlaySound(SoundID.Item30);
             for (int k = 0; k <= 175; k++)
             {
-                //BootlegDust dus = new BlessDust2(ModContent.GetTexture("StarlightRiver/GUI/Assets/Holy"), drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 0.5f), Color.White * 0.2f, 3.8f, 180);
+                //BootlegDust dus = new BlessDust2(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Holy"), drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 0.5f), Color.White * 0.2f, 3.8f, 180);
                 //Bootlegdust.Add(dus);
             }
             return true;

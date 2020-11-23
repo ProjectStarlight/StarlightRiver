@@ -22,7 +22,7 @@ namespace StarlightRiver.GUI
         private int Timer = 0;
         private bool used = false;
         private float textScale = 1;
-        private string texturePath = "StarlightRiver/GUI/Assets/DefaultCard";
+        private string texturePath = "StarlightRiver/Assets/GUI/DefaultCard";
         private bool reverse = false;
 
         private int tempTime = 0;
@@ -58,7 +58,7 @@ namespace StarlightRiver.GUI
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.AlphaBlend);
 
-            spriteBatch.Draw(GetTexture("StarlightRiver/Keys/Glow"), new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Keys/Glow"), new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
 
             spriteBatch.End();
             spriteBatch.Begin();
@@ -103,7 +103,7 @@ namespace StarlightRiver.GUI
             Visible = false;
             textScale = 1;
             Thisability = null;
-            SetTexture("StarlightRiver/GUI/Assets/DefaultCard");
+            SetTexture("StarlightRiver/Assets/GUI/DefaultCard");
         }
     }
 }

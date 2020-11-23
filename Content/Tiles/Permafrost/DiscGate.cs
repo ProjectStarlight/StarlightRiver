@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = GetTexture("StarlightRiver/Tiles/Permafrost/DiscHole");
+            var tex = GetTexture("StarlightRiver/Assets/Tiles/Permafrost/DiscHole");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16), 0, tex.Size() / 2, 1, 0, 0);
         }
 

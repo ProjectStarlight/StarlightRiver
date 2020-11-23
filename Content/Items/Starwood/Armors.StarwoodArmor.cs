@@ -7,13 +7,14 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Starwood.Armors;
 
 namespace StarlightRiver.Content.Items.Starwood.Armors
 {
     [AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable
     {
-        public StarwoodHat() : base(GetTexture("StarlightRiver/Items/Armor/Starwood/StarwoodHat_Alt")) { }
+        public StarwoodHat() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodHat_Alt")) { }
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Hat");
@@ -35,10 +36,10 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat 
         {
             Color color = Lighting.GetColor((int)info.position.X / 16, (int)info.position.Y / 16);
-            ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat_Worn", color, 1, new Vector2(10, 4));
+            ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Assets/Items/Starwood/StarwoodHat_Worn", color, 1, new Vector2(10, 4));
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
             {
-                ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Items/Armor/Starwood/StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
+                ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Assets/Items/Starwood/StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
             }
         }
     }
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
     [AutoloadEquip(EquipType.Body)]
     public class StarwoodChest : StarwoodItem
     {
-        public StarwoodChest() : base(GetTexture("StarlightRiver/Items/Armor/Starwood/StarwoodChest_Alt")) { }
+        public StarwoodChest() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodChest_Alt")) { }
         public override bool Autoload(ref string name)//adds method to Starlight player event
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHitNPCStarwood;
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Items.Starwood.Armors
     [AutoloadEquip(EquipType.Legs)]
     public class StarwoodBoots : StarwoodItem
     {
-        public StarwoodBoots() : base(GetTexture("StarlightRiver/Items/Armor/Starwood/StarwoodBoots_Alt")) { }
+        public StarwoodBoots() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodBoots_Alt")) { }
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Leggings");
@@ -162,7 +163,7 @@ namespace StarlightRiver.Core
 
         public void StartStarwoodEmpowerment()
         {
-            if (player.armor[1].modItem is StarwoodChest && Items.Armor.ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
+            if (player.armor[1].modItem is StarwoodChest && ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
             {
                 if (!Empowered)
                 {

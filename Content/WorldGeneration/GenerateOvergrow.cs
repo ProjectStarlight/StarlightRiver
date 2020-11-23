@@ -9,6 +9,7 @@ using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Permafrost;
 
 namespace StarlightRiver.Core
 {
@@ -302,7 +303,7 @@ namespace StarlightRiver.Core
 
                     //keeps us from running into blacklisted tiles.
                     if (tile.type == TileID.BlueDungeonBrick || tile.type == TileID.GreenDungeonBrick || tile.type == TileID.PinkDungeonBrick || tile.type == typeBrickOvergrow ||
-                        tile.type == TileID.LihzahrdBrick || tile.type == instance.TileType("VitricSand") || tile.type == TileType<Tiles.Permafrost.PermafrostIce>())
+                        tile.type == TileID.LihzahrdBrick || tile.type == instance.TileType("VitricSand") || tile.type == TileType<PermafrostIce>())
                         return false;
                 }
             }

@@ -235,7 +235,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Projectiles/GlassSpikeGlow");
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/GlassSpikeGlow");
 
             Vector2 offsets = Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
 

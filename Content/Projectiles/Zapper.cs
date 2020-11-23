@@ -96,8 +96,8 @@ namespace StarlightRiver.Content.Projectiles
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Vector2 pos = projectile.position - Main.screenPosition + new Vector2(1, -23);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/ZapperGlow0"), pos, Color.White * (float)Math.Sin(StarlightWorld.rottime));
-            spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/ZapperGlow0"), pos, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
         }
     }
 }

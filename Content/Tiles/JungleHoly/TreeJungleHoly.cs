@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.JungleHoly
+namespace StarlightRiver.Content.Tiles.JungleHoly
 {
     internal class TreeJungleHoly : ModTree
     {

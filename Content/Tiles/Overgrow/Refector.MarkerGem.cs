@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             if (tile.frameX == 20)
             {
                 Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustType<Dusts.Gold2>(), 0, -1);
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Overgrow/MarkerGem");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/MarkerGem");
                 spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16, new Rectangle(20, 0, 16, 16), Color.White);
             }
         }

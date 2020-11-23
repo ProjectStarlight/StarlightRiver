@@ -81,7 +81,7 @@ namespace StarlightRiver.Tiles
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Keys/Glow");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             float sin = 0.5f + (float)(Math.Sin(StarlightWorld.rottime) * 0.5f);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
         }

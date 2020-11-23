@@ -30,7 +30,7 @@ namespace StarlightRiver.Tiles.Vitric
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Tiles/Vitric/SandstoneDoor");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/SandstoneDoor");
                 Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
                 int off = StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 46 : 0;
                 spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawColor, 0, Vector2.Zero, 1, 0, 0);

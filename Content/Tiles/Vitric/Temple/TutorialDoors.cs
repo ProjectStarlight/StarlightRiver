@@ -44,7 +44,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             Player player = Main.LocalPlayer;
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Vitric/Temple/TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
         }
     }
 
@@ -97,8 +97,8 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             Player player = Main.LocalPlayer;
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Vitric/Temple/TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Vitric/Temple/TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
         }
     }
 

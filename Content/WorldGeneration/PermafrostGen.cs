@@ -12,6 +12,8 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Tiles.Permafrost;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Permafrost.Decoration;
+using StarlightRiver.Content.Tiles.Permafrost.VFX;
 
 namespace StarlightRiver.Core
 {
@@ -133,7 +135,7 @@ namespace StarlightRiver.Core
 
                         for (int k = 0; k < WorldGen.genRand.Next(4); k++)
                         {
-                            WorldGen.PlaceTile(x, y - k, TileType<Tiles.Permafrost.Decoration.SnowGrass>());
+                            WorldGen.PlaceTile(x, y - k, TileType<SnowGrass>());
                         }
                     }
                 }
@@ -419,7 +421,7 @@ namespace StarlightRiver.Core
             var under = new Rectangle(circle.position.X - circle.radius - 1, circle.position.Y + 18, circle.radius * 2 + 2, circle.radius - 12);
             if (circle.radius > 22 && !CheckForTunnel(under)) //no tunnels under this circle
             {
-                WorldGen.PlaceTile(circle.position.X - 15, circle.position.Y - 15, TileType<Tiles.Permafrost.VFX.CaveVFX>()); //aurora VFX actor
+                WorldGen.PlaceTile(circle.position.X - 15, circle.position.Y - 15, TileType<CaveVFX>()); //aurora VFX actor
                 Helper.PlaceMultitile(circle.position - new Point16(8, 0), TileType<BigTree>()); //tree
 
                 for (int x = -4; x <= 4; x++) //island under the tree
@@ -549,7 +551,7 @@ namespace StarlightRiver.Core
             var index = WorldGen.genRand.NextBool() ? 0 : sorted.Count - 1;
             var circle = sorted[index];
 
-            WorldGen.PlaceObject(circle.position.X, circle.position.Y, TileType<Tiles.Misc.AuroraDiscTile>()); //TODO: Replace with full structure    
+            WorldGen.PlaceObject(circle.position.X, circle.position.Y, TileType<Content.Tiles.Misc.AuroraDiscTile>()); //TODO: Replace with full structure    
             circle.decorated = true;
         }
 

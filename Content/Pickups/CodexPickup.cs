@@ -16,7 +16,7 @@ namespace StarlightRiver.Pickups
 {
     internal class CodexPickup : AbilityPickup
     {
-        public override string Texture => "StarlightRiver/GUI/Assets/Book1Closed";
+        public override string Texture => "StarlightRiver/Assets/GUI/Book1Closed";
 
         public override Color GlowColor => new Color(200, 130, 40);
 
@@ -72,6 +72,6 @@ namespace StarlightRiver.Pickups
     {
         public CodexTileItem() : base("Starlight Codex", "Debug placer for ability pickup", TileType<CodexPickupTile>(), -1) { }
 
-        public override string Texture => "StarlightRiver/GUI/Assets/Book1Closed";
+        public override string Texture => "StarlightRiver/Assets/GUI/Book1Closed";
     }
 }

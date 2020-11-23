@@ -23,7 +23,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         public void Draw(SpriteBatch sb)
         {
             if (Parent == null) return;
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/VitricBossEye");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/VitricBossEye");
             float rot = (Parent.npc.position + Position - Main.player[Parent.npc.target].Center).ToRotation();
             if (Parent.npc.target >= 200) rot = 0;
             Color color = new Color(160, 220, 250);

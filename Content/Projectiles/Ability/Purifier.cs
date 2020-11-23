@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Projectiles.Ability
 {
@@ -146,22 +147,22 @@ namespace StarlightRiver.Projectiles.Ability
             }
         }
 
-        private readonly Texture2D cirTex = GetTexture("StarlightRiver/Projectiles/Ability/ArcaneCircle");
-        private readonly Texture2D cirTex2 = GetTexture("StarlightRiver/Projectiles/Ability/ArcaneCircle2");
-        //private readonly Texture2D starTex = ModContent.GetTexture("StarlightRiver/Projectiles/Ability/ArcaneStar");
+        private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneCircle");
+        private readonly Texture2D cirTex2 = GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneCircle2");
+        //private readonly Texture2D starTex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneStar");
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             spriteBatch.Draw(cirTex, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(projectile.ai[0] / 300f), cirTex.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
             spriteBatch.Draw(cirTex2, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, projectile.ai[0] / 300f, cirTex2.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
 
-            Texture2D tex = GetTexture("StarlightRiver/Pickups/PureCrown");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Pickups/PureCrown");
             spriteBatch.Draw(tex, projectile.Center + new Vector2(-16, -16 + (float)Math.Sin(StarlightWorld.rottime) * 2) - Main.screenPosition, tex.Frame(),
                 Color.White * ((projectile.timeLeft < 500) ? 1 : (projectile.ai[0] / 250f)), 0, tex.Size() / 2, 1, 0, 0);
 
             /*for (float k = 0; k <= 6.28f; k += 0.1f)
             {
-                Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Projectiles/Ability/WhiteLine"); //move this outside the for loop lol
+                Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/Ability/WhiteLine"); //move this outside the for loop lol
 
                 spriteBatch.Draw(tex2, projectile.Center + (Vector2.One * (projectile.ai[0] * 0.72f)).RotatedBy(k) - Vector2.One * 16 - Main.screenPosition, tex2.Frame(),
                     Color.White * (projectile.timeLeft / 600f), k - 1.58f / 2, tex2.Size() / 2, 1, 0, 0);

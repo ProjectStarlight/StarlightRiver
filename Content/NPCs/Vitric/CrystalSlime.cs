@@ -113,8 +113,8 @@ namespace StarlightRiver.NPCs.Hostile
             if (shielded)
             {
                 Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
-                spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Hostile/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));
-                spriteBatch.Draw(GetTexture("StarlightRiver/NPCs/Hostile/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
+                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Hostile/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));
+                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Hostile/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
             }
         }
     }

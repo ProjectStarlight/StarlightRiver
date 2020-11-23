@@ -127,7 +127,7 @@ namespace StarlightRiver.Pickups
         {
             if (Visible)
             {
-                Texture2D tex = GetTexture("StarlightRiver/RiftCrafting/Glow0");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
                 Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
 
                 spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);

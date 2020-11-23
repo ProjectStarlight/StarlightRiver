@@ -4,12 +4,13 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Items.Aluminum
 {
     public class AluminumOre : QuickTileItem
     {
-        public AluminumOre() : base("Astral Aluminum", "", TileType<Tiles.OreAluminum>(), ItemRarityID.White) { }
+        public AluminumOre() : base("Astral Aluminum", "", TileType<OreAluminum>(), ItemRarityID.White) { }
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
     }

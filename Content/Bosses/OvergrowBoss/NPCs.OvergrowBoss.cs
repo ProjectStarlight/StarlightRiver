@@ -134,7 +134,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                         Phase = (int)OvergrowBossPhase.FirstToss;
                         AttackPhase = 0;
                         ResetAttack();
-                        foreach (Projectile proj in Main.projectile.Where(p => p.type == ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>())) proj.ai[1] = 1; //opens the pits
+                        //foreach (Projectile proj in Main.projectile.Where(p => p.type == ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>())) proj.ai[1] = 1; //opens the pits
                     }
                 }
                 switch (AttackPhase) //attack pattern

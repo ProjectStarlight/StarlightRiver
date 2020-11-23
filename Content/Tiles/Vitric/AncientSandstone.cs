@@ -21,7 +21,7 @@ namespace StarlightRiver.Tiles.Vitric
         }
     }
 
-    public class AncientSandstoneItem : QuickTileItem { public AncientSandstoneItem() : base("Ancient Sandstone Brick", "", mod.TileType("AncientSandstone"), 0) { } }
+    public class AncientSandstoneItem : QuickTileItem { public AncientSandstoneItem() : base("Ancient Sandstone Brick", "", StarlightRiver.Instance.TileType("AncientSandstone"), 0) { } }
 
 
     internal class AncientSandstoneTile : ModTile

@@ -240,16 +240,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         }
         #endregion
 
-        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/glow");
-        private Texture2D GlowingTrail => GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/StarwoodBoomerangGlowTrail");
+        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/glow");
+        private Texture2D GlowingTrail => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodBoomerangGlowTrail");
 
-        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Items/StarwoodBoomerang");
-        private Texture2D GlowingTexture => GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/StarwoodBoomerangGlow");
-        private Texture2D AuraTexture => GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Assets/Items/StarwoodBoomerang");
+        private Texture2D GlowingTexture => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodBoomerangGlow");
+        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
 
-        //private Texture2D worm1 => GetTexture("StarlightRiver/worm1");
-        //private Texture2D worm2 => GetTexture("StarlightRiver/worm2");
-        //private Texture2D worm3 => GetTexture("StarlightRiver/worm3");
+        //private Texture2D worm1 => GetTexture("StarlightRiver/Assets/worm1");
+        //private Texture2D worm2 => GetTexture("StarlightRiver/Assets/worm2");
+        //private Texture2D worm3 => GetTexture("StarlightRiver/Assets/worm3");
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -298,7 +298,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Keys/Glow");
+                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                 spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }

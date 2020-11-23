@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
                     Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.1f;
 
                     var tenk = k * 5;
-                    var tex2 = GetTexture("StarlightRiver/Items/Permafrost/AuroraDiscOver" + k);
+                    var tex2 = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraDiscOver" + k);
 
                     var progress = (projectile.timeLeft < 590 - tenk ? 10 : 10 - (projectile.timeLeft - (590 - tenk))) / 10f;
                     if (progress < 0) progress = 0;
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Weapons
                 if (timer > 30 && timer < 150)
                 {
                     var tex = GetTexture(Texture);
-                    var tex2 = GetTexture("StarlightRiver/Keys/Glow");
+                    var tex2 = GetTexture("StarlightRiver/Assets/Keys/Glow");
                     spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * (timer < 90 ? (timer - 30) / 60f : 1), 0, tex.Size() / 2, 1, 0, 0);
                     spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * (timer < 90 ? (timer - 30) / 60f : 1) * 0.65f, 0, tex2.Size() / 2, 1, 0, 0);
 

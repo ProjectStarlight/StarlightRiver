@@ -46,7 +46,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             if (projectile.ai[0] <= 46) //draws the proejctile's tell ~0.75 seconds before it goes off
             {
-                Texture2D tex = GetTexture("StarlightRiver/NPCs/Boss/VitricBoss/VolleyTell");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/VitricBoss/VolleyTell");
                 float alpha = ((projectile.ai[0] * 2 / 23) - ((float)Math.Pow(projectile.ai[0], 2) / 529)) * 0.75f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }

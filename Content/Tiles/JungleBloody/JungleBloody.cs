@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.JungleBloody
+namespace StarlightRiver.Content.Tiles.JungleBloody
 {
     public class GrassJungleBloody : ModTile
     {

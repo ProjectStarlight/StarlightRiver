@@ -11,8 +11,8 @@ namespace StarlightRiver.Codex.Entries
             Category = Categories.Abilities;
             Title = "Starlight Codex";
             Body = "A mysterious compendium containing lost knowledge, it seems to write itself as you travel. Click the codex icon in your inventory to view the codex.";
-            Image = GetTexture("StarlightRiver/Codex/Entries/AbilityImageLore");
-            Icon = GetTexture("StarlightRiver/GUI/Assets/Book1Closed");
+            Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageLore");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Book1Closed");
         }
     }
 
@@ -24,8 +24,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Forbidden Winds";
             Body = "A collection of strange energies found deeep within a tomb buried in the vitric desert. These 'winds' hold the power to shatter certain objects on touch and propel you forward at great speeds.";
             Hint = "Sealed away in an ancient glass temple";
-            Image = GetTexture("StarlightRiver/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Pickups/ForbiddenWinds");
+            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Icon = GetTexture("StarlightRiver/Assets/Pickups/ForbiddenWinds");
         }
     }
 
@@ -37,8 +37,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Faeflame";
             Body = "NO TEXT";
             Hint = "Found upon an altar in an overgrown dungeon";
-            Image = GetTexture("StarlightRiver/Codex/Entries/AbilityImageWisp");
-            Icon = GetTexture("StarlightRiver/Pickups/Faeflame");
+            Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageWisp");
+            Icon = GetTexture("StarlightRiver/Assets/Pickups/Faeflame");
         }
     }
 
@@ -50,8 +50,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Corona of Purity";
             Body = "NO TEXT";
             Hint = "Found in a temple at the brink of the world...";
-            Image = GetTexture("StarlightRiver/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Pickups/PureCrown");
+            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Icon = GetTexture("StarlightRiver/Assets/Pickups/PureCrown");
         }
     }
 
@@ -63,8 +63,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Gaia's Fist";
             Body = "NO TEXT";
             Hint = "PENIS";
-            Image = GetTexture("StarlightRiver/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Pickups/GaiaFist");
+            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Icon = GetTexture("StarlightRiver/Assets/Pickups/GaiaFist");
         }
     }
 
@@ -75,8 +75,8 @@ namespace StarlightRiver.Codex.Entries
             Category = Categories.Abilities;
             Title = "Rift Codex";
             Body = "NO TEXT";
-            Image = GetTexture("StarlightRiver/GUI/Assets/Book2Closed");
-            Icon = GetTexture("StarlightRiver/GUI/Assets/Book2Closed");
+            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/Book2Closed");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Book2Closed");
             RequiresUpgradedBook = true;
         }
     }

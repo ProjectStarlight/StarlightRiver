@@ -89,9 +89,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D over = GetTexture("StarlightRiver/Items/Misc/GemFocusOver");
-            Texture2D under = GetTexture("StarlightRiver/Items/Misc/GemFocusUnder");
-            Texture2D glow = GetTexture("StarlightRiver/RiftCrafting/Glow0");
+            Texture2D over = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusOver");
+            Texture2D under = GetTexture("StarlightRiver/Assets/Items/Misc/GemFocusUnder");
+            Texture2D glow = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
 
             Vector2 position = projectile.position - Main.screenPosition;
             float scale = projectile.scale;

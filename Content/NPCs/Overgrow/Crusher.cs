@@ -82,8 +82,8 @@ namespace StarlightRiver.NPCs.Traps
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/NPCs/Traps/CrusherGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/NPCs/Traps/CrusherTile");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Traps/CrusherGlow");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/NPCs/Traps/CrusherTile");
 
             spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(npc.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
 

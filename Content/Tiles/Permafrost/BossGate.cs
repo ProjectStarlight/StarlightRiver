@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Tiles/Permafrost/BossGate");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Permafrost/BossGate");
 
             Vector2 off = Vector2.UnitX * (projectile.ai[0] / 120 * projectile.width / 2);
 

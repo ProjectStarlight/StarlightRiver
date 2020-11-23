@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
                 Color final = new Color(light.R + (int)(colorBack.R * 0.1f), light.G + (int)(colorBack.G * 0.1f), light.B + (int)(colorBack.B * 0.1f));
 
-                spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/AuroraIceUnder"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY % (4 * 18), 16, 16), final);
+                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY % (4 * 18), 16, 16), final);
             }
 
             if (tile.frameY >= 4 * 18) return;
@@ -115,9 +115,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.3f);
 
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/AuroraIceGlow2"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Tiles/Permafrost/AuroraIceGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
 
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.35f);
 

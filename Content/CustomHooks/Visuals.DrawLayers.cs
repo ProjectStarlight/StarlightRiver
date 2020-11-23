@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.CustomHooks
                 for (int k = 0; k >= 0; k++)
                 {
                     if (Main.tile[(int)npc.position.X / 16, (int)npc.position.Y / 16 + k + 2].active()) break;
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Projectiles/WeaponProjectiles/ShakerChain"),
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"),
                         npc.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(npc.ai[0] + k) * 4, 18 + k * 16), drawColor);
                 }
             }
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.CustomHooks
             //Temple shroud, TODO: move this somewhere more sane later. Im crunched for time rn.
             if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
             {
-                Main.spriteBatch.Draw(GetTexture("StarlightRiver/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
+                Main.spriteBatch.Draw(GetTexture("StarlightRiver/Assets/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
             }
         }
 

@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Content.Tiles.Vitric;
 
 using StarlightRiver.Core;
 

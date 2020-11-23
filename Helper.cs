@@ -305,10 +305,10 @@ namespace StarlightRiver
 
         public static void DrawSymbol(SpriteBatch spriteBatch, Vector2 position, Color color)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Symbol");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Symbol");
             spriteBatch.Draw(tex, position, tex.Frame(), color * 0.8f, 0, tex.Size() / 2, 1, 0, 0);
 
-            Texture2D tex2 = GetTexture("StarlightRiver/Tiles/Interactive/WispSwitchGlow2");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
 
             float fade = StarlightWorld.rottime / 6.28f;
             spriteBatch.Draw(tex2, position, tex2.Frame(), color * (1 - fade), 0, tex2.Size() / 2f, fade * 1.1f, 0, 0);
