@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "ZapperTile";
+            texture = Directory.OvergrowTileDir + "ZapperTile";
             return true;
         }
 

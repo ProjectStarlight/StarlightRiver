@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "BrickOvergrow";
+            texture = Directory.OvergrowTileDir + "BrickOvergrow";
             return true;
         }
 
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowItemDir + "ExecutionersAxe");
+            Texture2D tex = GetTexture(Directory.OvergrowItemDir + "ExecutionersAxe");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Center.X / 16, (int)Center.Y / 16), Angle, new Vector2(0, tex.Height), 1.5f, 0, 0);
         }
     }

@@ -10,9 +10,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
     class OvergrowTileLoader : TileLoader
     {
-        public static string OvergrowTileDir = "StarlightRiver/Assets/Tiles/Overgrow";
-        public static string OvergrowItemDir = "StarlightRiver/Assets/Items/Overgrow";
-        public override string AssetRoot => OvergrowTileDir;
+        public override string AssetRoot => Directory.OvergrowTileDir;
 
         public override void Load()
         {

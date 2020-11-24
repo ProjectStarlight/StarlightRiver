@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "OvergrowLock";
+            texture = Directory.OvergrowTileDir + "OvergrowLock";
             return true;
         }
 

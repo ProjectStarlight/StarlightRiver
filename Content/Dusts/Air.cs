@@ -9,6 +9,11 @@ namespace StarlightRiver.Dusts
 {
     public class Air : ModDust
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = 
+            return true;
+        }
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;

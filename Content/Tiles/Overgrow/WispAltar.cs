@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "WispAltarL";
+            texture = Directory.OvergrowTileDir + "WispAltarL";
             return true;
         }
 
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "WispAltarR";
+            texture = Directory.OvergrowTileDir + "WispAltarR";
             return true;
         }
 

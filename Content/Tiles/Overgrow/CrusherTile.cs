@@ -12,13 +12,19 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
     internal class CrusherTile : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.OvergrowTileDir + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
-            Main.tileMerge[Type][mod.GetTile("GrassOvergrow").Type] = true;
+            Main.tileMerge[Type][TileType<GrassOvergrow>()] = true;
             Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
             Main.tileFrameImportant[Type] = true;
             dustType = mod.DustType("Gold2");
@@ -42,5 +48,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
     }
 
-    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", TileType<CrusherTile>(), 0, OvergrowTileLoader.OvergrowItemDir + "CrusherOvergrowItem") { } }
+    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", TileType<CrusherTile>(), 0, Directory.OvergrowTileDir + "CrusherOvergrowItem") { } }
 }

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "GrassOvergrow";
+            texture = Directory.OvergrowTileDir + "GrassOvergrow";
             return true;
         }
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public static void CustomDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
-            Texture2D tex = GetTexture(OvergrowTileLoader.OvergrowTileDir + "GrassOvergrowMoss");
+            Texture2D tex = GetTexture(Directory.OvergrowTileDir + "GrassOvergrowMoss");
             Rectangle source = new Rectangle(0 + i % 5 * 8, 0, 8, 16);
             Color color = Lighting.GetColor(i, j);
 
@@ -81,5 +81,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassOvergrow>(), true);
         }
     }
-    internal class GrassOvergrowItem : QuickTileItem { public GrassOvergrowItem() : base("Overgrowth Grass", "They have a pulse...", ModContent.TileType<GrassOvergrow>(), 1, OvergrowTileLoader.OvergrowTileDir + "GrassOvergrowItem") { } }
+    internal class GrassOvergrowItem : QuickTileItem { public GrassOvergrowItem() : base("Overgrowth Grass", "They have a pulse...", ModContent.TileType<GrassOvergrow>(), 1, Directory.OvergrowTileDir + "GrassOvergrowItem") { } }
 }

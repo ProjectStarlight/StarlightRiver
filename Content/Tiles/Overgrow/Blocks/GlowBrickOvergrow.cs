@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "GlowBrickOvergrow";
+            texture = Directory.OvergrowTileDir + name;
             return true;
         }
 
@@ -40,5 +40,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             frameYOffset = 270 * ((j + Main.tileFrame[type]) % 6);
         }
     }
-    internal class GlowBrickOvergrowItem : QuickTileItem { public GlowBrickOvergrowItem() : base("Awoken Runic Bricks", "They have a pulse...", TileType<GlowBrickOvergrow>(), 1, OvergrowTileLoader.OvergrowTileDir + "GlowBrickOvergrowItem") { } }
+    internal class GlowBrickOvergrowItem : QuickTileItem { public GlowBrickOvergrowItem() : base("Awoken Runic Bricks", "They have a pulse...", TileType<GlowBrickOvergrow>(), 1, Directory.OvergrowTileDir + "GlowBrickOvergrowItem") { } }
 }

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = OvergrowTileLoader.OvergrowTileDir + "WallOvergrowGrass";
+            texture = Directory.OvergrowTileDir + "WallOvergrowGrass";
             return true;
         }
 
@@ -36,10 +36,24 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     }
 
     public class WallOvergrowBrick : ModWall
-    { public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55)); } }
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.OvergrowTileDir + name;
+            return true;
+        }
+
+        public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55)); } 
+    }
 
     public class WallOvergrowInvisible : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Invisible";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(255, 235, 50));
@@ -48,8 +62,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     }
 
     public class WallOvergrowBrickItem : QuickWallItem
-    { public WallOvergrowBrickItem() : base("Overgrow Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { } }
+    {
+        public override string Texture => Directory.OvergrowTileDir + Name;
+        public WallOvergrowBrickItem() : base("Overgrow Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { } 
+    }
 
     public class WallOvergrowGrassItem : QuickWallItem
-    { public WallOvergrowGrassItem() : base("Overgrow Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { } }
+    {
+        public override string Texture => Directory.OvergrowTileDir + Name;
+        public WallOvergrowGrassItem() : base("Overgrow Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { } 
+    }
 }

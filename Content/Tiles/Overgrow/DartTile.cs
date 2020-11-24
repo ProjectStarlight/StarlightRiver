@@ -10,10 +10,14 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    // This class shows off a number of less common ModTile methods. These methods help our trap tile behave like vanilla traps.
-    // In particular, hammer behavior is particularly tricky. The logic here is setup for multiple styles as well.
     public class DartTile : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.OvergrowTileDir + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
@@ -22,9 +26,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
             Main.tileFrameImportant[Type] = true;
-            Main.tileMerge[Type][mod.GetTile("GrassOvergrow").Type] = true;
+            Main.tileMerge[Type][TileType<GrassOvergrow>()] = true;
             Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
-
             dustType = mod.DustType("Gold2");
             AddMapEntry(new Color(81, 77, 71));
         }
@@ -126,5 +129,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
     }
 
-    public class DartOvergrowItem : QuickTileItem { public DartOvergrowItem() : base("Overgrow Dart Trap", "", TileType<DartTile>(), 0, OvergrowTileLoader.OvergrowItemDir + "DartOvergrowItem") { } }
+    public class DartOvergrowItem : QuickTileItem { public DartOvergrowItem() : base("Overgrow Dart Trap", "", TileType<DartTile>(), 0, Directory.OvergrowTileDir + "DartOvergrowItem") { } }
 }

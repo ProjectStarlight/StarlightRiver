@@ -16,7 +16,6 @@ using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
 
 namespace StarlightRiver
 {
