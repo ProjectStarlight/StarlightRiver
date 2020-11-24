@@ -14,8 +14,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon
     {
@@ -129,7 +130,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, tex.Frame(), Color.White * (0.45f + ((float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f)), 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, tex.Frame(), Color.White * (0.45f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f), 0, tex.Size() / 2, 1, 0, 0);
             }
 
             if (Phase == (int)AIStates.FirstToSecond)
@@ -172,7 +173,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         private void Animate(int ticksPerFrame, int maxFrames)
         {
             if (npc.frameCounter++ >= ticksPerFrame) { npc.frame.Y += npc.height; npc.frameCounter = 0; }
-            if ((npc.frame.Y / npc.height) > maxFrames - 1) npc.frame.Y = 0;
+            if (npc.frame.Y / npc.height > maxFrames - 1) npc.frame.Y = 0;
         }
 
         //resets animation and changes phase
@@ -244,9 +245,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     if (GlobalTimer > 200 && GlobalTimer <= 300) npc.scale = 0.5f + (GlobalTimer - 200) / 200f; //grow
 
                     if (GlobalTimer > 280) //summon crystal babies
-                    {
                         for (int k = 0; k <= 4; k++)
-                        {
                             if (GlobalTimer == 280 + k * 30)
                             {
                                 Vector2 target = new Vector2(npc.Center.X + (-100 + k * 50), StarlightWorld.VitricBiome.Top * 16 + 1100);
@@ -256,8 +255,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                                 (Main.npc[index].modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -120).RotatedBy(6.28f / 4 * k);
                                 crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                             }
-                        }
-                    }
 
                     if (GlobalTimer > 620) //start the fight
                     {
@@ -281,19 +278,17 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount && !npc.dontTakeDamage)
                     {
                         npc.dontTakeDamage = true; //boss is immune at phase gate
-                        npc.life = npc.lifeMax - ((1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount) - 1; //set health at phase gate
+                        npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
                         Main.PlaySound(SoundID.ForceRoar, npc.Center);
                     }
 
                     if (AttackTimer == 1) //switching out attacks
-                    {
                         if (npc.dontTakeDamage) AttackPhase = 0; //nuke attack once the boss turns immortal for a chance to break a crystal
                         else //otherwise proceed with attacking pattern
                         {
                             AttackPhase++;
                             if (AttackPhase > 4) AttackPhase = 1;
                         }
-                    }
 
                     switch (AttackPhase) //switch for crystal behavior
                     {
@@ -312,28 +307,22 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 case (int)AIStates.FirstToSecond:
 
                     if (GlobalTimer == 2)
-                    {
                         foreach (NPC crystal in crystals)
                         {
                             crystal.ai[0] = 0;
                             crystal.ai[2] = 5; //turn the crystals to transform mode
                         }
-                    }
 
                     if (GlobalTimer == 120)
                     {
                         SetFrameX(1);
                         foreach (NPC crystal in crystals) //kill all the crystals
-                        {
                             crystal.Kill();
-                        }
                         npc.friendly = true; //so we wont get contact damage
                     }
 
                     if (GlobalTimer > 120)
-                    {
                         foreach (Player player in Main.player)
-                        {
                             if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox)) //boss should be dashable now, when dashed:
                             {
                                 player.immune = true;
@@ -346,8 +335,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
                                 break;
                             }
-                        }
-                    }
 
                     /*if (GlobalTimer > 900) //after waiting too long, wipe all players
                     {
@@ -373,12 +360,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     if (GlobalTimer == 702) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
 
                     if (GlobalTimer > 702 && GlobalTimer < 760) //no fadein
-                    {
                         for (int k = 0; k < Main.musicFade.Length; k++)
-                        {
                             if (k == Main.curMusic) Main.musicFade[k] = 1;
-                        }
-                    }
 
                     if (AttackTimer == 1) //switching out attacks
                     {

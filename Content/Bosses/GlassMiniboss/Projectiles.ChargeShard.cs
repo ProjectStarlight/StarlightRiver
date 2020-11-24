@@ -6,12 +6,14 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class ChargeShard : ModProjectile
     {
         public Vector2 target;
         private Vector2 origin;
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/ChargeShard";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("shard");
 
@@ -47,13 +49,9 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 var parent = Main.npc.First(n => n.modNPC is GlassMiniboss).modNPC as GlassMiniboss;
 
                 if (target.X > GlassMiniboss.spawnPos.X)
-                {
                     if (parent.rightForgeCharge < 15) parent.rightForgeCharge++;
-                }
                 else
-                {
                     if (parent.leftForgeCharge < 15) parent.leftForgeCharge++;
-                }
             }
         }
     }

@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 projectile.ai[0] -= 4;
                 if (projectile.ai[0] <= 0) projectile.ai[1] = 0;
             }
-            if (projectile.ai[1] == 1 && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>())) projectile.ai[1] = 2;
+            if (projectile.ai[1] == 1 && !Main.npc.Any(n => n.active && n.type == NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBoss>())) projectile.ai[1] = 2;
 
             Lighting.AddLight(projectile.position + new Vector2(88, 0), new Vector3(1, 1, 0.4f) * (projectile.ai[0] / 88f));
             if (projectile.ai[0] > 0)
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 }
 
                 //flail zapping
-                foreach (NPC flail in Main.npc.Where(p => p.active && p.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossFlail>()
+                foreach (NPC flail in Main.npc.Where(p => p.active && p.type == NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBossFlail>()
                 && p.Hitbox.Intersects(new Rectangle((int)projectile.position.X, (int)projectile.position.Y, 176, 32)) && p.life <= 1 && p.ai[2] == 0))
                 {
                     flail.ai[2] = 1; //tells the flail it is zapped

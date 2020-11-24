@@ -15,7 +15,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.OvergrowBoss
+namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
     [AutoloadBossHead]
     public partial class OvergrowBoss : ModNPC
@@ -40,6 +40,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
             Stun = 5,
             SecondAttack = 6
         };
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/OvergrowBoss/OvergrowBoss";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Horny God");
 

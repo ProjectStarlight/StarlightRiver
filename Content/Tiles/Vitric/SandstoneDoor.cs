@@ -22,7 +22,7 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && !Main.npc.Any(n => n.type == NPCType<NPCs.Boss.VitricBoss.VitricBoss>() && n.active)) Main.tileSolid[Type] = false;
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && !Main.npc.Any(n => n.type == NPCType<StarlightRiver.Content.Bosses.GlassBoss.VitricBoss>() && n.active)) Main.tileSolid[Type] = false;
             else Main.tileSolid[Type] = true;
         }
 

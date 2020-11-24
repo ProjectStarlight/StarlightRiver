@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-
 using StarlightRiver.Core;
+using StarlightRiver.NPCs;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class VitricBossPlatformUp : MovingPlatform
     {
@@ -31,22 +31,18 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
              */
 
             if (npc.ai[0] == 0)
-            {
                 if (npc.ai[1] > 0)
                 {
                     npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
                     npc.ai[1]--;
                 }
                 else npc.velocity.Y = 0;
-            }
 
             if (npc.ai[0] == 1)
             {
                 npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * 0.999f;
                 if (npc.position.Y <= StarlightWorld.VitricBiome.Y * 16 + 16 * 16)
-                {
                     npc.position.Y += MaxHeight;
-                }
             }
         }
     }
@@ -61,22 +57,18 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
              */
 
             if (npc.ai[0] == 0)
-            {
                 if (npc.ai[1] > 0)
                 {
                     npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
                     npc.ai[1]--;
                 }
                 else npc.velocity.Y = 0;
-            }
 
             if (npc.ai[0] == 1)
             {
                 npc.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * 0.999f;
                 if (npc.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
-                {
                     npc.position.Y -= MaxHeight;
-                }
             }
         }
     }

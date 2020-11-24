@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class IcePlatform : MovingPlatform
     {

@@ -10,6 +10,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
     public class Pulse : InfusionItem<Dash>
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
+        public override string Texture => "StarlightRiver/Assets/Abilities/Pulse";
 
         public override void SetStaticDefaults()
         {

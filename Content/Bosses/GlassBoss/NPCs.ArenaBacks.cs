@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
     {

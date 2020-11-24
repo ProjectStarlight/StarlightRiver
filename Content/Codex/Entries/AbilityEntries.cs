@@ -25,7 +25,7 @@ namespace StarlightRiver.Codex.Entries
             Body = "A collection of strange energies found deeep within a tomb buried in the vitric desert. These 'winds' hold the power to shatter certain objects on touch and propel you forward at great speeds.";
             Hint = "Sealed away in an ancient glass temple";
             Image = GetTexture("StarlightRiver/Assets/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Assets/Pickups/ForbiddenWinds");
+            Icon = GetTexture("StarlightRiver/Assets/Abilities/ForbiddenWinds");
         }
     }
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Codex.Entries
             Body = "NO TEXT";
             Hint = "Found upon an altar in an overgrown dungeon";
             Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageWisp");
-            Icon = GetTexture("StarlightRiver/Assets/Pickups/Faeflame");
+            Icon = GetTexture("StarlightRiver/Assets/Abilities/Faeflame");
         }
     }
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Codex.Entries
             Body = "NO TEXT";
             Hint = "Found in a temple at the brink of the world...";
             Image = GetTexture("StarlightRiver/Assets/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Assets/Pickups/PureCrown");
+            Icon = GetTexture("StarlightRiver/Assets/Abilities/PureCrown");
         }
     }
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Codex.Entries
             Body = "NO TEXT";
             Hint = "PENIS";
             Image = GetTexture("StarlightRiver/Assets/MarioCumming");
-            Icon = GetTexture("StarlightRiver/Assets/Pickups/GaiaFist");
+            Icon = GetTexture("StarlightRiver/Assets/Abilities/GaiaFist");
         }
     }
 

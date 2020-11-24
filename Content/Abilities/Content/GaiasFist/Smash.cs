@@ -16,7 +16,7 @@ namespace StarlightRiver.Abilities.Content.GaiasFist
         public override float ActivationCostDefault => 2;
 
         public override bool Available => base.Available && Player.velocity.Y != 0;
-        public override string Texture => "StarlightRiver/Assets/Pickups/GaiaFist";
+        public override string Texture => "StarlightRiver/Assets/Abilities/GaiaFist";
         public override Color Color => new Color(127, 255, 77);
 
         public float Timer { get; private set; }

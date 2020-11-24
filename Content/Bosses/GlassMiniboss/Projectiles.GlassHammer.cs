@@ -8,11 +8,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassHammer : ModProjectile
     {
         Vector2 origin;
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassHammer";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
 
@@ -52,7 +54,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                 if (projectile.timeLeft == 1)
                 {
                     Main.PlaySound(SoundID.Shatter, projectile.Center);
-                    Main.LocalPlayer.GetModPlayer<Core.StarlightPlayer>().Shake += 15;
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
 
                     for (int k = 0; k < 30; k++)
                     {
@@ -68,9 +70,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
             if (projectile.timeLeft <= 30 && projectile.timeLeft >= 20)
-            {
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
-            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -187,7 +187,7 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/SpikeTell");
                 float factor = 2 * projectile.ai[0] / 25f - (float)Math.Pow(projectile.ai[0], 2) / 625f;
-                spriteBatch.Draw(tex, projectile.Center + new Vector2(0, -128) - Main.screenPosition, null, new Color(255, 230, 71) * (factor));
+                spriteBatch.Draw(tex, projectile.Center + new Vector2(0, -128) - Main.screenPosition, null, new Color(255, 230, 71) * factor);
             }
 
         }

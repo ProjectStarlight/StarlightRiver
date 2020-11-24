@@ -3,12 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ModLoader;
-using static StarlightRiver.NPCs.Boss.VitricBoss.VitricBoss;
+using static StarlightRiver.Content.Bosses.GlassBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class VitricBossCrystal : ModNPC, IDrawAdditive
     {
@@ -74,7 +74,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             npc.ai[3]++;
 
             if (npc.ai[0] == 0)
-            {
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
                     Player player = Main.player[i];
@@ -101,7 +100,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                         }
                     }
                 }
-            }
 
             switch (npc.ai[2])
             {
@@ -114,9 +112,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     if (npc.friendly && npc.ai[0] != 0)
                     {
                         if (npc.ai[3] > 0 && npc.ai[3] <= 90)
-                        {
                             npc.Center = Vector2.SmoothStep(StartPos, TargetPos, npc.ai[3] / 90);
-                        }
                         if (npc.ai[3] == 90)
                         {
                             npc.friendly = false;
@@ -136,9 +132,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     }
 
                     if (npc.ai[1] > 60 && npc.ai[1] <= 120)
-                    {
                         npc.Center = Vector2.SmoothStep(StartPos, TargetPos, (npc.ai[1] - 60) / 60f); //go to the platform
-                    }
                     if (npc.ai[1] >= 719) //when time is up... uh oh
                     {
                         if (npc.ai[0] == 0) //only the vulnerable crystal
@@ -149,9 +143,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
 
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
-                            {
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());
-                            }
                         }
                         npc.ai[2] = 0; //go back to doing nothing
                         npc.ai[1] = 0; //reset timer
@@ -163,9 +155,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     npc.rotation = (npc.Center - Parent.npc.Center).ToRotation() + 1.57f; //sets the rotation appropriately for the circle attack
 
                     if (Vector2.Distance(npc.Center, Parent.npc.Center) <= 100) //shrink the crystals for the rotation attack if they're near the boss so they properly hide in him
-                    {
                         npc.scale = Vector2.Distance(npc.Center, Parent.npc.Center) / 100f;
-                    }
                     else npc.scale = 1;
 
                     break;
@@ -187,9 +177,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                     }
 
                     for (int k = 0; k < 3; k++)
-                    {
                         Dust.NewDustPerfect(npc.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<Dusts.Starlight>(), new Vector2(0, -15));
-                    }
 
                     if (npc.Center.Y > TargetPos.Y)
                         foreach (Vector2 point in Parent.crystalLocations) //Better than cycling througn Main.npc, still probably a better way to do this
@@ -221,9 +209,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
 
                 case 5: //transforming the boss
                     for (float k = 0; k < 1; k += 0.03f)
-                    {
                         Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Air>());
-                    }
                     break;
             }
         }
@@ -253,10 +239,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
                 for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)
-                {
                     spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,
                         (npc.Center - TargetPos).ToRotation(), tex.Frame().Size() / 2, 1, 0, 0);
-                }
             }
         }
     }

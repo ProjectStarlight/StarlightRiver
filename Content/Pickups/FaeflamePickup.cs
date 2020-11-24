@@ -16,7 +16,7 @@ namespace StarlightRiver.Pickups
 {
     internal class FaeflamePickup : AbilityPickup
     {
-        public override string Texture => "StarlightRiver/Assets/Pickups/Faeflame";
+        public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
         public override Color GlowColor => new Color(255, 255, 130);
 
         public override bool CanPickup(Player player)

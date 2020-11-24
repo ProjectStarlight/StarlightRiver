@@ -4,8 +4,9 @@ using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs.Boss.VitricBoss;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class VitricBossEye
     {
@@ -28,7 +29,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (Parent.npc.target >= 200) rot = 0;
             Color color = new Color(160, 220, 250);
             if ((Parent.npc.ai[0] > 360 || Timer >= 1) && Timer < 15) Timer++;
-            if (Parent.npc.ai[1] != (int)VitricBoss.AIStates.SpawnAnimation && Parent.npc.ai[0] % (120) == Index * 6) Timer = 1;
+            if (Parent.npc.ai[1] != (int)VitricBoss.AIStates.SpawnAnimation && Parent.npc.ai[0] % 120 == Index * 6) Timer = 1;
             if (Parent.npc.ai[1] == (int)VitricBoss.AIStates.Anger)
             {
                 rot = StarlightWorld.rottime * 4 + Index / 7f;

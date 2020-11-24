@@ -8,10 +8,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassKnife : ModProjectile
     {
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassKnife";
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailingMode[projectile.type] = 2;

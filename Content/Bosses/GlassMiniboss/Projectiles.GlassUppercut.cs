@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassUppercut : ModProjectile
     {

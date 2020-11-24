@@ -98,14 +98,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 }
             }
 
-            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
+            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
             {
-                NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 250, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBoss>());
+                NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 250, NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBoss>());
 
-                NPC.NewNPC((int)projectile.Center.X - 790, (int)projectile.Center.Y + 450, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X + 790, (int)projectile.Center.Y + 450, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X - 300, (int)projectile.Center.Y + 600, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X + 300, (int)projectile.Center.Y + 600, NPCType<NPCs.Boss.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)projectile.Center.X - 790, (int)projectile.Center.Y + 450, NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)projectile.Center.X + 790, (int)projectile.Center.Y + 450, NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)projectile.Center.X - 300, (int)projectile.Center.Y + 600, NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)projectile.Center.X + 300, (int)projectile.Center.Y + 600, NPCType<StarlightRiver.Content.Bosses.OvergrowBoss.OvergrowBossAnchor>());
             }
 
             if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && projectile.ai[0] <= 360) projectile.ai[0]++;

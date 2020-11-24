@@ -11,8 +11,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs.Boss.OvergrowBoss;
 
-namespace StarlightRiver.NPCs.Boss.OvergrowBoss
+namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
     public partial class OvergrowBoss : ModNPC
     {
@@ -165,9 +166,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
                 //adds
                 for (int k = 0; k < 3; k++)
-                {
                     NPC.NewNPC((int)flail.npc.Center.X + Main.rand.Next(-100, 100), (int)flail.npc.Center.Y, NPCType<SkeletonMinion>());
-                }
 
                 //visuals
                 for (int k = 0; k < 50; k++)
@@ -190,7 +189,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         private void DrawTossTell(SpriteBatch sb)
         {
-            float glow = AttackTimer > 90 ? (1 - (AttackTimer - 90) / 30f) : ((AttackTimer - 60) / 30f);
+            float glow = AttackTimer > 90 ? 1 - (AttackTimer - 90) / 30f : (AttackTimer - 60) / 30f;
             Color color = new Color(255, 70, 70) * glow;
             Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
             sb.End();
@@ -220,10 +219,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
             if (AttackTimer == 90)
             {
                 foreach (Player player in Main.player.Where(p => p.active && Helper.CheckCircularCollision(targetPoint, 100, p.Hitbox))) //circular collision
-                {
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was strangled..."), 50, 0); //hurt em
-                    //debuff em
-                }
 
                 //dusts
                 for (float k = 0; k < 6.28f; k += 0.1f)
@@ -239,7 +235,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         private void DrawTrapTell(SpriteBatch sb)
         {
-            float glow = AttackTimer > 45 ? (1 - (AttackTimer - 45) / 45f) : ((AttackTimer) / 45f);
+            float glow = AttackTimer > 45 ? 1 - (AttackTimer - 45) / 45f : AttackTimer / 45f;
             Color color = new Color(255, 40, 40) * glow;
             Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellCircle");
 
@@ -326,7 +322,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         private void DrawRapidTossTell(SpriteBatch sb)
         {
-            float glow = AttackTimer < 15 ? (AttackTimer) / 15f : (1 - (AttackTimer - 15) / 15f);
+            float glow = AttackTimer < 15 ? AttackTimer / 15f : 1 - (AttackTimer - 15) / 15f;
             Color color = new Color(255, 70, 70) * glow;
             Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
 

@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     internal partial class GlassMiniboss : ModNPC
     {

@@ -28,7 +28,7 @@ namespace StarlightRiver.Codex.Entries
             Body = "Shards of these intricate metal devices seem to be scattered around the world everywhere. By combining 3 of them, a completed stamina vessel can be made, allowing it's holder to store an extra unit of stamina. Unfortunately, the strange material and intricate tooling of these fragments makes it nigh impossible to re-create them on your own.";
             Hint = "Find a stamina vessel shard...";
             Image = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaEmpty");
-            Icon = GetTexture("StarlightRiver/Assets/Pickups/Stamina1");
+            Icon = GetTexture("StarlightRiver/Assets/Abilities/Stamina1");
         }
     }
 

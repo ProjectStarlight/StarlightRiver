@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class BossSpikeSmall : ModProjectile
     {
@@ -25,9 +25,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             if (projectile.ai[0] >= 30 && Abilities.AbilityHelper.CheckDash(target, projectile.Hitbox))
             {
                 for (int k = 0; k < 50; k++)
-                {
                     Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
-                }
                 Main.PlaySound(Terraria.ID.SoundID.Shatter, target.Center);
                 projectile.Kill();
                 return false;

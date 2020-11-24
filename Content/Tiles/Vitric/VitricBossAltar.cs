@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.NPCs.Boss.VitricBoss;
 using System;
 using System.Linq;
 using Terraria;
@@ -10,6 +9,7 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Bosses.GlassBoss;
 
 namespace StarlightRiver.Tiles.Vitric
 {

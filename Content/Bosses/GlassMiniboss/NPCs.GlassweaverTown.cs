@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     [AutoloadHead]
     class GlassweaverTown : ModNPC
@@ -15,6 +15,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override bool CheckConditions(int left, int right, int top, int bottom) => true;
 
         public override string TownNPCName() => "";
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassweaverTown";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
 
@@ -65,11 +67,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         public override void OnChatButtonClicked(bool firstButton, ref bool shop)
         {
             if (!firstButton)
-            {
                 if (altarIndex < altarChat.Length - 1)
-                {
                     Main.npcChatText = altarChat[altarIndex++];
-                }
                 else
                 {
                     int idol = ModContent.ItemType<GlassIdol>();
@@ -81,13 +80,10 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
                         Main.npcChatText = "Take care. They are remarkably fragile.";
                     }
                     else
-                    {
                         Main.npcChatText = "Adventurer, my supply of idols is limited. " +
                             "If you bring me some vitric ore, I'll make a replica and give you one. " +
                             "Six ore should suffice.";
-                    }
                 }
-            }
         }
     }
 }

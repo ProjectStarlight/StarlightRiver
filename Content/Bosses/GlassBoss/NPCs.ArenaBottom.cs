@@ -10,8 +10,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs.Boss.VitricBoss;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class ArenaBottom : ModNPC
     {
@@ -53,9 +54,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
             {
                 case 0:
                     if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
-                    {
                         npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
-                    }
 
                     if (npc.ai[0] > 120) //after standing there for too long a wave comes by to fuck em up.
                     {
@@ -85,11 +84,8 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                 case 2: //only happens when the boss goes into phase 2
                     if (npc.ai[0] < 120) npc.ai[0]++; //cap timer at 120
                     if (npc.ai[0] < 90) //dust before rising
-                    {
                         Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Air>());
-                    }
                     if (npc.ai[0] >= 120)
-                    {
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
                             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 840, npc.width, npc.height);
@@ -106,7 +102,6 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
                                 target.velocity.Y -= 12;
                             }
                         }
-                    }
                     break;
             }
         }

@@ -27,7 +27,6 @@ namespace StarlightRiver.Core
         public static string VitricTileDir =        "StarlightRiver/Assets/Tiles/Vitric";
         public static string VitricItemDir =        "StarlightRiver/Assets/Items/Vitric";
 
-        public static string PermafrostTileDir =    "StarlightRiver/Assets/Tiles/Permafrost";
-        public static string PermafrostItemDir =    "StarlightRiver/Assets/Items/Permafrost";
+        public static string PermafrostTileDir =    "StarlightRiver/Assets/Bosses/SquidBoss";
     }
 }

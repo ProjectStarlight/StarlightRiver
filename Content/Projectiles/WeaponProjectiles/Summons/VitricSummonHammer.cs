@@ -230,7 +230,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         }
     }
 
-    class ShockwaveSummon : NPCs.Miniboss.Glassweaver.Shockwave
+    class ShockwaveSummon : StarlightRiver.Content.Bosses.GlassMiniboss.Shockwave
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/Blocks/AncientSandstone";
 

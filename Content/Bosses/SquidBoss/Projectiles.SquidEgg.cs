@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class SquidEgg : ModProjectile
     {

@@ -10,12 +10,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.OvergrowBoss
+namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
     public class OvergrowBossFlail : ModNPC, IDrawAdditive
     {
         public OvergrowBoss parent;
         public Player holder;
+
         public override string Texture => "StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerBall";
 
         public override void SetStaticDefaults()
@@ -34,8 +35,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
             npc.noGravity = true;
             npc.knockBackResist = 0;
             npc.damage = 60;
-            for (int k = 0; k < npc.buffImmune.Length; k++) { npc.buffImmune[k] = true; }
-
+            for (int k = 0; k < npc.buffImmune.Length; k++) npc.buffImmune[k] = true;
             npc.ai[3] = 1;
         }
 
@@ -76,10 +76,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                 }
 
                 if (npc.ai[1] == 80) //some things need to be on a delay
-                {
                     npc.ai[2] = 0; //no longer zapped!
-                    //foreach (Projectile proj in Main.projectile.Where(p => p.type == ProjectileType<Projectiles.Dummies.OvergrowBossPitDummy>())) proj.ai[1] = 2; //closes the pits
-                }
             }
 
             if (npc.ai[0] == 1) //pick-upable
@@ -91,9 +88,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
                 if (npc.velocity.Y == 0 && npc.velocity.X < -0.3f) npc.velocity.X += 0.3f;
                 if (Math.Abs(npc.velocity.X) <= 0.3f) npc.velocity.X = 0;
                 if (Main.player.Any(p => p.Hitbox.Intersects(npc.Hitbox)) && holder == null && npc.velocity == Vector2.Zero)
-                {
                     holder = Main.player.FirstOrDefault(p => p.Hitbox.Intersects(npc.Hitbox)); //the first person to walk over it picks it up
-                }
                 if (holder != null)
                 {
                     npc.position = holder.Center + new Vector2(-32, -100); //they hold it above their head
@@ -123,57 +118,47 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (npc.life <= 1)
-            {
                 for (int k = 0; k < npc.oldPos.Length; k++)
                 {
                     Color color = drawColor * ((float)(npc.oldPos.Length - k) / npc.oldPos.Length) * 0.4f;
-                    float scale = npc.scale * (float)(npc.oldPos.Length - k) / npc.oldPos.Length;
+                    float scale = npc.scale * (npc.oldPos.Length - k) / npc.oldPos.Length;
                     Texture2D tex = GetTexture(Texture);
 
                     spriteBatch.Draw(tex, npc.oldPos[k] + npc.Size / 2 - Main.screenPosition, null, color, npc.oldRot[k], tex.Size() / 2, scale, default, default);
                 }
-            }
 
             if (npc.ai[3] != 0)
-            {
                 for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(npc.Center, parent.npc.Center) / 16))
                 {
                     Vector2 pos = Vector2.Lerp(npc.Center, parent.npc.Center, k) - Main.screenPosition;
                     //shake the chain when tossed
                     if ((parent.npc.ai[0] == (int)OvergrowBoss.OvergrowBossPhase.FirstAttack && (parent.npc.ai[2] == 3 || parent.npc.ai[2] == 4 || parent.npc.ai[2] == 6) ||
                         parent.npc.ai[0] == (int)OvergrowBoss.OvergrowBossPhase.FirstToss) && npc.velocity.Length() > 0)
-                    {
                         pos += Vector2.Normalize(npc.Center - parent.npc.Center).RotatedBy(1.58f) * (float)Math.Sin(StarlightWorld.rottime + k * 20) * 10;
-                    }
 
                     spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"), pos,
                         new Rectangle(0, 0, 8, 16), drawColor, (npc.Center - parent.npc.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
                 }
-            }
             return true;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (npc.ai[0] == 1 && holder == null && npc.velocity.X == 0)
-            {
                 spriteBatch.DrawString(Main.fontMouseText, "Pick up!", npc.Center + new Vector2(Main.fontMouseText.MeasureString("Pick up!").X / -2, -50 + (float)Math.Sin(StarlightWorld.rottime) * 5) - Main.screenPosition, Color.Yellow * 0.75f);
-            }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             if (npc.life <= 1)
-            {
                 for (int k = 0; k < npc.oldPos.Length; k++)
                 {
                     Color color = new Color(255, 255, 200) * 0.3f;
-                    float scale = npc.scale * (float)(npc.oldPos.Length - k) / npc.oldPos.Length * 1.1f;
+                    float scale = npc.scale * (npc.oldPos.Length - k) / npc.oldPos.Length * 1.1f;
                     Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                     spriteBatch.Draw(tex, npc.oldPos[k] + npc.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
                 }
-            }
         }
     }
 }

@@ -101,8 +101,8 @@ namespace StarlightRiver.GUI
 
                 if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
-                    Texture2D shard1 = GetTexture("StarlightRiver/Assets/Pickups/Stamina1");
-                    Texture2D shard2 = GetTexture("StarlightRiver/Assets/Pickups/Stamina2");
+                    Texture2D shard1 = GetTexture("StarlightRiver/Assets/Abilities/Stamina1");
+                    Texture2D shard2 = GetTexture("StarlightRiver/Assets/Abilities/Stamina2");
 
                     if (mp.ShardCount % 3 >= 1) spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                     if (mp.ShardCount % 3 >= 2) spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);

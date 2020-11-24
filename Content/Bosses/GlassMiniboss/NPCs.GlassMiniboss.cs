@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     internal partial class GlassMiniboss : ModNPC
     {
@@ -40,6 +40,8 @@ namespace StarlightRiver.NPCs.Miniboss.Glassweaver
         }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassMiniboss";
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage! this is strictly a GOOD GAME DESIGN ONLY ZONE!!!
 

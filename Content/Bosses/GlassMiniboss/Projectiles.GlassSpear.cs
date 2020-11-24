@@ -7,12 +7,14 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Miniboss.Glassweaver
+namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassSpear : ModProjectile
     {
         Vector2 savedPoint;
         Vector2 movePoint;
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassSpear";
 
         public override void SetDefaults()
         {

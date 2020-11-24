@@ -133,6 +133,7 @@ namespace StarlightRiver
             //Shaders
             if (!Main.dedServ)
             {
+                /*
                 GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
 
                 Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
@@ -182,6 +183,7 @@ namespace StarlightRiver
                 Ref<Effect> screenRefWaterShine = new Ref<Effect>(GetEffect("Effects/WaterShine"));
                 Filters.Scene["WaterShine"] = new Filter(new ScreenShaderData(screenRefWaterShine, "WaterShinePass"), EffectPriority.High);
                 Filters.Scene["WaterShine"].Load();
+                */
 
                 lightingTest = new RenderTest();
             }

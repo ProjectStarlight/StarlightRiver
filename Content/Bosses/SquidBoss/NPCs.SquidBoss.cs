@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     [AutoloadBossHead]
     public partial class SquidBoss : ModNPC, IUnderwater
@@ -99,8 +99,8 @@ namespace StarlightRiver.NPCs.Boss.SquidBoss
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
-            Texture2D ring = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyRing");
-            Texture2D ringGlow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyRingGlow");
+            Texture2D ring = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRing");
+            Texture2D ringGlow = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRingGlow");
 
             Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyUnder");
 

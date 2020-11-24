@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Boss.VitricBoss
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     class VitricBomb : ModProjectile, IDrawAdditive
     {
@@ -38,7 +38,7 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             Texture2D tex2 = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/BombTell");
 
-            float bright = ((300 - projectile.timeLeft) / 300f * 0.9f);
+            float bright = (300 - projectile.timeLeft) / 300f * 0.9f;
             if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.1f;
             spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), (projectile.timeLeft < 60 ? Color.Red : Color.White) * bright, 0, tex2.Size() / 2, 2, 0, 0);
         }
@@ -69,13 +69,9 @@ namespace StarlightRiver.NPCs.Boss.VitricBoss
         {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
             for (int k = 0; k < 80; k++)
-            {
                 Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4));
-            }
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
-            {
                 player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), 60, 0);
-            }
         }
     }
 }

@@ -8,11 +8,10 @@ using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Tiles.Permafrost;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Permafrost.Tools;
 
-namespace StarlightRiver.NPCs.Boss.SquidBoss
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class ArenaActor : ModNPC
     {
