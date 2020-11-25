@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class InkBlob : ModProjectile
     {
+        public override string Texture => Directory.SquidBossDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rainbow Ink");
@@ -52,6 +53,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
     class SpewBlob : ModProjectile
     {
+        public override string Texture => Directory.SquidBossDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aurora Shard");

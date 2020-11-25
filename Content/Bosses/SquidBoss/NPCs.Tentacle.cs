@@ -1,19 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     public class Tentacle : ModNPC, IUnderwater
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
         public SquidBoss Parent { get; set; }
         public Vector2 MovePoint;
         public Vector2 SavedPoint;
@@ -45,11 +45,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (Parent != null)
             {
-                Texture2D top = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleTop");
-                Texture2D glow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow");
-                Texture2D glow2 = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow2");
-                Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleBody");
-                Texture2D ring = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleRing");
+                Texture2D top = GetTexture(Directory.SquidBossDir + "TentacleTop");
+                Texture2D glow = GetTexture(Directory.SquidBossDir + "TentacleGlow");
+                Texture2D glow2 = GetTexture(Directory.SquidBossDir + "TentacleGlow2");
+                Texture2D body = GetTexture(Directory.SquidBossDir + "TentacleBody");
+                Texture2D ring = GetTexture(Directory.SquidBossDir + "TentacleRing");
 
                 float dist = npc.Center.X - Parent.npc.Center.X;
                 int underMax = 0;
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (npc.ai[1] >= 60 && npc.ai[1] < 120) npc.Center = Vector2.SmoothStep(SavedPoint, MovePoint, (npc.ai[1] - 60) / 60f); //Spawn animation
         }
 
-        public override void SendExtraAI(BinaryWriter writer)
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
             writer.Write(SavedPoint.X);
             writer.Write(SavedPoint.Y);
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             writer.Write(MovePoint.Y);
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             SavedPoint = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             MovePoint = new Vector2(reader.ReadSingle(), reader.ReadSingle());

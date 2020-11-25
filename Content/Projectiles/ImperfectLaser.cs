@@ -11,7 +11,7 @@ namespace StarlightRiver.Projectiles
     {
         public const short LaserFocusDist = 80;
 
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetDefaults()
         {

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class SandCone : ModProjectile, IDrawAdditive
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetDefaults()
         {

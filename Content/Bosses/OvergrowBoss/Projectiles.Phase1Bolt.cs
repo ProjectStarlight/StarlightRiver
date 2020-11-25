@@ -10,7 +10,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
 {
     internal class Phase1Bolt : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetDefaults()
         {

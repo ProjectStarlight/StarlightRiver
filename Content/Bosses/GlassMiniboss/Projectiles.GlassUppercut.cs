@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         private NPC parent => Main.npc[(int)projectile.ai[0]];
 
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Blade");
 

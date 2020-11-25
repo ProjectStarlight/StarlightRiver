@@ -118,7 +118,7 @@ namespace StarlightRiver.Items.Aluminum
 
     internal class PhasespearNode : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
         public Color color;
 
         public override void SetDefaults()

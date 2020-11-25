@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class ArenaBottom : ModNPC
     {
         public VitricBoss Parent;
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 

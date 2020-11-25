@@ -2,7 +2,6 @@
 using StarlightRiver.Abilities;
 using StarlightRiver.GUI;
 using StarlightRiver.Items.Armor;
-using StarlightRiver.NPCs.Boss.SquidBoss;
 
 using System;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Tiles.Vitric;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Bosses.SquidBoss;
 
 namespace StarlightRiver.Core
 {

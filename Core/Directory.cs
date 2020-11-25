@@ -21,12 +21,19 @@ namespace StarlightRiver.Core
 {
     public static class Directory
     {
+        public static string Invisible =            "StarlightRiver/Assets/Invisible";
+        public static string Debug =                " ";
+
         public static string OvergrowTileDir =      "StarlightRiver/Assets/Tiles/Overgrow";
         public static string OvergrowItemDir =      "StarlightRiver/Assets/Items/Overgrow";
 
         public static string VitricTileDir =        "StarlightRiver/Assets/Tiles/Vitric";
         public static string VitricItemDir =        "StarlightRiver/Assets/Items/Vitric";
 
+<<<<<<< Updated upstream
         public static string PermafrostTileDir =    "StarlightRiver/Assets/Bosses/SquidBoss";
+=======
+        public static string SquidBossDir =         "StarlightRiver/Assets/Bosses/SquidBoss";
+>>>>>>> Stashed changes
     }
 }

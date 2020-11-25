@@ -7,11 +7,13 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.NPCs;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class Laser : InteractiveProjectile, IUnderwater
     {
+        public override string Texture => Directory.SquidBossDir + Name;
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
@@ -28,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void AI()
         {
-            if (projectile.timeLeft == 599 || (Main.expertMode && projectile.timeLeft == 449))
+            if (projectile.timeLeft == 599 || Main.expertMode && projectile.timeLeft == 449)
             {
                 int y = (int)projectile.Center.Y / 16 - 31;
 

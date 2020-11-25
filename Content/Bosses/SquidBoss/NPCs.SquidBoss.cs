@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -11,9 +10,13 @@ using Terraria.ModLoader;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.NPCs;
 
+<<<<<<< Updated upstream
 using StarlightRiver.Core;
 
+=======
+>>>>>>> Stashed changes
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     [AutoloadBossHead]
@@ -42,6 +45,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             DeathAnimation = 6
         }
 
+        public override string Texture => Directory.Invisible;
+
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale) => npc.lifeMax = (int)(6000 * bossLifeScale);
@@ -69,9 +74,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
 
                 for (int k = 0; k < 10; k++)
-                {
-                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Gores/SquidGore"));
-                }
+                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Content/Gores/SquidGore"));
                 return true;
             }
         }
@@ -99,10 +102,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
+<<<<<<< Updated upstream
             Texture2D ring = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRing");
             Texture2D ringGlow = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRingGlow");
+=======
+            Texture2D ring = GetTexture(Directory.SquidBossDir + "BodyRing");
+            Texture2D ringGlow = GetTexture(Directory.SquidBossDir + "BodyRingGlow");
+>>>>>>> Stashed changes
 
-            Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyUnder");
+            Texture2D body = GetTexture(Directory.SquidBossDir + "BodyUnder");
 
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
@@ -135,8 +143,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void DrawHeadBlobs(SpriteBatch spriteBatch)
         {
-            Texture2D headBlob = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyOver");
-            Texture2D headBlobGlow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/BodyOverGlow");
+            Texture2D headBlob = GetTexture(Directory.SquidBossDir + "BodyOver");
+            Texture2D headBlobGlow = GetTexture(Directory.SquidBossDir + "BodyOverGlow");
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {
@@ -153,8 +161,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 off = off.RotatedBy(npc.rotation);
 
-                float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - (k * 0.5f));
-                float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + (k * 0.5f));
+                float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f);
+                float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k * 0.5f);
                 float scale = 1 + sin * 0.04f;
 
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
@@ -164,7 +172,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (Phase == (int)AIStates.DeathAnimation) //Unique drawing for death animation
                 {
-                    sin = 1 + (float)Math.Sin(GlobalTimer / 5f - (k * 0.5f)); //faster pulsing
+                    sin = 1 + (float)Math.Sin(GlobalTimer / 5f - k * 0.5f); //faster pulsing
                     scale = 1 + sin * 0.08f; //bigger pulsing
 
                     if (GlobalTimer == (k + 1) * 20) //dust explosion
@@ -256,13 +264,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (GlobalTimer > 600) //tentacles returning back underwater
-                {
                     foreach (NPC tentacle in tentacles)
                     {
                         Tentacle mt = tentacle.modNPC as Tentacle;
                         tentacle.Center = Vector2.SmoothStep(mt.MovePoint, mt.SavedPoint, (GlobalTimer - 600) / 100f);
                     }
-                }
 
                 if (GlobalTimer > 700) Phase = (int)AIStates.FirstPhase;
             }
@@ -276,7 +282,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 npc.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
                 if (AttackTimer == 1)
-                {
                     if (tentacles.Count(n => n.ai[0] == 2) == 2) //phasing logic
                     {
                         Phase = (int)AIStates.FirstPhaseTwo;
@@ -288,7 +293,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         AttackPhase++;
                         if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
                     }
-                }
 
                 switch (AttackPhase)
                 {
@@ -311,9 +315,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
-                {
                     foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1)) tentacle.ai[0] = 0;
-                }
 
                 if (GlobalTimer > 325) //continue attacking otherwise
                 {
@@ -324,7 +326,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     npc.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
                     if (AttackTimer == 1)
-                    {
                         if (tentacles.Count(n => n.ai[0] == 2) == 4) //phasing logic
                         {
                             Phase = (int)AIStates.SecondPhase;
@@ -336,7 +337,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             AttackPhase++;
                             if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
                         }
-                    }
 
                     switch (AttackPhase)
                     {
@@ -496,12 +496,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        public override void SendExtraAI(BinaryWriter writer)
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
             writer.Write(variantAttack);
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             variantAttack = reader.ReadBoolean();
         }

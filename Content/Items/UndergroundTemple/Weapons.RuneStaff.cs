@@ -159,7 +159,7 @@ namespace StarlightRiver.Items.Temple.DashLocked
 
     public class RuneStaffExplosion : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetDefaults()
         {

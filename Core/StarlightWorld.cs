@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Keys;
-using StarlightRiver.NPCs.Boss.SquidBoss;
 using StarlightRiver.NPCs.TownUpgrade;
 using System;
 using System.Collections.Generic;

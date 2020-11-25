@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class ArenaBlocker : ModNPC
     {
-        public override string Texture => "STarlightRiver/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
@@ -32,24 +32,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void AI()
         {
-            if (npc.ai[1] == 1 && npc.ai[0] > 0) { npc.ai[0] -= 4; }
-            npc.friendly = false;
+            if (npc.ai[1] == 1 && npc.ai[0] > 0) npc.ai[0] -= 4; npc.friendly = false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (npc.ai[0] > 150)
             {
-                Texture2D top = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleTop");
-                Texture2D glow = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleGlow");
-                Texture2D body = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/TentacleBody");
+                Texture2D top = GetTexture(Directory.SquidBossDir + "TentacleTop");
+                Texture2D glow = GetTexture(Directory.SquidBossDir + "TentacleGlow");
+                Texture2D body = GetTexture(Directory.SquidBossDir + "TentacleBody");
 
-                for (int k = 0; k < (npc.ai[0] - top.Height); k += (body.Height + 2))
+                for (int k = 0; k < npc.ai[0] - top.Height; k += body.Height + 2)
                 {
-                    Vector2 pos2 = npc.position + new Vector2(k, 4 + (float)Math.Sin(StarlightWorld.rottime + (k / 25f)) * 10);
+                    Vector2 pos2 = npc.position + new Vector2(k, 4 + (float)Math.Sin(StarlightWorld.rottime + k / 25f) * 10);
                     spriteBatch.Draw(body, pos2 - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos2.X / 16, (int)pos2.Y / 16), 1.57f, body.Size() / 2, 1, 0, 0);
 
-                    Vector2 pos3 = npc.position + new Vector2(npc.width - k, 4 + (float)Math.Sin(StarlightWorld.rottime + (k / 25f)) * 10);
+                    Vector2 pos3 = npc.position + new Vector2(npc.width - k, 4 + (float)Math.Sin(StarlightWorld.rottime + k / 25f) * 10);
                     spriteBatch.Draw(body, pos3 - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos3.X / 16, (int)pos3.Y / 16), 1.57f, body.Size() / 2, 1, 0, 0);
                 }
 

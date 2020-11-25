@@ -1,9 +1,9 @@
-﻿using StarlightRiver.NPCs.Boss.SquidBoss;
-using Terraria;
+﻿using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Bosses.SquidBoss;
 
 namespace StarlightRiver.Content.CustomHooks
 {

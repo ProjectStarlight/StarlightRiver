@@ -34,21 +34,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Main.tile[point.X, point.Y].inActive(false);
 
             if (projectile.timeLeft < 10)
-            {
                 foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
-            }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/Highlight");
+            Texture2D tex = ModContent.GetTexture(Directory.SquidBossDir + "Highlight");
             int off = 16 * ((int)projectile.ai[0] % 5);
 
             if (projectile.timeLeft > 10)
-            {
                 foreach (Point16 point in ValidPoints)
                     if (!Main.tile[point.X, point.Y].active()) spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
-            }
             projectile.ai[0] += 0.2f;
         }
 

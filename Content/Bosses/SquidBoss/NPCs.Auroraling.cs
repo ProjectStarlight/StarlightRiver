@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class Auroraling : ModNPC
     {
+        public override string Texture => Directory.SquidBossDir + Name;
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
         public override void SetDefaults()
@@ -41,8 +42,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/AuroralingGlow");
-            Texture2D tex2 = GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/AuroralingGlow2");
+            Texture2D tex = GetTexture(Directory.SquidBossDir + "AuroralingGlow");
+            Texture2D tex2 = GetTexture(Directory.SquidBossDir + "AuroralingGlow2");
 
             float sin = 1 + (float)Math.Sin(npc.ai[0] / 10f);
             float cos = 1 + (float)Math.Cos(npc.ai[0] / 10f);

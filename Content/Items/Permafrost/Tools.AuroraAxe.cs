@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items.Permafrost.Tools
     {
         Color thisColor = Color.White;
 
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
 
         public override void SetDefaults()
         {

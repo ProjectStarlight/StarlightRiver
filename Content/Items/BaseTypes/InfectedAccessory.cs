@@ -59,7 +59,7 @@ namespace StarlightRiver.Items.CursedAccessories
 
     internal class Blocker : ModItem
     {
-        public override string Texture => "StarlightRiver/Assets/Invisible";
+        public override string Texture => Directory.Invisible;
         public Item Parent { get; set; }
 
         public override void SetDefaults()
