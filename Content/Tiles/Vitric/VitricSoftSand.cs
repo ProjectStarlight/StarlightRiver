@@ -5,17 +5,16 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Tiles.Vitric;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricSoftSand : ModTile
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
+            (this).QuickSet(0, DustType<Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
             Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
             Main.tileMerge[Type][TileType<VitricMoss>()] = true;

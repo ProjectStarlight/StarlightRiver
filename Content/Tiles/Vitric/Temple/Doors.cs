@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class DoorVertical : ModTile
     {
@@ -14,13 +14,13 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+            (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
     }
 
     class DoorVerticalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public DoorVerticalItem() : base("Vertical Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorVertical>(), ItemRarityID.Blue) { }
     }
@@ -31,13 +31,13 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+            (this).QuickSetFurniture(7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
     }
 
     class DoorHorizontalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public DoorHorizontalItem() : base("Horizontal Temple Door", "CUM IN ME DADDY OH YES YES YES", TileType<DoorHorizontal>(), ItemRarityID.Blue) { }
     }

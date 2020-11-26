@@ -6,16 +6,16 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class RecieverPuzzle : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Reciever");
+        public override void SetDefaults() => (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Reciever");
     }
 
     class RecieverPlacable : ModTile
     {
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Reciever");
+        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Reciever");
     }
 
     class RecieverItem : QuickTileItem

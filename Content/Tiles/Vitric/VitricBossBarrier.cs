@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricBossBarrier : ModTile
     {
@@ -24,7 +24,7 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<StarlightRiver.Content.Bosses.GlassBoss.VitricBoss>());
+            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<Bosses.GlassBoss.VitricBoss>());
         }
     }
 }

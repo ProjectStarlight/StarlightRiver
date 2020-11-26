@@ -32,7 +32,7 @@ namespace StarlightRiver.Tiles.Temple
 
     public class DashBarrierItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public DashBarrierItem() : base("Dash Barrier", "Cum in my pussy.", TileType<DashBarrier>(), -12) { }
     }

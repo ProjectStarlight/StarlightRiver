@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
     class DebugDisc : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public DebugDisc() : base("Debug Disc Placer", "Dragon Sex", TileType<AuroraDiscTile>(), 1) { }
     }

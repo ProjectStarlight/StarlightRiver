@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class WindsCrystal : DummyTile
     {
@@ -19,7 +19,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 10, 10, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
+            (this).QuickSetFurniture(10, 10, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
         }
     }
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 10, 4, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
+            (this).QuickSetFurniture(10, 4, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
         }
     }
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class WindsCrystalItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1) { }
     }

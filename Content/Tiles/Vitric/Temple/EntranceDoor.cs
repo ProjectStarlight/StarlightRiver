@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class EntranceDoor : ModTile
     {
@@ -15,7 +15,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
+            (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
         }
 
         public override void NearbyEffects(int i, int j, bool closer)
@@ -28,7 +28,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class EntranceDoorItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1) { }
     }

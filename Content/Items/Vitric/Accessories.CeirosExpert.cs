@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Accessories.Expert
+namespace StarlightRiver.Content.Items.Vitric
 {
     internal class CeirosExpert : ModItem
     {

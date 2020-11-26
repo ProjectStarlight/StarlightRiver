@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricSword : ModItem
     {
@@ -58,14 +58,10 @@ namespace StarlightRiver.Items.Vitric
 
         public override bool CanUseItem(Player player)
         {
-            if (Main.projectile.Any(projectile => (projectile.type == mod.ProjectileType("VitricSwordProjectile") && projectile.owner == player.whoAmI && projectile.active)))
-            {
+            if (Main.projectile.Any(projectile => projectile.type == mod.ProjectileType("VitricSwordProjectile") && projectile.owner == player.whoAmI && projectile.active))
                 return false;
-            }
             else
-            {
                 Broken = false;
-            }
             return true;
         }
 

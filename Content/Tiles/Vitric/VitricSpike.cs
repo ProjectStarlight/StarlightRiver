@@ -8,14 +8,14 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricSpike : ModTile
     {
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSet(this, 200, DustType<Dusts.Glass3>(), SoundID.Tink, new Color(95, 162, 138), -1);
+            (this).QuickSet(200, DustType<Dusts.Glass3>(), SoundID.Tink, new Color(95, 162, 138), -1);
             Main.tileMerge[Type][mod.TileType("VitricSand")] = true;
             Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricSmallCrystal>()] = true;

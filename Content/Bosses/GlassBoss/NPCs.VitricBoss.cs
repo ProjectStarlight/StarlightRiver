@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.GUI;
-using StarlightRiver.Items.BossDrops.VitricBossDrops;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.NPCs;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {

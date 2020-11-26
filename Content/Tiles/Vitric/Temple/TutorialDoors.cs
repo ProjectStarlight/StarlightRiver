@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class TutorialDoor1 : DummyTile
     {
@@ -26,7 +26,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+            (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
     }
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1) { }
     }
@@ -69,7 +69,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+            (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
     }
 
@@ -80,7 +80,6 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         public override void Collision(Player player)
         {
             if (player.GetModPlayer<StarlightPlayer>().inTutorial && player.Hitbox.Intersects(projectile.Hitbox))
-            {
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     player.GetModPlayer<StarlightPlayer>().inTutorial = false;
@@ -90,7 +89,6 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                         Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.Glass2>());
                 }
                 else player.velocity.X = -1;
-            }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -104,7 +102,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class TutorialDoor2Item : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1) { }
     }

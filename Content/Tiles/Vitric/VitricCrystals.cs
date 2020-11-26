@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricLargeCrystal : ModTile
     {
@@ -19,7 +19,7 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
+            (this).QuickSet(int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
@@ -38,7 +38,7 @@ namespace StarlightRiver.Tiles.Vitric
             if (t.frameX > 0)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/LargeCrystal");
-                spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(80, 176), 1, 0, 0);
+                spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(80, 176), 1, 0, 0);
                 //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }
         }
@@ -59,7 +59,7 @@ namespace StarlightRiver.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
+            (this).QuickSet(int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
@@ -83,7 +83,7 @@ namespace StarlightRiver.Tiles.Vitric
             if (t.frameX > 0)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/SmallCrystal");
-                spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(32, 48), 1, 0, 0);
+                spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(32, 48), 1, 0, 0);
                 //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }
         }

@@ -7,16 +7,17 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
-    public class AncientSandstoneTorchItem : Items.QuickTileItem
+    public class AncientSandstoneTorchItem : QuickTileItem
     {
         public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0)
         {
         }
 
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
     }
 
     internal class AncientSandstoneTorch : ModTile
@@ -50,9 +51,7 @@ namespace StarlightRiver.Tiles.Vitric
 
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 8 - Main.screenPosition;
             for (int k = 0; k < 3; k++)
-            {
                 spriteBatch.Draw(tex, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.05f), 0, tex.Size() / 2, k * 0.3f, 0, 0);
-            }
             spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.10f), (float)Math.Sin(StarlightWorld.rottime) * 0.1f, tex.Size() / 2, 0.6f, 0, 0);
             spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.rottime) * 0.10f), 2 + -(float)Math.Sin(StarlightWorld.rottime + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
 

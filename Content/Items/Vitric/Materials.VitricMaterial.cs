@@ -3,8 +3,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricOre : QuickMaterial
     {

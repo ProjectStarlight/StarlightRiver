@@ -4,8 +4,9 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Tiles;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     class VitricLootBox : LootChest
     {
@@ -30,6 +31,6 @@ namespace StarlightRiver.Tiles.Vitric
             };
         }
 
-        public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+        public override void SafeSetDefaults() => (this).QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
     }
 }

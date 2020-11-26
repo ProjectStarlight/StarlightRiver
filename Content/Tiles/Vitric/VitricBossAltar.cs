@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Bosses.GlassBoss;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricBossAltar : DummyTile
     {
@@ -20,12 +20,12 @@ namespace StarlightRiver.Tiles.Vitric
         public override bool SpawnConditions(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return (tile.frameX % 90 == 0 && tile.frameY == 0);
+            return tile.frameX % 90 == 0 && tile.frameY == 0;
         }
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 5, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
+            (this).QuickSetFurniture(5, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
             minPick = int.MaxValue;
         }
 
@@ -72,9 +72,7 @@ namespace StarlightRiver.Tiles.Vitric
 
                 for (int x = parentPos.X; x < parentPos.X + 5; x++)
                     for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
-                    {
                         Framing.GetTileSafely(x, y).frameX += 90;
-                    }
             }
         }
 
@@ -125,7 +123,7 @@ namespace StarlightRiver.Tiles.Vitric
                 if (projectile.ai[0] == 119) //hitting the top
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 25;
-                    for (int k = 0; k < 5; k++) Main.PlaySound(Terraria.ID.SoundID.Tink);
+                    for (int k = 0; k < 5; k++) Main.PlaySound(SoundID.Tink);
                 }
             }
             else if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>())) projectile.ai[0] = 0; //TODO fix this later

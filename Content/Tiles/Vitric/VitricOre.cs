@@ -9,14 +9,14 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricOre : DummyTile
     {
         public override int DummyType => ProjectileType<VitricOreDummy>();
         public override void SetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230));
+            (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230));
             minPick = int.MaxValue;
         }
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
@@ -27,7 +27,7 @@ namespace StarlightRiver.Tiles.Vitric
         public override int DummyType => ProjectileType<VitricOreFloatDummy>();
         public override void SetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230));
+            (this).QuickSetFurniture(2, 2, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230));
             minPick = int.MaxValue;
         }
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);

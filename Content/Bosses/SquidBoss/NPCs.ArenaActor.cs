@@ -8,10 +8,6 @@ using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Tiles.Permafrost;
 using static Terraria.ModLoader.ModContent;
-<<<<<<< Updated upstream
-using StarlightRiver.Core;
-=======
->>>>>>> Stashed changes
 using StarlightRiver.Content.Items.Permafrost.Tools;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss

@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class Mirror : ModTile
     {
@@ -21,7 +21,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Mirror");
+            (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Mirror");
         }
 
         public override bool NewRightClick(int i, int j)

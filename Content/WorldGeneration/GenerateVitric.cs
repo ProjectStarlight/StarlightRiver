@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Noise;
-using StarlightRiver.Tiles.Vitric;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricStaff : ModItem
     {
@@ -35,9 +35,7 @@ namespace StarlightRiver.Items.Vitric
         {
             Vector2 muzzleOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 35f;
             if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
-            {
                 position += muzzleOffset;
-            }
             Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 43, 0.75f);
             Vector2 perturbedSpeed = new Vector2(speedX, speedY).RotatedByRandom(MathHelper.ToRadians(20));
             Projectile.NewProjectile(position.X, position.Y, perturbedSpeed.X, perturbedSpeed.Y, item.shoot, damage, knockBack, player.whoAmI);

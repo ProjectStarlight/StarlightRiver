@@ -11,7 +11,7 @@ namespace StarlightRiver.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = 
+            texture = Directory.Dust + name;
             return true;
         }
         public override void OnSpawn(Dust dust)

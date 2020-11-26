@@ -8,6 +8,11 @@ namespace StarlightRiver.Dusts
 {
     class Crystal : ModDust
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
         public override void OnSpawn(Dust dust)
         {
             dust.frame = new Rectangle(0, Main.rand.Next(2) * 20, 20, 20);

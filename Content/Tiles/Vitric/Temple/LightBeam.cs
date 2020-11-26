@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class LightBeam : ModProjectile
     {
@@ -100,9 +100,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                 }
 
                 if (tile.type == TileType<RecieverPuzzle>())
-                {
                     Main.NewText("Nice cock.", new Color(255, 0, 255));
-                }
 
                 if (tile.type == TileType<RecieverPlacable>())
                 {
@@ -115,9 +113,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
                 }
 
                 if (tile.type == TileType<DoorVertical>() || tile.type == TileType<DoorHorizontal>())
-                {
                     WorldGen.KillTile(x, y);
-                }
             }
             return true;
         }

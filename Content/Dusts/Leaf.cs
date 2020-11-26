@@ -8,6 +8,11 @@ namespace StarlightRiver.Dusts
 {
     public class Leaf : Corrupt
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return lightColor;

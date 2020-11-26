@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     internal class BulbFruitItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
         public BulbFruitItem() : base("Bulb Fruit", "", TileType<BulbFruit>(), 1) { }
     }
 

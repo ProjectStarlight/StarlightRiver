@@ -7,6 +7,12 @@ namespace StarlightRiver.Dusts
 {
     public abstract class QuickSplash : ModDust
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
             updateType = 33;

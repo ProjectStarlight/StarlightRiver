@@ -24,7 +24,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Forbidden Winds";
             Body = "A collection of strange energies found deeep within a tomb buried in the vitric desert. These 'winds' hold the power to shatter certain objects on touch and propel you forward at great speeds.";
             Hint = "Sealed away in an ancient glass temple";
-            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Image = GetTexture(Directory.Debug);
             Icon = GetTexture("StarlightRiver/Assets/Abilities/ForbiddenWinds");
         }
     }
@@ -50,7 +50,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Corona of Purity";
             Body = "NO TEXT";
             Hint = "Found in a temple at the brink of the world...";
-            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Image = GetTexture(Directory.Debug);
             Icon = GetTexture("StarlightRiver/Assets/Abilities/PureCrown");
         }
     }
@@ -63,7 +63,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Gaia's Fist";
             Body = "NO TEXT";
             Hint = "PENIS";
-            Image = GetTexture("StarlightRiver/Assets/MarioCumming");
+            Image = GetTexture(Directory.Debug);
             Icon = GetTexture("StarlightRiver/Assets/Abilities/GaiaFist");
         }
     }

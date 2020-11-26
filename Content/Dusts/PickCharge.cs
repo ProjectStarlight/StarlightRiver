@@ -10,7 +10,7 @@ namespace StarlightRiver.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Dusts/FireDust";
+            texture = Directory.Dust + "FireDust";
             return true;
         }
         public override void OnSpawn(Dust dust)

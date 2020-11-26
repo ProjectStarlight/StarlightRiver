@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
-using StarlightRiver.Items.Vitric;
 using StarlightRiver.Projectiles.WeaponProjectiles;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Armor.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     [AutoloadEquip(EquipType.Head)]
     public class VitricHead : ModItem
@@ -55,7 +54,6 @@ namespace StarlightRiver.Items.Armor.Vitric
             player.setBonus = "Gain 5% attack strength, lose 3 defense, and release protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
 
             for (float k = 0.2f; k <= 0.8f; k += 0.2f)
-            {
                 if ((float)player.statLife / player.statLifeMax2 < k)
                 {
                     player.statDefense -= 3;
@@ -74,11 +72,8 @@ namespace StarlightRiver.Items.Armor.Vitric
                         Main.projectile[proj].netUpdate = true;
                     }
                     else
-                    {
                         findproj.ai[1] = 3;
-                    }
                 }
-            }
         }
 
         public override void AddRecipes()
@@ -94,7 +89,6 @@ namespace StarlightRiver.Items.Armor.Vitric
         private bool SetBonusPrehurt(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
             if (player.armor[0].type == ItemType<VitricHead>() && player.armor[1].type == ItemType<VitricChest>() && player.armor[2].type == ItemType<VitricLegs>())//Better way to do this?
-            {
                 foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
                 {
                     VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
@@ -105,7 +99,6 @@ namespace StarlightRiver.Items.Armor.Vitric
                         break;
                     }
                 }
-            }
             return true;
         }
 
@@ -207,8 +200,8 @@ namespace StarlightRiver.Items.Armor.Vitric
                 foreach (VitricArmorProjectile modshard in allshards)
                 {
                     double angle = Math.Sin(-modshard.projectile.localAI[1]);
-                    if ((angle > 0 && !back) ||
-                        (angle <= 0 && back))
+                    if (angle > 0 && !back ||
+                        angle <= 0 && back)
                         Main.playerDrawData.Add(modshard.Draw());
                 }
             }

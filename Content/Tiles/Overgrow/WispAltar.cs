@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarLItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public WispAltarLItem() : base("Wisp Altar L Placer", "DEBUG", TileType<WispAltarL>(), -1) { }
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarRItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public WispAltarRItem() : base("Wisp Altar R Placer", "DEBUG", TileType<WispAltarR>(), -1) { }
     }

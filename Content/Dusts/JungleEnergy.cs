@@ -9,6 +9,11 @@ namespace StarlightRiver.Dusts
 {
     public class JungleEnergy : ModDust
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -46,7 +51,7 @@ namespace StarlightRiver.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Dusts/JungleEnergy";
+            texture = Directory.Dust + "JungleEnergy";
             return true;
         }
 

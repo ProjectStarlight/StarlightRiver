@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class ForgeDoorItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public ForgeDoorItem() : base("Forge Door", "Titties", TileType<ForgeDoor>(), 1) { }
     }

@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Ammo
+namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricArrow : ModItem
     {

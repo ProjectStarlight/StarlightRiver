@@ -41,7 +41,7 @@ namespace StarlightRiver.Tiles.Temple
 
     class TempleChestPlacer : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0) { }
     }

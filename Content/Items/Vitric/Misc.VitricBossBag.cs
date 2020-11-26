@@ -5,11 +5,11 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.BossDrops.VitricBossDrops
+namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBag : ModItem
     {
-        public override int BossBagNPC => NPCType<StarlightRiver.Content.Bosses.GlassBoss.VitricBoss>();
+        public override int BossBagNPC => NPCType<Bosses.GlassBoss.VitricBoss>();
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Treasure Bag");
 
@@ -30,18 +30,18 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
             {
                 switch (weapon % 5)
                 {
-                    case 0: Item.NewItem(player.Center, ItemType<Items.Vitric.VitricPick>()); break;
-                    case 1: Item.NewItem(player.Center, ItemType<Items.Vitric.VitricAxe>()); break;
-                    case 2: Item.NewItem(player.Center, ItemType<Items.Vitric.VitricHammer>()); break;
-                    case 3: Item.NewItem(player.Center, ItemType<Items.Vitric.VitricSword>()); break;
-                    case 4: Item.NewItem(player.Center, ItemType<Items.Vitric.VitricBow>()); break;
+                    case 0: Item.NewItem(player.Center, ItemType<Vitric.VitricPick>()); break;
+                    case 1: Item.NewItem(player.Center, ItemType<Vitric.VitricAxe>()); break;
+                    case 2: Item.NewItem(player.Center, ItemType<Vitric.VitricHammer>()); break;
+                    case 3: Item.NewItem(player.Center, ItemType<Vitric.VitricSword>()); break;
+                    case 4: Item.NewItem(player.Center, ItemType<Vitric.VitricBow>()); break;
                 }
                 weapon++;
             }
 
-            Item.NewItem(player.Center, ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(40, 60));
+            Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(40, 60));
             Item.NewItem(player.Center, ItemType<Items.Accessories.StaminaUp>());
-            Item.NewItem(player.Center, ItemType<Items.Accessories.Expert.CeirosExpert>());
+            Item.NewItem(player.Center, ItemType<CeirosExpert>());
         }
     }
 }

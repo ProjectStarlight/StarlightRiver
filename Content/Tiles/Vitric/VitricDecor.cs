@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     class VitricDecor : ModTile
     {
@@ -20,7 +20,7 @@ namespace StarlightRiver.Tiles.Vitric
             TileObjectData.newTile.RandomStyleRange = 4;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(2, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
         }
     }
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.Tiles.Vitric
             TileObjectData.newTile.RandomStyleRange = 6;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            QuickBlock.QuickSetFurniture(this, 3, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(3, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
         }
     }
 }

@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricPick : ModItem
     {

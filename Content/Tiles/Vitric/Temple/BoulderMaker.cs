@@ -8,14 +8,14 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric.Temple
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class BoulderMaker : ModTile
     {
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 6, 1, DustType<Dusts.Sand>(), SoundID.Tink, false, new Color(100, 80, 10));
+            (this).QuickSetFurniture(6, 1, DustType<Dusts.Sand>(), SoundID.Tink, false, new Color(100, 80, 10));
         }
 
         public override void NearbyEffects(int i, int j, bool closer)
@@ -28,7 +28,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
 
     class BoulderMakerItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1) { }
     }
@@ -67,9 +67,7 @@ namespace StarlightRiver.Tiles.Vitric.Temple
         public override void NPCLoot()
         {
             for (int k = 0; k < 100; k++)
-            {
                 Dust.NewDust(npc.position, npc.width, npc.height, DustID.Stone);
-            }
 
             Main.PlaySound(SoundID.NPCHit42.SoundId, (int)npc.Center.X, (int)npc.Center.Y, 42, 1, -0.8f);
         }

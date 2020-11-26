@@ -7,8 +7,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricKnockbackAccessory : SmartAccessory
     {
@@ -29,8 +30,8 @@ namespace StarlightRiver.Items.Vitric
         {
             if (Equipped(player) && damage > player.statLifeMax2 * 0.1f)
             {
-                float magnitude = 1 + (player.statLife / damage) * 4;
-                Array.ForEach(Main.npc, (NPC npc) =>
+                float magnitude = 1 + player.statLife / damage * 4;
+                Array.ForEach(Main.npc, (npc) =>
                 {
                     if (npc.active && Helper.IsTargetValid(npc) && !npc.friendly && Vector2.Distance(npc.Center, player.MountedCenter) < 250)
                     {

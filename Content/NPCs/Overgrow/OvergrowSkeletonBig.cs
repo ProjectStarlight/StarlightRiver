@@ -8,7 +8,7 @@ namespace StarlightRiver.NPCs.Hostile
 {
     internal class OvergrowSkeletonBig : ModNPC
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public override void SetStaticDefaults()
         {

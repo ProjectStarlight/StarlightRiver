@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricMagicBook : ModItem
     {
@@ -37,9 +37,7 @@ namespace StarlightRiver.Items.Vitric
             {
                 Vector2 muzzleOffset = MathHelper.ToRadians(i).ToRotationVector2() * 35f;
                 if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
-                {
                     position += muzzleOffset;
-                }
                 Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 8, 1);
                 muzzleOffset.Normalize();
                 Projectile.NewProjectile(position.X, position.Y, muzzleOffset.X * 16f, 0, item.shoot, damage, knockBack, player.whoAmI);

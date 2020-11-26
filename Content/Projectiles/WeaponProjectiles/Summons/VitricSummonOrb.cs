@@ -9,10 +9,10 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles.Summons;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
+namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
 {
 
     internal class VKnife
@@ -70,12 +70,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         private int Weapon
         {
             get => (int)projectile.ai[0];
-            set => projectile.ai[0] = (int)value;
+            set => projectile.ai[0] = value;
         }
         private int DisabledTime
         {
             get => (int)projectile.ai[1];
-            set => projectile.ai[1] = (int)value;
+            set => projectile.ai[1] = value;
         }
 
         public VitricSummonOrb()
@@ -96,7 +96,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         {
             startchase = reader.ReadInt32();
             reversechase = reader.ReadInt32();
-            AnimationTimer = (float)reader.ReadInt32();
+            AnimationTimer = reader.ReadInt32();
         }
 
         public int NextWeapon
@@ -114,25 +114,21 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                     if (currentProjectile.active
                     && currentProjectile.owner == projectile.owner
                     && currentProjectile.type == projectile.type)
-                    {
                         if (i == currentProjectile.whoAmI)
                         {
                             projcount += 1;
                             for (int j = 0; j < 20; j++)
                                 findweapon.Add((int)currentProjectile.ai[0]);
                         }
-                    }
                 }
 
                 if (projcount < 3)
-                {
                     for (int i = 0; i < 4; i++)
                         for (int j = Weapon; j >= 0; j--)
                             findweapon.Add(j);
-                }
 
                 //Find least common
-                return (findweapon.ToArray().GroupBy(i => i).OrderBy(g => g.Count()).Select(g => g.Key).ToList()).First();
+                return findweapon.ToArray().GroupBy(i => i).OrderBy(g => g.Count()).Select(g => g.Key).ToList().First();
             }
 
         }
@@ -193,7 +189,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 projectile.timeLeft = 2;
 
             bool toplayer = true;
-            Vector2 gothere = player.Center + new Vector2(player.direction * (HoldingWeaponsOff[Weapon].X), HoldingWeaponsOff[Weapon].Y);
+            Vector2 gothere = player.Center + new Vector2(player.direction * HoldingWeaponsOff[Weapon].X, HoldingWeaponsOff[Weapon].Y);
 
             if (DisabledTime > 0)
             {
@@ -257,20 +253,20 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             }
 
             float timer = player.GetModPlayer<StarlightPlayer>().Timer * (MathHelper.TwoPi / 180f);
-            double angles = (float)(thisprojectile / maxmatchingprojectiles * MathHelper.TwoPi) - ((float)Math.PI / 2f) + (timer * projectile.spriteDirection); //again, please work in radians.IDG-yes
+            double angles = thisprojectile / maxmatchingprojectiles * MathHelper.TwoPi - (float)Math.PI / 2f + timer * projectile.spriteDirection; //again, please work in radians.IDG-yes
             float dist = 16f;
-            float aval = timer + (thisprojectile * MathHelper.Pi * 0.465f) * projectile.spriteDirection;
+            float aval = timer + thisprojectile * MathHelper.Pi * 0.465f * projectile.spriteDirection;
             Vector2 here;
 
             if (!toplayer)
             {
-                here = (new Vector2((float)Math.Sin(aval / 60f) * 6f, 20f * ((float)Math.Sin(aval / 70f)))).RotatedBy((them.Center - gothere).ToRotation());
-                projectile.rotation = projectile.rotation.AngleTowards((MovementLerp * projectile.spriteDirection) * 0.10f, 0.1f);
+                here = new Vector2((float)Math.Sin(aval / 60f) * 6f, 20f * (float)Math.Sin(aval / 70f)).RotatedBy((them.Center - gothere).ToRotation());
+                projectile.rotation = projectile.rotation.AngleTowards(MovementLerp * projectile.spriteDirection * 0.10f, 0.1f);
             }
             else
             {
-                float anglz = (float)(Math.Cos(aval)) / 4f;
-                projectile.rotation = projectile.rotation.AngleTowards(((player.direction * 0) + anglz) - (MovementLerp * projectile.spriteDirection) * 0.07f, 0.05f);
+                float anglz = (float)Math.Cos(aval) / 4f;
+                projectile.rotation = projectile.rotation.AngleTowards(player.direction * 0 + anglz - MovementLerp * projectile.spriteDirection * 0.07f, 0.05f);
                 here = new Vector2((float)Math.Cos(angles) / 2f, (float)Math.Sin(angles)) * dist;
             }
 
@@ -288,8 +284,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 {
                     startchase = 0f;
                     reversechase += 1f;
-                    projectile.velocity += (diff / 5f) * Math.Min(reversechase / 405f, 1f);
-                    projectile.velocity *= (0.725f * Math.Max(diff.Length() / 100f, 1f));
+                    projectile.velocity += diff / 5f * Math.Min(reversechase / 405f, 1f);
+                    projectile.velocity *= 0.725f * Math.Max(diff.Length() / 100f, 1f);
                     projectile.spriteDirection = player.direction;
                 }
                 else
@@ -316,19 +312,19 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             if (Weapon < 0 || DisabledTime > 0)
                 return false;
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/" + (WeaponSprite[Weapon]));
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/" + WeaponSprite[Weapon]);
 
             float scale = Math.Min(AnimationTimer / 15f, 1f);
             Rectangle Rect = WhiteFrame(tex.Size().ToRectangle(), false);
             Rectangle Rect2 = WhiteFrame(tex.Size().ToRectangle(), true);
 
 
-            Vector2 drawPos = ((projectile.Center - Main.screenPosition));
+            Vector2 drawPos = projectile.Center - Main.screenPosition;
             Color color = lightColor * scale;
             Vector2 drawOrigin;
 
             //Local variables. Use them. Please. IDG-ok
-            if ((int)Weapon == (int)WeaponType.Hammer || Weapon == (int)WeaponType.Javelin)
+            if (Weapon == (int)WeaponType.Hammer || Weapon == (int)WeaponType.Javelin)
             {
                 drawOrigin = new Vector2(tex.Width / 2f, tex.Height) / 2f;
                 spriteBatch.Draw(tex, drawPos, Rect, color, (projectile.rotation + (Weapon == 3 ? MathHelper.Pi / 2f : 0)) * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
@@ -343,7 +339,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             }
 
             if (Weapon == (int)WeaponType.Knives)
-            {
                 foreach (VKnife knife in knives)
                 {
                     drawOrigin = new Vector2(tex.Width / 2f, tex.Height) / 2f;
@@ -351,7 +346,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                     spriteBatch.Draw(tex, drawPos + knife.pos * scale, Rect, color, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
                     spriteBatch.Draw(tex, drawPos + knife.pos * scale, Rect2, MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale * scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
                 }
-            }
 
             return false;
         }
@@ -392,9 +386,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                     foreach (VKnife knife in knives)
                     {
                         Projectile proj = Main.projectile[Projectile.NewProjectile(projectile.Center + knife.pos, projectile.velocity * 2, ModContent.ProjectileType<VitricSummonKnife>(), projectile.damage, projectile.knockBack, projectile.owner)];
-                        proj.ai[0] = (projectile.rotation + knife.rotation) + (projectile.spriteDirection > 0 ? 0 : 1000);
+                        proj.ai[0] = projectile.rotation + knife.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
                         proj.ai[1] = target.whoAmI;
-                        (proj.modProjectile as VitricSummonKnife).offset = new Vector2(0, -10 + (index * 10));
+                        (proj.modProjectile as VitricSummonKnife).offset = new Vector2(0, -10 + index * 10);
                         projectile.ai[1] = 80;
                         (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
                         proj.netUpdate = true;
@@ -406,7 +400,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 if (attack == (int)WeaponType.Javelin && targetdistance < 300)
                 {
                     Projectile proj = Main.projectile[Projectile.NewProjectile(projectile.Center, projectile.velocity * -5f, ModContent.ProjectileType<VitricSummonJavelin>(), projectile.damage, projectile.knockBack, projectile.owner)];
-                    proj.ai[0] = (projectile.rotation) + (projectile.spriteDirection > 0 ? 0 : 1000);
+                    proj.ai[0] = projectile.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     projectile.ai[1] = 80;
                     (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;

@@ -10,7 +10,7 @@ namespace StarlightRiver.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Dusts/Stamina";
+            texture = Directory.Dust + "Stamina";
             return true;
         }
 
@@ -43,6 +43,11 @@ namespace StarlightRiver.Dusts
 
     public class Electric2 : Electric
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
         public override bool Update(Dust dust)
         {
             Lighting.AddLight(dust.position, new Vector3(0.1f, 0.35f, 0.5f) * 1.5f * dust.scale);
@@ -61,6 +66,11 @@ namespace StarlightRiver.Dusts
 
     public class ElectricColor : Electric
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

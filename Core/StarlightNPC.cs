@@ -1,10 +1,9 @@
-﻿
-using StarlightRiver.Tiles.Vitric;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Vitric;
 
 namespace StarlightRiver.Core
 {

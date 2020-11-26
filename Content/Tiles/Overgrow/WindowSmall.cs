@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WindowSmallItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public WindowSmallItem() : base("Smol Window", "Titties", TileType<WindowSmall>(), 1) { }
     }

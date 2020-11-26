@@ -13,9 +13,9 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Tiles.Vitric;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Tiles.Vitric;
 
 namespace StarlightRiver.Core
 {
@@ -195,7 +195,7 @@ namespace StarlightRiver.Core
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (player.HeldItem.modItem is Items.Vitric.VitricSword && (player.HeldItem.modItem as Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
+            if (player.HeldItem.modItem is StarlightRiver.Content.Items.Vitric.VitricSword && (player.HeldItem.modItem as StarlightRiver.Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
 
             Action<PlayerDrawInfo> layerTarget = DrawGlowmasks;
             PlayerLayer layer = new PlayerLayer("ItemLayer", "Starlight River Item Drawing Layer", layerTarget);

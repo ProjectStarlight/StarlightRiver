@@ -12,11 +12,8 @@ using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.NPCs;
 
-<<<<<<< Updated upstream
 using StarlightRiver.Core;
 
-=======
->>>>>>> Stashed changes
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     [AutoloadBossHead]
@@ -102,13 +99,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
-<<<<<<< Updated upstream
-            Texture2D ring = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRing");
-            Texture2D ringGlow = GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/BodyRingGlow");
-=======
             Texture2D ring = GetTexture(Directory.SquidBossDir + "BodyRing");
             Texture2D ringGlow = GetTexture(Directory.SquidBossDir + "BodyRingGlow");
->>>>>>> Stashed changes
 
             Texture2D body = GetTexture(Directory.SquidBossDir + "BodyUnder");
 

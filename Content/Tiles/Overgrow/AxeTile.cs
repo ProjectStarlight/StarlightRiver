@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class AxeTileItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
 
         public AxeTileItem() : base("Axe Trap", "Titties", TileType<AxeTile>(), 1) { }
     }

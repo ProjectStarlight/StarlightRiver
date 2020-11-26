@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.BossDrops.VitricBossDrops
+namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBow : ModItem, IGlowingItem
     {
@@ -34,7 +34,7 @@ namespace StarlightRiver.Items.BossDrops.VitricBossDrops
             item.knockBack = 1;
             item.rare = ItemRarityID.Orange;
             item.channel = true;
-            item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.VitricBowProjectile>();
+            item.shoot = ProjectileType<Projectiles.WeaponProjectiles.VitricBowProjectile>();
             item.shootSpeed = 1f;
             item.useAmmo = AmmoID.Arrow;
             item.useTurn = true;

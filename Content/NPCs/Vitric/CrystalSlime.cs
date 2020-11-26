@@ -104,7 +104,7 @@ namespace StarlightRiver.NPCs.Hostile
 
         public override void NPCLoot()
         {
-            if (Main.rand.NextFloat() < 0.50f) { Item.NewItem(npc.getRect(), ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(4, 5)); }
+            if (Main.rand.NextFloat() < 0.50f) { Item.NewItem(npc.getRect(), ItemType<StarlightRiver.Content.Items.Vitric.VitricOre>(), Main.rand.Next(4, 5)); }
             Item.NewItem(npc.getRect(), ItemID.Gel, Main.rand.Next(5, 6));
         }
 

@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricYoyo : ModItem
     {

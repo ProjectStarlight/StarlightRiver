@@ -7,6 +7,12 @@ namespace StarlightRiver.Dusts
 {
     public class GenericFollow : ModDust
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.Dust + name;
+            return true;
+        }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

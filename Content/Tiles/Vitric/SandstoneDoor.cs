@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class SandstoneDoor : ModTile
     {
@@ -18,11 +18,11 @@ namespace StarlightRiver.Tiles.Vitric
             return true;
         }
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 8, 2, DustID.Stone, SoundID.Tink, false, new Color(130, 85, 45));
+        public override void SetDefaults() => (this).QuickSetFurniture(8, 2, DustID.Stone, SoundID.Tink, false, new Color(130, 85, 45));
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && !Main.npc.Any(n => n.type == NPCType<StarlightRiver.Content.Bosses.GlassBoss.VitricBoss>() && n.active)) Main.tileSolid[Type] = false;
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && !Main.npc.Any(n => n.type == NPCType<Bosses.GlassBoss.VitricBoss>() && n.active)) Main.tileSolid[Type] = false;
             else Main.tileSolid[Type] = true;
         }
 

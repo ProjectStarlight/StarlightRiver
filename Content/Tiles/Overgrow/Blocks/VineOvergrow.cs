@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     }
     internal class VineOvergrowItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/MarioCumming";
+        public override string Texture => Directory.Debug;
         public VineOvergrowItem() : base("OG Vine", "", ModContent.TileType<VineOvergrow>(), 0) { }
     }
 }

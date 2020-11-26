@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.NPCs.Miniboss.Glassweaver;
+using StarlightRiver.Content.Bosses.GlassMiniboss;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     class ForgeActor : ModTile
     {
@@ -20,7 +20,7 @@ namespace StarlightRiver.Tiles.Vitric
             return true;
         }
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {

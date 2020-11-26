@@ -9,14 +9,14 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class AncientSandstone : ModTile
     {
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSet(this, 200, DustID.Copper, SoundID.Tink, new Color(150, 105, 65), ItemType<AncientSandstoneItem>());
+            (this).QuickSet(200, DustID.Copper, SoundID.Tink, new Color(150, 105, 65), ItemType<AncientSandstoneItem>());
             Main.tileMerge[Type][TileType<AncientSandstoneTile>()] = true;
         }
     }
@@ -29,7 +29,7 @@ namespace StarlightRiver.Tiles.Vitric
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSet(this, 200, DustID.Copper, SoundID.Tink, new Color(160, 115, 75), ItemType<AncientSandstoneTileItem>());
+            (this).QuickSet(200, DustID.Copper, SoundID.Tink, new Color(160, 115, 75), ItemType<AncientSandstoneTileItem>());
             Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
         }
 
@@ -61,7 +61,7 @@ namespace StarlightRiver.Tiles.Vitric
 
     internal class AncientSandstoneWall : ModWall
     {
-        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(71, 46, 41));
+        public override void SetDefaults() => (this).QuickSetWall(DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(71, 46, 41));
     }
 
     internal class AncientSandstoneWallItem : QuickWallItem
@@ -71,7 +71,7 @@ namespace StarlightRiver.Tiles.Vitric
 
     internal class AncientSandstonePillarWall : ModWall
     {
-        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<AncientSandstonePillarWallItem>(), false, new Color(75, 48, 44));
+        public override void SetDefaults() => (this).QuickSetWall(DustID.Copper, SoundID.Dig, ItemType<AncientSandstonePillarWallItem>(), false, new Color(75, 48, 44));
     }
 
     internal class AncientSandstonePillarWallItem : QuickWallItem

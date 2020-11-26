@@ -9,6 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 {
@@ -230,7 +231,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         }
     }
 
-    class ShockwaveSummon : StarlightRiver.Content.Bosses.GlassMiniboss.Shockwave
+    class ShockwaveSummon : Content.Bosses.GlassMiniboss.Shockwave
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/Blocks/AncientSandstone";
 

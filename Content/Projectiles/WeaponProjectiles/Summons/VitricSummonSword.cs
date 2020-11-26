@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 {
