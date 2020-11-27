@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
 
-namespace StarlightRiver
+namespace StarlightRiver.Helpers
 {
     public class RenderTest
     {
