@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using StarlightRiver.Items;
 using System;
 using Terraria;

@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Tiles
 {

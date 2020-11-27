@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
 {

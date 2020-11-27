@@ -36,7 +36,7 @@ namespace StarlightRiver.Helpers
         /// <param name="value"></param>
         public static void UpdateRotation(this Player player, float value) => player.GetModPlayer<StarlightPlayer>().rotation = value;
 
-        public static bool OnScreen(Vector2 pos) => (pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16);
+        public static bool OnScreen(Vector2 pos) => pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
 
         public static bool OnScreen(Rectangle rect) => rect.Intersects(new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
 
@@ -100,7 +100,7 @@ namespace StarlightRiver.Helpers
         public static string TicksToTime(int ticks)
         {
             int sec = ticks / 60;
-            return (sec / 60) + ":" + (sec % 60 < 10 ? "0" + sec % 60 : "" + sec % 60);
+            return sec / 60 + ":" + (sec % 60 < 10 ? "0" + sec % 60 : "" + sec % 60);
         }
 
         public static void DoTilt(float intensity)
@@ -139,7 +139,7 @@ namespace StarlightRiver.Helpers
 
             Color[] rawData = new Color[perlin.Width]; //array of colors
             Rectangle row = new Rectangle(0, y, perlin.Width, 1); //one row of the image
-            perlin.GetData<Color>(0, row, rawData, 0, perlin.Width); //put the color data from the image into the array
+            perlin.GetData(0, row, rawData, 0, perlin.Width); //put the color data from the image into the array
             return (int)(min + rawData[x % 512].R / 255f * max);
         }
 
@@ -158,20 +158,20 @@ namespace StarlightRiver.Helpers
             {
                 if (str == "NEWBLOCK")
                 {
-                    output += ("\n\n");
-                    line = ("");
+                    output += "\n\n";
+                    line = "";
                     continue;
                 }
 
                 if (font.MeasureString(line).X * scale < length)
                 {
-                    output += (" " + str);
-                    line += (" " + str);
+                    output += " " + str;
+                    line += " " + str;
                 }
                 else
                 {
-                    output += ("\n" + str);
-                    line = (str);
+                    output += "\n" + str;
+                    line = str;
                 }
             }
             return output;
@@ -196,10 +196,8 @@ namespace StarlightRiver.Helpers
             Player player = null;
 
             for (int k = 0; k < Main.maxPlayers; k++)
-            {
                 if (Main.player[k] != null && Main.player[k].active && (player == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, player.Center)))
                     player = Main.player[k];
-            }
             return player;
         }
     }

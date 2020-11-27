@@ -12,6 +12,7 @@ using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Tiles.Mushroom
 {

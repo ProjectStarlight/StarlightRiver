@@ -11,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 using Void = StarlightRiver.Dusts.Void;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Abilities.Content.Faeflame
 {

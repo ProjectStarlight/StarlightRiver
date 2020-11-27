@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {

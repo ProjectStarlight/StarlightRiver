@@ -9,6 +9,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using Terraria.ID;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {

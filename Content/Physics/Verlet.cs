@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Physics
 {

@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Bosses.GlassBoss;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {

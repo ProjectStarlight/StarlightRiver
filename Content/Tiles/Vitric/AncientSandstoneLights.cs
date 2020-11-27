@@ -8,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Items;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {

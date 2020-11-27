@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Permafrost.Tools
 {

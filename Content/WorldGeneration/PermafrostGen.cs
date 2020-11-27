@@ -14,6 +14,7 @@ using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles.Permafrost.Decoration;
 using StarlightRiver.Content.Tiles.Permafrost.VFX;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
 {

@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.NPCs.Boss.OvergrowBoss;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {

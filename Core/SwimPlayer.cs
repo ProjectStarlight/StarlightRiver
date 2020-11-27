@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 {

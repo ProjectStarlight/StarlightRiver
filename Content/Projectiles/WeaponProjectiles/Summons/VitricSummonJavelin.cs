@@ -7,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 {

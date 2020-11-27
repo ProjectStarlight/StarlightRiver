@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.World.Generation;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
 {

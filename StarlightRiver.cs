@@ -5,6 +5,7 @@ using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using StarlightRiver.RiftCrafting;
 using System;
 using System.Collections.Generic;

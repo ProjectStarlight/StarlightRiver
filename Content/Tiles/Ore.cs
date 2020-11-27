@@ -7,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Items.EbonyIvory;
 using StarlightRiver.Items.Aluminum;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles
 {

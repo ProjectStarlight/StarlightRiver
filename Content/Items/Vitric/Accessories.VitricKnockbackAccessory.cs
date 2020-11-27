@@ -6,6 +6,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

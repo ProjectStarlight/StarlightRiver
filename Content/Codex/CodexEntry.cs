@@ -8,6 +8,7 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Codex
 {

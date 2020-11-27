@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Buffs;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;

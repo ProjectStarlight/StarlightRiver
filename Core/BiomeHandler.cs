@@ -16,6 +16,7 @@ using StarlightRiver.Content.Tiles.JungleBloody;
 using StarlightRiver.Content.Tiles.JungleCorrupt;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
 {
@@ -175,7 +176,7 @@ namespace StarlightRiver.Core
 }
 
 namespace StarlightRiver
-{ 
+{
     public partial class StarlightRiver : Mod
     {
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
