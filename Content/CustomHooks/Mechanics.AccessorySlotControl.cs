@@ -1,13 +1,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Items.CursedAccessories;
 using StarlightRiver.Items.Prototypes;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
 using StarlightRiver.Core;
-using StarlightRiver.Items;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.CustomHooks
 {

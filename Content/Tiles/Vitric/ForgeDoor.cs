@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            tile.inActive(!NPC.AnyNPCs(NPCType<NPCs.Miniboss.Glassweaver.GlassMiniboss>()));
+            tile.inActive(!NPC.AnyNPCs(NPCType<Bosses.GlassMiniboss.GlassMiniboss>()));
         }
     }
 

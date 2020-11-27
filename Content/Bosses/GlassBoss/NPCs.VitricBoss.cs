@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     case 4: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricBow>()); break;
                 }
                 Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(30, 50));
-                Item.NewItem(npc.Center, ItemType<Items.Accessories.StaminaUp>());
+                Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
             }
         }
 

@@ -6,10 +6,9 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.CursedAccessories
+namespace StarlightRiver.Content.Items.BaseTypes
 {
     internal abstract class InfectedAccessory : SmartAccessory
     {

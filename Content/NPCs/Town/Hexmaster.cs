@@ -1,4 +1,3 @@
-using StarlightRiver.Items.CursedAccessories;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -6,6 +5,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.NPCs.Town
 {

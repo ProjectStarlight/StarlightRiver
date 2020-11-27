@@ -75,7 +75,7 @@ namespace StarlightRiver.NPCs.Hostile
 
                         for (int k = -1; k <= 1; k++)
                         {
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Projectiles.GlassSpike>(), 10, 0);
+                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<StarlightRiver.Content.Bosses.GlassBoss.GlassSpike>(), 10, 0);
                         }
 
                         npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;

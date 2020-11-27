@@ -4,10 +4,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.CursedAccessories
+namespace StarlightRiver.Content.Items.BaseTypes
 {
     internal class SpecialAccessoryHandler : ModPlayer
     {
@@ -33,9 +32,7 @@ namespace StarlightRiver.Items.CursedAccessories
                 Main.NewText("Your " + item.modItem.Name + " shattered...", 255, 242, 161);
                 Main.PlaySound(SoundID.Shatter, player.Center);
                 for (int k = 0; k <= 30; k++)
-                {
                     Dust.NewDustPerfect(player.Center, DustType<Dusts.Gold>(), Vector2.One.RotatedByRandom(6.28) * k / 10, 0, default, 2);
-                }
 
                 item.TurnToAir();
             }
@@ -44,13 +41,9 @@ namespace StarlightRiver.Items.CursedAccessories
         public override void PreUpdate()
         {
             foreach (Item item in player.inventory.Where(item => item.modItem is BlessedAccessory))
-            {
                 CheckFail(item);
-            }
             foreach (Item item in player.armor.Where(item => item.modItem is BlessedAccessory))
-            {
                 CheckFail(item);
-            }
         }
     }
 }

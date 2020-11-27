@@ -195,7 +195,7 @@ namespace StarlightRiver.Core
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (player.HeldItem.modItem is StarlightRiver.Content.Items.Vitric.VitricSword && (player.HeldItem.modItem as StarlightRiver.Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
+            if (player.HeldItem.modItem is Content.Items.Vitric.VitricSword && (player.HeldItem.modItem as Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
 
             Action<PlayerDrawInfo> layerTarget = DrawGlowmasks;
             PlayerLayer layer = new PlayerLayer("ItemLayer", "Starlight River Item Drawing Layer", layerTarget);

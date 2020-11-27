@@ -8,8 +8,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal sealed partial class VitricBoss : ModNPC
@@ -239,7 +237,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (timer >= 80 && timer % 10 == 0) //burst of 4 spikes
                         {
                             Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8, ProjectileType<Projectiles.GlassSpike>(), 15, 0);
+                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8, ProjectileType<GlassSpike>(), 15, 0);
                         }
                     }
                     else
@@ -291,8 +289,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             int restTime = Main.expertMode ? 240 : 300;
             if (AttackTimer % 20 == 0)
             {
-                Projectile.NewProjectile(homePos + new Vector2(-700 + (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<Projectiles.GlassSpike>(), 5, 0);
-                Projectile.NewProjectile(homePos + new Vector2(700 - (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<Projectiles.GlassSpike>(), 5, 0);
+                Projectile.NewProjectile(homePos + new Vector2(-700 + (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 5, 0);
+                Projectile.NewProjectile(homePos + new Vector2(700 - (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 5, 0);
             }
 
             if (AttackTimer == restTime) ResetAttack();
@@ -330,7 +328,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 for (int k = 0; k < 12; k++)
                 {
-                    Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, 8), ProjectileType<Projectiles.GlassSpike>(), 15, 0);
+                    Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, 8), ProjectileType<GlassSpike>(), 15, 0);
                 }
                 ResetAttack();
             }
@@ -365,7 +363,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 {
                     for (float k = 0; k < 6.28f; k += 6.28f / 12) //ring of glass spikes
                     {
-                        Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 3.5f, ProjectileType<Projectiles.GlassSpike>(), 15, 0.2f);
+                        Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 3.5f, ProjectileType<GlassSpike>(), 15, 0.2f);
                     }
                 }
             }

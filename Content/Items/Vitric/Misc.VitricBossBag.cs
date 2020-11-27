@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Vitric
             }
 
             Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(40, 60));
-            Item.NewItem(player.Center, ItemType<Items.Accessories.StaminaUp>());
+            Item.NewItem(player.Center, ItemType<Misc.StaminaUp>());
             Item.NewItem(player.Center, ItemType<CeirosExpert>());
         }
     }

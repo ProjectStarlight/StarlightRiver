@@ -1,15 +1,17 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.WeaponProjectiles.Slime;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Slime;
 
-namespace StarlightRiver.Items.Slime
+namespace StarlightRiver.Content.Items.Slime
 {
     public class SlimeStaff : ModItem
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Slime Slinger");

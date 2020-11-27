@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items
+namespace StarlightRiver.Content.Items.BaseTypes
 {
     public abstract class SmartAccessory : ModItem
     {

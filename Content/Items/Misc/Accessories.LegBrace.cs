@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Accessories
 {

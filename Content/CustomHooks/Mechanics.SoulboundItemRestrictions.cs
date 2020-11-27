@@ -1,10 +1,10 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.CustomHooks
 {

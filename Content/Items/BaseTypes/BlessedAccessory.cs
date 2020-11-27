@@ -3,10 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
 using Terraria.ID;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.CursedAccessories
+namespace StarlightRiver.Content.Items.BaseTypes
 {
     public abstract class BlessedAccessory : SmartAccessory
     {
@@ -45,7 +44,7 @@ namespace StarlightRiver.Items.CursedAccessories
             if (LegendWorld.rottime > 3.14) { Bootlegdust.Add(dus4); }
             else { Bootlegdust2.Add(dus4); }
             */
-            drawpos = position - new Vector2((frame.Width / 2), (frame.Width / 2));
+            drawpos = position - new Vector2(frame.Width / 2, frame.Width / 2);
         }
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

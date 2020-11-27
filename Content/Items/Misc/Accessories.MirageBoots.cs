@@ -2,6 +2,7 @@
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Items.Accessories
 {

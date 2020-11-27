@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Items.Slime;
-using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
+namespace StarlightRiver.Content.Items.Slime
 {
     internal class SlimeStaffProjectile : ModProjectile
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
+
         public float maxProjSpeed;
         public int maxTimeleft;
 
@@ -73,7 +73,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
             {
                 Projectile curProj = Main.projectile[index];
                 if (index != projectile.whoAmI && curProj.active && curProj.type == ProjectileType<SlimeStaffProjectile>())//if active, this type, and not this projectile
-                {
                     if (Vector2.Distance(projectile.position, curProj.position) < size && projectile.timeLeft < maxTimeleft - 60)//if 60 seconds have passed, and the distance is less than size
                     {
                         SlimeStaffProjectile curSlimeProj = curProj.modProjectile as SlimeStaffProjectile;
@@ -87,7 +86,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
                             break;//stops iterating to prevent extra combinings with projectiles after this one should be already dead
                         }
                     }
-                }
             }
 
             projectile.Size = Vector2.One * size;//called after the above stuff, position in where this is called may not actually change anything
@@ -105,10 +103,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
                 // This code checks if the precious velocity of the projectile is different enough from its new velocity, and if it is, syncs it with the server and the other clients in MP.
                 // We previously multiplied the speed by 1000, then casted it to int, this is to reduce its precision and prevent the speed from being synced too much.
                 if (currentTargetX != oldTargetX || currentTargetY != oldTargetY)
-                {
                     projectile.netUpdate = true;
-                    //Main.NewText("update " + projectile.velocity.Length());
-                }
             }
 
             //Main.NewText(projectile.velocity.Length());
@@ -124,7 +119,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
 
             spriteBatch.Draw(Main.projectileTexture[projectile.type],
                 projectile.Center - Main.screenPosition,
-                new Rectangle(0, (Main.projectileTexture[projectile.type].Height / maxSize) * (globSize - 1), Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / maxSize),
+                new Rectangle(0, Main.projectileTexture[projectile.type].Height / maxSize * (globSize - 1), Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / maxSize),
                 lightColor,
                 projectile.rotation,
                 new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / (maxSize * 2)),
@@ -137,16 +132,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
         {
             projectile.penetrate--;
             if (projectile.penetrate <= 0)
-            {
                 projectile.Kill();
-            }
             else
             {
                 if (projectile.velocity.X != oldVelocity.X)
-                {
                     projectile.velocity.X = -oldVelocity.X;
-                }
-                if (projectile.velocity.Y != oldVelocity.Y) ;
+                if (projectile.velocity.Y != oldVelocity.Y)
                 {
                     projectile.velocity.Y = -oldVelocity.Y;
                 }
@@ -156,12 +147,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
             return false;
         }
 
-        public override void SendExtraAI(BinaryWriter writer)
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
             writer.Write(globSize);
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             globSize = reader.ReadInt32();//might be reader.readSingle() instead
         }
@@ -170,9 +161,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Slime
         {
             Main.NewText(globSize + " index " + projectile.whoAmI);
             for (int k = 0; k <= 30; k++)
-            {
                 Dust.NewDustPerfect(projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f), 0, Color.BlueViolet, 0.8f);
-            }
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

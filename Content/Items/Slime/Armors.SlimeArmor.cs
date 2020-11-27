@@ -4,11 +4,12 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Armor.Slime
+namespace StarlightRiver.Content.Items.Slime
 {
     [AutoloadEquip(EquipType.Head)]
     public class SlimeHead : ModItem
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Head Slime");//temp names
@@ -36,6 +37,7 @@ namespace StarlightRiver.Items.Armor.Slime
     [AutoloadEquip(EquipType.Body)]
     public class SlimeChest : ModItem
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Body Slime");
@@ -68,6 +70,7 @@ namespace StarlightRiver.Items.Armor.Slime
     [AutoloadEquip(EquipType.Legs)]
     public class SlimeLegs : ModItem
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Foot Slime");

@@ -3,8 +3,9 @@ using Terraria;
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Items.Accessories
+namespace StarlightRiver.Content.Items.Misc
 {
     public class StaminaUp : SmartAccessory
     {

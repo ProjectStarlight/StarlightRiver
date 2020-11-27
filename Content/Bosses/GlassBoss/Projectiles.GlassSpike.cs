@@ -7,10 +7,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Projectiles
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     public class GlassSpike : ModProjectile, IDrawAdditive
     {
+        public override string Texture => Directory.GlassBossDir + Name;
+
         public override void SetDefaults()
         {
             projectile.hostile = true;
@@ -29,10 +31,10 @@ namespace StarlightRiver.Projectiles
         {
             for (int k = 0; k <= 1; k++)
             {
-                Dust d = Dust.NewDustPerfect(projectile.Center + projectile.velocity, 264, (projectile.velocity * (Main.rand.NextFloat(-0.25f, -0.1f))).RotatedBy((k == 0) ? 0.4f : -0.4f), 0, default, 1f);
+                Dust d = Dust.NewDustPerfect(projectile.Center + projectile.velocity, 264, (projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? 0.4f : -0.4f), 0, default, 1f);
                 d.noGravity = true;
             }
-            projectile.rotation = projectile.velocity.ToRotation() + (3.14f / 4);
+            projectile.rotation = projectile.velocity.ToRotation() + 3.14f / 4;
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit) => target.AddBuff(BuffID.Bleeding, 300);

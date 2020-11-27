@@ -8,8 +8,6 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBow : ModItem, IGlowingItem

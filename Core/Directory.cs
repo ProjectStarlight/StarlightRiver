@@ -21,18 +21,26 @@ namespace StarlightRiver.Core
 {
     public static class Directory
     {
-        public static string Invisible =            "StarlightRiver/Assets/Invisible";
-        public static string Debug =                "StarlightRiver/Assets/MarioCumming";
+        public static string Assets =               "StarlightRiver/Assets/";
 
-        public static string Dust =                 "StarlightRiver/Assets/Dusts";
+        public static string Invisible =            Assets + "Invisible";
+        public static string Debug =                Assets + "MarioCumming";
 
-        public static string OvergrowTileDir =      "StarlightRiver/Assets/Tiles/Overgrow";
-        public static string OvergrowItemDir =      "StarlightRiver/Assets/Items/Overgrow";
+        public static string Dust =                 Assets + "Dusts";
 
-        public static string VitricTileDir =        "StarlightRiver/Assets/Tiles/Vitric";
-        public static string VitricItemDir =        "StarlightRiver/Assets/Items/Vitric";
+        public static string OvergrowTileDir =      Assets + "Tiles/Overgrow";
+        public static string OvergrowItemDir =      Assets + "Items/Overgrow";
+        public static string OvergrowBossDir =      Assets + "Bosses/OvergrowBoss";
 
-        public static string PermafrostTileDir =    "StarlightRiver/Assets/Bosses/SquidBoss";
-        public static string SquidBossDir =         "StarlightRiver/Assets/Bosses/SquidBoss";
+        public static string VitricTileDir =        Assets + "Tiles/Vitric";
+        public static string VitricItemDir =        Assets + "Items/Vitric";
+        public static string GlassBossDir =         Assets + "Bosses/GlassBoss";
+        public static string GlassMinibossDir =     Assets + "Bosses/GlassMiniboss";
+
+        public static string PermafrostTileDir =    Assets + "Tiles/Permafrost";
+        public static string PermafrostItemDir =    Assets + "Items/Permafrost";
+        public static string SquidBossDir =         Assets + "Bosses/SquidBoss";
+
+        public static string SlimeItemDir =         Assets + "Items/Slime";
     }
 }

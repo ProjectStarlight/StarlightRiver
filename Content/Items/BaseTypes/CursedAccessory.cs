@@ -7,9 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
-namespace StarlightRiver.Items.CursedAccessories
+namespace StarlightRiver.Content.Items.BaseTypes
 {
     public abstract class CursedAccessory : SmartAccessory
     {
@@ -24,7 +22,7 @@ namespace StarlightRiver.Items.CursedAccessories
 
         private static void UpdateCursedBody(Particle particle)
         {
-            float alpha = (particle.Timer * 0.053f) - (0.00088f * (float)Math.Pow(particle.Timer, 2));
+            float alpha = particle.Timer * 0.053f - 0.00088f * (float)Math.Pow(particle.Timer, 2);
             particle.Color = Color.White * alpha;
             particle.Scale *= 0.97f;
             particle.Position += particle.Velocity;
@@ -49,9 +47,7 @@ namespace StarlightRiver.Items.CursedAccessories
             Main.PlaySound(SoundID.NPCHit55);
             Main.PlaySound(SoundID.Item123);
             for (int k = 0; k <= 50; k++)
-            {
                 CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 3, Color.White * 0.1f, 60, Vector2.Zero));
-            }
 
             return true;
         }

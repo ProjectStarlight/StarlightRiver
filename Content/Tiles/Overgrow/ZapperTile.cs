@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
@@ -13,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + "ZapperTile";
+            texture = Directory.OvergrowTileDir + name;
             return true;
         }
 
@@ -23,10 +22,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                if (!(Main.projectile.Any(proj => proj.modProjectile is Projectiles.Zapper && (proj.modProjectile as Projectiles.Zapper).parent == Main.tile[i, j] && proj.active)))
+                if (!(Main.projectile.Any(proj => proj.modProjectile is Zapper && (proj.modProjectile as Zapper).parent == Main.tile[i, j] && proj.active)))
                 {
-                    int proj = Projectile.NewProjectile(new Vector2(i + 2, j + 2) * 16, Vector2.Zero, ProjectileType<Projectiles.Zapper>(), 1, 1);
-                    (Main.projectile[proj].modProjectile as Projectiles.Zapper).parent = Main.tile[i, j];
+                    int proj = Projectile.NewProjectile(new Vector2(i + 2, j + 2) * 16, Vector2.Zero, ProjectileType<Zapper>(), 1, 1);
+                    (Main.projectile[proj].modProjectile as Zapper).parent = Main.tile[i, j];
                 }
             }
         }

@@ -4,10 +4,12 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Slime
+namespace StarlightRiver.Content.Items.Slime
 {
     public class SlimeFlail : ModItem
     {
+        public override string Texture => Directory.SlimeItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Snail Flail");

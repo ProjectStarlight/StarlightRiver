@@ -1,7 +1,7 @@
-﻿using StarlightRiver.Items.CursedAccessories;
-using Terraria;
+﻿using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.CustomHooks
 {
