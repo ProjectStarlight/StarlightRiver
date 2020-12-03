@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Color airColor = new Color(190, 255, 245);
             if (Main.rand.Next(200) == 0 && light.R >= 10 && light.B >= 10 && light.G >= 10)
             {
-                Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustType<Dusts.Air3>(), Vector2.Zero, 0, airColor * ((light.R + light.G + light.B) / 765f));
+                Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustType<Dusts.AirGravity>(), Vector2.Zero, 0, airColor * ((light.R + light.G + light.B) / 765f));
             }
         }
     }

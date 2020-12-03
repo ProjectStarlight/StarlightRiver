@@ -54,7 +54,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 projectile.velocity.Y = -6;
                 for (int i = 0; i < 5; i++)
                 {
-                    int dust = Dust.NewDust(projectile.Center, projectile.width, projectile.height * 2, DustType<Dusts.Gold2>());
+                    int dust = Dust.NewDust(projectile.Center, projectile.width, projectile.height * 2, DustType<Dusts.GoldWithMovement>());
                     Main.dust[dust].velocity = Vector2.Zero;
                     Main.dust[dust].noGravity = true;
                 }

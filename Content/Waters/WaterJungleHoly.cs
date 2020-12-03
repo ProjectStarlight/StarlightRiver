@@ -22,7 +22,7 @@ namespace StarlightRiver.Waters
 
         public override int GetSplashDust()
         {
-            return DustType<Dusts.HolyJungleSplash>();
+            return DustType<StarlightRiver.Content.Dusts.HolyJungleSplash>();
         }
 
         public override int GetDropletGore()

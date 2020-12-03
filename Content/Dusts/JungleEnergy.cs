@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class JungleEnergy : ModDust
     {
@@ -14,6 +14,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -40,9 +41,7 @@ namespace StarlightRiver.Dusts
             if (dust.alpha <= 175) dust.fadeIn = 1;
 
             if (dust.alpha > 255)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }
@@ -82,16 +81,14 @@ namespace StarlightRiver.Dusts
                 {
                     dust.rotation += 6.28f / Smash.ChargeTime;
 
-                    if (smash.Active && smash.Timer <= Smash.ChargeTime) dust.alpha = (int)(smash.Timer / (float)Smash.ChargeTime * 255f);
+                    if (smash.Active && smash.Timer <= Smash.ChargeTime) dust.alpha = (int)(smash.Timer / Smash.ChargeTime * 255f);
 
                     if (smash.Timer > Smash.ChargeTime || !smash.Active) dust.alpha -= 10;
                     if (dust.alpha <= 0) dust.active = false;
                 }
             }
             else
-            {
                 dust.active = false;
-            }
 
             return false;
         }

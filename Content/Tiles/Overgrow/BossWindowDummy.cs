@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             if (Main.rand.Next(4) == 0 && projectile.ai[0] >= 360)
             {
                 float rot = Main.rand.NextFloat(-1.5f, 1.5f);
-                Dust.NewDustPerfect(projectile.Center + new Vector2(0, 1).RotatedBy(rot) * 500, DustType<Dusts.Gold4>(), (new Vector2(0, 1).RotatedBy(rot) + new Vector2(0, 1.6f)) * (0.1f + Math.Abs(rot / 5f)), 0, default, 0.23f + Math.Abs(rot / 5f));
+                Dust.NewDustPerfect(projectile.Center + new Vector2(0, 1).RotatedBy(rot) * 500, DustType<Dusts.GoldSlowFade>(), (new Vector2(0, 1).RotatedBy(rot) + new Vector2(0, 1.6f)) * (0.1f + Math.Abs(rot / 5f)), 0, default, 0.23f + Math.Abs(rot / 5f));
             }
 
             //Screenshake

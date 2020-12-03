@@ -8,11 +8,11 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.NPCs.Pickups
 {
@@ -141,10 +141,10 @@ namespace StarlightRiver.NPCs.Pickups
             if (!mp.Unlocked<Pure>() && animate == 0)
             {
                 spriteBatch.Draw(wind, npc.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
-                Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 16), npc.width, npc.height, DustType<Dusts.Purify>());
+                Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 16), npc.width, npc.height, DustType<StarlightRiver.Content.Dusts.Purify>());
 
-                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20), DustType<Dusts.Purify>(), null, 0, default, 2f);
-                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20) * -1, DustType<Dusts.Purify>(), null, 0, default, 2f);
+                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20), DustType<StarlightRiver.Content.Dusts.Purify>(), null, 0, default, 2f);
+                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20) * -1, DustType<StarlightRiver.Content.Dusts.Purify>(), null, 0, default, 2f);
             }
         }
     }

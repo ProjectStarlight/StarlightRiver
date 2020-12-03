@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class GemFocusDust : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -33,8 +34,7 @@ namespace StarlightRiver.Dusts
                 dust.alpha = (int)((dust.customData as Projectile).alpha * dust.scale);
             }
 
-            if (dust.scale < 0.2f) { dust.active = false; }
-            return false;
+            if (dust.scale < 0.2f) dust.active = false; return false;
         }
     }
 }

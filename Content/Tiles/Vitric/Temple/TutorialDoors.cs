@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                     Main.PlaySound(SoundID.Shatter, player.Center);
 
                     for (int k = 0; k < 50; k++)
-                        Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.Glass2>());
+                        Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.GlassGravity>());
                 }
                 else player.velocity.X = -1;
         }

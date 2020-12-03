@@ -4,16 +4,16 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Sand : ModDust
     {
-        //private readonly float mult;
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -29,7 +29,6 @@ namespace StarlightRiver.Dusts
 
         public override bool Update(Dust dust)
         {
-            //Lighting.AddLight((int)dust.position.X / 16, (int)dust.position.Y / 16, 0.2f, 0.19f, 0.0f);
             dust.color = Lighting.GetColor((int)(dust.position.X / 16), (int)(dust.position.Y / 16)).MultiplyRGB(Color.White) * 0.2f * (dust.alpha / 255f);
             dust.position += dust.velocity;
             dust.scale *= 0.982f;
@@ -38,9 +37,7 @@ namespace StarlightRiver.Dusts
             dust.rotation += 0.1f;
 
             if (dust.scale <= 0.2f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

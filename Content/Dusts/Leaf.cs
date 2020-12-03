@@ -4,7 +4,7 @@ using Terraria;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Leaf : Corrupt
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return lightColor;
@@ -34,9 +35,7 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.99f;
             dust.color *= 0.92f;
             if (dust.scale <= 0.3)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

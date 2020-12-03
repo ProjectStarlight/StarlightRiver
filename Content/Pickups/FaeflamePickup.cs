@@ -31,11 +31,11 @@ namespace StarlightRiver.Pickups
 
         public override void Visuals()
         {
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime), (float)Math.Sin(StarlightWorld.rottime)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 1) * 32, DustType<Dusts.Gold2>(), Vector2.Zero, 0, default, 0.65f);
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 2) / 2, (float)Math.Sin(StarlightWorld.rottime + 2)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 4) * 32, DustType<Dusts.Gold2>(), Vector2.Zero, 0, default, 0.65f);
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 4), (float)Math.Sin(StarlightWorld.rottime + 4) / 2) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Dusts.Gold2>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime), (float)Math.Sin(StarlightWorld.rottime)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 1) * 32, DustType<Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 2) / 2, (float)Math.Sin(StarlightWorld.rottime + 2)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 4) * 32, DustType<Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 4), (float)Math.Sin(StarlightWorld.rottime + 4) / 2) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
 
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Dusts.Gold2>(), Vector2.UnitY * -2, 0, default, 0.25f);
+            Dust.NewDustPerfect(npc.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
         }
 
         public override void PickupVisuals(int timer)

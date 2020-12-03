@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class StarFragment : ModDust
     {
@@ -13,15 +13,18 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
             dust.noLight = false;
         }
+
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return dust.color;
         }
+
         public override bool Update(Dust dust)
         {
             dust.position += dust.velocity;
@@ -31,9 +34,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.96f;
             if (dust.scale < 0.1f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

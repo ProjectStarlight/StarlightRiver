@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Dusts;
 using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
 {

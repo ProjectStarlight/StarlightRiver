@@ -28,7 +28,7 @@ namespace StarlightRiver.Items
 
         public override void PostUpdate()
         {
-            Dust.NewDust(item.position - new Vector2(1, 1), 18, 20, DustType<Dusts.Starlight>(), 0, 0, 0, default, 0.5f);
+            Dust.NewDust(item.position - new Vector2(1, 1), 18, 20, DustType<StarlightRiver.Content.Dusts.Starlight>(), 0, 0, 0, default, 0.5f);
         }
 
         public override bool CanPickup(Player player)
@@ -43,7 +43,7 @@ namespace StarlightRiver.Items
             CombatText.NewText(player.Hitbox, new Color(120, 245 - gemID, 175 + gemID), "Starlight Gem #" + (gemID + 1) + " Accquired!");
             for (float k = 0; k <= 6.28f; k += 0.1f)
             {
-                Dust.NewDustPerfect(item.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedBy(k) * (k % 0.79f) * 15, 0, new Color(120, 245 - gemID, 175 + gemID), 3 - (k % 0.79f) * 3);
+                Dust.NewDustPerfect(item.Center, DustType<StarlightRiver.Content.Dusts.Starlight>(), Vector2.One.RotatedBy(k) * (k % 0.79f) * 15, 0, new Color(120, 245 - gemID, 175 + gemID), 3 - (k % 0.79f) * 3);
             }
             return false;
         }

@@ -11,7 +11,9 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class AshHellForeground : Foreground
     {
-        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
+        public override ParticleSystem ParticleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
+
+        public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell;
 
         private void UpdateAshParticles(Particle particle)
         {
@@ -35,10 +37,10 @@ namespace StarlightRiver.Content.Foregrounds
 
         public override void Draw(SpriteBatch spriteBatch, float opacity)
         {
-            particleSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
+            ParticleSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
                 1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40))));
 
-            particleSystem.DrawParticles(Main.spriteBatch);
+            ParticleSystem.DrawParticles(Main.spriteBatch);
         }
     }
 }

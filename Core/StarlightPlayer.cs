@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
-using StarlightRiver.GUI;
 using StarlightRiver.Items.Armor;
 
 using System;
@@ -16,6 +15,7 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Core
 {
@@ -74,7 +74,7 @@ namespace StarlightRiver.Core
             {
                 var staminaState = UILoader.GetUIState<Stamina>();
                 var infusionState = UILoader.GetUIState<Infusion>();
-                var codexState = UILoader.GetUIState<GUI.Codex>();
+                var codexState = UILoader.GetUIState<StarlightRiver.Content.GUI.Codex>();
                 var collectionState = UILoader.GetUIState<Collection>();
 
                 AbilityHandler mp = player.GetHandler();

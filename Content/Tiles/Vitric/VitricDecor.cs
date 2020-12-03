@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.RandomStyleRange = 4;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            (this).QuickSetFurniture(2, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(2, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(114, 78, 80));
         }
     }
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.RandomStyleRange = 6;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            (this).QuickSetFurniture(3, 2, DustType<Dusts.Glass3>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(3, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(114, 78, 80));
         }
     }
 }

@@ -38,7 +38,7 @@ namespace StarlightRiver.Tiles.Temple
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
         }
     }
 

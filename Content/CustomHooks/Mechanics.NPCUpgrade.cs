@@ -2,7 +2,6 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Reflection;
 using Terraria;
@@ -10,6 +9,7 @@ using Terraria.ID;
 using Terraria.Localization;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Content.CustomHooks
 {

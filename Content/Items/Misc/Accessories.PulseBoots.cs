@@ -56,9 +56,9 @@ namespace StarlightRiver.Items.Accessories
                     float y = (float)Math.Sin(k + rand) * 10;
                     float rot = (!player.controlLeft ? (player.controlRight ? 1 : 0) : -1);
 
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 16), DustType<Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 32), DustType<Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 48), DustType<Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 16), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 32), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 48), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
                 }
                 Main.PlaySound(SoundID.DD2_BetsyFireballShot);
 

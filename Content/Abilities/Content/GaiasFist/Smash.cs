@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Dusts;
 using System;
 using Terraria;
 using Terraria.GameInput;
@@ -8,6 +7,7 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Abilities.Content.GaiasFist
 {

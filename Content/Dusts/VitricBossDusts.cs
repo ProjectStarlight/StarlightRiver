@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class VitricBossTell : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -32,13 +33,13 @@ namespace StarlightRiver.Dusts
             dust.color *= 0.98f;
             dust.scale *= 0.988f;
             dust.velocity *= 0.97f;
+
             if (dust.scale <= 0.4)
-            {
                 dust.active = false;
-            }
 
             float light = 0.02f * dust.scale;
             Lighting.AddLight(dust.position, new Vector3(1.45f, 2.28f, 2.37f) * light);
+
             return false;
         }
     }

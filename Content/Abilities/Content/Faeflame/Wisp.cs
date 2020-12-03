@@ -40,7 +40,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
         {
             Player.mount.Dismount(Player);
             for (int k = 0; k <= 50; k++)
-                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-20, 20), Main.rand.Next(-20, 20), 0, default, 1.2f);
+                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<GoldWithMovement>(), Main.rand.Next(-20, 20), Main.rand.Next(-20, 20), 0, default, 1.2f);
         }
 
         public override void UpdateActive()
@@ -88,7 +88,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 
         protected virtual void UpdateEffects()
         {
-            int type = safe ? DustType<Gold>() : DustType<Void>();
+            int type = safe ? DustType<GoldNoMovement>() : DustType<Void>();
             for (int k = 0; k <= 2; k++)
                 Dust.NewDust(Player.Center - new Vector2(4, 4), 8, 8, type);
         }
@@ -118,7 +118,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
                 Player.direction = Math.Sign(Player.velocity.X);
 
             for (int k = 0; k <= 30; k++)
-                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<Gold2>(), Main.rand.Next(-5, 5), Main.rand.Next(-5, 5), 0, default, 1.2f);
+                Dust.NewDust(Player.Center - new Vector2(Player.height / 2, Player.height / 2), Player.height, Player.height, DustType<GoldWithMovement>(), Main.rand.Next(-5, 5), Main.rand.Next(-5, 5), 0, default, 1.2f);
         }
 
         public bool SafeExit(out Vector2 topLeft)

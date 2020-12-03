@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Permafrost.Weapons;
 using StarlightRiver.Core;
-using StarlightRiver.Dusts;
 using StarlightRiver.Items;
 using System;
 using Terraria;

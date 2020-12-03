@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class LootUI : SmartUIState
     {
@@ -84,12 +84,10 @@ namespace StarlightRiver.GUI
                 Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + new Vector2(60, offY);
 
                 for (int k = 0; k <= BigItem.ToolTip.Lines; k++)
-                {
                     if (k == 0)
                         Utils.DrawBorderString(spriteBatch, BigItem.Name, pos + new Vector2(0, k * 14), ItemRarity.GetColor(BigItem.rare), 0.75f);
                     else
                         Utils.DrawBorderString(spriteBatch, BigItem.ToolTip.GetLine(k - 1), pos + new Vector2(0, k * 14), Color.White, 0.75f);
-                }
             }
 
             base.Draw(spriteBatch);
@@ -158,10 +156,8 @@ namespace StarlightRiver.GUI
                     float offY = 40 - Item.ToolTip.Lines * 14;
                     Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + new Vector2(60, offY);
                     for (int k = 0; k <= Item.ToolTip.Lines; k++)
-                    {
                         if (k == 0) Utils.DrawBorderString(spriteBatch, Item.Name, pos + new Vector2(0, k * 14), ItemRarity.GetColor(Item.rare), 0.75f);
                         else Utils.DrawBorderString(spriteBatch, Item.ToolTip.GetLine(k - 1), pos + new Vector2(0, k * 14), Color.White, 0.75f);
-                    }
                 }
             }
         }

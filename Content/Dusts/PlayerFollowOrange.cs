@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class PlayerFollowOrange : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -31,18 +32,14 @@ namespace StarlightRiver.Dusts
         public override bool Update(Dust dust)
         {
             if (dust.customData is int && Main.player[(int)dust.customData].active)
-            {
                 dust.position = Main.player[(int)dust.customData].Center + new Vector2(0, Main.player[(int)dust.customData].gfxOffY) + dust.velocity;
-            }
 
             dust.rotation += 0.15f;
 
             dust.scale *= 0.95f;
 
             if (dust.scale < 0.4f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

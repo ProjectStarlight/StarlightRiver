@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class BlueStamina : ModDust
     {
@@ -36,9 +36,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.98f;
             if (dust.scale < 0.1f || dust.color == Color.Transparent)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

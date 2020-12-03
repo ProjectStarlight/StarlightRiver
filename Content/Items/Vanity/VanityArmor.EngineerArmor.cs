@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Dusts;
 using StarlightRiver.Noise;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Items.Armor.Engineer
 {

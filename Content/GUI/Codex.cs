@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class Codex : SmartUIState
     {
@@ -68,9 +68,7 @@ namespace StarlightRiver.GUI
 
             CodexBack element = listeningElement as CodexBack;
             if (element.ActiveEntry != null)
-            {
                 element.ActiveEntry.LinePos += evt.ScrollWheelValue > 0 ? -1 : 1;
-            }
         }
 
         private void OpenCodex(UIMouseEvent evt, UIElement listeningElement)
@@ -188,9 +186,7 @@ namespace StarlightRiver.GUI
 
             foreach (EntryButton button in (Parent as Codex).ClickableEntries._items)
                 if (button.IsMouseHovering && button.Entry.Locked && button.Entry.Hint != null)
-                {
                     Utils.DrawBorderString(spriteBatch, Helper.WrapString(button.Entry.Hint, 300, Main.fontDeathText, 0.8f), Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal, 0.8f);
-                }
         }
 
         internal void ChangeCategory(CodexEntry.Categories category) //swaps out all of the entry buttons based on the category
@@ -233,7 +229,7 @@ namespace StarlightRiver.GUI
             Texture2D backTex = GetTexture("StarlightRiver/Assets/GUI/Assets/CategoryButton");
             spriteBatch.Draw(backTex, pos, backColor * 0.8f);
             Vector2 textSize = Main.fontDeathText.MeasureString(Text) * 0.6f;
-            Utils.DrawBorderString(spriteBatch, Text, GetDimensions().ToRectangle().Center(), (parent.ActiveCategory == Category) ? Color.Yellow : Color.White, 0.6f, 0.5f, 0.5f);
+            Utils.DrawBorderString(spriteBatch, Text, GetDimensions().ToRectangle().Center(), parent.ActiveCategory == Category ? Color.Yellow : Color.White, 0.6f, 0.5f, 0.5f);
         }
 
         public override void MouseDown(UIMouseEvent evt)
@@ -270,7 +266,7 @@ namespace StarlightRiver.GUI
             if (!Entry.Locked) //draws the icon and name if the entry is unlocked
             {
                 spriteBatch.Draw(Entry.Icon, iconPos, Entry.Icon.Frame(), Color.White, 0, Entry.Icon.Size() / 2, 0.5f, 0, 0);
-                Utils.DrawBorderString(spriteBatch, Entry.Title, iconPos + new Vector2(10, -6), (parent.ActiveEntry != null && parent.ActiveEntry == Entry) ? Color.Yellow : Color.White, 0.6f);
+                Utils.DrawBorderString(spriteBatch, Entry.Title, iconPos + new Vector2(10, -6), parent.ActiveEntry != null && parent.ActiveEntry == Entry ? Color.Yellow : Color.White, 0.6f);
             }
             else //draws the locked icon if locked
             {

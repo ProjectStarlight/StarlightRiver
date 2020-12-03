@@ -4,9 +4,9 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
-    public class Glass : ModDust
+    public class GlassAttracted : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -31,9 +31,7 @@ namespace StarlightRiver.Dusts
                 dust.rotation = (origin - dust.position).Length() * 0.1f;
                 dust.scale *= 0.99f;
                 if (Vector2.Distance(dust.position, origin) <= 5)
-                {
                     dust.active = false;
-                }
             }
 
             if (dust.customData is Vector2)
@@ -46,15 +44,13 @@ namespace StarlightRiver.Dusts
                 dust.rotation = (origin - dust.position).Length() * 0.1f;
                 dust.scale *= 0.99f;
                 if (Vector2.Distance(dust.position, origin) <= 5)
-                {
                     dust.active = false;
-                }
             }
             return false;
         }
     }
 
-    public class Glass2 : ModDust
+    public class GlassGravity : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -75,14 +71,12 @@ namespace StarlightRiver.Dusts
             dust.rotation += 0.1f;
             dust.scale *= 0.98f;
             if (dust.scale <= 0.2)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }
 
-    public class Glass3 : ModDust
+    public class GlassNoGravity : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -102,9 +96,7 @@ namespace StarlightRiver.Dusts
             dust.rotation += 0.12f;
             dust.scale *= 0.98f;
             if (dust.scale <= 0.2)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

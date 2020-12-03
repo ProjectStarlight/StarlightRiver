@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Glass3>(), SoundID.Dig, new Color(190, 255, 245), ItemID.Eggnog);
+            QuickBlock.QuickSet(this, 0, DustType<Dusts.GlassNoGravity>(), SoundID.Dig, new Color(190, 255, 245), ItemID.Eggnog);
 
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;

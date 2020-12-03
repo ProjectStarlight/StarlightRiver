@@ -21,7 +21,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         private float ScaleMult = 1;
         //private Color glowColor = new Color(255, 220, 200, 150);
         private Vector3 lightColor = new Vector3(0.2f, 0.1f, 0.05f);
-        private int dustType = DustType<Dusts.Stamina>();
+        private int dustType = DustType<StarlightRiver.Content.Dusts.Stamina>();
         private bool empowered;
 
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     //glowColor = new Color(220, 200, 255, 150);
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     ScaleMult = 1.5f;
-                    dustType = DustType<Dusts.BlueStamina>();
+                    dustType = DustType<StarlightRiver.Content.Dusts.BlueStamina>();
                     projectile.velocity *= 1.25f;//TODO: This could be on on the item's side like the staff does, thats generally the better way
                     empowered = true;
                 }
@@ -188,7 +188,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (int k = 0; k < 3; k++)
             {
-                Dust.NewDustPerfect(projectile.position, ModContent.DustType<Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);
+                Dust.NewDustPerfect(projectile.position, ModContent.DustType<StarlightRiver.Content.Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);
             }
         }
 

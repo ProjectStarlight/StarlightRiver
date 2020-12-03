@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 "Vitric Bricks",
                 new TileLoadData(
                     minPick: 0,
-                    dustType: DustType<Dusts.Glass3>(),
+                    dustType: DustType<Dusts.GlassNoGravity>(),
                     soundType: SoundID.Shatter,
                     mapColor: new Color(190, 255, 245)
                 )
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 "Crystal Cactus",
                 new TileLoadData(
                     minPick: 0,
-                    dustType: DustType<Dusts.Glass3>(),
+                    dustType: DustType<Dusts.GlassNoGravity>(),
                     soundType: SoundID.Shatter,
                     mapColor: new Color(190, 255, 245)
                 )
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 "Vitric Glass",
                 new TileLoadData(
                     minPick: 0,
-                    dustType: DustType<Dusts.Glass3>(),
+                    dustType: DustType<Dusts.GlassNoGravity>(),
                     soundType: SoundID.Shatter,
                     mapColor: new Color(190, 255, 245)
                 )
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 "Glassy Sand",
                 new TileLoadData(
                     minPick: 0,
-                    dustType: DustType<Dusts.Air3>(),
+                    dustType: DustType<Dusts.AirGravity>(),
                     soundType: SoundID.Dig,
                     mapColor: new Color(172, 131, 105)
                 )
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 "Soft Glassy Sand",
                 new TileLoadData(
                     minPick: 0,
-                    dustType: DustType<Dusts.Air3>(),
+                    dustType: DustType<Dusts.AirGravity>(),
                     soundType: SoundID.Dig,
                     mapColor: new Color(182, 141, 115)
                 )

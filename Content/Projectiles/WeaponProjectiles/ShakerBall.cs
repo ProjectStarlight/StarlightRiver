@@ -39,7 +39,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             if (projectile.ai[0] == 100)
             {
-                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f));
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
             }
 
             if (projectile.ai[1] == 0)
@@ -54,13 +54,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 {
                     for (int k = 0; k <= 100; k++)
                     {
-                        Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
+                        Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                     }
                     Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
                 }
                 projectile.velocity = Vector2.Zero;
                 float rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Dusts.Gold2>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
+                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
             }
 
             if (!player.channel && projectile.ai[0] > 10 && projectile.ai[1] == 0)
@@ -84,7 +84,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
                     for (int k = 0; k <= 100; k++)
                     {
-                        Dust.NewDustPerfect(projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
+                        Dust.NewDustPerfect(projectile.Center + new Vector2(0, 32), DustType<StarlightRiver.Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
                     }
                     Main.PlaySound(SoundID.Item70, projectile.Center);
                     Main.PlaySound(SoundID.NPCHit42, projectile.Center);

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Mist : ModDust
     {
@@ -14,6 +14,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return dust.color;
@@ -38,13 +39,11 @@ namespace StarlightRiver.Dusts
             dust.rotation += 0.01f;
 
             dust.fadeIn++;
-            float alpha = (dust.fadeIn / 45f) - ((float)Math.Pow(dust.fadeIn, 2) / 3600f);
+            float alpha = dust.fadeIn / 45f - (float)Math.Pow(dust.fadeIn, 2) / 3600f;
             dust.color = new Color(200, 235, 255) * 0.4f * alpha;
 
             if (dust.fadeIn > 120)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

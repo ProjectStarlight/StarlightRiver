@@ -25,7 +25,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         //These stats get scaled when empowered
         private int ScaleMult = 2;
         private Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.1f);
-        private int dustType = ModContent.DustType<Dusts.Stamina>();
+        private int dustType = ModContent.DustType<StarlightRiver.Content.Dusts.Stamina>();
         private bool empowered = false;
         //private VerletChainInstance Chain; //chain example
         //private List<Vector2> defaultGravList; //chain example
@@ -83,7 +83,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     projectile.frame = 1;
                     lightColor = new Vector3(0.1f, 0.2f, 0.4f);
                     ScaleMult = 3;
-                    dustType = ModContent.DustType<Dusts.BlueStamina>();
+                    dustType = ModContent.DustType<StarlightRiver.Content.Dusts.BlueStamina>();
                     empowered = true;
                 }
             }

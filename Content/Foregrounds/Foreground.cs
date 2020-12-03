@@ -7,22 +7,22 @@ namespace StarlightRiver.Content.Foregrounds
 {
     public abstract class Foreground : ILoadable
     {
-        public virtual ParticleSystem particleSystem => null;
+        public virtual ParticleSystem ParticleSystem => null;
 
-        public virtual bool visible => false;
+        public virtual bool Visible => false;
 
         protected float opacity = 0;
 
         public void Render(SpriteBatch spriteBatch)
         {
-            if (visible || opacity > 0)
+            if (Visible || opacity > 0)
             {
                 Draw(spriteBatch, opacity);
 
-                if (visible && opacity < 1)
+                if (Visible && opacity < 1)
                     opacity += 0.05f;
 
-                if (!visible && opacity > 0)
+                if (!Visible && opacity > 0)
                     opacity -= 0.05f;
             }
         }

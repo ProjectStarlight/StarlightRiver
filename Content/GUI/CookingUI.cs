@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class CookingUI : SmartUIState
     {
@@ -42,7 +42,7 @@ namespace StarlightRiver.GUI
             ExitButton.OnClick += Exit;
             ExitButton.SetVisibility(1, 1);
 
-            this.OnScrollWheel += ScrollStats;
+            OnScrollWheel += ScrollStats;
         }
 
         public override void Update(GameTime gameTime)
@@ -132,7 +132,7 @@ namespace StarlightRiver.GUI
                     var tex = GetTexture("StarlightRiver/Assets/GUI/Assets/Arrow");
 
                     spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 358, (int)Basepos.Y + 60, 4, 80), new Color(120, 80, 60));
-                    spriteBatch.Draw(tex, Basepos + new Vector2(360, 60 + (scrollStart / (float)(lineCount - 5)) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(tex, Basepos + new Vector2(360, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
                 }
             }
         }

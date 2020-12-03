@@ -55,13 +55,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Lighting.AddLight(projectile.position + new Vector2(88, 0), new Vector3(1, 1, 0.4f) * (projectile.ai[0] / 88f));
             if (projectile.ai[0] > 0)
             {
-                Dust.NewDustPerfect(new Vector2(projectile.position.X + (88 - projectile.ai[0] + Main.rand.NextFloat(projectile.ai[0] * 2)), projectile.position.Y + 56), DustType<Dusts.Gold2>(), new Vector2(0, Main.rand.NextFloat(-3, -1)));
+                Dust.NewDustPerfect(new Vector2(projectile.position.X + (88 - projectile.ai[0] + Main.rand.NextFloat(projectile.ai[0] * 2)), projectile.position.Y + 56), DustType<Dusts.GoldWithMovement>(), new Vector2(0, Main.rand.NextFloat(-3, -1)));
             }
 
             //lightning
             if (projectile.ai[0] == 88 && Main.rand.Next(8) == 0)
             {
-                Helper.DrawElectricity(projectile.position + new Vector2(Main.rand.Next(176), 60), projectile.position + new Vector2(Main.rand.Next(2) == 0 ? 0 : 176, 0), DustType<Dusts.Gold>(), 0.5f);
+                Helper.DrawElectricity(projectile.position + new Vector2(Main.rand.Next(176), 60), projectile.position + new Vector2(Main.rand.Next(2) == 0 ? 0 : 176, 0), DustType<Dusts.GoldNoMovement>(), 0.5f);
             }
 
             if (projectile.ai[1] != 0)

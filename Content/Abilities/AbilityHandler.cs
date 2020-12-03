@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Abilities
 {

@@ -14,7 +14,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<DashBarrierDummy>();
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
+        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 3, DustType<StarlightRiver.Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
     }
 
     internal class DashBarrierDummy : Dummy

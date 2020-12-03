@@ -33,7 +33,7 @@ namespace StarlightRiver.Keys
         public override void PreUpdate()
         {
             if (Main.rand.Next(4) == 0)
-                Dust.NewDust(Position + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5), 32, 32, DustType<Dusts.Gold2>(), 0, 0, 0, default, 0.5f);
+                Dust.NewDust(Position + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5), 32, 32, DustType<Dusts.GoldWithMovement>(), 0, 0, 0, default, 0.5f);
             Lighting.AddLight(Position, new Vector3(1, 1, 0.8f) * 0.6f);
         }
 

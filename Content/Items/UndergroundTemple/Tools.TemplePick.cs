@@ -59,7 +59,7 @@ namespace StarlightRiver.Items.Temple
             {
                 if (Main.mouseRight && Charge < 120) //this is gonna go to shiiittt in MPPPPP
                 {
-                    Dust d = Dust.NewDustPerfect(player.Center, DustType<Dusts.PickCharge>(), Vector2.UnitY.RotatedBy(Charge / 120f * 6.28f) * 30, 0, Color.LightYellow, 2);
+                    Dust d = Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.PickCharge>(), Vector2.UnitY.RotatedBy(Charge / 120f * 6.28f) * 30, 0, Color.LightYellow, 2);
                     d.customData = player.whoAmI;
 
                     if (Charge == 119)
@@ -67,7 +67,7 @@ namespace StarlightRiver.Items.Temple
                         Main.PlaySound(SoundID.MaxMana, player.Center);
 
                         for (int k = 0; k < 100; k++)
-                            Dust.NewDustPerfect(player.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+                            Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
                     }
                 }
 

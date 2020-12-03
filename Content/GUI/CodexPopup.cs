@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class CodexPopup : SmartUIState
     {
@@ -26,7 +26,7 @@ namespace StarlightRiver.GUI
             string str = "New Entry: " + Text;
             float xOff = Main.screenWidth / 2 - Main.fontDeathText.MeasureString(str).X / 4;
 
-            Vector2 pos = Timer > 120 ? new Vector2(xOff, Main.screenHeight - 60) : new Vector2(xOff, (Main.screenHeight - 60) + (120 - Timer));
+            Vector2 pos = Timer > 120 ? new Vector2(xOff, Main.screenHeight - 60) : new Vector2(xOff, Main.screenHeight - 60 + (120 - Timer));
             Color col = Timer > 120 ? Color.White : Color.White * (Timer / 120f);
             spriteBatch.Draw(tex, pos, col);
             Utils.DrawBorderString(spriteBatch, str, pos + new Vector2(40, 8), col);

@@ -20,7 +20,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             Player player = Main.player[projectile.owner];
             for (int k = 0; k <= 100; k++)
             {
-                Dust.NewDustPerfect(projectile.oldPosition + new Vector2(projectile.width / 2, projectile.height / 2), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
+                Dust.NewDustPerfect(projectile.oldPosition + new Vector2(projectile.width / 2, projectile.height / 2), DustType<StarlightRiver.Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
             }
             for (int k = 0; k < 3; k++)
             {

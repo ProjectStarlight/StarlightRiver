@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Starlight : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -32,15 +33,14 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.982f;
             dust.velocity *= 0.97f;
             if (dust.scale <= 0.2)
-            {
                 dust.active = false;
-            }
 
             float light = 0.1f * dust.scale;
             Lighting.AddLight(dust.position, new Vector3(1.45f, 2.28f, 2.37f) * light);
             return false;
         }
     }
+
     public class StarlightSmoke : Starlight
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -61,9 +61,7 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.982f;
             dust.velocity *= 0.97f;
             if (dust.scale <= 0.2)
-            {
                 dust.active = false;
-            }
 
             float light = 0.1f * dust.scale;
             Lighting.AddLight(dust.position, new Vector3(1.45f, 2.28f, 2.37f) * light);

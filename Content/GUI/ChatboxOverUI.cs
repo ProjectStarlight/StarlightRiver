@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class ChatboxOverUI : SmartUIState
     {
@@ -73,9 +73,7 @@ namespace StarlightRiver.GUI
         public override void Click(UIMouseEvent evt)
         {
             if (Parent is ChatboxOverUI)
-            {
                 (Parent as ChatboxOverUI).activeUpgrade?.ClickButton();
-            }
         }
     }
 }

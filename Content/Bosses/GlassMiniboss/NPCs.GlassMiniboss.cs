@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using System;
 using System.IO;
 using Terraria;
@@ -9,6 +8,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {

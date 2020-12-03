@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Dusts;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -10,6 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
@@ -72,7 +72,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 {
                     float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
                     Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
-                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<Glass2>(), vari, 100, default, num315 / 3f);
+                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<GlassGravity>(), vari, 100, default, num315 / 3f);
                 }
                 Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f, -Main.rand.NextFloat(0.15f, 0.75f));
             }

@@ -9,7 +9,9 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class OvergrowForeground : Foreground
     {
-        public override ParticleSystem particleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
+        public override ParticleSystem ParticleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
+
+        public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow;
 
         private void UpdateOvergrowWells(Particle particle)
         {
@@ -30,15 +32,15 @@ namespace StarlightRiver.Content.Foregrounds
                 {
                     for (int i = (int)Main.worldSurface; i < Main.maxTilesY - 200; i += 20)
                     {
-                        particleSystem.AddParticle(new Particle(new Vector2(0, 0), new Vector2(0.4f, Main.rand.NextFloat(-2, -1)), 0, Main.rand.NextFloat(1.5f, 2),
+                        ParticleSystem.AddParticle(new Particle(new Vector2(0, 0), new Vector2(0.4f, Main.rand.NextFloat(-2, -1)), 0, Main.rand.NextFloat(1.5f, 2),
                             Color.White * 0.05f, 600, new Vector2(Main.dungeonX * 16 + k * (800 * direction) + Main.rand.Next(30), i * 16)));
 
-                        particleSystem.AddParticle(new Particle(new Vector2(0, 0), new Vector2(0.15f, Main.rand.NextFloat(-2, -1)), 0, Main.rand.NextFloat(0.5f, 0.8f),
+                        ParticleSystem.AddParticle(new Particle(new Vector2(0, 0), new Vector2(0.15f, Main.rand.NextFloat(-2, -1)), 0, Main.rand.NextFloat(0.5f, 0.8f),
                             Color.White * 0.05f, 600, new Vector2(Main.dungeonX * 16 + k * (900 * direction) + Main.rand.Next(15), i * 16)));
                     }
                 }
 
-            particleSystem.DrawParticles(Main.spriteBatch);
+            ParticleSystem.DrawParticles(Main.spriteBatch);
         }
     }
 }

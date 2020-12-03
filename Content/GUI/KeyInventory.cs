@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class KeyInventory : SmartUIState
     {
@@ -20,9 +20,7 @@ namespace StarlightRiver.GUI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             foreach (KeyIcon key in keys)
-            {
                 key.DrawKey(spriteBatch, new Vector2(Main.screenWidth - (Main.LocalPlayer.GetModPlayer<Abilities.AbilityHandler>().StaminaMax > 7 ? 344 : 324), 110 + keys.IndexOf(key) * 40));
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

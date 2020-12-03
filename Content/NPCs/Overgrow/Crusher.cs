@@ -51,7 +51,7 @@ namespace StarlightRiver.NPCs.Traps
                     Vector2 vel = new Vector2(1, 0).RotatedBy(-k) * Main.rand.NextFloat(8);
                     if (Main.rand.Next(2) == 0) { vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8); }
                     Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
-                    Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);
+                    Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustType<StarlightRiver.Content.Dusts.Stamina>(), vel);
                 }
                 Main.PlaySound(SoundID.Item70.WithPitchVariance(0.6f), npc.Center);
 

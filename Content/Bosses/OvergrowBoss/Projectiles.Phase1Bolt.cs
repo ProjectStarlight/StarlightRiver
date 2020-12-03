@@ -24,7 +24,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f), DustType<Dusts.Gold2>(),
+            Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f), DustType<Dusts.GoldWithMovement>(),
                 Vector2.Normalize(projectile.velocity.RotatedBy(1.58f)) * (float)Math.Sin(StarlightWorld.rottime * 16) * 0.6f, 0, default, 0.8f);
         }
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
             //Main.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/ProjectileImpact1").WithVolume(0.5f), projectile.Center);
             for (int k = 0; k < 20; k++)
             {
-                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f));
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
             }
         }
     }

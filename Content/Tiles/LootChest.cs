@@ -1,11 +1,11 @@
 ﻿using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Tiles
 {

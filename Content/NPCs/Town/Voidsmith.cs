@@ -1,11 +1,11 @@
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.NPCs.Town
 {

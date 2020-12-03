@@ -35,14 +35,14 @@ namespace StarlightRiver.Items.Prototypes
             Vector2 dir = Vector2.Normalize(player.Center - Main.MouseWorld);
             for (int k = 0; k <= 100; k++)
             {
-                Dust.NewDustPerfect(player.Center, DustType<Dusts.Starlight>(), dir.RotatedByRandom(0.5f) * -Main.rand.NextFloat(200));
+                Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.Starlight>(), dir.RotatedByRandom(0.5f) * -Main.rand.NextFloat(200));
             }
             for (int k = 1; k <= 6; k++)
             {
                 for (float n = 0; n <= 6.28f; n += 0.02f)
                 {
                     Vector2 off = new Vector2((float)Math.Cos(n), (float)Math.Sin(n) * 2) * (20 + k * 5);
-                    Dust.NewDustPerfect(player.Center + off.RotatedBy(dir.ToRotation()), DustType<Dusts.Starlight>(), dir * -k * 40);
+                    Dust.NewDustPerfect(player.Center + off.RotatedBy(dir.ToRotation()), DustType<StarlightRiver.Content.Dusts.Starlight>(), dir * -k * 40);
                 }
             }
             foreach (NPC npc in Main.npc.Where(npc => Vector2.Distance(player.Center, npc.Center) <= 800))

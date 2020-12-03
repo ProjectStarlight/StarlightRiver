@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 flail.npc.Center = target;
 
                 //dust
-                for (int k = 0; k < 3; k++) Dust.NewDust(flail.npc.position, flail.npc.width, flail.npc.height, DustType<Dusts.Gold2>());
-                for (int k = 0; k < 8; k++) Dust.NewDustPerfect(Vector2.Lerp(flail.npc.Center, flail.npc.oldPosition + flail.npc.Size / 2, k / 8f), DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f) * 0.5f);
+                for (int k = 0; k < 3; k++) Dust.NewDust(flail.npc.position, flail.npc.width, flail.npc.height, DustType<Dusts.GoldWithMovement>());
+                for (int k = 0; k < 8; k++) Dust.NewDustPerfect(Vector2.Lerp(flail.npc.Center, flail.npc.oldPosition + flail.npc.Size / 2, k / 8f), DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * 0.5f);
             }
 
             if (AttackTimer > 400) //deceleration
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
             if (AttackTimer <= 30)
             {
                 float rot = Main.rand.NextFloat(6.28f); //random rotation for the dust
-                Dust.NewDustPerfect(handpos + Vector2.One.RotatedBy(rot) * 50, DustType<Dusts.Gold2>(), -Vector2.One.RotatedBy(rot) * 2); //"suck in" charging effect
+                Dust.NewDustPerfect(handpos + Vector2.One.RotatedBy(rot) * 50, DustType<Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 2); //"suck in" charging effect
             }
 
             if (AttackTimer == 30)
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 for (int k = 0; k < 50; k++)
                 {
                     Dust.NewDust(flail.npc.position, flail.npc.width, flail.npc.height, DustType<Dusts.Stone>(), Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
-                    Dust.NewDustPerfect(flail.npc.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, default, 1);
+                    Dust.NewDustPerfect(flail.npc.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, default, 1);
                 }
 
                 //audio
@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 for (float k = 0; k < 6.28f; k += 0.1f)
                 {
                     Dust.NewDustPerfect(targetPoint + Vector2.One.RotatedBy(k) * 90, DustType<Dusts.Leaf>(), null, 0, default, 1.5f);
-                    Dust.NewDustPerfect(targetPoint + Vector2.One.RotatedBy(k) * Main.rand.NextFloat(95, 105), DustType<Dusts.Gold2>(), null, 0, default, 0.6f);
+                    Dust.NewDustPerfect(targetPoint + Vector2.One.RotatedBy(k) * Main.rand.NextFloat(95, 105), DustType<Dusts.GoldWithMovement>(), null, 0, default, 0.6f);
                     if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(targetPoint + Vector2.One.RotatedBy(k) * Main.rand.Next(100), DustType<Dusts.Leaf>());
                 }
             }
@@ -306,7 +306,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 for (int k = 0; k < 50; k++)
                 {
                     Dust.NewDust(flail.npc.position, flail.npc.width, flail.npc.height, DustType<Dusts.Stone>(), Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
-                    Dust.NewDustPerfect(flail.npc.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, default, 1);
+                    Dust.NewDustPerfect(flail.npc.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, default, 1);
                 }
 
                 //audio

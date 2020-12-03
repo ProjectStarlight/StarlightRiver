@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (projectile.ai[0] >= 30 && Abilities.AbilityHelper.CheckDash(target, projectile.Hitbox))
             {
                 for (int k = 0; k < 50; k++)
-                    Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
+                    Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());
                 Main.PlaySound(Terraria.ID.SoundID.Shatter, target.Center);
                 projectile.Kill();
                 return false;
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (projectile.ai[0] < 30)
             {
-                Dust.NewDust(projectile.position + new Vector2(0, projectile.height), projectile.width, 1, DustType<Dusts.Glass2>());
+                Dust.NewDust(projectile.position + new Vector2(0, projectile.height), projectile.width, 1, DustType<Dusts.GlassGravity>());
                 int i = Dust.NewDust(projectile.position + new Vector2(0, projectile.height), projectile.width, 1, DustType<Dusts.AirDash>(), 0, -5);
                 Main.dust[i].fadeIn = 30;
             }

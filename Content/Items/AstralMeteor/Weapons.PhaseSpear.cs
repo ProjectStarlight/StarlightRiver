@@ -150,7 +150,7 @@ namespace StarlightRiver.Items.Aluminum
                 Projectile proj = Main.projectile[i];
                 if (proj.modProjectile is PhasespearNode) (proj.modProjectile as PhasespearNode).color = color;
 
-                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Dusts.ElectricColor>(), 1, 20, color);
+                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<StarlightRiver.Content.Dusts.ElectricColor>(), 1, 20, color);
             }
             projectile.timeLeft = 0;
         }

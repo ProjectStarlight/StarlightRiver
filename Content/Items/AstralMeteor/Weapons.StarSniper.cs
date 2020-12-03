@@ -57,7 +57,7 @@ namespace StarlightRiver.Items.Aluminum
         public override void AI()
         {
             projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
-            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
+            Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.Stamina>(), projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

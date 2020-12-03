@@ -4,7 +4,6 @@ using StarlightRiver.Abilities.Content.ForbiddenWinds;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using StarlightRiver.Items;
 using System;
 using Terraria;
@@ -15,6 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Pickups
 {

@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.CustomHooks
                         g = 0.32f;
                         b = 0.0f;
                         if (Main.rand.Next(5) == 0)
-                            Dust.NewDustPerfect(new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16)), ModContent.DustType<Dusts.Gold2>(), new Vector2(0, Main.rand.NextFloat(-1.4f, -1.2f)), 0, default, 0.3f);
+                            Dust.NewDustPerfect(new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16)), ModContent.DustType<Dusts.GoldWithMovement>(), new Vector2(0, Main.rand.NextFloat(-1.4f, -1.2f)), 0, default, 0.3f);
                     }
                 }
                 // the corruption

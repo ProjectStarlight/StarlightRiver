@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
             TileObjectData.addTile(Type);
             soundType = SoundID.Shatter;
-            dustType = DustType<Dusts.Glass2>();
+            dustType = DustType<Dusts.GlassGravity>();
             AddMapEntry(new Color(114, 78, 80));
         }
     }

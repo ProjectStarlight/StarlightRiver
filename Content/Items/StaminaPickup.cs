@@ -27,7 +27,7 @@ namespace StarlightRiver.Items
 
             for (int k = 0; k <= 20; k++)
             {
-                Dust.NewDust(player.Center, 1, 1, DustType<Dusts.Stamina>(), 0, 0, 0, default, 1.2f);
+                Dust.NewDust(player.Center, 1, 1, DustType<StarlightRiver.Content.Dusts.Stamina>(), 0, 0, 0, default, 1.2f);
             }
             CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
             Main.PlaySound(SoundID.Item112, player.Center);

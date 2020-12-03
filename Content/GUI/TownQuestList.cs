@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     class TownQuestList : SmartUIState
     {
@@ -121,7 +121,7 @@ namespace StarlightRiver.GUI
             Texture2D back = GetTexture("StarlightRiver/Assets/GUI/Assets/TownQuestBack");
             Texture2D check = GetTexture("StarlightRiver/Assets/GUI/Assets/QuestCheck");
 
-            spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : (IsMouseHovering ? 0.7f : 0.5f)), 0, back.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : IsMouseHovering ? 0.7f : 0.5f), 0, back.Size() / 2, 1, 0, 0);
             Utils.DrawBorderString(spriteBatch, quest._questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
 
             if (quest.Unlocked) spriteBatch.Draw(check, pos + new Vector2(158, 0), back.Frame(), Color.White, 0, back.Size() / 2, 1, 0, 0);

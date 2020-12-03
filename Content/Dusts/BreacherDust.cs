@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class BreacherDust : ModDust
     {
@@ -26,15 +26,11 @@ namespace StarlightRiver.Dusts
             dust.velocity *= 0.75f;
             dust.alpha += 15;
             if (dust.velocity.Length() <= 1)
-            {
                 dust.active = false;
-            }
             float num64 = dust.scale * 1.4f;
             num64 *= 1.3f;
             if (num64 > 1f)
-            {
                 num64 = 1f;
-            }
             Lighting.AddLight((int)(dust.position.X / 16f), (int)(dust.position.Y / 16f), num64, num64 * 0.45f, num64 * 0.2f);
             return false;
         }

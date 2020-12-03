@@ -47,7 +47,7 @@ namespace StarlightRiver.Items.Aluminum
                     if (target.active && Vector2.Distance(target.Center, player.Center) < 100)
                     {
                         Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 20, 0, 0, 2, 100);
-                        Helper.DrawElectricity(player.Center, target.Center, DustType<Dusts.Electric>());
+                        Helper.DrawElectricity(player.Center, target.Center, DustType<StarlightRiver.Content.Dusts.Electric>());
                     }
                 }
             }

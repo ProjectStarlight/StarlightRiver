@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Stamina : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -35,12 +36,11 @@ namespace StarlightRiver.Dusts
             dust.rotation += 0.15f;
             dust.velocity *= 0.95f;
             dust.color *= 0.98f;
-
             dust.scale *= 0.98f;
+
             if (dust.scale < 0.1f)
-            {
                 dust.active = false;
-            }
+
             return false;
         }
     }

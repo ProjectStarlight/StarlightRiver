@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {

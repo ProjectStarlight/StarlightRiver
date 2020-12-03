@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 Main.NewText("Your " + item.modItem.Name + " shattered...", 255, 242, 161);
                 Main.PlaySound(SoundID.Shatter, player.Center);
                 for (int k = 0; k <= 30; k++)
-                    Dust.NewDustPerfect(player.Center, DustType<Dusts.Gold>(), Vector2.One.RotatedByRandom(6.28) * k / 10, 0, default, 2);
+                    Dust.NewDustPerfect(player.Center, DustType<Dusts.GoldNoMovement>(), Vector2.One.RotatedByRandom(6.28) * k / 10, 0, default, 2);
 
                 item.TurnToAir();
             }

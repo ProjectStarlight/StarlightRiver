@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Main.PlaySound(SoundID.Shatter, projectile.Center);
 
             for (int k = 0; k < 5; k++)
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());
 
             GlassMiniboss.SpawnShards(1, projectile.Center);
         }

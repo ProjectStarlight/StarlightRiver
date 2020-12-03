@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Abilities.AbilityHelper.CheckDash(target, projectile.Hitbox))
             {
                 projectile.active = false;
-                for (int k = 0; k < 20; k++) Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.Glass2>());
+                for (int k = 0; k < 20; k++) Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());
                 Item.NewItem(projectile.Center, ItemID.Heart);
                 Main.PlaySound(SoundID.Shatter, projectile.Center);
                 return false;

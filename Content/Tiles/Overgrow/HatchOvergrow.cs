@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 1, DustType<Dusts.Gold4>(), SoundID.Tink, false, new Color(255, 255, 220));
+            QuickBlock.QuickSetFurniture(this, 2, 1, DustType<Dusts.GoldSlowFade>(), SoundID.Tink, false, new Color(255, 255, 220));
         }
     }
 
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             if (Main.rand.Next(5) == 0)
             {
                 float rot = Main.rand.NextFloat(-0.7f, 0.7f);
-                Dust.NewDustPerfect(projectile.Center + new Vector2(24, -24), DustType<Dusts.Gold4>(), new Vector2(0, 0.4f).RotatedBy(rot + 0.7f), 0, default, 0.4f - Math.Abs(rot) / 0.7f * 0.2f);
+                Dust.NewDustPerfect(projectile.Center + new Vector2(24, -24), DustType<Dusts.GoldSlowFade>(), new Vector2(0, 0.4f).RotatedBy(rot + 0.7f), 0, default, 0.4f - Math.Abs(rot) / 0.7f * 0.2f);
             }
         }
         public void DrawAdditive(SpriteBatch spriteBatch)

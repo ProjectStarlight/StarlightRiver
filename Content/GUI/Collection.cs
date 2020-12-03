@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class Collection : SmartUIState
     {
@@ -30,7 +30,7 @@ namespace StarlightRiver.GUI
 
         public override void Update(GameTime gameTime)
         {
-            if ((!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null) || ShouldReset)
+            if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || ShouldReset)
             {
                 RemoveAllChildren();
                 var abilities = Ability.GetAbilityInstances();

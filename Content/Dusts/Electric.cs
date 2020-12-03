@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Electric : ModDust
     {
@@ -34,9 +34,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.92f;
             if (dust.scale < 0.2f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }
@@ -48,6 +46,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override bool Update(Dust dust)
         {
             Lighting.AddLight(dust.position, new Vector3(0.1f, 0.35f, 0.5f) * 1.5f * dust.scale);
@@ -57,9 +56,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.98f;
             if (dust.scale < 0.1f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }
@@ -71,6 +68,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -90,9 +88,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.92f;
             if (dust.scale < 0.2f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

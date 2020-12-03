@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            Dust.NewDustPerfect(new Vector2(4 + i * 16, 4 + j * 16), DustType<Dusts.Gold2>());
+            Dust.NewDustPerfect(new Vector2(4 + i * 16, 4 + j * 16), DustType<Dusts.GoldWithMovement>());
             Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(255, 200, 110) * 0.001f);
         }
 

@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class FireDust : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -30,9 +31,7 @@ namespace StarlightRiver.Dusts
             dust.position += dust.velocity * 0.1f;
             dust.scale *= 0.88f;
             if (dust.scale <= 0.3)
-            {
                 dust.active = false;
-            }
             dust.color *= 0.9f;
             dust.color.G -= 3;
             dust.color.B -= 3;
@@ -50,6 +49,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -67,9 +67,7 @@ namespace StarlightRiver.Dusts
             dust.position += dust.velocity * 0.15f;
             dust.scale *= 0.9f;
             if (dust.scale <= 0.1)
-            {
                 dust.active = false;
-            }
             dust.color *= 0.95f;
             dust.color.G -= 1;
             dust.color.B -= 1;

@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 for (int k = 0; k <= 10; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Glass2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
                     Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
                 }
             }
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 for (int k = 0; k <= 10; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Glass2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
                     Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
                 }
             }

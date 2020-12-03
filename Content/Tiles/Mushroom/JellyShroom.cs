@@ -23,7 +23,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 7, 7, DustType<Dusts.BlueStamina>(), 1, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
+            QuickBlock.QuickSetFurniture(this, 7, 7, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), 1, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
         }
     }
 
@@ -41,7 +41,7 @@ namespace StarlightRiver.Tiles.Mushroom
                 if (player.velocity.Y > -10) player.velocity.Y = -10;
 
                 for (int k = 16; k < 96; k++)
-                    Dust.NewDustPerfect(projectile.position + new Vector2(k, Main.rand.Next(36)), DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
+                    Dust.NewDustPerfect(projectile.position + new Vector2(k, Main.rand.Next(36)), DustType<StarlightRiver.Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
 
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/JellyBounce"), player.Center);
             }
@@ -54,7 +54,7 @@ namespace StarlightRiver.Tiles.Mushroom
                 if (Main.rand.Next(120) == 0)
                 {
                     float off = -2 * k * k / 357 + 232 * k / 357 - 1280 / 119;
-                    Dust.NewDustPerfect(projectile.position + new Vector2(k, 36 - off), DustType<Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
+                    Dust.NewDustPerfect(projectile.position + new Vector2(k, 36 - off), DustType<StarlightRiver.Content.Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
                 }
             }
 

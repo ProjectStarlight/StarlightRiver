@@ -120,7 +120,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
         {
             for (int k = 0; k <= 60; k++)
             {
-                Dust dus = Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(k / 60f * 6.28f) * Main.rand.NextFloat(50), DustType<Air2>(), Vector2.Zero);
+                Dust dus = Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(k / 60f * 6.28f) * Main.rand.NextFloat(50), DustType<AirLegacyWindsAnimation>(), Vector2.Zero);
                 dus.customData = Player;
             }
 

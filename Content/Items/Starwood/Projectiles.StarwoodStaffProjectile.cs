@@ -20,7 +20,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         //These stats get scaled when empowered
         private int counterScore = 1;
         private Vector3 lightColor = new Vector3(0.2f, 0.1f, 0.05f);
-        private int dustType = ModContent.DustType<Dusts.Stamina>();
+        private int dustType = ModContent.DustType<StarlightRiver.Content.Dusts.Stamina>();
         private bool empowered;
 
         public override void SetDefaults()
@@ -46,7 +46,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     counterScore = 2;
-                    dustType = ModContent.DustType<Dusts.BlueStamina>();
+                    dustType = ModContent.DustType<StarlightRiver.Content.Dusts.BlueStamina>();
                     empowered = true;
                 }
             }
@@ -116,7 +116,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         //These stats get scaled when empowered
         private float ScaleMult = 1;
         private Vector3 lightColor = new Vector3(0.2f, 0.1f, 0.05f);
-        private int dustType = ModContent.DustType<Dusts.Stamina>();
+        private int dustType = ModContent.DustType<StarlightRiver.Content.Dusts.Stamina>();
         private bool empowered;
 
 
@@ -144,7 +144,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     ScaleMult = 1.5f;
-                    dustType = ModContent.DustType<Dusts.BlueStamina>();
+                    dustType = ModContent.DustType<StarlightRiver.Content.Dusts.BlueStamina>();
                     empowered = true;
                 }
             }

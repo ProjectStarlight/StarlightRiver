@@ -99,8 +99,8 @@ namespace StarlightRiver.Items.Misc
             float x = (float)Math.Cos(-rot) * 80;
             float y = (float)Math.Sin(-rot) * 20;
             Vector2 off = new Vector2(x, y);
-            Dust.NewDustPerfect(player.Center + off, DustType<Dusts.BlueStamina>(), off * 0.01f, 0, default, 2f);
-            Dust.NewDustPerfect(player.Center + off, DustType<Dusts.BlueStamina>(), off * Main.rand.NextFloat(0.01f, 0.04f));
+            Dust.NewDustPerfect(player.Center + off, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), off * 0.01f, 0, default, 2f);
+            Dust.NewDustPerfect(player.Center + off, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), off * Main.rand.NextFloat(0.01f, 0.04f));
 
             if (player.channel) player.UpdateRotation(rot);
             else player.UpdateRotation(0);

@@ -15,12 +15,12 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<JarDummy>();
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
+        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<StarlightRiver.Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
-            if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
+            if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

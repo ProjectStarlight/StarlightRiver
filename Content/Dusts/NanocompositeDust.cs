@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class NanocompositeDust : ModDust
     {
@@ -13,6 +13,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -37,9 +38,7 @@ namespace StarlightRiver.Dusts
 
             dust.scale *= 0.95f;
             if (dust.scale < 0.1f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

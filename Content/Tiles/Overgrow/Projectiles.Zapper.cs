@@ -77,10 +77,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                         joints[k].Y = startpos.Y + k * 20 + Main.rand.NextFloat(-5, 5);
                     }
                     for (float k2 = 0; k2 <= 1; k2 += 0.1f)
-                        Dust.NewDustPerfect(Vector2.Lerp(joints[k], joints[k - 1], k2), DustType<Dusts.Gold>(), null, 0, default, 0.5f);
+                        Dust.NewDustPerfect(Vector2.Lerp(joints[k], joints[k - 1], k2), DustType<Dusts.GoldNoMovement>(), null, 0, default, 0.5f);
                 }
                 for (float k = 0; k <= 3.14f; k += 0.1f)
-                    Dust.NewDustPerfect(joints[(int)dims.Y / 20], DustType<Dusts.Gold2>(), new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(2), 0, default, 0.6f);
+                    Dust.NewDustPerfect(joints[(int)dims.Y / 20], DustType<Dusts.GoldWithMovement>(), new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(2), 0, default, 0.6f);
                 Main.PlaySound(SoundID.NPCHit53.WithVolume(0.2f), joints[(int)dims.Y / 20]);
             }
         }

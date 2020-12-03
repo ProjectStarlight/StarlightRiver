@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class Stamina : SmartUIState
     {
@@ -34,7 +34,6 @@ namespace StarlightRiver.GUI
             AbilityHandler mp = player.GetHandler();
 
             if (Main.mapStyle != 1)
-            {
                 if (Main.playerInventory)
                 {
                     Stam1.Left.Set(-220, 1);
@@ -45,7 +44,6 @@ namespace StarlightRiver.GUI
                     Stam1.Left.Set(-70, 1);
                     Stam1.Top.Set(90, 0);
                 }
-            }
             else
             {
                 Stam1.Left.Set(-306, 1);
@@ -96,8 +94,8 @@ namespace StarlightRiver.GUI
             {
                 if (k % 7 == 0 && k != 0) row++;
 
-                Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, (k % 7) * 28) :
-                    dimensions.TopLeft() + new Vector2(row * -18, 14 + (k % 7) * 28);
+                Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, k % 7 * 28) :
+                    dimensions.TopLeft() + new Vector2(row * -18, 14 + k % 7 * 28);
 
                 if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
@@ -113,9 +111,7 @@ namespace StarlightRiver.GUI
 
                 // If on a filled stamina vessel
                 if (k < mp.Stamina - 1)
-                {
                     spriteBatch.Draw(fillTex, pos + Vector2.One * 4, Color.White);
-                }
                 // If on the last stamina vessel
                 else if (k <= mp.Stamina)
                 {

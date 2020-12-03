@@ -22,7 +22,7 @@ namespace StarlightRiver.Gores
 
             var color = new Color(50, 150, 255) * (gore.timeLeft / 55f);
 
-            Dust.NewDustPerfect(gore.position + Vector2.One * 29 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), DustType<Dusts.Ink>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, color, 0.7f);
+            Dust.NewDustPerfect(gore.position + Vector2.One * 29 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), DustType<StarlightRiver.Content.Dusts.Ink>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, color, 0.7f);
             Lighting.AddLight(gore.position, color.ToVector3() * 0.3f);
             return true;
         }

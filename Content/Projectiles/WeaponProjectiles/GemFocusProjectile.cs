@@ -82,7 +82,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 float y = (float)Math.Sin(StarlightWorld.rottime + k) * projectile.ai[0] / 30f * 10;
                 Vector2 pos = (new Vector2(x, y)).RotatedBy(k / 12f * 6.28f);
 
-                Dust d = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GemFocusDust>(), pos, 0, color, 1f);
+                Dust d = Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.GemFocusDust>(), pos, 0, color, 1f);
                 d.customData = projectile;
             }
         }

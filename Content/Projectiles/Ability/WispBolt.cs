@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Dusts;
 using StarlightRiver.Items;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Projectiles.Ability
 {

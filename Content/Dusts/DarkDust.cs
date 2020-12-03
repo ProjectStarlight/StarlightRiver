@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Darkness : ModDust
     {
@@ -30,10 +30,9 @@ namespace StarlightRiver.Dusts
             dust.alpha = (int)(dust.fadeIn * 17f / 2f - 17 * (float)(Math.Pow(dust.fadeIn, 2) / 240f));
             dust.position += dust.velocity;
             dust.rotation += 0.1f;
+
             if (dust.fadeIn > 120)
-            {
                 dust.active = false;
-            }
 
             if (dust.velocity.X != 0)
             {

@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Corrupt : ModDust
     {
@@ -32,15 +32,11 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.94f;
             dust.color *= 0.94f;
             if (dust.scale <= 0.4)
-            {
                 dust.active = false;
-            }
 
             float light = 0.2f * dust.scale;
             if (dust.scale <= 2.5 + .55)
-            {
                 Lighting.AddLight(dust.position, new Vector3(1.49f, 1.32f, 1.59f) * light);
-            }
             return false;
         }
     }
@@ -63,15 +59,11 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.99f;
             dust.color *= 0.99f;
             if (dust.scale <= 0.1)
-            {
                 dust.active = false;
-            }
 
             float light = 0.1f * dust.scale;
             if (dust.scale <= 2.5 + .55)
-            {
                 Lighting.AddLight(dust.position, new Vector3(1.49f, 1.32f, 1.59f) * light);
-            }
             return false;
         }
     }

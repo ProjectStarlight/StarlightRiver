@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Glass3>(), SoundID.Shatter, new Color(200, 220, 255), -1);
+            QuickBlock.QuickSet(this, 0, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, new Color(200, 220, 255), -1);
             Main.tileLighted[Type] = false;
             TileID.Sets.DrawsWalls[Type] = true;
         }

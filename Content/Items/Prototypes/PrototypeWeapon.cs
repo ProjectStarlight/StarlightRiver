@@ -84,7 +84,7 @@ namespace StarlightRiver.Items.Prototypes
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, spawnpos);
             for (int k = 0; k <= 40; k++)
             {
-                Dust.NewDustPerfect(spawnpos, DustType<Dusts.Stone>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));
+                Dust.NewDustPerfect(spawnpos, DustType<StarlightRiver.Content.Dusts.Stone>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));
                 Dust.NewDustPerfect(spawnpos, 133, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
             }
             item.TurnToAir();

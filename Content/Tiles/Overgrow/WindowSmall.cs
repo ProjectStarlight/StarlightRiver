@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             if (Main.rand.Next(20) == 0)
             {
                 Vector2 off = Vector2.UnitY.RotatedByRandom(0.8f);
-                Dust.NewDustPerfect(projectile.Center + off * 20, DustType<Dusts.Gold4>(), off * 0.15f, 0, default, 0.35f);
+                Dust.NewDustPerfect(projectile.Center + off * 20, DustType<Dusts.GoldSlowFade>(), off * 0.15f, 0, default, 0.35f);
             }
         }
 

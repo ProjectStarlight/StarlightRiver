@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Piss : ModDust
     {
@@ -30,9 +30,7 @@ namespace StarlightRiver.Dusts
             Lighting.AddLight((int)(dust.position.X / 16f), (int)(dust.position.Y / 16f), 0.05f, 0.15f, 0.2f);
             dust.scale += 0.03f;
             if (dust.scale > 3.0f)
-            {
                 dust.active = false;
-            }
             return false;
         }
     }

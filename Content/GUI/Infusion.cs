@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.GUI
+namespace StarlightRiver.Content.GUI
 {
     public class Infusion : SmartUIState
     {
@@ -103,9 +103,7 @@ namespace StarlightRiver.GUI
                     //Grabs the items tooltip
                     System.Text.StringBuilder ToolTip = new System.Text.StringBuilder();
                     for (int k = 0; k < equipped.item.ToolTip.Lines; k++)
-                    {
                         ToolTip.AppendLine(equipped.item.ToolTip.GetLine(k));
-                    }
 
                     //Draws the name and tooltip at the mouse
                     Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
@@ -124,10 +122,8 @@ namespace StarlightRiver.GUI
         public override void Update(GameTime gameTime)
         {
             if (Unlocked && IsMouseHovering && ItemSlot.ShiftInUse && Main.LocalPlayer.GetHandler().GetInfusion(TargetSlot) != null)
-            {
                 // Set cursor to the little chest icon
                 Main.cursorOverride = 9;
-            }
         }
 
         public override void Click(UIMouseEvent evt)

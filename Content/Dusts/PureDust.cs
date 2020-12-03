@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Dusts
+namespace StarlightRiver.Content.Dusts
 {
     public class Purify : ModDust
     {
@@ -33,9 +33,7 @@ namespace StarlightRiver.Dusts
             dust.scale *= 0.94f;
             dust.rotation += dust.velocity.Length() * 0.1f;
             if (dust.scale <= 0.3)
-            {
                 dust.active = false;
-            }
 
             float light = 0.2f * dust.scale;
             Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);
@@ -51,6 +49,7 @@ namespace StarlightRiver.Dusts
             texture = Directory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -71,9 +70,7 @@ namespace StarlightRiver.Dusts
             dust.rotation = dust.velocity.ToRotation();
             dust.scale *= 0.98f;
             if (dust.scale <= 0.2)
-            {
                 dust.active = false;
-            }
 
             float light = 0.2f * dust.scale;
             Lighting.AddLight(dust.position, new Vector3(1, 1, 1) * light);

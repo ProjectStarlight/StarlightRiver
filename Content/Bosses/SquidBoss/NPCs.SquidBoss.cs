@@ -8,11 +8,11 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.NPCs;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {

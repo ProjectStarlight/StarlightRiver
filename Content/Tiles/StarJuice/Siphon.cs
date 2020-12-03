@@ -87,7 +87,7 @@ namespace StarlightRiver.Tiles.StarJuice
                 timer++;
                 if (timer > 100 + variation)
                 {
-                    Dust.NewDustPerfect(Vector2.Lerp(pos, tankpos, (timer - (100 + variation)) / 20f), DustType<Dusts.Starlight>());
+                    Dust.NewDustPerfect(Vector2.Lerp(pos, tankpos, (timer - (100 + variation)) / 20f), DustType<StarlightRiver.Content.Dusts.Starlight>());
                 }
 
                 if (timer >= 120 + variation)

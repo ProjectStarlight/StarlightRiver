@@ -119,7 +119,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override bool PreKill(int timeLeft)
         {
-            int dusttype = DustType<Dusts.Glass2>();
+            int dusttype = DustType<StarlightRiver.Content.Dusts.Glass2>();
             for (float num315 = 0.75f; num315 < 8; num315 += 2f)
             {
                 for (float i = -80; i < 41; i += 8f)
