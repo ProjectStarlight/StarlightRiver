@@ -7,7 +7,7 @@ namespace StarlightRiver.Items.Herbology.Potions
 {
     internal class PotionForest : QuickPotion
     {
-        public PotionForest() : base("Forest Tonic", "Provides regenration and immunity to poision", 1800, BuffType<Buffs.ForestTonic>(), 2)
+        public PotionForest() : base("Forest Tonic", "Provides regeneration and immunity to poison", 1800, BuffType<Buffs.ForestTonic>(), 2)
         {
         }
 
