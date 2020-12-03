@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         [AutoloadEquip(EquipType.Head)]
         public class AluminumHead : ModItem
         {
+            public override string Texture => Directory.AluminumItemDir + "AluminumHead";
+
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Helmet");
@@ -55,6 +57,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         [AutoloadEquip(EquipType.Body)]
         public class AluminumChest : ModItem
         {
+            public override string Texture => Directory.AluminumItemDir + "AluminumChest";
+
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Suit");
@@ -87,6 +91,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         [AutoloadEquip(EquipType.Legs)]
         public class AluminumLegs : ModItem
         {
+            public override string Texture => Directory.AluminumItemDir + "AluminumLegs";
+
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Leggings");

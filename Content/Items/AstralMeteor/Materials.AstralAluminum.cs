@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumOre : QuickTileItem
     {
+        public override string Texture => Directory.AluminumItemDir + "AluminumOre";
+
         public AluminumOre() : base("Astral Aluminum", "", TileType<OreAluminum>(), ItemRarityID.White) { }
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
@@ -18,6 +20,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     public class AluminumBar : QuickTileItem
     {
+        public override string Texture => Directory.AluminumItemDir + "AluminumBar";
+
         public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<Tiles.AluminumBar>(), ItemRarityID.Blue) { }
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 14, 0);
