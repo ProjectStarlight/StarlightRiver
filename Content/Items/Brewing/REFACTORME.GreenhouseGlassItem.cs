@@ -16,7 +16,7 @@ namespace StarlightRiver.Items.Herbology
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Glass, 10);
-            recipe.AddIngredient(ItemType<Aluminum.AluminumBar>(), 1);
+            recipe.AddIngredient(ItemType<StarlightRiver.Content.Items.AstralMeteor.AluminumBar>(), 1);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this, 10);
             recipe.AddRecipe();

@@ -4,10 +4,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Ammo
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumBullet : ModItem
     {
+        public override string Texture => 
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Astral Tracer");
@@ -25,7 +27,7 @@ namespace StarlightRiver.Items.Ammo
             item.knockBack = 0.5f;
             item.value = 1;
             item.rare = ItemRarityID.Blue;
-            item.shoot = ProjectileType<Projectiles.Ammo.AluminumBullet>();
+            item.shoot = ProjectileType<AluminumBulletProjectile>();
             item.shootSpeed = 0.01f;
             item.ammo = AmmoID.Bullet;
         }
@@ -34,7 +36,7 @@ namespace StarlightRiver.Items.Ammo
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.MusketBall, 70);
-            recipe.AddIngredient(ItemType<Aluminum.AluminumBar>(), 1);
+            recipe.AddIngredient(ItemType<AluminumBar>(), 1);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this, 70);
             recipe.AddRecipe();

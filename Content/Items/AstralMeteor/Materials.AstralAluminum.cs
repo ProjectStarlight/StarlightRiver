@@ -5,8 +5,9 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Items.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumOre : QuickTileItem
     {

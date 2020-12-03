@@ -21,26 +21,28 @@ namespace StarlightRiver.Core
 {
     public static class Directory
     {
-        public static string Assets =               "StarlightRiver/Assets/";
+        public const string Assets =               "StarlightRiver/Assets/";
 
-        public static string Invisible =            Assets + "Invisible";
-        public static string Debug =                Assets + "MarioCumming";
+        public const string Invisible =            Assets + "Invisible";
+        public const string Debug =                Assets + "MarioCumming";
 
-        public static string Dust =                 Assets + "Dusts";
+        public const string Dust =                 Assets + "Dusts";
 
-        public static string OvergrowTileDir =      Assets + "Tiles/Overgrow";
-        public static string OvergrowItemDir =      Assets + "Items/Overgrow";
-        public static string OvergrowBossDir =      Assets + "Bosses/OvergrowBoss";
+        public const string AluminumItemDir =      Assets + "Items/AstralMeteor";
 
-        public static string VitricTileDir =        Assets + "Tiles/Vitric";
-        public static string VitricItemDir =        Assets + "Items/Vitric";
-        public static string GlassBossDir =         Assets + "Bosses/GlassBoss";
-        public static string GlassMinibossDir =     Assets + "Bosses/GlassMiniboss";
+        public const string OvergrowTileDir =      Assets + "Tiles/Overgrow";
+        public const string OvergrowItemDir =      Assets + "Items/Overgrow";
+        public const string OvergrowBossDir =      Assets + "Bosses/OvergrowBoss";
 
-        public static string PermafrostTileDir =    Assets + "Tiles/Permafrost";
-        public static string PermafrostItemDir =    Assets + "Items/Permafrost";
-        public static string SquidBossDir =         Assets + "Bosses/SquidBoss";
+        public const string VitricTileDir =        Assets + "Tiles/Vitric";
+        public const string VitricItemDir =        Assets + "Items/Vitric";
+        public const string GlassBossDir =         Assets + "Bosses/GlassBoss";
+        public const string GlassMinibossDir =     Assets + "Bosses/GlassMiniboss";
 
-        public static string SlimeItemDir =         Assets + "Items/Slime";
+        public const string PermafrostTileDir =    Assets + "Tiles/Permafrost";
+        public const string PermafrostItemDir =    Assets + "Items/Permafrost";
+        public const string SquidBossDir =         Assets + "Bosses/SquidBoss";
+
+        public const string SlimeItemDir =         Assets + "Items/Slime";
     }
 }

@@ -1,12 +1,11 @@
-﻿using StarlightRiver.Items.Aluminum;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Armor.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     class AluminumArmor
     {
