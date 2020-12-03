@@ -4,7 +4,7 @@ namespace StarlightRiver.Buffs
 {
     public class ForestTonic : SmartBuff
     {
-        public ForestTonic() : base("Forest Tonic", "Immunity to poision\nSlowly regenerate life", false) { }
+        public ForestTonic() : base("Forest Tonic", "Immunity to poison\nSlowly regenerate life", false) { }
         public override void Update(Player player, ref int buffIndex)
         {
             player.lifeRegen += 2;
