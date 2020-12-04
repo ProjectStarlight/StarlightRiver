@@ -4,6 +4,7 @@ using ReLogic.Graphics;
 using StarlightRiver.Abilities;
 using System;
 using System.Linq;
+using System.Text;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -63,6 +64,13 @@ namespace StarlightRiver.GUI
             RemoveAllChildren();
             Initialize();
             Recalculate();
+
+            for (int i = 0; i < 3; i++)
+                if (GetElementAt(new Vector2(Main.mouseX, Main.mouseY)) == slots[i])
+                {
+                    Main.LocalPlayer.mouseInterface = true;
+                    slots[i].DrawTooltips(spriteBatch);
+                }
         }
     }
 
@@ -76,9 +84,6 @@ namespace StarlightRiver.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (IsMouseHovering)
-                Main.LocalPlayer.mouseInterface = true;
-
             var mp = Main.LocalPlayer.GetHandler();
             var equipped = mp.GetInfusion(TargetSlot);
 
@@ -90,30 +95,33 @@ namespace StarlightRiver.GUI
 
             //Draws the slot
             else if (equipped != null)
-            {
                 //Draws the item itself
                 equipped.Draw(spriteBatch, GetInnerDimensions().Center(), 1, false);
-
-                if (IsMouseHovering && Main.mouseItem.IsAir)
-                {
-                    //Grabs the items tooltip
-                    System.Text.StringBuilder ToolTip = new System.Text.StringBuilder();
-                    for (int k = 0; k < equipped.item.ToolTip.Lines; k++)
-                    {
-                        ToolTip.AppendLine(equipped.item.ToolTip.GetLine(k));
-                    }
-
-                    //Draws the name and tooltip at the mouse
-                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
-                    Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
-                }
-            }
 
             // Draws the transparent visual
             else if (Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
             {
                 float opacity = 0.33f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
                 mouseItem.Draw(spriteBatch, GetDimensions().Center(), opacity, false);
+            }
+        }
+
+        // Separated in order to draw tooltips above everything else.
+        public void DrawTooltips(SpriteBatch spriteBatch)
+        {
+            InfusionItem equipped = Main.LocalPlayer.GetHandler().GetInfusion(TargetSlot);
+
+            if (equipped != null && Unlocked && Main.mouseItem.IsAir)
+            {
+                //Grabs the items tooltip
+                StringBuilder ToolTip = new StringBuilder();
+                for (int k = 0; k < equipped.item.ToolTip.Lines; k++)
+                    ToolTip.AppendLine(equipped.item.ToolTip.GetLine(k));
+
+                //Draws the name and tooltip at the mouse
+                // TODO: Draw DisplayName rather than Name (currently throws an InvalidOperationException due to Main.spriteBatch not being ended in MethodSwaps.TestLighting if attempted.
+                Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
+                Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
             }
         }
 
