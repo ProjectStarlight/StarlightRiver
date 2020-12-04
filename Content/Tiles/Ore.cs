@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Items.EbonyIvory;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items.AstralMeteor;
+using StarlightRiver.Content.Items.EbonyIvory;
 
 namespace StarlightRiver.Content.Tiles
 {

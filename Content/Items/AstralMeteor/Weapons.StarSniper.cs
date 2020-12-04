@@ -5,12 +5,13 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items.AstralMeteor;
 
-namespace StarlightRiver.Items.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     class StarSniper : ModItem
     {
+        public override string Texture => Directory.AluminumItemDir + "StarSniper";
+
         public override void SetDefaults()
         {
             item.damage = 140;
@@ -45,6 +46,8 @@ namespace StarlightRiver.Items.Aluminum
 
     class StarSniperBolt : ModProjectile
     {
+        public override string Texture => Directory.AluminumItemDir + "StarSniperBolt";
+
         public override void SetDefaults()
         {
             projectile.friendly = true;
@@ -58,7 +61,7 @@ namespace StarlightRiver.Items.Aluminum
         public override void AI()
         {
             projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
-            Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.Stamina>(), projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
+            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -69,6 +72,8 @@ namespace StarlightRiver.Items.Aluminum
 
     class StarSniperAura : ModProjectile
     {
+        public override string Texture => Directory.AluminumItemDir + "StarSniperAura";
+
         public override void SetDefaults()
         {
             projectile.friendly = true;

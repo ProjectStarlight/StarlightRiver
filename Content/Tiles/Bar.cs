@@ -45,7 +45,7 @@ namespace StarlightRiver.Tiles
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
             //dustType = 0;
-            drop = ItemType<Items.EbonyIvory.BarEbony>();
+            drop = ItemType<StarlightRiver.Content.Items.EbonyIvory.BarEbony>();
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Metal Bar");
             AddMapEntry(new Color(156, 172, 177), name);

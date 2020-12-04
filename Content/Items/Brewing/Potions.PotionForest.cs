@@ -4,8 +4,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Items.Herbology.Potions;
 
-namespace StarlightRiver.Items.Herbology.Potions
+namespace StarlightRiver.Content.Items.Brewing
 {
     internal class PotionForest : QuickPotion
     {

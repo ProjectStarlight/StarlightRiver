@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.EbonyIvory
+namespace StarlightRiver.Content.Items.EbonyIvory
 {
     public class EbonyPrismStaff : ModItem
     {
@@ -41,25 +41,17 @@ namespace StarlightRiver.Items.EbonyIvory
             if (player.ownedProjectileCounts[ProjectileType<EbonyPrismSummon>()] > 0)
             {
                 for (int i = 0; i < Main.projectile.Length; i++)
-                {
                     if (Main.projectile[i].active)
-                    {
                         if (Main.projectile[i].type == type)
-                        {
                             if (Main.projectile[i].owner == player.whoAmI)
                             {
 
                                 Main.projectile[i].minionSlots += 1;
 
                                 if (Main.projectile[i].minionSlots < player.maxMinions)
-                                {
                                     Main.projectile[i].minionSlots += 1;
-                                }
 
                             }
-                        }
-                    }
-                }
                 return false;
             }
             Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockBack, player.whoAmI, 0, 0);

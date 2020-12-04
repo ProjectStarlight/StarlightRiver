@@ -7,12 +7,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.AstralMeteor;
 
-namespace StarlightRiver.Items.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     internal class AluminumReaver : ModItem
     {
+        public override string Texture => Directory.AluminumItemDir + "AluminumReaver";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Astral Reaver");
@@ -41,7 +42,6 @@ namespace StarlightRiver.Items.Aluminum
         public override bool UseItem(Player player)
         {
             if (Main.rand.Next(10) == 0)
-            {
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
                     NPC target = Main.npc[k];
@@ -51,7 +51,6 @@ namespace StarlightRiver.Items.Aluminum
                         Helper.DrawElectricity(player.Center, target.Center, DustType<StarlightRiver.Content.Dusts.Electric>());
                     }
                 }
-            }
             return true;
         }
 

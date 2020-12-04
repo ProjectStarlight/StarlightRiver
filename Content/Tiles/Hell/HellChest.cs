@@ -15,7 +15,7 @@ namespace StarlightRiver.Tiles.Hell
         {
             get => new List<Loot>
             {
-                new Loot(ItemType<Items.Hell.MagmaSword>(), 1)
+                new Loot(ItemType<StarlightRiver.Content.Items.Hell.MagmaSword>(), 1)
             };
         }
         internal override List<Loot> SmallLootPool
@@ -39,7 +39,7 @@ namespace StarlightRiver.Tiles.Hell
             for (int k = 0; k < player.inventory.Length; k++)
             {
                 Item item = player.inventory[k];
-                if (item.type == ItemType<Items.Hell.HellKey>())
+                if (item.type == ItemType<StarlightRiver.Content.Items.Hell.HellKey>())
                 {
                     if (item.stack > 1) item.stack--;
                     else item.TurnToAir();
@@ -54,7 +54,7 @@ namespace StarlightRiver.Tiles.Hell
             Player player = Main.LocalPlayer;
             player.noThrow = 2;
             player.showItemIcon = true;
-            player.showItemIcon2 = ItemType<Items.Hell.HellKey>();
+            player.showItemIcon2 = ItemType<StarlightRiver.Content.Items.Hell.HellKey>();
         }
 
     }

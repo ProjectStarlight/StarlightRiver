@@ -4,8 +4,9 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Items.EbonyIvory
+namespace StarlightRiver.Content.Items.EbonyIvory
 {
     public class OreEbonyItem : QuickTileItem
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Buffs;
-using StarlightRiver.Dusts;
+using StarlightRiver.Content.Dusts;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -8,7 +8,6 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Void = StarlightRiver.Dusts.Void;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -88,7 +87,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 
         protected virtual void UpdateEffects()
         {
-            int type = safe ? DustType<GoldNoMovement>() : DustType<Void>();
+            int type = safe ? DustType<GoldNoMovement>() : DustType<StarlightRiver.Content.Dusts.Void>();
             for (int k = 0; k <= 2; k++)
                 Dust.NewDust(Player.Center - new Vector2(4, 4), 8, 8, type);
         }

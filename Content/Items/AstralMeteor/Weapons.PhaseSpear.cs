@@ -10,9 +10,8 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.AstralMeteor;
 
-namespace StarlightRiver.Items.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     internal abstract class Phasespear : ModItem
     {
@@ -139,9 +138,7 @@ namespace StarlightRiver.Items.Aluminum
 
             List<NPC> possibleTargets = new List<NPC>();
             foreach (NPC npc in Main.npc.Where(npc => npc.active && !npc.immortal && Vector2.Distance(npc.Center, projectile.Center) < projectile.ai[1] && npc != target))
-            {
                 possibleTargets.Add(npc); //This grabs all possible targets, which includes all NPCs in the appropriate raidus which are alive and vulnerable, excluding the hit NPC
-            }
             if (possibleTargets.Count == 0) return; //kill if no targets are available
             NPC chosenTarget = possibleTargets[Main.rand.Next(possibleTargets.Count)];
 

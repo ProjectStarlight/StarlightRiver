@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.AstralMeteor;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -9,11 +8,13 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Items.Aluminum
+namespace StarlightRiver.Content.Items.AstralMeteor
 {
     class AluminumCarbide : ModItem, IGlowingItem
     {
         float spinup = 0;
+
+        public override string Texture => Directory.AluminumItemDir + "AluminumCarbide";
 
         public override void SetStaticDefaults()
         {
@@ -129,12 +130,12 @@ namespace StarlightRiver.Items.Aluminum
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = new Color(130, 220, 255) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.2f * projectile.scale;
+                Color color = new Color(130, 220, 255) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.2f * projectile.scale;
 
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
-                Vector2 off = Vector2.Normalize(projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(-StarlightWorld.rottime * 9 + (k * 0.5f)) * (k * 0.12f);
+                Vector2 off = Vector2.Normalize(projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(-StarlightWorld.rottime * 9 + k * 0.5f) * (k * 0.12f);
                 spriteBatch.Draw(tex, projectile.oldPos[k] + off + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
                 spriteBatch.Draw(tex, projectile.oldPos[k] + off + projectile.Size / 2 - Main.screenPosition, null, color * 0.4f, 0, tex.Size() / 2, scale * 2.2f, default, default);
             }

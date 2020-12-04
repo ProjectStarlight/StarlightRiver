@@ -9,10 +9,12 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Items.Hell
+namespace StarlightRiver.Content.Items.Hell
 {
     class MagmaSword : ModItem, IGlowingItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Hell/MagmaSword";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("[PH] Magma Sword");
@@ -67,6 +69,8 @@ namespace StarlightRiver.Items.Hell
 
     class MagmaSwordBlob : ModProjectile
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Hell/MagmaSwordBlob";
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
@@ -113,8 +117,8 @@ namespace StarlightRiver.Items.Hell
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = new Color(255, 175 + (int)(Math.Sin(StarlightWorld.rottime * 5 + (k / 2)) * 50), 50) * ((float)(projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.4f);
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / projectile.oldPos.Length;
+                Color color = new Color(255, 175 + (int)(Math.Sin(StarlightWorld.rottime * 5 + k / 2) * 50), 50) * ((float)(projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.4f);
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length;
                 Texture2D tex = GetTexture(Texture);
                 Texture2D tex2 = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
