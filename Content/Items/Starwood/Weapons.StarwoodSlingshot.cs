@@ -3,9 +3,8 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.WeaponProjectiles;
 
-namespace StarlightRiver.Content.Items.Starwood.Weapons
+namespace StarlightRiver.Content.Items.Starwood
 {
     public class StarwoodSlingshot : StarwoodItem
     {

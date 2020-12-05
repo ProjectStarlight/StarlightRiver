@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricHammer : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetDefaults()
         {
             item.damage = 28;

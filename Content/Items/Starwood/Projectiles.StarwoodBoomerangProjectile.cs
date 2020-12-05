@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles
+namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
     {
@@ -25,7 +25,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         //These stats get scaled when empowered
         private int ScaleMult = 2;
         private Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.1f);
-        private int dustType = ModContent.DustType<StarlightRiver.Content.Dusts.Stamina>();
+        private int dustType = DustType<StarlightRiver.Content.Dusts.Stamina>();
         private bool empowered = false;
         //private VerletChainInstance Chain; //chain example
         //private List<Vector2> defaultGravList; //chain example
@@ -83,7 +83,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     projectile.frame = 1;
                     lightColor = new Vector3(0.1f, 0.2f, 0.4f);
                     ScaleMult = 3;
-                    dustType = ModContent.DustType<StarlightRiver.Content.Dusts.BlueStamina>();
+                    dustType = DustType<StarlightRiver.Content.Dusts.BlueStamina>();
                     empowered = true;
                 }
             }
@@ -97,23 +97,17 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     {
                         projectile.velocity += Vector2.Normalize(Main.MouseWorld - projectile.Center);
                         if (projectile.velocity.Length() > 10)//swap this for shootspeed or something
-                        { //if more than max speed
                             projectile.velocity = Vector2.Normalize(projectile.velocity) * 10;//cap to max speed
-                        }
                     }
 
                     if (projectile.timeLeft < maxDistTime)
-                    {//if it doesn't collide, start it over time
                         NextPhase(0);
-                    }
                     break;
                 case 1://has hit something
                     if (projOwner.controlUseItem || projectile.ai[1] >= maxChargeTime - 5)
                     {
                         if (projectile.ai[1] == 0)
-                        {
                             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ImpactHeal"), projectile.Center);
-                        }
 
                         chargeMult = projectile.ai[1] / (maxChargeTime + 3);
                         projectile.ai[1]++;
@@ -128,9 +122,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                             projectile.height = 18;
                             projectile.Center = projectile.position;
                             for (int k = 0; k < projectile.oldPos.Length; k++)
-                            {
                                 projectile.oldPos[k] = projectile.position;
-                            }
                             NextPhase(1);//ai[]s reset here
                         }
                         else if (projectile.ai[1] == maxChargeTime)//change hitbox size, stays for 3 frames
@@ -140,9 +132,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                             projectile.height = 67 * ScaleMult;
                             projectile.Center = projectile.position;
                             for (int k = 0; k < projectile.oldPos.Length; k++)
-                            {
                                 projectile.oldPos[k] = projectile.position;
-                            }
                         }
                         else if (projectile.ai[1] == maxChargeTime - 5)//sfx
                         {
@@ -151,53 +141,37 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                             //Main.PlaySound(SoundID.Item74, projectile.Center);
                             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/MagicAttack"), projectile.Center);
                             for (int k = 0; k < 50; k++)
-                            {
                                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.5f) * ScaleMult), 0, default, 1.5f);
-                            }
                         }
                     }
                     else
-                    { //if mouse isnt held or let go, start next phase
                         NextPhase(1); // ai[]s and damage reset here
-                    }
                     break;
                 case 2://heading back
                     if (Vector2.Distance(projOwner.Center, projectile.Center) < 24)
-                    { //if close enough delete projectile
                         projectile.Kill();
-                    }
                     else if (Vector2.Distance(projOwner.Center, projectile.Center) < 200)
-                    { //faster turning if close enough
                         projectile.velocity += Vector2.Normalize(projOwner.Center - projectile.Center) * 4;
-                    }
                     else
-                    { //turning
                         projectile.velocity += Vector2.Normalize(projOwner.Center - projectile.Center);
-                    }
 
                     if (projectile.velocity.Length() > 10)//swap this for shootspeed or something
-                    { //if more than max speed
                         projectile.velocity = Vector2.Normalize(projectile.velocity) * 10;//cap to max speed
-                    }
                     break;
             }
 
             if (projectile.ai[0] != 1)
-            {
                 if (projectile.timeLeft % 8 == 0)
                 {
                     Main.PlaySound(SoundID.Item7, projectile.Center);
                     Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.5f).RotatedByRandom(0.5f), Scale: Main.rand.NextFloat(0.8f, 1.5f));
                 }
-            }
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (projectile.ai[0] == 1)
-            {
                 if (projectile.ai[1] >= maxChargeTime - 3 && projectile.ai[1] <= maxChargeTime + 3)
-                {
                     if (empowered)
                     {
                         damage *= ScaleMult;
@@ -208,17 +182,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                         damage *= ScaleMult;
                         knockback *= ScaleMult;
                     }
-                }
                 else
                 {
                     damage = ScaleMult;
                     knockback *= 0.1f;
                 }
-            }
             else if (empowered)
-            {
                 damage += 3;
-            }
         }
 
 
@@ -254,15 +224,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
 
             if (projectile.ai[0] != 1)
-            {
                 for (int k = 0; k < projectile.oldPos.Length; k++)
                 {
-                    Color color = projectile.GetAlpha(Color.White) * (((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length) * 0.5f);
-                    float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length;
+                    Color color = projectile.GetAlpha(Color.White) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.5f);
+                    float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length;
 
                     spriteBatch.Draw(GlowingTrail,
                     projectile.oldPos[k] + drawOrigin - Main.screenPosition,
-                    new Rectangle(0, (Main.projectileTexture[projectile.type].Height / 2) * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
+                    new Rectangle(0, Main.projectileTexture[projectile.type].Height / 2 * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
                     color,
                     projectile.rotation,
                     new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
@@ -276,11 +245,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     //new Vector2(LightTrailTexture.Width / 2, LightTrailTexture.Height / 2),
                     //scale, default, default);
                 }
-            }
 
             spriteBatch.Draw(Main.projectileTexture[projectile.type],
                 projectile.Center - Main.screenPosition,
-                new Rectangle(0, (Main.projectileTexture[projectile.type].Height / 2) * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
+                new Rectangle(0, Main.projectileTexture[projectile.type].Height / 2 * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
                 lightColor,
                 projectile.rotation,
                 new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
@@ -293,10 +261,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
                 spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
@@ -308,13 +276,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             spriteBatch.Draw(GlowingTexture,
                 projectile.Center - Main.screenPosition,
-                new Rectangle(0, (GlowingTexture.Height / 2) * projectile.frame, GlowingTexture.Width, GlowingTexture.Height / 2),
+                new Rectangle(0, GlowingTexture.Height / 2 * projectile.frame, GlowingTexture.Width, GlowingTexture.Height / 2),
                 color,
                 projectile.rotation,
                 new Vector2(GlowingTexture.Width / 2, GlowingTexture.Height / 4),
                 1f, default, default);
 
-            spriteBatch.Draw(AuraTexture, projectile.Center - Main.screenPosition, AuraTexture.Frame(), (Color.White * (projectile.ai[1] / maxChargeTime)), 0, AuraTexture.Size() / 2, (-chargeMult + 1) / 1.2f, 0, 0);
+            spriteBatch.Draw(AuraTexture, projectile.Center - Main.screenPosition, AuraTexture.Frame(), Color.White * (projectile.ai[1] / maxChargeTime), 0, AuraTexture.Size() / 2, (-chargeMult + 1) / 1.2f, 0, 0);
 
             //Chain.DrawRope(spriteBatch, ChainDrawMethod); //chain example
         }
@@ -353,9 +321,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (phase == 0 && projectile.ai[0] == phase)
             {
                 if (bounce)
-                {
                     projectile.velocity = -projectile.velocity;
-                }
 
                 projectile.tileCollide = false;
                 projectile.ignoreWater = true;

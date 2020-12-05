@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricAxe : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetDefaults()
         {
             item.damage = 18;

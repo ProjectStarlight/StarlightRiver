@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     internal class CeirosExpert : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Reduces the cooldown of forbidden winds by 16%");

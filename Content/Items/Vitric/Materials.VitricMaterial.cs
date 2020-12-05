@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricOre : QuickMaterial
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public VitricOre() : base("Vitric Ore", "", 999, 200, 2)
         {
         }
@@ -16,6 +18,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
     public class VitricGem : QuickMaterial
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public VitricGem() : base("Vitric Gem", "Many Facters Shimmer Within", 250, 500, 2)
         {
         }

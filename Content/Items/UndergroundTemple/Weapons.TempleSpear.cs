@@ -7,10 +7,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Temple
+namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TempleSpear : ModItem
     {
+        public override string Texture => Directory.CaveTempleItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Point of Light");

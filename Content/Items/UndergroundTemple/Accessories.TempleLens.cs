@@ -6,10 +6,12 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Items.Temple
+namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TempleLens : SmartAccessory
     {
+        public override string Texture => Directory.CaveTempleItemDir + Name;
+
         public TempleLens() : base("Ancient Lens", "+ 3 % Critical Strike Chance\nCritical strikes inflict glowing") { }
 
         public override void SafeSetDefaults()
@@ -34,17 +36,13 @@ namespace StarlightRiver.Items.Temple
         private void ModifyHurtLens(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
             if (Equipped(player) && crit)
-            {
                 target.AddBuff(BuffType<Buffs.Illuminant>(), 300);
-            }
         }
 
         private void ModifyProjectileLens(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (Equipped(Main.player[projectile.owner]) && crit)
-            {
                 target.AddBuff(BuffType<Buffs.Illuminant>(), 300);
-            }
         }
     }
 }

@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBow : ModItem, IGlowingItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Greatbow");

@@ -7,6 +7,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricYoyo : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Yoyo");

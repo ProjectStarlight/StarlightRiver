@@ -6,10 +6,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Temple
+namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TemplePick : ModItem
     {
+        public override string Texture => Directory.CaveTempleItemDir + Name;
+
         private int Charge;
         private bool Whirling;
         private int Direction;
@@ -81,7 +83,7 @@ namespace StarlightRiver.Items.Temple
                 {
                     Charge--;
                     player.velocity.X = Direction * 8;
-                    player.direction = (Charge / 3) % 2 == 0 ? 1 : -1;
+                    player.direction = Charge / 3 % 2 == 0 ? 1 : -1;
 
                     if (Charge % 3 == 0)
                         for (int k = 0; k < 3; k++)
@@ -97,7 +99,7 @@ namespace StarlightRiver.Items.Temple
                 }
             }
 
-            if ((!Main.mouseRight && Charge > 0 && !Whirling) || player.HeldItem != item) Charge = 0;
+            if (!Main.mouseRight && Charge > 0 && !Whirling || player.HeldItem != item) Charge = 0;
 
             if (Main.mouseRight && player.HeldItem == item && Charge < 120) Charge++;
         }

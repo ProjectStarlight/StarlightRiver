@@ -15,10 +15,10 @@ namespace StarlightRiver.Tiles.Temple
         {
             get => new List<Loot>
             {
-                new Loot(ItemType<Items.Temple.TemplePick>(), 1),
-                new Loot(ItemType<Items.Temple.TempleSpear>(), 1),
-                new Loot(ItemType<Items.Temple.TempleRune>(), 1),
-                new Loot(ItemType<Items.Temple.TempleLens>(), 1)
+                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TemplePick>(), 1),
+                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleSpear>(), 1),
+                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleRune>(), 1),
+                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleLens>(), 1)
             };
         }
 

@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles
+namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodSlingshotProjectile : ModProjectile, IDrawAdditive
     {
@@ -58,17 +58,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
 
             if (projectile.timeLeft % 25 == 0)//delay between star sounds
-            {
                 Main.PlaySound(SoundID.Item9, projectile.Center);
-            }
 
             projectile.rotation += 0.2f;
 
             Lighting.AddLight(projectile.Center, lightColor);
             if (projectile.velocity.Y < 50)
-            {
                 projectile.velocity.Y += 0.25f;
-            }
             projectile.velocity.X *= 0.995f;
         }
 
@@ -78,14 +74,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 damage += 5;
                 if (projectile.penetrate <= 1)
-                {
                     for (int k = 0; k < 4; k++)
                     {
                         Main.NewText(k);
-                        Projectile.NewProjectile(projectile.position, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(0.5f, 0.8f), ModContent.ProjectileType<WeaponProjectiles.StarwoodSlingshotFragment>(), damage / 2, knockback, projectile.owner, Main.rand.Next(2));
+                        Projectile.NewProjectile(projectile.position, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(0.5f, 0.8f), ProjectileType<StarlightRiver.Content.Items.Starwood.StarwoodSlingshotFragment>(), damage / 2, knockback, projectile.owner, Main.rand.Next(2));
 
                     }
-                }
             }
         }
 
@@ -94,14 +88,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 0.5f, pointDepthMult: 0.3f);
             Main.PlaySound(SoundID.Item10, projectile.Center);
             for (int k = 0; k < 35; k++)
-            {
                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.2f) * ScaleMult), 0, default, 1.5f);
-            }
 
         }
 
         //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/glow");
-        private Texture2D GlowingTrail => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail");
+        private Texture2D GlowingTrail => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail");
 
         //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Assets/Items/StarwoodBoomerang");
         //private Texture2D GlowingTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotProjectile");
@@ -109,17 +101,17 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D tex = GetTexture(Texture);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, projectile.rotation, new Vector2(11, 12), projectile.scale, default, default);
             Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = projectile.GetAlpha(Color.White) * (((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length) * 0.5f);
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length;
+                Color color = projectile.GetAlpha(Color.White) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.5f);
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length;
 
                 spriteBatch.Draw(GlowingTrail,
                 projectile.oldPos[k] + drawOrigin - Main.screenPosition,
-                new Rectangle(0, (Main.projectileTexture[projectile.type].Height / 2) * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
+                new Rectangle(0, Main.projectileTexture[projectile.type].Height / 2 * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
                 color,
                 projectile.oldRot[k],
                 new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
@@ -148,12 +140,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f;
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
-                spriteBatch.Draw(tex, (((projectile.oldPos[k] + projectile.Size / 2) + projectile.Center) * 0.50f) - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
         }
     }
@@ -187,14 +179,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void Kill(int timeLeft)
         {
             for (int k = 0; k < 3; k++)
-            {
-                Dust.NewDustPerfect(projectile.position, ModContent.DustType<StarlightRiver.Content.Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);
-            }
+                Dust.NewDustPerfect(projectile.position, DustType<StarlightRiver.Content.Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D tex = GetTexture(Texture);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, projectile.ai[0] > 0 ? 10 : 0, 12, 10), Color.White, projectile.rotation, new Vector2(6, 5), projectile.scale, default, default);
             return false;
         }

@@ -7,10 +7,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Temple.DashLocked
+namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class RuneStaff : ModItem
     {
+        public override string Texture => Directory.CaveTempleItemDir + Name;
+
         int charge = 0;
 
         public override void SetStaticDefaults()
@@ -142,11 +144,11 @@ namespace StarlightRiver.Items.Temple.DashLocked
 
                 for (int k = 0; k < projectile.oldPos.Length; k++)
                 {
-                    Color color = new Color(255, colorOff / 2, 1 - colorOff) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length) * 0.5f;
+                    Color color = new Color(255, colorOff / 2, 1 - colorOff) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length) * 0.5f;
                     if (k <= 4) color *= 1.2f;
-                    float scale = colorOff / 2 * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 1.4f;
+                    float scale = colorOff / 2 * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 1.4f;
 
-                    spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2) - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                    spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
                 }
             }
             else

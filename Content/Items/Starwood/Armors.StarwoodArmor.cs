@@ -6,10 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Starwood.Armors;
-
-namespace StarlightRiver.Content.Items.Starwood.Armors
+namespace StarlightRiver.Content.Items.Starwood
 {
     [AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable
@@ -169,20 +166,20 @@ namespace StarlightRiver.Core
 
         public void StartStarwoodEmpowerment()
         {
-            if (player.armor[1].modItem is StarwoodChest && ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
+            if (player.armor[1].modItem is Content.Items.Starwood.StarwoodChest && ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
             {
                 if (!Empowered)
                 {
                     for (int k = 0; k < 80; k++)//pickup sfx
                     {
-                        Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
+                        Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
                     }
                 }
                 else
                 {
                     for (int k = 0; k < 40; k++)//reduced pickup sfx if its already active
                     {
-                        Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
+                        Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
                     }
                 }
                 Empowered = true;

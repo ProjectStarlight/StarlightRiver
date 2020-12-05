@@ -8,6 +8,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricArrow : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Arrow");

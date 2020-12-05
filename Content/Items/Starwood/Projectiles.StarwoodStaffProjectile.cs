@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles
+namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
     {
@@ -52,9 +52,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
 
             if (projectile.timeLeft % 50 == projectile.ai[1])//delay between star sounds
-            {
                 Main.PlaySound(SoundID.Item9, projectile.Center);
-            }
 
             projectile.rotation += 0.3f;
             Lighting.AddLight(projectile.Center, lightColor);
@@ -71,16 +69,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             Main.PlaySound(SoundID.Item10, projectile.Center);
             for (int k = 0; k < 15; k++)
-            {
-                Dust.NewDustPerfect(projectile.Center, dustType, ((projectile.velocity * 0.1f) * Main.rand.NextFloat(0.8f, 0.12f)).RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)), 0, default, 1.5f);
-            }
+                Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.1f * Main.rand.NextFloat(0.8f, 0.12f)).RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)), 0, default, 1.5f);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             spriteBatch.Draw(Main.projectileTexture[projectile.type],
                 projectile.Center - Main.screenPosition,
-                new Rectangle(0, (Main.projectileTexture[projectile.type].Height / 2) * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
+                new Rectangle(0, Main.projectileTexture[projectile.type].Height / 2 * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
                 Color.White,
                 projectile.rotation,
                 new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
@@ -93,12 +89,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = (projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f) * 0.5f;
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f * 0.5f;
                 Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
 
-                spriteBatch.Draw(tex, (((projectile.oldPos[k] + projectile.Size / 2) + projectile.Center) * 0.5f) - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.5f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
         }
     }
@@ -156,9 +152,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             //Main.NewText("Vel: " + projectile.velocity.ToRotation());
 
             if (ToTarget > 0.785f && ToTarget < 2.355f && VelDirection > 0.785f && VelDirection < 2.355f)
-            {
                 projectile.velocity = projectile.velocity.RotatedBy((ToTarget - VelDirection) * 0.3f);
-            }
 
             projectile.rotation += 0.3f;
 
@@ -170,9 +164,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
             Main.PlaySound(SoundID.Item10, projectile.Center);
             for (int k = 0; k < 50; k++)
-            {
                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.7f) * ScaleMult), 0, default, 1.5f);
-            }
 
         }
 
@@ -188,12 +180,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.8f;
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
                 Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
 
-                spriteBatch.Draw(tex, (((projectile.oldPos[k] + projectile.Size / 2) + projectile.Center) * 0.50f) - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
         }
     }
@@ -225,7 +217,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     float speed = (mp.Empowered ? 16 : 14) * Main.rand.NextFloat(0.9f, 1.1f);
 
                     Vector2 position = new Vector2(npc.Center.X, npc.Center.Y - 700).RotatedBy(rotationAmount, npc.Center);
-                    Vector2 velocity = ((Vector2.Normalize((npc.Center + new Vector2(0, -20)) - position) * speed) + ((npc.velocity / (speed / 1.5f)) * 10f)) * (Math.Abs(rotationAmount) + 1f);
+                    Vector2 velocity = (Vector2.Normalize(npc.Center + new Vector2(0, -20) - position) * speed + npc.velocity / (speed / 1.5f) * 10f) * (Math.Abs(rotationAmount) + 1f);
 
                     Projectile.NewProjectile(position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
 

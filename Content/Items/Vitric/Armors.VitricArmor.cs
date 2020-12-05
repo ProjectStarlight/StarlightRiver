@@ -11,13 +11,13 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
     [AutoloadEquip(EquipType.Head)]
     public class VitricHead : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Headgear");

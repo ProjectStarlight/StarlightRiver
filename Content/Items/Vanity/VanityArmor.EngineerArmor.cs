@@ -10,8 +10,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Items.Armor.Engineer
@@ -19,6 +17,7 @@ namespace StarlightRiver.Items.Armor.Engineer
     [AutoloadEquip(EquipType.Head)]
     public class EngineerHead : ModItem
     {
+        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Helmet");
@@ -44,6 +43,7 @@ namespace StarlightRiver.Items.Armor.Engineer
     [AutoloadEquip(EquipType.Body)]
     public class EngineerChest : ModItem
     {
+        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Chestplate");
@@ -87,6 +87,7 @@ namespace StarlightRiver.Items.Armor.Engineer
     [AutoloadEquip(EquipType.Legs)]
     public class EngineerLegs : ModItem
     {
+        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Leggings");
@@ -112,7 +113,7 @@ namespace StarlightRiver.Items.Armor.Engineer
 
     public class EngineerArmorPlayer : ModPlayer
     {
-        FastNoise Noise = new FastNoise(0);
+        readonly FastNoise Noise = new FastNoise(0);
         short MaxTransform => 6;
         float EaseXVel = 0f;
         float EaseYVel = 0f;

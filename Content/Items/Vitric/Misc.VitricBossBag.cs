@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBag : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override int BossBagNPC => NPCType<Bosses.GlassBoss.VitricBoss>();
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Treasure Bag");

@@ -8,6 +8,8 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class GlassIdol : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Used to worship a powerful guardian.");
