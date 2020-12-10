@@ -10,32 +10,29 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
     {
+        public override string Texture => Directory.StarwoodItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Boomerang");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;    //The length of old position to be recorded
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;
             ProjectileID.Sets.TrailingMode[projectile.type] = 1;
         }
 
         private const int maxChargeTime = 50;//how long it takes to charge up
-        private int maxDistTime;//only set on spawn, used to simplify things, all uses could be replaced with: projectile.timeLeft - 30
 
         private float chargeMult;//a multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
 
         //These stats get scaled when empowered
         private int ScaleMult = 2;
         private Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.1f);
-        private int dustType = DustType<StarlightRiver.Content.Dusts.Stamina>();
+        private int dustType = DustType<Content.Dusts.Stamina>();
         private bool empowered = false;
-        //private VerletChainInstance Chain; //chain example
-        //private List<Vector2> defaultGravList; //chain example
 
-
+        private const int MaxTimeLeft = 1200;
+        private const int MaxDistTime = MaxTimeLeft - 30;
         public override void SetDefaults()
         {
-            projectile.timeLeft = 1200;
-            maxDistTime = projectile.timeLeft - 30;//the only time this is set
-
+            projectile.timeLeft = MaxTimeLeft;
             projectile.width = 18;
             projectile.height = 18;
             projectile.friendly = true;
@@ -43,66 +40,38 @@ namespace StarlightRiver.Content.Items.Starwood
             projectile.tileCollide = true;
             projectile.ignoreWater = false;
             projectile.aiStyle = -1;
-
-            /*Chain = new VerletChainInstance //chain example
-            {
-                segmentCount = 8,
-                segmentDistance = 32,
-                constraintRepetitions = 10,//defaults to 2, but with drag this may cause the rope to get stretched
-                //customDistances = true,
-                //segmentDistanceList = new List<float>
-                //{
-                //    64f,
-                //    32f,
-                //    24f,
-                //    24f,
-                //    32f,
-                //    64f,
-                //    86f,
-                //    176f
-                //},
-                drag = 1.05f,
-                forceGravity = new Vector2(0f, 1f),
-                gravityStrengthMult = 1f
-            };*/
         }
 
         public override void AI()
         {
-            //Chain.UpdateChain(projectile.Center); //chain example
-
             Player projOwner = Main.player[projectile.owner];
 
             projectile.rotation += 0.3f;
 
-            if (projectile.timeLeft == 1200)
-            {
+            if (projectile.timeLeft == MaxTimeLeft) {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered)
-                {
+                if (mp.Empowered) {
                     projectile.frame = 1;
                     lightColor = new Vector3(0.1f, 0.2f, 0.4f);
                     ScaleMult = 3;
-                    dustType = DustType<StarlightRiver.Content.Dusts.BlueStamina>();
-                    empowered = true;
-                }
-            }
+                    dustType = DustType<Dusts.BlueStamina>();
+                    empowered = true; } }
 
             Lighting.AddLight(projectile.Center, lightColor * 0.5f);
 
             switch (projectile.ai[0])
             {
                 case 0://flying outward
-                    if (empowered)
-                    {
+                    if (empowered) {
                         projectile.velocity += Vector2.Normalize(Main.MouseWorld - projectile.Center);
                         if (projectile.velocity.Length() > 10)//swap this for shootspeed or something
-                            projectile.velocity = Vector2.Normalize(projectile.velocity) * 10;//cap to max speed
-                    }
+                            projectile.velocity = Vector2.Normalize(projectile.velocity) * 10; }//cap to max speed
 
-                    if (projectile.timeLeft < maxDistTime)
+                    if (projectile.timeLeft < MaxDistTime)
                         NextPhase(0);
+
                     break;
+
                 case 1://has hit something
                     if (projOwner.controlUseItem || projectile.ai[1] >= maxChargeTime - 5)
                     {
@@ -114,35 +83,27 @@ namespace StarlightRiver.Content.Items.Starwood
                         projectile.velocity *= 0.75f;
                         Lighting.AddLight(projectile.Center, lightColor * chargeMult);
 
-
-                        if (projectile.ai[1] >= maxChargeTime + 3)//reset stats and start return phase
-                        {
+                        if (projectile.ai[1] >= maxChargeTime + 3) {//reset stats and start return phase
                             projectile.position = projectile.Center;
                             projectile.width = 18;
                             projectile.height = 18;
                             projectile.Center = projectile.position;
                             for (int k = 0; k < projectile.oldPos.Length; k++)
                                 projectile.oldPos[k] = projectile.position;
-                            NextPhase(1);//ai[]s reset here
-                        }
-                        else if (projectile.ai[1] == maxChargeTime)//change hitbox size, stays for 3 frames
-                        {
+                            NextPhase(1); }//ai[]s reset here
+                        else if (projectile.ai[1] == maxChargeTime){//change hitbox size, stays for 3 frames
                             projectile.position = projectile.Center;
                             projectile.width = 67 * ScaleMult;
                             projectile.height = 67 * ScaleMult;
                             projectile.Center = projectile.position;
                             for (int k = 0; k < projectile.oldPos.Length; k++)
-                                projectile.oldPos[k] = projectile.position;
-                        }
-                        else if (projectile.ai[1] == maxChargeTime - 5)//sfx
-                        {
-                            DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
+                                projectile.oldPos[k] = projectile.position; }
+                        else if (projectile.ai[1] == maxChargeTime - 5){//sfx
+                            Helpers.DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
                             Lighting.AddLight(projectile.Center, lightColor * 2);
-                            //Main.PlaySound(SoundID.Item74, projectile.Center);
                             Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/MagicAttack"), projectile.Center);
                             for (int k = 0; k < 50; k++)
-                                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.5f) * ScaleMult), 0, default, 1.5f);
-                        }
+                                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.5f) * ScaleMult), 0, default, 1.5f); }
                     }
                     else
                         NextPhase(1); // ai[]s and damage reset here
@@ -161,71 +122,44 @@ namespace StarlightRiver.Content.Items.Starwood
             }
 
             if (projectile.ai[0] != 1)
-                if (projectile.timeLeft % 8 == 0)
-                {
+                if (projectile.timeLeft % 8 == 0) {
                     Main.PlaySound(SoundID.Item7, projectile.Center);
-                    Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.5f).RotatedByRandom(0.5f), Scale: Main.rand.NextFloat(0.8f, 1.5f));
-                }
+                    Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.5f).RotatedByRandom(0.5f), Scale: Main.rand.NextFloat(0.8f, 1.5f)); }
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (projectile.ai[0] == 1)
-                if (projectile.ai[1] >= maxChargeTime - 3 && projectile.ai[1] <= maxChargeTime + 3)
-                    if (empowered)
-                    {
+            if (projectile.ai[0] == 1) {
+                if (projectile.ai[1] >= maxChargeTime - 3 && projectile.ai[1] <= maxChargeTime + 3) {
+                    if (empowered) {
                         damage *= ScaleMult;
-                        knockback *= ScaleMult;
-                    }
-                    else
-                    {
+                        knockback *= ScaleMult; }
+                    else {
                         damage *= ScaleMult;
-                        knockback *= ScaleMult;
-                    }
-                else
-                {
+                        knockback *= ScaleMult; } }
+                else {
                     damage = ScaleMult;
-                    knockback *= 0.1f;
-                }
+                    knockback *= 0.1f; } }
             else if (empowered)
                 damage += 3;
         }
 
-
-        #region on any collide start next phase
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
+        public override bool OnTileCollide(Vector2 oldVelocity) {
             NextPhase(0, true);
-            return false;
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-            NextPhase(0, true);
-        }
-        public override void OnHitPlayer(Player target, int damage, bool crit)
-        {
-            NextPhase(0, true);
-        }
-        #endregion
+            return false; }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => NextPhase(0, true);
+        public override void OnHitPlayer(Player target, int damage, bool crit) => NextPhase(0, true);
 
-        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/glow");
-        private Texture2D GlowingTrail => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodBoomerangGlowTrail");
-
-        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Assets/Items/StarwoodBoomerang");
-        private Texture2D GlowingTexture => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodBoomerangGlow");
-        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-
-        //private Texture2D worm1 => GetTexture("StarlightRiver/Assets/worm1");
-        //private Texture2D worm2 => GetTexture("StarlightRiver/Assets/worm2");
-        //private Texture2D worm3 => GetTexture("StarlightRiver/Assets/worm3");
+        private Texture2D GlowingTrail => GetTexture(Directory.StarwoodItemDir + "StarwoodBoomerangGlowTrail");
+        private Texture2D GlowingTexture => GetTexture(Directory.StarwoodItemDir + "StarwoodBoomerangGlow");
+        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");//TEXTURE PATH
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Vector2 drawOrigin = new Vector2(Main.projectileTexture[projectile.type].Width * 0.5f, projectile.height * 0.5f);
 
             if (projectile.ai[0] != 1)
-                for (int k = 0; k < projectile.oldPos.Length; k++)
-                {
+                for (int k = 0; k < projectile.oldPos.Length; k++) {
                     Color color = projectile.GetAlpha(Color.White) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length * 0.5f);
                     float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length;
 
@@ -235,16 +169,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     color,
                     projectile.rotation,
                     new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
-                    scale, default, default);
-
-                    //spriteBatch.Draw(LightTrailTexture,
-                    //projectile.oldPos[k] + drawOrigin - Main.screenPosition,
-                    //LightTrailTexture.Frame(),
-                    //Color.White * 0.3f,
-                    //0f,
-                    //new Vector2(LightTrailTexture.Width / 2, LightTrailTexture.Height / 2),
-                    //scale, default, default);
-                }
+                    scale, default, default); }
 
             spriteBatch.Draw(Main.projectileTexture[projectile.type],
                 projectile.Center - Main.screenPosition,

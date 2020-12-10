@@ -8,7 +8,8 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     public class StarwoodSlingshot : StarwoodItem
     {
-        public StarwoodSlingshot() : base(ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodSlingshot_Alt")) { }
+        public override string Texture => Directory.StarwoodItemDir + Name;
+        public StarwoodSlingshot() : base(ModContent.GetTexture(Directory.StarwoodItemDir + "StarwoodSlingshot_Alt")) { }
 
         public override void SetStaticDefaults()
         {

@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodSlingshotProjectile : ModProjectile, IDrawAdditive
     {
+        public override string Texture => Directory.StarwoodItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shooting Star");
@@ -19,15 +20,14 @@ namespace StarlightRiver.Content.Items.Starwood
 
         //These stats get scaled when empowered
         private float ScaleMult = 1;
-        //private Color glowColor = new Color(255, 220, 200, 150);
         private Vector3 lightColor = new Vector3(0.2f, 0.1f, 0.05f);
-        private int dustType = DustType<StarlightRiver.Content.Dusts.Stamina>();
+        private int dustType = DustType<Content.Dusts.Stamina>();
         private bool empowered;
 
-
+        private const int MaxTimeLeft = 600;
         public override void SetDefaults()
         {
-            projectile.timeLeft = 600;
+            projectile.timeLeft = MaxTimeLeft;
 
             projectile.width = 22;
             projectile.height = 24;
@@ -42,20 +42,15 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void AI()
         {
-            if (projectile.timeLeft == 600)
-            {
+            if (projectile.timeLeft == MaxTimeLeft) {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered)
-                {
+                if (mp.Empowered) {
                     projectile.frame = 1;
-                    //glowColor = new Color(220, 200, 255, 150);
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     ScaleMult = 1.5f;
-                    dustType = DustType<StarlightRiver.Content.Dusts.BlueStamina>();
+                    dustType = DustType<Content.Dusts.BlueStamina>();
                     projectile.velocity *= 1.25f;//TODO: This could be on on the item's side like the staff does, thats generally the better way
-                    empowered = true;
-                }
-            }
+                    empowered = true; } }
 
             if (projectile.timeLeft % 25 == 0)//delay between star sounds
                 Main.PlaySound(SoundID.Item9, projectile.Center);
@@ -63,42 +58,25 @@ namespace StarlightRiver.Content.Items.Starwood
             projectile.rotation += 0.2f;
 
             Lighting.AddLight(projectile.Center, lightColor);
+            projectile.velocity.X *= 0.995f;
             if (projectile.velocity.Y < 50)
                 projectile.velocity.Y += 0.25f;
-            projectile.velocity.X *= 0.995f;
         }
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (empowered)
-            {
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) {
+            if (empowered) {
                 damage += 5;
                 if (projectile.penetrate <= 1)
                     for (int k = 0; k < 4; k++)
-                    {
-                        Main.NewText(k);
-                        Projectile.NewProjectile(projectile.position, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(0.5f, 0.8f), ProjectileType<StarlightRiver.Content.Items.Starwood.StarwoodSlingshotFragment>(), damage / 2, knockback, projectile.owner, Main.rand.Next(2));
+                        Projectile.NewProjectile(projectile.position, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(0.5f, 0.8f), ProjectileType<Content.Items.Starwood.StarwoodSlingshotFragment>(), damage / 2, knockback, projectile.owner, Main.rand.Next(2)); } }
 
-                    }
-            }
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 0.5f, pointDepthMult: 0.3f);
+        public override void Kill(int timeLeft) {
+            Helpers.DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 0.5f, pointDepthMult: 0.3f);
             Main.PlaySound(SoundID.Item10, projectile.Center);
             for (int k = 0; k < 35; k++)
-                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.2f) * ScaleMult), 0, default, 1.5f);
+                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.2f) * ScaleMult), 0, default, 1.5f); }
 
-        }
-
-        //private Texture2D LightTrailTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/glow");
-        private Texture2D GlowingTrail => GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotGlowTrail");
-
-        //private static Texture2D MainTexture => ModContent.GetTexture("StarlightRiver/Assets/Items/StarwoodBoomerang");
-        //private Texture2D GlowingTexture => ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/StarwoodSlingshotProjectile");
-        //private Texture2D AuraTexture => ModContent.GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-
+        private Texture2D GlowingTrail => GetTexture(Directory.StarwoodItemDir + "StarwoodSlingshotGlowTrail");
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture(Texture);
@@ -116,42 +94,24 @@ namespace StarlightRiver.Content.Items.Starwood
                 projectile.oldRot[k],
                 new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
                 scale, default, default);
-
-                //spriteBatch.Draw(LightTrailTexture,
-                //projectile.oldPos[k] + drawOrigin - Main.screenPosition,
-                //LightTrailTexture.Frame(),
-                //Color.White * 0.3f,
-                //0f,
-                //new Vector2(LightTrailTexture.Width / 2, LightTrailTexture.Height / 2),
-                //scale, default, default);
             }
-
-            //spriteBatch.Draw(Main.projectileTexture[projectile.type],
-            //    projectile.Center - Main.screenPosition,
-            //    new Rectangle(0, (Main.projectileTexture[projectile.type].Height / 2) * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
-            //    lightColor,
-            //    projectile.rotation,
-            //    new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
-            //    1f, default, default);
             return false;
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            for (int k = 0; k < projectile.oldPos.Length; k++)
-            {
+            for (int k = 0; k < projectile.oldPos.Length; k++) {
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
-
-                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
-            }
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");//TEXTURE PATH
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default); }
         }
     }
 
     class StarwoodSlingshotFragment : ModProjectile
     {
+        public override string Texture => Directory.StarwoodItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Star Fragment");
@@ -171,22 +131,15 @@ namespace StarlightRiver.Content.Items.Starwood
             projectile.aiStyle = -1;
             projectile.rotation = Main.rand.NextFloat(4f);
         }
-        public override void AI()
-        {
-            projectile.rotation += 0.3f;
-        }
+        public override void AI() => projectile.rotation += 0.3f;
 
-        public override void Kill(int timeLeft)
-        {
+        public override void Kill(int timeLeft) {
             for (int k = 0; k < 3; k++)
-                Dust.NewDustPerfect(projectile.position, DustType<StarlightRiver.Content.Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f);
-        }
+                Dust.NewDustPerfect(projectile.position, DustType<Content.Dusts.StarFragment>(), projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(0.3f, 0.5f), 0, Color.White, 1.5f); }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) {
             Texture2D tex = GetTexture(Texture);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, projectile.ai[0] > 0 ? 10 : 0, 12, 10), Color.White, projectile.rotation, new Vector2(6, 5), projectile.scale, default, default);
-            return false;
-        }
+            return false; }
     }
 }

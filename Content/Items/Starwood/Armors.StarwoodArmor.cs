@@ -11,9 +11,9 @@ namespace StarlightRiver.Content.Items.Starwood
     [AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodHat";
+        public override string Texture => Directory.StarwoodItemDir + Name;
 
-        public StarwoodHat() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodHat_Alt")) { }
+        public StarwoodHat() : base(GetTexture(Directory.StarwoodItemDir + "StarwoodHat_Alt")) { }
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Hat");
@@ -35,10 +35,10 @@ namespace StarlightRiver.Content.Items.Starwood
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat 
         {
             Color color = Lighting.GetColor((int)info.position.X / 16, (int)info.position.Y / 16);
-            ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Assets/Items/Starwood/StarwoodHat_Worn", color, 1, new Vector2(10, 4));
+            ArmorHelper.QuickDrawHelmet(info, Directory.StarwoodItemDir + "StarwoodHat_Worn", color, 1, new Vector2(10, 4));
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
             {
-                ArmorHelper.QuickDrawHelmet(info, "StarlightRiver/Assets/Items/Starwood/StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
+                ArmorHelper.QuickDrawHelmet(info, Directory.StarwoodItemDir + "StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
             }
         }
     }
@@ -46,9 +46,9 @@ namespace StarlightRiver.Content.Items.Starwood
     [AutoloadEquip(EquipType.Body)]
     public class StarwoodChest : StarwoodItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodChest";
+        public override string Texture => Directory.StarwoodItemDir + Name;
 
-        public StarwoodChest() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodChest_Alt")) { }
+        public StarwoodChest() : base(GetTexture(Directory.StarwoodItemDir + "StarwoodChest_Alt")) { }
         public override bool Autoload(ref string name)//adds method to Starlight player event
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHitNPCStarwood;
@@ -103,9 +103,9 @@ namespace StarlightRiver.Content.Items.Starwood
     [AutoloadEquip(EquipType.Legs)]
     public class StarwoodBoots : StarwoodItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Starwood/StarwoodBoots";
+        public override string Texture => Directory.StarwoodItemDir + Name;
 
-        public StarwoodBoots() : base(GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodBoots_Alt")) { }
+        public StarwoodBoots() : base(GetTexture(Directory.StarwoodItemDir + "StarwoodBoots_Alt")) { }
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Leggings");

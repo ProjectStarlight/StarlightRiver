@@ -11,6 +11,31 @@ namespace StarlightRiver.Physics
 {
     public class VerletChainInstance
     {
+        #region verlet chain example
+        /*Chain = new VerletChainInstance //chain example
+        {
+            segmentCount = 8,
+            segmentDistance = 32,
+            constraintRepetitions = 10,//defaults to 2, but with drag this may cause the rope to get stretched
+            //customDistances = true,
+            //segmentDistanceList = new List<float>
+            //{
+            //    64f,
+            //    32f,
+            //    24f,
+            //    24f,
+            //    32f,
+            //    64f,
+            //    86f,
+            //    176f
+            //},
+            drag = 1.05f,
+            forceGravity = new Vector2(0f, 1f),
+            gravityStrengthMult = 1f
+        };*/
+        //Chain.UpdateChain(projectile.Center); //chain example
+        #endregion
+
         //base
         public bool ChainActive = true;
         public bool init = false;

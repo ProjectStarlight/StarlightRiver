@@ -45,5 +45,6 @@ namespace StarlightRiver.Core
         public const string SquidBossDir =         Assets + "Bosses/SquidBoss/";
 
         public const string SlimeItemDir =         Assets + "Items/Slime/";
+        public const string StarwoodItemDir =      Assets + "Items/Starwood/";
     }
 }
