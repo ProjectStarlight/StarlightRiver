@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items;
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Items.Prototypes.Materials
 {

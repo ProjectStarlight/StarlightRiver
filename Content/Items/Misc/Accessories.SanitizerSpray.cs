@@ -2,15 +2,14 @@
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Dusts;
 
-namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
+namespace StarlightRiver.Content.Items.Misc
 {
     public class SanitizerSpray : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer 5 seconds of a random debuff to all enemies nearby\nDoesn't trigger if there are no vurnerable enemies nearby") { }
 
         public override bool Autoload(ref string name)
@@ -22,18 +21,10 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         private void OnHit(Player player, NPC target, int damage, float knockback, bool crit)
         {
             if (Equipped(player) && crit && Main.rand.Next(0, 100) < 25)
-            {
                 DisinfectantWipes.CleanDebuff(player, 1);
-            }
         }
-        private void OnHitNPCAccessory(Player player, Item item, NPC target, int damage, float knockback, bool crit)
-        {
-            OnHit(player, target, damage, knockback, crit);
-        }
-        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            OnHit(player, target, damage, knockback, crit);
-        }
+        private void OnHitNPCAccessory(Player player, Item item, NPC target, int damage, float knockback, bool crit) =>                 OnHit(player, target, damage, knockback, crit);
+        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit) =>   OnHit(player, target, damage, knockback, crit);
         public static bool SanitizeEnemies(Player player, int bufftype, int time, float range)
         {
             bool triggered = false;
@@ -53,6 +44,5 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
             }
             return triggered;
         }
-
     }
 }

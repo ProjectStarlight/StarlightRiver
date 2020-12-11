@@ -125,7 +125,7 @@ namespace StarlightRiver.Tiles.StarJuice
             if (!Main.dayTime && charge < maxCharge)
             {
                 float rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(pos + Vector2.One.RotatedBy(rot) * 20, DustType<StarlightRiver.Content.Dusts.Starlight>(), Vector2.One.RotatedBy(rot) * -10, 0, default, 0.5f);
+                Dust.NewDustPerfect(pos + Vector2.One.RotatedBy(rot) * 20, DustType<Content.Dusts.Starlight>(), Vector2.One.RotatedBy(rot) * -10, 0, default, 0.5f);
 
                 if (Main.time % 10 == 0 && !Main.fastForwardTime) charge++;
             }
@@ -134,7 +134,7 @@ namespace StarlightRiver.Tiles.StarJuice
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    Dust.NewDustPerfect(pos, DustType<StarlightRiver.Content.Dusts.Starlight>(), Vector2.One.RotatedBy(StarlightWorld.rottime + 1.58f * k) * 5, 0, default, 0.7f);
+                    Dust.NewDustPerfect(pos, DustType<Content.Dusts.Starlight>(), Vector2.One.RotatedBy(StarlightWorld.rottime + 1.58f * k) * 5, 0, default, 0.7f);
                 }
             }
 

@@ -2,7 +2,6 @@
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -12,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Pickups
 {
@@ -28,7 +28,7 @@ namespace StarlightRiver.Pickups
         public override void Visuals()
         {
             float rot = Main.rand.NextFloat(6.28f);
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 20, DustType<StarlightRiver.Content.Dusts.Stamina>(), Vector2.One.RotatedBy(rot) * -1);
+            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 20, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedBy(rot) * -1);
 
             Lighting.AddLight(npc.Center, new Vector3(1, 0.5f, 0));
         }

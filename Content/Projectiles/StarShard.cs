@@ -27,7 +27,7 @@ namespace StarlightRiver.Projectiles
             for (int k = 0; k <= 50; k++)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, mod.DustType("Starlight"), Main.rand.NextFloat(-30, 30), Main.rand.NextFloat(-30, 30), 0, default, 1.8f);
 
-            if (Vector2.Distance(projectile.position, Main.LocalPlayer.position) <= 800) Item.NewItem(projectile.position, ItemType<StarlightRiver.Content.Items.AstralMeteor.AluminumOre>(), Main.rand.Next(4));
+            if (Vector2.Distance(projectile.position, Main.LocalPlayer.position) <= 800) Item.NewItem(projectile.position, ItemType<Content.Items.AstralMeteor.AluminumOre>(), Main.rand.Next(4));
         }
 
         public override void AI()

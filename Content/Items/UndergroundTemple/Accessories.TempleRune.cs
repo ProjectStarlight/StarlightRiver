@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
                 for (float k = RuneTimer % 5 * 0.1f; k < 6.28f; k += 0.5f)
                 {
                     Vector2 off = new Vector2((float)Math.Cos(k + RuneTimer / 100f) * player.width, (float)Math.Sin(k + RuneTimer / 100f) * player.height);
-                    Dust d = Dust.NewDustPerfect(player.Center, DustType<StarlightRiver.Content.Dusts.PlayerFollowOrange>(), off);
+                    Dust d = Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.PlayerFollowOrange>(), off);
                     d.customData = player.whoAmI;
                 }
             }

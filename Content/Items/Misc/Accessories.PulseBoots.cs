@@ -4,15 +4,15 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Accessories
+namespace StarlightRiver.Content.Items.Misc
 {
     [AutoloadEquip(EquipType.Shoes)]
     public class PulseBoots : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public PulseBoots() : base("Pulse Boots", "Rocket Power!") { }
 
         private bool doubleJumped = false;
@@ -25,24 +25,16 @@ namespace StarlightRiver.Items.Accessories
             {
                 float velSide = player.velocity.X * side;
                 if (velSide > 0 && velSide < maxSpeed)
-                {
-                    player.velocity.X += (((maxSpeed * side) - player.velocity.X) / 2);
-                }
+                    player.velocity.X += (maxSpeed * side - player.velocity.X) / 2;
                 else if (velSide < 0)
-                {
-                    player.velocity.X = (6 * side);
-                }
+                    player.velocity.X = 6 * side;
 
                 for (int y = 0; y < 10; y++)//placeholder dash dust
-                {
                     Dust.NewDust(player.BottomLeft + player.velocity, player.width, (int)player.velocity.Y, 6, 3 * -side, 0, 0, default, 2);
-                }
             }
 
             if (!player.controlJump && player.velocity.Y != 0)
-            {
                 releaseJump = true;
-            }
             if (player.controlJump && player.velocity.Y != 0 && releaseJump && !doubleJumped)
             {
                 doubleJumped = true;
@@ -54,31 +46,25 @@ namespace StarlightRiver.Items.Accessories
                     float rand = Main.rand.NextFloat(-0.05f, 0.05f);
                     float x = (float)Math.Cos(k + rand) * 30;
                     float y = (float)Math.Sin(k + rand) * 10;
-                    float rot = (!player.controlLeft ? (player.controlRight ? 1 : 0) : -1);
+                    float rot = !player.controlLeft ? player.controlRight ? 1 : 0 : -1;
 
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 16), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 32), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, 48), DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 16), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.07f, 0, default, 1.6f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 32), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, 48), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
                 }
                 Main.PlaySound(SoundID.DD2_BetsyFireballShot);
 
-                if ((player.controlLeft && player.controlRight) || (!player.controlLeft && !player.controlRight))
+                if (player.controlLeft && player.controlRight || !player.controlLeft && !player.controlRight)
                 {
                     player.velocity.Y += -2;//if neither or both, then slightly higher jump
 
                     for (int y = 0; y < 8; y++)//placeholder dash dust
-                    {
                         Dust.NewDust(player.BottomLeft + player.velocity, player.width, (int)player.velocity.Y, 6, 0, 0, 0, default, 2);
-                    }
                 }
                 else if (player.controlLeft)//-1
-                {
                     jumpSide(-1);
-                }
                 else if (player.controlRight)//1
-                {
                     jumpSide(1);
-                }
             }
             if (player.velocity.Y == 0)
             {

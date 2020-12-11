@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
             if (projectile.ai[0] == 1)
                 for (int k = 0; k < 2; k++)
-                    Dust.NewDust(projectile.position + Vector2.One * 4, 8, 8, DustType<StarlightRiver.Content.Dusts.Stamina>(), 0, 0, 0, default, 0.6f);
+                    Dust.NewDust(projectile.position + Vector2.One * 4, 8, 8, DustType<Content.Dusts.Stamina>(), 0, 0, 0, default, 0.6f);
             else
             {
                 projectile.position += player.velocity;
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         public override void Kill(int timeLeft)
         {
             for (int k = 0; k < 100; k++)
-                Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * 5);
+                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * 5);
         }
     }
 }

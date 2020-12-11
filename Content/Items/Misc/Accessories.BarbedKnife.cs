@@ -3,14 +3,14 @@ using StarlightRiver.NPCs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Items;
 
-namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
+namespace StarlightRiver.Content.Items.Misc
 {
     public class BarbedKnife : SmartAccessory, IChestItem
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public BarbedKnife() : base("Barbed Knife", "Critical hits apply a stacking bleeding debuff\nStacks up to 5 at once, additional Critical hits refresh all stacks") { }
 
         public override bool Autoload(ref string name)
@@ -23,20 +23,12 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         private void OnHitNPCAccessory(Player player, NPC target, int damage, float knockback, bool crit)
         {
             if (Equipped(player) && crit)
-            {
                 BleedStack.ApplyBleedStack(target, 300, true);
-            }
         }
 
-        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            OnHitNPCAccessory(player, target, damage, knockback, crit);
-        }
+        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit) => OnHitNPCAccessory(player, target, damage, knockback, crit);
+        private void OnHitNPC(Player player, Item item, NPC target, int damage, float knockback, bool crit) => OnHitNPCAccessory(player, target, damage, knockback, crit);
 
-        private void OnHitNPC(Player player, Item item, NPC target, int damage, float knockback, bool crit)
-        {
-            OnHitNPCAccessory(player, target, damage, knockback, crit);
-        }
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);

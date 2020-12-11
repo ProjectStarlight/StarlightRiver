@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.AbilityContent.Faeflame;
 using System;
 using System.Linq;
 using Terraria;
@@ -36,7 +36,7 @@ namespace StarlightRiver.Tiles.Interactive
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("");//Map name
             AddMapEntry(new Color(0, 0, 0), name);
-            dustType = DustType<Dusts.GoldWithMovement>();
+            dustType = DustType<Content.Dusts.GoldWithMovement>();
             disableSmartCursor = true;
         }
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Tiles.Interactive
                     Wiring.TripWire(Position.X, Position.Y, 2, 2);
                 }
 
-                Dust.NewDust(Position.ToVector2() * 16 + new Vector2(10, 10), 2, 2, DustType<Dusts.GoldWithMovement>(), 0, 0, 0, default, timer / 300f);
+                Dust.NewDust(Position.ToVector2() * 16 + new Vector2(10, 10), 2, 2, DustType<Content.Dusts.GoldWithMovement>(), 0, 0, 0, default, timer / 300f);
                 Lighting.AddLight(Position.ToVector2() * 16 + new Vector2(10, 10), new Vector3(10, 8, 2) * timer / 300f * 0.06f);
             }
         }

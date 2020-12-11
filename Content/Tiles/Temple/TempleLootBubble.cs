@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Tiles.Temple
 {
@@ -38,7 +38,7 @@ namespace StarlightRiver.Tiles.Temple
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Content.Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
         }
     }
 

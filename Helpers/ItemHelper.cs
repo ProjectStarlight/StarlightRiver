@@ -4,7 +4,7 @@ using ReLogic.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
+using StarlightRiver.Content.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -200,7 +200,7 @@ namespace StarlightRiver.Abilities
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            infusions = new InfusionItem[GUI.Infusion.InfusionSlots];
+            infusions = new InfusionItem[Content.GUI.Infusion.InfusionSlots];
             InfusionLimit = 1;
             try
             {

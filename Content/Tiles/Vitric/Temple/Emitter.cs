@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Light Emitter");
+            (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Light Emitter");
         }
 
         public override bool NewRightClick(int i, int j)

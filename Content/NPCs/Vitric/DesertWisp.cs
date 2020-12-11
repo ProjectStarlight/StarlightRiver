@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.AbilityContent.Faeflame;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -38,7 +38,7 @@ namespace StarlightRiver.NPCs.Passive
             AbilityHandler mp = player.GetHandler();
             Vector2 distance = player.Center - npc.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(npc.Center, DustType<Content.Dusts.Air>(), Vector2.Zero);
 
             if ((distance.Length() <= 180 && !(mp.Unlocked<Wisp>())) || Main.dayTime) npc.ai[3] = 1;
 
@@ -60,7 +60,7 @@ namespace StarlightRiver.NPCs.Passive
             Player player = Main.player[npc.target];
             Vector2 distance = player.Center - npc.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(npc.Center, DustType<Content.Dusts.Air>(), Vector2.Zero);
 
             if (distance.Length() <= 120 && !player.ActiveAbility<Wisp>()) npc.velocity += Vector2.Normalize(distance) * -10;
         }

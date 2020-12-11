@@ -2,20 +2,20 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Tiles.Interactive
 {
     internal class Bouncer : DummyTile
     {
         public override int DummyType => ProjectileType<BouncerDummy>();
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<StarlightRiver.Content.Dusts.Glass3>(), SoundID.Shatter, false, new Color(115, 182, 158));
+        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Glass3>(), SoundID.Shatter, false, new Color(115, 182, 158));
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<BouncerItem>());
     }
 

@@ -74,7 +74,7 @@ namespace StarlightRiver.Core
             {
                 var staminaState = UILoader.GetUIState<Stamina>();
                 var infusionState = UILoader.GetUIState<Infusion>();
-                var codexState = UILoader.GetUIState<StarlightRiver.Content.GUI.Codex>();
+                var codexState = UILoader.GetUIState<Content.GUI.Codex>();
                 var collectionState = UILoader.GetUIState<Collection>();
 
                 AbilityHandler mp = player.GetHandler();
@@ -89,13 +89,13 @@ namespace StarlightRiver.Core
                     if (player.chest == -1 && Main.npcShop == 0)
                     {
                         collectionState.Visible = true;
-                        GUI.Codex.ButtonVisible = true;
+                        Content.GUI.Codex.ButtonVisible = true;
                         if (mp.AnyUnlocked) infusionState.Visible = true;
                     }
                     else
                     {
                         collectionState.Visible = false;
-                        GUI.Codex.ButtonVisible = false;
+                        Content.GUI.Codex.ButtonVisible = false;
                         if (mp.AnyUnlocked) infusionState.Visible = false;
                     }
                 }
@@ -103,8 +103,8 @@ namespace StarlightRiver.Core
                 {
                     collectionState.Visible = false;
                     Collection.ActiveAbility = null;
-                    GUI.Codex.ButtonVisible = false;
-                    GUI.Codex.Open = false;
+                    Content.GUI.Codex.ButtonVisible = false;
+                    Content.GUI.Codex.Open = false;
                     infusionState.Visible = false;
                 }
             }

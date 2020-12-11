@@ -22,7 +22,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         public override void AI()
         {
             if (projectile.timeLeft == 90) projectile.velocity *= -1;
-            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldNoMovement>());
+            Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldNoMovement>());
             projectile.velocity = Vector2.Normalize(projectile.velocity) * 10;
         }
 

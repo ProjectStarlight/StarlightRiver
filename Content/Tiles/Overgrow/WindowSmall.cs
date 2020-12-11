@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using System;
 using Terraria;
 using Terraria.ID;

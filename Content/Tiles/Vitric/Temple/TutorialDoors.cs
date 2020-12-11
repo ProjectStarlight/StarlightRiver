@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+            (this).QuickSetFurniture(1, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
     }
 
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+            (this).QuickSetFurniture(2, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
     }
 

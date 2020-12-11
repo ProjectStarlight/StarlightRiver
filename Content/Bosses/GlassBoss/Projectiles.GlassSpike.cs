@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             for (int k = 0; k <= 10; k++)
             {
                 Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-                Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.Air>());
+                Dust.NewDust(projectile.position, 22, 22, DustType<Content.Dusts.Air>());
             }
             Main.PlaySound(SoundID.Shatter, projectile.Center);
         }

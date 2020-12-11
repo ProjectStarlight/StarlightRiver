@@ -5,7 +5,7 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities.Content.ForbiddenWinds
+namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 {
     public class Pulse : InfusionItem<Dash>
     {

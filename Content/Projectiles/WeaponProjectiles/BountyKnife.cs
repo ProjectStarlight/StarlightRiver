@@ -28,7 +28,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.Starlight>(), Vector2.Zero);
+            Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Starlight>(), Vector2.Zero);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

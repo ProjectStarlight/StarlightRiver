@@ -1,7 +1,7 @@
-﻿using StarlightRiver.Abilities.Content.Faeflame;
-using StarlightRiver.Abilities.Content.ForbiddenWinds;
-using StarlightRiver.Abilities.Content.GaiasFist;
-using StarlightRiver.Abilities.Content.Purify;
+﻿using StarlightRiver.Abilities.AbilityContent.Faeflame;
+using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
+using StarlightRiver.Abilities.AbilityContent.GaiasFist;
+using StarlightRiver.Abilities.AbilityContent.Purify;
 using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;

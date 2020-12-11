@@ -6,15 +6,13 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Misc
+namespace StarlightRiver.Content.Items.Misc
 {
     internal class GemFocus : ModItem
     {
         public override string Texture => Directory.Invisible;
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Focusing Gem");
@@ -41,9 +39,7 @@ namespace StarlightRiver.Items.Misc
         public override bool UseItem(Player player)
         {
             if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<Projectiles.WeaponProjectiles.GemFocusProjectile>() && n.owner == player.whoAmI))
-            {
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<Projectiles.WeaponProjectiles.GemFocusProjectile>(), item.damage, item.knockBack, player.whoAmI);
-            }
             return true;
         }
 

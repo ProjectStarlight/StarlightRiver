@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.Content.Faeflame;
+using StarlightRiver.Abilities.AbilityContent.Faeflame;
 using System;
 using System.Linq;
 using Terraria;
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                         Dust.NewDustPerfect(Vector2.Lerp(joints[k], joints[k - 1], k2), DustType<Dusts.GoldNoMovement>(), null, 0, default, 0.5f);
                 }
                 for (float k = 0; k <= 3.14f; k += 0.1f)
-                    Dust.NewDustPerfect(joints[(int)dims.Y / 20], DustType<Dusts.GoldWithMovement>(), new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(2), 0, default, 0.6f);
+                    Dust.NewDustPerfect(joints[(int)dims.Y / 20], DustType<Content.Dusts.GoldWithMovement>(), new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(2), 0, default, 0.6f);
                 Main.PlaySound(SoundID.NPCHit53.WithVolume(0.2f), joints[(int)dims.Y / 20]);
             }
         }

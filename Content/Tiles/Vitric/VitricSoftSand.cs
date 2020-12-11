@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override void SetDefaults()
         {
-            (this).QuickSet(0, DustType<Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
+            (this).QuickSet(0, DustType<Content.Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
             Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
             Main.tileMerge[Type][TileType<VitricMoss>()] = true;

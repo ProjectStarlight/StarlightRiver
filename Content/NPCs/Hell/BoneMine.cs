@@ -6,8 +6,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.NPCs.Hostile
 {
@@ -59,7 +59,7 @@ namespace StarlightRiver.NPCs.Hostile
 
                 if (Main.player.Any(player => Vector2.Distance(player.Center, npc.Center) <= 128)) //warning ring
                 {
-                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<StarlightRiver.Content.Dusts.Stamina>());
+                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<Content.Dusts.Stamina>());
                 }
             }
             else

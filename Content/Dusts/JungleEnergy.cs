@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.Content.GaiasFist;
+using StarlightRiver.Abilities.AbilityContent.GaiasFist;
 using Terraria;
 using Terraria.ModLoader;
 

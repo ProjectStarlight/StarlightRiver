@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
+using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Tile tile = Main.tile[ParentX - 1, ParentY - 1];
             if (tile.frameX == 0 && tile.frameY == 0 && AbilityHelper.CheckWisp(player, projectile.Hitbox))
             {
-                for (int k = 0; k < 40; k++) Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.2f, 1.4f));
+                for (int k = 0; k < 40; k++) Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.2f, 1.4f));
                 tile.frameX = 34;
             }
         }
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(sway - 8, k * -16) - Main.screenPosition, new Rectangle(16 * k % 3, 0, 16, 16), Lighting.GetColor(ParentX, ParentY - k));
 
-                if (Main.rand.Next(5) == 0 && tile.frameX == 0 && tile.frameY == 0) Dust.NewDust(projectile.Center - new Vector2(10, k * 16 - 8), 16, 16, DustType<Dusts.GoldWithMovement>(), 0, -3, 0, default, 0.3f);
+                if (Main.rand.Next(5) == 0 && tile.frameX == 0 && tile.frameY == 0) Dust.NewDust(projectile.Center - new Vector2(10, k * 16 - 8), 16, 16, DustType<Content.Dusts.GoldWithMovement>(), 0, -3, 0, default, 0.3f);
             }
         }
     }

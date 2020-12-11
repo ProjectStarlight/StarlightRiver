@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(10, 10, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
+            (this).QuickSetFurniture(10, 10, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, true, "Crystal Containment");
         }
     }
 
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(10, 4, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
+            (this).QuickSetFurniture(10, 4, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, new Color(100, 200, 255), false, false, "Crystal Containment");
         }
     }
 

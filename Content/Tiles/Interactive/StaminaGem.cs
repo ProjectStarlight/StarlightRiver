@@ -2,13 +2,13 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Tiles.Interactive
 {
@@ -16,7 +16,7 @@ namespace StarlightRiver.Tiles.Interactive
     {
         public override int DummyType => ProjectileType<StaminaGemDummy>();
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<StarlightRiver.Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
+        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<StaminaGemItem>());
 
@@ -36,7 +36,7 @@ namespace StarlightRiver.Tiles.Interactive
         public override void Update()
         {
             if (projectile.ai[0] > 0) { projectile.ai[0]--; }
-            else if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.position, 16, 16, DustType<StarlightRiver.Content.Dusts.Stamina>());
+            else if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.position, 16, 16, DustType<Content.Dusts.Stamina>());
 
             Lighting.AddLight(projectile.Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
         }
@@ -55,7 +55,7 @@ namespace StarlightRiver.Tiles.Interactive
                 CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
                 for (float k = 0; k <= 6.28; k += 0.1f)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<StarlightRiver.Content.Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
+                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
                 }
             }
         }

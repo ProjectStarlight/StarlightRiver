@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("");//Map name
             AddMapEntry(new Color(200, 200, 200), name);
-            dustType = DustType<Dusts.GoldWithMovement>();
+            dustType = DustType<Content.Dusts.GoldWithMovement>();
             disableSmartCursor = true;
         }
 

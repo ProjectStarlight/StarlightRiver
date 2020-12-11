@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void AI()
         {
             projectile.rotation = projectile.velocity.ToRotation() + 1.58f;
-            Dust d = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.Zero, 0, default, 1);
+            Dust d = Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Air>(), Vector2.Zero, 0, default, 1);
             d.noGravity = true;
         }
     }

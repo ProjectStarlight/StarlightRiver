@@ -58,7 +58,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
             for (int k = 0; k <= 100; k++)
             {
-                Dust.NewDustPerfect(projectile.oldPosition + new Vector2(projectile.width / 2, projectile.height / 2), DustType<StarlightRiver.Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
+                Dust.NewDustPerfect(projectile.oldPosition + new Vector2(projectile.width / 2, projectile.height / 2), DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
             }
             Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y - 32, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage / 3, projectile.knockBack / 2, projectile.owner, 15, player.direction);
         }
@@ -83,7 +83,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 {
                     projectile.ai[0]++;
                     float rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
+                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Content.Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
                     if (projectile.ai[0] < chargeTime / 1.5f || projectile.ai[0] % 2 == 0)
                     {
                         angularMomentum = -1;
@@ -99,12 +99,12 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                     {
                         for (int k = 0; k <= 100; k++)
                         {
-                            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
+                            Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                         }
                         Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
                         projectile.ai[0]++;
                     }
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
+                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
                     angularMomentum = 0;
                 }
                 projectile.damage = 20 + (int)projectile.ai[0];
@@ -123,7 +123,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 }
                 if (projectile.ai[0] > chargeTime)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
+                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
                 }
             }
 

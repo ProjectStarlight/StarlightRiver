@@ -10,11 +10,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.NPCs;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {

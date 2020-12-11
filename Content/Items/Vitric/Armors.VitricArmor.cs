@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using StarlightRiver.Projectiles.WeaponProjectiles;
 using System;
 using System.Collections.Generic;

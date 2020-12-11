@@ -3,13 +3,13 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Misc
+namespace StarlightRiver.Content.Items.Misc
 {
     internal class Sandscript : ModItem
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sand Scripts");

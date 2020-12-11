@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.GlassBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Helpers;
 
 using StarlightRiver.Core;
 
@@ -209,7 +210,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case 5: //transforming the boss
                     for (float k = 0; k < 1; k += 0.03f)
-                        Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Air>());
+                        Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Content.Dusts.Air>());
                     break;
             }
         }

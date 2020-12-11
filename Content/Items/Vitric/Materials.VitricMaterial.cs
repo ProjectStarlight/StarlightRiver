@@ -3,7 +3,6 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Dusts;
+using StarlightRiver.Content.Dusts;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;

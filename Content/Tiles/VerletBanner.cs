@@ -8,8 +8,6 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Tiles
 {
     class VerletBanner : DummyTile
@@ -19,7 +17,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
     }
 

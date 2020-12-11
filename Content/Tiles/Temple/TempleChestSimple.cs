@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Tiles.Temple
 {
@@ -15,10 +15,10 @@ namespace StarlightRiver.Tiles.Temple
         {
             get => new List<Loot>
             {
-                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TemplePick>(), 1),
-                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleSpear>(), 1),
-                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleRune>(), 1),
-                new Loot(ItemType<StarlightRiver.Content.Items.UndergroundTemple.TempleLens>(), 1)
+                new Loot(ItemType<Content.Items.UndergroundTemple.TemplePick>(), 1),
+                new Loot(ItemType<Content.Items.UndergroundTemple.TempleSpear>(), 1),
+                new Loot(ItemType<Content.Items.UndergroundTemple.TempleRune>(), 1),
+                new Loot(ItemType<Content.Items.UndergroundTemple.TempleLens>(), 1)
             };
         }
 

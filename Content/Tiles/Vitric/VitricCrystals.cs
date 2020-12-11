@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            (this).QuickSet(int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
+            (this).QuickSet(int.MaxValue, DustType<Content.Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            (this).QuickSet(int.MaxValue, DustType<Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
+            (this).QuickSet(int.MaxValue, DustType<Content.Dusts.Air>(), SoundID.CoinPickup, new Color(115, 182, 158), -1);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;

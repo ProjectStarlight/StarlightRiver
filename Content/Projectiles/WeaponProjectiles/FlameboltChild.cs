@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Dusts;
+using StarlightRiver.Content.Dusts;
 using System;
 using Terraria;
 using Terraria.ModLoader;
@@ -99,7 +99,7 @@ namespace StarlightRiver.Projectiles
             for (float f = 0; f <= 1f; f += 0.25f)
             {
                 Vector2 dustPos = projectile.oldPosition + projectile.velocity * f;
-                int dust = Dust.NewDust(dustPos, 0, 0, DustType<GoldWithMovement>(), 0, 0, 0, default, 1f);
+                int dust = Dust.NewDust(dustPos, 0, 0, DustType<Content.Dusts.GoldWithMovement>(), 0, 0, 0, default, 1f);
                 Main.dust[dust].position = dustPos;
                 Main.dust[dust].velocity = Vector2.Zero;
             }
@@ -109,7 +109,7 @@ namespace StarlightRiver.Projectiles
         {
             for (int num2 = 0; num2 < 7; num2++)
             {
-                int num = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustType<GoldWithMovement>(), 0f, 0f, 25, default, 1.2f);
+                int num = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, DustType<Content.Dusts.GoldWithMovement>(), 0f, 0f, 25, default, 1.2f);
                 Main.dust[num].velocity *= 2f;
             }
         }

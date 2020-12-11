@@ -200,7 +200,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (tile != null && WorldGen.InWorld(point.X, point.Y, 1))
             {
                 if (tile.active())
-                    DustHelper.TileDust(tile, ref dusttype);
+                    Helpers.DustHelper.TileDust(tile, ref dusttype);
             }
 
             for (float num315 = 0.2f; num315 < 8; num315 += 0.50f)

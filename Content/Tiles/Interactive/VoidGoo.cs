@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Tiles.Interactive
 {
@@ -17,7 +17,7 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, int.MaxValue, DustType<Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidGooItem>());
+            QuickBlock.QuickSet(this, int.MaxValue, DustType<Content.Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidGooItem>());
             animationFrameHeight = 88;
         }
 

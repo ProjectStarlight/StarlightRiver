@@ -13,7 +13,7 @@ namespace StarlightRiver.Tiles.Purified
 
         public override int CreateDust()
         {
-            return DustType<StarlightRiver.Content.Dusts.Purify>();
+            return DustType<Content.Dusts.Purify>();
         }
 
         public override int GrowthFXGore()

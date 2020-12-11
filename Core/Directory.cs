@@ -4,7 +4,6 @@ using ReLogic.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.GUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,5 +45,6 @@ namespace StarlightRiver.Core
 
         public const string SlimeItemDir =         Assets + "Items/Slime/";
         public const string StarwoodItemDir =      Assets + "Items/Starwood/";
+        public const string MiscItemDir =          Assets + "Items/Misc/";
     }
 }

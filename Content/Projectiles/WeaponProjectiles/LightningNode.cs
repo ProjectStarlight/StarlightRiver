@@ -39,7 +39,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             if (projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
                 Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, projectile.owner, projectile.ai[0] - 1, projectile.ai[1]);
-                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<StarlightRiver.Content.Dusts.Electric>());
+                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
             }
             projectile.timeLeft = 0;
         }

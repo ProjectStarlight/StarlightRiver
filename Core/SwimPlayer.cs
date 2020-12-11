@@ -77,8 +77,8 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 var off = new Vector2((float)Math.Cos(angle) * 40, (float)Math.Sin(angle) * 20);
 
                 player.UpdateRotation(angle);
-                Dust.NewDustPerfect(player.Center + off.RotatedBy(player.fullRotation), DustType<StarlightRiver.Content.Dusts.Starlight>());
-                Dust.NewDustPerfect(player.Center - off.RotatedBy(player.fullRotation), DustType<StarlightRiver.Content.Dusts.Starlight>());
+                Dust.NewDustPerfect(player.Center + off.RotatedBy(player.fullRotation), DustType<Content.Dusts.Starlight>());
+                Dust.NewDustPerfect(player.Center - off.RotatedBy(player.fullRotation), DustType<Content.Dusts.Starlight>());
 
                 player.bodyFrame = new Rectangle(0, 0, 40, 56);
                 player.legFrame = new Rectangle(0, 0, 40, 56);

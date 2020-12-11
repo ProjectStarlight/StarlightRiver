@@ -2,15 +2,15 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
+namespace StarlightRiver.Content.Items.Misc
 {
     public class CoughDrops : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public CoughDrops() : base("Cough Drops", "When debuffs expire or are otherwise removed, gain some temporary speed and damage\nBonuses are based on buff duration, additional activations stack the time") { }
 
         public override bool Autoload(ref string name)
@@ -30,16 +30,9 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         public override void SafeUpdateEquip(Player player)
         {
             for (int i = 0; i < Player.MaxBuffs; i += 1)
-            {
                 if (player.buffTime[i] < 10)
-                {
                     if (Helper.IsValidDebuff(player, i))
-                    {
                         player.DelBuff(i);
-                    }
-                }
-            }
-            //
         }
 
         public static void ProcEffect(Player ply)

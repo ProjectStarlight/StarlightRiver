@@ -60,7 +60,7 @@ namespace StarlightRiver.Codex
                     Entries.Add(ThisEntry);
                 }
             }
-            UILoader.ReloadState<StarlightRiver.Content.GUI.Codex>();
+            UILoader.ReloadState<Content.GUI.Codex>();
         }
     }
 }

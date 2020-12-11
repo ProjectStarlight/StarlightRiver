@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Abilities.Content.Faeflame
+namespace StarlightRiver.Abilities.AbilityContent.Faeflame
 {
     public class Wisp : Ability
     {
@@ -87,7 +87,7 @@ namespace StarlightRiver.Abilities.Content.Faeflame
 
         protected virtual void UpdateEffects()
         {
-            int type = safe ? DustType<GoldNoMovement>() : DustType<StarlightRiver.Content.Dusts.Void>();
+            int type = safe ? DustType<GoldNoMovement>() : DustType<Content.Dusts.Void>();
             for (int k = 0; k <= 2; k++)
                 Dust.NewDust(Player.Center - new Vector2(4, 4), 8, 8, type);
         }

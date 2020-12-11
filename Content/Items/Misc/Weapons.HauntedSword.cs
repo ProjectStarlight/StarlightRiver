@@ -3,13 +3,14 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Misc
+namespace StarlightRiver.Content.Items.Misc
 {
     class HauntedSword : ModItem
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public override bool Autoload(ref string name) => false; //TODO: implement
 
-        private int charge = 0;
+        //private int charge = 0;//unused
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Haunted Greatsword");
 

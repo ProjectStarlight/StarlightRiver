@@ -3,6 +3,7 @@ using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Items
 {

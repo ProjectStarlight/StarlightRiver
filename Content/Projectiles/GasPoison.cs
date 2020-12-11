@@ -29,7 +29,7 @@ namespace StarlightRiver.Projectiles
         public override void AI()
         {
             projectile.alpha = 255 - (int)((float)projectile.timeLeft / 180 * 255f);
-            Dust.NewDust(projectile.position, 64, 64, DustType<StarlightRiver.Content.Dusts.GasGreen>(), 0, 0, 0, Lighting.GetColor((int)projectile.position.X / 16, (int)projectile.position.Y / 16) * 0.1f * (1 - projectile.alpha / 255f), 10);
+            Dust.NewDust(projectile.position, 64, 64, DustType<Content.Dusts.GasGreen>(), 0, 0, 0, Lighting.GetColor((int)projectile.position.X / 16, (int)projectile.position.Y / 16) * 0.1f * (1 - projectile.alpha / 255f), 10);
             projectile.rotation += 0.02f;
         }
 

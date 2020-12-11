@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case 2: //only happens when the boss goes into phase 2
                     if (npc.ai[0] < 120) npc.ai[0]++; //cap timer at 120
                     if (npc.ai[0] < 90) //dust before rising
-                        Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Air>());
+                        Dust.NewDust(npc.position, npc.width, npc.height, DustType<Content.Dusts.Air>());
                     if (npc.ai[0] >= 120)
                         foreach (Player target in Main.player.Where(n => n.active))
                         {

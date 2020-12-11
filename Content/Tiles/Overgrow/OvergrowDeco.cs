@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -12,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {

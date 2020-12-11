@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), Type };
             drop = 0;
             AddMapEntry(new Color(199, 224, 190));
-            dustType = DustType<Dusts.Air>();
+            dustType = DustType<Content.Dusts.Air>();
             soundType = SoundID.CoinPickup;
         }
 

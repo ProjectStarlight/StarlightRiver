@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Abilities.Content.ForbiddenWinds;
+﻿using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 

@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
             for (int k = 0; k < 80; k++)
-                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4));
+                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4));
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
                 player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), 60, 0);
         }

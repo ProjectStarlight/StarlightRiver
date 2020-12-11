@@ -2,12 +2,11 @@
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Tiles.Forest
 {
-    internal class PalestoneItem : Items.QuickTileItem
+    internal class PalestoneItem : Content.Items.QuickTileItem
     {
         public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0)
         {

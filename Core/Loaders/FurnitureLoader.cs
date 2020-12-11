@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -8,6 +7,7 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Core
 {

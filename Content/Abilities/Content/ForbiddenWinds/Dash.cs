@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Dusts;
+using StarlightRiver.Content.Dusts;
 using System;
 using Terraria;
 using Terraria.GameInput;
@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities.Content.ForbiddenWinds
+namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {

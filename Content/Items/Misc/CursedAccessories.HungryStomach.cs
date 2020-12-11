@@ -3,15 +3,14 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Items.CursedAccessories
+namespace StarlightRiver.Content.Items.Misc
 {
     internal class HungryStomach : CursedAccessory
     {
-        public HungryStomach() : base(GetTexture("StarlightRiver/Assets/Items/CursedAccessories/AnthemDaggerGlow")) { }
+        public override string Texture => Directory.MiscItemDir + Name;
+        public HungryStomach() : base(GetTexture(Directory.MiscItemDir + "HungryStomachGlow")) { }
 
         public override void SetStaticDefaults()
         {
@@ -19,10 +18,7 @@ namespace StarlightRiver.Items.CursedAccessories
             DisplayName.SetDefault("Hungry Stomach");
         }
 
-        public override void SafeSetDefaults()
-        {
-            item.rare = ItemRarityID.Red;
-        }
+        public override void SafeSetDefaults() => item.rare = ItemRarityID.Red;
 
         public override bool Autoload(ref string name)
         {
@@ -32,33 +28,24 @@ namespace StarlightRiver.Items.CursedAccessories
             return true;
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual)
-        {
-            GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaBlood");
-        }
+        public override void UpdateAccessory(Player player, bool hideVisual) => GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaBlood");
 
         private void DisableRegen(StarlightPlayer player)
         {
             if (Equipped(player.player))
-            {
                 player.player.GetHandler().StaminaRegenRate = 0;
-            }
         }
 
         private void LeechStaminaRanged(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (Equipped(Main.player[projectile.owner]))
-            {
                 Main.player[projectile.owner].GetHandler().Stamina += damage / (projectile.melee ? 100f : 200f);
-            }
         }
 
         private void LeechStaminaMelee(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
             if (Equipped(player))
-            {
                 player.GetHandler().Stamina += damage / 100f;
-            }
         }
     }
 }

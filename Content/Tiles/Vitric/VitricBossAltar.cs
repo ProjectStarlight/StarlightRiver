@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            (this).QuickSetFurniture(5, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
+            (this).QuickSetFurniture(5, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
             minPick = int.MaxValue;
         }
 

@@ -5,7 +5,6 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
-using StarlightRiver.Items;
 
 namespace StarlightRiver.Content.Items.AstralMeteor
 {

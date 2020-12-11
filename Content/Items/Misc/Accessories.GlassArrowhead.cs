@@ -4,14 +4,13 @@ using StarlightRiver.Projectiles.Ammo;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
+namespace StarlightRiver.Content.Items.Misc
 {
     public class GlassArrowhead : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public GlassArrowhead() : base("Glass Arrowhead", "Arrows shatter into glass shards on critical hit\nsome shard may pass through the initial hit target") { }
 
         public override void AddRecipes()
@@ -38,7 +37,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                 {
                     Vector2 velocity = proj.velocity.RotatedByRandom(MathHelper.Pi / 6f);
                     velocity *= Main.rand.NextFloat(0.5f, 0.75f);
-                    int newproj = Projectile.NewProjectile(proj.Center, velocity, ModContent.ProjectileType<GlassheadShard>(), (int)((float)damage * 0.20f), knockback * 0.15f, player.whoAmI);
+                    int newproj = Projectile.NewProjectile(proj.Center, velocity, ModContent.ProjectileType<GlassheadShard>(), (int)(damage * 0.20f), knockback * 0.15f, player.whoAmI);
                     if (Main.rand.NextBool())
                     {
                         Main.projectile[newproj].ai[0] = target.whoAmI + 1000;
@@ -46,8 +45,6 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
                     }
                 }
             }
-
         }
-
     }
 }

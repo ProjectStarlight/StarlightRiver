@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Vitric
                         for (int i = 0; i < 6; ++i)
                         {
                             Dust.NewDust(npc.position, 22, 22, ModContent.DustType<Dusts.GlassGravity>(), vel.RotatedByRandom(0.05f).X * 0.5f, vel.RotatedByRandom(0.05f).Y * 0.5f);
-                            Dust.NewDust(npc.position, 22, 22, ModContent.DustType<Dusts.Air>());
+                            Dust.NewDust(npc.position, 22, 22, ModContent.DustType<Content.Dusts.Air>());
                         }
                     }
                 });

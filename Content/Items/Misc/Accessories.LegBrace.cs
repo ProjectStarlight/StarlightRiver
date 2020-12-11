@@ -1,10 +1,12 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Accessories
+namespace StarlightRiver.Content.Items.Misc
 {
     public class LegBrace : SmartAccessory
     {
+        //TODO: this
+        public override string Texture => Directory.MiscItemDir + Name;
         public LegBrace() : base("Leg Brace", "NaN") { }
     }
 }

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities.Content.ForbiddenWinds
+namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 {
     public class Blink : InfusionItem<Dash>
     {
@@ -105,7 +105,7 @@ namespace StarlightRiver.Abilities.Content.ForbiddenWinds
                     pos += vel * 10;
                     vel *= -1;
                 }
-                var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AirDash>(), vel);
+                var d = Dust.NewDustPerfect(pos, ModContent.DustType<Content.Dusts.AirDash>(), vel);
                 d.scale = 1.75f;
                 d.fadeIn = 7;
             }

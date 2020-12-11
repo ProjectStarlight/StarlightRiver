@@ -156,7 +156,7 @@ namespace StarlightRiver.Items.Armor.Overgrow
             for (int k = 0; k < leaves; k++)
             {
                 Dust dus = Dust.NewDustPerfect(player.Center + (new Vector2((float)Math.Cos(StarlightWorld.rottime) * 2, (float)Math.Sin(StarlightWorld.rottime)) * 20).RotatedBy(k / (float)leaves * 6.28f),
-                DustType<StarlightRiver.Content.Dusts.GenericFollow>(), Vector2.Zero, 0, default, leaves == 10 ? 1.2f : 0.8f);
+                DustType<Content.Dusts.GenericFollow>(), Vector2.Zero, 0, default, leaves == 10 ? 1.2f : 0.8f);
                 dus.customData = player;
             }
 

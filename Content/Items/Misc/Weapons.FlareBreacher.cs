@@ -15,10 +15,11 @@ using Terraria.ModLoader;
 //-glowmasks
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items
+namespace StarlightRiver.Content.Items.Misc
 {
     public class FlareBreacher : ModItem
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;
@@ -40,19 +41,17 @@ namespace StarlightRiver.Items
             item.shootSpeed = 17;
             //item.holdStyle = 1;
         }
-        public override void HoldItem(Player player)
-        {
 
-        }
+        //public override void HoldItem(Player player)
+        //{
+        //unused
+        //}
+        //public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        //{
+        //unused
+        //}
 
-        public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-        {
-
-        }
-        public override Vector2? HoldoutOffset()
-        {
-            return new Vector2(0, 0);
-        }
+        public override Vector2? HoldoutOffset() => new Vector2(0, 0);
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flare Breacher");

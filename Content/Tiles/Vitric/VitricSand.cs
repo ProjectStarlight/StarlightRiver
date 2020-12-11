@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
+            QuickBlock.QuickSet(this, 0, DustType<Content.Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
             Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
             Main.tileMerge[Type][mod.TileType("VitricSoftSand")] = true;
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Color airColor = new Color(190, 255, 245);
             if (Main.rand.Next(200) == 0 && light.R >= 10 && light.B >= 10 && light.G >= 10)
             {
-                Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustType<Dusts.AirGravity>(), Vector2.Zero, 0, airColor * ((light.R + light.G + light.B) / 765f));
+                Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustType<Content.Dusts.AirGravity>(), Vector2.Zero, 0, airColor * ((light.R + light.G + light.B) / 765f));
             }
         }
     }

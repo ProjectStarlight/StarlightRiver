@@ -7,10 +7,11 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Misc
+namespace StarlightRiver.Content.Items.Misc
 {
     public class FireGauntlet : ModItem
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;
@@ -41,9 +42,7 @@ namespace StarlightRiver.Items.Misc
         {
             Vector2 muzzleOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 55f;
             if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
-            {
                 position += muzzleOffset;
-            }
             return true;
         }
     }

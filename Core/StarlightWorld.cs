@@ -228,7 +228,7 @@ namespace StarlightRiver.Core
 
             foreach (Key key in KeyInventory)
             {
-                GUI.KeyInventory.keys.Add(new StarlightRiver.Content.GUI.KeyIcon(key, false));
+                Content.GUI.KeyInventory.keys.Add(new Content.GUI.KeyIcon(key, false));
             }
 
             //setup overlays

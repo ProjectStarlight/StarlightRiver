@@ -13,6 +13,7 @@ using StarlightRiver.NPCs;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {

@@ -2,15 +2,14 @@
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
+namespace StarlightRiver.Content.Items.Misc
 {
     public class FiftyFiveLeafClover : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public FiftyFiveLeafClover() : base("Fifty Five Leaf Clover", "Not taking damage gradually increases critical strike chance with a cap on +20% after 10 seconds\nResets after taking damage") { }
 
         public override bool Autoload(ref string name)
@@ -23,7 +22,7 @@ namespace StarlightRiver.Items.Accessories.EarlyPreHardmode
         {
             StarlightPlayer slp = player.GetModPlayer<StarlightPlayer>();
             slp.FiftyFiveLeafClover = (short)MathHelper.Clamp(slp.FiftyFiveLeafClover + 1, 0, 600);
-            Helper.BoostAllDamage(player, 0, (int)(((float)slp.FiftyFiveLeafClover / 600f) * 20f));
+            player.BoostAllDamage(0, (int)(slp.FiftyFiveLeafClover / 600f * 20f));
         }
 
         private void ResetEffectsAccessory(StarlightPlayer slp)

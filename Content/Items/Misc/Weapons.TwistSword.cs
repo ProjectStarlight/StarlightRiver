@@ -5,17 +5,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Items.Misc
+namespace StarlightRiver.Content.Items.Misc
 {
     class TwistSword : ModItem, IGlowingItem
     {
-        private int charge = 240;
-
+        public override string Texture => Directory.MiscItemDir + Name;
         public override void SetStaticDefaults() => DisplayName.SetDefault("Twisted Greatsword");
+
+        private int charge = 240;
 
         public override void SetDefaults()
         {
@@ -45,18 +44,23 @@ namespace StarlightRiver.Items.Misc
         {
             if (player.channel)
             {
-                if (player.velocity.Y > 1.5f) player.velocity.Y = 1.5f;
-                if (player.velocity.X < 5 && player.controlRight) player.velocity.X += 0.2f;
-                if (player.velocity.X > -5 && player.controlLeft) player.velocity.X -= 0.2f;
+                if (player.velocity.Y > 1.5f) 
+                        player.velocity.Y = 1.5f;
+                if (player.velocity.X < 5 && player.controlRight) 
+                        player.velocity.X += 0.2f;
+                if (player.velocity.X > -5 && player.controlLeft) 
+                        player.velocity.X -= 0.2f;
                 charge--;
             }
 
-            if (charge <= 0) player.channel = false;
+            if (charge <= 0) 
+                player.channel = false;
         }
 
         public override void UpdateInventory(Player player)
         {
-            if (charge < 240 && player.velocity.Y == 0) charge++;
+            if (charge < 240 && player.velocity.Y == 0) 
+                charge++;
         }
 
         public void DrawGlowmask(PlayerDrawInfo info)
@@ -92,30 +96,32 @@ namespace StarlightRiver.Items.Misc
 
             Player player = Main.player[projectile.owner];
             projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
-            if (player.channel) projectile.timeLeft = 2;
+            if (player.channel) 
+                projectile.timeLeft = 2;
 
             //visuals
-            float rot = (projectile.ai[0] % 80) / 80f * 6.28f;
+            float rot = projectile.ai[0] % 80 / 80f * 6.28f;
             float x = (float)Math.Cos(-rot) * 80;
             float y = (float)Math.Sin(-rot) * 20;
             Vector2 off = new Vector2(x, y);
-            Dust.NewDustPerfect(player.Center + off, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), off * 0.01f, 0, default, 2f);
-            Dust.NewDustPerfect(player.Center + off, DustType<StarlightRiver.Content.Dusts.BlueStamina>(), off * Main.rand.NextFloat(0.01f, 0.04f));
+            Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.BlueStamina>(), off * 0.01f, 0, default, 2f);
+            Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.BlueStamina>(), off * Main.rand.NextFloat(0.01f, 0.04f));
 
-            if (player.channel) player.UpdateRotation(rot);
-            else player.UpdateRotation(0);
+            if (player.channel) 
+                player.UpdateRotation(rot);
+            else 
+                player.UpdateRotation(0);
 
             Lighting.AddLight(projectile.Center + off, new Vector3(0.1f, 0.25f, 0.6f));
 
             if (projectile.ai[0] % 40 == 0)
-            {
                 Main.PlaySound(SoundID.Item1);
-            }
 
             if (++projectile.frameCounter >= 8)
             {
                 projectile.frameCounter = 0;
-                if (++projectile.frame >= 10) projectile.frame = 0;
+                if (++projectile.frame >= 10) 
+                    projectile.frame = 0;
             }
         }
     }

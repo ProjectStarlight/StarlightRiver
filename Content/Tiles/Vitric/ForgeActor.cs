@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return true;
         }
 
-        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {

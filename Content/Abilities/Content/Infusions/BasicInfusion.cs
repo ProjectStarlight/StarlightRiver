@@ -3,7 +3,7 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities.Content.Infusions
+namespace StarlightRiver.Abilities.AbilityContent.Infusions
 {
     class BasicInfusion : InfusionItem
     {

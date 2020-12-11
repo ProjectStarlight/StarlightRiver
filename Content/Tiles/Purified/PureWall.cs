@@ -9,14 +9,14 @@ namespace StarlightRiver.Tiles.Purified
     {
         public override void SetDefaults()
         {
-            dustType = DustType<StarlightRiver.Content.Dusts.Purify>();
+            dustType = DustType<Content.Dusts.Purify>();
         }
     }
     class WallGrassPure : ModWall
     {
         public override void SetDefaults()
         {
-            dustType = DustType<StarlightRiver.Content.Dusts.Purify>();
+            dustType = DustType<Content.Dusts.Purify>();
         }
     }
 }

@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Terraria;
-
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Buffs
 {

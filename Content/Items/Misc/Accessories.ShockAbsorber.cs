@@ -1,10 +1,11 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Accessories
+namespace StarlightRiver.Content.Items.Misc
 {
     public class ShockAbsorber : SmartAccessory
     {
+        public override string Texture => Directory.MiscItemDir + Name;
         public ShockAbsorber() : base("Shock Absorber", "NaN") { }
     }
 }

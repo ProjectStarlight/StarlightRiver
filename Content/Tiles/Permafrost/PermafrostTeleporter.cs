@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Items;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,6 +8,7 @@ using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
