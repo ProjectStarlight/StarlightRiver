@@ -134,7 +134,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override bool PreKill(int timeLeft)
         {
-            int dusttype = DustType<Content.Dusts.Glass2>(); //use the generics my dude.
+            int dusttype = DustType<Content.Dusts.GlassGravity>(); //use the generics my dude.
 
             for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
             {

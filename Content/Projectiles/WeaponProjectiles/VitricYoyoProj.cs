@@ -52,7 +52,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 }
                 for (int j = 0; j < 20; j++)
                 {
-                    Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Content.Dusts.Glass2>());
+                    Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Content.Dusts.GlassGravity>());
                 }
             }
         }

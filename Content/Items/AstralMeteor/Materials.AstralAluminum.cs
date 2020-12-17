@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
     {
         public override string Texture => Directory.AluminumItemDir + "AluminumBar";
 
-        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<Tiles.AluminumBar>(), ItemRarityID.Blue) { }
+        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<OreAluminum>(), ItemRarityID.Blue) { }  //TODO: Fix place type
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 14, 0);
 

@@ -5,6 +5,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 
 namespace StarlightRiver.Content.Items.EbonyIvory
 {
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
             item.useTime = 16;
             item.knockBack = 2f;
             item.damage = 46;
-            item.shoot = ProjectileType<Projectiles.WeaponProjectiles.IvorySwordProjectile>();
+            item.shoot = ProjectileType<IvorySwordProjectile>();
             item.rare = ItemRarityID.LightRed;
             item.autoReuse = false;
             item.useTurn = true;

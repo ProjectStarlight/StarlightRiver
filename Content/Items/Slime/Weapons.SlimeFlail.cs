@@ -3,6 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Starwood;
 
 namespace StarlightRiver.Content.Items.Slime
 {
@@ -30,7 +31,7 @@ namespace StarlightRiver.Content.Items.Slime
             item.useStyle = ItemUseStyleID.HoldingUp;
             item.UseSound = SoundID.Item43;
             item.knockBack = 0f;
-            item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.StarwoodStaffProjectile>();
+            item.shoot = ModContent.ProjectileType<StarwoodStaffProjectile>();
             item.shootSpeed = 15f;
             item.noMelee = true;
             item.autoReuse = true;

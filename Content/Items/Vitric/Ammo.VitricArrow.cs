@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.knockBack = 0.5f;
             item.value = 10;
             item.rare = ItemRarityID.Green;
-            item.shoot = ProjectileType<Projectiles.Ammo.VitricArrow>();
+            //item.shoot = ProjectileType<Projectiles.Ammo.VitricArrow>(); TODO: Reimplement
             item.shootSpeed = 1f;
             item.ammo = AmmoID.Arrow;
         }

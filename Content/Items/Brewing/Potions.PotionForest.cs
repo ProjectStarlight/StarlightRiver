@@ -5,6 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Potions;
+using StarlightRiver.Tiles.Crafting;
 
 namespace StarlightRiver.Content.Items.Brewing
 {
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Items.Brewing
             recipe.AddIngredient(ItemID.BottledWater, 1);
             recipe.AddIngredient(ItemType<ForestBerries>(), 5);
             recipe.AddIngredient(ItemType<Ivy>(), 20);
-            recipe.AddTile(TileType<Tiles.Crafting.HerbStation>());
+            recipe.AddTile(TileType<HerbStation>());
             recipe.SetResult(this);
             recipe.AddRecipe();
         }

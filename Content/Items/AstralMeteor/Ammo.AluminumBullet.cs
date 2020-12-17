@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             item.knockBack = 0.5f;
             item.value = 1;
             item.rare = ItemRarityID.Blue;
-            item.shoot = ProjectileType<AluminumBulletProjectile>();
+            //item.shoot = ProjectileType<Projectiles.AluminumBulletProjectile>(); TODO: Reimplement
             item.shootSpeed = 0.01f;
             item.ammo = AmmoID.Bullet;
         }

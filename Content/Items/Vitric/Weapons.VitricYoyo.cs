@@ -2,6 +2,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.noMelee = true;
             item.noUseGraphic = true;
             item.shootSpeed = 12f;
-            item.shoot = ModContent.ProjectileType<Projectiles.WeaponProjectiles.VitricYoyoProj>();
+            item.shoot = ModContent.ProjectileType<VitricYoyoProj>();
             item.UseSound = SoundID.Item1;
         }
     }

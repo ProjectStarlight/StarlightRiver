@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.knockBack = 1;
             item.rare = ItemRarityID.Orange;
             item.channel = true;
-            item.shoot = ProjectileType<Projectiles.WeaponProjectiles.VitricBowProjectile>();
+            item.shoot = ProjectileType<VitricBowProjectile>();
             item.shootSpeed = 1f;
             item.useAmmo = AmmoID.Arrow;
             item.useTurn = true;

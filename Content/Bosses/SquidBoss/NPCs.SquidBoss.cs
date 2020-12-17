@@ -45,6 +45,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override string Texture => Directory.Invisible;
 
+        public override string BossHeadTexture => Directory.SquidBossDir + "SquidBoss_Head_Boss";
+
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale) => npc.lifeMax = (int)(6000 * bossLifeScale);

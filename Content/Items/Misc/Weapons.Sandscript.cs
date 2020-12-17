@@ -4,6 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.shootSpeed = 1f;
             item.knockBack = 7f;
             item.damage = 12;
-            item.shoot = ProjectileType<Projectiles.WeaponProjectiles.SandSlash>();
+            item.shoot = ProjectileType<SandSlash>();
             item.rare = ItemRarityID.Blue;
             item.noMelee = true;
             item.magic = true;

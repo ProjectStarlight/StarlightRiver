@@ -13,6 +13,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs.Boss.OvergrowBoss;
 using StarlightRiver.Helpers;
+using StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile;
 
 namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
@@ -112,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 for (float k = -0.6f; k <= 0.6f; k += 0.3f) //5 projectiles in even spread
                 {
                     Vector2 trajectory = Vector2.Normalize(targetPoint - handpos).RotatedBy(k + (AttackTimer == 90 ? 0.15f : 0)) * 1.6f; //towards the target, alternates on the second round
-                    Projectile.NewProjectile(handpos, trajectory, ProjectileType<OvergrowBossProjectile.Phase1Bolt>(), 20, 0.2f);
+                    Projectile.NewProjectile(handpos, trajectory, ProjectileType<Phase1Bolt>(), 20, 0.2f); //TODO: Relocate or delete that projectile ,or whatever this whole fight is prolly gonna get redone later anyways
                 }
             }
 

@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 
     public class BarEbony : QuickTileItem
     {
-        public BarEbony() : base("Ebony Bar", "Soft and Heavy", TileType<Tiles.EbonyBar>(), 1) { }
+        public BarEbony() : base("Ebony Bar", "Soft and Heavy", TileType<OreEbony>(), 1) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 
     public class BarIvory : QuickTileItem
     {
-        public BarIvory() : base("Ivory Bar", "Hard and Light", TileType<Tiles.IvoryBar>(), 1) { }
+        public BarIvory() : base("Ivory Bar", "Hard and Light", TileType<OreEbony>(), 1) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {

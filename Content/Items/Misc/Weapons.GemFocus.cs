@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -38,8 +39,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool UseItem(Player player)
         {
-            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<Projectiles.WeaponProjectiles.GemFocusProjectile>() && n.owner == player.whoAmI))
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<Projectiles.WeaponProjectiles.GemFocusProjectile>(), item.damage, item.knockBack, player.whoAmI);
+            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<GemFocusProjectile>() && n.owner == player.whoAmI))
+                Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<GemFocusProjectile>(), item.damage, item.knockBack, player.whoAmI);
             return true;
         }
 
