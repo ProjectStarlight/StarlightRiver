@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public Vector2 TargetPos;
         public VitricBoss Parent;
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBossCrystal";
+        public override string Texture => Directory.GlassBossDir + Name;
 
         public override bool CheckActive() => npc.ai[2] == 4;
 
@@ -56,7 +56,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (npc.ai[2] == 0 && npc.velocity.Y <= 0) return false; //can only do damage when moving downwards
+            if (npc.ai[2] == 0 && npc.velocity.Y <= 0) 
+                return false; //can only do damage when moving downwards
             return !(npc.ai[0] == 0 || npc.ai[0] == 1); //too tired of dealing with this sheeeet
         }
 
@@ -223,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/CrystalGlow"); //glowy outline
+            Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
             if (npc.ai[0] == 0)
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
@@ -238,7 +239,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (npc.ai[2] == 1 && npc.ai[1] < 180) //tell line for going to a platform in the nuke attack
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Gores/TellBeam");
+                Texture2D tex = GetTexture(Directory.Misc + "TellBeam");
                 for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)
                     spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,
                         (npc.Center - TargetPos).ToRotation(), tex.Frame().Size() / 2, 1, 0, 0);

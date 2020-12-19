@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/GlassSpikeGlow");
+            Texture2D tex = GetTexture(Texture + "Glow");
             spriteBatch.Draw(tex, projectile.Center + Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
                 new Color(150, 255, 255) * (projectile.timeLeft / 140f), projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
         }

@@ -10,7 +10,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class BossSpike : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        //public override string Texture => Directory.Invisible;
+        public override string Texture => Directory.GlassBossDir + Name;
 
         public override void SetDefaults()
         {
@@ -56,7 +57,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (projectile.ai[0] > 90)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/BossSpike");
+                //Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/BossSpike");
+                Texture2D tex = Main.projectileTexture[projectile.type];
 
                 for (int k = 0; k < 4; k++)
                 {

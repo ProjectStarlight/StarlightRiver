@@ -8,14 +8,13 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class ArenaBottom : ModNPC
     {
         public VitricBoss Parent;
-        public override string Texture => Directory.Invisible;
+        public override string Texture => Directory.GlassBossDir + "CrystalWave";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -108,16 +107,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 820, npc.width, npc.height);
             if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
         }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (npc.ai[1] == 2 && npc.ai[0] > 90) //in the second phase after the crystals have risen
             {
                 float off = (npc.ai[0] - 90) / 30 * 32;
+                Texture2D tex = Main.npcTexture[npc.type];
                 for (int k = 0; k < npc.width; k += 16)
                 {
                     Vector2 pos = npc.position + new Vector2(k, 32 - off) - Main.screenPosition; //actually draw the crystals lol
                     Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off) - Main.screenPosition; //actually draw the crystals lol
-                    Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave");
                     spriteBatch.Draw(tex, pos, Color.White);
                     spriteBatch.Draw(tex, pos2, Color.White);
                 }
@@ -128,6 +128,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class CrystalWave : ModProjectile
     {
         private float startY;
+
+        public override string Texture => Directory.GlassBossDir + Name;
 
         public override void SetDefaults()
         {
@@ -156,7 +158,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Color.White);
+            spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.position - Main.screenPosition, Color.White);
         }
     }
 }

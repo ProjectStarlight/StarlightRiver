@@ -15,7 +15,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     internal class SandCone : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.Invisible;
+        //public override string Texture => Directory.Invisible;
+        public override string Texture => Directory.GlassBossDir + "ConeTell";
 
         public override void SetDefaults()
         {
@@ -47,10 +48,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (projectile.ai[0] <= 66) //draws the proejctile's tell ~1 second before it goes off
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ConeTell");
+                //Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ConeTell");
+                Texture2D tex = Main.projectileTexture[projectile.type];
                 float alpha = (projectile.ai[0] * 2 / 33 - (float)Math.Pow(projectile.ai[0], 2) / 1086) * 0.6f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(240, 220, 180) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
         }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
     }
 }

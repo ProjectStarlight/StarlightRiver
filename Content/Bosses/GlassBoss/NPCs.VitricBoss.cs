@@ -4,7 +4,6 @@ using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -34,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBoss";
+        public override string Texture => Directory.GlassBossDir + Name;
 
         #region tml hooks
 
@@ -169,11 +168,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         }
 
         //Easily animate a phase with custom framerate and frame quantity
-        private void Animate(int ticksPerFrame, int maxFrames)
-        {
-            if (npc.frameCounter++ >= ticksPerFrame) { npc.frame.Y += npc.height; npc.frameCounter = 0; }
-            if (npc.frame.Y / npc.height > maxFrames - 1) npc.frame.Y = 0;
-        }
+        //private void Animate(int ticksPerFrame, int maxFrames) //unused
+        //{
+        //    if (npc.frameCounter++ >= ticksPerFrame) { npc.frame.Y += npc.height; npc.frameCounter = 0; }
+        //    if (npc.frame.Y / npc.height > maxFrames - 1) npc.frame.Y = 0;
+        //}
 
         //resets animation and changes phase
         private void ChangePhase(AIStates phase, bool resetTime = false)
@@ -423,13 +422,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         #endregion AI
 
         #region Networking
-        public override void SendExtraAI(BinaryWriter writer)
+        public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
+        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
@@ -444,7 +443,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (IconFrameCounter++ >= 5) { IconFrame++; IconFrameCounter = 0; }
             if (IconFrame > 3) IconFrame = 0;
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricBoss_Head_Boss");
+            Texture2D tex = GetTexture(Texture + "_Head_Boss");
             spriteBatch.Draw(tex, center, new Rectangle(0, IconFrame * 30, 30, 30), color, npc.rotation, Vector2.One * 15, scale, 0, 0);
         }
     }

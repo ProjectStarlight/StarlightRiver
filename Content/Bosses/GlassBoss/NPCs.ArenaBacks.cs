@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBackdropLeft";
+        public override string Texture => Directory.GlassBossDir + Name;
 
         public override bool CheckActive() => false;
 
@@ -22,10 +22,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override bool? CanBeHitByItem(Player player, Item item) => false;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("");
-        }
+        public override void SetStaticDefaults() => DisplayName.SetDefault("");
 
         public override void SetDefaults()
         {
@@ -92,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (npc.ai[1] == 3 || npc.ai[1] == 4) ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
             {
-                Texture2D tex = GetTexture(Texture);
+                Texture2D tex = Main.npcTexture[npc.type];
                 int targetHeight = (int)(npc.ai[0] / Risetime * tex.Height);
                 const int yOffset = 3; // Fit perfectly in the gap
                 Rectangle target = new Rectangle(
@@ -109,7 +106,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public virtual void ScrollDraw(SpriteBatch sb) //im lazy
         {
-            Texture2D tex = GetTexture(Texture);
+            Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(npc.ai[2] / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             Color color = new Color(180, 225, 255);
@@ -146,11 +143,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
     {
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VitricBackdropRight";
-
         public override void ScrollDraw(SpriteBatch sb)
         {
-            Texture2D tex = GetTexture(Texture);
+            Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(npc.ai[2] / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             Color color = new Color(180, 225, 255);

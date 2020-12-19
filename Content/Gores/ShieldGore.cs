@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Gores
+namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     class ShieldGore : ModGore
     {
