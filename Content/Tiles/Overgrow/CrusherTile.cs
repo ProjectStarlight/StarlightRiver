@@ -7,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.NPCs.Overgrow;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -40,10 +41,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Vector2 pos = new Vector2(4 + i * 16, 4 + j * 16);
-            if (!Main.npc.Any(npc => npc.type == NPCType<NPCs.Traps.Crusher>() && (npc.modNPC as NPCs.Traps.Crusher).Parent == Main.tile[i, j] && npc.active))
+            if (!Main.npc.Any(npc => npc.type == NPCType<Crusher>() && (npc.modNPC as Crusher).Parent == Main.tile[i, j] && npc.active))
             {
-                int crusher = NPC.NewNPC((int)pos.X + 4, (int)pos.Y + 21, NPCType<NPCs.Traps.Crusher>());
-                if (Main.npc[crusher].modNPC is NPCs.Traps.Crusher) (Main.npc[crusher].modNPC as NPCs.Traps.Crusher).Parent = Main.tile[i, j];
+                int crusher = NPC.NewNPC((int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>());
+                if (Main.npc[crusher].modNPC is Crusher) (Main.npc[crusher].modNPC as Crusher).Parent = Main.tile[i, j];
             }
         }
     }

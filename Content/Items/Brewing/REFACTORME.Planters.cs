@@ -7,6 +7,8 @@ namespace StarlightRiver.Items.Herbology
 {
     public class Soil : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Soil";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rich Soil");
@@ -41,6 +43,8 @@ namespace StarlightRiver.Items.Herbology
 
     public class Trellis : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Trellis";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Trellis");
@@ -74,6 +78,8 @@ namespace StarlightRiver.Items.Herbology
 
     public class Planter : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Planter";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Hanging Planter");
@@ -107,6 +113,8 @@ namespace StarlightRiver.Items.Herbology
 
     public class Greenhouse : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Greenhouse";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Greenhouse Glass");

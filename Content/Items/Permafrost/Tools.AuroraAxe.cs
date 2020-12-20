@@ -9,12 +9,14 @@ using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Content.Items.Permafrost.Tools
+namespace StarlightRiver.Content.Items.Permafrost
 {
     class AuroraAxe : ModItem, IGlowingItem
     {
         float charge = 0;
         bool charged = false;
+
+        public override string Texture => Directory.PermafrostItemDir + "AuroraAxe";
 
         public override void SetStaticDefaults()
         {

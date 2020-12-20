@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
-using StarlightRiver.NPCs;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {

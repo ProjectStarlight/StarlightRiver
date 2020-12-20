@@ -7,10 +7,12 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.NPCs.Hostile
+namespace StarlightRiver.Content.NPCs.Overgrow
 {
     internal class OvergrowSkeletonLarge : ModNPC
     {
+        public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/OvergrowSkeletonLarge";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Swordsman Skeleton");
@@ -47,12 +49,8 @@ namespace StarlightRiver.NPCs.Hostile
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
             if (npc.HasValidTarget)
-            {
                 if (damage >= changeAgroDamage)
-                {
                     npc.target = player.whoAmI;
-                }
-            }
             else
             {
                 npc.target = player.whoAmI;
@@ -64,12 +62,8 @@ namespace StarlightRiver.NPCs.Hostile
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
             if (npc.HasValidTarget)
-            {
                 if (damage >= changeAgroDamage)
-                {
                     npc.target = projectile.owner;
-                }
-            }
             else
             {
                 npc.target = projectile.owner;
@@ -94,9 +88,7 @@ namespace StarlightRiver.NPCs.Hostile
         {
             Player target = new Player();
             if (npc.HasValidTarget)
-            {
                 target = Main.player[npc.target];
-            }
 
             /*
                 int playerSide = Math.Min(Math.Max((int)(target.position.X - npc.position.X), -1), 1);
@@ -124,13 +116,9 @@ namespace StarlightRiver.NPCs.Hostile
                         npc.spriteDirection = npc.direction;
 
                         if (npc.position.X == npc.oldPosition.X)//note: may have to change this to 'if new pos is within range of old pos'
-                        {
                             npc.ai[2]++; //losing intrest because npc is stuck
-                        }
                         else if (npc.ai[2] > 0)
-                        {
                             npc.ai[2]--; //npc unstuck
-                        }
 
                         if (npc.ai[2] >= loseIntrestTime) //intrest timer
                         {
@@ -140,21 +128,14 @@ namespace StarlightRiver.NPCs.Hostile
                         }
 
                         if (Math.Abs(target.Center.Y - npc.Center.Y) < detectRange.Y && Math.Abs(target.Center.X - npc.Center.X) < detectRange.X)
-                        { //if player is within range, start the dash countdown
                             npc.ai[3]++;
-                            //Main.NewText("within range"); //debug
-                        }
                         else if (npc.ai[3] >= countdownSpeed)
-                        { //else decrease timer
                             npc.ai[3] -= countdownSpeed;
-                        }
 
                         if (npc.ai[3] >= maxRangeTimer)
                         {//timer max, reset ai[]s and move to next step
                             for (int y = 0; y < 30; y++)//placeholder dash dust
-                            {
-                                Dust.NewDustPerfect(new Vector2(npc.Center.X - ((npc.width / 2) * npc.direction) + Main.rand.Next(-5, 5), Main.rand.Next((int)npc.position.Y + 5, (int)npc.position.Y + npc.height) - 5), 31, new Vector2((Main.rand.Next(-20, 30) * 0.03f) * npc.direction, Main.rand.Next(-20, 20) * 0.02f), 0, default, 2);
-                            }
+                                Dust.NewDustPerfect(new Vector2(npc.Center.X - npc.width / 2 * npc.direction + Main.rand.Next(-5, 5), Main.rand.Next((int)npc.position.Y + 5, (int)npc.position.Y + npc.height) - 5), 31, new Vector2(Main.rand.Next(-20, 30) * 0.03f * npc.direction, Main.rand.Next(-20, 20) * 0.02f), 0, default, 2);
 
                             npc.ai[2] = 0;
                             npc.ai[3] = 0;
@@ -180,9 +161,7 @@ namespace StarlightRiver.NPCs.Hostile
                     }
 
                     if (npc.velocity.Y == 0)//jumping. note: (the could be moved to just before it sets the velocity high in MoveVertical())
-                    {
                         Helper.NpcVertical(npc, true, default, jumpheight);
-                    }
 
                     Move(walkSpeedMax);
 
@@ -193,9 +172,7 @@ namespace StarlightRiver.NPCs.Hostile
                     {
                         Helper.NpcVertical(npc, false);
                         if (Main.rand.Next(4) == 0)//placeholder dash
-                        {
-                            Dust.NewDustPerfect(new Vector2(npc.Center.X, npc.position.Y + npc.height), 16, new Vector2((Main.rand.Next(-20, 20) * 0.02f), Main.rand.Next(-20, 20) * 0.02f), 0, default, 1.2f);
-                        }
+                            Dust.NewDustPerfect(new Vector2(npc.Center.X, npc.position.Y + npc.height), 16, new Vector2(Main.rand.Next(-20, 20) * 0.02f, Main.rand.Next(-20, 20) * 0.02f), 0, default, 1.2f);
                     }
 
                     if (npc.collideX && npc.position.X == npc.oldPosition.X && npc.velocity.X == 0)//note: npc.velocity.X == 0 seemed to fix catching on half blocks
@@ -209,9 +186,7 @@ namespace StarlightRiver.NPCs.Hostile
                     }
 
                     if (npc.direction != Math.Min(Math.Max((int)(target.Center.X - npc.Center.X), -1), 1) || !npc.HasValidTarget)
-                    {
                         npc.ai[3]++;
-                    }
 
                     if (npc.ai[3] >= distancePastPlayer)
                     {
@@ -246,25 +221,19 @@ namespace StarlightRiver.NPCs.Hostile
 
         private void Move(float speed) //note: seperated for simplicity //note: decide if this can be replaced with nightmare's version
         {
-            if ((npc.velocity.X * npc.direction) <= speed)//getting up to max speed
-            {
+            if (npc.velocity.X * npc.direction <= speed)//getting up to max speed
                 npc.velocity.X += 0.1f * npc.direction;
-            }
-            else if ((npc.velocity.X * npc.direction) >= speed + 0.1f)//slowdown if too fast
-            {
+            else if (npc.velocity.X * npc.direction >= speed + 0.1f)//slowdown if too fast
                 npc.velocity.X -= 0.2f * npc.direction;
-            }
         }
 
         private void Collide() //bonk
         {
             //note: if this is effected by player's dash, move dusts to where this is called, or add a check
             for (int y = 0; y < 12; y++)
-            {
-                Dust.NewDustPerfect(new Vector2(npc.Center.X - ((npc.width / 2) * -npc.direction), Main.rand.Next((int)npc.position.Y, (int)npc.position.Y + npc.height)), 53, new Vector2((Main.rand.Next(0, 20) * 0.08f) * -npc.direction, Main.rand.Next(-10, 10) * 0.04f), 0, default, 1.2f);
-            }
+                Dust.NewDustPerfect(new Vector2(npc.Center.X - npc.width / 2 * -npc.direction, Main.rand.Next((int)npc.position.Y, (int)npc.position.Y + npc.height)), 53, new Vector2(Main.rand.Next(0, 20) * 0.08f * -npc.direction, Main.rand.Next(-10, 10) * 0.04f), 0, default, 1.2f);
             Main.PlaySound(SoundID.NPCHit42, npc.Center);
-            npc.velocity.X -= (4 * npc.direction);
+            npc.velocity.X -= 4 * npc.direction;
             npc.velocity.Y -= 4;
         }
 

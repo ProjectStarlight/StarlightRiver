@@ -1,14 +1,14 @@
-﻿using StarlightRiver.Abilities.AbilityContent.Faeflame;
-using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
-using StarlightRiver.Abilities.AbilityContent.GaiasFist;
-using StarlightRiver.Abilities.AbilityContent.Purify;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Content.Abilities.GaiasFist;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Faeflame;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public class AbilityHotkeys
     {
@@ -25,13 +25,9 @@ namespace StarlightRiver.Abilities
             get
             {
                 if (type == typeof(object) || type == typeof(Ability))
-                {
                     throw new InvalidOperationException("Not a registered ability binding. This should never happen! Contact mod devs to implement a missing key binding for the ability.");
-                }
                 if (bindings.TryGetValue(type, out ModHotKey ret))
-                {
                     return ret;
-                }
                 return bindings[type] = this[type.BaseType];
             }
         }

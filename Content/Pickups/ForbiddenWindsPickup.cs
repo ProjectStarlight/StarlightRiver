@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -15,6 +13,8 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Pickups
 {

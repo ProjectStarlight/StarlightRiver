@@ -8,6 +8,8 @@ namespace StarlightRiver.Food.Content.Mains
 {
     internal class FaceSteak : Ingredient
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Food/FaceSteak";
+
         public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)

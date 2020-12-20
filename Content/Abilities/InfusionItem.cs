@@ -3,8 +3,9 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public abstract partial class InfusionItem : ModItem
     {

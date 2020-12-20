@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Abilities;
 using System;
 using Terraria.ID;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Tiles.Interactive
 {

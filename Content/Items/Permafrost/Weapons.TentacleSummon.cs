@@ -5,10 +5,12 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Items.Permafrost.Weapons
+namespace StarlightRiver.Content.Items.Permafrost
 {
     public class TentacleSummon : ModItem
     {
+        public override string Texture => Directory.PermafrostItemDir + "TentacleSummon";
+
         public override void SetDefaults()
         {
             item.damage = 10;

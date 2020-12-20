@@ -14,6 +14,8 @@ namespace StarlightRiver.Core.Loaders
         public static List<UserInterface> UserInterfaces = new List<UserInterface>();
         public static List<SmartUIState> UIStates = new List<SmartUIState>();
 
+        public float Priority { get => 1.1f; }
+
         public void Load()
         {
             Mod mod = StarlightRiver.Instance;

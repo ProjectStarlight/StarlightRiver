@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
 using StarlightRiver.Prefixes;
 using System.Collections.Generic;
 using Terraria;
@@ -7,6 +6,7 @@ using Terraria.ModLoader;
 using Terraria.Utilities;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Core
 {

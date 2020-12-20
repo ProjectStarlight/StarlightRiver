@@ -12,12 +12,13 @@ using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 using StarlightRiver.Content.Dusts;
 
-namespace StarlightRiver.Items.Armor.Engineer
+namespace StarlightRiver.Content.Items.Vanity
 {
     [AutoloadEquip(EquipType.Head)]
     public class EngineerHead : ModItem
     {
         public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Helmet");
@@ -30,6 +31,7 @@ namespace StarlightRiver.Items.Armor.Engineer
             item.value = 0;
             item.vanity = true;
         }
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
@@ -44,10 +46,12 @@ namespace StarlightRiver.Items.Armor.Engineer
     public class EngineerChest : ModItem
     {
         public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Chestplate");
         }
+
         public override bool Autoload(ref string name)
         {
             StarlightPlayer.PostUpdateEquipsEvent += PostMovementUpdate;
@@ -61,15 +65,18 @@ namespace StarlightRiver.Items.Armor.Engineer
             item.value = 0;
             item.vanity = true;
         }
+
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
             return head.type == ItemType<EngineerHead>() && legs.type == ItemType<EngineerLegs>();
         }
+
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = "Hold space to enter hover mode!";
             //starlightPlayer.ivyArmorComplete = true;
         }
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
@@ -78,16 +85,19 @@ namespace StarlightRiver.Items.Armor.Engineer
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
+
         private void PostMovementUpdate(StarlightPlayer slp)
         {
             EngineerArmorPlayer starlightPlayer = slp.player.GetModPlayer<EngineerArmorPlayer>();
             starlightPlayer.HandleEngineerArmor();
         }
     }
+
     [AutoloadEquip(EquipType.Legs)]
     public class EngineerLegs : ModItem
     {
         public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Engineer Leggings");
@@ -101,6 +111,7 @@ namespace StarlightRiver.Items.Armor.Engineer
             item.value = 0;
             item.vanity = true;
         }
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
@@ -117,7 +128,7 @@ namespace StarlightRiver.Items.Armor.Engineer
         short MaxTransform => 6;
         float EaseXVel = 0f;
         float EaseYVel = 0f;
-        bool TransformActive => (SLP.EngineerTransform >= MaxTransform);
+        bool TransformActive => SLP.EngineerTransform >= MaxTransform;
         StarlightPlayer SLP => player.GetModPlayer<StarlightPlayer>();
 
         public override void Initialize()
@@ -132,17 +143,17 @@ namespace StarlightRiver.Items.Armor.Engineer
 
         private bool EngieArmor()
         {
-            return (player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>());//Really is there a better way?
+            return player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>();//Really is there a better way?
         }
+
         private void RaycastTile(int z, int zz, ref int highest, ref int middleheight, ref int middletouch, ref int average, Point16 playerpos, ref Vector2 touchpoint)
         {
             for (int i = 0; i < 16; i += 1)
             {
                 int offset = zz * z;
                 Tile tile = Framing.GetTileSafely(playerpos.X + offset, playerpos.Y + i);
-                if (WorldGen.InWorld(playerpos.X + offset, playerpos.Y + i))
-                {
-                    if ((tile.active() && Main.tileSolid[tile.type]) || tile.liquid >= 32)
+                if (InWorld(playerpos.X + offset, playerpos.Y + i))
+                    if (tile.active() && Main.tileSolid[tile.type] || tile.liquid >= 32)
                     {
                         if (touchpoint == default)
                         {
@@ -163,15 +174,14 @@ namespace StarlightRiver.Items.Armor.Engineer
                         average += 1;
                         break;
                     }
-                }
             }
         }
+
         public void HandleEngineerArmor()
         {
             EaseXVel += (player.velocity.X - EaseXVel) / 15f;
             EaseYVel += (player.velocity.Y - EaseYVel) / 12f;
             if (EngieArmor())
-            {
                 //Do engie things here
 
                 if (player.controlJump)
@@ -186,27 +196,23 @@ namespace StarlightRiver.Items.Armor.Engineer
                         int middletouch = 0;
                         int highest = 0;
                         for (int z = 0; z <= 2; z += 1)
-                        {
                             for (int zz = -1; zz <= 1; zz += 2)
-                            {
                                 RaycastTile(z, zz, ref highest, ref middleheight, ref middletouch, ref average, playerpos, ref touchpoint);
-                            }
-                        }
 
                         if (touchpoint != default)
                         {
-                            touchpoint.Y = ((touchpoint.Y / average) + highest) / 2f;
+                            touchpoint.Y = (touchpoint.Y / average + highest) / 2f;
                             //Dust.NewDustPerfect(touchpoint + new Vector2(Main.rand.Next(0, 16), 0), ModContent.DustType<BioLumen>(), Vector2.Zero, 120, Color.Red, 2f);
                             if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
                             {
-                                float scale = (8f - middleheight);
-                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), ModContent.DustType<StarlightSmoke>(), new Vector2((Main.rand.NextFloat(-8, 8) * scale) - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                float scale = 8f - middleheight;
+                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), DustType<StarlightSmoke>(), new Vector2(Main.rand.NextFloat(-8, 8) * scale - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
                                 dust.color = new Color(196, 179, 143);
                             }
                             if (middleheight < 7)
                             {
-                                float velocityammount = 15f / (((float)touchpoint.Y) - ((float)player.Center.Y));
-                                player.velocity.Y -= (velocityammount + 0.2f);
+                                float velocityammount = 15f / (touchpoint.Y - player.Center.Y);
+                                player.velocity.Y -= velocityammount + 0.2f;
                             }
 
                             if (player.velocity.Y > 0)
@@ -221,11 +227,10 @@ namespace StarlightRiver.Items.Armor.Engineer
                     return;
                 }
 
-            }
-
             SLP.EngineerTransform = (short)Math.Max(SLP.EngineerTransform - 1, 0);
 
         }
+
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
 
@@ -282,17 +287,17 @@ namespace StarlightRiver.Items.Armor.Engineer
 
                     //Alotta predefined stuff for each part
                     string directory = "StarlightRiver/Items/Armor/Engineer/";
-                    Texture2D[] ShoulderMounts = { ModContent.GetTexture(directory + "ShoulderMount1"), ModContent.GetTexture(directory + "ShoulderMount2"), ModContent.GetTexture(directory + "ShoulderLauncher1"), ModContent.GetTexture(directory + "ShoulderLauncher2") };
+                    Texture2D[] ShoulderMounts = { GetTexture(directory + "ShoulderMount1"), GetTexture(directory + "ShoulderMount2"), GetTexture(directory + "ShoulderLauncher1"), GetTexture(directory + "ShoulderLauncher2") };
                     Vector2[] spriteorigins = { new Vector2(ShoulderMounts[0].Width - 4, ShoulderMounts[0].Height - 4),
                         new Vector2(2, ShoulderMounts[1].Height - 2),
                         new Vector2(4, ShoulderMounts[2].Height / 2),
-                    new Vector2((ShoulderMounts[3].Width/4f)/2, 2) };
+                    new Vector2(ShoulderMounts[3].Width/4f/2, 2) };
 
                     Vector2[] partoffsets = { Vector2.Zero,
                         new Vector2(-(ShoulderMounts[0].Width - 6), -(ShoulderMounts[0].Height - 8)),
                         new Vector2(ShoulderMounts[1].Width - 8,-(ShoulderMounts[1].Height - 4)),
-                        new Vector2(4, (ShoulderMounts[2].Height/2)),
-                    new Vector2((ShoulderMounts[3].Width/4) - 8,-(ShoulderMounts[3].Height - 4)) };
+                        new Vector2(4, ShoulderMounts[2].Height/2),
+                    new Vector2(ShoulderMounts[3].Width/4 - 8,-(ShoulderMounts[3].Height - 4)) };
 
                     //Redefined angles and some gentle idle animations
                     float[] rotationangles = { (float)Math.Sin(Main.GlobalTime*0.75f)*0.04f,
@@ -309,27 +314,23 @@ namespace StarlightRiver.Items.Armor.Engineer
                     rotationangles[1] -= (float)Math.Pow(Math.Abs(EaseYVel / 32), 0.70) * Math.Sign(EaseYVel);
 
                     //Transformation angles
-                    rotationangles[1] += ((float)SLP.EngineerTransform / (float)MaxTransform) * (MathHelper.Pi / 1.5f);
+                    rotationangles[1] += SLP.EngineerTransform / (float)MaxTransform * (MathHelper.Pi / 1.5f);
                     if (TransformActive)
-                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + (player.velocity.X / 3f)) / 18f), 0.60) * Math.Sign(EaseXVel + (player.velocity.X / 3f)) * player.direction;
+                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + player.velocity.X / 3f) / 18f), 0.60) * Math.Sign(EaseXVel + player.velocity.X / 3f) * player.direction;
 
                     //Support Arms
                     if (part % 2 == 0)
-                    {
                         for (int i = 0; i < 2; i += 1)
-                        {
                             if (part % (i + 3) == 0)
                             {
                                 Vector2 spriteoriginlocal = new Vector2(XOffset(ShoulderMounts[i], (int)spriteorigins[i].X), spriteorigins[i].Y);
-                                Vector2 partoffset = ((partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X));
+                                Vector2 partoffset = (partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X);
 
                                 Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + partoffset;
                                 DrawData drawarm = new DrawData(ShoulderMounts[i], drawhere - Main.screenPosition, null, info.middleArmorColor, rotationangles[i] * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
 
                                 Main.playerDrawData.Add(drawarm);
                             }
-                        }
-                    }
 
                     //Pods/GL/Jetpack
                     if (part % 2 == 1)
@@ -338,24 +339,22 @@ namespace StarlightRiver.Items.Armor.Engineer
                         Vector2 GLOffset = Vector2.Zero;
                         Vector2 spriteoriginlocal = new Vector2(XOffset(ShoulderMounts[isjetpack], (int)spriteorigins[isjetpack].X), spriteorigins[isjetpack].Y);
                         for (int i = 0; i < 3; i += 1)
-                        {
                             GLOffset += (partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X);
-                        }
 
-                        Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + (GLOffset);
+                        Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + GLOffset;
                         DrawData drawGL;
 
                         if (isjetpack == 3)
                         {
                             int maxframes = 4;
                             Texture2D tex = ShoulderMounts[3];
-                            int scale = (tex.Width / maxframes);
-                            Rectangle drawrect = new Rectangle(((int)(SLP.Timer / 10) % maxframes) * scale, 0, scale, tex.Height);
+                            int scale = tex.Width / maxframes;
+                            Rectangle drawrect = new Rectangle(SLP.Timer / 10 % maxframes * scale, 0, scale, tex.Height);
                             drawGL = new DrawData(tex, drawhere - Main.screenPosition, drawrect, info.middleArmorColor, rotationangles[3] * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
                         }
                         else
                         {
-                            float transformanimation = ((float)SLP.EngineerTransform / MaxTransform) * (MathHelper.Pi / 2f);
+                            float transformanimation = (float)SLP.EngineerTransform / MaxTransform * (MathHelper.Pi / 2f);
                             drawGL = new DrawData(ShoulderMounts[2], drawhere - Main.screenPosition, null, info.middleArmorColor, (rotationangles[2] + transformanimation) * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
                         }
 
@@ -373,11 +372,8 @@ namespace StarlightRiver.Items.Armor.Engineer
                             x = texwidth - x;
                         return x;
                     }
-
                 }
-
             }
         }
     }
-
 }

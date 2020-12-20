@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
 using StarlightRiver.Codex.Entries;
 using System;
 using Terraria;
@@ -10,6 +9,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Pickups
 {

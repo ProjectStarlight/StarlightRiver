@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             foreach (NPC npc in Main.npc)
             {
-                if (!npc.active || npc.modNPC == null || !(npc.modNPC is NPCs.MovingPlatform))
+                if (!npc.active || npc.modNPC == null || !(npc.modNPC is MovingPlatform))
                     continue;
 
                 Rectangle playerRect = new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1);
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.CustomHooks
                 }
             }
 
-            var mp = self.GetModPlayer<NPCs.GravityPlayer>();
+            var mp = self.GetModPlayer<GravityPlayer>();
 
             if (mp.controller != null && mp.controller.npc.active)
                 self.velocity.Y = 0;
@@ -90,7 +91,7 @@ namespace StarlightRiver.Content.CustomHooks
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
                     NPC n = Main.npc[k];
-                    if (n.active && n.modNPC is NPCs.MovingPlatform && n.Hitbox.Intersects(proj.Hitbox))
+                    if (n.active && n.modNPC is MovingPlatform && n.Hitbox.Intersects(proj.Hitbox))
                     {
                         proj.position += n.velocity;
                         return false;

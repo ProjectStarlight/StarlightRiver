@@ -14,9 +14,11 @@ namespace StarlightRiver.Core.Loaders
 {
     class ShaderLoader : ILoadable
     {
+        public float Priority { get => 0.9f; }
+
         public void Load() //TODO: Debug and fix this after we can build
         {
-            MethodInfo info = typeof(Mod).GetProperty("File").GetGetMethod(true);
+            MethodInfo info = typeof(Mod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
             var file = (TmodFile)info.Invoke(StarlightRiver.Instance, null);
 
             var shaders = file.Where(n => n.Name.StartsWith("Effects/") && n.Name.EndsWith(".xnb"));

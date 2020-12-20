@@ -25,6 +25,8 @@ namespace StarlightRiver.Core.Loaders
             mod.AddTile(internalName + "Tile", new LoaderFurniture(data, mod.ItemType(internalName + "Item")), AssetRoot + "/" + internalName);
         }
 
+        public float Priority { get => 1f; }
+
         public virtual void Load() { }
 
         public virtual void Unload() { }

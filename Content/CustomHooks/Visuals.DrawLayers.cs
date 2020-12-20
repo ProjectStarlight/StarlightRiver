@@ -9,6 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.NPCs.Hell;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -31,7 +32,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self, bg, styleOverride, allowUpdate);
 
-            foreach (NPC npc in Main.npc.Where(npc => npc.type == NPCType<NPCs.Hostile.BoneMine>() && npc.active))
+            foreach (NPC npc in Main.npc.Where(npc => npc.type == NPCType<BoneMine>() && npc.active))
             {
                 SpriteBatch spriteBatch = Main.spriteBatch;
                 Color drawColor = Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.3f;

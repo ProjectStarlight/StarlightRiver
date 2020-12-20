@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.AbilityContent.GaiasFist;
 using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities.GaiasFist;
 
 namespace StarlightRiver.Content.Dusts
 {

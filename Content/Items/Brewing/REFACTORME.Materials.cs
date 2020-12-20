@@ -9,6 +9,8 @@ namespace StarlightRiver.Items.Herbology.Materials
 {
     public class BlendForest : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/BlendForest";
+
         public BlendForest() : base("Forest Blend", "Powdered herbs from the Forest", 999, 100, 2)
         {
         }
@@ -27,6 +29,8 @@ namespace StarlightRiver.Items.Herbology.Materials
 
     public class BlendEvil : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/BlendEvil";
+
         public BlendEvil() : base("Twisted Blend", "Powdered herbs from Dark Places", 999, 100, 3)
         {
         }

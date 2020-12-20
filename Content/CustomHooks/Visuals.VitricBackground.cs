@@ -22,7 +22,18 @@ namespace StarlightRiver.Content.CustomHooks
             ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/LightBig", UpdateForegroundBody, 3);
             BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, 1);
 
-            crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
+            //crystalEffect = Main.dedServ ? null : Filters.Scene["Crystal"].GetShader().Shader;
+
+            vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
+            {
+                segmentCount = 35,
+                segmentDistance = 24,
+                constraintRepetitions = 2,
+                drag = 2.8f,
+                forceGravity = new Vector2(0f, 0.20f),
+                gravityStrengthMult = 1f
+            };
 
             On.Terraria.Main.DrawBackgroundBlackFill += DrawVitricBackground;
             Main.OnPreDraw += BannerTarget;
@@ -45,17 +56,9 @@ namespace StarlightRiver.Content.CustomHooks
         internal static ParticleSystem ForegroundParticles;
         internal static ParticleSystem BackgroundParticles;
 
-        static RenderTarget2D vitricBackgroundBannerTarget = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        static RenderTarget2D vitricBackgroundBannerTarget;
 
-        static VerletChainInstance BackgroundBanner = Main.dedServ ? null : new VerletChainInstance(true)
-        {
-            segmentCount = 35,
-            segmentDistance = 24,
-            constraintRepetitions = 2,
-            drag = 2.8f,
-            forceGravity = new Vector2(0f, 0.20f),
-            gravityStrengthMult = 1f
-        };
+        static VerletChainInstance BackgroundBanner;
 
         private void DrawBanner(SpriteBatch spriteBatch, Vector2 pos)
         {
@@ -64,11 +67,12 @@ namespace StarlightRiver.Content.CustomHooks
             BackgroundBanner.UpdateChain(Vector2.Zero);
             if (BackgroundBanner.init) BackgroundBanner.IterateRope(WindForce);
 
-            spriteBatch.Draw(GetTexture("Backgrounds/GlassPin"), pos + new Vector2(-200, -300), null, new Color(100, 120, 150), 0, Vector2.Zero, 1, 0, 0);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Backgrounds/GlassPin"), pos + new Vector2(-200, -300), null, new Color(100, 120, 150), 0, Vector2.Zero, 1, 0, 0);
             spriteBatch.Draw(vitricBackgroundBannerTarget, pos + new Vector2(-30, -240), null, Color.White, 0, Vector2.Zero, 2, 0, 0);
         }
 
         float bannerTimer = 0;
+
         private void WindForce(int index)//wind
         {
             float sin = (float)Math.Sin(bannerTimer - index / 3f);

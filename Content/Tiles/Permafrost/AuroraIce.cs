@@ -14,6 +14,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class AuroraIce : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Invisible";
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 0, -1, -1, new Color(100, 255, 255), ItemType<AuroraIceItem>());
@@ -116,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.3f);
 
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
             spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
             spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
 

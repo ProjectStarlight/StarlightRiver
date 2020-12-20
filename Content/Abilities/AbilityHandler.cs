@@ -11,7 +11,7 @@ using Terraria.ModLoader.IO;
 using StarlightRiver.Core;
 using StarlightRiver.Content.GUI;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public partial class AbilityHandler : ModPlayer
     {
@@ -94,9 +94,7 @@ namespace StarlightRiver.Abilities
         {
             // Ensure we don't unlock the same thing twice
             if (!unlockedAbilities.ContainsKey(typeof(T)))
-            {
                 Unlock(typeof(T), new T());
-            }
         }
 
         /// <summary>
@@ -200,16 +198,14 @@ namespace StarlightRiver.Abilities
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
-            infusions = new InfusionItem[Content.GUI.Infusion.InfusionSlots];
+            infusions = new InfusionItem[Infusion.InfusionSlots];
             InfusionLimit = 1;
             try
             {
                 // Load shards
                 var shardsTemp = tag.GetList<int>(nameof(Shards));
                 foreach (var item in shardsTemp)
-                {
                     Shards.Add(item);
-                }
 
                 // Load unlocked abilities and init them
                 var abilitiesTemp = tag.GetList<string>(nameof(unlockedAbilities));
@@ -223,9 +219,7 @@ namespace StarlightRiver.Abilities
                 // Load infusions
                 var infusionsTemp = tag.GetList<Item>(nameof(infusions));
                 for (int i = 0; i < infusionsTemp.Count; i++)
-                {
                     infusions[i] = infusionsTemp[i].modItem as InfusionItem;
-                }
 
                 // Load max infusions
                 InfusionLimit = tag.GetInt(nameof(InfusionLimit));
@@ -266,13 +260,11 @@ namespace StarlightRiver.Abilities
         {
             // Beyah
             foreach (var item in unlockedAbilities.Values)
-            {
                 if (item.Available && item.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
                 {
                     item.Activate(this);
                     break;
                 }
-            }
         }
 
         public override void PreUpdate()
@@ -295,18 +287,12 @@ namespace StarlightRiver.Abilities
                 SetStaminaRegenCD(200);
             }
             else
-            {
                 UpdateStaminaRegen();
-            }
 
             // To ensure fusions always have their owner set to a valid player.
             for (int i = 0; i < infusions.Length; i++)
-            {
                 if (infusions[i] != null)
-                {
                     infusions[i].item.owner = player.whoAmI;
-                }
-            }
         }
 
         private void UpdateStaminaRegen()
@@ -315,18 +301,14 @@ namespace StarlightRiver.Abilities
 
             // Faster regen while not moving much
             if (player.velocity.LengthSquared() > 1)
-            {
                 SetStaminaRegenCD(cooldownSmoothing);
-            }
 
             // Decrement cooldown
             if (staminaRegenCD > 0)
-            {
                 staminaRegenCD--;
-            }
 
             // Regen stamina at a speed inversely proportional to the smoothed cooldown
-            Stamina += StaminaRegenRate / ((staminaRegenCD / (float)cooldownSmoothing) + 1);
+            Stamina += StaminaRegenRate / (staminaRegenCD / (float)cooldownSmoothing + 1);
         }
 
         private void UpdateAbilities()
@@ -355,9 +337,7 @@ namespace StarlightRiver.Abilities
 
             // Update abilities unaffected by infusions
             foreach (var ability in called)
-            {
                 ability.UpdateFixed();
-            }
 
             // Update active ability if unaffected by an infusion
             if (ActiveAbility != null && called.Contains(ActiveAbility))

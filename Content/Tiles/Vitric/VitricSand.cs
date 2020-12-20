@@ -10,7 +10,7 @@ using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricSand : ModTile
+    /*internal class VitricSand : ModTile
     {
         public override void SetDefaults()
         {
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
     }
-    internal class VitricSandItem : QuickTileItem { public VitricSandItem() : base("Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { } }
+    internal class VitricSandItem : QuickTileItem { public VitricSandItem() : base("Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { } }*/
 
     internal class VitricSandWall : ModWall { public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); }
 

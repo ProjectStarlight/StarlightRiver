@@ -8,10 +8,12 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public abstract partial class InfusionItem : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             Draw(spriteBatch, position + GetTexture(Texture).Size() / 2, 1, true);
@@ -79,14 +81,12 @@ namespace StarlightRiver.Abilities
             var mp = player.GetHandler();
 
             for (int i = 0; i < mp.InfusionLimit; i++)
-            {
                 if (mp.GetInfusion(i) == null || i == mp.InfusionLimit - 1)
                 {
                     mp.SetInfusion(item.Clone().modItem as InfusionItem, i);
                     item.TurnToAir();
                     return;
                 }
-            }
         }
     }
 }

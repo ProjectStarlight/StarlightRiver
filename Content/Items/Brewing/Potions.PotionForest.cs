@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Items.Brewing
 {
     internal class PotionForest : QuickPotion
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/PotionForest";
+
         public PotionForest() : base("Forest Tonic", "Provides regenration and immunity to poision", 1800, BuffType<Buffs.ForestTonic>(), 2)
         {
         }

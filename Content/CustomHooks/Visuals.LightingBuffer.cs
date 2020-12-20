@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.CustomHooks
             //TODO: move all below
 
 
-            Main.spriteBatch.End();
+            //Main.spriteBatch.End();
 
             graphics.SetRenderTarget(null);
         }

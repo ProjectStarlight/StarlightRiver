@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
 using StarlightRiver.Codex;
 using System;
 using System.Linq;
@@ -10,6 +9,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -46,17 +46,17 @@ namespace StarlightRiver.Content.CustomHooks
             Rectangle box = new Rectangle((int)(origin + new Vector2(86, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
             Rectangle box2 = new Rectangle((int)(origin + new Vector2(172, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
 
-            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/box"), box, Color.White); //Stamina box
-            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/box"), box2, Color.White); //Codex box
+            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/box"), box, Color.White); //Stamina box
+            spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/box"), box2, Color.White); //Codex box
 
             if (mp.AnyUnlocked)//Draw stamina if any unlocked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina"), origin + new Vector2(91, 68), Color.White);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Stamina"), origin + new Vector2(91, 68), Color.White);
                 Utils.DrawBorderString(spriteBatch, playerStamina + " SP", origin + new Vector2(118, 68), Color.White);
             }
             else//Myserious if locked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina3"), origin + new Vector2(91, 68), Color.White);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Stamina3"), origin + new Vector2(91, 68), Color.White);
                 Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(118, 68), Color.White);
             }
 
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
             else//Mysterious if locked
             {
-                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/BookLocked"), origin + new Vector2(178, 60), Color.White * 0.4f);
+                spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/GUI/BookLocked"), origin + new Vector2(178, 60), Color.White * 0.4f);
                 Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(212, 68), Color.White);
             }
 

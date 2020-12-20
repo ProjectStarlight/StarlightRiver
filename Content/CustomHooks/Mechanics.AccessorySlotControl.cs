@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
             //TODO: Rewrite this later to be less... noob looking.
             if ((inv[slot].modItem is CursedAccessory || inv[slot].modItem is BlessedAccessory) && context == 10)
             {
-                Texture2D back = inv[slot].modItem is CursedAccessory ? ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/CursedBack") : ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/BlessedBack");
+                Texture2D back = inv[slot].modItem is CursedAccessory ? ModContent.GetTexture("StarlightRiver/Assets/GUI/CursedBack") : ModContent.GetTexture("StarlightRiver/Assets/GUI/BlessedBack");
                 Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
             else if ((inv[slot].modItem is InfectedAccessory || inv[slot].modItem is Blocker) && context == 10)
             {
-                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/InfectedBack");
+                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/InfectedBack");
                 Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
             else if (inv[slot].modItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
             {
-                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/ProtoBack");
+                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/ProtoBack");
                 Color backcolor = Main.LocalPlayer.HeldItem != inv[slot] ? Color.White * 0.75f : Color.Yellow;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);

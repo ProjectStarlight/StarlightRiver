@@ -2,7 +2,7 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs
+namespace StarlightRiver.Content.NPCs.BaseTypes
 {
     interface IUnderwater
     {

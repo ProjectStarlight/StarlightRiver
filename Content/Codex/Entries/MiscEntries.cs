@@ -1,8 +1,8 @@
-﻿using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Codex.Entries
 {
@@ -14,8 +14,8 @@ namespace StarlightRiver.Codex.Entries
             Title = "Stamina";
             Body = "All of your abilities utilize stamina, a resource represented by the orange diamonds next to your mana bar. Your stamina will replenish itself over time. You can gain additional stamina by unlocking new abilities and having certain equipment.";
             Hint = "Unlock an ability...";
-            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina");
-            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina");
+            Image = GetTexture("StarlightRiver/Assets/GUI/Stamina");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Stamina");
         }
     }
 
@@ -27,7 +27,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Stamina Vessels";
             Body = "Shards of these intricate metal devices seem to be scattered around the world everywhere. By combining 3 of them, a completed stamina vessel can be made, allowing it's holder to store an extra unit of stamina. Unfortunately, the strange material and intricate tooling of these fragments makes it nigh impossible to re-create them on your own.";
             Hint = "Find a stamina vessel shard...";
-            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaEmpty");
+            Image = GetTexture("StarlightRiver/Assets/GUI/StaminaEmpty");
             Icon = GetTexture("StarlightRiver/Assets/Abilities/Stamina1");
         }
     }

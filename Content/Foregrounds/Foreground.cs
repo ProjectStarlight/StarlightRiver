@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Foregrounds
 
         public virtual void Draw(SpriteBatch spriteBatch, float opacity) { }
 
+        public float Priority { get => 1f; }
+
         public void Load() => StarlightRiver.Instance.foregrounds.Add(this);
 
         public void Unload() => StarlightRiver.Instance.foregrounds.Remove(this);

@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
-using StarlightRiver.NPCs;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {

@@ -6,5 +6,6 @@ namespace StarlightRiver.Core
     {
         void Load();
         void Unload();
+        float Priority { get; }
     }
 }

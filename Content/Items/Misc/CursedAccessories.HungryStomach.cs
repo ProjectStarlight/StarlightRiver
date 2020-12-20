@@ -1,9 +1,9 @@
-﻿using StarlightRiver.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
             return true;
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual) => GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaBlood");
+        public override void UpdateAccessory(Player player, bool hideVisual) => GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/StaminaBlood");
 
         private void DisableRegen(StarlightPlayer player)
         {

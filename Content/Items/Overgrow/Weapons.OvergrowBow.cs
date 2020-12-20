@@ -7,10 +7,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Overgrow
+namespace StarlightRiver.Content.Items.Overgrow
 {
     public class OvergrowBow : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowBow";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Overgrown Bow");

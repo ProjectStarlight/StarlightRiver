@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Content.Abilities.Purify;
 
 namespace StarlightRiver.Projectiles.Ability
 {
@@ -42,7 +43,7 @@ namespace StarlightRiver.Projectiles.Ability
 
         public override void AI()
         {
-            if (projectile.timeLeft <= 800 && projectile.ai[1] == 0 && StarlightRiver.Instance.AbilityKeys.Get<Abilities.AbilityContent.Purify.Pure>().JustPressed) //recall logic
+            if (projectile.timeLeft <= 800 && projectile.ai[1] == 0 && StarlightRiver.Instance.AbilityKeys.Get<Pure>().JustPressed) //recall logic
             {
                 projectile.ai[1] = 1;
                 projectile.timeLeft = 150;
@@ -147,8 +148,8 @@ namespace StarlightRiver.Projectiles.Ability
             }
         }
 
-        private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneCircle");
-        private readonly Texture2D cirTex2 = GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneCircle2");
+        private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle");
+        private readonly Texture2D cirTex2 = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle2");
         //private readonly Texture2D starTex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/Ability/ArcaneStar");
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

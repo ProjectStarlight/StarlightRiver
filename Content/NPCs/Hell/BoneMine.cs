@@ -8,11 +8,14 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Projectiles;
 
-namespace StarlightRiver.NPCs.Hostile
+namespace StarlightRiver.Content.NPCs.Hell
 {
     internal class BoneMine : ModNPC
     {
+        public override string Texture => "StarlightRiver/Assets/NPCs/Hell/BoneMine";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Bone Mine");
@@ -35,7 +38,7 @@ namespace StarlightRiver.NPCs.Hostile
         public override bool CheckDead()
         {
             Main.PlaySound(SoundID.Item14, npc.Center);
-            Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<Projectiles.AOEExplosionHostile>(), npc.damage, 3, 255, 128);
+            Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), npc.damage, 3, 255, 128);
             return true;
         }
 
@@ -53,14 +56,10 @@ namespace StarlightRiver.NPCs.Hostile
             if (npc.ai[1] == 0)
             {
                 if (Main.player.Any(player => Vector2.Distance(player.Center, npc.Center) <= 64)) //arm
-                {
                     npc.ai[1] = 1;
-                }
 
                 if (Main.player.Any(player => Vector2.Distance(player.Center, npc.Center) <= 128)) //warning ring
-                {
-                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<Content.Dusts.Stamina>());
-                }
+                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<Dusts.Stamina>());
             }
             else
             {

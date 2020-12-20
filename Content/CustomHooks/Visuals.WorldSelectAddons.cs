@@ -39,8 +39,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) chungosity = tag3.GetFloat("Chungus");
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/ChungusMeter");
-            Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/GUI/Assets/ChungusMeterFill");
+            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeter");
+            Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeterFill");
             spriteBatch.Draw(tex, pos + new Vector2(-122, 6), Color.White);
             spriteBatch.Draw(tex2, pos + new Vector2(-108, 10), new Rectangle(0, 0, (int)(tex2.Width * chungosity), tex2.Height), Color.White);
             spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X - 108 + (int)(tex2.Width * chungosity), (int)pos.Y + 10, 2, 10), Color.White);

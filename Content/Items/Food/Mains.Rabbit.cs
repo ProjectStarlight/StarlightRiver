@@ -8,6 +8,8 @@ namespace StarlightRiver.Food.Content.Mains
 {
     internal class Rabbit : Ingredient
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Food/Rabbit";
+
         public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)

@@ -7,11 +7,13 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.NPCs.Town
+namespace StarlightRiver.Content.NPCs.Town
 {
     [AutoloadHead]
-    public class Hex : ModNPC
+    public class Hexmaster : ModNPC
     {
+        public override string Texture => Directory.TownNPCDir + "Hexmaster";
+
         public override bool Autoload(ref string name)
         {
             name = "Hexmaster";
@@ -53,7 +55,7 @@ namespace StarlightRiver.NPCs.Town
 
         public override bool CheckConditions(int left, int right, int top, int bottom)
         {
-            return top >= (Main.maxTilesY - 200);
+            return top >= Main.maxTilesY - 200;
         }
 
         public override string TownNPCName()
@@ -106,13 +108,10 @@ namespace StarlightRiver.NPCs.Town
             int cursecount = player.armor.Count(item => item.modItem is CursedAccessory);
 
             if (firstButton)
-            {
                 shop = true;
-            }
             else
             {
                 if (chatstate == 0 || chatstate == 2)
-                {
                     if (player.armor.Any(armor => armor.modItem is CursedAccessory))
                     {
                         chatstate = 1;
@@ -123,16 +122,11 @@ namespace StarlightRiver.NPCs.Town
                         chatstate = 2;
                         npc.GetChat();
                     }
-                }
                 if (chatstate == 1)
                 {
                     for (int k = 3; k <= 8 + player.extraAccessorySlots; k++)
-                    {
                         if (player.armor[k].modItem is CursedAccessory)
-                        {
                             player.armor[k].TurnToAir();
-                        }
-                    }
                     chatstate = 0;
                     npc.GetChat();
                 }

@@ -6,8 +6,9 @@ using Terraria.GameInput;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Abilities.AbilityContent.GaiasFist
+namespace StarlightRiver.Content.Abilities.GaiasFist
 {
     public class Smash : Ability
     {

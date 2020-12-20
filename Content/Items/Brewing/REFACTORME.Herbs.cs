@@ -10,16 +10,22 @@ namespace StarlightRiver.Items.Herbology.Materials
 {
     public class Ivy : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Ivy";
+
         public Ivy() : base("Forest Ivy", "A common, yet versatile herb", 999, 100, 1) { }
     }
 
     public class IvySeeds : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/IvySeeds";
+
         public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1) { }
     }
 
     public class ForestBerries : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/ForestBerries";
+
         public override void SetDefaults()
         {
             item.width = 16;
@@ -43,11 +49,15 @@ namespace StarlightRiver.Items.Herbology.Materials
 
     public class BerryBush : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/BerryBusy";
+
         public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<Tiles.Herbology.ForestBerryBush>(), 1) { }
     }
 
     public class Deathstalk : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Deathstalk";
+
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Grows on Rich Soil");

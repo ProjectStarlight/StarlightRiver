@@ -1,8 +1,8 @@
-using StarlightRiver.Abilities;
 using Terraria;
 using Terraria.ID;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Items.Misc
 {

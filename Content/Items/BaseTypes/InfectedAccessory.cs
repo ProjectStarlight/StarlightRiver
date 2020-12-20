@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
             if (Main.LocalPlayer.armor.Any(n => n == item))
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/InfectedGoop");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/InfectedGoop");
                 spriteBatch.Draw(tex, position + new Vector2(-10, -35), tex.Frame(), Color.White);
             }
 

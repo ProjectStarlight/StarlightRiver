@@ -68,7 +68,7 @@ namespace StarlightRiver.Helpers
             graphics.SetRenderTarget(null);
         }
 
-        private readonly Effect UpscaleEffect = Main.dedServ ? null : Filters.Scene["Lighting"].GetShader().Shader;
+        private readonly Effect UpscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
 
         private void RenderLightingQuad()
         {
@@ -126,7 +126,7 @@ namespace StarlightRiver.Helpers
 
     public static partial class Helper
     {
-        private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightingApply"].GetShader().Shader;
+        private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
 
         private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
 

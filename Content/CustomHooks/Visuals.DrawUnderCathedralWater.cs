@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoMod.Cil;
-using StarlightRiver.NPCs;
 using System;
 using System.Linq;
 using Terraria;
@@ -8,6 +7,7 @@ using Terraria.Graphics.Effects;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.CustomHooks
 {

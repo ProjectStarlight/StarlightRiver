@@ -1,9 +1,9 @@
-﻿using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

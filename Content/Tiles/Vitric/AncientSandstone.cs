@@ -12,40 +12,6 @@ using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class AncientSandstone : ModTile
-    {
-        public override void SetDefaults()
-        {
-            minPick = int.MaxValue;
-            (this).QuickSet(200, DustID.Copper, SoundID.Tink, new Color(150, 105, 65), ItemType<AncientSandstoneItem>());
-            Main.tileMerge[Type][TileType<AncientSandstoneTile>()] = true;
-        }
-    }
-
-    public class AncientSandstoneItem : QuickTileItem { public AncientSandstoneItem() : base("Ancient Sandstone Brick", "", StarlightRiver.Instance.TileType("AncientSandstone"), 0) { } }
-
-
-    internal class AncientSandstoneTile : ModTile
-    {
-        public override void SetDefaults()
-        {
-            minPick = int.MaxValue;
-            (this).QuickSet(200, DustID.Copper, SoundID.Tink, new Color(160, 115, 75), ItemType<AncientSandstoneTileItem>());
-            Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
-        }
-
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            Tile tile = Main.tile[i, j];
-            Color color = i % 2 == 0 ? Lighting.GetColor(i, j) * 1.5f : Lighting.GetColor(i, j) * 1.1f;
-
-            spriteBatch.Draw(Main.tileTexture[mod.TileType("AncientSandstone")], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Lighting.GetColor(i, j));
-            spriteBatch.Draw(Main.tileTexture[Type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color);
-        }
-    }
-
-    public class AncientSandstoneTileItem : QuickTileItem { public AncientSandstoneTileItem() : base("Ancient Sandstone Tiles", "", TileType<AncientSandstoneTile>(), 0) { } }
-
     internal class AncientSandstonePlatform : ModTile
     {
         public override void SetDefaults()

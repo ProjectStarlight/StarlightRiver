@@ -8,12 +8,15 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Projectiles.WeaponProjectiles;
 
-namespace StarlightRiver.Items.Armor.Overgrow
+namespace StarlightRiver.Content.Items.Overgrow
 {
     [AutoloadEquip(EquipType.Head)]
     public class OvergrowHead : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowHead";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Faeleaf Cowl");
@@ -43,6 +46,8 @@ namespace StarlightRiver.Items.Armor.Overgrow
     [AutoloadEquip(EquipType.Body)]
     public class OvergrowChest : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowChest";
+
         public int floatTime = 0;
 
         public override void SetStaticDefaults()
@@ -63,9 +68,7 @@ namespace StarlightRiver.Items.Armor.Overgrow
         public override void UpdateEquip(Player player)
         {
             if (player.velocity.Y != 0)
-            {
                 player.rangedDamageMult += 0.15f;
-            }
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -86,9 +89,7 @@ namespace StarlightRiver.Items.Armor.Overgrow
             }
 
             if (player.velocity.Y != 0)
-            {
                 player.rangedCrit += 20;
-            }
         }
 
         public override void AddRecipes()
@@ -101,26 +102,20 @@ namespace StarlightRiver.Items.Armor.Overgrow
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
         {
             foreach (Player player in Main.player.Where(player => player.armor[1].type == ItemType<OvergrowChest>()))
-            {
                 if (projectile.owner == player.whoAmI && projectile.active && projectile.ranged && player.velocity.Y != 0 && player.armor[1].modItem is OvergrowChest)
-                {
                     (player.armor[1].modItem as OvergrowChest).floatTime = 40;
-                }
-            }
 
             foreach (Player player in Main.player.Where(player => player.armor[1].type == ItemType<OvergrowRobe>()))
-            {
                 if (projectile.owner == player.whoAmI && projectile.active && projectile.magic && player.armor[1].modItem is OvergrowRobe && (player.armor[1].modItem as OvergrowRobe).leaves < 10)
-                {
                     (player.armor[1].modItem as OvergrowRobe).leaves++;
-                }
-            }
         }
     }
 
     [AutoloadEquip(EquipType.Body)]
     public class OvergrowRobe : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowRobe";
+
         public int leaves = 0;
 
         public override void SetStaticDefaults()
@@ -156,16 +151,14 @@ namespace StarlightRiver.Items.Armor.Overgrow
             for (int k = 0; k < leaves; k++)
             {
                 Dust dus = Dust.NewDustPerfect(player.Center + (new Vector2((float)Math.Cos(StarlightWorld.rottime) * 2, (float)Math.Sin(StarlightWorld.rottime)) * 20).RotatedBy(k / (float)leaves * 6.28f),
-                DustType<Content.Dusts.GenericFollow>(), Vector2.Zero, 0, default, leaves == 10 ? 1.2f : 0.8f);
+                DustType<Dusts.GenericFollow>(), Vector2.Zero, 0, default, leaves == 10 ? 1.2f : 0.8f);
                 dus.customData = player;
             }
 
             if (player.GetModPlayer<StarlightPlayer>().JustHit)
             {
                 for (int k = 0; k < leaves; k++)
-                {
-                    Projectile.NewProjectile(player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<Projectiles.WeaponProjectiles.ArmorLeaf>(), 10, 0);
-                }
+                    Projectile.NewProjectile(player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<ArmorLeaf>(), 10, 0);
                 leaves = 0;
             }
         }
@@ -178,6 +171,8 @@ namespace StarlightRiver.Items.Armor.Overgrow
     [AutoloadEquip(EquipType.Legs)]
     public class OvergrowLegs : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowLegs";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Faeleaf Boots");

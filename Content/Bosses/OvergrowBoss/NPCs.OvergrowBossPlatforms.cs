@@ -3,6 +3,7 @@ using System;
 using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {

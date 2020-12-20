@@ -2,6 +2,7 @@
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Abilities.AbilityContent.Infusions
 {

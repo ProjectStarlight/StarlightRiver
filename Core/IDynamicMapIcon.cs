@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs
+namespace StarlightRiver.Core
 {
     internal interface IDynamicMapIcon
     {

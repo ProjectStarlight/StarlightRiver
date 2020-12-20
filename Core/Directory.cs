@@ -48,6 +48,10 @@ namespace StarlightRiver.Core
 
         public const string SlimeItemDir =         Assets + "Items/Slime/";
         public const string StarwoodItemDir =      Assets + "Items/Starwood/";
+        public const string PalestoneItemDir =     Assets + "Items/Palestone/";
+        public const string IvyItemDir =           Assets + "Items/ForestIvy/";
         public const string MiscItemDir =          Assets + "Items/Misc/";
+
+        public const string TownNPCDir =           Assets + "NPCs/Town/";
     }
 }

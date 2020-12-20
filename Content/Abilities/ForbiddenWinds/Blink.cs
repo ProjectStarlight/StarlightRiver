@@ -5,8 +5,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
+namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
     public class Blink : InfusionItem<Dash>
     {
@@ -50,9 +51,7 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
             {
                 // Local client effects
                 if (Player.whoAmI == Main.myPlayer)
-                {
                     Main.SetCameraLerp(0.2f, 5);
-                }
 
                 // Enter tp velocity
                 Player.velocity = Ability.Dir * Ability.Speed * Ability.Time;
@@ -63,18 +62,12 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
                 Player.grappling[0] = -1;
                 Player.grapCount = 0;
                 for (int i = 0; i < 1000; i++)
-                {
                     if (Main.projectile[i].active && Main.projectile[i].owner == Player.whoAmI && Main.projectile[i].aiStyle == 7)
-                    {
                         Main.projectile[i].Kill();
-                    }
-                }
             }
             else if (Ability.Time == maxTime - 1)
-            {
                 // Cancel tp velocity
                 Player.velocity = stored;
-            }
 
             // Do fx at old then new position
             if (Ability.Time > maxTime - 2 && Main.netMode != NetmodeID.Server)
@@ -105,7 +98,7 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
                     pos += vel * 10;
                     vel *= -1;
                 }
-                var d = Dust.NewDustPerfect(pos, ModContent.DustType<Content.Dusts.AirDash>(), vel);
+                var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AirDash>(), vel);
                 d.scale = 1.75f;
                 d.fadeIn = 7;
             }

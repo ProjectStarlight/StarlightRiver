@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Assets/Infusions");
+            Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Infusions");
             spriteBatch.Draw(texture, new Vector2(68, 272), Color.White);
 
             base.Draw(spriteBatch);
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.GUI
 
             if (!Unlocked) //draw a lock instead for locked slots
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/InfusionLock");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/InfusionLock");
                 spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
             }
 

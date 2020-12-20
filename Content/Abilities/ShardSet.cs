@@ -3,7 +3,7 @@ using System.Linq;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public class ShardSet
     {

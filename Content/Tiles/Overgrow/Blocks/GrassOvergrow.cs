@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -10,6 +8,8 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {

@@ -6,10 +6,12 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.BaseTypes;
 
-namespace StarlightRiver.Items.Overgrow
+namespace StarlightRiver.Content.Items.Overgrow
 {
     internal class MossSalve : SmartAccessory
     {
+        public override string Texture => Directory.OvergrowItemDir + "MossSalve";
+
         public MossSalve() : base("Moss Salve", "Health potions grant a short regeneration effect") { }
 
         public override void SafeSetDefaults()

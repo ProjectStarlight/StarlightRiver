@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.Purify;
 using StarlightRiver.Codex.Entries;
 using System;
 using Terraria;
@@ -13,6 +11,8 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Purify;
 
 namespace StarlightRiver.NPCs.Pickups
 {

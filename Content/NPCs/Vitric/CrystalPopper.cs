@@ -9,17 +9,20 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles.Vitric;
 
-namespace StarlightRiver.NPCs.Hostile
+namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class CrystalPopper : ModNPC
     {
+        private const int animFramesLoop = 6; //amount of frames in the main loop
+        private readonly float AnimSpeedMult = 0.3f;
+
+        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/CrystalPopper";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sandbat");
             Main.npcFrameCount[npc.type] = 7;
         }
-
-        private const int animFramesLoop = 6; //amount of frames in the main loop
 
         public override void SetDefaults()
         {
@@ -36,9 +39,7 @@ namespace StarlightRiver.NPCs.Hostile
 
             npc.direction = Main.rand.Next(2) == 0 ? 1 : -1;
             npc.spriteDirection = npc.direction;
-        }
-
-        private readonly float AnimSpeedMult = 0.3f;
+        }      
 
         public override void AI()
         {
@@ -63,9 +64,7 @@ namespace StarlightRiver.NPCs.Hostile
                     npc.velocity.Y += 0.6f;
 
                     for (int k = 0; k <= 10; k++)
-                    {
                         Dust.NewDust(npc.position, 32, 32, DustID.Sandstorm);
-                    }
 
                     if (npc.ai[1] >= 30)
                     {
@@ -74,9 +73,7 @@ namespace StarlightRiver.NPCs.Hostile
                         npc.ai[0] = 2;
 
                         for (int k = -1; k <= 1; k++)
-                        {
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Content.Bosses.GlassBoss.GlassSpike>(), 10, 0);
-                        }
+                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.GlassBoss.GlassSpike>(), 10, 0);
 
                         npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;
 
@@ -93,7 +90,7 @@ namespace StarlightRiver.NPCs.Hostile
                     if (npc.collideX && Math.Abs(npc.velocity.X) > 1f) npc.velocity.X = Vector2.Normalize(-npc.velocity).X * 1.5f;
                     if (npc.collideY && Math.Abs(npc.velocity.Y) > 1f) npc.velocity.Y = Vector2.Normalize(-npc.velocity).Y * 1.5f;
 
-                    npc.spriteDirection = (Main.player[npc.target].Center.X - npc.Center.X < 0) ? -1 : 1;
+                    npc.spriteDirection = Main.player[npc.target].Center.X - npc.Center.X < 0 ? -1 : 1;
                     break;
             }
         }

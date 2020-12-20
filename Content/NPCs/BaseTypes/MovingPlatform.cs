@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs
+namespace StarlightRiver.Content.NPCs.BaseTypes
 {
     internal abstract class MovingPlatform : ModNPC
     {
@@ -38,13 +38,9 @@ namespace StarlightRiver.NPCs
             SafeAI();
 
             foreach (Player player in Main.player)
-            {
                 if (new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4).Intersects
                 (new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4)) && player.position.Y <= npc.position.Y)
-                {
                     player.position += npc.velocity;
-                }
-            }
 
             foreach (Projectile proj in Main.projectile.Where(n => n.active && n.aiStyle == 7 && n.ai[0] != 1 && n.timeLeft < 36000 - 3 && n.Hitbox.Intersects(npc.Hitbox)))
             {

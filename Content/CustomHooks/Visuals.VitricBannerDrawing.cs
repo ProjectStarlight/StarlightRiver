@@ -27,6 +27,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             foreach (var i in VerletChainInstance.toDraw)
                 i.DrawStrip();
+
+            graphics.SetRenderTarget(null);
         }
 
         private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)

@@ -11,14 +11,20 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Permafrost.Weapons
+namespace StarlightRiver.Content.Items.Permafrost
 {
     class AuroraDisc : ModItem
     {
+        public override string Texture => Directory.PermafrostItemDir + "AuroraDisc";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("[PH]Aurora Disc");
-            Tooltip.SetDefault("Can open gates in the permafrost\nGrows frost spikes when striking an enemy or tiles\nEnemies struck by these spikes lose health over time if struck by minions\nRepeated minion strikes increase the intensity up to 10\nCan be re-used to recall the disc");
+            Tooltip.SetDefault("Can open gates in the permafrost\n" +
+                "Grows frost spikes when striking an enemy or tiles\n" +
+                "Enemies struck by these spikes lose health over time if struck by minions\n" +
+                "Repeated minion strikes increase the intensity up to 10\n" +
+                "Can be re-used to recall the disc");
         }
 
         public override void SetDefaults()

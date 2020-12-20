@@ -10,7 +10,7 @@ using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricSoftSand : ModTile
+    /*internal class VitricSoftSand : ModTile
     {
         public override void SetDefaults()
         {
@@ -22,5 +22,5 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
     }
 
-    internal class VitricSoftSandItem : QuickTileItem { public VitricSoftSandItem() : base("Soft Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSoftSand"), 0) { } }
+    internal class VitricSoftSandItem : QuickTileItem { public VitricSoftSandItem() : base("Soft Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSoftSand"), 0) { } }*/
 }

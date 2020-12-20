@@ -5,10 +5,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Overgrow
+namespace StarlightRiver.Content.Items.Overgrow
 {
     public class OvergrowStaff : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "OvergrowStaff";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Entanglement Rod");

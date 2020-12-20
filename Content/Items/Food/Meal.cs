@@ -18,6 +18,8 @@ namespace StarlightRiver.Food
         public int Fullness { get; set; }
         public override bool CloneNewInstances => true;
 
+        public override string Texture => "StarlightRiver/Assets/Items/Food/Meal";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Meal");

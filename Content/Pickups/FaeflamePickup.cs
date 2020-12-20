@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.Faeflame;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -11,6 +9,8 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
 
 namespace StarlightRiver.Pickups
 {

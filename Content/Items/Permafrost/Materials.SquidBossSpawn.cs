@@ -3,10 +3,12 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Items.Permafrost.Tools
+namespace StarlightRiver.Content.Items.Permafrost
 {
     public class SquidBossSpawn : ModItem
     {
+        public override string Texture => Directory.PermafrostItemDir + "SquidBossSpawn";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("[PH] Auroracle Bait");

@@ -12,6 +12,8 @@ namespace StarlightRiver.NPCs.Town
     [AutoloadHead]
     public class Voidsmith : ModNPC
     {
+        public override string Texture => Directory.TownNPCDir + "Voidsmith";
+
         public override bool CanTownNPCSpawn(int numTownNPCs, int money) => true;
 
         public override bool CheckConditions(int left, int right, int top, int bottom) => top >= (Main.maxTilesY - 200);

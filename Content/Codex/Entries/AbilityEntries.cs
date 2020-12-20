@@ -12,7 +12,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Starlight Codex";
             Body = "A mysterious compendium containing lost knowledge, it seems to write itself as you travel. Click the codex icon in your inventory to view the codex.";
             Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageLore");
-            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Book1Closed");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Book1Closed");
         }
     }
 
@@ -75,8 +75,8 @@ namespace StarlightRiver.Codex.Entries
             Category = Categories.Abilities;
             Title = "Rift Codex";
             Body = "NO TEXT";
-            Image = GetTexture("StarlightRiver/Assets/GUI/Assets/Book2Closed");
-            Icon = GetTexture("StarlightRiver/Assets/GUI/Assets/Book2Closed");
+            Image = GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
+            Icon = GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
             RequiresUpgradedBook = true;
         }
     }

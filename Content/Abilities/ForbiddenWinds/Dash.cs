@@ -7,8 +7,9 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
+namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
     public class Dash : CooldownAbility
     {

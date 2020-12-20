@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -9,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Tiles.Interactive
 {

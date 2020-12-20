@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
@@ -121,14 +121,23 @@ namespace StarlightRiver
 
         public override void Load()
         {
+            loadCache = new List<ILoadable>();
+            foregrounds = new List<Foreground>();
+
             foreach (Type type in Code.GetTypes())
             {
                 if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
                 {
                     var instance = Activator.CreateInstance(type);
                     loadCache.Add(instance as ILoadable);
-                    (instance as ILoadable).Load();
                 }
+
+                loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+            }
+
+            for(int k = 0; k < loadCache.Count; k++)
+            {
+                loadCache[k].Load();
             }
 
             //Shaders
@@ -251,7 +260,7 @@ namespace StarlightRiver
         {
             NetEasy.NetEasy.Register(this);
             InitWorldGenChests();
-            CallBossChecklist();
+            //CallBossChecklist();
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)

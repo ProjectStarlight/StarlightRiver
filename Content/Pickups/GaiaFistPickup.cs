@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.GaiasFist;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -10,6 +8,8 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.GaiasFist;
 
 namespace StarlightRiver.Pickups
 {

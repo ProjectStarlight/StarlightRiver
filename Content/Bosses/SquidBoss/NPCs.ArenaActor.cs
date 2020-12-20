@@ -10,6 +10,7 @@ using StarlightRiver.Content.Tiles.Permafrost;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Items.Permafrost.Tools;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.Permafrost;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {

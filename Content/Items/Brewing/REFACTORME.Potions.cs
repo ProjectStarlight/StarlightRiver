@@ -8,6 +8,8 @@ namespace StarlightRiver.Items.Herbology.Potions
 {
     public class Bottle : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Bottle";
+
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("A bottle made of thick vitric glass");

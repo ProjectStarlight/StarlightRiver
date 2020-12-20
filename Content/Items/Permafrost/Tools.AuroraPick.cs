@@ -8,12 +8,14 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Permafrost.Tools
+namespace StarlightRiver.Content.Items.Permafrost
 {
     class AuroraPick : ModItem, IGlowingItem
     {
         float charge = 0;
         bool charged = false;
+
+        public override string Texture => Directory.PermafrostItemDir + "AuroraPick";
 
         public override void SetStaticDefaults()
         {

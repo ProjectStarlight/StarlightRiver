@@ -31,6 +31,8 @@ namespace StarlightRiver.Core
             this.material = material;
         }
 
+        public float Priority { get => 1f; }
+
         public void Load()
         {
             var mod = StarlightRiver.Instance;

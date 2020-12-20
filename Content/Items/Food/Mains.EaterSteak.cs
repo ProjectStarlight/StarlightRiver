@@ -8,6 +8,8 @@ namespace StarlightRiver.Food.Content.Mains
 {
     internal class EaterSteak : Ingredient
     {
+        public override string Texture => "StarlightRiver/Assets/Items/Food/EaterSteak";
+
         public EaterSteak() : base("+3% damage reduction", 900, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)

@@ -8,10 +8,12 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.NPCs.Hostile
+namespace StarlightRiver.Content.NPCs.Permafrost
 {
     internal class StrangeLight : ModNPC
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Strange Light");
@@ -40,6 +42,7 @@ namespace StarlightRiver.NPCs.Hostile
         int numOfTentacles = 5;
         bool spawnedTentacles = false;
         int[] tentacles = new int[5];
+
         public override void AI()
         {
             npc.TargetClosest(true);
@@ -48,23 +51,19 @@ namespace StarlightRiver.NPCs.Hostile
             {
                 spawnedTentacles = true;
                 for (int i = 0; i < numOfTentacles; i++)
-                {
                     tentacles[i] = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<StrangeTentacle>(), npc.damage, npc.knockBackResist, player.whoAmI, npc.whoAmI, i / 4);
-                }
             }
             npc.ai[1] += 0.05f;
             if (npc.ai[1] > 21)
-            {
                 Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(Main.projectile[3].rotation + 1.57) * 10, ModContent.ProjectileType<StrangePredictor>(), 0, 0);
-            }
             if (npc.ai[1] > 29.5)
-            {
                 npc.ai[1] = 0;
-            }
         }
     }
     internal class StrangePredictor : ModProjectile
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Strange Light");
@@ -85,13 +84,17 @@ namespace StarlightRiver.NPCs.Hostile
             projectile.ignoreWater = true;
             projectile.extraUpdates = 5;
         }
+
         public override void AI()
         {
             Dust.NewDustPerfect(projectile.position, 6).noGravity = true;
         }
     }
+
     internal class StrangeTentacle : ModProjectile
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Strange Light");
@@ -110,6 +113,7 @@ namespace StarlightRiver.NPCs.Hostile
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
         }
+
         float rotationCounter = 0;
         Vector2 control1;
         Vector2 control2;
@@ -124,40 +128,38 @@ namespace StarlightRiver.NPCs.Hostile
             Vector2 posToBe = Vector2.UnitY * 100;
             Player player = projectile.Owner();
             NPC parent = Main.npc[(int)projectile.ai[0]];
+
             if (circleX == 0)
             {
                 circleSpeed = Main.rand.NextFloat(0.03f, 0.06f);
                 circleX = Main.rand.Next(20, 40);
                 circleY = Main.rand.Next(20, 40);
             }
+
             projectile.ai[1] += 0.05f;
+
             if (projectile.ai[1] < 21)
-            {
                 if (extend > 1f)
-                {
                     extend -= 0.2f;
-                }
                 else if (Math.Abs(projectile.rotation - (parent.Center - player.Center).ToRotation()) > 0.1f)
-                {
                     projectile.rotation = (parent.Center - player.Center).ToRotation();
-                }
-            }
+
             if (projectile.ai[1] > 21 && projectile.ai[1] < 22f)
             {
                 extend -= 0.03f;
                 projectile.rotation = (parent.Center - player.Center).ToRotation();
             }
+
             if (projectile.ai[1] > 28)
-            {
                 extend += 0.13f;
-            }
+
             if (projectile.ai[1] > 29.5)
-            {
                 projectile.ai[1] = 0;
-            }
+
             rotationCounter += circleSpeed;
+
             float speed = 0.5f;
-            Vector2 circle = new Vector2(circleX * (float)Math.Sin((double)rotationCounter), circleY * (float)Math.Cos((double)rotationCounter));
+            Vector2 circle = new Vector2(circleX * (float)Math.Sin(rotationCounter), circleY * (float)Math.Cos(rotationCounter));
             float angle = projectile.rotation;
             posToBe *= extend;
             posToBe += circle;
@@ -166,10 +168,9 @@ namespace StarlightRiver.NPCs.Hostile
             control2 = posToBe.RotatedBy(Math.Sin(rotationCounter)) + parent.Center;
             posToBe += parent.Center;
             Vector2 direction = posToBe - projectile.position;
+
             if (direction.Length() > 1000)
-            {
                 projectile.position = posToBe;
-            }
             else
             {
                 speed *= (float)Math.Sqrt(direction.Length());
@@ -189,9 +190,7 @@ namespace StarlightRiver.NPCs.Hostile
                 TentacleDraw.DrawBezier(spriteBatch, lightColor, tex, projectile.Center, parent.Center, control1, control2, tex.Height / dist / 2, projectile.rotation);
             }
             else
-            {
                 projectile.active = false;
-            }
             return false;
         }
     }
@@ -201,6 +200,7 @@ namespace StarlightRiver.NPCs.Hostile
         {
             float width = texture.Width;
             float length = (startPoint - endpoint).Length();
+
             for (float i = 0; i <= 1; i += chainsPerUse)
             {
                 float sin = 1 + (float)Math.Sin(i * length / 10);
@@ -208,6 +208,7 @@ namespace StarlightRiver.NPCs.Hostile
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
                 Vector2 distBetween;
                 float projTrueRotation;
+
                 if (i != 0)
                 {
                     float x = EX(i, startPoint.X, c1.X, c2.X, endpoint.X);

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.AbilityContent.Faeflame;
-using StarlightRiver.Abilities.AbilityContent.ForbiddenWinds;
-using StarlightRiver.Abilities.AbilityContent.GaiasFist;
-using StarlightRiver.Abilities.AbilityContent.Purify;
+using StarlightRiver.Content.Abilities.GaiasFist;
+using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Purify;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameInput;
@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public abstract class Ability
     {

@@ -5,8 +5,9 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
+namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
     class Astral : InfusionItem<Dash>
     {
@@ -50,10 +51,10 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
                     //Vector2 pos2 = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 60;
                     //Dust.NewDustPerfect(pos2, DustType<Dusts.BlueStamina>(), Vector2.UnitY.RotatedBy(Ability.Player.velocity.ToRotation() + k + 1.57f) * Math.Abs(k), 0, default, 3 - Math.Abs(k));
                 }
-                Dust.NewDustPerfect(pos, DustType<Content.Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.Time / 10f);
+                Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.Time / 10f);
 
                 if (Math.Abs(k) >= 1.5f)
-                    Dust.NewDustPerfect(pos, DustType<Content.Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.Time / 10f);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.Time / 10f);
             }
         }
     }

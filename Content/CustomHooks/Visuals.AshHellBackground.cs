@@ -22,6 +22,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void DrawAltBackground(On.Terraria.Main.orig_DrawUnderworldBackground orig, Main self, bool flat)
         {
             orig(self, flat);
+            if (Main.gameMenu) return; //safety net
 
             if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
             {

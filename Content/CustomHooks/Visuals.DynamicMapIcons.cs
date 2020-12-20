@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private NPC EmitDynamicIconDelegateOverlay(NPC npc)
         {
-            if (npc?.active == true && npc.modNPC is NPCs.IDynamicMapIcon)
+            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
             {
                 Vector2 npcPos = npc.Center;
                 Vector2 framePos = (Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2));
@@ -59,14 +59,14 @@ namespace StarlightRiver.Content.CustomHooks
 
                 float scale = (Main.mapMinimapScale * 0.25f * 2f + 1f) / 3f;
 
-                (npc.modNPC as NPCs.IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White * Main.mapOverlayAlpha);
+                (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White * Main.mapOverlayAlpha);
             }
             return npc;
         }
 
         private NPC EmitDynamicIconDelegateMinimap(NPC npc)
         {
-            if (npc?.active == true && npc.modNPC is NPCs.IDynamicMapIcon)
+            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
             {
                 Vector2 mapPos = new Vector2(Main.miniMapX, Main.miniMapY);
                 Vector2 npcPos = npc.Center;
@@ -77,7 +77,8 @@ namespace StarlightRiver.Content.CustomHooks
                 {
                     float scale = (Main.mapMinimapScale * 0.25f * 2f + 1f) / 3f;
 
-                    (npc.modNPC as NPCs.IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+                    (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+
                     if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                     {
                         Utils.DrawBorderString(Main.spriteBatch, npc.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
@@ -89,7 +90,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private NPC EmitDynamicIconDelegateFullmap(NPC npc)
         {
-            if (npc?.active == true && npc.modNPC is NPCs.IDynamicMapIcon)
+            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
             {
                 float mapScale = Main.mapFullscreenScale / Main.UIScale;
 
@@ -104,7 +105,8 @@ namespace StarlightRiver.Content.CustomHooks
 
                 float scale = Main.UIScale;
 
-                (npc.modNPC as NPCs.IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+                (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+
                 if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                 {
                     Utils.DrawBorderString(Main.spriteBatch, npc.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);

@@ -11,11 +11,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Armor.Palestone
+namespace StarlightRiver.Content.Items.Palestone
 {
     [AutoloadEquip(EquipType.Head)]
     public class PalestoneHead : ModItem
     {
+        public override string Texture => Directory.PalestoneItemDir + "PalestoneHead";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Palestone Helm");
@@ -38,6 +40,8 @@ namespace StarlightRiver.Items.Armor.Palestone
     [AutoloadEquip(EquipType.Body)]
     public class PalestoneChest : ModItem
     {
+        public override string Texture => Directory.PalestoneItemDir + "PalestoneChest";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Palestone Chestplate");
@@ -64,12 +68,8 @@ namespace StarlightRiver.Items.Armor.Palestone
             player.setBonus = "anyway palestone set bonus i had in mind was that getting kills forms a big stone tablet to spin around the player (not in a circle, more like an orbit (think the overgrowth enemy that throws boulders)) which would provide damage resistance per tablet with a cap of 3, and taking damage would damage the tablets (a tablet can be damaged 3x before breaking)";
             PalestonePlayer palestonePlayer = player.GetModPlayer<PalestonePlayer>();
             foreach (int i in palestonePlayer.tablets)
-            {
                 if (i > 0)
-                {
                     player.endurance += 0.1f;
-                }
-            }
         }
     }
     public class PalestonePlayer : ModPlayer
@@ -78,48 +78,33 @@ namespace StarlightRiver.Items.Armor.Palestone
         public int[] tablets = new int[3];
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
-            if (item.melee)
-            {
-                if (target.life <= 0)
-                {
-                    for (int i = 0; i < tablets.Length; i++)
+            if (item.melee && target.life <= 0)
+                for (int i = 0; i < tablets.Length; i++)
+                    if (tablets[i] == 0)
                     {
-                        if (tablets[i] == 0)
-                        {
-                            tablets[i] = 3;
-                            break;
-                        }
+                        tablets[i] = 3;
+                        break;
                     }
-                }
-            }
         }
+
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            if (proj.melee)
-            {
-                if (target.life <= 0)
-                {
-                    for (int i = 0; i < tablets.Length; i++)
+            if (proj.melee && target.life <= 0)
+                for (int i = 0; i < tablets.Length; i++)
+                    if (tablets[i] == 0)
                     {
-                        if (tablets[i] == 0)
-                        {
-                            tablets[i] = 3;
-                            break;
-                        }
+                        tablets[i] = 3;
+                        break;
                     }
-                }
-            }
         }
+
         public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
         {
             for (int i = 0; i < tablets.Length; i++)
-            {
                 if (tablets[i] > 0)
-                {
                     tablets[i]--;
-                }
-            }
         }
+
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             Action<PlayerDrawInfo> backTarget = s => DrawGlowmasks(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
@@ -163,9 +148,12 @@ namespace StarlightRiver.Items.Armor.Palestone
             }
         }
     }
+
     [AutoloadEquip(EquipType.Legs)]
     public class PalestoneLegs : ModItem
     {
+        public override string Texture => Directory.PalestoneItemDir + "PalestoneLegs";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Palestone Leggings");

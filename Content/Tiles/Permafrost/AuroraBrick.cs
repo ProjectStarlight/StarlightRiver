@@ -13,6 +13,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class AuroraBrick : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrick";
+            return true;
+        }
+
         public override void SetDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -36,6 +42,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class AuroraBrickItem : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickItem";
+
         public AuroraBrickItem() : base("Aurora Brick", "Oooh... Preeetttyyy", TileType<AuroraBrick>(), ItemRarityID.White) { }
     }
 

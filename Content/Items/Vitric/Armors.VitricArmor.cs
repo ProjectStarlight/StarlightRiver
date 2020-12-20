@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Projectiles.WeaponProjectiles;
@@ -108,6 +108,8 @@ namespace StarlightRiver.Content.Items.Vitric
     [AutoloadEquip(EquipType.Body)]
     public class VitricChest : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Chestpiece");
@@ -142,6 +144,8 @@ namespace StarlightRiver.Content.Items.Vitric
     [AutoloadEquip(EquipType.Legs)]
     public class VitricLegs : ModItem
     {
+        public override string Texture => Directory.VitricItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Greaves");
@@ -175,7 +179,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
     public class VitricArmorPlayer : ModPlayer
     {
-
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             void backTarget(PlayerDrawInfo s) => DrawShards(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.

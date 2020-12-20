@@ -9,10 +9,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.Overgrow
+namespace StarlightRiver.Content.Items.Overgrow
 {
     internal class Shaker : ModItem
     {
+        public override string Texture => Directory.OvergrowItemDir + "Shaker";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("The Shaker");

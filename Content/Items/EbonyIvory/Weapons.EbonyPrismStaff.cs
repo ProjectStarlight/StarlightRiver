@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 {
     public class EbonyPrismStaff : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/EbonyIvory/EbonyPrismStaff";
+
         public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("");

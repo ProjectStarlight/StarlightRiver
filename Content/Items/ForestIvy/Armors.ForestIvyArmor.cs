@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
     [AutoloadEquip(EquipType.Head)]
     public class ForestIvyHead : ModItem
     {
+        public override string Texture => Directory.IvyItemDir + "ForestIvyHead";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ivy Helm");
@@ -42,6 +44,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
     [AutoloadEquip(EquipType.Body)]
     public class ForestIvyChest : ModItem
     {
+        public override string Texture => Directory.IvyItemDir + "ForestIvyChest";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ivy Chestplate");
@@ -78,9 +82,12 @@ namespace StarlightRiver.Content.Items.ForestIvy
             recipe.AddRecipe();
         }
     }
+
     [AutoloadEquip(EquipType.Legs)]
     public class ForestIvyLegs : ModItem
     {
+        public override string Texture => Directory.IvyItemDir + "ForestIvyLegs";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ivy Leggings");

@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs
+namespace StarlightRiver.Content.NPCs.BaseTypes
 {
     class GravityOrbTest : ModNPC, IDrawAdditive
     {
@@ -57,7 +57,7 @@ namespace StarlightRiver.NPCs
         {
             for (int k = 0; k < 6; k++)
             {
-                float time = ((Main.GameUpdateCount + (k / (6 / 4f) * 200)) / 200f);
+                float time = (Main.GameUpdateCount + k / (6 / 4f) * 200) / 200f;
 
                 var tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 float rad = (radius + attract) * 2 / (float)tex.Width;
@@ -74,12 +74,12 @@ namespace StarlightRiver.NPCs
         public float attractSpeed = 0;
 
         int angleTimer = 0;
-        float realAngle => (angleTimer / 59f * angle);
+        float realAngle => angleTimer / 59f * angle;
 
 
         public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
         {
-            if ((controller != null && controller.npc.active) || angleTimer > 0)
+            if (controller != null && controller.npc.active || angleTimer > 0)
             {
                 drawInfo.drawPlayer.fullRotationOrigin = drawInfo.drawPlayer.Size / 2;
                 drawInfo.drawPlayer.fullRotation = realAngle + (float)Math.PI * 0.5f * angleTimer / 59f;

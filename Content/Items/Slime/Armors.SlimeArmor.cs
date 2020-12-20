@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Slime
     public class SlimeHead : ModItem
     {
         public override string Texture => Directory.SlimeItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Head Slime");//temp names
@@ -38,6 +39,7 @@ namespace StarlightRiver.Content.Items.Slime
     public class SlimeChest : ModItem
     {
         public override string Texture => Directory.SlimeItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Body Slime");
@@ -71,6 +73,7 @@ namespace StarlightRiver.Content.Items.Slime
     public class SlimeLegs : ModItem
     {
         public override string Texture => Directory.SlimeItemDir + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Foot Slime");

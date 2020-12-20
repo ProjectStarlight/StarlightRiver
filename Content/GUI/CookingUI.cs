@@ -28,10 +28,10 @@ namespace StarlightRiver.Content.GUI
         private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
-        private readonly UIImageButton CookButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/Assets/CookPrep"));
-        private readonly UIImageButton ExitButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/Assets/CookExit"));
-        private readonly UIImage StatBack = new UIImage(GetTexture("StarlightRiver/Assets/GUI/Assets/CookStatWindow"));
-        private readonly UIImage TopBar = new UIImage(GetTexture("StarlightRiver/Assets/GUI/Assets/CookTop"));
+        private readonly UIImageButton CookButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/CookPrep"));
+        private readonly UIImageButton ExitButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/CookExit"));
+        private readonly UIImage StatBack = new UIImage(GetTexture("StarlightRiver/Assets/GUI/CookStatWindow"));
+        private readonly UIImage TopBar = new UIImage(GetTexture("StarlightRiver/Assets/GUI/CookTop"));
 
         private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.GUI
 
                 if (lineCount > 5)
                 {
-                    var tex = GetTexture("StarlightRiver/Assets/GUI/Assets/Arrow");
+                    var tex = GetTexture("StarlightRiver/Assets/GUI/Arrow");
 
                     spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 358, (int)Basepos.Y + 60, 4, 80), new Color(120, 80, 60));
                     spriteBatch.Draw(tex, Basepos + new Vector2(360, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -193,12 +193,12 @@ namespace StarlightRiver.Content.GUI
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/CookSlotY");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotY");
             switch (Type)
             {
-                case IngredientType.Main: tex = GetTexture("StarlightRiver/Assets/GUI/Assets/CookSlotY"); break;
-                case IngredientType.Side: tex = GetTexture("StarlightRiver/Assets/GUI/Assets/CookSlotG"); break;
-                case IngredientType.Seasoning: tex = GetTexture("StarlightRiver/Assets/GUI/Assets/CookSlotB"); break;
+                case IngredientType.Main: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotY"); break;
+                case IngredientType.Side: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotG"); break;
+                case IngredientType.Seasoning: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotB"); break;
             }
 
             spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);

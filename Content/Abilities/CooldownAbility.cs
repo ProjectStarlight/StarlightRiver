@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Core;
 
-namespace StarlightRiver.Abilities
+namespace StarlightRiver.Content.Abilities
 {
     public abstract class CooldownAbility : Ability
     {
@@ -27,9 +27,7 @@ namespace StarlightRiver.Abilities
             base.UpdateFixed();
 
             if (!Active)
-            {
                 Cooldown--;
-            }
 
             if (Cooldown == 0)
                 CooldownFinish();

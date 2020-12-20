@@ -1,16 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
-using StarlightRiver.Abilities.AbilityContent.Faeflame;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
 
-namespace StarlightRiver.NPCs.Passive
+namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class DesertWisp : ModNPC
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Desert Wisp");
@@ -38,9 +40,9 @@ namespace StarlightRiver.NPCs.Passive
             AbilityHandler mp = player.GetHandler();
             Vector2 distance = player.Center - npc.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Content.Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if ((distance.Length() <= 180 && !(mp.Unlocked<Wisp>())) || Main.dayTime) npc.ai[3] = 1;
+            if (distance.Length() <= 180 && !mp.Unlocked<Wisp>() || Main.dayTime) npc.ai[3] = 1;
 
             if (npc.ai[3] == 1)
             {
@@ -49,22 +51,24 @@ namespace StarlightRiver.NPCs.Passive
             }
         }
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.player.ZoneOverworldHeight && !Main.dayTime && spawnInfo.player.ZoneDesert) ? 0.2f : 0f;
+        public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.ZoneOverworldHeight && !Main.dayTime && spawnInfo.player.ZoneDesert ? 0.2f : 0f;
     }
 
     internal class DesertWisp2 : DesertWisp
     {
+        public override string Texture => "StarlightRiver/Assets/Invisible";
+
         public override void AI()
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
             Vector2 distance = player.Center - npc.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Content.Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
             if (distance.Length() <= 120 && !player.ActiveAbility<Wisp>()) npc.velocity += Vector2.Normalize(distance) * -10;
         }
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
+        public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 1f : 0f;
     }
 }

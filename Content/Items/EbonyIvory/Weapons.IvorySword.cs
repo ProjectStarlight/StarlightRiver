@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 {
     public class IvorySword : ModItem
     {
+        public override string Texture => "StarlightRiver/Assets/Items/EbonyIvory/IvorySword";
+
         private int combostate = 0;
 
         public override void SetDefaults()

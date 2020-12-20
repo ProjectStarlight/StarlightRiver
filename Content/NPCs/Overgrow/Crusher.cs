@@ -10,11 +10,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Traps
+namespace StarlightRiver.Content.NPCs.Overgrow
 {
     internal class Crusher : ModNPC
     {
         public Tile Parent;
+
+        public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/Crusher";
 
         public override void SetStaticDefaults()
         {
@@ -49,16 +51,13 @@ namespace StarlightRiver.NPCs.Traps
                 for (float k = 0; k <= 0.3f; k += 0.007f)
                 {
                     Vector2 vel = new Vector2(1, 0).RotatedBy(-k) * Main.rand.NextFloat(8);
-                    if (Main.rand.Next(2) == 0) { vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8); }
-                    Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
-                    Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustType<Content.Dusts.Stamina>(), vel);
+                    if (Main.rand.Next(2) == 0) vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8); Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
+                    Dust.NewDustPerfect(npc.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);
                 }
                 Main.PlaySound(SoundID.Item70.WithPitchVariance(0.6f), npc.Center);
 
                 foreach (Player player in Main.player.Where(player => Vector2.Distance(player.Center, npc.Center) <= 250))
-                {
                     player.GetModPlayer<StarlightPlayer>().Shake = (250 - (int)Vector2.Distance(player.Center, npc.Center)) / 12;
-                }
                 npc.ai[1] = 1;
             }
         }
@@ -87,11 +86,9 @@ namespace StarlightRiver.NPCs.Traps
 
             spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(npc.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
 
-            int count = (npc.ai[0] < 10) ? ((int)npc.ai[0] / 3) : (npc.ai[0] > 40) ? ((60 - (int)npc.ai[0]) / 4) : 3;
+            int count = npc.ai[0] < 10 ? (int)npc.ai[0] / 3 : npc.ai[0] > 40 ? (60 - (int)npc.ai[0]) / 4 : 3;
             for (int k = 1; k <= count; k++)
-            {
                 spriteBatch.Draw(tex2, npc.position - Main.screenPosition + new Vector2(8, -48 - k * 28), drawColor);
-            }
         }
     }
 }

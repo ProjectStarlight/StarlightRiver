@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Permafrost.Tools;
+using StarlightRiver.Content.Items.Permafrost;
 
 namespace StarlightRiver
 {

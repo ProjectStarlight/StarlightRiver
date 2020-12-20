@@ -10,10 +10,12 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.NPCs.Vitric
+namespace StarlightRiver.Content.NPCs.Vitric
 {
     class WalkingSentinel : ModNPC
     {
+        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/WalkingSentinel";
+
         public override void SetDefaults()
         {
             npc.width = 32;
@@ -41,10 +43,16 @@ namespace StarlightRiver.NPCs.Vitric
     {
         public override int DummyType => ProjectileType<WalkingSentinelDummy>();
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/NPCs/Vitric/WalkingSentinelTile";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            QuickBlock.QuickSetFurniture(this, 2, 3, DustID.Sandnado, SoundID.Tink, false, new Color(200, 100, 20), false, false, "???");
+            this.QuickSetFurniture(2, 3, DustID.Sandnado, SoundID.Tink, false, new Color(200, 100, 20), false, false, "???");
         }
     }
 
@@ -57,7 +65,7 @@ namespace StarlightRiver.NPCs.Vitric
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 Projectile proj = Main.projectile[k];
-                if (proj.active && proj.type == ProjectileType<Content.Tiles.Vitric.Temple.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
+                if (proj.active && proj.type == ProjectileType<Tiles.Vitric.Temple.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
                 {
                     WorldGen.KillTile(ParentX, ParentY);
                     NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<WalkingSentinel>());

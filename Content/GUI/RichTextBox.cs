@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.GUI
 
         public static void DrawBox(SpriteBatch sb, Rectangle target)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/FancyBox");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/FancyBox");
             Color color = Color.White * 0.8f;
 
             Rectangle sourceCorner = new Rectangle(0, 0, 6, 6);

@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.GUI
 
             bool locked = displayString == "Locked";
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/Assets/NPCButton");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/NPCButton");
             spriteBatch.Draw(tex, GetDimensions().ToRectangle(), tex.Frame(), Color.White * (locked ? 0.4f : 0.8f));
 
             float x = Main.fontItemStack.MeasureString(displayString).X;

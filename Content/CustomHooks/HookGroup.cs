@@ -8,6 +8,8 @@ namespace StarlightRiver.Content.CustomHooks
     {
         public virtual SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
 
+        public virtual float Priority { get => 1f; }
+
         public virtual void Load() { }
 
         public virtual void Unload() { }

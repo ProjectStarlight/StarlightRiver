@@ -11,11 +11,13 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.GUI;
 
-namespace StarlightRiver.NPCs.Passive
+namespace StarlightRiver.Content.NPCs.Permafrost
 {
     public class TutorialCultist : ModNPC
     {
         int textState = 0;
+
+        public override string Texture => "StarlightRiver/Assets/NPCs/Permafrost/TutorialCultist";
 
         public override void SetDefaults()
         {

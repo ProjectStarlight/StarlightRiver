@@ -45,6 +45,8 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             Main.spriteBatch.End();
+
+            graphics.SetRenderTarget(null);
         }
     }
 }

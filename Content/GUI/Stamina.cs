@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -86,8 +86,8 @@ namespace StarlightRiver.Content.GUI
             Player player = Main.LocalPlayer;
             AbilityHandler mp = player.GetHandler();
 
-            Texture2D emptyTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaEmpty");
-            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/Assets/GUI/Assets/Stamina") : overrideTexture;
+            Texture2D emptyTex = GetTexture("StarlightRiver/Assets/GUI/StaminaEmpty");
+            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/Assets/GUI/Stamina") : overrideTexture;
 
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
@@ -145,9 +145,9 @@ namespace StarlightRiver.Content.GUI
             AbilityHandler mp = player.GetHandler();
             Vector2 basepos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - Vector2.UnitY * 64;
 
-            var flagTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaFlag");
-            var emptyTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaSmallEmpty");
-            var fillTex = GetTexture("StarlightRiver/Assets/GUI/Assets/StaminaSmall");
+            var flagTex = GetTexture("StarlightRiver/Assets/GUI/StaminaFlag");
+            var emptyTex = GetTexture("StarlightRiver/Assets/GUI/StaminaSmallEmpty");
+            var fillTex = GetTexture("StarlightRiver/Assets/GUI/StaminaSmall");
 
             var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
 

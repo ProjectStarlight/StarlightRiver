@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities;
 using StarlightRiver.Items.Armor;
 
 using System;
@@ -16,6 +15,7 @@ using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Core
 {
