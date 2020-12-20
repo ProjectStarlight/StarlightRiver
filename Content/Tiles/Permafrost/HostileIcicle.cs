@@ -13,6 +13,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     public class HostileIcicle : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/HostileIcicle";
+            return true;
+        }
+
+        public override bool Dangersense(int i, int j, Player player) => true;
+
         public override void SetDefaults()
         {
             Main.tileFrameImportant[Type] = true;

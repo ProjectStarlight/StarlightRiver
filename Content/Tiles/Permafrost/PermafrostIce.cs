@@ -13,6 +13,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class PermafrostIce : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/PermafrostIce";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(90, 208, 232), ItemType<PermafrostIceItem>());
@@ -41,6 +47,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class PermafrostIceItem : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/PermafrostIceItem";
+
         public PermafrostIceItem() : base("Permafrost Ice", "", TileType<PermafrostIce>(), ItemRarityID.White) { }
     }
 }

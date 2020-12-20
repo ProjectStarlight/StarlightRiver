@@ -15,6 +15,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override int DummyType => ProjectileType<SpikeImmuneOrbDummy>();
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/SpikeImmuneOrb";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Aurora>(), SoundID.Tink, false, new Color(150, 255, 200));

@@ -16,6 +16,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     internal class IceSpike : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Invisible";
+            return true;
+        }
+
         public override bool Dangersense(int i, int j, Player player) => true;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
@@ -50,6 +56,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     internal class IceSpikeItem : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/IceSpikeItem";
+
         public IceSpikeItem() : base("Permafrost Ice Shards", "", TileType<IceSpike>(), ItemRarityID.White) { }
     }
 }

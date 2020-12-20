@@ -14,6 +14,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class PhotoreactiveIce : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/PhotoreactiveIce";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(100, 255, 255), ItemType<PhotoreactiveIceItem>());
@@ -47,6 +53,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class PhotoreactiveIceItem : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/PhotoreactiveIceItem";
+
         public PhotoreactiveIceItem() : base("Photoreactive Ice", "Becomes intangible in light", TileType<PhotoreactiveIce>(), ItemRarityID.White) { }
     }
 }

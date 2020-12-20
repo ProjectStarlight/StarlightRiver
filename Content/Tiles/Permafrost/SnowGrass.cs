@@ -17,6 +17,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 {
     class SnowGrass : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/SnowGrass";
+            return true;
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, 1, 0);
@@ -81,6 +87,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 
     internal class SnowGrassItem : QuickTileItem
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/SnowGrassItem";
+
         public SnowGrassItem() : base("Snow Reed Seeds", "Plant on permafrost snow", TileType<SnowGrass>(), ItemRarityID.White) { }
     }
 }

@@ -140,11 +140,15 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     //TODO: Move all this to a more sane place, im really tired tonight and cant be assed to put braincells into organizing this. Thanks in advance future me.
     class AuroraIceItem : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceItem";
+
         public AuroraIceItem() : base("Frozen Aurora Chunk", "A preserved piece of the night sky", 999, Item.sellPrice(0, 0, 5, 0), ItemRarityID.White) { }
     }
 
     class AuroraIceBar : QuickMaterial
     {
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceBar";
+
         public AuroraIceBar() : base("Frozen Aurora Bar", "A preserved selection of the night sky", 99, Item.sellPrice(0, 0, 25, 0), ItemRarityID.Blue) { }
 
         public override void AddRecipes()

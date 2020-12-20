@@ -15,6 +15,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class DoorBombShooter : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/DoorBombShooter";
+            return true;
+        }
+
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Ice, SoundID.Tink, false, new Color(200, 255, 255));
 
         public override void NearbyEffects(int i, int j, bool closer)

@@ -14,6 +14,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class PermafrostTeleporter : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/PermaforstTeleporter";
+            return true;
+        }
+
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 5, 10, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(100, 200, 200));
 
         public override bool NewRightClick(int i, int j)
