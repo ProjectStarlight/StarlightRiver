@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     class TwistSword : ModItem, IGlowingItem
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public override void SetStaticDefaults() => DisplayName.SetDefault("Twisted Greatsword");
 
         private int charge = 240;

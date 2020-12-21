@@ -10,6 +10,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     class VitricLootBox : LootChest
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
+
         internal override List<Loot> GoldLootPool
         {
             get => new List<Loot>

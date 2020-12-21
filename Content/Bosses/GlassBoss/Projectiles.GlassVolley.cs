@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class GlassVolley : ModProjectile, IDrawAdditive
     {
         //public override string Texture => Directory.Invisible;
-        public override string Texture => Directory.GlassBossDir + "VolleyTell";
+        public override string Texture => Directory.GlassBoss + "VolleyTell";
 
 
         public override void SetDefaults()
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     public class GlassVolleyShard : ModProjectile
     {
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override void SetDefaults()
         {

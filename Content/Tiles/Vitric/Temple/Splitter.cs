@@ -10,6 +10,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class Splitter : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -19,6 +25,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class SplitterItem : QuickTileItem
     {
-        public SplitterItem() : base("Light Splitter", "", TileType<Splitter>(), 0) { }
+        public SplitterItem() : base("Light Splitter", "", TileType<Splitter>(), 0, Directory.VitricTile) { }
     }
 }

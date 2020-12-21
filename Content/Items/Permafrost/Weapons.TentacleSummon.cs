@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     public class TentacleSummon : ModItem
     {
-        public override string Texture => Directory.PermafrostItemDir + "TentacleSummon";
+        public override string Texture => Directory.PermafrostItem + "TentacleSummon";
 
         public override void SetDefaults()
         {

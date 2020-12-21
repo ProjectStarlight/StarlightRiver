@@ -32,8 +32,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
     }
     internal class VitricSandItem : QuickTileItem { public VitricSandItem() : base("Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { } }*/
 
-    internal class VitricSandWall : ModWall { public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); }
+    internal class VitricSandWall : ModWall {
+        public override bool Autoload(ref string name, ref string texture)  {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture); }
+        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); }
 
-    internal class VitricSandWallItem : QuickWallItem { public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0) { } }
+    internal class VitricSandWallItem : QuickWallItem { public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0, Directory.VitricTile) { } }
 }
 

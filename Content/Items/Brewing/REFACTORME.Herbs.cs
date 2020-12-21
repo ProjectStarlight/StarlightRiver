@@ -10,21 +10,17 @@ namespace StarlightRiver.Items.Herbology.Materials
 {
     public class Ivy : QuickMaterial
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Ivy";
-
-        public Ivy() : base("Forest Ivy", "A common, yet versatile herb", 999, 100, 1) { }
+        public Ivy() : base("Forest Ivy", "A common, yet versatile herb", 999, 100, 1, Directory.BrewingItem) { }
     }
 
     public class IvySeeds : QuickMaterial
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/IvySeeds";
-
-        public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1) { }
+        public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1, Directory.BrewingItem) { }
     }
 
     public class ForestBerries : ModItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/ForestBerries";
+        public override string Texture => Directory.BrewingItem + Name;
 
         public override void SetDefaults()
         {
@@ -49,14 +45,12 @@ namespace StarlightRiver.Items.Herbology.Materials
 
     public class BerryBush : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/BerryBusy";
-
-        public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<Tiles.Herbology.ForestBerryBush>(), 1) { }
+        public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<Tiles.Herbology.ForestBerryBush>(), 1, Directory.BrewingItem) { }
     }
 
     public class Deathstalk : ModItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/Deathstalk";
+        public override string Texture => Directory.BrewingItem + Name;
 
         public override void SetStaticDefaults()
         {

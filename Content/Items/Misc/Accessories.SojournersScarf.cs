@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class SojournersScarf : SmartAccessory, IChestItem
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public SojournersScarf() : base("Sojourner's Scarf", "20% increased max movement speed, with halved life regeneration while stationary") { }
 
         public override bool Autoload(ref string name)

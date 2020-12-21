@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + "TorchOvergrow";
+            texture = Directory.OvergrowTile + "TorchOvergrow";
             return true;
         }
 
@@ -34,14 +34,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class TorchOvergrowItem : QuickTileItem
     {
-        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", TileType<TorchOvergrow>(), 0, Directory.OvergrowTileDir + "TorchOvergrowItem") { }
+        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", TileType<TorchOvergrow>(), 0, Directory.OvergrowTile + "TorchOvergrowItem") { }
     }
 
     internal class BlueTorchOvergrow : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + "BlueTorchOvergrow";
+            texture = Directory.OvergrowTile + "BlueTorchOvergrow";
             return true;
         }
 
@@ -60,6 +60,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class BlueTorchOvergrowItem : QuickTileItem
     {
-        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", TileType<BlueTorchOvergrow>(), 0, Directory.OvergrowTileDir + "BlueTorchOvergrowItem") { }
+        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", TileType<BlueTorchOvergrow>(), 0, Directory.OvergrowTile + "BlueTorchOvergrowItem") { }
     }
 }

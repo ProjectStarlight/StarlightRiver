@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc
     [AutoloadEquip(EquipType.Shoes)]
     public class PulseBoots : SmartAccessory
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public PulseBoots() : base("Pulse Boots", "Rocket Power!") { }
 
         private bool doubleJumped = false;

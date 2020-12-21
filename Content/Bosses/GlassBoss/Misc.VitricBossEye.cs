@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (Parent == null) 
                 return;
-            Texture2D tex = GetTexture(Directory.GlassBossDir + "VitricBossEye");
+            Texture2D tex = GetTexture(Directory.GlassBoss + "VitricBossEye");
             float rot = (Parent.npc.position + Position - Main.player[Parent.npc.target].Center).ToRotation();
             if (Parent.npc.target >= 200) 
                 rot = 0;

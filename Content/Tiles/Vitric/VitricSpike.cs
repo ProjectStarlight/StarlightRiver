@@ -4,14 +4,18 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricSpike : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -77,6 +81,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricSpikeItem : QuickTileItem
     {
-        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0) { }
+        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0, Directory.VitricItem + "VitricSpikeItem") { }
     }
 }

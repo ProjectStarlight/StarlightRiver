@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         #region tml hooks
 

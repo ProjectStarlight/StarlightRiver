@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricSword : ModItem
     {
-        public override string Texture => Directory.VitricItemDir + Name;
+        public override string Texture => Directory.VitricItem + Name;
 
 
         public bool Broken = false;

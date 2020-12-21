@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vitric
     [AutoloadEquip(EquipType.Head)]
     public class VitricHead : ModItem
     {
-        public override string Texture => Directory.VitricItemDir + Name;
+        public override string Texture => Directory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
     [AutoloadEquip(EquipType.Body)]
     public class VitricChest : ModItem
     {
-        public override string Texture => Directory.VitricItemDir + Name;
+        public override string Texture => Directory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Vitric
     [AutoloadEquip(EquipType.Legs)]
     public class VitricLegs : ModItem
     {
-        public override string Texture => Directory.VitricItemDir + Name;
+        public override string Texture => Directory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {

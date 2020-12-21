@@ -2,7 +2,6 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 
@@ -10,9 +9,7 @@ namespace StarlightRiver.Items.Crafting
 {
     public class OvenItem : QuickTileItem
     {
-        public OvenItem() : base("Oven", "Used to bake items", TileType<Tiles.Crafting.Oven>(), 0)
-        {
-        }
+        public OvenItem() : base("Oven", "Used to bake items", TileType<Tiles.Crafting.Oven>(), 0) { }
 
         public override void AddRecipes()
         {

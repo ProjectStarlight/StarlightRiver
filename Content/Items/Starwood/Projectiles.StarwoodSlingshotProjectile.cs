@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodSlingshotProjectile : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.StarwoodItemDir + Name;
+        public override string Texture => Directory.StarwoodItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shooting Star");
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Starwood
             for (int k = 0; k < 35; k++)
                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.2f) * ScaleMult), 0, default, 1.5f); }
 
-        private Texture2D GlowingTrail => GetTexture(Directory.StarwoodItemDir + "StarwoodSlingshotGlowTrail");
+        private Texture2D GlowingTrail => GetTexture(Directory.StarwoodItem + "StarwoodSlingshotGlowTrail");
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture(Texture);
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
     class StarwoodSlingshotFragment : ModProjectile
     {
-        public override string Texture => Directory.StarwoodItemDir + Name;
+        public override string Texture => Directory.StarwoodItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Star Fragment");

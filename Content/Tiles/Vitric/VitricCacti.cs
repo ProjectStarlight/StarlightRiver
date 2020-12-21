@@ -15,6 +15,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     public class VitricRoundCactus : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
@@ -29,6 +35,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     public class VitricSmallCactus : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
@@ -45,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override Texture2D GetTexture()
         {
-            return ModContent.GetTexture("StarlightRiver/Assets/Tiles/Vitric/VitricCactus");
+            return ModContent.GetTexture(Directory.VitricTile + "VitricCactus");
         }
     }
 }

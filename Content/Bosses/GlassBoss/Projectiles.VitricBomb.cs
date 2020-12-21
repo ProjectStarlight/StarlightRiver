@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     class VitricBomb : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override void SetDefaults()
         {
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex2 = GetTexture(Directory.GlassBossDir + "BombTell");
+            Texture2D tex2 = GetTexture(Directory.GlassBoss + "BombTell");
 
             float bright = (300 - projectile.timeLeft) / 300f * 0.9f;
             if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.1f;

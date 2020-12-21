@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
+            texture = Directory.Invisible;
             return true;
         }
 

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + "SetpieceAltar";
+            texture = Directory.OvergrowTile + "SetpieceAltar";
             return true;
         }
 

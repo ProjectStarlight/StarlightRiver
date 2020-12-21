@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class FlareBreacher : ModItem
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;

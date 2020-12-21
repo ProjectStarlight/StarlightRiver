@@ -9,20 +9,23 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Tiles.Overgrow;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     public class AncientSandstoneTorchItem : QuickTileItem
     {
-        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0)
-        {
-        }
-
-        public override string Texture => Directory.Debug;
+        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, Directory.Debug, true) { }
     }
 
     internal class AncientSandstoneTorch : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+        
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;
@@ -30,22 +33,24 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             TileID.Sets.FramesOnKillWall[Type] = true;
 
-            drop = mod.ItemType("TorchOvergrowItem");
+            drop = ItemType<TorchOvergrowItem>();
             dustType = mod.DustType("Air");
             AddMapEntry(new Color(115, 182, 158));
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+                return;
             Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(125, 162, 158) * 0.003f);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) return;
-            Texture2D tex = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
-            Texture2D tex2 = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+                return;
+            Texture2D tex = GetTexture(Directory.RiftCrafting + "Glow0");
+            Texture2D tex2 = GetTexture(Directory.RiftCrafting + "Glow1");
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive);

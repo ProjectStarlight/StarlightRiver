@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     public class GlassSpike : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override void SetDefaults()
         {

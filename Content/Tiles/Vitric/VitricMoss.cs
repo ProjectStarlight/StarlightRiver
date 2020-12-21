@@ -5,14 +5,18 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricMoss : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 0, DustType<Dusts.GlassNoGravity>(), SoundID.Dig, new Color(190, 255, 245), ItemID.Eggnog);
@@ -35,7 +39,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 {
                     int tileX = i + x1;
                     int tileY = j + y;
-                    if (!WorldGen.InWorld(i, j, 0)) continue;
+                    if (!WorldGen.InWorld(i, j, 0)) 
+                        continue;
                     if (Main.tile[tileX, tileY].type == (ushort)mod.TileType("VitricSand") && Main.rand.Next(3) == 0)
                     {
                         Main.tile[tileX, tileY].type = (ushort)TileType<VitricMoss>();
@@ -61,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Texture2D moss = GetTexture("StarlightRiver/Assets/Tiles/Vitric/Blocks/VitricMoss_Glow");
+            Texture2D moss = GetTexture(Directory.VitricTile + "VitricMoss_Glow");
             Tile t = Main.tile[i, j];
             Color col = Lighting.GetColor(i, j);
             Color realCol = new Color(((col.R / 255f) * 1.4f) + 0.1f, ((col.G / 255f) * 1.4f) + 0.1f, ((col.B / 255f) * 1.4f) + 0.1f);

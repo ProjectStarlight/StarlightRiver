@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Palestone
 {
     public class PalestoneHammer : ModItem
     {
-        public override string Texture => Directory.PalestoneItemDir + "PalestoneHammer";
+        public override string Texture => Directory.PalestoneItem + "PalestoneHammer";
 
         public override void SetStaticDefaults()
         {

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Overgrow
     [AutoloadEquip(EquipType.Head)]
     public class OvergrowHead : ModItem
     {
-        public override string Texture => Directory.OvergrowItemDir + "OvergrowHead";
+        public override string Texture => Directory.OvergrowItem + "OvergrowHead";
 
         public override void SetStaticDefaults()
         {
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Overgrow
     [AutoloadEquip(EquipType.Body)]
     public class OvergrowChest : ModItem
     {
-        public override string Texture => Directory.OvergrowItemDir + "OvergrowChest";
+        public override string Texture => Directory.OvergrowItem + "OvergrowChest";
 
         public int floatTime = 0;
 
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Overgrow
     [AutoloadEquip(EquipType.Body)]
     public class OvergrowRobe : ModItem
     {
-        public override string Texture => Directory.OvergrowItemDir + "OvergrowRobe";
+        public override string Texture => Directory.OvergrowItem + "OvergrowRobe";
 
         public int leaves = 0;
 
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Items.Overgrow
     [AutoloadEquip(EquipType.Legs)]
     public class OvergrowLegs : ModItem
     {
-        public override string Texture => Directory.OvergrowItemDir + "OvergrowLegs";
+        public override string Texture => Directory.OvergrowItem + "OvergrowLegs";
 
         public override void SetStaticDefaults()
         {

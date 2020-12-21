@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
-
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Core
@@ -23,6 +24,8 @@ namespace StarlightRiver.Core
         }
 
         public virtual bool ValidTile(Tile tile) => tile.type == ValidType;
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
 
         public override string Texture => Directory.Invisible;
 

@@ -7,8 +7,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Bosses.GlassBoss;
 using StarlightRiver.Helpers;
 
@@ -16,6 +14,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricBossAltar : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override int DummyType => ProjectileType<VitricBossAltarDummy>();
 
         public override bool SpawnConditions(int i, int j)
@@ -26,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            (this).QuickSetFurniture(5, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
+            (this).QuickSetFurniture(5, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
             minPick = int.MaxValue;
         }
 
@@ -140,13 +144,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             else if (parent.frameX < 90)
             {
-                Texture2D glow = GetTexture("StarlightRiver/Assets/Tiles/Vitric/VitricBossAltarGlow");
+                Texture2D glow = GetTexture(Directory.VitricTile + "VitricBossAltarGlow");
                 spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(3, -1), glow.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, Vector2.Zero, 1, 0, 0);
             }
 
             //Barriers
             Vector2 center = projectile.Center + new Vector2(0, 56);
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricBossBarrier");
+            Texture2D tex = GetTexture(Directory.GlassBoss + "VitricBossBarrier");
             Color color = new Color(180, 225, 255);
             int off = (int)(projectile.ai[0] / 120f * tex.Height);
 

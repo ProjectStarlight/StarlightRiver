@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class BossSpikeSmall : ModProjectile
     {
         //public override string Texture => Directory.Invisible;
-        public override string Texture => Directory.GlassBossDir + "BossSpike";
+        public override string Texture => Directory.GlassBoss + "BossSpike";
 
         public override void SetDefaults()
         {

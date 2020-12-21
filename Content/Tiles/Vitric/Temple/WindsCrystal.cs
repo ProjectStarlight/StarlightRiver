@@ -5,8 +5,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items;
 
@@ -14,6 +12,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class WindsCrystal : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override int DummyType => ProjectileType<WindsCrystalDummy>();
 
         public override void SetDefaults()
@@ -26,6 +30,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class WindsCrystalDestroyed : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
+
         public override void SetDefaults()
         {
             //minPick = int.MaxValue;
@@ -58,8 +69,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class WindsCrystalItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
-
-        public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1) { }
+        public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1, Directory.Debug, true) { }
     }
 }

@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumBullet : ModItem
     {
-        public override string Texture => Directory.AluminumItemDir + "AluminumBullet";
+        public override string Texture => Directory.AluminumItem + "AluminumBullet";
 
         public override void SetStaticDefaults()
         {

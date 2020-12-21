@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class ArenaBottom : ModNPC
     {
         public VitricBoss Parent;
-        public override string Texture => Directory.GlassBossDir + "CrystalWave";
+        public override string Texture => Directory.GlassBoss + "CrystalWave";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         private float startY;
 
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override void SetDefaults()
         {

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Slime
 {
     public class SlimeStaff : ModItem
     {
-        public override string Texture => Directory.SlimeItemDir + Name;
+        public override string Texture => Directory.SlimeItem + Name;
 
         public override void SetStaticDefaults()
         {

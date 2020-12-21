@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TempleRune : SmartAccessory
     {
-        public override string Texture => Directory.CaveTempleItemDir + Name;
+        public override string Texture => Directory.CaveTempleItem + Name;
 
         private int RuneTimer;
         public TempleRune() : base("Rune of Warding", "Periodically provides +5 Defense") { }

@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Slime
 {
     public class SlimeItem : QuickMaterial
     {
-        public override string Texture => Directory.SlimeItemDir + Name;
+        public override string Texture => Directory.SlimeItem + Name;
         public SlimeItem() : base("Slime glob", "sticks to your hands", 999, Item.sellPrice(0, 0, 0, 2), ItemRarityID.Green) { }
     }
 }

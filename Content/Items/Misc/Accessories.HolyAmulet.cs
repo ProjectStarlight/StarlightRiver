@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class HolyAmulet : SmartAccessory
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public HolyAmulet() : base("Holy Amulet", "It's obviously not done, being lazy sry") { }
 
         public override bool Autoload(ref string name)

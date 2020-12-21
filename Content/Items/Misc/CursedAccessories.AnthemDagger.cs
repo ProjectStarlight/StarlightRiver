@@ -9,8 +9,8 @@ namespace StarlightRiver.Content.Items.Misc
 {
     internal class AnthemDagger : CursedAccessory
     {
-        public override string Texture => Directory.MiscItemDir + Name;
-        public AnthemDagger() : base(GetTexture(Directory.MiscItemDir + "AnthemDaggerGlow")) { }
+        public override string Texture => Directory.MiscItem + Name;
+        public AnthemDagger() : base(GetTexture(Directory.MiscItem + "AnthemDaggerGlow")) { }
 
         public override void SetStaticDefaults()
         {

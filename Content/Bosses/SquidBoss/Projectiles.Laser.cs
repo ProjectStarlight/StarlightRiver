@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class Laser : InteractiveProjectile, IUnderwater
     {
-        public override string Texture => Directory.SquidBossDir + Name;
+        public override string Texture => Directory.SquidBoss + Name;
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;

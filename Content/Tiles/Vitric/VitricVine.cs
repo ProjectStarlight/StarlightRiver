@@ -12,6 +12,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricVine : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = false;

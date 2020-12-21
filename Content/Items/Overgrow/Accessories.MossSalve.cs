@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
     internal class MossSalve : SmartAccessory
     {
-        public override string Texture => Directory.OvergrowItemDir + "MossSalve";
+        public override string Texture => Directory.OvergrowItem + "MossSalve";
 
         public MossSalve() : base("Moss Salve", "Health potions grant a short regeneration effect") { }
 

@@ -5,14 +5,19 @@ using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricOre : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override int DummyType => ProjectileType<VitricOreDummy>();
         public override void SetDefaults()
         {
@@ -24,6 +29,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricOreFloat : DummyTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override int DummyType => ProjectileType<VitricOreFloatDummy>();
         public override void SetDefaults()
         {
@@ -51,9 +62,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
+        public override string Texture => Directory.VitricTile + "VitricOreGlow";
+
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/VitricOreGlow");
+            Texture2D tex = Main.npcTexture[projectile.type];
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
@@ -78,9 +91,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
+        public override string Texture => Directory.VitricTile + "VitricOreFloatGlow";
+
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/VitricOreFloatGlow");
+            Texture2D tex = Main.npcTexture[projectile.type];
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);

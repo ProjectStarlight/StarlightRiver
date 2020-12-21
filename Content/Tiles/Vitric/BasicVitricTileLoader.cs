@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     class BasicVitricTileLoader : TileLoader
     {
-        public override string AssetRoot => Directory.VitricTileDir;
+        public override string AssetRoot => Directory.VitricTile;
 
         public override void Load()
         {

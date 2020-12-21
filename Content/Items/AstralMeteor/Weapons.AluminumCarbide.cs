@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
     {
         float spinup = 0;
 
-        public override string Texture => Directory.AluminumItemDir + "AluminumCarbide";
+        public override string Texture => Directory.AluminumItem + "AluminumCarbide";
 
         public override void SetStaticDefaults()
         {

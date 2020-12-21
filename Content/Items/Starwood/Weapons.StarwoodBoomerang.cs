@@ -8,8 +8,8 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     public class StarwoodBoomerang : StarwoodItem
     {
-        public override string Texture => Directory.StarwoodItemDir + Name;
-        public StarwoodBoomerang() : base(ModContent.GetTexture(Directory.StarwoodItemDir + "StarwoodBoomerang_Alt")) { }
+        public override string Texture => Directory.StarwoodItem + Name;
+        public StarwoodBoomerang() : base(ModContent.GetTexture(Directory.StarwoodItem + "StarwoodBoomerang_Alt")) { }
 
         public override void SetStaticDefaults()
         {

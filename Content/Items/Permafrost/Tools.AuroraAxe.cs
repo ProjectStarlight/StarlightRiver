@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         float charge = 0;
         bool charged = false;
 
-        public override string Texture => Directory.PermafrostItemDir + "AuroraAxe";
+        public override string Texture => Directory.PermafrostItem + "AuroraAxe";
 
         public override void SetStaticDefaults()
         {

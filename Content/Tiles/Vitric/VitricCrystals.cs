@@ -12,11 +12,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricLargeCrystal : ModTile
     {
+
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
-            return true;
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
         }
+
 
         public override void SetDefaults()
         {
@@ -28,34 +30,30 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
         }
 
-        public override bool CanExplode(int i, int j)
-        {
-            return false;
-        }
+        public override bool CanExplode(int i, int j) => false;
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile t = Main.tile[i, j];
             if (t.frameX > 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/LargeCrystal");
+                Texture2D tex = Main.tileTexture[Type];
                 spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(80, 176), 1, 0, 0);
                 //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }
         }
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-        {
-            fail = true;
-        }
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => fail = true;
     }
 
     internal class VitricSmallCrystal : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
-            return true;
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
         }
 
         public override void SetDefaults()
@@ -68,22 +66,18 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
         }
 
-        public override bool CanExplode(int i, int j)
-        {
-            return false;
-        }
+        public override bool CanExplode(int i, int j) => false;
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-        {
-            fail = true;
-        }
+        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => fail = true;
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile t = Main.tile[i, j];
             if (t.frameX > 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/SmallCrystal");
+                Texture2D tex = Main.tileTexture[Type];
                 spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(32, 48), 1, 0, 0);
                 //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }

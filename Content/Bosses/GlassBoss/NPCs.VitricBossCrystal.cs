@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public Vector2 TargetPos;
         public VitricBoss Parent;
 
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override bool CheckActive() => npc.ai[2] == 4;
 

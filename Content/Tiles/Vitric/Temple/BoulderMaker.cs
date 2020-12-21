@@ -12,6 +12,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class BoulderMaker : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -28,17 +34,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class BoulderMakerItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
-
-        public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1) { }
+        public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1, Directory.Debug, true) { }
     }
 
     class Boulder : ModNPC
     {
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Temple Boulder");
-        }
+        public override string Texture => Directory.VitricTile + Name;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Temple Boulder");
 
         public override void SetDefaults()
         {

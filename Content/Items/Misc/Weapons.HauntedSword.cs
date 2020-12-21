@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     class HauntedSword : ModItem
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public override bool Autoload(ref string name) => false; //TODO: implement
 
         //private int charge = 0;//unused

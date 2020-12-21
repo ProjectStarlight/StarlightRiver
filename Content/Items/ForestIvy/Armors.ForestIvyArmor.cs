@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
     [AutoloadEquip(EquipType.Head)]
     public class ForestIvyHead : ModItem
     {
-        public override string Texture => Directory.IvyItemDir + "ForestIvyHead";
+        public override string Texture => Directory.IvyItem + "ForestIvyHead";
 
         public override void SetStaticDefaults()
         {
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
     [AutoloadEquip(EquipType.Body)]
     public class ForestIvyChest : ModItem
     {
-        public override string Texture => Directory.IvyItemDir + "ForestIvyChest";
+        public override string Texture => Directory.IvyItem + "ForestIvyChest";
 
         public override void SetStaticDefaults()
         {
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
     [AutoloadEquip(EquipType.Legs)]
     public class ForestIvyLegs : ModItem
     {
-        public override string Texture => Directory.IvyItemDir + "ForestIvyLegs";
+        public override string Texture => Directory.IvyItem + "ForestIvyLegs";
 
         public override void SetStaticDefaults()
         {

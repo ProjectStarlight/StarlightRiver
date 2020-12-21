@@ -1,6 +1,5 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
-
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items
@@ -12,15 +11,21 @@ namespace StarlightRiver.Content.Items
         private readonly int Maxstack;
         private readonly int Value;
         private readonly int Rare;
+        private readonly string TexturePath;
+        private readonly bool PathHasName;
 
-        protected QuickMaterial(string name, string tooltip, int maxstack, int value, int rare)
+        protected QuickMaterial(string name, string tooltip, int maxstack, int value, int rare, string texturePath = null, bool pathHasName = false)
         {
             Matname = name;
             Mattooltip = tooltip;
             Maxstack = maxstack;
             Value = value;
             Rare = rare;
+            TexturePath = texturePath;
+            PathHasName = pathHasName;
         }
+
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? Name : string.Empty);
 
         public override void SetStaticDefaults()
         {
@@ -44,18 +49,20 @@ namespace StarlightRiver.Content.Items
         public string Itemtooltip;
         private readonly int Tiletype;
         private readonly int Rare;
-        private readonly string texturePath;
+        private readonly string TexturePath;
+        private readonly bool PathHasName;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare, string texturePath = "")
+        public QuickTileItem(string name, string tooltip, int placetype, int rare, string texturePath = null, bool pathHasName = false)
         {
             Itemname = name;
             Itemtooltip = tooltip;
             Tiletype = placetype;
             Rare = rare;
-            this.texturePath = texturePath;
+            TexturePath = texturePath;
+            PathHasName = pathHasName;
         }
 
-        public override string Texture => texturePath == "" ? base.Texture : texturePath;
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (!PathHasName ? string.Empty : Name);
 
         public virtual void SafeSetDefaults() { }
 
@@ -89,14 +96,21 @@ namespace StarlightRiver.Content.Items
         public string Itemtooltip;
         private readonly int Walltype;
         private readonly int Rare;
+        private readonly string TexturePath;
+        private readonly bool PathHasName;
 
-        protected QuickWallItem(string name, string tooltip, int placetype, int rare)
+        protected QuickWallItem(string name, string tooltip, int placetype, int rare, string texturePath = null, bool pathHasName = false)
         {
             Itemname = name;
             Itemtooltip = tooltip;
             Walltype = placetype;
             Rare = rare;
+            TexturePath = texturePath;
+            PathHasName = pathHasName;
         }
+
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (!PathHasName ? string.Empty : Name);
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault(Itemname);

@@ -5,8 +5,6 @@ using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Abilities;
 
@@ -18,9 +16,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
+            texture = Directory.Invisible;
             return true;
         }
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
         public override void SetDefaults()
         {
@@ -44,15 +44,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             Player player = Main.LocalPlayer;
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
         }
     }
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
-
-        public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1) { }
+        public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1, Directory.Debug, true) { }
     }
 
     class TutorialDoor2 : DummyTile
@@ -61,15 +59,17 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
+            texture = Directory.Invisible;
             return true;
         }
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(2, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
+            (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
     }
 
@@ -94,16 +94,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Player player = Main.LocalPlayer;
-            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Vitric/Temple/TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) 
+                return;
+            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
         }
     }
 
     class TutorialDoor2Item : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
-
-        public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1) { }
+        public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1, Directory.Debug, true) { }
     }
 }

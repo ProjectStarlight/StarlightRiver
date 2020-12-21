@@ -11,6 +11,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class EntranceDoor : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -30,6 +36,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => Directory.Debug;
 
-        public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1) { }
+        public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1, Directory.VitricTile) { }
     }
 }

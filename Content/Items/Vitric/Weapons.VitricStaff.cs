@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricStaff : ModItem
     {
-        public override string Texture => Directory.VitricItemDir + Name;
+        public override string Texture => Directory.VitricItem + Name;
 
         public override void SetDefaults()
         {

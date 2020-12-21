@@ -11,6 +11,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     class ForgeDoor : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -27,8 +33,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class ForgeDoorItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
-
-        public ForgeDoorItem() : base("Forge Door", "Titties", TileType<ForgeDoor>(), 1) { }
+        public ForgeDoorItem() : base("Forge Door", "Titties", TileType<ForgeDoor>(), 1, Directory.Debug, true) { }
     }
 }

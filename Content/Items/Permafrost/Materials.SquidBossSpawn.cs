@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     public class SquidBossSpawn : ModItem
     {
-        public override string Texture => Directory.PermafrostItemDir + "SquidBossSpawn";
+        public override string Texture => Directory.PermafrostItem + "SquidBossSpawn";
 
         public override void SetStaticDefaults()
         {

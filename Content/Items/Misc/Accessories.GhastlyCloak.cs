@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class GhastlyCloak : SmartAccessory
     {
-        public override string Texture => Directory.MiscItemDir + Name;
+        public override string Texture => Directory.MiscItem + Name;
         public GhastlyCloak() : base("Ghastly Cloak", "Avoiding damage cloaks you, increasing most stats.") { }
 
         public override void SafeUpdateEquip(Player player)

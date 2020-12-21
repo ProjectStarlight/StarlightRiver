@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class RuneStaff : ModItem
     {
-        public override string Texture => Directory.CaveTempleItemDir + Name;
+        public override string Texture => Directory.CaveTempleItem + Name;
 
         int charge = 0;
 

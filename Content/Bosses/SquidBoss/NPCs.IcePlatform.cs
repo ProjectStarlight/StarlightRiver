@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class IcePlatform : MovingPlatform
     {
-        public override string Texture => Directory.SquidBossDir + Name;
+        public override string Texture => Directory.SquidBoss + Name;
         public override void SafeSetDefaults()
         {
             npc.width = 200;
@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
     class IcePlatformSmall : MovingPlatform, IUnderwater
     {
-        public override string Texture => Directory.SquidBossDir + Name;
+        public override string Texture => Directory.SquidBoss + Name;
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
     class GoldPlatform : MovingPlatform, IUnderwater
     {
-        public override string Texture => Directory.SquidBossDir + Name;
+        public override string Texture => Directory.SquidBoss + Name;
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
         public void DrawUnderWater(SpriteBatch spriteBatch)

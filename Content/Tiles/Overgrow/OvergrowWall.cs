@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + "WallOvergrowGrass";
+            texture = Directory.OvergrowTile + "WallOvergrowGrass";
             return true;
         }
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTileDir + name;
+            texture = Directory.OvergrowTile + name;
             return true;
         }
 
@@ -64,13 +64,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class WallOvergrowBrickItem : QuickWallItem
     {
-        public override string Texture => Directory.OvergrowTileDir + Name;
+        public override string Texture => Directory.OvergrowTile + Name;
         public WallOvergrowBrickItem() : base("Overgrow Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { } 
     }
 
     public class WallOvergrowGrassItem : QuickWallItem
     {
-        public override string Texture => Directory.OvergrowTileDir + Name;
+        public override string Texture => Directory.OvergrowTile + Name;
         public WallOvergrowGrassItem() : base("Overgrow Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { } 
     }
 }

@@ -13,6 +13,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     internal class VitricRock : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileCut[Type] = true;

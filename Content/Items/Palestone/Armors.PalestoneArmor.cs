@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Head)]
     public class PalestoneHead : ModItem
     {
-        public override string Texture => Directory.PalestoneItemDir + "PalestoneHead";
+        public override string Texture => Directory.PalestoneItem + "PalestoneHead";
 
         public override void SetStaticDefaults()
         {
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Body)]
     public class PalestoneChest : ModItem
     {
-        public override string Texture => Directory.PalestoneItemDir + "PalestoneChest";
+        public override string Texture => Directory.PalestoneItem + "PalestoneChest";
 
         public override void SetStaticDefaults()
         {
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Legs)]
     public class PalestoneLegs : ModItem
     {
-        public override string Texture => Directory.PalestoneItemDir + "PalestoneLegs";
+        public override string Texture => Directory.PalestoneItem + "PalestoneLegs";
 
         public override void SetStaticDefaults()
         {

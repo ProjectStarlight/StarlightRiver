@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
 
-        public override string Texture => Directory.GlassBossDir + Name;
+        public override string Texture => Directory.GlassBoss + Name;
 
         public override bool CheckActive() => false;
 

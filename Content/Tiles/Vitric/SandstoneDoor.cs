@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Invisible";
-            return true;
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
         }
 
         public override void SetDefaults() => (this).QuickSetFurniture(8, 2, DustID.Stone, SoundID.Tink, false, new Color(130, 85, 45));
@@ -27,11 +27,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
             else Main.tileSolid[Type] = true;
         }
 
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
+
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Vitric/SandstoneDoor");
+                Texture2D tex = Main.tileTexture[Type];
                 Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
                 int off = StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 46 : 0;
                 spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawColor, 0, Vector2.Zero, 1, 0, 0);

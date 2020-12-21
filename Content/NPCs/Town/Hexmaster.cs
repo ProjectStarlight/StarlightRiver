@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.NPCs.Town
     [AutoloadHead]
     public class Hexmaster : ModNPC
     {
-        public override string Texture => Directory.TownNPCDir + "Hexmaster";
+        public override string Texture => Directory.TownNPC + "Hexmaster";
 
         public override bool Autoload(ref string name)
         {

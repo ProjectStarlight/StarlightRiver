@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
     class StarSniper : ModItem
     {
-        public override string Texture => Directory.AluminumItemDir + "StarSniper";
+        public override string Texture => Directory.AluminumItem + "StarSniper";
 
         public override void SetDefaults()
         {
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     class StarSniperBolt : ModProjectile
     {
-        public override string Texture => Directory.AluminumItemDir + "StarSniperBolt";
+        public override string Texture => Directory.AluminumItem + "StarSniperBolt";
 
         public override void SetDefaults()
         {
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     class StarSniperAura : ModProjectile
     {
-        public override string Texture => Directory.AluminumItemDir + "StarSniperAura";
+        public override string Texture => Directory.AluminumItem + "StarSniperAura";
 
         public override void SetDefaults()
         {

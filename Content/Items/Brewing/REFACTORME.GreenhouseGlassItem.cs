@@ -9,11 +9,7 @@ namespace StarlightRiver.Items.Herbology
 {
     public class GreenhouseGlassItem : QuickTileItem
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Brewing/GreenhouseGlassItems";
-
-        public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth the plant below it\nNeeds a clear area above it", TileType<Tiles.Herbology.GreenhouseGlass>(), 1)
-        {
-        }
+        public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth the plant below it\nNeeds a clear area above it", TileType<Tiles.Herbology.GreenhouseGlass>(), 1, Directory.BrewingItem) { }
 
         public override void AddRecipes()
         {

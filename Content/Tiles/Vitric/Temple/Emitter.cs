@@ -3,7 +3,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 
@@ -11,6 +10,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class Emitter : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
@@ -47,6 +52,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class EmitterItem : QuickTileItem
     {
-        public EmitterItem() : base("Light Emitter", "", TileType<Emitter>(), 1) { }
+        public EmitterItem() : base("Light Emitter", "", TileType<Emitter>(), 1, Directory.VitricTile) { }
     }
 }

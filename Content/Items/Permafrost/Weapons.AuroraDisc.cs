@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     class AuroraDisc : ModItem
     {
-        public override string Texture => Directory.PermafrostItemDir + "AuroraDisc";
+        public override string Texture => Directory.PermafrostItem + "AuroraDisc";
 
         public override void SetStaticDefaults()
         {

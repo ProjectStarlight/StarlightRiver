@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
     internal class VineWhip : ModItem
     {
-        public override string Texture => Directory.OvergrowItemDir + "VineWhip";
+        public override string Texture => Directory.OvergrowItem + "VineWhip";
 
         public override void SetStaticDefaults()
         {
