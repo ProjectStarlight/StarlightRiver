@@ -2,11 +2,11 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Decoration
+namespace StarlightRiver.Content.Tiles.Decoration
 {
     public class VineBanner : SplineBanner
     {
-        public VineBanner() : base("StarlightRiver/Tiles/Decoration/VineBanner") { }
+        public VineBanner() : base("StarlightRiver/Assets/Tiles/Decoration/VineBanner") { }
     }
 
     public class VineBannerItem : SplineBannerItem

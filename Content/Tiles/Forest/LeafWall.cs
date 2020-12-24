@@ -9,10 +9,16 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Tiles.Forest
+namespace StarlightRiver.Content.Tiles.Forest
 {
     public class LeafWall : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.ForestTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.wallHouse[Type] = false;
@@ -36,7 +42,7 @@ namespace StarlightRiver.Tiles.Forest
                 {
                     Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/Forest/LeafWallFlower");
                     spriteBatch.Draw(tex2, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 0.7f - Main.screenPosition,
-                        new Rectangle((i * j % 4) * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.04f, new Vector2(4, 4), 1, 0, 0);
+                        new Rectangle(i * j % 4 * 10, 0, 8, 8), Lighting.GetColor(i, j), offset + sin * 0.04f, new Vector2(4, 4), 1, 0, 0);
                 }
             }
         }

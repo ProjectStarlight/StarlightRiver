@@ -1,9 +1,9 @@
-﻿using StarlightRiver.Tiles.AshHell;
-using Terraria;
+﻿using Terraria;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.AshHell;
 
 namespace StarlightRiver.Core
 {

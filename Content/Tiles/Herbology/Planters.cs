@@ -9,10 +9,16 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Herbology
+namespace StarlightRiver.Content.Tiles.Herbology
 {
     internal class Soil : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
@@ -28,6 +34,12 @@ namespace StarlightRiver.Tiles.Herbology
 
     internal class Trellis : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
@@ -43,12 +55,18 @@ namespace StarlightRiver.Tiles.Herbology
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Herbology/Post"), new Vector2((i + 12) * 16, (j + 9) * 16) - (Main.screenPosition), Lighting.GetColor(i, j));
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Herbology/Post"), new Vector2((i + 12) * 16, (j + 9) * 16) - Main.screenPosition, Lighting.GetColor(i, j));
         }
     }
 
     public class Planter : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;
@@ -88,28 +106,30 @@ namespace StarlightRiver.Tiles.Herbology
         public override void RandomUpdate(int i, int j)
         {
             if (Main.tile[i, j + 1].active() == false)
-            {
                 switch (Main.tile[i, j].frameX / 18)
                 {
                     case 0: break;
                     case 1: WorldGen.PlaceTile(i, j + 1, mod.TileType("ForestIvy"), true); break;
                 }
-            }
         }
 
         public override bool NewRightClick(int i, int j)
         {
             Player player = Main.LocalPlayer;
             if (player.HeldItem.type == mod.ItemType("IvySeeds") && Main.tile[i, j].frameX == 0) //plants ivy
-            {
                 Main.tile[i, j].frameX = 18;
-            }
             return true;
         }
     }
 
     internal class GreenhouseWall : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.wallHouse[Type] = true;

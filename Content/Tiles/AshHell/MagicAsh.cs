@@ -7,13 +7,19 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 
-namespace StarlightRiver.Tiles.AshHell
+namespace StarlightRiver.Content.Tiles.AshHell
 {
     class MagicAsh : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.AshHellTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustID.Stone, SoundID.Dig, Color.White, ItemType<MagicAshItem>());
+            this.QuickSet(0, DustID.Stone, SoundID.Dig, Color.White, ItemType<MagicAshItem>());
         }
     }
 

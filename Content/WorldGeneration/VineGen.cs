@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Tiles.Decoration;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,6 +6,7 @@ using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Decoration;
 
 namespace StarlightRiver.Core
 {

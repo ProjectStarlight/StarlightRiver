@@ -81,6 +81,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricSpikeItem : QuickTileItem
     {
-        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0, Directory.VitricItem + "VitricSpikeItem") { }
+        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0, Directory.VitricTile) { }
     }
 }

@@ -4,9 +4,9 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Forest
+namespace StarlightRiver.Content.Tiles.Forest
 {
-    internal class PalestoneItem : Content.Items.QuickTileItem
+    internal class PalestoneItem : Items.QuickTileItem
     {
         public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0)
         {
@@ -15,6 +15,12 @@ namespace StarlightRiver.Tiles.Forest
 
     internal class Palestone : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.ForestTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;

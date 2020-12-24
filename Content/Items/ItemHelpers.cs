@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items
             PathHasName = pathHasName;
         }
 
-        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? Name : string.Empty);
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? string.Empty : Name);
 
         public override void SetStaticDefaults()
         {
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items
             PathHasName = pathHasName;
         }
 
-        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (!PathHasName ? string.Empty : Name);
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? string.Empty : Name);
 
         public virtual void SafeSetDefaults() { }
 
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items
             PathHasName = pathHasName;
         }
 
-        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (!PathHasName ? string.Empty : Name);
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? string.Empty : Name);
 
         public override void SetStaticDefaults()
         {

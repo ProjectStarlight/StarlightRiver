@@ -10,6 +10,7 @@ namespace StarlightRiver.Items.Overgrow
 {
     public class ExecutionersAxe : ModItem
     {
+        public override string Texture => Directory.OvergrowItem + Name;
 
         public override void SetStaticDefaults()
         {

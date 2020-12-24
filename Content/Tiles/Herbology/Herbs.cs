@@ -7,9 +7,9 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Herbology
+namespace StarlightRiver.Content.Tiles.Herbology
 {
-    internal class HangingPlant : ModTile
+    internal abstract class HangingPlant : ModTile
     {
         private readonly string ItemDrop;
 
@@ -20,7 +20,8 @@ namespace StarlightRiver.Tiles.Herbology
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            return GetType().IsSubclassOf(typeof(HangingPlant));
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
         }
 
         public override void SetDefaults()
@@ -44,13 +45,11 @@ namespace StarlightRiver.Tiles.Herbology
         public override void RandomUpdate(int i, int j)
         {
             if (Main.tile[i, j + 1].active() == false)
-            {
                 WorldGen.PlaceTile(i, j + 1, mod.TileType(Type.ToString()), true);
-            }
         }
     }
 
-    internal class TallPlant : ModTile
+    internal abstract class TallPlant : ModTile
     {
         private readonly string ItemDrop;
 
@@ -61,7 +60,8 @@ namespace StarlightRiver.Tiles.Herbology
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            return GetType().IsSubclassOf(typeof(HangingPlant));
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
         }
 
         public override void SetDefaults()
@@ -85,9 +85,7 @@ namespace StarlightRiver.Tiles.Herbology
         public override void RandomUpdate(int i, int j)
         {
             if (Main.tile[i, j - 1].active() == false)
-            {
                 WorldGen.PlaceTile(i, j - 1, mod.TileType(Type.ToString()));
-            }
         }
     }
 }

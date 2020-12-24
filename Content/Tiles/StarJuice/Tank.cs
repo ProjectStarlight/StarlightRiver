@@ -37,7 +37,7 @@ namespace StarlightRiver.Tiles.StarJuice
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 32, 32, ItemType<Items.Crafting.OvenItem>());
+            //Item.NewItem(i * 16, j * 16, 32, 32, ItemType<OvenItem>());
         }
 
         public override bool NewRightClick(int i, int j)

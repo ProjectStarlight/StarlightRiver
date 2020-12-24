@@ -81,5 +81,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassOvergrow>(), true);
         }
     }
-    internal class GrassOvergrowItem : QuickTileItem { public GrassOvergrowItem() : base("Overgrowth Grass", "They have a pulse...", ModContent.TileType<GrassOvergrow>(), 1, Directory.OvergrowTile + "GrassOvergrowItem") { } }
+    internal class GrassOvergrowItem : QuickTileItem { public GrassOvergrowItem() : base("Overgrowth Grass", "They have a pulse...", ModContent.TileType<GrassOvergrow>(), 1, Directory.OvergrowTile) { } }
 }

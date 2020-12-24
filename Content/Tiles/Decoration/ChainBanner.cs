@@ -2,11 +2,11 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Decoration
+namespace StarlightRiver.Content.Tiles.Decoration
 {
     public class ChainBanner : SplineBanner
     {
-        public ChainBanner() : base("StarlightRiver/Tiles/Decoration/ChainBanner") { }
+        public ChainBanner() : base("StarlightRiver/Assets/Tiles/Decoration/ChainBanner") { }
     }
 
     public class ChainBannerItem : SplineBannerItem

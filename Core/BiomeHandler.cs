@@ -2,7 +2,6 @@
 using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Tiles;
-using StarlightRiver.Tiles.AshHell;
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -17,6 +16,7 @@ using StarlightRiver.Content.Tiles.JungleCorrupt;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Tiles.AshHell;
 
 namespace StarlightRiver.Core
 {

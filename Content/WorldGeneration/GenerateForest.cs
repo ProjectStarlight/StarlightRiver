@@ -25,7 +25,7 @@ namespace StarlightRiver.Core
                         {
                             if (Main.tile[k, y].type == TileID.Grass && Main.tile[k + 1, y].type == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
-                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<Tiles.Herbology.ForestBerryBush>());
+                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<StarlightRiver.Content.Tiles.Herbology.ForestBerryBush>());
                                 k += 3;
                             }
                         }
@@ -83,13 +83,13 @@ namespace StarlightRiver.Core
                         int surface = 0;
 
                         for (int j = 50; j < Main.worldSurface; j++) //Wall Bushes
-                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<Tiles.Forest.LeafWall>()) { surface = j; break; }
+                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<StarlightRiver.Content.Tiles.Forest.LeafWall>()) { surface = j; break; }
 
                         int xOff = x > size / 2 ? size - x : x;
 
                         for (int y = surface - (xOff / 2 + WorldGen.genRand.Next(2)) - 3; true; y++)
                         {
-                            WorldGen.PlaceWall(k + x, y, WallType<Tiles.Forest.LeafWall>());
+                            WorldGen.PlaceWall(k + x, y, WallType<StarlightRiver.Content.Tiles.Forest.LeafWall>());
                             if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].wall != 0) break;
                         }
                     }
@@ -108,7 +108,7 @@ namespace StarlightRiver.Core
                 for (int y2 = y - xSqr; y2 < y + xSqr; y2++)
                 {
                     WorldGen.KillTile(x, y2);
-                    WorldGen.PlaceTile(x, y2, TileType<Tiles.Forest.Palestone>(), true, true); //Kills and places palestone
+                    WorldGen.PlaceTile(x, y2, TileType<StarlightRiver.Content.Tiles.Forest.Palestone>(), true, true); //Kills and places palestone
                     WorldGen.SlopeTile(x, y2);
 
                     if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].active()) //Slopes only if exposed to air

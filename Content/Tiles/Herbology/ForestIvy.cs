@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Tiles.Herbology;
 
 namespace StarlightRiver.Tiles.Herbology
 {
@@ -24,6 +25,12 @@ namespace StarlightRiver.Tiles.Herbology
 
     public class ForestIvyWild : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileCut[Type] = true;

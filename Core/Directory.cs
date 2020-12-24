@@ -58,6 +58,24 @@ namespace StarlightRiver.Core
         public const string IvyItem =               Assets + "Items/ForestIvy/";
         public const string MiscItem =              Assets + "Items/Misc/";
 
+        public const string CraftingTile =          Assets + "Tiles/Crafting/";
+
+        public const string AshHellTile =           Assets + "Tiles/AshHell/";
+
+        public const string CookingTile =           Assets + "Tiles/Cooking/";
+
+        public const string DecorationTile =        Assets + "Tiles/Decoration/";
+
+        public const string ForestTile =            Assets + "Tiles/Forest/";
+
+        public const string HerbologyTile =         Assets + "Tiles/Herbology/";
+
+        public const string InteractiveTile =       Assets + "Tiles/Interactive/";
+
+        public const string JungleBloodyTile =      Assets + "Tiles/JungleBloody/";
+        public const string JungleCorrputTile =     Assets + "Tiles/JungleCorrupt/";
+        public const string JungleHolyTile =        Assets + "Tiles/JungleHoly/";
+
         public const string TownNPC =               Assets + "NPCs/Town/";
     }
 }

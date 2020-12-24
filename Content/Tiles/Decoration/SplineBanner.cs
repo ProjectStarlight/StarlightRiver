@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Tiles.Decoration
+namespace StarlightRiver.Content.Tiles.Decoration
 {
     public abstract class SplineBanner : ModTile
     {
@@ -70,6 +70,7 @@ namespace StarlightRiver.Tiles.Decoration
                     if (k > 0)
                     {
                         spriteBatch.Draw(tex, pos - Main.screenPosition, new Rectangle(k % 3 * tex.Width / 3, 0, tex.Height, tex.Width / 3), color, rot, tex.Size() / 2, 1, 0, 0);
+
                         if (glowTexture != "")
                         {
                             Texture2D tex2 = GetTexture(glowTexture);
@@ -90,6 +91,8 @@ namespace StarlightRiver.Tiles.Decoration
         private readonly string name;
 
         private Tile target;
+
+        public override string Texture => Directory.DecorationTile + Name;
 
         protected SplineBannerItem(string displayName, int place)
         {

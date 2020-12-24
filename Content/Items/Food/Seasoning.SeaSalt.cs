@@ -13,7 +13,7 @@ namespace StarlightRiver.Food.Content.Seasoning
 
         public override void SafeSetDefaults()
         {
-            item.createTile = TileType<Tiles.Cooking.SeaSalt>();
+            item.createTile = TileType<StarlightRiver.Content.Tiles.Cooking.SeaSalt>();
         }
 
         public override void BuffEffects(Player player, float multiplier)

@@ -6,18 +6,26 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Tiles;
 
-namespace StarlightRiver.Tiles.Hell
+namespace StarlightRiver.Content.Tiles.Hell
 {
     class HellChest : LootChest
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Hell/HellChest";
+            return base.Autoload(ref name, ref texture);
+        }
+
         internal override List<Loot> GoldLootPool
         {
             get => new List<Loot>
             {
-                new Loot(ItemType<Content.Items.Hell.MagmaSword>(), 1)
+                new Loot(ItemType<Items.Hell.MagmaSword>(), 1)
             };
         }
+
         internal override List<Loot> SmallLootPool
         {
             get => new List<Loot>
@@ -32,14 +40,14 @@ namespace StarlightRiver.Tiles.Hell
             };
         }
 
-        public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.AmberBolt, SoundID.Unlock, false, new Color(255, 255, 155));
+        public override void SafeSetDefaults() => this.QuickSetFurniture(2, 2, DustID.AmberBolt, SoundID.Unlock, false, new Color(255, 255, 155));
 
         public override bool CanOpen(Player player)
         {
             for (int k = 0; k < player.inventory.Length; k++)
             {
                 Item item = player.inventory[k];
-                if (item.type == ItemType<Content.Items.Hell.HellKey>())
+                if (item.type == ItemType<Items.Hell.HellKey>())
                 {
                     if (item.stack > 1) item.stack--;
                     else item.TurnToAir();
@@ -54,7 +62,7 @@ namespace StarlightRiver.Tiles.Hell
             Player player = Main.LocalPlayer;
             player.noThrow = 2;
             player.showItemIcon = true;
-            player.showItemIcon2 = ItemType<Content.Items.Hell.HellKey>();
+            player.showItemIcon2 = ItemType<Items.Hell.HellKey>();
         }
 
     }
