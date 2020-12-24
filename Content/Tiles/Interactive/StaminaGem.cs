@@ -10,13 +10,13 @@ using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive
 {
     internal class StaminaGem : DummyTile
     {
         public override int DummyType => ProjectileType<StaminaGemDummy>();
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
+        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<StaminaGemItem>());
 
@@ -35,8 +35,7 @@ namespace StarlightRiver.Tiles.Interactive
 
         public override void Update()
         {
-            if (projectile.ai[0] > 0) { projectile.ai[0]--; }
-            else if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.position, 16, 16, DustType<Content.Dusts.Stamina>());
+            if (projectile.ai[0] > 0) projectile.ai[0]--; else if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.position, 16, 16, DustType<Dusts.Stamina>());
 
             Lighting.AddLight(projectile.Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
         }
@@ -54,9 +53,7 @@ namespace StarlightRiver.Tiles.Interactive
                 Main.PlaySound(SoundID.Item112, projectile.Center);
                 CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
                 for (float k = 0; k <= 6.28; k += 0.1f)
-                {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
-                }
+                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
             }
         }
 

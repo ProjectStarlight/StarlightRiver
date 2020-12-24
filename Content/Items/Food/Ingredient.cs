@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food
+namespace StarlightRiver.Content.Items.Food
 {
     public enum IngredientType
     {
@@ -27,6 +27,8 @@ namespace StarlightRiver.Food
             ItemTooltip = tooltip;
             ThisType = type;
         }
+
+        public override string Texture => Directory.FoodItem + Name;
 
         ///<summary>Where the effects of this food item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
         public virtual void BuffEffects(Player player, float multiplier) { }

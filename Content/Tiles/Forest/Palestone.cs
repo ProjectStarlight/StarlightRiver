@@ -8,9 +8,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 {
     internal class PalestoneItem : Items.QuickTileItem
     {
-        public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0)
-        {
-        }
+        public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, Directory.ForestTile) { }
     }
 
     internal class Palestone : ModTile

@@ -18,6 +18,6 @@ namespace StarlightRiver.Content.Tiles.Void
     }
     public class VoidWallItem : QuickWallItem
     {
-        public VoidWallItem() : base("Void Brick Wall", "", WallType<VoidWall>(), 0) { }
+        public VoidWallItem() : base("Void Brick Wall", "", WallType<VoidWall>(), 0, Directory.VoidTile) { }
     }
 }

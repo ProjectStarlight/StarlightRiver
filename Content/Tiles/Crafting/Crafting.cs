@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class OvenItem : QuickTileItem
     {
-        public OvenItem() : base("Oven", "Used to bake items", TileType<Oven>(), 0, Directory.RiftCrafting) { }
+        public OvenItem() : base("Oven", "Used to bake items", TileType<Oven>(), 0, Directory.CraftingTile) { }
 
         public override void AddRecipes()
         {
@@ -82,9 +82,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class HerbStationItem : QuickTileItem
     {
-        public HerbStationItem() : base("Herbologist's Bench", "Used to refine herbs", TileType<HerbStation>(), 0, Directory.RiftCrafting)
-        {
-        }
+        public HerbStationItem() : base("Herbologist's Bench", "Used to refine herbs", TileType<HerbStation>(), 0, Directory.CraftingTile) { }
 
         public override void AddRecipes()
         {
@@ -100,9 +98,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class CookStationItem : QuickTileItem
     {
-        public CookStationItem() : base("Prep Station", "Right click to prepare meals", TileType<CookStation>(), 0, Directory.RiftCrafting)
-        {
-        }
+        public CookStationItem() : base("Prep Station", "Right click to prepare meals", TileType<CookStation>(), 0, Directory.CraftingTile) { }
 
         public override void AddRecipes()
         {

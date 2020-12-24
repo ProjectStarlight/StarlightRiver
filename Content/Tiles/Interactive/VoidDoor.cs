@@ -7,13 +7,13 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
 
-namespace StarlightRiver.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive
 {
     internal class VoidDoorOn : ModTile
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, int.MaxValue, DustType<Content.Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidDoorItem>());
+            (this).QuickSet(int.MaxValue, DustType<Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidDoorItem>());
             Main.tileMerge[Type][TileType<VoidDoorOff>()] = true;
             animationFrameHeight = 88;
         }
@@ -33,7 +33,7 @@ namespace StarlightRiver.Tiles.Interactive
         public override void SetDefaults()
         {
             drop = ItemType<VoidDoorItem>();
-            dustType = DustType<Content.Dusts.Void>();
+            dustType = DustType<Dusts.Void>();
             Main.tileMerge[Type][TileType<VoidDoorOn>()] = true;
         }
     }

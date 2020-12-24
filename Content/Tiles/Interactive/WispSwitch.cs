@@ -14,7 +14,7 @@ using StarlightRiver.Helpers;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faeflame;
 
-namespace StarlightRiver.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive
 {
     internal class WispSwitch : ModTile
     {
@@ -36,7 +36,7 @@ namespace StarlightRiver.Tiles.Interactive
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("");//Map name
             AddMapEntry(new Color(0, 0, 0), name);
-            dustType = DustType<Content.Dusts.GoldWithMovement>();
+            dustType = DustType<Dusts.GoldWithMovement>();
             disableSmartCursor = true;
         }
 
@@ -45,27 +45,23 @@ namespace StarlightRiver.Tiles.Interactive
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
                 Tile tile = Main.tile[i, j];
-                int left = i - (tile.frameX / 18);
-                int top = j - (tile.frameY / 18);
+                int left = i - tile.frameX / 18;
+                int top = j - tile.frameY / 18;
                 int index = GetInstance<WispSwitchEntity>().Find(left, top);
 
                 if (index == -1)
-                {
                     return true;
-                }
                 WispSwitchEntity altarentity = (WispSwitchEntity)TileEntity.ByID[index];
 
                 int timer = altarentity.timer;
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
-                Color color = Color.White * (0.2f + (timer / 300f * 0.8f));
+                Color color = Color.White * (0.2f + timer / 300f * 0.8f);
 
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchReal"), pos, Lighting.GetColor(i, j));
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow0"), pos - Vector2.One, Color.White * (float)Math.Sin(StarlightWorld.rottime));
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow1"), pos, color);
                 if (timer > 0)
-                {
                     spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2"), pos + Vector2.One * 16, new Rectangle(0, 0, 96, 96), Color.LightYellow * (timer / 300f), 0, new Vector2(48, 48), timer * 0.002f, 0, 0);
-                }
             }
 
             return true;
@@ -102,18 +98,14 @@ namespace StarlightRiver.Tiles.Interactive
         public override void Update()
         {
             if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.ActiveAbility<Wisp>()) && timer == 0)
-            {
                 timer = 300;
-            }
             if (timer > 0)
             {
                 timer--;
                 if (timer == 299 || timer == 1)
-                {
                     Wiring.TripWire(Position.X, Position.Y, 2, 2);
-                }
 
-                Dust.NewDust(Position.ToVector2() * 16 + new Vector2(10, 10), 2, 2, DustType<Content.Dusts.GoldWithMovement>(), 0, 0, 0, default, timer / 300f);
+                Dust.NewDust(Position.ToVector2() * 16 + new Vector2(10, 10), 2, 2, DustType<Dusts.GoldWithMovement>(), 0, 0, 0, default, timer / 300f);
                 Lighting.AddLight(Position.ToVector2() * 16 + new Vector2(10, 10), new Vector3(10, 8, 2) * timer / 300f * 0.06f);
             }
         }

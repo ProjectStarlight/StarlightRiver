@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
         {
             Main.tileMerge[Type][TileID.Sand] = true;
             Main.tileMerge[TileID.Sand][Type] = true;
-            this.QuickSet(0, 2, SoundID.Dig, Color.White, ItemType<Food.Content.Seasoning.SeaSalt>());
+            this.QuickSet(0, 2, SoundID.Dig, Color.White, ItemType<Items.Food.SeaSalt>());
         }
     }
 }

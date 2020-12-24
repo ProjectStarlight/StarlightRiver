@@ -4,12 +4,10 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food.Content.Mains
+namespace StarlightRiver.Content.Items.Food
 {
     internal class Rabbit : Ingredient
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Food/Rabbit";
-
         public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)

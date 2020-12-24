@@ -26,13 +26,17 @@ namespace StarlightRiver.Core
         public const string Debug =                 Assets + "MarioCumming";
         public const string Symbol =                Assets + "Symbol";
 
-        public const string Misc =                  Assets + "Misc/";
+        public const string MiscTextures =          Assets + "Misc/";
+
+        public const string GUI =                   Assets + "GUI/";
 
         public const string RiftCrafting =          Assets + "RiftCrafting/";
 
         public const string Dust =                  Assets + "Dusts/";
 
         public const string BrewingItem =           Assets + "Items/Brewing/";
+
+        public const string FoodItem =              Assets + "Items/Food/";
 
         public const string EbonyIvoryItem =        Assets + "Items/EbonyIvory/";
 
@@ -61,6 +65,8 @@ namespace StarlightRiver.Core
         public const string CraftingTile =          Assets + "Tiles/Crafting/";
 
         public const string AshHellTile =           Assets + "Tiles/AshHell/";
+
+        public const string VoidTile =              Assets + "Tiles/Void/";
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
 

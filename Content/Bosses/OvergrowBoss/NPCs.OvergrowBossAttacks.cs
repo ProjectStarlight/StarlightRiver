@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
         {
             float glow = AttackTimer < 15 ? AttackTimer / 15f : 1 - (AttackTimer - 15) / 15f;
             Color color = new Color(255, 70, 70) * glow;
-            Texture2D tex = GetTexture(Directory.Misc + "TellBeam");
+            Texture2D tex = GetTexture(Directory.MiscTextures + "TellBeam");
 
             sb.End();
             sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

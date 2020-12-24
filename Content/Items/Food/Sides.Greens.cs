@@ -2,12 +2,10 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food.Content.Side
+namespace StarlightRiver.Content.Items.Food
 {
     internal class Greens : Ingredient
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Food/Greens";
-
         public Greens() : base("+1 defense", 300, IngredientType.Side) { }
 
         public override void BuffEffects(Player player, float multiplier)
