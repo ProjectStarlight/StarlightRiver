@@ -1,8 +1,8 @@
-﻿using StarlightRiver.Food;
-using System.Linq;
+﻿using System.Linq;
 using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Food;
 
 namespace StarlightRiver.Buffs
 {

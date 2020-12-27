@@ -9,11 +9,17 @@ using System;
 using Terraria.ID;
 using StarlightRiver.Content.Abilities;
 
-namespace StarlightRiver.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive
 {
     internal class StaminaOrb : DummyTile
     {
         public override int DummyType => ProjectileType<StaminaOrbDummy>();
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.InteractiveTile + name;
+            return true;
+        }
 
         public override void SetDefaults()
         {
@@ -42,11 +48,11 @@ namespace StarlightRiver.Tiles.Interactive
         public override void Update()
         {
             if (projectile.localAI[0] > 0)
-                projectile.localAI[0]--; 
+                projectile.localAI[0]--;
             else
             {
                 float rot = Main.rand.NextFloat(0, 6.28f);
-                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
             }
         }
 
@@ -60,9 +66,7 @@ namespace StarlightRiver.Tiles.Interactive
             CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
 
             for (float k = 0; k <= 6.28; k += 0.1f)
-            {
-                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
-            }
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
         }
     }
 

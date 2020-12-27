@@ -9,15 +9,21 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items;
 
-namespace StarlightRiver.Tiles.Interactive
+namespace StarlightRiver.Content.Tiles.Interactive
 {
     internal class VoidGoo : ModTile
     {
         private int Frame = 0;
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.InteractiveTile + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, int.MaxValue, DustType<Content.Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidGooItem>());
+            (this).QuickSet(int.MaxValue, DustType<Dusts.Void>(), SoundID.Drown, Color.Black, ItemType<VoidGooItem>());
             animationFrameHeight = 88;
         }
 
@@ -27,9 +33,7 @@ namespace StarlightRiver.Tiles.Interactive
             {
                 frameCounter = 0;
                 if (++frame >= 3)
-                {
                     frame = 0;
-                }
             }
             Frame = frame;
         }
@@ -41,5 +45,5 @@ namespace StarlightRiver.Tiles.Interactive
         }
     }
 
-    internal class VoidGooItem : QuickTileItem { public VoidGooItem() : base("Void Goo", "", TileType<VoidGoo>(), 0) { } }
+    internal class VoidGooItem : QuickTileItem { public VoidGooItem() : base("Void Goo", "", TileType<VoidGoo>(), 0, Directory.InteractiveTile) { } }
 }

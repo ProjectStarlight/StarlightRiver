@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Tiles;
-using StarlightRiver.Tiles.Interactive;
 using StarlightRiver.Tiles.Purified;
 using System;
 using Terraria;
@@ -13,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Content.Tiles.Interactive;
 
 namespace StarlightRiver.Projectiles.Ability
 {

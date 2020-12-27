@@ -60,8 +60,8 @@ namespace StarlightRiver.Helpers
 
         public static void SpawnGem(int ID, Vector2 position)
         {
-            int item = Item.NewItem(position, ItemType<Items.StarlightGem>());
-            (Main.item[item].modItem as Items.StarlightGem).gemID = ID;
+            int item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
+            (Main.item[item].modItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
         public static void DrawSymbol(SpriteBatch spriteBatch, Vector2 position, Color color)

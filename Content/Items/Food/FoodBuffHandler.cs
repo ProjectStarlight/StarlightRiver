@@ -6,16 +6,16 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food
+namespace StarlightRiver.Content.Items.Food
 {
     internal class FoodBuffHandler : ModPlayer
     {
         public List<Item> Consumed { get; set; } = new List<Item>(); //all of the ingredients in the food the player ate
         public float Multiplier { get; set; } = 1; //the multipler that should be applied to those ingredients
 
-        public override void PostUpdateBuffs()
-        {
-        }
+        //public override void PostUpdateBuffs()
+        //{
+        //}
 
         public override void ResetEffects()
         {
@@ -25,9 +25,7 @@ namespace StarlightRiver.Food
             Multiplier = 1;
 
             foreach (Item item in Consumed.Where(n => n.modItem is Ingredient))
-            {
                 (item.modItem as Ingredient).ResetBuffEffects(player, Multiplier);
-            }
         }
     }
 }

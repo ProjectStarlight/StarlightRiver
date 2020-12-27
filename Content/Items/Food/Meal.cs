@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food
+namespace StarlightRiver.Content.Items.Food
 {
     internal class Meal : ModItem
     {
@@ -18,7 +18,7 @@ namespace StarlightRiver.Food
         public int Fullness { get; set; }
         public override bool CloneNewInstances => true;
 
-        public override string Texture => "StarlightRiver/Assets/Items/Food/Meal";
+        public override string Texture => Directory.FoodItem + Name;
 
         public override void SetStaticDefaults()
         {

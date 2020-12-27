@@ -4,12 +4,10 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Food.Content.Mains
+namespace StarlightRiver.Content.Items.Food
 {
     internal class EaterSteak : Ingredient
     {
-        public override string Texture => "StarlightRiver/Assets/Items/Food/EaterSteak";
-
         public EaterSteak() : base("+3% damage reduction", 900, IngredientType.Main) { }
 
         public override bool Autoload(ref string name)

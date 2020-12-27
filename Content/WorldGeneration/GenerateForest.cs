@@ -7,6 +7,8 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Content.Tiles.Herbology;
 
 namespace StarlightRiver.Core
 {
@@ -25,7 +27,11 @@ namespace StarlightRiver.Core
                         {
                             if (Main.tile[k, y].type == TileID.Grass && Main.tile[k + 1, y].type == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
-                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<StarlightRiver.Content.Tiles.Herbology.ForestBerryBush>());
+<<<<<<< HEAD
+                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<ForestBerryBush>());
+=======
+                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<Content.Tiles.Herbology.ForestBerryBush>());
+>>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
                                 k += 3;
                             }
                         }
@@ -83,13 +89,21 @@ namespace StarlightRiver.Core
                         int surface = 0;
 
                         for (int j = 50; j < Main.worldSurface; j++) //Wall Bushes
-                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<StarlightRiver.Content.Tiles.Forest.LeafWall>()) { surface = j; break; }
+<<<<<<< HEAD
+                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<LeafWall>()) { surface = j; break; }
+=======
+                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<Content.Tiles.Forest.LeafWall>()) { surface = j; break; }
+>>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
 
                         int xOff = x > size / 2 ? size - x : x;
 
                         for (int y = surface - (xOff / 2 + WorldGen.genRand.Next(2)) - 3; true; y++)
                         {
-                            WorldGen.PlaceWall(k + x, y, WallType<StarlightRiver.Content.Tiles.Forest.LeafWall>());
+<<<<<<< HEAD
+                            WorldGen.PlaceWall(k + x, y, WallType<LeafWall>());
+=======
+                            WorldGen.PlaceWall(k + x, y, WallType<Content.Tiles.Forest.LeafWall>());
+>>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
                             if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].wall != 0) break;
                         }
                     }
@@ -108,7 +122,11 @@ namespace StarlightRiver.Core
                 for (int y2 = y - xSqr; y2 < y + xSqr; y2++)
                 {
                     WorldGen.KillTile(x, y2);
-                    WorldGen.PlaceTile(x, y2, TileType<StarlightRiver.Content.Tiles.Forest.Palestone>(), true, true); //Kills and places palestone
+<<<<<<< HEAD
+                    WorldGen.PlaceTile(x, y2, TileType<Palestone>(), true, true); //Kills and places palestone
+=======
+                    WorldGen.PlaceTile(x, y2, TileType<Content.Tiles.Forest.Palestone>(), true, true); //Kills and places palestone
+>>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
                     WorldGen.SlopeTile(x, y2);
 
                     if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].active()) //Slopes only if exposed to air
