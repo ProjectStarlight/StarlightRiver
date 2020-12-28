@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -13,8 +13,11 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
 {
     public class GrassJungleBloody : ModTile
     {
-        public int x = 0;
-        public int y = 0;
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.JungleBloodyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
 
         public override void SetDefaults()
         {
@@ -34,9 +37,8 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
 
         public override void RandomUpdate(int i, int j)//grappling hook breaks the grass, its running killtile for some reason?
         {
-            x = Main.rand.Next(-4, 4);
-            y = Main.rand.Next(-4, 4);
-            //Main.NewText("tick");
+            var x = Main.rand.Next(-4, 4);
+            var y = Main.rand.Next(-4, 4);
 
             if (Main.tile[i + x, j + y].active() && Main.hardMode)//spread
             {
@@ -91,83 +93,6 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
         {
             effectOnly = true;
             WorldGen.PlaceTile(i, j, TileID.Mud, false, true);
-        }
-
-        /*public override void NearbyEffects(int i, int j, bool closer)
-        {
-            if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)
-            {
-                Dust.NewDustPerfect(new Vector2(i, j) * 16, mod.DustType("Bloody2"), new Vector2(0, 0.6f));
-            }
-        }*/
-    }
-
-    public class VineJungleBloody : ModTile
-    {
-        public override void SetDefaults()
-        {
-            Main.tileCut[Type] = true;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-            TileObjectData.newTile.AnchorAlternateTiles = new int[]
-            {
-                TileType<GrassJungleBloody>(),
-                TileType<VineJungleBloody>()
-            };
-            TileObjectData.addTile(Type);
-            soundType = SoundID.Grass;
-            dustType = 14;
-            AddMapEntry(new Color(122, 38, 38));
-        }
-
-        public override void RandomUpdate(int i, int j)
-        {
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j - 9].type != Type)
-            {
-                if (Main.rand.Next(1) == 0)
-                {
-                    WorldGen.PlaceTile(i, j + 1, TileType<VineJungleBloody>(), true);
-                }
-            }
-        }
-
-        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-        {
-            if (!Main.tile[i, j - 1].active())
-            {
-                WorldGen.KillTile(i, j, false, false, false);
-                WorldGen.SquareTileFrame(i, j, true);
-            }
-            else if (Main.tile[i, j - 1].type != TileType<GrassJungleBloody>() && Main.tile[i, j - 1].type != TileType<VineJungleBloody>())
-            {
-                WorldGen.KillTile(i, j, false, false, false);
-                WorldGen.SquareTileFrame(i, j, true);
-            }
-            return true;
-        }
-    }
-
-    public class TallgrassJungleBloody : ModTile
-    {
-        public override void SetDefaults()
-        {
-            Main.tileCut[Type] = true;
-            Main.tileFrameImportant[Type] = true;
-
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-            TileObjectData.newTile.RandomStyleRange = 9;
-            TileObjectData.newTile.AnchorAlternateTiles = new int[]
-            {
-                TileType<GrassJungleBloody>()
-            };
-            TileObjectData.addTile(Type);
-            soundType = SoundID.Grass;
-            dustType = 14;
-            AddMapEntry(new Color(122, 38, 38));
         }
     }
 }

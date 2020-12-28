@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -13,8 +13,11 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
 {
     public class GrassJungleHoly : ModTile
     {
-        public int x = 0;
-        public int y = 0;
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.JungleHolyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
 
         public override void SetDefaults()
         {
@@ -34,8 +37,8 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
 
         public override void RandomUpdate(int i, int j)//grappling hook breaks the grass, its running killtile for some reason?
         {
-            x = Main.rand.Next(-4, 4);
-            y = Main.rand.Next(-4, 4);
+            var x = Main.rand.Next(-4, 4);
+            var y = Main.rand.Next(-4, 4);
             //Main.NewText("tick");
 
             if (Main.tile[i + x, j + y].active() && Main.hardMode)//spread
@@ -107,74 +110,5 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
                 Dust.NewDustPerfect(new Vector2(i, j) * 16, mod.DustType("Holy2"), new Vector2(0, 0.6f));
             }
         }*/
-    }
-
-    public class VineJungleHoly : ModTile
-    {
-        public override void SetDefaults()
-        {
-            Main.tileCut[Type] = true;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-            TileObjectData.newTile.AnchorAlternateTiles = new int[]
-            {
-                TileType<GrassJungleHoly>(),
-                TileType<VineJungleHoly>()
-            };
-            TileObjectData.addTile(Type);
-            soundType = SoundID.Grass;
-            dustType = 14;
-            AddMapEntry(new Color(48, 141, 128));
-        }
-
-        public override void RandomUpdate(int i, int j)
-        {
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j - 9].type != Type)
-            {
-                if (Main.rand.Next(1) == 0)
-                {
-                    WorldGen.PlaceTile(i, j + 1, TileType<VineJungleHoly>(), true);
-                }
-            }
-        }
-
-        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-        {
-            if (!Main.tile[i, j - 1].active())
-            {
-                WorldGen.KillTile(i, j, false, false, false);
-                WorldGen.SquareTileFrame(i, j, true);
-            }
-            else if (Main.tile[i, j - 1].type != TileType<GrassJungleHoly>() && Main.tile[i, j - 1].type != TileType<VineJungleHoly>())
-            {
-                WorldGen.KillTile(i, j, false, false, false);
-                WorldGen.SquareTileFrame(i, j, true);
-            }
-            return true;
-        }
-    }
-
-    public class TallgrassJungleHoly : ModTile
-    {
-        public override void SetDefaults()
-        {
-            Main.tileCut[Type] = true;
-            Main.tileFrameImportant[Type] = true;
-
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-            TileObjectData.newTile.RandomStyleRange = 9;
-            TileObjectData.newTile.AnchorAlternateTiles = new int[]
-            {
-                TileType<GrassJungleHoly>()
-            };
-            TileObjectData.addTile(Type);
-            soundType = SoundID.Grass;
-            dustType = 14;
-            AddMapEntry(new Color(48, 141, 128));
-        }
     }
 }
