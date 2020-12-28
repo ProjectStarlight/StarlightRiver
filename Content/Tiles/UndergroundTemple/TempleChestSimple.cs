@@ -11,6 +11,12 @@ namespace StarlightRiver.Tiles.Temple
 {
     class TempleChestSimple : LootChest
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.UndergroundTempleTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         internal override List<Loot> GoldLootPool
         {
             get => new List<Loot>
@@ -43,6 +49,6 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => Directory.Debug;
 
-        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0) { }
+        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0, Directory.UndergroundTempleTile) { }
     }
 }

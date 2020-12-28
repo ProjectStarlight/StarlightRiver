@@ -66,6 +66,6 @@ namespace StarlightRiver.Pickups
     {
         public FaeflameTileItem() : base("Faeflame", "Debug placer for ability pickup", TileType<FaeflamePickupTile>(), -1) { }
 
-        public override string Texture => "STarlightRiver/Pickups/Faeflame";
+        public override string Texture => Directory.Debug;
     }
 }

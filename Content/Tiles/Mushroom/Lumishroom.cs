@@ -18,6 +18,12 @@ namespace StarlightRiver.Tiles.Mushroom
 {
     class Lumishroom : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Mushroom/" + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLighted[Type] = true;
@@ -50,6 +56,6 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class LumishroomItem : QuickTileItem
     {
-        public LumishroomItem() : base("Lumishroom", "Glowy...", TileType<Lumishroom>(), 1) { }
+        public LumishroomItem() : base("Lumishroom", "Glowy...", TileType<Lumishroom>(), 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
     }
 }

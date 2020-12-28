@@ -3,20 +3,32 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Purified
+namespace StarlightRiver.Content.Tiles.Purified
 {
     class WallStonePure : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.PureTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
-            dustType = DustType<Content.Dusts.Purify>();
+            dustType = DustType<Dusts.Purify>();
         }
     }
     class WallGrassPure : ModWall
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.PureTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
-            dustType = DustType<Content.Dusts.Purify>();
+            dustType = DustType<Dusts.Purify>();
         }
     }
 }

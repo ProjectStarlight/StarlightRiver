@@ -13,10 +13,16 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items.StarJuice;
 
-namespace StarlightRiver.Tiles.StarJuice
+namespace StarlightRiver.Content.Tiles.StarJuice
 {
     internal sealed class Tank : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.StarjuiceTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;
@@ -49,9 +55,7 @@ namespace StarlightRiver.Tiles.StarJuice
             TankEntity entity = (TankEntity)TileEntity.ByID[index];
 
             if (player.HeldItem.modItem is StarjuiceStoringItem)
-            {
                 (player.HeldItem.modItem as StarjuiceStoringItem).Refuel(entity);
-            }
 
             return true;
         }
@@ -65,7 +69,7 @@ namespace StarlightRiver.Tiles.StarJuice
 
             if (tile.frameX == 0 && tile.frameY == 0)
             {
-                Vector2 pos = ((new Vector2(i, j) + Helper.TileAdj) * 16) + new Vector2(8, -28) - Main.screenPosition;
+                Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + new Vector2(8, -28) - Main.screenPosition;
                 int charge = (int)(entity.charge / 5000f * 32f);
 
                 spriteBatch.End();
@@ -125,18 +129,14 @@ namespace StarlightRiver.Tiles.StarJuice
             if (!Main.dayTime && charge < maxCharge)
             {
                 float rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(pos + Vector2.One.RotatedBy(rot) * 20, DustType<Content.Dusts.Starlight>(), Vector2.One.RotatedBy(rot) * -10, 0, default, 0.5f);
+                Dust.NewDustPerfect(pos + Vector2.One.RotatedBy(rot) * 20, DustType<Dusts.Starlight>(), Vector2.One.RotatedBy(rot) * -10, 0, default, 0.5f);
 
                 if (Main.time % 10 == 0 && !Main.fastForwardTime) charge++;
             }
 
             if (charge == maxCharge)
-            {
                 for (int k = 0; k < 4; k++)
-                {
-                    Dust.NewDustPerfect(pos, DustType<Content.Dusts.Starlight>(), Vector2.One.RotatedBy(StarlightWorld.rottime + 1.58f * k) * 5, 0, default, 0.7f);
-                }
-            }
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Starlight>(), Vector2.One.RotatedBy(StarlightWorld.rottime + 1.58f * k) * 5, 0, default, 0.7f);
 
             if (charge > maxCharge) charge = maxCharge;
         }

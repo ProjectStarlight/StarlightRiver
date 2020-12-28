@@ -76,11 +76,17 @@ namespace StarlightRiver.Core
 
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";
 
+        public const string PureTile =              Assets + "Tiles/Purified/";
+
         public const string InteractiveTile =       Assets + "Tiles/Interactive/";
 
         public const string JungleBloodyTile =      Assets + "Tiles/JungleBloody/";
         public const string JungleCorrputTile =     Assets + "Tiles/JungleCorrupt/";
         public const string JungleHolyTile =        Assets + "Tiles/JungleHoly/";
+
+        public const string StarjuiceTile =         Assets + "Tiles/StarJuice/";
+
+        public const string UndergroundTempleTile = Assets + "Tiles/UndergroundTemple/";
 
         public const string TownNPC =               Assets + "NPCs/Town/";
     }

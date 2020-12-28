@@ -15,6 +15,12 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<JarDummy>();
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.UndergroundTempleTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
@@ -65,7 +71,8 @@ namespace StarlightRiver.Tiles.Temple
 
     public class JarTallItem : QuickTileItem
     {
-        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Places a stamina jar, for debugging.", TileType<JarTall>(), -12) { }
         public override string Texture => Directory.Debug;
+
+        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Places a stamina jar, for debugging.", TileType<JarTall>(), -12) { }
     }
 }

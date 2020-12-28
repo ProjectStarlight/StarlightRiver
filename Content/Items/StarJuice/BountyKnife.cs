@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.StarJuice
     {
         public BountyKnife() : base(2500) { }
 
-        public override string Texture => "StarlightRiver/Assets/Starjuice/BountyKnife";
+        public override string Texture => "StarlightRiver/Assets/Items/Starjuice/BountyKnife";
 
         public override void SetStaticDefaults()
         {
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.StarJuice
 
     internal class BountyKnifeProjectile : ModProjectile     
     {
-        public override string Texture => "StarlightRiver/Assets/Starjuice/BountyKnifeProjectile";
+        public override string Texture => "StarlightRiver/Assets/Items/Starjuice/BountyKnifeProjectile";
 
         public override void SetDefaults()
         {

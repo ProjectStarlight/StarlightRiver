@@ -5,11 +5,18 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Purified;
 
-namespace StarlightRiver.Tiles.Purified
+namespace StarlightRiver.Content.Tiles.Purified
 {
     internal class StonePure : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.PureTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
@@ -25,6 +32,12 @@ namespace StarlightRiver.Tiles.Purified
 
     internal class GrassPure : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.PureTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
@@ -40,6 +53,12 @@ namespace StarlightRiver.Tiles.Purified
     }
     internal class SandPure : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.PureTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;

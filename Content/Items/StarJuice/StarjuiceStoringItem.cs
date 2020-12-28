@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
-using StarlightRiver.Tiles.StarJuice;
+using StarlightRiver.Content.Tiles.StarJuice;
 
 namespace StarlightRiver.Content.Items.StarJuice
 {

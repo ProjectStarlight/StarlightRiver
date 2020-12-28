@@ -10,6 +10,12 @@ namespace StarlightRiver.Tiles.Temple
 {
     class TempleLootBubble : LootBubble
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.UndergroundTempleTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override List<Loot> GoldLootPool
         {
             get => new List<Loot>
@@ -46,7 +52,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Bubble";
 
-        public TestBubble() : base("Bubble", "ngh", TileType<TempleLootBubble>(), 5) { }
+        public TestBubble() : base("Bubble", "ngh", TileType<TempleLootBubble>(), 5, Directory.UndergroundTempleTile) { }
     }
 
 }

@@ -12,6 +12,12 @@ namespace StarlightRiver.Tiles.Trophies
 {
     class CeirosTrophy : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Trophies/" + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorWall = TileObjectData.Style3x3Wall.AnchorWall;
@@ -23,6 +29,6 @@ namespace StarlightRiver.Tiles.Trophies
 
     class CeirosTrophyItem : QuickTileItem
     {
-        public CeirosTrophyItem() : base("Ceiros Trophy", "", TileType<CeirosTrophy>(), 1) { }
+        public CeirosTrophyItem() : base("Ceiros Trophy", "", TileType<CeirosTrophy>(), 1, "StarlightRiver/Assets/Tiles/Trophies/") { }
     }
 }

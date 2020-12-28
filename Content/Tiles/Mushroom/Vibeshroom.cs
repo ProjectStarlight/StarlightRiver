@@ -18,6 +18,12 @@ namespace StarlightRiver.Tiles.Mushroom
 {
     class Vibeshroom : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Tiles/Mushroom/" + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLighted[Type] = true;
@@ -50,6 +56,6 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class VibeshroomItem : QuickTileItem
     {
-        public VibeshroomItem() : base("Vibeshroom", "Vibin'", TileType<Vibeshroom>(), 1) { }
+        public VibeshroomItem() : base("Vibeshroom", "Vibin'", TileType<Vibeshroom>(), 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
     }
 }

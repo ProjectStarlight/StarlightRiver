@@ -14,7 +14,7 @@ namespace StarlightRiver.Core
     public abstract class FurnitureLoader : ILoadable
     {
         private readonly string name = "Nameless";
-        private readonly string path = "StarlightRiver/Tiles/Placeholders";
+        private readonly string path = "StarlightRiver/Tiles/Placeholders/";
 
         private readonly Color color = Color.White;
         private readonly Color glowColor = Color.Blue;

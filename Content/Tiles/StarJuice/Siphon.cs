@@ -10,10 +10,16 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Tiles.StarJuice
+namespace StarlightRiver.Content.Tiles.StarJuice
 {
     internal sealed class Siphon : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.StarjuiceTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;
@@ -69,16 +75,12 @@ namespace StarlightRiver.Tiles.StarJuice
             if (!Main.tile[Position.X, Position.Y].active()) Kill(Position.X, Position.Y);
 
             if (tank == null)
-            {
                 for (int i = -6; i <= 6; i++)
-                {
                     for (int j = -6; j <= 6; j++)
                     {
                         int index = GetInstance<TankEntity>().Find(Position.X + i, Position.Y + j);
                         if (index != -1) { tank = (TankEntity)ByID[index]; i = 7; j = 7; }
                     }
-                }
-            }
             else if (Main.tile[Position.X, Position.Y + 2].type == TileType<CrystalBlock>() && tank.charge < tank.maxCharge)
             {
                 Vector2 pos = Position.ToVector2() * 16 + Vector2.One * 8;
@@ -86,9 +88,7 @@ namespace StarlightRiver.Tiles.StarJuice
 
                 timer++;
                 if (timer > 100 + variation)
-                {
-                    Dust.NewDustPerfect(Vector2.Lerp(pos, tankpos, (timer - (100 + variation)) / 20f), DustType<Content.Dusts.Starlight>());
-                }
+                    Dust.NewDustPerfect(Vector2.Lerp(pos, tankpos, (timer - (100 + variation)) / 20f), DustType<Dusts.Starlight>());
 
                 if (timer >= 120 + variation)
                 {

@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Tiles.Purified
+namespace StarlightRiver.Content.Tiles.Purified
 {
     internal class TreePure : ModTree
     {
@@ -13,7 +13,7 @@ namespace StarlightRiver.Tiles.Purified
 
         public override int CreateDust()
         {
-            return DustType<Content.Dusts.Purify>();
+            return DustType<Dusts.Purify>();
         }
 
         public override int GrowthFXGore()
@@ -28,7 +28,7 @@ namespace StarlightRiver.Tiles.Purified
 
         public override Texture2D GetTexture()
         {
-            return mod.GetTexture("Tiles/Purified/TreePure");
+            return mod.GetTexture("Assets/Tiles/Purified/TreePure");
         }
 
         public override Texture2D GetTopTextures(int i, int j, ref int frame, ref int frameWidth, ref int frameHeight, ref int xOffsetLeft, ref int yOffset)
@@ -37,13 +37,13 @@ namespace StarlightRiver.Tiles.Purified
             frameHeight = 98;
             xOffsetLeft = 48;
             yOffset = 2;
-            return mod.GetTexture("Tiles/Purified/TreePure_Tops");
+            return mod.GetTexture("Assets/Tiles/Purified/TreePure_Tops");
 
         }
 
         public override Texture2D GetBranchTextures(int i, int j, int trunkOffset, ref int frame)
         {
-            return mod.GetTexture("Tiles/Purified/TreePure_Branches");
+            return mod.GetTexture("Assets/Tiles/Purified/TreePure_Branches");
         }
     }
 }
