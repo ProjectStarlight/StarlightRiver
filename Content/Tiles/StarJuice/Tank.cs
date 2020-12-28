@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
-using StarlightRiver.Items.StarJuice;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -12,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.StarJuice;
 
 namespace StarlightRiver.Tiles.StarJuice
 {

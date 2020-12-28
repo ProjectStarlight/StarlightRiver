@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Tiles.StarJuice;
 
-namespace StarlightRiver.Items.StarJuice
+namespace StarlightRiver.Content.Items.StarJuice
 {
     internal class StarjuiceStoringItem : ModItem
     {
@@ -16,13 +17,12 @@ namespace StarlightRiver.Items.StarJuice
             maxCharge = maxcap;
         }
 
-        public void Refuel(Tiles.StarJuice.TankEntity entity)
+        public void Refuel(TankEntity entity)
         {
             int needed = maxCharge - charge;
             int available = entity.charge;
 
             if (needed > 0)
-            {
                 if (available >= needed)
                 {
                     charge += needed;
@@ -33,7 +33,6 @@ namespace StarlightRiver.Items.StarJuice
                     charge += entity.charge;
                     entity.charge = 0;
                 }
-            }
         }
 
         public override bool CloneNewInstances => true;

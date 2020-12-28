@@ -4,13 +4,13 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Items.StarJuice
+namespace StarlightRiver.Content.Items.StarJuice
 {
     internal class StarLamp : StarjuiceStoringItem
     {
-        public StarLamp() : base(500)
-        {
-        }
+        public StarLamp() : base(500) { }
+
+        public override string Texture => "StarlightRiver/Assets/Items/Starjuice/StarLamp";
 
         public override void SetStaticDefaults()
         {
