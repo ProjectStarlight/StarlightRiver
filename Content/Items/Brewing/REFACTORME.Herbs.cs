@@ -46,11 +46,7 @@ namespace StarlightRiver.Items.Herbology.Materials
 
     public class BerryBush : QuickTileItem
     {
-<<<<<<< HEAD
         public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<ForestBerryBush>(), 1, Directory.BrewingItem) { }
-=======
-        public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<Content.Tiles.Herbology.ForestBerryBush>(), 1, Directory.BrewingItem) { }
->>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
     }
 
     public class Deathstalk : ModItem

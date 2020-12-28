@@ -23,12 +23,6 @@ namespace StarlightRiver.Content.Tiles.AshHell
 
     class MagicAshItem : QuickTileItem
     {
-<<<<<<< HEAD
-        public override string Texture => Directory.AshHellTile + Name;
-
-        public MagicAshItem() : base("Magic Ash", "", TileType<MagicAsh>(), 0) { }
-=======
         public MagicAshItem() : base("Magic Ash", "", TileType<MagicAsh>(), 0, Directory.AshHellTile) { }
->>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
     }
 }

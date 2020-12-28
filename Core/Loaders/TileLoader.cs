@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Core.Loaders
 {
@@ -86,7 +87,10 @@ namespace StarlightRiver.Core.Loaders
                     data.mapColor,
                     data.solidTop,
                     data.solid,
-                    data.mapName
+                    data.mapName,
+                    data.bottomAnchor,
+                    data.topAnchor,
+                    data.anchorTiles
                 );
         }
 
@@ -131,8 +135,11 @@ namespace StarlightRiver.Core.Loaders
         public bool solidTop;
         public bool solid;
         public string mapName;
+        public AnchorData bottomAnchor;
+        public AnchorData topAnchor;
+        public int[] anchorTiles;
 
-        public FurnitureLoadData(int width, int height, int dustType, int soundType, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "")
+        public FurnitureLoadData(int width, int height, int dustType, int soundType, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
         {
             this.width = width;
             this.height = height;
@@ -143,6 +150,9 @@ namespace StarlightRiver.Core.Loaders
             this.solidTop = solidTop;
             this.solid = solid;
             this.mapName = mapName;
+            this.bottomAnchor = bottomAnchor;
+            this.topAnchor = topAnchor;
+            this.anchorTiles = anchorTiles;
         }
     }
 }

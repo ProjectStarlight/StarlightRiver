@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.Tiles.Interactive
     internal class Bouncer : DummyTile
     {
         public override int DummyType => ProjectileType<BouncerDummy>();
-<<<<<<< HEAD
 
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -25,9 +24,6 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 
-=======
-        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
->>>>>>> a93da633f917beb5bb3693af9f0324eb3572cfdd
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<BouncerItem>());
     }
 
