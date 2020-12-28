@@ -42,6 +42,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
     class TempleSpearProjectile : SpearProjectile
     {
         public TempleSpearProjectile() : base(30, 25, 100) { }
+
+        public override string Texture => Directory.CaveTempleItem + Name;
+
         public override void PostAI()
         {
             //Dust effects
@@ -66,6 +69,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     class TempleSpearLight : ModProjectile
     {
+        public override string Texture => Directory.CaveTempleItem + Name;
+
         public override void SetDefaults()
         {
             projectile.width = 16;

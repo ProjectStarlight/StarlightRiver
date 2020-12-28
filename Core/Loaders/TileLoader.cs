@@ -17,13 +17,13 @@ namespace StarlightRiver.Core.Loaders
         public void LoadTile(string internalName, string displayName, TileLoadData data)
         {
             mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", mod.TileType(internalName + "Tile"), 0, AssetRoot + internalName + "Item", true));
-            mod.AddTile(internalName + "Tile", new LoaderTile(data, data.dropType == -1 ? mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + "/" + internalName);
+            mod.AddTile(internalName, new LoaderTile(data, data.dropType == -1 ? mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + internalName);
         }
 
         public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
         {
             mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", mod.TileType(internalName + "Tile"), 0, AssetRoot + internalName + "Item", true));
-            mod.AddTile(internalName + "Tile", new LoaderFurniture(data, mod.ItemType(internalName + "Item")), AssetRoot + "/" + internalName);
+            mod.AddTile(internalName, new LoaderFurniture(data, mod.ItemType(internalName + "Item")), AssetRoot + internalName);
         }
 
         public float Priority { get => 1f; }

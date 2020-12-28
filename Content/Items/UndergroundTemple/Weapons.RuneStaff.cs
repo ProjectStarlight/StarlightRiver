@@ -61,6 +61,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     class RuneStaffProjectile : ModProjectile, IDrawAdditive
     {
+        public override string Texture => Directory.CaveTempleItem + Name;
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;

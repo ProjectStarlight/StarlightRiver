@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles
+namespace StarlightRiver.Content.Tiles
 {
     class VerletBanner : DummyTile
     {
@@ -17,7 +17,7 @@ namespace StarlightRiver.Tiles
         public override void SetDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
+            this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
     }
 
@@ -59,7 +59,7 @@ namespace StarlightRiver.Tiles
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
 
-            Color color = (new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16)));
+            Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16));
 
             Chain.ropeSegments[index].posNow = pos;
             Chain.ropeSegments[index].color = color;

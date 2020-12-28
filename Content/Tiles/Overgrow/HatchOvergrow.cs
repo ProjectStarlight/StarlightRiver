@@ -16,6 +16,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override int DummyType => ProjectileType<HatchDummy>();
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.OvergrowTile + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 2, 1, DustType<Dusts.GoldSlowFade>(), SoundID.Tink, false, new Color(255, 255, 220));
@@ -53,6 +59,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     internal class BigHatchOvergrow : DummyTile
     {
         public override int DummyType => ProjectileType<BigHatchDummy>();
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.OvergrowTile + name;
+            return true;
+        }
 
         public override void SetDefaults()
         {

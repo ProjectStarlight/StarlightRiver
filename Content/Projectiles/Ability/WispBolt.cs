@@ -7,10 +7,12 @@ using StarlightRiver.Core;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 
-namespace StarlightRiver.Projectiles.Ability
+namespace StarlightRiver.Content.Projectiles.Ability
 {
     public class WispBolt : ModProjectile
     {
+        public override string Texture => Directory.Invisible;
+
         public override void SetDefaults()
         {
             projectile.friendly = true;

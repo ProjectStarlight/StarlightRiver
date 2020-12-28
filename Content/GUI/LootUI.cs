@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Tiles;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -12,6 +11,7 @@ using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Content.GUI
 {

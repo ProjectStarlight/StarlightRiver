@@ -103,6 +103,8 @@ namespace StarlightRiver.Content.Items.Permafrost
         private ref float HitCount => ref projectile.ai[1];
         private Player Owner => Main.player[projectile.owner];
 
+        public override string Texture => Directory.PermafrostItem + Name;
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 10;

@@ -7,7 +7,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
 
-namespace StarlightRiver.Tiles
+namespace StarlightRiver.Content.Tiles
 {
     public abstract class LootChest : ModTile
     {
@@ -31,7 +31,7 @@ namespace StarlightRiver.Tiles
                 WorldGen.KillTile(i, j);
                 Loot[] smallLoot = new Loot[5];
 
-                List<Loot> types = Helper.RandomizeList<Loot>(SmallLootPool);
+                List<Loot> types = Helper.RandomizeList(SmallLootPool);
                 for (int k = 0; k < 5; k++) smallLoot[k] = types[k];
 
                 UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);

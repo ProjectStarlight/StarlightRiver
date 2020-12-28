@@ -5,10 +5,12 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Misc;
 
-namespace StarlightRiver.Projectiles.Ability
+namespace StarlightRiver.Content.Projectiles.Ability
 {
     public class DashFire : ModProjectile
     {
+        public override string Texture => Directory.Invisible;
+
         public override void SetDefaults()
         {
             projectile.friendly = true;
@@ -28,19 +30,13 @@ namespace StarlightRiver.Projectiles.Ability
         public override bool? CanHitNPC(NPC target)
         {
             if (target.lifeMax * 0.05 <= 200 && target.lifeMax * 0.05 >= 10)
-            {
                 projectile.damage = (int)(target.lifeMax * 0.05);
-            }
             else
             {
                 if (target.lifeMax * 0.05 > 200)
-                {
                     projectile.damage = 200;
-                }
                 if (target.lifeMax * 0.05 < 10)
-                {
                     projectile.damage = 10;
-                }
             }
             target.GetGlobalNPC<StaminaDrop>().DropStamina = true;
             return null;

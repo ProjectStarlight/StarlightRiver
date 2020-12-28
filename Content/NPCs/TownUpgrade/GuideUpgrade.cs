@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Tiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.NPCs.TownUpgrade
 {

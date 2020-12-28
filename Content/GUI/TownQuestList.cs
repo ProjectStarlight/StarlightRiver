@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs.TownUpgrade;
-using StarlightRiver.Tiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
@@ -12,6 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Content.GUI
 {

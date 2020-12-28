@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.Ability;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
@@ -8,6 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Projectiles.Ability;
 
 namespace StarlightRiver.Content.Abilities.Purify
 {

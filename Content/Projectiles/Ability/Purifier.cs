@@ -14,7 +14,7 @@ using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Content.Tiles.Interactive;
 using StarlightRiver.Content.Tiles.Purified;
 
-namespace StarlightRiver.Projectiles.Ability
+namespace StarlightRiver.Content.Projectiles.Ability
 {
     internal class Purifier : ModProjectile
     {
@@ -62,15 +62,14 @@ namespace StarlightRiver.Projectiles.Ability
 
             //Filters.Scene["PurityFilter"].GetShader().UseProgress((projectile.ai[0] / 255) * 0.125f).UseIntensity((projectile.ai[0] / 255) * 0.006f);
 
-            Dust.NewDust(projectile.Center - Vector2.One * 32, 32, 32, DustType<Content.Dusts.Purify>()); //dusts around crown
+            Dust.NewDust(projectile.Center - Vector2.One * 32, 32, 32, DustType<Dusts.Purify>()); //dusts around crown
 
             for (int x = -40; x < 40; x++) //tile transformation
-            {
                 for (int y = -40; y < 40; y++)
                 {
-                    Vector2 check = (projectile.position / 16) + new Vector2(x, y);
+                    Vector2 check = projectile.position / 16 + new Vector2(x, y);
 
-                    if (Vector2.Distance((check * 16), projectile.Center) <= projectile.ai[0] - 2)
+                    if (Vector2.Distance(check * 16, projectile.Center) <= projectile.ai[0] - 2)
                         TransformTile((int)check.X, (int)check.Y);
                     else
                         RevertTile((int)check.X, (int)check.Y);
@@ -79,25 +78,20 @@ namespace StarlightRiver.Projectiles.Ability
                     if (projectile.timeLeft == 1)
                         RevertTile((int)check.X, (int)check.Y);
                 }
-            }
 
             if (projectile.timeLeft == 1)
             {
                 for (int k = 0; k <= 50; k++)
-                {
-                    Dust.NewDustPerfect(projectile.Center - Vector2.One * 8, DustType<Content.Dusts.Purify2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.4f), 0, default, 1.2f);
-                }
-                Projectile.NewProjectile(projectile.Center - Vector2.One * 16, Vector2.Normalize((projectile.Center - Vector2.One * 16) - Main.player[projectile.owner].Center).RotatedBy(0.3f) * 6,
+                    Dust.NewDustPerfect(projectile.Center - Vector2.One * 8, DustType<Dusts.Purify2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.4f), 0, default, 1.2f);
+                Projectile.NewProjectile(projectile.Center - Vector2.One * 16, Vector2.Normalize(projectile.Center - Vector2.One * 16 - Main.player[projectile.owner].Center).RotatedBy(0.3f) * 6,
                     ProjectileType<PurifierReturn>(), 0, 0, projectile.owner);
 
             }
             else if (projectile.timeLeft == 60)
-            {
                 if (Filters.Scene["PurityFilter"].IsActive())
                 {
                     //Filters.Scene.Deactivate("PurityFilter");
                 }
-            }
         }
 
         public static void TransformTile(int x, int y)
@@ -110,8 +104,7 @@ namespace StarlightRiver.Projectiles.Ability
                 if (target.type == TileID.Grass || target.type == TileID.CorruptGrass || target.type == TileID.FleshGrass || target.type == TileID.HallowedGrass) { target.type = (ushort)TileType<GrassPure>(); SpawnDust(x, y); }
                 if (target.type == TileID.Sand || target.type == TileID.Ebonsand || target.type == TileID.Crimsand || target.type == TileID.Pearlsand) { target.type = (ushort)TileType<SandPure>(); SpawnDust(x, y); }
                 if (target.type == (ushort)TileType<OreEbony>()) { target.type = (ushort)TileType<OreIvory>(); SpawnDust(x, y); }
-                if (target.type == (ushort)TileType<VoidDoorOn>()) { target.type = (ushort)TileType<VoidDoorOff>(); } //No Dust.
-
+                if (target.type == (ushort)TileType<VoidDoorOn>()) target.type = (ushort)TileType<VoidDoorOff>();
                 //walls
                 if (target.wall == WallID.Stone || target.wall == WallID.EbonstoneUnsafe || target.wall == WallID.CrimstoneUnsafe || target.wall == WallID.PearlstoneBrickUnsafe) { target.wall = (ushort)WallType<WallStonePure>(); SpawnDust(x, y); }
                 if (target.wall == WallID.GrassUnsafe || target.wall == WallID.CorruptGrassUnsafe || target.wall == WallID.CrimsonGrassUnsafe || target.wall == WallID.HallowedGrassUnsafe) { target.wall = (ushort)WallType<WallGrassPure>(); SpawnDust(x, y); }
@@ -143,9 +136,7 @@ namespace StarlightRiver.Projectiles.Ability
         private static void SpawnDust(int x, int y)
         {
             for (int k = 0; k <= 4; k++)
-            {
-                Dust.NewDustPerfect(new Vector2(x, y) * 16 + Main.rand.NextVector2Square(-2, 18), DustType<Content.Dusts.Purify2>(), new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.1f, -0.5f)), 0, Color.White, 0.5f);
-            }
+                Dust.NewDustPerfect(new Vector2(x, y) * 16 + Main.rand.NextVector2Square(-2, 18), DustType<Dusts.Purify2>(), new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.1f, -0.5f)), 0, Color.White, 0.5f);
         }
 
         private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle");
@@ -154,12 +145,12 @@ namespace StarlightRiver.Projectiles.Ability
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(cirTex, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(projectile.ai[0] / 300f), cirTex.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
-            spriteBatch.Draw(cirTex2, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, projectile.ai[0] / 300f, cirTex2.Size() / 2, (projectile.ai[0] / cirTex.Width * 2.1f), 0, 0);
+            spriteBatch.Draw(cirTex, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(projectile.ai[0] / 300f), cirTex.Size() / 2, projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
+            spriteBatch.Draw(cirTex2, projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, projectile.ai[0] / 300f, cirTex2.Size() / 2, projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
 
             Texture2D tex = GetTexture("StarlightRiver/Assets/Abilities/PureCrown");
             spriteBatch.Draw(tex, projectile.Center + new Vector2(-16, -16 + (float)Math.Sin(StarlightWorld.rottime) * 2) - Main.screenPosition, tex.Frame(),
-                Color.White * ((projectile.timeLeft < 500) ? 1 : (projectile.ai[0] / 250f)), 0, tex.Size() / 2, 1, 0, 0);
+                Color.White * (projectile.timeLeft < 500 ? 1 : projectile.ai[0] / 250f), 0, tex.Size() / 2, 1, 0, 0);
 
             /*for (float k = 0; k <= 6.28f; k += 0.1f)
             {
@@ -195,32 +186,22 @@ namespace StarlightRiver.Projectiles.Ability
         {
             Player player = Main.player[projectile.owner];
             if (projectile.timeLeft < 120)
-            {
                 for (int k = 0; k <= 8; k++)
-                {
-                    Dust.NewDustPerfect(Vector2.Lerp(projectile.position, projectile.oldPosition, k / 8f), DustType<Content.Dusts.Purify>(), Vector2.Zero, 0, default, 2.4f);
-                }
-            }
+                    Dust.NewDustPerfect(Vector2.Lerp(projectile.position, projectile.oldPosition, k / 8f), DustType<Dusts.Purify>(), Vector2.Zero, 0, default, 2.4f);
 
             Vector2 target = player.Center + new Vector2(0, -16);
             projectile.velocity += Vector2.Normalize(projectile.Center - target) * -0.8f;
 
             if (projectile.velocity.Length() >= 6)
-            {
                 projectile.velocity = Vector2.Normalize(projectile.velocity) * 6f;
-            }
 
             if (projectile.Hitbox.Intersects(new Rectangle((int)player.Center.X - 2, (int)player.Center.Y - 14, 4, 4)) || projectile.timeLeft == 1)
             {
                 for (int k = 0; k <= 50; k++)
-                {
-                    Dust.NewDustPerfect(player.Center + new Vector2(0, -16), DustType<Content.Dusts.Purify2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.4f));
-                }
+                    Dust.NewDustPerfect(player.Center + new Vector2(0, -16), DustType<Dusts.Purify2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.4f));
                 for (int k = 0; k <= Vector2.Distance(player.Center + new Vector2(0, -16), projectile.position); k++)
-                {
                     Dust.NewDustPerfect(Vector2.Lerp(player.Center + new Vector2(0, -16), projectile.Center, k / Vector2.Distance(player.Center + new Vector2(0, -16), projectile.position))
-                        , DustType<Content.Dusts.Purify>());
-                }
+                        , DustType<Dusts.Purify>());
 
                 projectile.timeLeft = 0;
             }

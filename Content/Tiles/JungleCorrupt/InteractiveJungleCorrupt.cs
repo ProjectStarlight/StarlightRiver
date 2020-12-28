@@ -12,6 +12,12 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
     internal class SporeJungleCorrupt : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.JungleCorruptTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileLavaDeath[Type] = false;
@@ -52,6 +58,12 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 
     public class ThornJungleCorrupt : ModTile
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = Directory.JungleCorruptTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
         public override void SetDefaults()
         {
             Main.tileCut[Type] = true;

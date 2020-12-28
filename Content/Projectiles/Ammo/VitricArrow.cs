@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Projectiles.Ammo
+namespace StarlightRiver.Content.Projectiles.Ammo
 {
     internal class VitricArrow : ModProjectile
     {
@@ -32,9 +32,7 @@ namespace StarlightRiver.Projectiles.Ammo
             projectile.rotation = projectile.velocity.ToRotation() + (float)Math.PI / 2;
             projectile.ai[0] += 1f;
             if (projectile.ai[0] >= 25f)
-            {
                 projectile.velocity.Y += 0.05f;
-            }
         }
 
         //Ew Boiler Plate, fixing that-IDG
@@ -112,7 +110,7 @@ namespace StarlightRiver.Projectiles.Ammo
             return base.CanHitNPC(target);
         }
 
-        public override string Texture => "StarlightRiver/Assets/Projectiles/Ammo/VitricArrowShattered";
+        public override string Texture => "StarlightRiver/Content/Projectiles/Ammo/VitricArrowShattered";
 
         public override void SetStaticDefaults()
         {

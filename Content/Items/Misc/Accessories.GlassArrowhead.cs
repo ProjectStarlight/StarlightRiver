@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.Ammo;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Projectiles.Ammo;
 
 namespace StarlightRiver.Content.Items.Misc
 {

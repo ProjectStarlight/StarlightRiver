@@ -79,6 +79,8 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override void SetStaticDefaults() => Main.projFrames[projectile.type] = 10;
 
+        public override string Texture => Directory.MiscItem + Name;
+
         public override void SetDefaults()
         {
             projectile.width = 160;

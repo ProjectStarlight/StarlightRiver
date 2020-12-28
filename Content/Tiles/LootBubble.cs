@@ -7,13 +7,13 @@ using System.Collections.Generic;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Tiles
+namespace StarlightRiver.Content.Tiles
 {
     abstract class LootBubble : DummyTile
     {
         public virtual List<Loot> GoldLootPool => null;
 
-        public virtual string BubbleTexture => "StarlightRiver/Tiles/Bubble";
+        public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
 
         public virtual bool CanOpen(Player player) => true;
 
@@ -30,7 +30,7 @@ namespace StarlightRiver.Tiles
             //Main.PlaySound( , origin);
 
             for (int k = 0; k < 50; k++)
-                Dust.NewDustPerfect(origin, DustType<Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
+                Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
         }
 
         public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
@@ -43,7 +43,7 @@ namespace StarlightRiver.Tiles
             Texture2D tex = GetTexture(BubbleTexture);
             int sin = (int)(Math.Sin(time) * 4);
             int sin2 = (int)(Math.Sin(time + 0.75f) * 4);
-            Rectangle bubbleTarget = new Rectangle((int)pos.X - (sin / 2), (int)pos.Y + (sin2 / 2), 32 + sin, 32 - sin2);
+            Rectangle bubbleTarget = new Rectangle((int)pos.X - sin / 2, (int)pos.Y + sin2 / 2, 32 + sin, 32 - sin2);
             spriteBatch.Draw(tex, bubbleTarget, Color.White);
 
             return;

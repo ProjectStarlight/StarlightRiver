@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Projectiles.Ability;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
@@ -107,7 +108,7 @@ namespace StarlightRiver.Core
 
         public override void PostUpdate()
         {
-            if (!Main.projectile.Any(proj => proj.type == ProjectileType<Projectiles.Ability.Purifier>()) && PureTiles != null)
+            if (!Main.projectile.Any(proj => proj.type == ProjectileType<Purifier>()) && PureTiles != null)
                 PureTiles.Clear();
 
             //SquidBoss arena
@@ -221,7 +222,7 @@ namespace StarlightRiver.Core
                 for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
                     for (int j = (int)PureTiles[k].Y - 16; j <= (int)PureTiles[k].Y + 16; j++)
                     {
-                        Projectiles.Ability.Purifier.RevertTile(i, j);
+                        Purifier.RevertTile(i, j);
                     }
 
             PureTiles.Clear();
