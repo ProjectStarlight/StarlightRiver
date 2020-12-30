@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public Vector2 TargetPos;
         public VitricBoss Parent;
 
-        public override string Texture => Directory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.GlassBoss + Name;
 
         public override bool CheckActive() => npc.ai[2] == 4;
 
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (npc.ai[2] == 1 && npc.ai[1] < 180) //tell line for going to a platform in the nuke attack
             {
-                Texture2D tex = GetTexture(Directory.MiscTextures + "TellBeam");
+                Texture2D tex = GetTexture(AssetDirectory.MiscTextures + "TellBeam");
                 for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)
                     spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,
                         (npc.Center - TargetPos).ToRotation(), tex.Frame().Size() / 2, 1, 0, 0);

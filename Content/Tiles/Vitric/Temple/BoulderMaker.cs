@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -34,12 +34,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class BoulderMakerItem : QuickTileItem
     {
-        public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1, Directory.Debug, true) { }
+        public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1, AssetDirectory.Debug, true) { }
     }
 
     class Boulder : ModNPC
     {
-        public override string Texture => Directory.VitricTile + Name;
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Temple Boulder");
 

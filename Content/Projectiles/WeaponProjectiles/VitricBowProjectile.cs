@@ -229,7 +229,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             {
                 float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
                 Vector2 vecangle = (new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315) + (projectile.velocity * num315);
-                Dust num316 = Dust.NewDustPerfect(new Vector2(projectile.position.X, projectile.position.Y) + new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), mod.DustType("Glass2"), vecangle / 3f, 50, default, (8f - num315) / 5f);
+                Dust num316 = Dust.NewDustPerfect(new Vector2(projectile.position.X, projectile.position.Y) + new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), ModContent.DustType<Dusts.GlassGravity>(), vecangle / 3f, 50, default, (8f - num315) / 5f);
                 num316.fadeIn = 0.5f;
             }
         }

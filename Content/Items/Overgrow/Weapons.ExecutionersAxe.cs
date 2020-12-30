@@ -11,7 +11,7 @@ namespace StarlightRiver.Items.Overgrow
 {
     public class ExecutionersAxe : ModItem
     {
-        public override string Texture => Directory.OvergrowItem + Name;
+        public override string Texture => AssetDirectory.OvergrowItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -53,7 +53,7 @@ namespace StarlightRiver.Items.Overgrow
     }
     public class AxeHead : ModProjectile
     {
-         public override string Texture => Directory.OvergrowItem + Name;
+         public override string Texture => AssetDirectory.OvergrowItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Executioner's Axe");
@@ -214,7 +214,7 @@ namespace StarlightRiver.Items.Overgrow
     }
     public class AxeFire : ModProjectile
     {
-        public override string Texture => Directory.OvergrowItem + Name;
+        public override string Texture => AssetDirectory.OvergrowItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Axe Fire");

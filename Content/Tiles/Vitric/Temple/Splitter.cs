@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -25,6 +25,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class SplitterItem : QuickTileItem
     {
-        public SplitterItem() : base("Light Splitter", "", TileType<Splitter>(), 0, Directory.VitricTile) { }
+        public SplitterItem() : base("Light Splitter", "", TileType<Splitter>(), 0, AssetDirectory.VitricTile) { }
     }
 }

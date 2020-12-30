@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.StarwoodItem + Name;
+        public override string Texture => AssetDirectory.StarwoodItem + Name;
 
         public override void SetStaticDefaults() {
             DisplayName.SetDefault("Starshot");
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
     class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.StarwoodItem + "StarwoodSlingshotGlowTrail";
+        public override string Texture => AssetDirectory.StarwoodItem + "StarwoodSlingshotGlowTrail";
         public override void SetStaticDefaults() {
             DisplayName.SetDefault("Falling Star");
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;

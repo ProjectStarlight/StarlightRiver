@@ -27,7 +27,7 @@ namespace StarlightRiver.Core
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
 
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public virtual void Update() { }
 

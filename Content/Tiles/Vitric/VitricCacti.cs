@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override Texture2D GetTexture()
         {
-            return ModContent.GetTexture(Directory.VitricTile + "VitricCactus");
+            return ModContent.GetTexture(AssetDirectory.VitricTile + "VitricCactus");
         }
     }
 }

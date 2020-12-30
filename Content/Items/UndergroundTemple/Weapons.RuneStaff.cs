@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class RuneStaff : ModItem
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         int charge = 0;
 
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     class RuneStaffProjectile : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     public class RuneStaffExplosion : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

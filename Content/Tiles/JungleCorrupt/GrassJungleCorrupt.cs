@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.JungleCorruptTile + name;
+            texture = AssetDirectory.JungleCorruptTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

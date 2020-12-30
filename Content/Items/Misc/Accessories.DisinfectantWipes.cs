@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class DisinfectantWipes : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public DisinfectantWipes() : base("Disinfectant Wipes", "Melee crits reduce all debuff durations by 3 seconds\nNon-Melee attacks have a 50% chance to trigger on Crit\nhas a Short cooldown between activations") { }
 
         public override bool Autoload(ref string name)

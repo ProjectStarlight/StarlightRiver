@@ -14,7 +14,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -48,8 +48,8 @@ namespace StarlightRiver.Tiles.Temple
 
     class TempleChestPlacer : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
-        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0, Directory.UndergroundTempleTile) { }
+        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0, AssetDirectory.UndergroundTempleTile) { }
     }
 }

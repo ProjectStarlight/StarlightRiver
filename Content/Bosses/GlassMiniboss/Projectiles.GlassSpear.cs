@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -63,7 +64,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (timer < 60)
             {
-                Color color = Projectiles.WeaponProjectiles.Summons.VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 2, 120)); //TODO, clean up the file this is from later
+                Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 2, 120)); //TODO, clean up the file this is from later
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/VitricSummonJavelin");
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 

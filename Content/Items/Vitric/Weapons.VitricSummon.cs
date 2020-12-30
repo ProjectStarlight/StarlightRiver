@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricSummon : ModItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {

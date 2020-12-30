@@ -8,14 +8,14 @@ namespace StarlightRiver.Content.Tiles.Forest
 {
     internal class PalestoneItem : Items.QuickTileItem
     {
-        public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, Directory.ForestTile) { }
+        public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, AssetDirectory.ForestTile) { }
     }
 
     internal class Palestone : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.ForestTile + name;
+            texture = AssetDirectory.ForestTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

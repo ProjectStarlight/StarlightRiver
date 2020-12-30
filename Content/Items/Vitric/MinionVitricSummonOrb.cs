@@ -10,12 +10,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.WeaponProjectiles.Summons;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
+namespace StarlightRiver.Content.Items.Vitric
 {
-
     internal class VKnife
     {
         public Vector2 pos;
@@ -152,6 +150,8 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
         public override bool CanDamage() => false;
 
         public override bool MinionContactDamage() => false;
+
+        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave";
 
         public override void SetStaticDefaults()
         {
@@ -305,8 +305,6 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
             MovementLerp += (projectile.velocity.X - MovementLerp) / 20f;
         }
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave";
-
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 
@@ -365,7 +363,7 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
                     proj.ai[0] = projectile.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     projectile.ai[1] = 80;
-                    (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+                    (proj.modProjectile as VitricSummonHammer).animationProgress = moltenglowanim;
                     proj.netUpdate = true;
                     didattack = true;
                 }
@@ -376,7 +374,7 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
                     proj.ai[0] = projectile.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     projectile.ai[1] = 80;
-                    (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+                    (proj.modProjectile as VitricSummonHammer).animationProgress = moltenglowanim;
                     proj.netUpdate = true;
                     didattack = true;
                 }
@@ -391,7 +389,7 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
                         proj.ai[1] = target.whoAmI;
                         (proj.modProjectile as VitricSummonKnife).offset = new Vector2(0, -10 + index * 10);
                         projectile.ai[1] = 80;
-                        (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+                        (proj.modProjectile as VitricSummonHammer).animationProgress = moltenglowanim;
                         proj.netUpdate = true;
                         index += 1;
                         didattack = true;
@@ -404,7 +402,7 @@ namespace StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons
                     proj.ai[0] = projectile.rotation + (projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     projectile.ai[1] = 80;
-                    (proj.modProjectile as VitricSummonHammer).moltenglowanim = moltenglowanim;
+                    (proj.modProjectile as VitricSummonHammer).animationProgress = moltenglowanim;
                     proj.netUpdate = true;
                     didattack = true;
                 }

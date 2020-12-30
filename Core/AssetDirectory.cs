@@ -18,7 +18,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-    public static class Directory
+    public static class AssetDirectory
     {
         public const string Assets =                "StarlightRiver/Assets/";
 

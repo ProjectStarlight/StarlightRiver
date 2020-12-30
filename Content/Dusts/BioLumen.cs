@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + name;
+            texture = AssetDirectory.Dust + name;
             return true;
         }
         public override Color? GetAlpha(Dust dust, Color lightColor)

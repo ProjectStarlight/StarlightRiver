@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Tiles.Purified
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.PureTile + name;
+            texture = AssetDirectory.PureTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Purified
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.PureTile + name;
+            texture = AssetDirectory.PureTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

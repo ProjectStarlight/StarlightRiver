@@ -194,7 +194,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
             }
             Point16 point = new Point16((int)(projectile.Center.X / 16), Math.Min(Main.maxTilesY, (int)(projectile.Center.Y / 16) + 1));
             Tile tile = Framing.GetTileSafely(point.X, point.Y);
-            int dusttype = mod.DustType("Glass2");
+            int dusttype = ModContent.DustType<Dusts.GlassGravity>();
 
             //hard coded dust ids in worldgen.cs, ew
             if (tile != null && WorldGen.InWorld(point.X, point.Y, 1))

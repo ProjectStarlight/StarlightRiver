@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             Tile tile = Main.tile[ParentX - 1, ParentY - 1];
 
-            Texture2D tex2 = GetTexture(Directory.OvergrowTile + "BulbFruit"); //Draws the bulb itself
+            Texture2D tex2 = GetTexture(AssetDirectory.OvergrowTile + "BulbFruit"); //Draws the bulb itself
             Rectangle frame = new Rectangle((tile.frameX == 0 && tile.frameY == 0) ? 0 : 32, 0, 32, 32);
             float offset = (float)Math.Sin(StarlightWorld.rottime) * 3;
 
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             if (tile.frameX == 0 && tile.frameY == 0) //Draws the glowing indicator
             {
-                Texture2D tex = GetTexture(Directory.OvergrowTile + "BulbFruitGlow");
+                Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "BulbFruitGlow");
 
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(offset, 6) - Main.screenPosition, tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
                 Dust.NewDust(projectile.position, 32, 32, DustType<Dusts.GoldNoMovement>(), 0, 0, 0, default, 0.3f);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             for (int k = 2; k <= 30; k++) //Draws the vine
             {
                 if (Main.tile[ParentX, ParentY - k].active()) break;
-                Texture2D tex = GetTexture(Directory.OvergrowTile + "VineOvergrowFlow");
+                Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "VineOvergrowFlow");
                 float sway = (float)Math.Sin(StarlightWorld.rottime + k * 0.2f) * 3;
 
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(sway - 8, k * -16) - Main.screenPosition, new Rectangle(16 * k % 3, 0, 16, 16), Lighting.GetColor(ParentX, ParentY - k));
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     internal class BulbFruitItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
         public BulbFruitItem() : base("Bulb Fruit", "", TileType<BulbFruit>(), 1) { }
     }
 

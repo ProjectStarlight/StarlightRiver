@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class Ultrashark : ModItem, IGlowingItem
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
 
         #region values
         public float spinup;

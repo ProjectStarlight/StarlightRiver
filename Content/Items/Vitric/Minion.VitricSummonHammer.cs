@@ -9,26 +9,26 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
+namespace StarlightRiver.Content.Items.Vitric
 {
-
     public class VitricSummonHammer : ModProjectile
     {
-        protected Vector2 strikewhere;
-        protected Vector2 enemysize;
+        protected Vector2 strikeWhere;
+        protected Vector2 enemySize;
         protected Player player;
         protected NPC enemy;
-        protected Vector2 oldhitbox;
-        internal float moltenglowanim = 0f;
+        protected Vector2 oldHitbox;
+        internal float animationProgress = 0f;
 
         public VitricSummonHammer()
         {
-            strikewhere = projectile.Center;
-            enemysize = Vector2.One;
+            strikeWhere = projectile.Center;
+            enemySize = Vector2.One;
         }
+
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -62,8 +62,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             projectile.localAI[0] += 1;
             enemy = Main.npc[(int)projectile.ai[1]];
-            float cooloffrate = (GetType() == typeof(VitricSummonSword) ? 1.50f : (GetType() == typeof(VitricSummonKnife) ? 2f : 1f));
-            moltenglowanim += cooloffrate / (1f + (float)projectile.extraUpdates);
+            float animationSpeed = GetType() == typeof(VitricSummonSword) ? 1.50f : GetType() == typeof(VitricSummonKnife) ? 2f : 1f;
+            animationProgress += animationSpeed / (1f + projectile.extraUpdates);
 
             DoAI();
         }
@@ -76,7 +76,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 return;
             }
 
-            oldhitbox = new Vector2(projectile.width, projectile.height);
+            oldHitbox = new Vector2(projectile.width, projectile.height);
 
             if (projectile.localAI[0] == 1)
             {
@@ -90,7 +90,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 projectile.netUpdate = true;
             }
 
-            Vector2 gothere;
+            Vector2 target;
 
             SwingUp();
             SwingDown();
@@ -99,19 +99,19 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             {
                 if (projectile.localAI[0] < 70)//Swing up
                 {
-                    float lerpval = Math.Min(projectile.localAI[0] / 50f, 1f);
+                    float progress = Math.Min(projectile.localAI[0] / 50f, 1f);
                     if (Helper.IsTargetValid(enemy))
                     {
-                        strikewhere = enemy.Center + new Vector2(enemy.velocity.X, enemy.velocity.Y / 2f);
-                        enemysize = new Vector2(enemy.width, enemy.height);
+                        strikeWhere = enemy.Center + new Vector2(enemy.velocity.X, enemy.velocity.Y / 2f);
+                        enemySize = new Vector2(enemy.width, enemy.height);
                     }
 
-                    projectile.rotation = projectile.rotation.AngleLerp(-MathHelper.Pi / 4f, 0.075f * lerpval);
-                    gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(75 + (float)Math.Pow(projectile.localAI[0] * 2f, 0.80) + enemysize.X / 2f), -200));
-                    projectile.velocity += ((gothere - projectile.Center) / 75f);
+                    projectile.rotation = projectile.rotation.AngleLerp(-MathHelper.Pi / 4f, 0.075f * progress);
+                    target = strikeWhere + new Vector2(projectile.spriteDirection * -(75 + (float)Math.Pow(projectile.localAI[0] * 2f, 0.80) + enemySize.X / 2f), -200);
+                    projectile.velocity += (target - projectile.Center) / 75f;
 
-                    if (projectile.velocity.Length() > 14f * lerpval)
-                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * lerpval;
+                    if (projectile.velocity.Length() > 14f * progress)
+                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * progress;
 
                     projectile.velocity /= 1.5f;
                 }
@@ -123,19 +123,19 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 if (projectile.localAI[0] >= 70)//Swing Down
                 {
                     if (Helper.IsTargetValid(enemy))
-                        strikewhere.X = enemy.Center.X + enemy.velocity.X * 1.50f;
+                        strikeWhere.X = enemy.Center.X + enemy.velocity.X * 1.50f;
 
                     projectile.velocity.X += Math.Min(Math.Abs(projectile.velocity.X), 0) * projectile.spriteDirection;
 
-                    float lerpval = Math.Min((projectile.localAI[0] - 70f) / 30f, 1f);
+                    float progress = Math.Min((projectile.localAI[0] - 70f) / 30f, 1f);
 
-                    projectile.rotation = projectile.rotation.AngleTowards(MathHelper.Pi / 4f, 0.075f * lerpval);
-                    gothere = (strikewhere + new Vector2(projectile.spriteDirection * -(32 + enemysize.X / 4f), -32));
-                    projectile.velocity.X += (MathHelper.Clamp(gothere.X - projectile.Center.X, -80f, 80f)) / 24f;
+                    projectile.rotation = projectile.rotation.AngleTowards(MathHelper.Pi / 4f, 0.075f * progress);
+                    target = strikeWhere + new Vector2(projectile.spriteDirection * -(32 + enemySize.X / 4f), -32);
+                    projectile.velocity.X += MathHelper.Clamp(target.X - projectile.Center.X, -80f, 80f) / 24f;
                     projectile.velocity.Y += 1f;
 
-                    if (projectile.velocity.Length() > 10 * lerpval)
-                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 10 * lerpval;
+                    if (projectile.velocity.Length() > 10 * progress)
+                        projectile.velocity = Vector2.Normalize(projectile.velocity) * 10 * progress;
 
                     projectile.velocity.X /= 1.20f;
 
@@ -145,10 +145,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             void Smash()
             {
-                if (projectile.Center.Y > gothere.Y)//Smashing!
+                if (projectile.Center.Y > target.Y)//Smashing!
                 {
-                    int tiley = (int)(projectile.Center.Y / 16) + 1;
-                    Point16 point = new Point16((int)((projectile.Center.X + (projectile.width / 3f) * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, tiley));
+                    int tileTargetY = (int)(projectile.Center.Y / 16) + 1;
+                    Point16 point = new Point16((int)((projectile.Center.X + projectile.width / 3f * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, tileTargetY));
                     Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
                     //hard coded dust ids in worldgen.cs, still ew
@@ -156,10 +156,10 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                     if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.active() && Main.tileSolid[tile.type])
                     {
                         projectile.localAI[0] = 301;
-                        int dusttype = mod.DustType("Glass2");
+                        int dusttype = ModContent.DustType<Dusts.GlassGravity>();
                         DustHelper.TileDust(tile, ref dusttype);
 
-                        int ai0 = (int)tile.type;
+                        int ai0 = tile.type;
                         int ai1 = 16 * projectile.spriteDirection;
                         Vector2 tilepos16 = new Vector2(point.X, point.Y - 1) * 16;
 
@@ -170,7 +170,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                         {
                             float angle = MathHelper.ToRadians(-Main.rand.Next(70, 130));
                             Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315 * 3f;
-                            Vector2 position = new Vector2(projectile.position.X + (projectile.spriteDirection * (int)(projectile.width * 0.60)), projectile.Center.Y - projectile.height / 2f);
+                            Vector2 position = new Vector2(projectile.position.X + projectile.spriteDirection * (int)(projectile.width * 0.60), projectile.Center.Y - projectile.height / 2f);
 
                             int num316 = Dust.NewDust(position, projectile.width / 2, projectile.height, dusttype, 0f, 0f, 50, default, (12f - num315) / 5f);
                             Main.dust[num316].noGravity = true;
@@ -190,16 +190,16 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override bool PreKill(int timeLeft)
         {
-            int dusttype = mod.DustType("Glass2");
+            int dusttype = ModContent.DustType<Dusts.GlassGravity>();
 
-            for (float num315 = 2f; num315 < 12; num315 += 0.25f)
+            for (float k = 2f; k < 12; k += 0.25f)
             {
                 float angle = MathHelper.ToRadians(-Main.rand.Next(40, 140));
-                Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315;
-                int num316 = Dust.NewDust(new Vector2(projectile.Center.X + (projectile.spriteDirection < 0 ? -oldhitbox.X : 0), projectile.Center.Y - oldhitbox.Y), (int)oldhitbox.X, (int)oldhitbox.Y * 2, dusttype, 0f, 0f, 50, default, (40f - num315) / 40f);
-                Main.dust[num316].noGravity = true;
-                Main.dust[num316].velocity = vecangle;
-                Main.dust[num316].fadeIn = 0.75f;
+                Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * k;
+                int index = Dust.NewDust(new Vector2(projectile.Center.X + (projectile.spriteDirection < 0 ? -oldHitbox.X : 0), projectile.Center.Y - oldHitbox.Y), (int)oldHitbox.X, (int)oldHitbox.Y * 2, dusttype, 0f, 0f, 50, default, (40f - k) / 40f);
+                Main.dust[index].noGravity = true;
+                Main.dust[index].velocity = vecangle;
+                Main.dust[index].fadeIn = 0.75f;
             }
 
             Main.PlaySound(SoundID.Shatter, projectile.Center);
@@ -212,7 +212,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             for (float xx = Math.Min(1f, (projectile.velocity.Length() - 4f) / 2f); xx > 0; xx -= 0.10f)
             {
-                Vector2 drawPos = (pos) - ((projectile.velocity * 6f) * xx);
+                Vector2 drawPos = pos - projectile.velocity * 6f * xx;
                 Draw(spriteBatch, drawPos, lightColor * (1f - xx) * 0.5f, xx);
             }
 
@@ -225,14 +225,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             Texture2D tex = Main.projectileTexture[projectile.type];
 
             Vector2 drawOrigin = new Vector2(tex.Width / 2f, tex.Height) / 2f;
-            Vector2 drawPos = ((drawpos - Main.screenPosition));
+            Vector2 pos = drawpos - Main.screenPosition;
             Color color = lightColor;
-            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, pos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, pos, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(animationProgress), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
         }
     }
 
-    class ShockwaveSummon : Content.Bosses.GlassMiniboss.Shockwave
+    class ShockwaveSummon : Bosses.GlassMiniboss.Shockwave
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/Blocks/AncientSandstone";
 
@@ -268,8 +268,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 projectile.velocity.Y = projectile.timeLeft <= 10 ? 1f : -1f;
 
                 if (projectile.timeLeft == 19 && Math.Abs(ShockwavesLeft) > 0) //what the fuck is this. Local vars. please.
-                    Projectile.NewProjectile(new Vector2(((int)projectile.Center.X / 16) * 16 + 16 * Math.Sign(ShockwavesLeft)
-                    , (((int)projectile.Center.Y / 16) * 16) - 32),
+                    Projectile.NewProjectile(new Vector2((int)projectile.Center.X / 16 * 16 + 16 * Math.Sign(ShockwavesLeft)
+                    , (int)projectile.Center.Y / 16 * 16 - 32),
                     Vector2.Zero, projectile.type, projectile.damage, 0, Main.myPlayer, TileType, projectile.ai[1] - Math.Sign(ShockwavesLeft));
 
             }
@@ -287,7 +287,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
         {
             if (projectile.timeLeft > 800) //smells like boilerplate. IDG-it kinda is
             {
-                Point16 point = new Point16((int)((projectile.Center.X + (projectile.width / 3f) * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)((projectile.Center.Y) / 16) + 1));
+                Point16 point = new Point16((int)((projectile.Center.X + projectile.width / 3f * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)(projectile.Center.Y / 16) + 1));
                 Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
                 //hard coded dust ids in worldgen.cs, still ew

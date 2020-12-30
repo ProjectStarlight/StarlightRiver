@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Projectiles
 {
     public class DartShooter : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public Tile parent;
         public int direction;

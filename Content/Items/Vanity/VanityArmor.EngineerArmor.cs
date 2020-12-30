@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Head)]
     public class EngineerHead : ModItem
     {
-        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
 
         public override void SetStaticDefaults()
         {
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Body)]
     public class EngineerChest : ModItem
     {
-        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
 
         public override void SetStaticDefaults()
         {
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Legs)]
     public class EngineerLegs : ModItem
     {
-        public override string Texture => Directory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
 
         public override void SetStaticDefaults()
         {

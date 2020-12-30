@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class SquidEgg : ModProjectile
     {
-        public override string Texture => Directory.SquidBoss + Name;
+        public override string Texture => AssetDirectory.SquidBoss + Name;
         public override void SetDefaults()
         {
             projectile.width = 62;

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class BossSpikeSmall : ModProjectile
     {
         //public override string Texture => Directory.Invisible;
-        public override string Texture => Directory.GlassBoss + "BossSpike";
+        public override string Texture => AssetDirectory.GlassBoss + "BossSpike";
 
         public override void SetDefaults()
         {
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
             else
             {
-                Texture2D tex = GetTexture(Directory.Symbol);
+                Texture2D tex = GetTexture(AssetDirectory.Symbol);
                 spriteBatch.Draw(tex, projectile.Center + Vector2.UnitY * -60 - Main.screenPosition, null, Color.Pink * (projectile.ai[0] / 30f));
             }
         }

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
     {
         float spinup = 0;
 
-        public override string Texture => Directory.AluminumItem + "AluminumCarbide";
+        public override string Texture => AssetDirectory.AluminumItem + "AluminumCarbide";
 
         public override void SetStaticDefaults()
         {
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     class CarbideLaser : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults()
         {

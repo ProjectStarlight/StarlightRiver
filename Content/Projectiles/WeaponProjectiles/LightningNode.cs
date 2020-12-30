@@ -12,7 +12,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 {
     internal class LightningNode : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

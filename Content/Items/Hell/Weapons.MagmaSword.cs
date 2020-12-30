@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Items.Hell
 
     class MagmaSwordBurn : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 

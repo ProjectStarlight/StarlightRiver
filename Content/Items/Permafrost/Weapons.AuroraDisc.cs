@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     class AuroraDisc : ModItem
     {
-        public override string Texture => Directory.PermafrostItem + "AuroraDisc";
+        public override string Texture => AssetDirectory.PermafrostItem + "AuroraDisc";
 
         public override void SetStaticDefaults()
         {
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         private ref float HitCount => ref projectile.ai[1];
         private Player Owner => Main.player[projectile.owner];
 
-        public override string Texture => Directory.PermafrostItem + Name;
+        public override string Texture => AssetDirectory.PermafrostItem + Name;
 
         public override void SetStaticDefaults()
         {

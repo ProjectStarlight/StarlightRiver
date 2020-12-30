@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Palestone
 {
     public class PalestoneHammer : ModItem
     {
-        public override string Texture => Directory.PalestoneItem + "PalestoneHammer";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalestoneHammer";
 
         public override void SetStaticDefaults()
         {
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Palestone
     }
      class PalecrusherProj : ClubProj
     {
-        public override string Texture => Directory.PalestoneItem + "PalecrusherProj";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalecrusherProj";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pale Crusher");
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Palestone
     }
     public class PalePillar : ModProjectile
     {
-        public override string Texture => Directory.PalestoneItem + "PalePillar";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalePillar";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pale Pillar");

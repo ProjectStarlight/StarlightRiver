@@ -43,9 +43,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             DeathAnimation = 6
         }
 
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
-        public override string BossHeadTexture => Directory.SquidBoss + "SquidBoss_Head_Boss";
+        public override string BossHeadTexture => AssetDirectory.SquidBoss + "SquidBoss_Head_Boss";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
 
@@ -102,10 +102,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
-            Texture2D ring = GetTexture(Directory.SquidBoss + "BodyRing");
-            Texture2D ringGlow = GetTexture(Directory.SquidBoss + "BodyRingGlow");
+            Texture2D ring = GetTexture(AssetDirectory.SquidBoss + "BodyRing");
+            Texture2D ringGlow = GetTexture(AssetDirectory.SquidBoss + "BodyRingGlow");
 
-            Texture2D body = GetTexture(Directory.SquidBoss + "BodyUnder");
+            Texture2D body = GetTexture(AssetDirectory.SquidBoss + "BodyUnder");
 
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
@@ -138,8 +138,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void DrawHeadBlobs(SpriteBatch spriteBatch)
         {
-            Texture2D headBlob = GetTexture(Directory.SquidBoss + "BodyOver");
-            Texture2D headBlobGlow = GetTexture(Directory.SquidBoss + "BodyOverGlow");
+            Texture2D headBlob = GetTexture(AssetDirectory.SquidBoss + "BodyOver");
+            Texture2D headBlobGlow = GetTexture(AssetDirectory.SquidBoss + "BodyOverGlow");
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {

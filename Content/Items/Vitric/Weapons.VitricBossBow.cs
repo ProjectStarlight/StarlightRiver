@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBow : ModItem, IGlowingItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {

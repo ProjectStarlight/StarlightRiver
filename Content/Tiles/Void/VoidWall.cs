@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Void
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VoidTile + name;
+            texture = AssetDirectory.VoidTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -24,6 +24,6 @@ namespace StarlightRiver.Content.Tiles.Void
     }
     public class VoidWallItem : QuickWallItem
     {
-        public VoidWallItem() : base("Void Brick Wall", "", WallType<VoidWall>(), 0, Directory.VoidTile) { }
+        public VoidWallItem() : base("Void Brick Wall", "", WallType<VoidWall>(), 0, AssetDirectory.VoidTile) { }
     }
 }

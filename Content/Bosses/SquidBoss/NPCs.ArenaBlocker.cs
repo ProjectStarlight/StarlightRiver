@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class ArenaBlocker : ModNPC
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
@@ -39,9 +39,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (npc.ai[0] > 150)
             {
-                Texture2D top = GetTexture(Directory.SquidBoss + "TentacleTop");
-                Texture2D glow = GetTexture(Directory.SquidBoss + "TentacleGlow");
-                Texture2D body = GetTexture(Directory.SquidBoss + "TentacleBody");
+                Texture2D top = GetTexture(AssetDirectory.SquidBoss + "TentacleTop");
+                Texture2D glow = GetTexture(AssetDirectory.SquidBoss + "TentacleGlow");
+                Texture2D body = GetTexture(AssetDirectory.SquidBoss + "TentacleBody");
 
                 for (int k = 0; k < npc.ai[0] - top.Height; k += body.Height + 2)
                 {

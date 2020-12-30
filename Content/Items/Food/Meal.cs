@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Food
         public int Fullness { get; set; }
         public override bool CloneNewInstances => true;
 
-        public override string Texture => Directory.FoodItem + Name;
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         public override void SetStaticDefaults()
         {

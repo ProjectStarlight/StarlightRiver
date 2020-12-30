@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     internal class GemFocus : ModItem
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Focusing Gem");

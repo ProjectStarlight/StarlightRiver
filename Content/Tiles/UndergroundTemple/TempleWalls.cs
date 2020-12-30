@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -21,14 +21,14 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
     class TempleWallItem : QuickWallItem
     { 
-        public TempleWallItem() : base("Ancient Temple Brick Wall", "", WallType<TempleWall>(), ItemRarityID.White, Directory.UndergroundTempleTile) { } 
+        public TempleWallItem() : base("Ancient Temple Brick Wall", "", WallType<TempleWall>(), ItemRarityID.White, AssetDirectory.UndergroundTempleTile) { } 
     }
 
     class TempleWallBig : ModWall 
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -37,6 +37,6 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
     class TempleWallBigItem : QuickWallItem 
     {
-        public TempleWallBigItem() : base("Large Ancient Temple Brick Wall", "", WallType<TempleWallBig>(), ItemRarityID.White, Directory.UndergroundTempleTile) { } 
+        public TempleWallBigItem() : base("Large Ancient Temple Brick Wall", "", WallType<TempleWallBig>(), ItemRarityID.White, AssetDirectory.UndergroundTempleTile) { } 
     }
 }

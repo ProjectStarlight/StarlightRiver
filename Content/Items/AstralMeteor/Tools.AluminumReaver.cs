@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
     internal class AluminumReaver : ModItem
     {
-        public override string Texture => Directory.AluminumItem + "AluminumReaver";
+        public override string Texture => AssetDirectory.AluminumItem + "AluminumReaver";
 
         public override void SetStaticDefaults()
         {

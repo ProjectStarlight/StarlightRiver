@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
     public class OvergrowBow : ModItem
     {
-        public override string Texture => Directory.OvergrowItem + "OvergrowBow";
+        public override string Texture => AssetDirectory.OvergrowItem + "OvergrowBow";
 
         public override void SetStaticDefaults()
         {

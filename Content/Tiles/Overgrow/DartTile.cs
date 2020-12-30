@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + name;
+            texture = AssetDirectory.OvergrowTile + name;
             return true;
         }
 
@@ -129,5 +129,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
     }
 
-    public class DartOvergrowItem : QuickTileItem { public DartOvergrowItem() : base("Overgrow Dart Trap", "", TileType<DartTile>(), 0, Directory.OvergrowTile) { } }
+    public class DartOvergrowItem : QuickTileItem { public DartOvergrowItem() : base("Overgrow Dart Trap", "", TileType<DartTile>(), 0, AssetDirectory.OvergrowTile) { } }
 }

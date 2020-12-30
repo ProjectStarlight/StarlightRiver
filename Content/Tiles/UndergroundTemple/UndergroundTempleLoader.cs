@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
     class UndergroundTempleLoader : TileLoader
     {
-        public override string AssetRoot => Directory.UndergroundTempleTile;
+        public override string AssetRoot => AssetDirectory.UndergroundTempleTile;
 
         public override void Load()
         {

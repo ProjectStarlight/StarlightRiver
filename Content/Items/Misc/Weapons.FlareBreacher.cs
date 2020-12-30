@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class FlareBreacher : ModItem
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
      internal class ExplosiveFlare : ModProjectile
     {
-         public override string Texture => Directory.MiscItem + Name;
+         public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetDefaults()
         {
             projectile.width = 10;
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
     internal class FlareExplosion : ModProjectile
     {
-         public override string Texture => Directory.MiscItem + Name;
+         public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetDefaults()
         {
             projectile.width = 24;

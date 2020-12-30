@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class GlassArrowhead : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public GlassArrowhead() : base("Glass Arrowhead", "Arrows shatter into glass shards on critical hit\nsome shard may pass through the initial hit target") { }
 
         public override void AddRecipes()

@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

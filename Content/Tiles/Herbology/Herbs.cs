@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.HerbologyTile + name;
+            texture = AssetDirectory.HerbologyTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.HerbologyTile + name;
+            texture = AssetDirectory.HerbologyTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

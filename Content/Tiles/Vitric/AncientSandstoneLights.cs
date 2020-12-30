@@ -15,14 +15,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     public class AncientSandstoneTorchItem : QuickTileItem
     {
-        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, Directory.Debug, true) { }
+        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, AssetDirectory.Debug, true) { }
     }
 
     internal class AncientSandstoneTorch : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
         
@@ -49,8 +49,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
                 return;
-            Texture2D tex = GetTexture(Directory.RiftCrafting + "Glow0");
-            Texture2D tex2 = GetTexture(Directory.RiftCrafting + "Glow1");
+            Texture2D tex = GetTexture(AssetDirectory.RiftCrafting + "Glow0");
+            Texture2D tex2 = GetTexture(AssetDirectory.RiftCrafting + "Glow1");
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive);

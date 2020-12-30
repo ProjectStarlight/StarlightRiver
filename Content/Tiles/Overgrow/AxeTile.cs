@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + "BrickOvergrow";
+            texture = AssetDirectory.OvergrowTile + "BrickOvergrow";
             return true;
         }
 
@@ -62,14 +62,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(Directory.OvergrowItem + "ExecutionersAxe");
+            Texture2D tex = GetTexture(AssetDirectory.OvergrowItem + "ExecutionersAxe");
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Center.X / 16, (int)Center.Y / 16), Angle, new Vector2(0, tex.Height), 1.5f, 0, 0);
         }
     }
 
     class AxeTileItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public AxeTileItem() : base("Axe Trap", "Titties", TileType<AxeTile>(), 1) { }
     }

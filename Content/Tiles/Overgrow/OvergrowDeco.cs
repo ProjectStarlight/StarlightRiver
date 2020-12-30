@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + "Rock2x2";
+            texture = AssetDirectory.OvergrowTile + "Rock2x2";
             return true;
         }
 
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            Texture2D tex = GetTexture(Directory.OvergrowTile + "Rock2x2Glow");
+            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "Rock2x2Glow");
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
             spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White);
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class Rock2x2Item : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public Rock2x2Item() : base("2x2 rock placer", "It places... Rocks", TileType<Rock2x2>(), 7) { }
     }

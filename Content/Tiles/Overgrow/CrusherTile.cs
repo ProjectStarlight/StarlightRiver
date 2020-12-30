@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + name;
+            texture = AssetDirectory.OvergrowTile + name;
             return true;
         }
 
@@ -49,5 +49,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
     }
 
-    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", TileType<CrusherTile>(), 0, Directory.OvergrowTile) { } }
+    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", TileType<CrusherTile>(), 0, AssetDirectory.OvergrowTile) { } }
 }

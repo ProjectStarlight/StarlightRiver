@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Head)]
     public class PalestoneHead : ModItem
     {
-        public override string Texture => Directory.PalestoneItem + "PalestoneHead";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalestoneHead";
 
         public override void SetStaticDefaults()
         {
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Body)]
     public class PalestoneChest : ModItem
     {
-        public override string Texture => Directory.PalestoneItem + "PalestoneChest";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalestoneChest";
 
         public override void SetStaticDefaults()
         {
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Palestone
     [AutoloadEquip(EquipType.Legs)]
     public class PalestoneLegs : ModItem
     {
-        public override string Texture => Directory.PalestoneItem + "PalestoneLegs";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalestoneLegs";
 
         public override void SetStaticDefaults()
         {
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.Palestone
     }
      internal class PalestoneArmorProjectile : ModProjectile
     {
-        public override string Texture => Directory.PalestoneItem + "PalestoneArmorProjectile";
+        public override string Texture => AssetDirectory.PalestoneItem + "PalestoneArmorProjectile";
         private int MaxCharge = 300;
         private Vector2 LastLocation;
         public static int MaxTablets = 3;

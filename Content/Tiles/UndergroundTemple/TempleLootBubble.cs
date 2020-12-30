@@ -13,7 +13,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -53,7 +53,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Bubble";
 
-        public TestBubble() : base("Bubble", "ngh", TileType<TempleLootBubble>(), 5, Directory.UndergroundTempleTile) { }
+        public TestBubble() : base("Bubble", "ngh", TileType<TempleLootBubble>(), 5, AssetDirectory.UndergroundTempleTile) { }
     }
 
 }

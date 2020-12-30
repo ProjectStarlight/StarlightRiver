@@ -6,24 +6,24 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
+namespace StarlightRiver.Content.Items.Vitric
 {
-
     public class VitricSummonJavelin : VitricSummonHammer
     {
         internal Vector2 offset;
 
         public VitricSummonJavelin()
         {
-            strikewhere = projectile.Center;
-            enemysize = Vector2.One;
+            strikeWhere = projectile.Center;
+            enemySize = Vector2.One;
             Vector2 offset = Vector2.Zero;
         }
 
         public override bool CanDamage() => offset.X > 0;
+
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -47,7 +47,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override void DoAI()
         {
-            oldhitbox = new Vector2(projectile.width, projectile.height);
+            oldHitbox = new Vector2(projectile.width, projectile.height);
 
             if (projectile.localAI[0] > 1000)
                 projectile.Kill();
@@ -66,21 +66,21 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             if (enemy != null && enemy.active)
             {
-                strikewhere = enemy.Center + enemy.velocity * 4;
-                enemysize = new Vector2(enemy.width, enemy.height);
+                strikeWhere = enemy.Center + enemy.velocity * 4;
+                enemySize = new Vector2(enemy.width, enemy.height);
             }
 
             if (offset.X < 1)
             {
                 Vector2 gothere = projectile.Center;
-                Vector2 aimvector = strikewhere - projectile.Center;
+                Vector2 aimvector = strikeWhere - projectile.Center;
                 float animlerp = Math.Min(projectile.localAI[0] / 200f, 1f);
                 float turnto = aimvector.ToRotation();
 
                 if (projectile.localAI[0] < 200)
                 {
-                    gothere = strikewhere - new Vector2(projectile.spriteDirection * 96, 0);
-                    projectile.velocity += ((gothere - projectile.Center) / 80f) * animlerp;
+                    gothere = strikeWhere - new Vector2(projectile.spriteDirection * 96, 0);
+                    projectile.velocity += (gothere - projectile.Center) / 80f * animlerp;
                     projectile.velocity *= 0.65f;
                 }
                 else
@@ -94,19 +94,17 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
                 if ((int)projectile.localAI[0] == 400)
                 {
                     for (float num315 = 0.75f; num315 < 8; num315 += 2f)
-                    {
                         for (float i = -80; i < 41; i += 8f)
                         {
                             float angle = Main.rand.NextFloat(-MathHelper.Pi / 8f, MathHelper.Pi / 8f);
-                            float idist = ((i + 82f) / 40f);
-                            Vector2 velo = Vector2.Normalize((((projectile.rotation) + angle) + (float)Math.PI).ToRotationVector2()) * idist;
+                            float idist = (i + 82f) / 40f;
+                            Vector2 velo = Vector2.Normalize((projectile.rotation + angle + (float)Math.PI).ToRotationVector2()) * idist;
                             Vector2 velo2 = new Vector2(velo.X * projectile.spriteDirection, velo.Y);
                             Vector2 veloincreasebyi = Vector2.Normalize(projectile.velocity) * (i * 1.5f);
                             Vector2 randomvelo = new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-6, 6));
 
                             Dust.NewDustPerfect(projectile.Center + veloincreasebyi + randomvelo, DustID.LavaMoss, velo2, 100, default, num315 / 2f);
                         }
-                    }
 
                     offset.X = 1;
                     projectile.velocity = (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * 10f * projectile.spriteDirection;
@@ -119,9 +117,8 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override bool PreKill(int timeLeft)
         {
-            int dusttype = DustType<Content.Dusts.GlassGravity>();
+            int dusttype = DustType<Dusts.GlassGravity>();
             for (float num315 = 0.75f; num315 < 8; num315 += 2f)
-            {
                 for (float i = -80; i < 41; i += 8f)
                 {
                     float angle = MathHelper.ToRadians(-Main.rand.NextFloat(-MathHelper.Pi / 5f, MathHelper.Pi / 5f));
@@ -131,7 +128,6 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
                     Dust.NewDustPerfect(projectile.Center + offset + randomoffsetreboiled, dusttype, new Vector2(velo.X * projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
                 }
-            }
 
             Main.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
             return true;
@@ -147,7 +143,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             float rotoffset = projectile.rotation + MathHelper.ToRadians(90f);
             float themath = Math.Min((projectile.localAI[0] - 200f) / 300f, 1f);
             spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect, lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(animationProgress), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
         }
     }
 

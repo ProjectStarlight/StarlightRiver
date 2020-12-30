@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
     internal class OvergrowBossAnchor : ModNPC
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool CheckActive()
         {

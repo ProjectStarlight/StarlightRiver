@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     public class Tentacle : ModNPC, IUnderwater
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
         public SquidBoss Parent { get; set; }
         public Vector2 MovePoint;
         public Vector2 SavedPoint;
@@ -45,11 +45,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (Parent != null)
             {
-                Texture2D top = GetTexture(Directory.SquidBoss + "TentacleTop");
-                Texture2D glow = GetTexture(Directory.SquidBoss + "TentacleGlow");
-                Texture2D glow2 = GetTexture(Directory.SquidBoss + "TentacleGlow2");
-                Texture2D body = GetTexture(Directory.SquidBoss + "TentacleBody");
-                Texture2D ring = GetTexture(Directory.SquidBoss + "TentacleRing");
+                Texture2D top = GetTexture(AssetDirectory.SquidBoss + "TentacleTop");
+                Texture2D glow = GetTexture(AssetDirectory.SquidBoss + "TentacleGlow");
+                Texture2D glow2 = GetTexture(AssetDirectory.SquidBoss + "TentacleGlow2");
+                Texture2D body = GetTexture(AssetDirectory.SquidBoss + "TentacleBody");
+                Texture2D ring = GetTexture(AssetDirectory.SquidBoss + "TentacleRing");
 
                 float dist = npc.Center.X - Parent.npc.Center.X;
                 int underMax = 0;

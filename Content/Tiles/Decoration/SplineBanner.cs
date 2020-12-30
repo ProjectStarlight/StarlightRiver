@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
         private Tile target;
 
-        public override string Texture => Directory.DecorationTile + Name;
+        public override string Texture => AssetDirectory.DecorationTile + Name;
 
         protected SplineBannerItem(string displayName, int place)
         {

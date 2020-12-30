@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -33,6 +33,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class ForgeDoorItem : QuickTileItem
     {
-        public ForgeDoorItem() : base("Forge Door", "Titties", TileType<ForgeDoor>(), 1, Directory.Debug, true) { }
+        public ForgeDoorItem() : base("Forge Door", "Titties", TileType<ForgeDoor>(), 1, AssetDirectory.Debug, true) { }
     }
 }

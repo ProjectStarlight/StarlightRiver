@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Starwood
 {
     class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
     {
-        public override string Texture => Directory.StarwoodItem + Name;
+        public override string Texture => AssetDirectory.StarwoodItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Boomerang");
@@ -150,8 +150,8 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => NextPhase(0, true);
         public override void OnHitPlayer(Player target, int damage, bool crit) => NextPhase(0, true);
 
-        private Texture2D GlowingTrail => GetTexture(Directory.StarwoodItem + "StarwoodBoomerangGlowTrail");
-        private Texture2D GlowingTexture => GetTexture(Directory.StarwoodItem + "StarwoodBoomerangGlow");
+        private Texture2D GlowingTrail => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlowTrail");
+        private Texture2D GlowingTexture => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlow");
         private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");//TEXTURE PATH
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

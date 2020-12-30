@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         readonly int whitelistID = WallType<AuroraBrickWall>();
         public float WaterLevel { get => npc.Center.Y + 35 * 16 - npc.ai[0]; }
 
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("");
 
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawWater(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture(Directory.SquidBoss + "CathedralWater");
+            Texture2D tex = GetTexture(AssetDirectory.SquidBoss + "CathedralWater");
             Vector2 pos = npc.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
             var source = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, (int)npc.ai[0] - 5 * 16);
 
@@ -181,8 +181,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + Helper.ConvertY(WaterLevel - Main.screenPosition.Y) / 2f));
             ApplyEffect.Parameters["time"].SetValue(Main.GameUpdateCount / 75f);
 
-            ApplyEffect.Parameters["draw"].SetValue(GetTexture(Directory.SquidBoss + "WaterOver"));
-            ApplyEffect.Parameters["distort"].SetValue(GetTexture(Directory.SquidBoss + "WaterDistort"));
+            ApplyEffect.Parameters["draw"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterOver"));
+            ApplyEffect.Parameters["distort"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterDistort"));
             ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
             ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
             ApplyEffect.Parameters["xOff"].SetValue(0.5f + Helper.ConvertX(target.X) / 2f);
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         }
 
         public static ParticleSystem.Update updateBubbles => UpdateBubblesBody;
-        ParticleSystem system = new ParticleSystem(Directory.SquidBoss + "Bubble", updateBubbles, 3);
+        ParticleSystem system = new ParticleSystem(AssetDirectory.SquidBoss + "Bubble", updateBubbles, 3);
 
         private static void UpdateBubblesBody(Particle particle)
         {
@@ -230,9 +230,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (!Helper.OnScreen(drawCheck)) return;
 
             //parallax background
-            Texture2D layer0 = GetTexture(Directory.SquidBoss + "Background0");
-            Texture2D layer1 = GetTexture(Directory.SquidBoss + "Background1");
-            Texture2D layer2 = GetTexture(Directory.SquidBoss + "Background2");
+            Texture2D layer0 = GetTexture(AssetDirectory.SquidBoss + "Background0");
+            Texture2D layer1 = GetTexture(AssetDirectory.SquidBoss + "Background1");
+            Texture2D layer2 = GetTexture(AssetDirectory.SquidBoss + "Background2");
 
             Vector2 pos = npc.Center;
             Vector2 dpos = pos - Main.screenPosition;
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
-            Texture2D backdrop = GetTexture(Directory.SquidBoss + "Window");
+            Texture2D backdrop = GetTexture(AssetDirectory.SquidBoss + "Window");
             Helper.DrawWithLighting(npc.Center - backdrop.Size() / 2 + new Vector2(0, -114) - Main.screenPosition, backdrop);
 
             var shinePos = npc.Center - backdrop.Size() / 2 + new Vector2(0, 920 - npc.ai[0]) - Main.screenPosition;
@@ -259,12 +259,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-            Texture2D glass = GetTexture(Directory.SquidBoss + "WindowIn");
-            Texture2D glass2 = GetTexture(Directory.SquidBoss + "WindowInGlow");
+            Texture2D glass = GetTexture(AssetDirectory.SquidBoss + "WindowIn");
+            Texture2D glass2 = GetTexture(AssetDirectory.SquidBoss + "WindowInGlow");
             spriteBatch.Draw(glass, npc.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, Color.White * 0.425f, 0, glass.Size() / 2, 1, 0, 0);
             spriteBatch.Draw(glass2, npc.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, Color.White * 0.2f, 0, glass.Size() / 2, 1, 0, 0);
 
-            Texture2D ray = GetTexture(Directory.SquidBoss + "Godray");
+            Texture2D ray = GetTexture(AssetDirectory.SquidBoss + "Godray");
 
             for (int k = 0; k < 4; k++)
             {
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-            Texture2D texIn = GetTexture(Directory.SquidBoss + "SmallWindowIn");
+            Texture2D texIn = GetTexture(AssetDirectory.SquidBoss + "SmallWindowIn");
 
             DrawWindowGlass(spriteBatch, texIn, new Vector2(0, -70));
 
@@ -311,8 +311,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void DrawWindowLit(Vector2 off)
         {
-            Texture2D background1 = GetTexture(Directory.SquidBoss + "Background1");
-            Texture2D background2 = GetTexture(Directory.SquidBoss + "Background2");
+            Texture2D background1 = GetTexture(AssetDirectory.SquidBoss + "Background1");
+            Texture2D background2 = GetTexture(AssetDirectory.SquidBoss + "Background2");
 
             var position = npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition;
             position -= new Vector2(70, 220);
@@ -367,7 +367,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
             );
 
-            Texture2D texOver = GetTexture(Directory.SquidBoss + "SmallWindow");
+            Texture2D texOver = GetTexture(AssetDirectory.SquidBoss + "SmallWindow");
 
             Vector2 pos = npc.Center - texOver.Size() / 2 + off * 16;
             Helper.DrawWithLighting(pos - Main.screenPosition, texOver);
@@ -381,9 +381,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void DrawWindow(SpriteBatch spriteBatch, Vector2 off, Color color)
         {
-            Texture2D background1 = GetTexture(Directory.SquidBoss + "Background1");
-            Texture2D background2 = GetTexture(Directory.SquidBoss + "Background2");
-            Texture2D texUnder = GetTexture(Directory.SquidBoss + "SmallWindowUnder");
+            Texture2D background1 = GetTexture(AssetDirectory.SquidBoss + "Background1");
+            Texture2D background2 = GetTexture(AssetDirectory.SquidBoss + "Background2");
+            Texture2D texUnder = GetTexture(AssetDirectory.SquidBoss + "SmallWindowUnder");
 
             spriteBatch.Draw(texUnder, npc.Center + new Vector2(off.X * 16, off.Y * 16) - Main.screenPosition, null, new Color(0, 5, 15), 0, texUnder.Size() / 2, 1, 0, 0);
 
@@ -408,10 +408,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && !NPC.AnyNPCs(NPCType<SquidBoss>()))
             {
-                Texture2D tentacleGlow = GetTexture(Directory.SquidBoss + "TentacleGlow");
-                Texture2D tentacleTop = GetTexture(Directory.SquidBoss + "TentacleTop");
-                Texture2D tentacleMid = GetTexture(Directory.SquidBoss + "TentacleBody");
-                Texture2D squidBody = GetTexture(Directory.SquidBoss + "BodyPreview");
+                Texture2D tentacleGlow = GetTexture(AssetDirectory.SquidBoss + "TentacleGlow");
+                Texture2D tentacleTop = GetTexture(AssetDirectory.SquidBoss + "TentacleTop");
+                Texture2D tentacleMid = GetTexture(AssetDirectory.SquidBoss + "TentacleBody");
+                Texture2D squidBody = GetTexture(AssetDirectory.SquidBoss + "BodyPreview");
 
                 float sin = 1 + (float)Math.Sin(StarlightWorld.rottime);
                 float cos = 1 + (float)Math.Cos(StarlightWorld.rottime);

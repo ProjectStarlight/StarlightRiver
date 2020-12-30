@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricBossBag : ModItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override int BossBagNPC => NPCType<Bosses.GlassBoss.VitricBoss>();
 

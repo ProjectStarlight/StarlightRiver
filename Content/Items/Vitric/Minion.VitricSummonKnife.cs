@@ -7,18 +7,18 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles.WeaponProjectiles.Summons;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
+namespace StarlightRiver.Content.Items.Vitric
 {
-
     public class VitricSummonKnife : VitricSummonHammer
     {
         private bool closetoplayer = false;
         internal Vector2 offset;
 
         public override bool CanDamage() => offset.X > 0;
+
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -56,14 +56,14 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public VitricSummonKnife()
         {
-            strikewhere = projectile.Center;
-            enemysize = Vector2.One;
+            strikeWhere = projectile.Center;
+            enemySize = Vector2.One;
         }
 
         public override void DoAI()
         {
             Player player = projectile.Owner();
-            oldhitbox = new Vector2(projectile.width, projectile.height);
+            oldHitbox = new Vector2(projectile.width, projectile.height);
             projectile.tileCollide = offset.X > 0;
 
             if (projectile.localAI[0] > 600)
@@ -88,11 +88,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             if (Helper.IsTargetValid(enemy))
             {
-                strikewhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y * 4);
-                enemysize = new Vector2(enemy.width, enemy.height);
+                strikeWhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y * 4);
+                enemySize = new Vector2(enemy.width, enemy.height);
             }
 
-            Vector2 aimvector = strikewhere - projectile.Center;
+            Vector2 aimvector = strikeWhere - projectile.Center;
             float turnto = aimvector.ToRotation();
 
             if (offset.X < 1)
@@ -102,13 +102,13 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
                 if (closetoplayer)
                 {
-                    gothere = player.Center - new Vector2(player.direction * 32, 72) + (offset * 3f);
-                    projectile.velocity += ((gothere - projectile.Center) / 30f) * animlerp;
+                    gothere = player.Center - new Vector2(player.direction * 32, 72) + offset * 3f;
+                    projectile.velocity += (gothere - projectile.Center) / 30f * animlerp;
                     projectile.velocity *= 0.65f;
                 }
                 else
                 {
-                    projectile.velocity -= Vector2.Normalize(strikewhere - projectile.Center).RotatedBy(offset.Y * 0.2f * projectile.spriteDirection) * animlerp * 0.10f;
+                    projectile.velocity -= Vector2.Normalize(strikeWhere - projectile.Center).RotatedBy(offset.Y * 0.2f * projectile.spriteDirection) * animlerp * 0.10f;
                     projectile.velocity *= 0.92f;
                 }
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
         public override bool PreKill(int timeLeft)
         {
-            int dusttype = DustType<Content.Dusts.GlassGravity>(); //use the generics my dude.
+            int dusttype = DustType<Dusts.GlassGravity>(); //use the generics my dude.
 
             for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
             {
@@ -154,7 +154,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
             Vector2 drawOrigin = new Vector2(tex.Width / 2, tex.Height) / 2f;
             float rotoffset = projectile.rotation + MathHelper.ToRadians(45f);
             spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-            spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(moltenglowanim), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), VitricSummonOrb.MoltenGlow(animationProgress), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
         }
     }
 

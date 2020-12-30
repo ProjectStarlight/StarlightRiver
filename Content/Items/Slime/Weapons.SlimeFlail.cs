@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Slime
 {
     public class SlimeFlail : ModItem
     {
-        public override string Texture => Directory.SlimeItem + Name;
+        public override string Texture => AssetDirectory.SlimeItem + Name;
 
         public override void SetStaticDefaults()
         {

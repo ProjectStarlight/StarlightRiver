@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
         public int gemID = 0;
         public override bool CloneNewInstances => true;
 
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetDefaults()
         {

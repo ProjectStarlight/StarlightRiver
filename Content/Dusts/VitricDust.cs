@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + "Glass";
+            texture = AssetDirectory.Dust + "Glass";
             return true;
         }
         public override void OnSpawn(Dust dust)
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + "Glass";
+            texture = AssetDirectory.Dust + "Glass";
             return base.Autoload(ref name, ref texture);
         }
 
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + "Glass";
+            texture = AssetDirectory.Dust + "Glass";
             return base.Autoload(ref name, ref texture);
         }
 

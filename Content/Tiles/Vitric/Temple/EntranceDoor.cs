@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class EntranceDoorItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
-        public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1, Directory.VitricTile) { }
+        public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1, AssetDirectory.VitricTile) { }
     }
 }

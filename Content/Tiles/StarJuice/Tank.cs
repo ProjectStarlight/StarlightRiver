@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.StarjuiceTile + name;
+            texture = AssetDirectory.StarjuiceTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

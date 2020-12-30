@@ -2,7 +2,6 @@
 using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Projectiles.Ability;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;

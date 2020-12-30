@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
     class DoorBomb : InteractiveProjectile
     {
-        public override string Texture => Directory.SquidBoss + "SpewBlob";
+        public override string Texture => AssetDirectory.SquidBoss + "SpewBlob";
 
         public override void GoodEffects() => StarlightWorld.Flag(WorldFlags.SquidBossOpen);
 

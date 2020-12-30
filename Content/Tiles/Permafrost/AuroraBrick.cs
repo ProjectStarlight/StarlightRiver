@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class AuroraBrickDoorItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public AuroraBrickDoorItem() : base("Debug Brick Placer", "", TileType<AuroraBrickDoor>(), ItemRarityID.White) { }
     }

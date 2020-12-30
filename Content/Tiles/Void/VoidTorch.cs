@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Void
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VoidTile + name;
+            texture = AssetDirectory.VoidTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -42,6 +42,6 @@ namespace StarlightRiver.Content.Tiles.Void
 
     class VoidTorchItem : QuickTileItem 
     { 
-        public VoidTorchItem() : base("Void Torch", "", TileType<VoidTorch>(), 1, Directory.VoidTile) { } 
+        public VoidTorchItem() : base("Void Torch", "", TileType<VoidTorch>(), 1, AssetDirectory.VoidTile) { } 
     }
 }

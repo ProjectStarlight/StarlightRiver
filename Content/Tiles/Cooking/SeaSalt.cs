@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.CookingTile + name;
+            texture = AssetDirectory.CookingTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

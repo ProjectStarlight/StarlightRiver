@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -27,5 +27,5 @@ namespace StarlightRiver.Content.Tiles.Vitric
             player.showItemIcon2 = ItemType<VitricMusicBoxItem>();
         }
     }
-    internal class VitricMusicBoxItem : QuickTileItem { public VitricMusicBoxItem() : base("Music Box (Vitric Desert)", "", TileType<VitricMusicBox>(), 2, Directory.VitricTile) { } }
+    internal class VitricMusicBoxItem : QuickTileItem { public VitricMusicBoxItem() : base("Music Box (Vitric Desert)", "", TileType<VitricMusicBox>(), 2, AssetDirectory.VitricTile) { } }
 }

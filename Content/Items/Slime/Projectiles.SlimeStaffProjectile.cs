@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Slime
 {
     internal class SlimeStaffProjectile : ModProjectile
     {
-        public override string Texture => Directory.SlimeItem + Name;
+        public override string Texture => AssetDirectory.SlimeItem + Name;
 
         public float maxProjSpeed;
         public int maxTimeleft;

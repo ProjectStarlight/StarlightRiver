@@ -12,7 +12,7 @@ namespace StarlightRiver.NPCs.Town
     [AutoloadHead]
     public class Voidsmith : ModNPC
     {
-        public override string Texture => Directory.TownNPC + "Voidsmith";
+        public override string Texture => AssetDirectory.TownNPC + "Voidsmith";
 
         public override bool CanTownNPCSpawn(int numTownNPCs, int money) => true;
 

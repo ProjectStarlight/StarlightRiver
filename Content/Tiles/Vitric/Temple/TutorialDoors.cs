@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -44,13 +44,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             Player player = Main.LocalPlayer;
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
         }
     }
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1, Directory.Debug, true) { }
+        public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1, AssetDirectory.Debug, true) { }
     }
 
     class TutorialDoor2 : DummyTile
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -96,13 +96,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             Player player = Main.LocalPlayer;
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) 
                 return;
-            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(GetTexture(Directory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
         }
     }
 
     class TutorialDoor2Item : QuickTileItem
     {
-        public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1, Directory.Debug, true) { }
+        public TutorialDoor2Item() : base("TutorialDoor2", "Titties", TileType<TutorialDoor2>(), 1, AssetDirectory.Debug, true) { }
     }
 }

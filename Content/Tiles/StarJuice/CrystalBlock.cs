@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.StarjuiceTile + name;
+            texture = AssetDirectory.StarjuiceTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -30,6 +30,6 @@ namespace StarlightRiver.Content.Tiles.StarJuice
     }
     internal class CrystalBlockItem : QuickTileItem
     {
-        public CrystalBlockItem() : base("Star Crytsal", "Entrancing Crystalized Starlight...", TileType<CrystalBlock>(), 1, Directory.StarjuiceTile) { }
+        public CrystalBlockItem() : base("Star Crytsal", "Entrancing Crystalized Starlight...", TileType<CrystalBlock>(), 1, AssetDirectory.StarjuiceTile) { }
     }
 }

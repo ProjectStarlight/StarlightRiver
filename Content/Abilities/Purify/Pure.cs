@@ -7,11 +7,11 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Projectiles.Ability;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using Terraria.Graphics.Effects;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace StarlightRiver.Content.Abilities.Purify
 {
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Abilities.Purify
 
     internal class Purifier : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Corona of Purity");
 
@@ -113,12 +113,6 @@ namespace StarlightRiver.Content.Abilities.Purify
                 }
         }
 
-        private static void SpawnDust(int x, int y)
-        {
-            for (int k = 0; k <= 4; k++)
-                Dust.NewDustPerfect(new Vector2(x, y) * 16 + Main.rand.NextVector2Square(-2, 18), DustType<Dusts.Purify2>(), new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), Main.rand.NextFloat(-0.1f, -0.5f)), 0, Color.White, 0.5f);
-        }
-
         private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle");
         private readonly Texture2D cirTex2 = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle2");
 
@@ -135,7 +129,7 @@ namespace StarlightRiver.Content.Abilities.Purify
 
     internal class PurifierReturn : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

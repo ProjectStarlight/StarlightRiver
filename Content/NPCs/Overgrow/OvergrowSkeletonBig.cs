@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 {
     internal class OvergrowSkeletonBig : ModNPC
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public override void SetStaticDefaults()
         {

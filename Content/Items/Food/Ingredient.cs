@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Food
             ThisType = type;
         }
 
-        public override string Texture => Directory.FoodItem + Name;
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         ///<summary>Where the effects of this food item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
         public virtual void BuffEffects(Player player, float multiplier) { }

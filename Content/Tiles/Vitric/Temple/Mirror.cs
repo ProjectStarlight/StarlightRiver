@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
-            Texture2D tex = GetTexture(Directory.VitricTile + "MirrorOver");
+            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "MirrorOver");
 
             spriteBatch.Draw(tex, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(), Lighting.GetColor(i, j), tile.frameX * 1.57f, tex.Size() / 2 + Vector2.One * 4, 1, 0, 0);
         }
@@ -49,6 +49,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class MirrorItem : QuickTileItem
     {
-        public MirrorItem() : base("Light Mirror", "", TileType<Mirror>(), 1, Directory.VitricTile) { }
+        public MirrorItem() : base("Light Mirror", "", TileType<Mirror>(), 1, AssetDirectory.VitricTile) { }
     }
 }

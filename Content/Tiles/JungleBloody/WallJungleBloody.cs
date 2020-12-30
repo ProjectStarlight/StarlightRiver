@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.JungleBloodyTile + name;
+            texture = AssetDirectory.JungleBloodyTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

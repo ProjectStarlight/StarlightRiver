@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class SanitizerSpray : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer 5 seconds of a random debuff to all enemies nearby\nDoesn't trigger if there are no vurnerable enemies nearby") { }
 
         public override bool Autoload(ref string name)

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Void
 {
     class VoidTileLoader : TileLoader
     {
-        public override string AssetRoot => Directory.VoidTile;
+        public override string AssetRoot => AssetDirectory.VoidTile;
 
         public override void Load()
         {

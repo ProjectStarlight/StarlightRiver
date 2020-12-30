@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         float charge = 0;
         bool charged = false;
 
-        public override string Texture => Directory.PermafrostItem + "AuroraPick";
+        public override string Texture => AssetDirectory.PermafrostItem + "AuroraPick";
 
         public override void SetStaticDefaults()
         {
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         Color thisColor = Color.White;
 
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

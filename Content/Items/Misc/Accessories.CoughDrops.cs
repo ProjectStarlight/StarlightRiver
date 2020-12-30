@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class CoughDrops : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public CoughDrops() : base("Cough Drops", "When debuffs expire or are otherwise removed, gain some temporary speed and damage\nBonuses are based on buff duration, additional activations stack the time") { }
 
         public override bool Autoload(ref string name)

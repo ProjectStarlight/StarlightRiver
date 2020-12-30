@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + "WindowSmall";
+            texture = AssetDirectory.OvergrowTile + "WindowSmall";
             return true;
         }
 
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WindowSmallItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public WindowSmallItem() : base("Smol Window", "Titties", TileType<WindowSmall>(), 1) { }
     }
@@ -41,8 +41,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(Directory.OvergrowTile + "Window3");
-            Texture2D tex2 = GetTexture(Directory.OvergrowTile + "WindowSmall");
+            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "Window3");
+            Texture2D tex2 = GetTexture(AssetDirectory.OvergrowTile + "WindowSmall");
 
             Rectangle target = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.position.Y - Main.screenPosition.Y), 4 * 16, 6 * 16);
 
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture(Directory.OvergrowTile + "PitGlow");
+            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "PitGlow");
 
             float off = (float)Math.Sin(projectile.ai[0]) * 0.05f;
 

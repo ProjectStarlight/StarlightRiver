@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     public class TentacleSummon : ModItem
     {
-        public override string Texture => Directory.PermafrostItem + "TentacleSummon";
+        public override string Texture => AssetDirectory.PermafrostItem + "TentacleSummon";
 
         public override void SetDefaults()
         {
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Permafrost
     }
     public class TentacleSummonHead : ModProjectile
     {
-        public override string Texture => Directory.PermafrostItem + Name;
+        public override string Texture => AssetDirectory.PermafrostItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tentacle");
@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Player player = projectile.Owner();
-            Texture2D tex = mod.GetTexture(Directory.PermafrostItem + "TentacleSummonTail2");
+            Texture2D tex = mod.GetTexture(AssetDirectory.PermafrostItem + "TentacleSummonTail2");
             float dist = (projectile.position - player.Center).Length();
             TentacleDraw.DrawBezier(spriteBatch, lightColor, tex, projectile.Center, player.Center, control1, control2, tex.Height / dist / 2, projectile.rotation);
             return true;

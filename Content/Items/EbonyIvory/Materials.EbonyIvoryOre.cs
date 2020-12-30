@@ -9,17 +9,17 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 {
     public class OreEbonyItem : QuickTileItem
     {
-        public OreEbonyItem() : base("Ebony Ore", "Heavy and Impure", TileType<OreEbony>(), 1, Directory.EbonyIvoryItem) { }
+        public OreEbonyItem() : base("Ebony Ore", "Heavy and Impure", TileType<OreEbony>(), 1, AssetDirectory.EbonyIvoryItem) { }
     }
 
     public class OreIvoryItem : QuickMaterial
     {
-        public OreIvoryItem() : base("Ivory Ore", "Light and Pure", 999, 1000, 4, Directory.EbonyIvoryItem) { }
+        public OreIvoryItem() : base("Ivory Ore", "Light and Pure", 999, 1000, 4, AssetDirectory.EbonyIvoryItem) { }
     }
 
     public class BarEbony : QuickTileItem
     {
-        public BarEbony() : base("Ebony Bar", "Soft and Heavy", TileType<OreEbony>(), 1, Directory.EbonyIvoryItem) { } //TODO: Fix place type
+        public BarEbony() : base("Ebony Bar", "Soft and Heavy", TileType<OreEbony>(), 1, AssetDirectory.EbonyIvoryItem) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 
     public class BarIvory : QuickTileItem
     {
-        public BarIvory() : base("Ivory Bar", "Hard and Light", TileType<OreEbony>(), 1, Directory.EbonyIvoryItem) { } //TODO: Fix place type
+        public BarIvory() : base("Ivory Bar", "Hard and Light", TileType<OreEbony>(), 1, AssetDirectory.EbonyIvoryItem) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {

@@ -10,7 +10,7 @@ namespace StarlightRiver.Buffs
         public Illuminant() : base("Illuminant", "Glowing brightly!", true) { }
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
         public override void Update(NPC npc, ref int buffIndex)

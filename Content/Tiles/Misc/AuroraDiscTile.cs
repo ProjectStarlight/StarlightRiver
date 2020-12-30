@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
     class DebugDisc : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public DebugDisc() : base("Debug Disc Placer", "Dragon Sex", TileType<AuroraDiscTile>(), 1) { }
     }

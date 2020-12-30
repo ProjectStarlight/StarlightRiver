@@ -17,7 +17,7 @@ namespace StarlightRiver.Tiles.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Tiles.Temple
 
     public class JarTallItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public JarTallItem() : base("Stamina Jar Placer (Tall)", "Places a stamina jar, for debugging.", TileType<JarTall>(), -12) { }
     }

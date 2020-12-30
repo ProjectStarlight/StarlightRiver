@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
         public override void SetDefaults()
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     }
     internal class VineOvergrowItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
         public VineOvergrowItem() : base("OG Vine", "", ModContent.TileType<VineOvergrow>(), 0) { }
     }
 }

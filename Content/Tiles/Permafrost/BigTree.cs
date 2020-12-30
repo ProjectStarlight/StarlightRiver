@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class BigTreeItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public BigTreeItem() : base("Big Tree", "I came", TileType<BigTree>(), 1) { }
     }

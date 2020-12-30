@@ -17,7 +17,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
@@ -108,7 +108,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class JellyShroomItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", TileType<JellyShroom>(), 0) { }
     }

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -27,13 +27,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
     }
 
-    internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", TileType<AncientSandstonePlatform>(), 0, Directory.VitricTile) { } }
+    internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", TileType<AncientSandstonePlatform>(), 0, AssetDirectory.VitricTile) { } }
 
     internal class AncientSandstoneWall : ModWall
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -42,14 +42,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class AncientSandstoneWallItem : QuickWallItem
     {
-        public AncientSandstoneWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstoneWall>(), 0, Directory.VitricTile) { }
+        public AncientSandstoneWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstoneWall>(), 0, AssetDirectory.VitricTile) { }
     }
 
     internal class AncientSandstonePillarWall : ModWall
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -58,6 +58,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class AncientSandstonePillarWallItem : QuickWallItem
     {
-        public AncientSandstonePillarWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstonePillarWall>(), 0, Directory.VitricTile) { }
+        public AncientSandstonePillarWallItem() : base("Ancient Sandstone Wall", "", WallType<AncientSandstonePillarWall>(), 0, AssetDirectory.VitricTile) { }
     }
 }

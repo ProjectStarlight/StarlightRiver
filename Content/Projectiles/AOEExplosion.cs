@@ -6,7 +6,7 @@ namespace StarlightRiver.Projectiles
 {
     public class AOEExplosion : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {
@@ -31,7 +31,7 @@ namespace StarlightRiver.Projectiles
 
     public class AOEExplosionHostile : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

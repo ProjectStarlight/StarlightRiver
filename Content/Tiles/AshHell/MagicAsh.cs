@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.AshHell
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.AshHellTile + name;
+            texture = AssetDirectory.AshHellTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -23,6 +23,6 @@ namespace StarlightRiver.Content.Tiles.AshHell
 
     class MagicAshItem : QuickTileItem
     {
-        public MagicAshItem() : base("Magic Ash", "", TileType<MagicAsh>(), 0, Directory.AshHellTile) { }
+        public MagicAshItem() : base("Magic Ash", "", TileType<MagicAsh>(), 0, AssetDirectory.AshHellTile) { }
     }
 }

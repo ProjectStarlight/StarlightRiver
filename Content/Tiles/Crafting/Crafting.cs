@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.CraftingTile + name;
+            texture = AssetDirectory.CraftingTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.CraftingTile + name;
+            texture = AssetDirectory.CraftingTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.CraftingTile + name;
+            texture = AssetDirectory.CraftingTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class OvenItem : QuickTileItem
     {
-        public OvenItem() : base("Oven", "Used to bake items", TileType<Oven>(), 0, Directory.CraftingTile) { }
+        public OvenItem() : base("Oven", "Used to bake items", TileType<Oven>(), 0, AssetDirectory.CraftingTile) { }
 
         public override void AddRecipes()
         {
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class HerbStationItem : QuickTileItem
     {
-        public HerbStationItem() : base("Herbologist's Bench", "Used to refine herbs", TileType<HerbStation>(), 0, Directory.CraftingTile) { }
+        public HerbStationItem() : base("Herbologist's Bench", "Used to refine herbs", TileType<HerbStation>(), 0, AssetDirectory.CraftingTile) { }
 
         public override void AddRecipes()
         {
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class CookStationItem : QuickTileItem
     {
-        public CookStationItem() : base("Prep Station", "Right click to prepare meals", TileType<CookStation>(), 0, Directory.CraftingTile) { }
+        public CookStationItem() : base("Prep Station", "Right click to prepare meals", TileType<CookStation>(), 0, AssetDirectory.CraftingTile) { }
 
         public override void AddRecipes()
         {

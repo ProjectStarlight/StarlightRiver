@@ -16,7 +16,7 @@ namespace StarlightRiver.Tiles.Temple
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.UndergroundTempleTile + name;
+            texture = AssetDirectory.UndergroundTempleTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Tiles.Temple
 
     public class DashBarrierItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public DashBarrierItem() : base("Dash Barrier", "Cum in my pussy.", TileType<DashBarrier>(), -12) { }
     }

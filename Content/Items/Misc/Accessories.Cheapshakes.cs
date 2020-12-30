@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class Cheapskates : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public Cheapskates() : base("Cheapskates", "greatly increases your max run speed\ntake up to 50% more damage while moving above normal speed") { }
 
         public override bool Autoload(ref string name)

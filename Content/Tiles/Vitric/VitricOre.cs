@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
-        public override string Texture => Directory.VitricTile + "VitricOreGlow";
+        public override string Texture => AssetDirectory.VitricTile + "VitricOreGlow";
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
-        public override string Texture => Directory.VitricTile + "VitricOreFloatGlow";
+        public override string Texture => AssetDirectory.VitricTile + "VitricOreFloatGlow";
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {

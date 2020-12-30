@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricArrow : ModItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
     internal class VitricArrowProjectile : ModProjectile
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {

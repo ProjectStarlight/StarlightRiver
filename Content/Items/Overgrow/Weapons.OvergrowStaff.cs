@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
     public class OvergrowStaff : ModItem
     {
-        public override string Texture => Directory.OvergrowItem + "OvergrowStaff";
+        public override string Texture => AssetDirectory.OvergrowItem + "OvergrowStaff";
 
         public override void SetStaticDefaults()
         {

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
     class LightBeam : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

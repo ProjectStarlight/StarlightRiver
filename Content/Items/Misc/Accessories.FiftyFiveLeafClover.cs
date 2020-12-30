@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class FiftyFiveLeafClover : SmartAccessory
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public FiftyFiveLeafClover() : base("Fifty Five Leaf Clover", "Not taking damage gradually increases critical strike chance with a cap on +20% after 10 seconds\nResets after taking damage") { }
 
         public override bool Autoload(ref string name)

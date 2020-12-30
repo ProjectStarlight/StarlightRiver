@@ -10,14 +10,14 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumOre : QuickTileItem
     {
-        public AluminumOre() : base("Astral Aluminum", "", TileType<OreAluminum>(), ItemRarityID.White, Directory.AluminumItem) { }
+        public AluminumOre() : base("Astral Aluminum", "", TileType<OreAluminum>(), ItemRarityID.White, AssetDirectory.AluminumItem) { }
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
     }
 
     public class AluminumBar : QuickTileItem
     {
-        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<OreAluminum>(), ItemRarityID.Blue, Directory.AluminumItem) { }  //TODO: Fix place type
+        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<OreAluminum>(), ItemRarityID.Blue, AssetDirectory.AluminumItem) { }  //TODO: Fix place type
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 14, 0);
 

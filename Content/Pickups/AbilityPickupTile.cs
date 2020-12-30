@@ -13,7 +13,7 @@ namespace StarlightRiver.Pickups
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Invisible;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 

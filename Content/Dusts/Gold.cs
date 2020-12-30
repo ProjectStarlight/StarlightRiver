@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + "Gold";
+            texture = AssetDirectory.Dust + "Gold";
             return base.Autoload(ref name, ref texture);
         }
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.Dust + "Gold";
+            texture = AssetDirectory.Dust + "Gold";
             return base.Autoload(ref name, ref texture);
         }
 

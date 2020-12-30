@@ -90,7 +90,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles.Summons
 
             }
 
-            /*int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, mod.DustType("Glass2"));
+            /*int dust = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y), projectile.width, projectile.height, ModContent.DustType<Dusts.GlassGravity>());
 			Main.dust[dust].scale = 0.7f;
 			Main.dust[dust].velocity = projectile.velocity * 0.2f;
 			Main.dust[dust].noGravity = true;*/

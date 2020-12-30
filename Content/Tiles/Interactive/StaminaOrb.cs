@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.InteractiveTile + name;
+            texture = AssetDirectory.InteractiveTile + name;
             return true;
         }
 

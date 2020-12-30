@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Directory.SquidBoss + "Highlight");
+            Texture2D tex = ModContent.GetTexture(AssetDirectory.SquidBoss + "Highlight");
             int off = 16 * ((int)projectile.ai[0] % 5);
 
             if (projectile.timeLeft > 10)

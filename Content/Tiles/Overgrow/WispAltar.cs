@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + "WispAltarL";
+            texture = AssetDirectory.OvergrowTile + "WispAltarL";
             return true;
         }
 
@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarLItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public WispAltarLItem() : base("Wisp Altar L Placer", "DEBUG", TileType<WispAltarL>(), -1) { }
 
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.OvergrowTile + "WispAltarR";
+            texture = AssetDirectory.OvergrowTile + "WispAltarR";
             return true;
         }
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarRItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public WispAltarRItem() : base("Wisp Altar R Placer", "DEBUG", TileType<WispAltarR>(), -1) { }
     }

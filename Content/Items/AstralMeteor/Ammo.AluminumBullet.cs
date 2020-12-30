@@ -5,12 +5,13 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using Terraria;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumBullet : ModItem
     {
-        public override string Texture => Directory.AluminumItem + Name;
+        public override string Texture => AssetDirectory.AluminumItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -47,7 +48,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     internal class AluminumBulletProjectile : ModProjectile
     {
-        public override string Texture => Directory.AluminumItem + Name;
+        public override string Texture => AssetDirectory.AluminumItem + Name;
 
         public override void SetDefaults()
         {

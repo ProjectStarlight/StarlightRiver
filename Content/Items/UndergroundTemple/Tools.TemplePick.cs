@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TemplePick : ModItem
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         private int Charge;
         private bool Whirling;

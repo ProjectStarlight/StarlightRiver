@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     internal class VitricBossPlatformUp : MovingPlatform
     {
         public const int MaxHeight = 880;
-        public override string Texture => Directory.GlassBoss + "VitricBossPlatform";
+        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatform";
 
         public override bool CheckActive() => false;
         public override void DrawEffects(ref Color drawColor) => drawColor *= 1.4f;
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     internal class VitricBossPlatformUpSmall : VitricBossPlatformUp
     {
-        public override string Texture => Directory.GlassBoss + "VitricBossPlatformSmall";
+        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     internal class VitricBossPlatformDownSmall : VitricBossPlatformDown
     {
-        public override string Texture => Directory.GlassBoss + "VitricBossPlatformSmall";
+        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {

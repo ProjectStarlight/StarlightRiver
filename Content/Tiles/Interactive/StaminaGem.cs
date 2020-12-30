@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.InteractiveTile + name;
+            texture = AssetDirectory.InteractiveTile + name;
             return true;
         }
 
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     }
     internal class StaminaGemItem : QuickTileItem 
     { 
-        public StaminaGemItem() : base("Stamina Gem", "Restores stamina when hit with an ability", TileType<StaminaGem>(), 8, Directory.InteractiveTile) { } 
+        public StaminaGemItem() : base("Stamina Gem", "Restores stamina when hit with an ability", TileType<StaminaGem>(), 8, AssetDirectory.InteractiveTile) { } 
     }
 
     internal class StaminaGemDummy : Dummy

@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                     Main.PlaySound(SoundID.Shatter, npc.Center);
                     for (int k = 0; k <= 20; k++)
-                        Dust.NewDust(npc.position, 48, 32, mod.DustType("Glass2"), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+                        Dust.NewDust(npc.position, 48, 32, ModContent.DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
                     npc.netUpdate = true;
                 }
 

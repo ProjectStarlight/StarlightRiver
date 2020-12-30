@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -81,6 +81,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricSpikeItem : QuickTileItem
     {
-        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0, Directory.VitricTile) { }
+        public VitricSpikeItem() : base("Vitric Spikes", "Ouch!", TileType<VitricSpike>(), 0, AssetDirectory.VitricTile) { }
     }
 }

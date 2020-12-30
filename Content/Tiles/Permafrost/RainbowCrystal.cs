@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         class RainbowCrystalItem : QuickTileItem
         {
-            public override string Texture => Directory.Debug;
+            public override string Texture => AssetDirectory.Debug;
             public RainbowCrystalItem() : base("RainbowCrystal Placer", "", TileType<RainbowCrystal>(), ItemRarityID.White) { }
         }
     }

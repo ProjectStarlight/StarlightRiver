@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricYoyo : ModItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Vitric
     }
      public class VitricYoyoProj : ModProjectile
     {
-        public override string Texture => Directory.VitricItem + "VitricYoyoProj";
+        public override string Texture => AssetDirectory.VitricItem + "VitricYoyoProj";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Yoyo");
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Vitric
     }
     public class VitricYoyoShard : ModProjectile
     {
-        public override string Texture => Directory.VitricItem + "VitricYoyoShard";
+        public override string Texture => AssetDirectory.VitricItem + "VitricYoyoShard";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Yoyo");

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class TempleSpear : ModItem
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
     {
         public TempleSpearProjectile() : base(30, 25, 100) { }
 
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         public override void PostAI()
         {
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     class TempleSpearLight : ModProjectile
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         public override void SetDefaults()
         {

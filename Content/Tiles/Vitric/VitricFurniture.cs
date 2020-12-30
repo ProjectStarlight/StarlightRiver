@@ -6,6 +6,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     class VitricFurniture : FurnitureLoader
     {
-        public VitricFurniture() : base("Vitric", Directory.VitricTile + "Decoration/", new Color(140, 97, 86), new Color(255, 220, 150), DustType<Dusts.Air>(), StarlightRiver.Instance.ItemType("AncientSandstoneItem")) { }
+        public VitricFurniture() : base("Vitric", AssetDirectory.VitricTile + "Decoration/", new Color(140, 97, 86), new Color(255, 220, 150), DustType<Dusts.Air>(), StarlightRiver.Instance.ItemType("AncientSandstoneItem")) { }
     }
 }

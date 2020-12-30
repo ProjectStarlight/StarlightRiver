@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class FireGauntlet : ModItem
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;

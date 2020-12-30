@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     internal class Sandscript : ModItem
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sand Scripts");

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -69,6 +69,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class WindsCrystalItem : QuickTileItem
     {
-        public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1, Directory.Debug, true) { }
+        public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1, AssetDirectory.Debug, true) { }
     }
 }

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Forest
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.ForestTile + name;
+            texture = AssetDirectory.ForestTile + name;
             return base.Autoload(ref name, ref texture);
         }
 

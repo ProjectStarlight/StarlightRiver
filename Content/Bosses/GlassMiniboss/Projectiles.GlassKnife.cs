@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (timer < 30)
             {
-                Color color = Content.Projectiles.WeaponProjectiles.Summons.VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 4, 120));
+                Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 4, 120));
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/VitricSummonKnife");
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 

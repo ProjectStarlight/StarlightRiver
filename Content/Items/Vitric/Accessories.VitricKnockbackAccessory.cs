@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     class VitricKnockbackAccessory : SmartAccessory
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public VitricKnockbackAccessory() : base("Vitric Knockback Bauble", "Knocks enemies back upon taking heavy damage") { }
 

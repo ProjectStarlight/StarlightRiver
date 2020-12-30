@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class BarbedKnife : SmartAccessory, IChestItem
     {
-        public override string Texture => Directory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public BarbedKnife() : base("Barbed Knife", "Critical hits apply a stacking bleeding debuff\nStacks up to 5 at once, additional Critical hits refresh all stacks") { }
 
         public override bool Autoload(ref string name)

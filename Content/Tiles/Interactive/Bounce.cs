@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.InteractiveTile + name;
+            texture = AssetDirectory.InteractiveTile + name;
             return true;
         }
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
     internal class BouncerItem : QuickTileItem 
     {
-        public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", TileType<Bouncer>(), 8, Directory.InteractiveTile) { }
+        public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", TileType<Bouncer>(), 8, AssetDirectory.InteractiveTile) { }
     }
 
     internal class BouncerDummy : Dummy

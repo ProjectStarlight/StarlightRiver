@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.PermafrostTile + name;
+            texture = AssetDirectory.PermafrostTile + name;
             return true;
         }
 
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class PermafrostTeleporterItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public PermafrostTeleporterItem() : base("PermafrostTeleporter", "I came", TileType<PermafrostTeleporter>(), 1) { }
     }

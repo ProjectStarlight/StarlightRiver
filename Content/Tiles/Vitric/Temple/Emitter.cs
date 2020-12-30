@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.VitricTile + name;
+            texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
@@ -52,6 +52,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class EmitterItem : QuickTileItem
     {
-        public EmitterItem() : base("Light Emitter", "", TileType<Emitter>(), 1, Directory.VitricTile) { }
+        public EmitterItem() : base("Light Emitter", "", TileType<Emitter>(), 1, AssetDirectory.VitricTile) { }
     }
 }

@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.InteractiveTile + name;
+            texture = AssetDirectory.InteractiveTile + name;
             return true;
         }
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = Directory.InteractiveTile + name;
+            texture = AssetDirectory.InteractiveTile + name;
             return true;
         }
 
@@ -52,6 +52,6 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
     public class VoidDoorItem : QuickTileItem 
     { 
-        public VoidDoorItem() : base("Void Barrier", "Dissappears when Purified", TileType<VoidDoorOn>(), 8, Directory.InteractiveTile) { } 
+        public VoidDoorItem() : base("Void Barrier", "Dissappears when Purified", TileType<VoidDoorOn>(), 8, AssetDirectory.InteractiveTile) { } 
     }
 }

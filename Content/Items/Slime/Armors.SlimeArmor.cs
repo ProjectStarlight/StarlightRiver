@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Slime
     [AutoloadEquip(EquipType.Head)]
     public class SlimeHead : ModItem
     {
-        public override string Texture => Directory.SlimeItem + Name;
+        public override string Texture => AssetDirectory.SlimeItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Slime
     [AutoloadEquip(EquipType.Body)]
     public class SlimeChest : ModItem
     {
-        public override string Texture => Directory.SlimeItem + Name;
+        public override string Texture => AssetDirectory.SlimeItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Slime
     [AutoloadEquip(EquipType.Legs)]
     public class SlimeLegs : ModItem
     {
-        public override string Texture => Directory.SlimeItem + Name;
+        public override string Texture => AssetDirectory.SlimeItem + Name;
 
         public override void SetStaticDefaults()
         {

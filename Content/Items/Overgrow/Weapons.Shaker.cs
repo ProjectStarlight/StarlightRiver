@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
     internal class Shaker : ModItem
     {
-        public override string Texture => Directory.OvergrowItem + "Shaker";
+        public override string Texture => AssetDirectory.OvergrowItem + "Shaker";
 
         public override void SetStaticDefaults()
         {
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Overgrow
     }
      internal class ShakerBall : ModProjectile
     {
-        public override string Texture => Directory.OvergrowItem + Name;
+        public override string Texture => AssetDirectory.OvergrowItem + Name;
         public override void SetDefaults()
         {
             projectile.friendly = false;

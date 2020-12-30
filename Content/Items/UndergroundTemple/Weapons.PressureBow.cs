@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
     class PressureBow : ModItem
     {
-        public override string Texture => Directory.CaveTempleItem + Name;
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
         public override void SetStaticDefaults()
         {

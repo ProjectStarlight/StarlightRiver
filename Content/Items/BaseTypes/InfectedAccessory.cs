@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
     internal class Blocker : ModItem
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
         public Item Parent { get; set; }
 
         public override void SetDefaults()

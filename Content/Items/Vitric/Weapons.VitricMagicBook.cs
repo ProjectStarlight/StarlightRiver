@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Vitric
 {
     public class VitricMagicBook : ModItem
     {
-        public override string Texture => Directory.VitricItem + Name;
+        public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {

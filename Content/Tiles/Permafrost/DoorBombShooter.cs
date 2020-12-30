@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class DoorBombShooterItem : QuickTileItem
     {
-        public override string Texture => Directory.Debug;
+        public override string Texture => AssetDirectory.Debug;
 
         public DoorBombShooterItem() : base("Debug Shooter Placer", "", TileType<DoorBombShooter>(), ItemRarityID.White) { }
     }

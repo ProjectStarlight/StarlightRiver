@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
     public class Zapper : ModProjectile
     {
-        public override string Texture => Directory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;
         public Tile parent;
         private Vector2 dims = new Vector2(32, 0);
 
@@ -88,8 +88,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Vector2 pos = projectile.position - Main.screenPosition + new Vector2(1, -23);
-            spriteBatch.Draw(GetTexture(Directory.OvergrowTile + "ZapperGlow0"), pos, Color.White * (float)Math.Sin(StarlightWorld.rottime));
-            spriteBatch.Draw(GetTexture(Directory.OvergrowTile + "ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
+            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow0"), pos, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
         }
     }
 }
