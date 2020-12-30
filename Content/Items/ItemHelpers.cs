@@ -1,6 +1,8 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StarlightRiver.Content.Items
 {
@@ -62,7 +64,9 @@ namespace StarlightRiver.Content.Items
             PathHasName = pathHasName;
         }
 
-        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? string.Empty : Name);
+        public QuickTileItem() { }
+
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
 
         public virtual void SafeSetDefaults() { }
 
