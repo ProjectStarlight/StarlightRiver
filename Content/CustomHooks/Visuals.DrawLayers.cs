@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
             //Temple shroud, TODO: move this somewhere more sane later. Im crunched for time rn.
             if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
             {
-                Main.spriteBatch.Draw(GetTexture("StarlightRiver/Assets/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
+                //Main.spriteBatch.Draw(GetTexture("StarlightRiver/Assets/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
             }
         }
 

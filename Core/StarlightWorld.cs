@@ -126,11 +126,14 @@ namespace StarlightRiver.Core
             {
                 Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
 
-                cathedralOverlay.fade =
-                    tile.wall == WallType<AuroraBrickWall>() &&
-                    !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
+                if (tile != null && cathedralOverlay != null)
+                {
+                    cathedralOverlay.fade =
+                        tile.wall == WallType<AuroraBrickWall>() &&
+                        !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
 
-                cathedralOverlay.Draw();
+                    cathedralOverlay.Draw();
+                }
             }
         }
 

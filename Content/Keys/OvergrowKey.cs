@@ -10,7 +10,7 @@ namespace StarlightRiver.Keys
 {
     internal class OvergrowKey : Key
     {
-        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Keys/OvergrowKey")
+        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey")
         {
         }
 
