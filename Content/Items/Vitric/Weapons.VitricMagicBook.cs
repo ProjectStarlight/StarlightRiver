@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.WeaponProjectiles;
+
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

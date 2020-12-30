@@ -105,6 +105,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
     internal class VitricArrowShattered : ModProjectile
     {
+        public override string Texture => AssetDirectory.VitricItem + Name;
+
         public override void SetDefaults()
         {
             projectile.width = 8;

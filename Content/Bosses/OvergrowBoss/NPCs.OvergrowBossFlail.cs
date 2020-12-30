@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
         public OvergrowBoss parent;
         public Player holder;
 
-        public override string Texture => "StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerBall";
+        public override string Texture => AssetDirectory.OvergrowItem + "ShakerBall";
 
         public override void SetStaticDefaults()
         {
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                         parent.npc.ai[0] == (int)OvergrowBoss.OvergrowBossPhase.FirstToss) && npc.velocity.Length() > 0)
                         pos += Vector2.Normalize(npc.Center - parent.npc.Center).RotatedBy(1.58f) * (float)Math.Sin(StarlightWorld.rottime + k * 20) * 10;
 
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"), pos,
+                    spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "ShakerChain"), pos,
                         new Rectangle(0, 0, 8, 16), drawColor, (npc.Center - parent.npc.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
                 }
             return true;

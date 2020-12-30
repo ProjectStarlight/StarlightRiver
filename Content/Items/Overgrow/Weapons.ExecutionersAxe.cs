@@ -76,12 +76,14 @@ namespace StarlightRiver.Items.Overgrow
         float angularMomentum = 1;
         double radians = 0;
         int lingerTimer = 0;
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Rectangle? sourceRectangle = null;
-            Main.spriteBatch.Draw(ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/AxeHead"), Main.player[projectile.owner].Center - Main.screenPosition, sourceRectangle, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "AxeHead"), Main.player[projectile.owner].Center - Main.screenPosition, sourceRectangle, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
+
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 
@@ -93,6 +95,7 @@ namespace StarlightRiver.Items.Overgrow
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
             }
         }
+
         private void Smash(Vector2 position)
         {
             Player player = Main.player[projectile.owner];
@@ -103,6 +106,7 @@ namespace StarlightRiver.Items.Overgrow
             }
             Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y - 32, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage / 3, projectile.knockBack / 2, projectile.owner, 15, player.direction);
         }
+
         public override bool PreAI()
         {
             projectile.scale = projectile.ai[0] < 10 ? (projectile.ai[0] / 10f) : 1;

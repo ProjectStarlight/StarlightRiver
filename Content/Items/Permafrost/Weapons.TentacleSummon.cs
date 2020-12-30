@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Tooltip.SetDefault("Dock Ock");
         }
     }
+
     public class TentacleSummonHead : ModProjectile
     {
         public override string Texture => AssetDirectory.PermafrostItem + Name;

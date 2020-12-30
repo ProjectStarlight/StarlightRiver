@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.WeaponProjectiles;
+
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -296,7 +296,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Projectiles/GlassSpikeGlow");
+            Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "GlassSpikeGlow");
 
             Vector2 offsets = Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
 

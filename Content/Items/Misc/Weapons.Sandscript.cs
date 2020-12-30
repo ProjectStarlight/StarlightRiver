@@ -4,7 +4,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
-using StarlightRiver.Projectiles.WeaponProjectiles;
+
 using System;
 
 namespace StarlightRiver.Content.Items.Misc

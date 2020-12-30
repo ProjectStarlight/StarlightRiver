@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles.WeaponProjectiles;
+
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -48,6 +48,8 @@ namespace StarlightRiver.Content.Items.Overgrow
 
     internal class LeafSpawner : ModProjectile
     {
+        public override string Texture => AssetDirectory.Invisible;
+
         public override void SetDefaults()
         {
             projectile.width = 1;

@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassMiniboss";
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage! this is strictly a GOOD GAME DESIGN ONLY ZONE!!!
 

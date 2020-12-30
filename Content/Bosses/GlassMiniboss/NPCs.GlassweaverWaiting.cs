@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassweaverWaiting : ModNPC
     {
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+
         public override string TownNPCName() => "";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");

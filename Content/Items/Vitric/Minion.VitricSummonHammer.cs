@@ -234,7 +234,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
     class ShockwaveSummon : Bosses.GlassMiniboss.Shockwave
     {
-        public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/Blocks/AncientSandstone";
+        public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/AncientSandstone";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
         private int TileType => (int)projectile.ai[0];

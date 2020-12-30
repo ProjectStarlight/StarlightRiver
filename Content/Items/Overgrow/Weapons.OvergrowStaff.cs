@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Projectiles.WeaponProjectiles;
+﻿
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;

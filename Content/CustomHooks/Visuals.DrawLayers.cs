@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.CustomHooks
                 for (int k = 0; k >= 0; k++)
                 {
                     if (Main.tile[(int)npc.position.X / 16, (int)npc.position.Y / 16 + k + 2].active()) break;
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/ShakerChain"),
+                    spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "ShakerChain"),
                         npc.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(npc.ai[0] + k) * 4, 18 + k * 16), drawColor);
                 }
             }

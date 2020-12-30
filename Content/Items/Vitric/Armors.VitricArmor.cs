@@ -2,7 +2,7 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Projectiles.WeaponProjectiles;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

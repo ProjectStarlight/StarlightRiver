@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Projectiles;
+
 
 namespace StarlightRiver.Content.NPCs.Hell
 {
