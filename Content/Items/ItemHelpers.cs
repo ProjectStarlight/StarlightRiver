@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Items
         public string Itemname;
         public string Itemtooltip;
         private readonly int Tiletype;
+        private readonly string Tilename;
         private readonly int Rare;
         private readonly string TexturePath;
         private readonly bool PathHasName;
@@ -64,16 +65,26 @@ namespace StarlightRiver.Content.Items
             PathHasName = pathHasName;
         }
 
-        public QuickTileItem() { }
+        public QuickTileItem(string name, string tooltip, string placetype, int rare, string texturePath = null, bool pathHasName = false)
+        {
+            Itemname = name;
+            Itemtooltip = tooltip;
+            Tilename = placetype;
+            Rare = rare;
+            TexturePath = texturePath;
+            PathHasName = pathHasName;
+        }
 
         public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
+
+        public override bool CloneNewInstances => true;
 
         public virtual void SafeSetDefaults() { }
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault(Itemname);
-            Tooltip.SetDefault(Itemtooltip);
+            DisplayName.SetDefault(Itemname ?? "ERROR");
+            Tooltip.SetDefault(Itemtooltip ?? "Report me please!");
         }
 
         public override void SetDefaults()
@@ -87,7 +98,7 @@ namespace StarlightRiver.Content.Items
             item.useTime = 10;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.consumable = true;
-            item.createTile = Tiletype;
+            item.createTile = (Tiletype == 0 && Tilename != null) ? mod.TileType(Tilename) : Tiletype;
             item.rare = Rare;
 
             SafeSetDefaults();
