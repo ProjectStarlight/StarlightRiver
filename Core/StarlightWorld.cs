@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Projectiles.Ability;
 using StarlightRiver.Content.Tiles;
@@ -222,7 +224,7 @@ namespace StarlightRiver.Core
                 for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
                     for (int j = (int)PureTiles[k].Y - 16; j <= (int)PureTiles[k].Y + 16; j++)
                     {
-                        Purifier.RevertTile(i, j);
+                        PurifyTransformation.RevertTile(i, j);
                     }
 
             PureTiles.Clear();
