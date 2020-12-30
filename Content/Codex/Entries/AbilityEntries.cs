@@ -11,7 +11,7 @@ namespace StarlightRiver.Codex.Entries
             Category = Categories.Abilities;
             Title = "Starlight Codex";
             Body = "A mysterious compendium containing lost knowledge, it seems to write itself as you travel. Click the codex icon in your inventory to view the codex.";
-            Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageLore");
+            Image = GetTexture("StarlightRiver/Assets/Codex/AbilityImageLore");
             Icon = GetTexture("StarlightRiver/Assets/GUI/Book1Closed");
         }
     }
@@ -37,7 +37,7 @@ namespace StarlightRiver.Codex.Entries
             Title = "Faeflame";
             Body = "NO TEXT";
             Hint = "Found upon an altar in an overgrown dungeon";
-            Image = GetTexture("StarlightRiver/Assets/Codex/Entries/AbilityImageWisp");
+            Image = GetTexture("StarlightRiver/Assets/Codex/AbilityImageWisp");
             Icon = GetTexture("StarlightRiver/Assets/Abilities/Faeflame");
         }
     }
