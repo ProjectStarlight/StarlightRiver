@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Hell
         public override bool CheckDead()
         {
             Main.PlaySound(SoundID.Item14, npc.Center);
-            Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), npc.damage, 3, 255, 128);
+            //Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), npc.damage, 3, 255, 128); TODO: New explosion
             return true;
         }
 

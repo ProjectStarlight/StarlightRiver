@@ -4,7 +4,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Projectiles.Ammo;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -32,12 +31,11 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (Equipped(player) && proj.arrow && crit)
             {
-                VitricArrow.MakeDusts(proj, 6);
                 for (int i = 0; i < 3; i += 1)
                 {
                     Vector2 velocity = proj.velocity.RotatedByRandom(MathHelper.Pi / 6f);
                     velocity *= Main.rand.NextFloat(0.5f, 0.75f);
-                    int newproj = Projectile.NewProjectile(proj.Center, velocity, ModContent.ProjectileType<GlassheadShard>(), (int)(damage * 0.20f), knockback * 0.15f, player.whoAmI);
+                    int newproj = Projectile.NewProjectile(proj.Center, velocity, ModContent.ProjectileType<Vitric.VitricArrowShattered>(), (int)(damage * 0.20f), knockback * 0.15f, player.whoAmI);
                     if (Main.rand.NextBool())
                     {
                         Main.projectile[newproj].ai[0] = target.whoAmI + 1000;
