@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Projectiles.Ability
                 }
         }
 
-        public static void TransformTile(int x, int y)
+        public static void TransformTile(int x, int y) //TODO: Move this, set up a better system to implement transformations
         {
             if (!WorldGen.InWorld(x, y)) return;
 
