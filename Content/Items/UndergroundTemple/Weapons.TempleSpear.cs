@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Projectiles;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Projectiles;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {

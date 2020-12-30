@@ -17,15 +17,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private int SwordFrame
         {
-            get
-            {
-                return (int)projectile.localAI[1];
-            }
-            set
-            {
-                projectile.localAI[1] = value;
-            }
+            get => (int) projectile.localAI[1];
+            set => projectile.localAI[1] = value;
         }
+
         public VitricSummonSword()
         {
             strikeWhere = projectile.Center;

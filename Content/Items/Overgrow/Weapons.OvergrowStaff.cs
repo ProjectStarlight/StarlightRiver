@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             item.noMelee = true;
             item.knockBack = 4;
             item.rare = ItemRarityID.Green;
-            item.shoot = ProjectileType<EntangleThorn>();
+            //item.shoot = ProjectileType<EntangleThorn>(); TODO: Reimplement better
             item.shootSpeed = 5;
         }
     }

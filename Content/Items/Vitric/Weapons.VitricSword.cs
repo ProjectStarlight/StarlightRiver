@@ -13,7 +13,6 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-
         public bool Broken = false;
 
         public override void SetDefaults()
@@ -47,6 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center) * -24, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -13, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -18, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
+
                 for (int k = 0; k <= 20; k++)
                 {
                     Dust.NewDust(Vector2.Lerp(player.Center, target.Center, 0.4f), 8, 8, mod.DustType("Air"), (Vector2.Normalize(player.Center - target.Center) * -2).X, (Vector2.Normalize(player.Center - target.Center) * -2).Y);
@@ -76,6 +76,49 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
+        }
+    }
+
+    internal class VitricSwordProjectile : ModProjectile
+    {
+        public override string Texture => AssetDirectory.VitricItem + Name;
+
+        public override void SetDefaults()
+        {
+            projectile.width = 12;
+            projectile.height = 18;
+            projectile.friendly = true;
+            projectile.penetrate = -1;
+            projectile.timeLeft = 120;
+            projectile.tileCollide = false;
+            projectile.ignoreWater = false;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Enchanted Glass");
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            Main.PlaySound(SoundID.Item27);
+        }
+
+        private float f = 1;
+
+        public override void AI()
+        {
+            f += 0.1f;
+            Player player = Main.player[projectile.owner];
+            projectile.position += Vector2.Normalize(player.Center - projectile.Center) * f;
+            projectile.velocity *= 0.94f;
+            projectile.rotation = (player.Center - projectile.Center).Length() * 0.1f;
+
+            if ((player.Center - projectile.Center).Length() <= 32 && projectile.timeLeft < 110)
+            {
+                projectile.timeLeft = 0;
+                Main.PlaySound(SoundID.Item101);
+            }
         }
     }
 }

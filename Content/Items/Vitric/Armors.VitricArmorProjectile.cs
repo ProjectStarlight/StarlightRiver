@@ -1,20 +1,24 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Buffs.Summon;
+using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using Terraria.DataStructures;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Dusts;
 
-namespace StarlightRiver.Projectiles.WeaponProjectiles
+namespace StarlightRiver.Content.Items.Vitric
 {
     internal class VitricArmorProjectile : ModProjectile
     {
+        public override string Texture => AssetDirectory.VitricItem + Name;
+
         public override void SetDefaults()
         {
             projectile.width = 12;
@@ -35,15 +39,9 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
         {
             Main.PlaySound(SoundID.Item27);
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
-            return false;
-        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
 
-        public override bool CanDamage()
-        {
-            return false;
-        }
+        public override bool CanDamage() => false;
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
@@ -72,7 +70,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
                 {
                     float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
                     Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
-                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<GlassGravity>(), vari, 100, default, num315 / 3f);
+                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<Dusts.GlassGravity>(), vari, 100, default, num315 / 3f);
                 }
                 Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f, -Main.rand.NextFloat(0.15f, 0.75f));
             }
@@ -83,9 +81,11 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
         public DrawData Draw()
         {
-            Vector2 rightthere = projectile.Center;
             float scale = MathHelper.Clamp(1f - projectile.ai[0] / 15f, 0, 1);
-            return new DrawData(Main.projectileTexture[projectile.type], rightthere - Main.screenPosition, null, Lighting.GetColor((int)(rightthere.X / 16f), (int)(rightthere.Y / 16f)), projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
+            var color = Lighting.GetColor((int)(projectile.Center.X / 16f), (int)(projectile.Center.Y / 16f));
+            var tex = ModContent.GetTexture(Texture);
+
+            return new DrawData(tex, projectile.Center - Main.screenPosition, null, color, projectile.rotation, tex.Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
         }
 
         public override void AI()
@@ -102,7 +102,7 @@ namespace StarlightRiver.Projectiles.WeaponProjectiles
 
             if (Regenerate())
             {
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Air>(), 0, 0, 0, default, 0.35f);
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, ModContent.DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
                 player.AddBuff(ModContent.BuffType<Buffs.ProtectiveShard>(), 2);
             }
 

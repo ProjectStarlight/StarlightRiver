@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool MinionContactDamage() => false;
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/CrystalWave";
+        public override string Texture => AssetDirectory.GlassBoss + "CrystalWave";
 
         public override void SetStaticDefaults()
         {
@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Weapon < 0 || DisabledTime > 0)
                 return false;
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Projectiles/WeaponProjectiles/Summons/" + WeaponSprite[Weapon]);
+            Texture2D tex = ModContent.GetTexture(AssetDirectory.VitricItem + WeaponSprite[Weapon]);
 
             float scale = Math.Min(AnimationTimer / 15f, 1f);
             Rectangle Rect = WhiteFrame(tex.Size().ToRectangle(), false);

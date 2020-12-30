@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             if (player.GetModPlayer<StarlightPlayer>().JustHit)
             {
                 for (int k = 0; k < leaves; k++)
-                    Projectile.NewProjectile(player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<ArmorLeaf>(), 10, 0);
+                    //Projectile.NewProjectile(player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<ArmorLeaf>(), 10, 0); TODO: Rework this
                 leaves = 0;
             }
         }
