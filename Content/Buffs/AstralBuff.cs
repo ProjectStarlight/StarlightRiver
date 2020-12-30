@@ -15,12 +15,6 @@ namespace StarlightRiver.Buffs
     {
         public AstralBuff() : base("Zapped!", "Losing life, but zapping nearby enemies!", true) { }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/MarioCumming";
-            return true;
-        }
-
         public override void Update(Player player, ref int buffIndex)
         {
             player.lifeRegen -= 40;

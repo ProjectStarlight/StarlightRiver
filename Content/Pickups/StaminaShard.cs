@@ -57,10 +57,10 @@ namespace StarlightRiver.Pickups
 
         private static string GetStaminaTexture()
         {
-            if (Main.gameMenu) return "StarlightRiver/Pickups/Stamina1";
+            if (Main.gameMenu) return "StarlightRiver/Assets/Abilities/Stamina1";
 
             AbilityHandler ah = Main.LocalPlayer.GetHandler();
-            return "StarlightRiver/Pickups/Stamina" + (ah.ShardCount + 1);
+            return "StarlightRiver/Assets/Abilities/Stamina" + (ah.ShardCount + 1);
         }
     }
 

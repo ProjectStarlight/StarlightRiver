@@ -334,6 +334,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override bool Autoload(ref string name, ref string texture)
         {
             StarlightNPC.ModifyHitByProjectileEvent += SpecialMinionRecation;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 

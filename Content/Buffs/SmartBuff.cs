@@ -15,6 +15,13 @@ namespace StarlightRiver.Buffs
         public bool InflictedPlayer(Player player) => player.HasBuff(Type);
         public bool InflictedNPC(NPC npc) => npc.HasBuff(Type);
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            var path = AssetDirectory.Buffs + name;
+            texture = ModContent.TextureExists(path) ? path : AssetDirectory.Debug;
+            return true;
+        }
+
         public virtual void SafeSetDetafults() { }
         protected SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
         {

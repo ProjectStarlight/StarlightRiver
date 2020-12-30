@@ -8,15 +8,7 @@ namespace StarlightRiver.Buffs
 {
     public class Claustrophobia : SmartBuff
     {
-        public Claustrophobia() : base("Claustrophobia", "Stuck in wisp form!", true)
-        {
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/MarioCumming";
-            return true;
-        }
+        public Claustrophobia() : base("Claustrophobia", "Stuck in wisp form!", true) { }
 
         private int timer;
 

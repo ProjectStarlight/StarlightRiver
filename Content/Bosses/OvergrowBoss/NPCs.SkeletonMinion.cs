@@ -11,6 +11,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
     class SkeletonMinion : ModNPC
     {
+        public override string Texture => AssetDirectory.OvergrowBoss + Name;
+
         public override void SetDefaults()
         {
             npc.lifeMax = 120;

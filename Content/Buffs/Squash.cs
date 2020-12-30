@@ -7,6 +7,12 @@ namespace StarlightRiver.Buffs
 {
     class Squash : ModBuff
     {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.Buffs + name;
+            return true;
+        }
+
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Pancaked");

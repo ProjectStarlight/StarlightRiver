@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
             SecondAttack = 6
         };
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/OvergrowBoss/OvergrowBoss";
+        public override string Texture => AssetDirectory.OvergrowBoss + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Horny God");
 

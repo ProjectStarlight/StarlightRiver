@@ -7,6 +7,7 @@ namespace StarlightRiver.Buffs
     public class GhastlyCloakBuff : SmartBuff
     {
         public GhastlyCloakBuff() : base("Cloaked", "Increases most stats", false) { }
+
         public override void Update(Player player, ref int buffIndex)
         {
             player.immuneAlpha += 80;

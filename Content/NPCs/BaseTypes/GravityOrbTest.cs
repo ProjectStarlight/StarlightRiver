@@ -14,6 +14,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         public int radius = 100;
         public int attract = 100;
 
+        public override string Texture => AssetDirectory.Debug;
+
         public override void SetDefaults()
         {
             npc.lifeMax = 2;

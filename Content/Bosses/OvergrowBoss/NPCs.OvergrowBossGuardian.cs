@@ -16,6 +16,8 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
     internal class OvergrowBossGuardian : ModNPC
     {
+        public override string Texture => AssetDirectory.OvergrowBoss + Name;
+
         public override void SetDefaults()
         {
             npc.dontTakeDamage = true;

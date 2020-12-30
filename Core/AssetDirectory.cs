@@ -26,6 +26,8 @@ namespace StarlightRiver.Core
         public const string Debug =                 Assets + "MarioCumming";
         public const string Symbol =                Assets + "Symbol";
 
+        public const string Buffs =                 Assets + "Buffs/";
+
         public const string MiscTextures =          Assets + "Misc/";
 
         public const string GUI =                   Assets + "GUI/";

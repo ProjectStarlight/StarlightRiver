@@ -9,6 +9,13 @@ namespace StarlightRiver.Waters
 {
     public class WaterJungleCorrupt : ModWaterStyle
     {
+        public override bool Autoload(ref string name, ref string texture, ref string blockTexture)
+        {
+            texture = "StarlightRiver/Assets/Waters/" + name;
+            blockTexture = texture + "_Block";
+            return base.Autoload(ref name, ref texture, ref blockTexture);
+        }
+
         public override bool ChooseWaterStyle()
         {
             BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
@@ -27,7 +34,7 @@ namespace StarlightRiver.Waters
 
         public override int GetDropletGore()
         {
-            return mod.GetGoreSlot("Gores/DropJungleCorrupt");
+            return 0;// mod.GetGoreSlot("Gores/DropJungleCorrupt");
         }
 
         public override void LightColorMultiplier(ref float r, ref float g, ref float b)
@@ -43,5 +50,12 @@ namespace StarlightRiver.Waters
         }
     }
 
-    public class WaterfallJungleCorrupt : ModWaterfallStyle { }
+    public class WaterfallJungleCorrupt : ModWaterfallStyle 
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "StarlightRiver/Assets/Waters/" + name;
+            return base.Autoload(ref name, ref texture);
+        }
+    }
 }
