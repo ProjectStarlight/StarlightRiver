@@ -237,7 +237,7 @@ namespace StarlightRiver.Core
             }
 
             //setup overlays
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/NPCs/Boss/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
         }
 
         public static void LearnRecipie(string key)
