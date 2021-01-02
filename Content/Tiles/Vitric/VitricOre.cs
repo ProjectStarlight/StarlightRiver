@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.npcTexture[projectile.type];
+            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.npcTexture[projectile.type];
+            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);

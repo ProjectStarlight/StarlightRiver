@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core.Loaders;
 using Terraria.ID;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
@@ -90,6 +91,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 )
               );
 
+        }
+
+        public override void PostLoad()
+        {
+            AddMerge("VitricSoftSand", "VitricSand");
+            AddMerge("AncientSandstone", "AncientSandstoneTile");
         }
     }
 }

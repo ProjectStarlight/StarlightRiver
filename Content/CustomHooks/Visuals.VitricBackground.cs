@@ -184,16 +184,19 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawTilingBackground()
         {
-            Texture2D tex = GetTexture("Backgrounds/VitricSand");
-            Texture2D tex2 = GetTexture("Backgrounds/VitricSandBottom");
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSand");
+            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandBottom");
             Rectangle blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y - 2, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height);
 
             for (int x = 0; x <= Main.screenWidth + tex.Width; x += tex.Width)
                 for (int y = 0; y <= Main.screenHeight + tex.Height; y += tex.Height)
                 {
                     Vector2 pos = new Vector2(x, y) - new Vector2(Main.screenPosition.X % tex.Width, Main.screenPosition.Y % tex.Height);
-                    if (CheckBackground(pos, tex.Size(), blacklist)) Helper.DrawWithLighting(pos, tex);
-                    else if (CheckBackground(pos + Vector2.UnitY * -tex.Height, tex.Size(), blacklist)) Helper.DrawWithLighting(pos, tex2);
+
+                    if (CheckBackground(pos, tex.Size(), blacklist))
+                        Helper.DrawWithLighting(pos, tex);
+                    else if (CheckBackground(pos + Vector2.UnitY * -tex.Height, tex.Size(), blacklist)) 
+                        Helper.DrawWithLighting(pos, tex2);
                 }
         }
 

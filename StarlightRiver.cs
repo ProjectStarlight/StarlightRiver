@@ -140,61 +140,8 @@ namespace StarlightRiver
                 loadCache[k].Load();
             }
 
-            //Shaders
             if (!Main.dedServ)
             {
-                /*
-                GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
-
-                Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
-                Filters.Scene["ShockwaveFilter"] = new Filter(new ScreenShaderData(screenRef4, "ShockwavePass"), EffectPriority.VeryHigh);
-                Filters.Scene["ShockwaveFilter"].Load();
-
-                Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/WaterEffect"));
-                Filters.Scene["WaterFilter"] = new Filter(new ScreenShaderData(screenRef3, "WaterPass"), EffectPriority.VeryHigh);
-                Filters.Scene["WaterFilter"].Load();
-
-                Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/AuraEffect"));
-                Filters.Scene["AuraFilter"] = new Filter(new ScreenShaderData(screenRef2, "AuraPass"), EffectPriority.VeryHigh);
-                Filters.Scene["AuraFilter"].Load();
-
-                Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/BlurEffect"));
-                Filters.Scene["BlurFilter"] = new Filter(new ScreenShaderData(screenRef, "BlurPass"), EffectPriority.High);
-                Filters.Scene["BlurFilter"].Load();
-
-                Ref<Effect> screenRef5 = new Ref<Effect>(GetEffect("Effects/Purity"));
-                Filters.Scene["PurityFilter"] = new Filter(new ScreenShaderData(screenRef5, "PurityPass"), EffectPriority.High);
-                Filters.Scene["PurityFilter"].Load();
-
-                Ref<Effect> screenRef6 = new Ref<Effect>(GetEffect("Effects/LightShader"));
-                Filters.Scene["Lighting"] = new Filter(new ScreenShaderData(screenRef6, "LightingPass"), EffectPriority.High);
-                Filters.Scene["Lighting"].Load();
-
-                Ref<Effect> screenRef7 = new Ref<Effect>(GetEffect("Effects/LightApply"));
-                Filters.Scene["LightingApply"] = new Filter(new ScreenShaderData(screenRef7, "LightingApplyPass"), EffectPriority.High);
-                Filters.Scene["LightingApply"].Load();
-
-                Ref<Effect> screenRef8 = new Ref<Effect>(GetEffect("Effects/pixelationFull"));
-                Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
-                Filters.Scene["Pixelation"].Load();
-
-                Ref<Effect> screenRefCrystal = new Ref<Effect>(GetEffect("Effects/CrystalRefraction"));
-                Filters.Scene["Crystal"] = new Filter(new ScreenShaderData(screenRefCrystal, "CrystalPass"), EffectPriority.High);
-                Filters.Scene["Crystal"].Load();
-
-                Ref<Effect> screenRefIceCrystal = new Ref<Effect>(GetEffect("Effects/IceCrystal"));
-                Filters.Scene["IceCrystal"] = new Filter(new ScreenShaderData(screenRefIceCrystal, "IcePass"), EffectPriority.High);
-                Filters.Scene["IceCrystal"].Load();
-
-                Ref<Effect> screenRefWaves = new Ref<Effect>(GetEffect("Effects/Waves"));
-                Filters.Scene["Waves"] = new Filter(new ScreenShaderData(screenRefWaves, "WavesPass"), EffectPriority.High);
-                Filters.Scene["Waves"].Load();
-
-                Ref<Effect> screenRefWaterShine = new Ref<Effect>(GetEffect("Effects/WaterShine"));
-                Filters.Scene["WaterShine"] = new Filter(new ScreenShaderData(screenRefWaterShine, "WaterShinePass"), EffectPriority.High);
-                Filters.Scene["WaterShine"].Load();
-                */
-
                 lightingTest = new RenderTest();
             }
 
@@ -261,6 +208,15 @@ namespace StarlightRiver
             NetEasy.NetEasy.Register(this);
             InitWorldGenChests();
             //CallBossChecklist();
+
+            foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
+                {
+                    var toLoad = Activator.CreateInstance(type);
+                    ((IPostLoadable)toLoad).PostLoad();
+                }
+            }
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
