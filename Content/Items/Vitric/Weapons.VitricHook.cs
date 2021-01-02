@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     player.immune = true;
                     player.immuneTime = 20;
                     player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
-                    player.GetModPlayer<StarlightPlayer>().Shake += 30;
+                    player.GetModPlayer<StarlightPlayer>().Shake += 15;
 
                     hooked.StrikeNPC(30, 2, player.Center.X < hooked.Center.X ? -1 : 1);
 

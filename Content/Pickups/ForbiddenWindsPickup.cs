@@ -47,7 +47,7 @@ namespace StarlightRiver.Pickups
             if (timer == 1)
             {
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
-                Filters.Scene.Deactivate("ShockwaveFilter");
+                Filters.Scene.Deactivate("Shockwave");
             }
 
             if (timer < 300) //spiraling out
@@ -84,7 +84,7 @@ namespace StarlightRiver.Pickups
             {
                 float timeRel = (timer - 420) / 150f;
                 Dust.NewDust(player.position, player.width, player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
-                Filters.Scene.Activate("ShockwaveFilter", player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
+                Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
             }
 
             if (timer == 569) //popup + codex entry

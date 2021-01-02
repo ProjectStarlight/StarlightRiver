@@ -29,6 +29,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public static void CollideWithSpikes(Entity entity, out int damage)
         {
+            if (entity is NPC && ((entity as NPC).dontTakeDamage || (entity as NPC).immortal))
+            {
+                damage = 0;
+                return;
+            }
+
             damage = 0;
             var points = Collision.GetEntityEdgeTiles(entity);
             foreach (var p in points)

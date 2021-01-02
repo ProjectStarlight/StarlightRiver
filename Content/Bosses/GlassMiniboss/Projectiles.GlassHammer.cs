@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (projectile.ai[0] > 50)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/Spike");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/Spike");
 
                 int off = projectile.ai[0] < 55 ? (int)((projectile.ai[0] - 50) / 5f * 128) : 128 - (int)((projectile.ai[0] - 55) / 25f * 128);
                 Rectangle targetRect = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.ai[1] - off - Main.screenPosition.Y), tex.Width, off);
@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (projectile.ai[0] <= 50)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/NPCs/Miniboss/Glassweaver/SpikeTell");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/SpikeTell");
                 float factor = 2 * projectile.ai[0] / 25f - (float)Math.Pow(projectile.ai[0], 2) / 625f;
                 spriteBatch.Draw(tex, projectile.Center + new Vector2(0, -128) - Main.screenPosition, null, new Color(255, 230, 71) * factor);
             }

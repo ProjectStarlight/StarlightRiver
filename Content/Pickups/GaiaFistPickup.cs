@@ -50,7 +50,7 @@ namespace StarlightRiver.Pickups
             if (timer == 1)
             {
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
-                Filters.Scene.Deactivate("ShockwaveFilter");
+                Filters.Scene.Deactivate("Shockwave");
             }
         }
 
