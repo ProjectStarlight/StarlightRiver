@@ -256,6 +256,7 @@ namespace StarlightRiver.Helpers
 
             gd.SetVertexBuffer(null);
         }
+
         public static void DrawLine(SpriteBatch spritebatch, Vector2 startPoint, Vector2 endPoint, Texture2D texture, Color color, Rectangle sourceRect = default)
         {
             Vector2 edge = endPoint - startPoint;
@@ -277,9 +278,8 @@ namespace StarlightRiver.Helpers
                 new Vector2(0, 0), // point in line about which to rotate
                 SpriteEffects.None,
                 default);
-
-
         }
+
         public static void DrawElectricity(Vector2 point1, Vector2 point2, int dusttype, float scale = 1, int armLength = 30, Color color = default)
         {
             int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
@@ -301,6 +301,7 @@ namespace StarlightRiver.Helpers
                 }
             }
         }
+
         public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
         public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);

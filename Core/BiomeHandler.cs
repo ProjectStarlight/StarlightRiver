@@ -17,6 +17,8 @@ using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.AshHell;
+using Terraria.Graphics.Effects;
+using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Core
 {
@@ -129,6 +131,19 @@ namespace StarlightRiver.Core
             {
                 Dust.NewDustPerfect(Main.screenPosition - Vector2.One * 100 + new Vector2(Main.rand.Next(Main.screenWidth + 200), Main.rand.Next(Main.screenHeight + 200)),
                 DustType<Content.Dusts.OvergrowDust>(), Vector2.Zero, 0, new Color(255, 255, 205) * 0.05f, 2);
+            }
+
+            if(ZoneGlass)
+            {
+                Filters.Scene.Activate("GradientDistortion").GetShader()
+                    .UseImage(StarlightRiver.lightingTest.screenLightingTexture, 1)
+                    .UseOpacity(1)
+                    .UseIntensity(1)
+                    .UseProgress(2);                  
+            }
+            else
+            {
+                Filters.Scene.Deactivate("GradientDistortion");
             }
 
             //Codex Unlocks
