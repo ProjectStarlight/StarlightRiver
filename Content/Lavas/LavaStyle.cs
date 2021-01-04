@@ -21,9 +21,9 @@ namespace StarlightRiver.Content.Lavas
             return true;
         }
 
-        public virtual void DrawEffects()
+        public virtual bool DrawEffects(int x, int y)
         {
-
+            return false;
         }
 
         public string blockTexture;

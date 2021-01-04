@@ -35,9 +35,10 @@ namespace StarlightRiver.Content.Lavas
             return true;
         }
 
-        public override void DrawEffects()
+        public override bool DrawEffects(int x, int y)
         {
             Main.NewText("Fuck my pussy!");
+            return true;
         }
     }
 }

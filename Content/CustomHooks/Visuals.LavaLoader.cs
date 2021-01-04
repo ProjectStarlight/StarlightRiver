@@ -98,8 +98,7 @@ namespace StarlightRiver.Content.Lavas
             foreach (var style in lavas)
                 if (style.ChooseLavaStyle)
                 {
-                    style.DrawEffects();
-                    return true;
+                    return style.DrawEffects(x, y);
                 }
 
             return false;
