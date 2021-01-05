@@ -33,8 +33,8 @@ namespace StarlightRiver.Tiles.Temple
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Temple/JarTallGlow");
-                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/Temple/JarTallGlow2");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow");
+                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2");
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive);

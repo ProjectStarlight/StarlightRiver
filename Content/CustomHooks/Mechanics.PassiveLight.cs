@@ -77,7 +77,14 @@ namespace StarlightRiver.Content.CustomHooks
             // If the tile is in the vitric biome and doesn't block light, emit light.
             bool tileBlock = Main.tile[i, j].active() && Main.tileBlockLight[Main.tile[i, j].type] && !(Main.tile[i, j].slope() != 0 || Main.tile[i, j].halfBrick());
             bool wallBlock = Main.wallLight[Main.tile[i, j].wall];
-            if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock)
+            bool lava = Main.tile[i, j].liquidType() == 1;
+
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass && Main.tile[i, j] != null && lava)
+            {
+                (r, g, b) = (1, 0, 0);
+            }
+
+            if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock && !lava)
             {
                 r = .4f;
                 g = .57f;

@@ -135,11 +135,13 @@ namespace StarlightRiver.Core
 
             if(ZoneGlass)
             {
+                var a = Filters.Scene;
+
                 Filters.Scene.Activate("GradientDistortion").GetShader()
-                    .UseImage(StarlightRiver.lightingTest.screenLightingTexture, 1)
-                    .UseOpacity(1)
-                    .UseIntensity(1)
-                    .UseProgress(2);                  
+                    .UseOpacity(2.5f)
+                    .UseIntensity(7f)
+                    .UseProgress(6)
+                    .UseImage(StarlightRiver.lightingTest.screenLightingTexture, 0);                 
             }
             else
             {

@@ -2,6 +2,10 @@ sampler uImage0 : register(s0);
 sampler uImage1 : register(s1);
 sampler uImage2 : register(s2);
 sampler uImage3 : register(s3);
+
+texture draw;
+sampler2D InputLayer1 = sampler_state { texture = <draw>; };
+
 float3 uColor;
 float3 uSecondaryColor;
 float2 uScreenResolution;
@@ -20,17 +24,18 @@ float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
 
-float4 main(float2 uv : TEXCOORD) : COLOR
+float4 main(float2 uv : TEXCOORD0) : COLOR0
 {
-    float strength = tex2D(uImage1, uv).r;
+    float strength = max(tex2D(uImage1, uv).r - tex2D(uImage1, uv).b, 0.0);
     float progress = uTime / uProgress;
     float sinTime = (strength + progress) * uIntensity * 6.28;
-    return tex2D(uImage0, float2(sin(sinTime), sin(sinTime * 1.25168)) * 0.01 * strength * uOpacity);
+	float2 off = float2(sin(sinTime), sin(sinTime * 1.25168)) * 0.1 * (strength / 255.0) * uOpacity;
+    return tex2D(uImage0, uv + off);
 }
 
 technique Technique1
 {
-    pass ShaderPass
+    pass GradientDistortionPass
     {
         PixelShader = compile ps_2_0 main();
     }

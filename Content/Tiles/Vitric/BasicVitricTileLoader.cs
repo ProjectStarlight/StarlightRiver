@@ -90,7 +90,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     mapColor: new Color(182, 141, 115)
                 )
               );
-
         }
 
         public override void PostLoad()

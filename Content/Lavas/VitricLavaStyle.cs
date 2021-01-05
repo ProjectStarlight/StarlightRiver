@@ -37,7 +37,9 @@ namespace StarlightRiver.Content.Lavas
 
         public override bool DrawEffects(int x, int y)
         {
-            Main.NewText("Fuck my pussy!");
+            var tile = Framing.GetTileSafely(x, y - 1);
+            if (Main.rand.Next(150) == 0 && tile.liquidType() == 1)
+                Dust.NewDustPerfect(new Microsoft.Xna.Framework.Vector2(x, y) * 16, ModContent.DustType<Dusts.LavaBubble>(), -Microsoft.Xna.Framework.Vector2.UnitY, 0, default, Main.rand.NextFloat(0.6f, 0.7f));
             return true;
         }
     }
