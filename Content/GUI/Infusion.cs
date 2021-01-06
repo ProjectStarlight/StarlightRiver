@@ -63,6 +63,12 @@ namespace StarlightRiver.Content.GUI
             Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Infusions");
             spriteBatch.Draw(texture, new Vector2(68, 272), Color.White);
 
+            if(true) //TODO: Figure out some sort of cool condition for this
+            {
+                Texture2D charm = GetTexture(AssetDirectory.GUI + "charm");
+                spriteBatch.Draw(charm, new Vector2(92, 318), Color.White);
+            }
+
             base.Draw(spriteBatch);
             RemoveAllChildren();
             Initialize();

@@ -97,6 +97,27 @@ namespace StarlightRiver.Helpers
             return Vector2.Distance(center, check) <= radius && thisAngle > angle - width && thisAngle < angle + width;
         }
 
+        public static bool PointInTile(Vector2 point)
+        {
+            Point16 startCoords = new Point16((int)point.X / 16, (int)point.Y / 16);
+            for(int x = -1; x <= 1; x++)
+                for(int y = -1; y <= 1; y++)
+                {                 
+                    var thisPoint = startCoords + new Point16(x, y);
+
+                    if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
+
+                        var tile = Framing.GetTileSafely(thisPoint);
+                    if(tile.collisionType == 1)
+                    {
+                        var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
+                        if (rect.Contains(point.ToPoint())) return true;
+                    }
+                }
+
+            return false;
+        }
+
         public static string TicksToTime(int ticks)
         {
             int sec = ticks / 60;
