@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         private KettleLimb FootOffGround => FootOnGround == leftLeg ? rightLeg : leftLeg;
         private KettleLimb FootOnGround;
 
-        private const int WALK_RADIUS = 64;
+        private const int WALK_RADIUS = 32;
 
         private ref float Timer => ref npc.ai[0];
         private ref float WalkTimer => ref npc.ai[1];
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if(!Floating)
             {
                 npc.velocity *= 0;
-                npc.Center = Vector2.Lerp(leftLeg.foot, rightLeg.foot, 0.5f) + new Vector2(0, -50);
+                npc.Center = Vector2.Lerp(leftLeg.foot, rightLeg.foot, 0.5f) + new Vector2(0, -70);
 
                 if(leftLeg.savedPoint == default && rightLeg.savedPoint == default && Landed == 0) //landing case
                 {
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     Landed = 1;
                 }
 
-                WalkTimer += 0.08f;
+                WalkTimer += 0.14f;
                 FootOffGround.foot = FootOffGround.savedPoint + (Vector2.UnitX * -WALK_RADIUS * npc.direction).RotatedBy(WalkTimer * npc.direction);
 
                 if (WalkTimer > 4.68f)
