@@ -9,6 +9,8 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -40,6 +42,11 @@ namespace StarlightRiver.Content.CustomHooks
 
         private DrawData EmitLayerManipDelegate(DrawData input, Player player)
         {
+            if(!Main.gameMenu && player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Main.itemTexture[player.HeldItem.type])
+            {
+                input.shader = 2; //TODO: Move this. actually bind the correct armor shader. Stop being lazy.
+            }
+
             float rotation = player.GetModPlayer<StarlightPlayer>().rotation;
 
             if (rotation != 0) //paper mario-style rotation

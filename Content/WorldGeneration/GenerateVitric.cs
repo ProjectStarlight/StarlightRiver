@@ -368,6 +368,7 @@ namespace StarlightRiver.Core
         {
             int x = forgeSide == 0 ? VitricBiome.X - 40 : VitricBiome.Right - 40;
             StructureHelper.StructureHelper.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 10), StarlightRiver.Instance);
+            NPC.NewNPC((VitricBiome.X) * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
         }
 
         private static void GenTemple()

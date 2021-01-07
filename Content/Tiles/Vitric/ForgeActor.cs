@@ -25,20 +25,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            Vector2 pos = (new Vector2(i + 3, j + 3) + Helper.TileAdj) * 16 + new Vector2(-464, -336) - Main.screenPosition;
+            Vector2 pos = (new Vector2(i - 9, j + 3) + Helper.TileAdj) * 16 + new Vector2(-464, -336) - Main.screenPosition;
             Texture2D backdrop = GetTexture(AssetDirectory.GlassMiniboss + "Backdrop");
+            var frame = new Rectangle(0, (backdrop.Height / 3) * (int)(Main.GameUpdateCount / 2 % 3), backdrop.Width, backdrop.Height / 3);
 
-            spriteBatch.Draw(backdrop, pos, Color.White);
-
-            if (boss is null || !boss.npc.active)
-            {
-                Vector2 forgeOff1 = new Vector2(36, 324);
-                Vector2 forgeOff2 = new Vector2(736, 324);
-                var tex = GetTexture(AssetDirectory.GlassMiniboss + "Forge");
-
-                spriteBatch.Draw(tex, pos + forgeOff1, Color.White);
-                spriteBatch.Draw(tex, pos + forgeOff2, Color.White);
-            }
+            spriteBatch.Draw(backdrop, pos, frame, Color.White);
         }
     }
 }

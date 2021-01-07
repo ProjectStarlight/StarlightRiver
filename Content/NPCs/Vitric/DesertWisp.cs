@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             Player player = Main.player[npc.target];
             Vector2 distance = player.Center - npc.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(npc.Center, DustType<Dusts.AirDash>(), Vector2.Zero);
 
             if (distance.Length() <= 120 && !player.ActiveAbility<Wisp>()) npc.velocity += Vector2.Normalize(distance) * -10;
         }

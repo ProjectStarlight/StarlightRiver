@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -20,10 +21,27 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
+            Main.tileLighted[Type] = true; //im fucking lazy
+            Main.tileFrameImportant[Type] = true;
             Main.tileSolidTop[Type] = true;
-            Main.tileBlockLight[Type] = false;
-            minPick = 200;
-            AddMapEntry(new Color(150, 105, 65));
+            Main.tileSolid[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileTable[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+            TileID.Sets.Platforms[Type] = true;
+            TileObjectData.newTile.CoordinateHeights = new[] { 16 };
+            TileObjectData.newTile.CoordinateWidth = 16;
+            TileObjectData.newTile.CoordinatePadding = 2;
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.StyleMultiplier = 27;
+            TileObjectData.newTile.StyleWrapLimit = 27;
+            TileObjectData.newTile.UsesCustomCanPlace = false;
+            TileObjectData.newTile.LavaDeath = true;
+            TileObjectData.addTile(Type);
+            AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
+            AddMapEntry(new Color(200, 200, 200));
+            disableSmartCursor = true;
+            adjTiles = new int[] { TileID.Platforms };
         }
     }
 

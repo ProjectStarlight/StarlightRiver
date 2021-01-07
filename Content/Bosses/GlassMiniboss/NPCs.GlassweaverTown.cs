@@ -85,6 +85,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             "If you bring me some vitric ore, I'll make a replica and give you one. " +
                             "Six ore should suffice.";
                 }
+            else
+            {
+                Main.LocalPlayer.HeldItem.GetGlobalItem<GlassReplica>().isReplica = true;
+                Main.npcChatText = "Held item turned into replica.";
+            }
         }
     }
 }

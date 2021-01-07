@@ -151,7 +151,6 @@ namespace StarlightRiver
             RiftRecipes = new List<RiftRecipe>();
             AutoloadRiftRecipes(RiftRecipes);
 
-            //UI
             if (!Main.dedServ)
             {
                 //Hotkeys
