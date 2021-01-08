@@ -52,10 +52,13 @@ namespace StarlightRiver.Helpers
             CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);
 
             if (entry.RequiresUpgradedBook && mp.CodexState != 2) return; //dont give the player void entries if they dont have the void book
-            entry.Locked = false;
-            entry.New = true;
-            if (mp.CodexState != 0) UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title);
-            Main.PlaySound(SoundID.Item30);
+            if (entry.Locked)
+            {
+                entry.Locked = false;
+                entry.New = true;
+                if (mp.CodexState != 0) UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title);
+                Main.PlaySound(SoundID.Item30);
+            }
         }
 
         public static void SpawnGem(int ID, Vector2 position)
