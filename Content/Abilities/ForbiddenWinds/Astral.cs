@@ -6,6 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Abilities.AbilityContent.Infusions;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
@@ -92,6 +93,29 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Ability.ActivationCostBonus += 0.4f;
             Ability.Speed *= 1.25f;
             base.OnActivate();
+        }
+    }
+
+    class AstralImprint : InfusionImprint
+    {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+        public override string Texture => "StarlightRiver/Assets/Abilities/AstralImprint";
+        public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Comet Rush");
+            Tooltip.SetDefault("Dash farther and carry more speed");
+        }
+
+        public override void SetDefaults()
+        {
+            objectives.Add(new InfusionObjective("Jump", 100, CheckKillEnemies, Color.Orange));
+        }
+
+        public void CheckKillEnemies(InfusionObjective objective)
+        {
+            if (Player.controlJump) objective.progress++;
         }
     }
 }
