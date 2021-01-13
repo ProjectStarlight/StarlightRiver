@@ -17,7 +17,6 @@ using ReLogic.Graphics;
 using StarlightRiver.Abilities.AbilityContent.Infusions;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using Terraria.ID;
-using HotXXXScalieVids;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -69,6 +68,7 @@ namespace StarlightRiver.Content.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             previewPlayer.Update();
+            previewPlayer.framerate = 2;
             spriteBatch.Draw(previewPlayer.CurrentFrame, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);
 
 
@@ -157,6 +157,8 @@ namespace StarlightRiver.Content.GUI
 
         private void Craft(UIMouseEvent evt, UIElement listeningElement)
         {
+            previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
+
             if (selected is null) return;
 
             Main.PlaySound(SoundID.DD2_DarkMageCastHeal);
