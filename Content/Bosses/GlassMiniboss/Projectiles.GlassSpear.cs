@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             projectile.width = 64;
             projectile.height = 16;
-            projectile.timeLeft = 150;
+            projectile.timeLeft = 130;
             projectile.hostile = true;
             projectile.tileCollide = false;
         }
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             projectile.rotation = projectile.ai[1] == 1 ? 1.57f : -1.57f;
 
-            int timer = 150 - projectile.timeLeft;
+            int timer = 130 - projectile.timeLeft;
 
             if (timer == 0) //set vectors to move to / from on spawn
             {
@@ -42,22 +42,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 movePoint = projectile.Center + Vector2.UnitY * -projectile.ai[0];
             }
 
-            if (timer < 60) //Spreading upwards
-                projectile.Center = Vector2.SmoothStep(savedPoint, movePoint, timer / 60f);
+            if (timer < 40) //Spreading upwards
+                projectile.Center = Vector2.SmoothStep(savedPoint, movePoint, timer / 40f);
 
-            if (timer > 60 && timer < 80) //draw back
-                projectile.Center = Vector2.SmoothStep(movePoint, movePoint + Vector2.UnitX * -projectile.ai[1] * 45, (timer - 60) / 20f);
+            if (timer > 40 && timer < 60) //draw back
+                projectile.Center = Vector2.SmoothStep(movePoint, movePoint + Vector2.UnitX * -projectile.ai[1] * 45, (timer - 40) / 20f);
 
-            if (timer == 80) //fire
+            if (timer == 60) //fire
                 projectile.velocity = Vector2.UnitX * projectile.ai[1] * 2;
 
-            if (timer > 80 && timer < 90) //accelerate
+            if (timer > 60 && timer < 70) //accelerate
                 projectile.velocity *= 1.28f;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            int timer = 160 - projectile.timeLeft;
+            int timer = 130 - projectile.timeLeft;
             Texture2D backTex = GetTexture(Texture);
 
             spriteBatch.Draw(backTex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, backTex.Size() / 2, 1, 0, 0);

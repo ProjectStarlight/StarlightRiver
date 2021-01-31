@@ -164,6 +164,18 @@ namespace StarlightRiver.Core
 
                                 byte[] entry;
 
+                                if(key == Math.Pow(2, codeSize))
+                                {
+                                    LZWTable = new List<byte[]>();
+
+                                    for (int i = 0; i < 256; i++)
+                                    {
+                                        LZWTable.Add(new byte[] { (byte)k });
+                                    }
+
+                                    continue;
+                                }
+
                                 if (LZWTable.Count >= key)
                                     entry = LZWTable[key];
                                 else

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Assets/Invisible";
+            texture = "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
             return base.Autoload(ref name, ref texture);
         }
 

@@ -22,6 +22,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         internal ref float AttackTimer => ref npc.ai[3];
 
         private float spinAngle = 0;
+        private float glowStrength = 0.25f;
 
         public static Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16);
         private static Vector2 LeftForge => spawnPos + new Vector2(-350, 300);
@@ -31,6 +32,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public int leftForgeCharge;
         public int rightForgeCharge;
 
+        //Animation tracking utils
+        private int Frame
+        {
+            set => npc.frame.Y = value * 128;
+        }
+
+        private AnimationSelection CurrentAnimation
+        {
+            set
+            {
+                npc.frame.X = (int)value * 160;
+                Frame = 0;
+            }
+        }
+
+        //Phase tracking utils
         public enum PhaseEnum
         {
             SpawnEffects = 0,
@@ -106,8 +123,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 case (int)PhaseEnum.FirstPhase:
 
-                    npc.spriteDirection = npc.Center.X > Target.Center.X ? 1 : -1;
-
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
@@ -148,6 +163,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             var glowTex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/ForgeGlow");
 
+            npc.frame.Width = 128;
+            npc.frame.Height = 160;
+
             for (int k = 0; k < leftForgeCharge; k++)
             {
                 var pos = LeftForge - Main.screenPosition + new Vector2(-glowTex.Width / 2 + 2, -168 + k * -(glowTex.Height + 2));
@@ -160,6 +178,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 spriteBatch.Draw(glowTex, pos, Color.Red * 0.3f);
             }
 
+            Vector2 offset = new Vector2(0, 16);
+
             if (spinAngle != 0)
             {
                 float sin = (float)Math.Sin(spinAngle + 1.57f * npc.direction);
@@ -167,15 +187,34 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                spriteBatch.Draw(GetTexture(Texture), new Rectangle((int)(npc.position.X - Main.screenPosition.X - off / 2 + npc.width / 2), (int)(npc.position.Y - Main.screenPosition.Y), off, npc.frame.Height), npc.frame, drawColor, 0, Vector2.Zero, effect, 0);
+                spriteBatch.Draw(GetTexture(Texture), 
+                    new Rectangle((int)(npc.position.X - Main.screenPosition.X - off / 2 + npc.width / 2), 
+                    (int)(npc.position.Y - Main.screenPosition.Y - 64), off, npc.frame.Height),
+                    npc.frame, drawColor, 0, Vector2.Zero, effect, 0);
             }
 
             else
             {
-                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, 0, npc.frame.Size() / 2, 1, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition - offset, npc.frame, drawColor, 0, npc.frame.Size() / 2, 1, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition - offset, npc.frame, Color.White * glowStrength, 0, npc.frame.Size() / 2, 1, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
 
+            if (glowStrength > 0.3f)
+                Lighting.AddLight(npc.Center, new Vector3(1, 0.5f, 0) * (glowStrength - 0.3f));
+
             return false;
+        }
+
+        private enum AnimationSelection
+        { 
+            Idle,
+            IdleSword,
+            IdleHammer,
+            Walk,
+            WalkSword,
+            WalkHammer,
+            SummonSword,
+            SummonHammer
         }
     }
 }

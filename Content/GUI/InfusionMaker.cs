@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.GUI
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
-        public override bool Visible => true; //lol
+        public override bool Visible => false; //lol
 
         private Vector2 basePos;
 

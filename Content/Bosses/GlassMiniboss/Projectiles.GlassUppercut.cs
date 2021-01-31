@@ -28,7 +28,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            if (projectile.timeLeft == 20) Main.PlaySound(SoundID.Item65, projectile.Center);
+            if (projectile.timeLeft == 20)
+                Main.PlaySound(
+                    StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").SoundId,
+                    -1, -1,
+                    StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").Style,
+                    1.0f, 0.6f
+                    );
+
             if (parent != null) projectile.Center = parent.Center + new Vector2(projectile.ai[1] == -1 ? 70 : -70, 40 - projectile.timeLeft * 2);
         }
     }
