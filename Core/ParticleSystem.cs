@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+
 namespace StarlightRiver.Core
 {
     public class ParticleSystem
@@ -30,7 +33,7 @@ namespace StarlightRiver.Core
                 {
                     Particle particle = Particles[k];
 
-                    if(!Main.gameInactive) UpdateDelegate(particle);
+                    if (!Main.gameInactive) UpdateDelegate(particle);
                     if (Helper.OnScreen(particle.Position))
                     {
                         int height = Texture.Height / Styles;

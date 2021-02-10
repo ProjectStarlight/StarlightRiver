@@ -1,11 +1,10 @@
 ﻿using StarlightRiver.Items;
-using StarlightRiver.Structures;
 using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
-using Terraria.World.Generation;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver
 {
@@ -38,10 +37,10 @@ namespace StarlightRiver
         {
             ChestLoots = new List<ChestLootData>();
 
-            for(int i=0; i<ItemLoader.ItemCount; i+=1)
+            for (int i = 0; i < ItemLoader.ItemCount; i += 1)
             {
                 ModItem modItem = ItemLoader.GetItem(i);
-                if (modItem!=null && modItem is IChestItem iChestItem)
+                if (modItem != null && modItem is IChestItem iChestItem)
                 {
                     AddToGeneratedChests(modItem.item.type, iChestItem.ItemStack, iChestItem.GenerateCondition);
                     Instance.Logger.Warn("Chestloot: " + modItem.item.type + " found");

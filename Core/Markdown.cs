@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
+
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Core
 {
@@ -18,7 +17,7 @@ namespace StarlightRiver.Core
             List<string> mods;
 
             SplitMessage(WrapMarkdownText(message, wrapWidth), out messages, out mods);
-            return  (1 + messages.Count(n => n == "\n")) * Main.fontMouseText.MeasureString("A").Y * scale;
+            return (1 + messages.Count(n => n == "\n")) * Main.fontMouseText.MeasureString("A").Y * scale;
         }
 
         public static float GetWidth(string message, float scale)
@@ -37,7 +36,7 @@ namespace StarlightRiver.Core
             float yOff = 0;
             for (int k = 0; k < messages.Count; k++)
             {
-                if(messages[k] == "\n") //special case for linebreak because im layzeee
+                if (messages[k] == "\n") //special case for linebreak because im layzeee
                 {
                     yOff += Main.fontMouseText.MeasureString("A").Y * scale;
                     xOff = 0;
@@ -181,7 +180,7 @@ namespace StarlightRiver.Core
             string output = "";
             string[] parts = text.Replace("]", "[").Split('[');
 
-            for(int k = 0; k < parts.Length; k += 2)
+            for (int k = 0; k < parts.Length; k += 2)
             {
                 output += parts[k];
             }
@@ -200,11 +199,11 @@ namespace StarlightRiver.Core
             int singleCharIndexCache = 0;
             bool singleCharBroken = false;
 
-            for (int k = 1; k < parts.Length; k ++)
+            for (int k = 1; k < parts.Length; k++)
             {
                 var segment = parts[k];
 
-                if(k % 2 == 1) //modifier
+                if (k % 2 == 1) //modifier
                 {
                     output += '[' + segment + ']';
                     lastMod = '[' + segment + ']';
@@ -213,7 +212,7 @@ namespace StarlightRiver.Core
                 {
                     string[] words = segment.Split(' ');
 
-                    if(words.Length == 1 && words[0].Length == 1) //special case for single characters
+                    if (words.Length == 1 && words[0].Length == 1) //special case for single characters
                     {
                         if (singleCharIndexCache == 0)
                         {
@@ -245,7 +244,7 @@ namespace StarlightRiver.Core
                         singleCharBroken = false;
                     }
 
-                    for(int n = 0; n < words.Length; n++)
+                    for (int n = 0; n < words.Length; n++)
                     {
                         float w = Main.fontMouseText.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
                         if (totalWidth + w > width)
