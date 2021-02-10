@@ -1,10 +1,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Abilities;
-using StarlightRiver.GUI;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using StarlightRiver.RiftCrafting;
-using StarlightRiver.Tiles;
-using StarlightRiver.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,47 +14,22 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Graphics;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.Graphics.Effects;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver
 {
     public partial class StarlightRiver : Mod
     {
-        public Stamina stamina;
-        public Collection collection;
-        public ParticleOverlay overlay;
-        public Infusion infusion;
-        public CookingUI cooking;
-        public KeyInventory keyinventory;
-        public TextCard textcard;
-        public GUI.Codex codex;
-        public CodexPopup codexpopup;
-        public LootUI lootUI;
-        public ChatboxOverUI Chatbox;
-        public UIState ExtraNPCState;
-        public RichTextBox RichText;
-
-        public UserInterface StaminaUserInterface;
-        public UserInterface CollectionUserInterface;
-        public UserInterface OverlayUserInterface;
-        public UserInterface InfusionUserInterface;
-        public UserInterface CookingUserInterface;
-        public UserInterface KeyInventoryUserInterface;
-        public UserInterface TextCardUserInterface;
-        public UserInterface CodexUserInterface;
-        public UserInterface CodexPopupUserInterface;
-        public UserInterface LootUserInterface;
-        public UserInterface ChatboxUserInterface;
-        public UserInterface ExtraNPCInterface;
-        public UserInterface RichTextInterface;
-
         public AbilityHotkeys AbilityKeys { get; private set; }
 
         public List<RiftRecipe> RiftRecipes;
+
+        public List<Foreground> foregrounds;
+
+        private List<ILoadable> loadCache;
 
         public static float Rotation;
 
@@ -122,7 +99,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneAshHell)
+                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
@@ -142,131 +119,44 @@ namespace StarlightRiver
             }
         }
 
-        public static void AutoloadFurniture()
-        {
-            if (Instance.Code != null)
-            {
-                foreach (Type type in Instance.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(AutoFurniture))))
-                {
-                    (Activator.CreateInstance(type) as AutoFurniture).Load(Instance);
-                }
-            }
-        }
-
         public override void Load()
         {
-            //Shaders
+            loadCache = new List<ILoadable>();
+            foregrounds = new List<Foreground>();
+
+            foreach (Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    loadCache.Add(instance as ILoadable);
+                }
+
+                loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+            }
+
+            for(int k = 0; k < loadCache.Count; k++)
+            {
+                loadCache[k].Load();
+            }
+
             if (!Main.dedServ)
             {
-                GameShaders.Misc["StarlightRiver:Distort"] = new MiscShaderData(new Ref<Effect>(GetEffect("Effects/Distort")), "Distort");
-
-                Ref<Effect> screenRef4 = new Ref<Effect>(GetEffect("Effects/Shockwave"));
-                Filters.Scene["ShockwaveFilter"] = new Filter(new ScreenShaderData(screenRef4, "ShockwavePass"), EffectPriority.VeryHigh);
-                Filters.Scene["ShockwaveFilter"].Load();
-
-                Ref<Effect> screenRef3 = new Ref<Effect>(GetEffect("Effects/WaterEffect"));
-                Filters.Scene["WaterFilter"] = new Filter(new ScreenShaderData(screenRef3, "WaterPass"), EffectPriority.VeryHigh);
-                Filters.Scene["WaterFilter"].Load();
-
-                Ref<Effect> screenRef2 = new Ref<Effect>(GetEffect("Effects/AuraEffect"));
-                Filters.Scene["AuraFilter"] = new Filter(new ScreenShaderData(screenRef2, "AuraPass"), EffectPriority.VeryHigh);
-                Filters.Scene["AuraFilter"].Load();
-
-                Ref<Effect> screenRef = new Ref<Effect>(GetEffect("Effects/BlurEffect"));
-                Filters.Scene["BlurFilter"] = new Filter(new ScreenShaderData(screenRef, "BlurPass"), EffectPriority.High);
-                Filters.Scene["BlurFilter"].Load();
-
-                Ref<Effect> screenRef5 = new Ref<Effect>(GetEffect("Effects/Purity"));
-                Filters.Scene["PurityFilter"] = new Filter(new ScreenShaderData(screenRef5, "PurityPass"), EffectPriority.High);
-                Filters.Scene["PurityFilter"].Load();
-
-                Ref<Effect> screenRef6 = new Ref<Effect>(GetEffect("Effects/LightShader"));
-                Filters.Scene["Lighting"] = new Filter(new ScreenShaderData(screenRef6, "LightingPass"), EffectPriority.High);
-                Filters.Scene["Lighting"].Load();
-
-                Ref<Effect> screenRef7 = new Ref<Effect>(GetEffect("Effects/LightApply"));
-                Filters.Scene["LightingApply"] = new Filter(new ScreenShaderData(screenRef7, "LightingApplyPass"), EffectPriority.High);
-                Filters.Scene["LightingApply"].Load();
-
-                Ref<Effect> screenRef8 = new Ref<Effect>(GetEffect("Effects/pixelationFull"));
-                Filters.Scene["Pixelation"] = new Filter(new ScreenShaderData(screenRef8, "PixelationPass"), EffectPriority.Medium);
-                Filters.Scene["Pixelation"].Load();
-
-                Ref<Effect> screenRefCrystal = new Ref<Effect>(GetEffect("Effects/CrystalRefraction"));
-                Filters.Scene["Crystal"] = new Filter(new ScreenShaderData(screenRefCrystal, "CrystalPass"), EffectPriority.High);
-                Filters.Scene["Crystal"].Load();
-
-                Ref<Effect> screenRefIceCrystal = new Ref<Effect>(GetEffect("Effects/IceCrystal"));
-                Filters.Scene["IceCrystal"] = new Filter(new ScreenShaderData(screenRefIceCrystal, "IcePass"), EffectPriority.High);
-                Filters.Scene["IceCrystal"].Load();
-
                 lightingTest = new RenderTest();
             }
+
+            foregrounds = new List<Foreground>();
 
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();
             AutoloadRiftRecipes(RiftRecipes);
 
-            //Furniture
-            AutoloadFurniture();
-
-            //UI
             if (!Main.dedServ)
             {
                 //Hotkeys
                 AbilityKeys = new AbilityHotkeys(this);
                 AbilityKeys.LoadDefaults();
-
-                StaminaUserInterface = new UserInterface();
-                CollectionUserInterface = new UserInterface();
-                OverlayUserInterface = new UserInterface();
-                InfusionUserInterface = new UserInterface();
-                CookingUserInterface = new UserInterface();
-                KeyInventoryUserInterface = new UserInterface();
-                TextCardUserInterface = new UserInterface();
-                CodexUserInterface = new UserInterface();
-                CodexPopupUserInterface = new UserInterface();
-                LootUserInterface = new UserInterface();
-                ChatboxUserInterface = new UserInterface();
-                ExtraNPCInterface = new UserInterface();
-                RichTextInterface = new UserInterface();
-
-                stamina = new Stamina();
-                collection = new Collection();
-                overlay = new ParticleOverlay();
-                infusion = new Infusion();
-                cooking = new CookingUI();
-                keyinventory = new KeyInventory();
-                textcard = new TextCard();
-                codex = new GUI.Codex();
-                codexpopup = new CodexPopup();
-                lootUI = new LootUI();
-                Chatbox = new ChatboxOverUI();
-                RichText = new RichTextBox();
-
-                StaminaUserInterface.SetState(stamina);
-                CollectionUserInterface.SetState(collection);
-                OverlayUserInterface.SetState(overlay);
-                InfusionUserInterface.SetState(infusion);
-                CookingUserInterface.SetState(cooking);
-                KeyInventoryUserInterface.SetState(keyinventory);
-                TextCardUserInterface.SetState(textcard);
-                CodexUserInterface.SetState(codex);
-                CodexPopupUserInterface.SetState(codexpopup);
-                LootUserInterface.SetState(lootUI);
-                ChatboxUserInterface.SetState(Chatbox);
-                RichTextInterface.SetState(RichText);
             }
-
-            //particle systems
-            if (!Main.dedServ)
-            {
-                LoadVitricBGSystems();
-            }
-
-            //Hooking
-            HookOn();
-            HookIL();
         }
 
         private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -287,79 +177,28 @@ namespace StarlightRiver
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
         {
-            int MouseTextIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-            int NPCChatIndex = layers.FindIndex(layer => layer.Name.Equals("Vanilla: NPC / Sign Dialog"));
-            if (MouseTextIndex != -1)
+            for (int k = 0; k < UILoader.UIStates.Count; k++)
             {
-                AddLayer(layers, StaminaUserInterface, stamina, MouseTextIndex, Stamina.visible);
-                AddLayer(layers, CollectionUserInterface, collection, MouseTextIndex - 1, Collection.visible);
-                AddLayer(layers, OverlayUserInterface, overlay, 0, ParticleOverlay.visible);
-                AddLayer(layers, InfusionUserInterface, infusion, MouseTextIndex, Infusion.visible);
-                AddLayer(layers, CookingUserInterface, cooking, MouseTextIndex, CookingUI.Visible);
-                AddLayer(layers, KeyInventoryUserInterface, keyinventory, MouseTextIndex, KeyInventory.visible);
-                AddLayer(layers, TextCardUserInterface, textcard, MouseTextIndex, TextCard.Visible);
-                AddLayer(layers, CodexUserInterface, codex, MouseTextIndex, GUI.Codex.ButtonVisible);
-                AddLayer(layers, CodexPopupUserInterface, codexpopup, MouseTextIndex, codexpopup.Timer > 0);
-                AddLayer(layers, LootUserInterface, lootUI, MouseTextIndex, LootUI.Visible);
-                AddLayer(layers, ChatboxUserInterface, Chatbox, NPCChatIndex, Main.player[Main.myPlayer].talkNPC > 0 && Main.npcShop <= 0 && !Main.InGuideCraftMenu);
-                AddLayer(layers, ExtraNPCInterface, ExtraNPCState, MouseTextIndex, ExtraNPCState != null);
-                AddLayer(layers, RichTextInterface, RichText, MouseTextIndex, RichTextBox.visible);
+                var state = UILoader.UIStates[k];
+                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible);
             }
-        }
-
-        private void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible)
-        {
-            string name = state == null ? "Unknown" : state.ToString();
-            layers.Insert(index, new LegacyGameInterfaceLayer("StarlightRiver: " + name,
-                delegate
-                {
-                    if (visible)
-                    {
-                        userInterface.Update(Main._drawInterfaceGameTime);
-                        state.Draw(Main.spriteBatch);
-                    }
-                    return true;
-                }, InterfaceScaleType.UI));
         }
 
         public override void Unload()
         {
+            foreach (var loadable in loadCache)
+            {
+                loadable.Unload();
+            }
+            loadCache = null;
+
             if (!Main.dedServ)
             {
                 RiftRecipes = null;
 
-                StaminaUserInterface = null;
-                CollectionUserInterface = null;
-                OverlayUserInterface = null;
-                InfusionUserInterface = null;
-                CookingUserInterface = null;
-                TextCardUserInterface = null;
-                CodexUserInterface = null;
-                CodexPopupUserInterface = null;
-                LootUserInterface = null;
-                ChatboxUserInterface = null;
-                ExtraNPCInterface = null;
-                RichTextInterface = null;
-
-                stamina = null;
-                collection = null;
-                overlay = null;
-                infusion = null;
-                cooking = null;
-                textcard = null;
-                codex = null;
-                codexpopup = null;
-                lootUI = null;
-                Chatbox = null;
-                ExtraNPCState = null;
-                RichText = null;
-
                 Instance = null;
                 AbilityKeys.Unload();
             }
-
-            UnhookIL();
-            Main.OnPreDraw -= TestLighting;
         }
 
         #region NetEasy
@@ -367,7 +206,16 @@ namespace StarlightRiver
         {
             NetEasy.NetEasy.Register(this);
             InitWorldGenChests();
-            CallBossChecklist();
+            //CallBossChecklist();
+
+            foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
+                {
+                    var toLoad = Activator.CreateInstance(type);
+                    ((IPostLoadable)toLoad).PostLoad();
+                }
+            }
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)

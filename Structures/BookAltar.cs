@@ -3,6 +3,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.World.Generation;
 
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+
 namespace StarlightRiver.Structures
 {
     public partial class GenHelper
