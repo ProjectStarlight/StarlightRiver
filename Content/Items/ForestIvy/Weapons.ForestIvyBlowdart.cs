@@ -93,6 +93,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
         }
     }
 
+    // TODO: add actual visuals
     public class ForestIvyBlowdartGlobalNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
