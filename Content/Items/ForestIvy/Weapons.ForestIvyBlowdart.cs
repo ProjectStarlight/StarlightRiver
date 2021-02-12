@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Linq;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -37,8 +40,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
             item.noMelee = true;
             item.ranged = true;
             item.knockBack = 4f; // .5 more than vanilla blowpipe
-            item.damage = 11; // TODO: determine if this is good (same with other stats), I can't balance if my life depended on it
-            // (btw 2 more than vanilla blowpipe)
+            item.damage = 16; // TODO: determine if this is good (same with other stats), I can't balance if my life depended on it
+            // (btw 7 more than vanilla blowpipe)
 
             // TODO: Value
         }
@@ -50,7 +53,10 @@ namespace StarlightRiver.Content.Items.ForestIvy
             position.X -= 4f * player.direction;
             position.Y -= 2f * player.gravDir;
 
-            return true;
+            Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
+            proj.GetGlobalProjectile<ForestIvyBlowdartGlobalProj>().forestIvyPoisonVine = true;
+
+            return false;
         }
     }
 
@@ -69,6 +75,61 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
             player.bodyFrame.Y = player.bodyFrame.Height * 2;
             drawInfo.itemLocation -= new Vector2(0, 8); // account for added stuff on the blowdart that fricks with the origin
+        }
+    }
+
+    public class ForestIvyBlowdartGlobalProj : GlobalProjectile
+    {
+        public override bool InstancePerEntity => true;
+
+        public override bool CloneNewInstances => true;
+
+        public bool forestIvyPoisonVine = false;
+
+        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+        {
+            if (Main.rand.NextBool(2))
+                target.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
+        }
+    }
+
+    public class ForestIvyBlowdartGlobalNPC : GlobalNPC
+    {
+        public override bool InstancePerEntity => true;
+
+        public override bool CloneNewInstances => true;
+
+        // TODO: probably needs syncing in mp
+        public int forestIvyPoisonVineCount = 0;
+
+        public int forestIvyPoisonVineContact = 0;
+
+        public override void AI(NPC npc)
+        {
+            foreach (NPC otherNPC in Main.npc.Where(n => n.active && n.life > 5 && !n.friendly &&
+                                                         n.type != NPCID.TargetDummy))
+                if (npc.Hitbox.Intersects(otherNPC.Hitbox))
+                {
+                    if (npc.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount >
+                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount &&
+                        ++otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact >= 60)
+                    {
+                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
+                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact = 0;
+                    }
+                }
+        }
+
+        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        {
+            if (forestIvyPoisonVineCount <= 0)
+                return;
+
+            if (npc.lifeRegen > 0)
+                npc.lifeRegen = 0;
+
+            npc.lifeRegen -= forestIvyPoisonVineCount * 2 * 5;
+            damage += forestIvyPoisonVineCount * 5;
         }
     }
 }
