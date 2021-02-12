@@ -78,7 +78,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
             // Don't know if this is the best hook to put it in, but eh
             // This code makes the player hold the blowdart to their mouth instead of the normal useStyle code behavior
             // TODO: Determine if it'd be better to entirely customize useStyle code, not sure because we'd likely have to copy over draw-code which is a pain
-            if (player.inventory[player.selectedItem].type != ModContent.ItemType<ForestIvyBlowdart>())
+            if (player.inventory[player.selectedItem].type != ModContent.ItemType<ForestIvyBlowdart>() ||
+                player.itemTime <= 0)
                 return;
 
             player.bodyFrame.Y = player.bodyFrame.Height * 2;
