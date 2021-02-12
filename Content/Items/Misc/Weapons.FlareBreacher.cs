@@ -64,9 +64,9 @@ namespace StarlightRiver.Content.Items.Misc
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
-     internal class ExplosiveFlare : ModProjectile
+    internal class ExplosiveFlare : ModProjectile
     {
-         public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetDefaults()
         {
             projectile.width = 10;
