@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
         {
-            if (Main.rand.NextBool(2))
+            if (Main.rand.NextBool(2) && target.life > 5 && !target.friendly && target.type != NPCID.TargetDummy)
                 target.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
         }
     }
