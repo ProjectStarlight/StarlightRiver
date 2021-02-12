@@ -145,10 +145,5 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         {
             return abilityKeys.Get<Wisp>().Current;
         }
-
-        private class WispMount : ModMountData
-        {
-
-        }
     }
 }

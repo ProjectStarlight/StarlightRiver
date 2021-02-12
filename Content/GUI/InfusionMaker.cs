@@ -152,12 +152,12 @@ namespace StarlightRiver.Content.GUI
             craftButton.OnClick += Craft;
             Append(craftButton);
 
-            previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
+            //previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
         }
 
         private void Craft(UIMouseEvent evt, UIElement listeningElement)
         {
-            previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
+            //previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
 
             if (selected is null) return;
 
