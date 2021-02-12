@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
             graphics.SetRenderTarget(vitricBackgroundBannerTarget);
             graphics.Clear(Color.Transparent);
 
-            BackgroundBanner.DrawStrip(Main.screenPosition + new Vector2(0, 50));
+            BackgroundBanner?.DrawStrip(Main.screenPosition + new Vector2(0, 50));
 
             graphics.SetRenderTarget(null);
         }
