@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Items.Herbology.Materials;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
@@ -58,6 +57,15 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
             return false;
         }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
+            recipe.AddTile(TileID.Anvils);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
     }
 
     /// <summary>
@@ -84,7 +92,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override bool CloneNewInstances => true;
 
-        public bool forestIvyPoisonVine = false;
+        public bool forestIvyPoisonVine;
 
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
         {
@@ -101,9 +109,9 @@ namespace StarlightRiver.Content.Items.ForestIvy
         public override bool CloneNewInstances => true;
 
         // TODO: probably needs syncing in mp
-        public int forestIvyPoisonVineCount = 0;
+        public int forestIvyPoisonVineCount;
 
-        public int forestIvyPoisonVineContact = 0;
+        public int forestIvyPoisonVineContact;
 
         public override void AI(NPC npc)
         {
@@ -111,13 +119,13 @@ namespace StarlightRiver.Content.Items.ForestIvy
                                                          n.type != NPCID.TargetDummy))
                 if (npc.Hitbox.Intersects(otherNPC.Hitbox))
                 {
-                    if (npc.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount >
-                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount &&
-                        ++otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact >= 60)
-                    {
-                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
-                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact = 0;
-                    }
+                    if (npc.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount <=
+                        otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount ||
+                        ++otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact < 60)
+                        continue;
+
+                    otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
+                    otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact = 0;
                 }
         }
 
