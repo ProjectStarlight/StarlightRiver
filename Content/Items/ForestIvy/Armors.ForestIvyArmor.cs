@@ -3,9 +3,6 @@ using StarlightRiver.Items.Herbology.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.ForestIvy
 {
@@ -17,7 +14,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ivy Helm");
-            Tooltip.SetDefault("2% increased ranged critial strike change");
+            Tooltip.SetDefault("2% increased ranged critical strike change");
         }
 
         public override void SetDefaults()
@@ -27,14 +24,13 @@ namespace StarlightRiver.Content.Items.ForestIvy
             item.value = 8000;
             item.defense = 2;
         }
-        public override void UpdateEquip(Player player)
-        {
-            player.rangedCrit += 2;
-        }
+
+        public override void UpdateEquip(Player player) => player.rangedCrit += 2;
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<Ivy>(), 8);
+            recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -49,7 +45,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Forest Ivy Chestplate");
-            Tooltip.SetDefault("2% increased ranged critial strike change");
+            Tooltip.SetDefault("2% increased ranged critical strike change");
         }
 
         public override void SetDefaults()
@@ -59,24 +55,23 @@ namespace StarlightRiver.Content.Items.ForestIvy
             item.value = 6000;
             item.defense = 4;
         }
-        public override void UpdateEquip(Player player)
-        {
-            player.rangedCrit += 2;
-        }
-        public override bool IsArmorSet(Item head, Item body, Item legs)
-        {
-            return head.type == ItemType<ForestIvyHead>() && legs.type == ItemType<ForestIvyLegs>();
-        }
+
+        public override void UpdateEquip(Player player) => player.rangedCrit += 2;
+
+        public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<ForestIvyHead>() && legs.type == ModContent.ItemType<ForestIvyLegs>();
+
+        // TODO: Forest ivy armor setbonus
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "After five (5) seconds of not taking damage, your next attack will ensnare and cause bleeding.";
-            StarlightPlayer starlightPlayer = player.GetModPlayer<StarlightPlayer>();
-            //starlightPlayer.ivyArmorComplete = true;
+            player.setBonus = "After 5 seconds of not taking damage, your next attack will ensnare and cause bleeding.";
+            /*StarlightPlayer starlightPlayer = player.GetModPlayer<StarlightPlayer>();
+            starlightPlayer.ivyArmorComplete = true;*/
         }
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<Ivy>(), 12);
+            recipe.AddIngredient(ModContent.ItemType<Ivy>(), 12);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -102,14 +97,12 @@ namespace StarlightRiver.Content.Items.ForestIvy
             item.defense = 2;
         }
 
-        public override void UpdateEquip(Player player)
-        {
-            player.moveSpeed += 0.2f;
-        }
+        public override void UpdateEquip(Player player) => player.moveSpeed += 0.2f;
+
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<Ivy>(), 8);
+            recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
