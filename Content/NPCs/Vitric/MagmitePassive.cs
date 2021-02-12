@@ -5,7 +5,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
@@ -14,7 +13,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class MagmitePassive : ModNPC
     {
-        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
+        //public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
+        public override string Texture => AssetDirectory.Debug;
 
         public override void SetStaticDefaults()
         {

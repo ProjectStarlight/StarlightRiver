@@ -16,7 +16,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
         private const int animFramesLoop = 6; //amount of frames in the main loop
         private readonly float AnimSpeedMult = 0.3f;
 
-        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/BoomBug";
+        //public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/BoomBug";
+        public override string Texture => AssetDirectory.Debug;
 
         public override void SetStaticDefaults()
         {
