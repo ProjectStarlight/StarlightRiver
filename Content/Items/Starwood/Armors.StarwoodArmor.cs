@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Starwood
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
 
-        public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat 
+        public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
         {
             Color color = Lighting.GetColor((int)info.position.X / 16, (int)info.position.Y / 16);
             ArmorHelper.QuickDrawHelmet(info, AssetDirectory.StarwoodItem + "StarwoodHat_Worn", color, 1, new Vector2(10, 4));
