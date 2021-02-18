@@ -1,10 +1,4 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Lavas
 {
@@ -12,6 +6,7 @@ namespace StarlightRiver.Content.Lavas
     {
         public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {
+            // Stop initialising static variables in the global scope, this causes a crash when the mod is reloaded after unloading (lavas is null).
             LavaLoader.lavas.Add(this);
             return SafeAutoload(ref name, ref texture, ref blockTexture);
         }

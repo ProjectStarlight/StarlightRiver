@@ -91,5 +91,7 @@ namespace StarlightRiver.Core
         public const string UndergroundTempleTile = Assets + "Tiles/UndergroundTemple/";
 
         public const string TownNPC =               Assets + "NPCs/Town/";
+
+        public const string Astroflora =            Assets + "Items/Astroflora/";
     }
 }

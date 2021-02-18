@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
+using System.Runtime.InteropServices;
 
 namespace StarlightRiver.Helpers
 {
@@ -305,5 +306,53 @@ namespace StarlightRiver.Helpers
         public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
         public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
+    }
+
+    public class Primitives : IDisposable 
+    {
+        public bool IsDisposed { get; private set; }
+
+        private readonly DynamicVertexBuffer vertexBuffer;
+        private readonly DynamicIndexBuffer indexBuffer;
+
+        private readonly GraphicsDevice device;
+
+        public Primitives(GraphicsDevice device, int maxVertices, int maxIndices)
+        {
+            this.device = device;
+
+            vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
+            indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+        }
+
+        public void Render(Effect effect)
+        {
+            device.SetVertexBuffer(vertexBuffer);
+            device.Indices = indexBuffer;
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, vertexBuffer.VertexCount, 0, indexBuffer.IndexCount / 3);
+            }
+        }
+
+        public void SetVertices(VertexPositionColorTexture[] vertices)
+        {
+            vertexBuffer.SetData(0, vertices, 0, vertices.Length, VertexPositionColorTexture.VertexDeclaration.VertexStride, SetDataOptions.Discard);
+        }
+
+        public void SetIndices(short[] indices)
+        {
+            indexBuffer.SetData(0, indices, 0, indices.Length, SetDataOptions.Discard);
+        }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+
+            vertexBuffer?.Dispose();
+            indexBuffer?.Dispose();
+        }
     }
 }

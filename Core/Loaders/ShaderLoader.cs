@@ -43,6 +43,4 @@ namespace StarlightRiver.Core.Loaders
             Filters.Scene[name].Load();
         }
     }
-
-
 }
