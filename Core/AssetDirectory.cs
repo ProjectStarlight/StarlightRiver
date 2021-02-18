@@ -38,6 +38,8 @@ namespace StarlightRiver.Core
 
         public const string BrewingItem =           Assets + "Items/Brewing/";
 
+        public const string VanityItem =            Assets + "Items/Vanity/";
+
         public const string FoodItem =              Assets + "Items/Food/";
 
         public const string EbonyIvoryItem =        Assets + "Items/EbonyIvory/";
@@ -61,6 +63,7 @@ namespace StarlightRiver.Core
         public const string SlimeItem =             Assets + "Items/Slime/";
         public const string StarwoodItem =          Assets + "Items/Starwood/";
         public const string PalestoneItem =         Assets + "Items/Palestone/";
+        public const string AstrofloraItem =        Assets + "Items/Astroflora/";
         public const string IvyItem =               Assets + "Items/ForestIvy/";
         public const string MiscItem =              Assets + "Items/Misc/";
 

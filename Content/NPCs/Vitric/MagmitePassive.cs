@@ -13,8 +13,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class MagmitePassive : ModNPC
     {
-        //public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
-        public override string Texture => AssetDirectory.Debug;
+        public ref float ActionState => ref npc.ai[0];
+        public ref float ActionTimer => ref npc.ai[1];
+
+        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
 
         public override bool Autoload(ref string name)
         {
@@ -44,10 +46,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void AI()
         {
+            var x = (int)(npc.Center.X / 16) + npc.direction; //check 1 tile infront of la cretura
+            var y = (int)(npc.Center.Y / 16);
+            var tile = Framing.GetTileSafely(x, y);
+
             if (Main.rand.Next(10) == 0)
                 Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
 
-            npc.velocity.X = 2f * (Main.player[Main.myPlayer].Center.X > npc.Center.X ? 1 : -1);
+            npc.velocity.X += 0.1f * (Main.player[Main.myPlayer].Center.X > npc.Center.X ? 1 : -1);
 
             npc.spriteDirection = npc.velocity.X > 0 ? 1 : -1;
         }

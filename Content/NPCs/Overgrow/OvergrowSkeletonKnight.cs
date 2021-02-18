@@ -9,9 +9,9 @@ using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-    internal class OvergrowSkeletonLarge : ModNPC
+    internal class OvergrowSkeletonKnight : ModNPC
     {
-        public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/OvergrowSkeletonLarge";
+        public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/OvergrowSkeletonKnight";
 
         public override void SetStaticDefaults()
         {
@@ -37,42 +37,37 @@ namespace StarlightRiver.Content.NPCs.Overgrow
         }
 
         /*
-        ai[0] : state | main state
-        ai[0] : state | counts blocks for jump height
-        ai[2] : timer | 1 acts as timer for losing intrest, timer for looking for a new target
-        ai[3] : timer | 2 acts as dash warmup, counts jump attempts until turn around when no target
+        ai[MainState] : state | main state
+        ai[JumpHeightCounter] : state | counts blocks for jump height
+        ai[IntrestTimer] : timer | 1 acts as timer for losing intrest, timer for looking for a new target
+        ai[DashAndJumpCounter] : timer | 2 acts as dash warmup, counts jump attempts until turn around when no target
         */
 
         //Main stuck points: zipping up blocks/slabs, and falling through platforms
         //zombies check a bit closer for blocks
 
-        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit) => OnHit(player.whoAmI, damage);
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit) => OnHit(projectile.owner, damage);
+
+        private void OnHit(int targetPlayer, int damage)
         {
+            Main.NewText("hit");
             if (npc.HasValidTarget)
+            {
                 if (damage >= changeAgroDamage)
-                    npc.target = player.whoAmI;
+                    npc.target = targetPlayer;
+            }
             else
             {
-                npc.target = player.whoAmI;
-                npc.ai[2] = 0;
-                npc.ai[3] = 0;
+                npc.target = targetPlayer;
+                Main.NewText(targetPlayer);
+                npc.ai[IntrestTimer] = 0;
+                npc.ai[DashAndJumpCounter] = 0;
             }
         }
 
-        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
-        {
-            if (npc.HasValidTarget)
-                if (damage >= changeAgroDamage)
-                    npc.target = projectile.owner;
-            else
-            {
-                npc.target = projectile.owner;
-                npc.ai[2] = 0;
-                npc.ai[3] = 0;
-            }
-        }
 
-        private const int intrestTime = 800; //time before gained intrest
+        private const int lookForNearestPlayerTime = 800; //time before gained intrest
         private const int loseIntrestTime = 300; //time before lost intrest
 
         private const int changeAgroDamage = 5; //how much damage minimum from another player changes the agro
@@ -82,93 +77,113 @@ namespace StarlightRiver.Content.NPCs.Overgrow
         private const float dashSpeedMax = 4f;
         private const int distancePastPlayer = 75; //if npc is past the player, how long should it go before it stops and turns around
         private const int jumpheight = 6; //not max jumpheight in blocks, max of blocks checked, this increases jumpheight in blocks exponentially. real jump height is 3 more than this (3 is the minimum for 1 block)
-        private Vector2 detectRange = new Vector2(400, 100); //detect range for dash
+        private const int jumpAttempts = 2;//how many times it will try to jump over a wall
+        private const int detectRangeWidth = 400;//detect range for dash
+        private const int detectRangeHeight = 100;//detect range for dash
+
+
+        /*
+       ai[MainState] : state | main state
+       ai[JumpHeightCounter] : state | counts blocks for jump height TODO: (can be made local)
+       ai[IntrestTimer] : timer | 1 acts as timer for losing intrest, timer for looking for a new target
+       ai[DashAndJumpCounter] : timer | 2 acts as dash warmup, counts jump attempts until turn around when no target
+       */
+
+        private const int MainState = 0;
+        private const int JumpHeightCounter = 1;
+        private const int IntrestTimer = 2;
+        private const int DashAndJumpCounter = 3;
+
+        Player playerTarget = Main.player[255];//null player(?)
 
         public override void AI()
         {
-            Player target = new Player();
             if (npc.HasValidTarget)
-                target = Main.player[npc.target];
+                playerTarget = Main.player[npc.target];
 
             /*
                 int playerSide = Math.Min(Math.Max((int)(target.position.X - npc.position.X), -1), 1);
                 npc.direction = playerSide; old version. saved in case npc direction and player side need to be seperate
             */
+            
+            //if (true == true) //easy disabling
+            //{
+            //    Main.NewText("DEBUG:"); //guess what this is for
+            //    Main.NewText("Main Case: " + npc.ai[MainState]); //debug
+            //    //Main.NewText("Jump Height: " + npc.ai[JumpHeightCounter]); //debug
+            //    Main.NewText("Intrest: " + npc.ai[IntrestTimer]); //debug
+            //    Main.NewText("warmup/jumps: " + npc.ai[DashAndJumpCounter]); //debug
+            //    Main.NewText("has valid target: " + npc.HasValidTarget); //debug
+            //    Main.NewText("player target: " + playerTarget.whoAmI); //debug
+            //    Main.NewText("target index: " + npc.target); //debug
+            //    Main.NewText("Player Pos" + playerTarget.Center.X + " " + playerTarget.Center.Y); //debug
+            //    Main.NewText("velocity: " + npc.velocity.X + " " + npc.velocity.Y); //debug
+            //}
 
-            /*if (true == false) //easy disabling
-            {
-                Main.NewText("DEBUG:"); //guess what this is for
-                Main.NewText("state 1: " + npc.ai[0]); //debug
-                Main.NewText("state 2: " + npc.ai[1]); //debug
-                Main.NewText("timer 1: " + npc.ai[2]); //debug
-                Main.NewText("timer 2: " + npc.ai[3]); //debug
-                Main.NewText(npc.velocity.X + " " + npc.velocity.Y); //debug
-            }*/ //debug
-
-            switch (npc.ai[0])//main switch
+            switch (npc.ai[MainState])//main case
             {
                 case 0: //walking (handles wandering and tracking)
                     npc.spriteDirection = npc.direction;
 
                     if (npc.HasValidTarget)
                     {
-                        npc.direction = Math.Min(Math.Max((int)(target.Center.X - npc.Center.X), -1), 1);
+                        npc.direction = Math.Min(Math.Max((int)(playerTarget.Center.X - npc.Center.X), -1), 1);
                         npc.spriteDirection = npc.direction;
 
-                        if (npc.position.X == npc.oldPosition.X)//note: may have to change this to 'if new pos is within range of old pos'
-                            npc.ai[2]++; //losing intrest because npc is stuck
-                        else if (npc.ai[2] > 0)
-                            npc.ai[2]--; //npc unstuck
+                        if (npc.position.X == npc.oldPosition.X)        //note: may have to change this to 'if new pos is within range of old pos'
+                            npc.ai[IntrestTimer]++;                     //increase losing intrest timer because npc is stuck
+                        else if (npc.ai[IntrestTimer] > 0)
+                            npc.ai[IntrestTimer]--;                     //decrease npc unstuck
 
-                        if (npc.ai[2] >= loseIntrestTime) //intrest timer
+                        if (npc.ai[IntrestTimer] >= loseIntrestTime)    //intrest timer
                         {
                             npc.target = 255;
-                            npc.ai[2] = 0;
-                            npc.ai[3] = 0;
+                            npc.ai[IntrestTimer] = 0;
+                            npc.ai[DashAndJumpCounter] = 0;
                         }
 
-                        if (Math.Abs(target.Center.Y - npc.Center.Y) < detectRange.Y && Math.Abs(target.Center.X - npc.Center.X) < detectRange.X)
-                            npc.ai[3]++;
-                        else if (npc.ai[3] >= countdownSpeed)
-                            npc.ai[3] -= countdownSpeed;
+                        if (npc.velocity.X != 0 && Math.Abs(playerTarget.Center.Y - npc.Center.Y) < detectRangeHeight && Math.Abs(playerTarget.Center.X - npc.Center.X) < detectRangeWidth)
+                            npc.ai[DashAndJumpCounter]++;
+                        else if (npc.ai[DashAndJumpCounter] >= countdownSpeed)
+                            npc.ai[DashAndJumpCounter] -= countdownSpeed;
 
-                        if (npc.ai[3] >= maxRangeTimer)
+                        if (npc.ai[DashAndJumpCounter] >= maxRangeTimer)
                         {//timer max, reset ai[]s and move to next step
                             for (int y = 0; y < 30; y++)//placeholder dash dust
                                 Dust.NewDustPerfect(new Vector2(npc.Center.X - npc.width / 2 * npc.direction + Main.rand.Next(-5, 5), Main.rand.Next((int)npc.position.Y + 5, (int)npc.position.Y + npc.height) - 5), 31, new Vector2(Main.rand.Next(-20, 30) * 0.03f * npc.direction, Main.rand.Next(-20, 20) * 0.02f), 0, default, 2);
 
-                            npc.ai[2] = 0;
-                            npc.ai[3] = 0;
-                            npc.ai[0] = 1;//start dash
+                            npc.ai[IntrestTimer] = 0;
+                            npc.ai[DashAndJumpCounter] = 0;
+                            npc.ai[MainState] = 1;//start dash
                         }
                     }
                     else //if no target
                     {
-                        npc.ai[2]++;
+                        npc.ai[IntrestTimer]++;
 
-                        if (npc.ai[3] >= 2 && npc.velocity.Y == 0)
+                        if (npc.ai[DashAndJumpCounter] >= jumpAttempts && npc.velocity.Y == 0)//jump attempts
                         {
                             npc.direction = -npc.direction;
-                            npc.ai[3] = 0;
+                            npc.ai[DashAndJumpCounter] = 0;
                         }
 
-                        if (npc.ai[2] >= intrestTime)
+                        if (npc.ai[IntrestTimer] >= lookForNearestPlayerTime)
                         {
                             npc.TargetClosest();
-                            npc.ai[2] = 0;
-                            npc.ai[3] = 0;
+                            npc.ai[IntrestTimer] = 0;
+                            npc.ai[DashAndJumpCounter] = 0;
                         }
                     }
 
-                    if (npc.velocity.Y == 0)//jumping. note: (the could be moved to just before it sets the velocity high in MoveVertical())
-                        Helper.NpcVertical(npc, true, default, jumpheight);
+                    if (npc.velocity.Y == 0)//jumping. note: (the if could be moved to just before it sets the velocity high in MoveVertical())
+                        Helper.NpcVertical(npc, true, JumpHeightCounter, jumpheight);
 
                     Move(walkSpeedMax);
 
                     break;
 
-                case 1: //start dash
-                    if (npc.velocity.Y == 0)//jumping. note: (the could be moved to just before it sets the velocity high in MoveVertical())
+                case 1: //dashing
+                    if (npc.velocity.Y == 0)//step-up blocks while dashing
                     {
                         Helper.NpcVertical(npc, false);
                         if (Main.rand.Next(4) == 0)//placeholder dash
@@ -179,22 +194,22 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                     {
                         Collide(); //thunk
 
-                        npc.ai[3] = 0;
-                        npc.ai[2] = 0;
-                        npc.ai[0] = 2;//bonk cooldown, then back to case 0
+                        npc.ai[DashAndJumpCounter] = 0;
+                        npc.ai[IntrestTimer] = 0;
+                        npc.ai[MainState] = 2;//bonk cooldown, then back to case 0
                         break;
                     }
 
-                    if (npc.direction != Math.Min(Math.Max((int)(target.Center.X - npc.Center.X), -1), 1) || !npc.HasValidTarget)
-                        npc.ai[3]++;
+                    if (npc.direction != Math.Min(Math.Max((int)(playerTarget.Center.X - npc.Center.X), -1), 1) || !npc.HasValidTarget)
+                        npc.ai[DashAndJumpCounter]++;
 
-                    if (npc.ai[3] >= distancePastPlayer)
+                    if (npc.ai[DashAndJumpCounter] >= distancePastPlayer)
                     {
                         npc.direction = -npc.direction;
                         npc.spriteDirection = npc.direction;
-                        npc.ai[3] = 0;//slide to a halt and then back to case 0
-                        npc.ai[2] = 1;//tells case 2 to spawn particles
-                        npc.ai[0] = 2;//turns out this case is the exact same for both
+                        npc.ai[DashAndJumpCounter] = 0;//slide to a halt and then back to case 0
+                        npc.ai[IntrestTimer] = 1;//tells case 2 to spawn particles
+                        npc.ai[MainState] = 2;//turns out this case is the exact same for both
                         break;
                     }
 
@@ -203,17 +218,18 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                     break;
 
                 case 2:
-                    npc.ai[3]++;
+                    npc.ai[DashAndJumpCounter]++;
                     npc.velocity.X *= 0.95f;
-                    if (npc.ai[2] == 1)//this checks if this is for hitting a wall or slowing down
+                    if (npc.ai[IntrestTimer] == 1)//this checks if this is for hitting a wall or slowing down
                     {
+                        //TODO
                     }
 
-                    if (npc.ai[3] >= 50)
+                    if (npc.ai[DashAndJumpCounter] >= 50)
                     {
-                        npc.ai[3] = 0;
-                        npc.ai[2] = 0;
-                        npc.ai[0] = 0;
+                        npc.ai[DashAndJumpCounter] = 0;
+                        npc.ai[IntrestTimer] = 0;
+                        npc.ai[MainState] = 0;
                     }
                     break;
             }
@@ -246,10 +262,10 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             //Main.NewText(npc.frame.Y / frameHeight); //debug
         }
 
-        /*public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             return (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
-        }*/
+        }
 
         public override void NPCLoot()
         {

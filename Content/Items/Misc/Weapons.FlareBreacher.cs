@@ -158,12 +158,12 @@ namespace StarlightRiver.Content.Items.Misc
     }
     internal class FlareExplosion : ModProjectile
     {
-         public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.Invisible;
         public override void SetDefaults()
         {
             projectile.width = 24;
             projectile.height = 24;
-            projectile.alpha = 255;
+            projectile.alpha = 255;//invisible
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.timeLeft = 14;
@@ -172,14 +172,8 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.extraUpdates = 1;
         }
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Flare Explosion");
-        }
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Flare Explosion");
 
-        public override void AI()
-        {
-
-        }
+        public override void AI() { }
     }
 }

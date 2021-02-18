@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Head)]
     public class EngineerHead : ModItem
     {
-        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Body)]
     public class EngineerChest : ModItem
     {
-        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Vanity
     [AutoloadEquip(EquipType.Legs)]
     public class EngineerLegs : ModItem
     {
-        public override string Texture => AssetDirectory.Assets + "Items/Vanity/" + Name;
+        public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -286,8 +286,7 @@ namespace StarlightRiver.Content.Items.Vanity
                     }
 
                     //Alotta predefined stuff for each part
-                    string directory = "StarlightRiver/Items/Armor/Engineer/";
-                    Texture2D[] ShoulderMounts = { GetTexture(directory + "ShoulderMount1"), GetTexture(directory + "ShoulderMount2"), GetTexture(directory + "ShoulderLauncher1"), GetTexture(directory + "ShoulderLauncher2") };
+                    Texture2D[] ShoulderMounts = { GetTexture(AssetDirectory.VanityItem + "ShoulderMount1"), GetTexture(AssetDirectory.VanityItem + "ShoulderMount2"), GetTexture(AssetDirectory.VanityItem + "ShoulderLauncher1"), GetTexture(AssetDirectory.VanityItem + "ShoulderLauncher2") };
                     Vector2[] spriteorigins = { new Vector2(ShoulderMounts[0].Width - 4, ShoulderMounts[0].Height - 4),
                         new Vector2(2, ShoulderMounts[1].Height - 2),
                         new Vector2(4, ShoulderMounts[2].Height / 2),
