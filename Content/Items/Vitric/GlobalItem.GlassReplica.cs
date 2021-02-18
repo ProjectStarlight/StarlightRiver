@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (isReplica)
             {
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+                spriteBatch.Begin(default, default, default, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.UIScaleMatrix);
                 Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.rottime);
             }
 
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (isReplica)
             {
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
             }
         }
 
