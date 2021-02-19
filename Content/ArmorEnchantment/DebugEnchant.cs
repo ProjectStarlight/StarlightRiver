@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
             for (int k = 0; k < 3; k++)
             {
-                spriteBatch.Draw(tex, position + tex.Size() * 0.5f * scale, frame, new Color(0.5f, 0.8f, 1f) * (0.85f), 0, frame.Size() * 0.5f, scale * 1.3f + 0.1f * (float)Math.Sin(StarlightWorld.rottime + k), SpriteEffects.None, 0);
+                spriteBatch.Draw(tex, position + tex.Size() * 0.5f * scale, frame, new Color(0.5f, 0.8f, 1f) * (0.55f), 0, frame.Size() * 0.5f, scale * 1.3f + 0.1f * (float)Math.Sin(StarlightWorld.rottime + k), SpriteEffects.None, 0);
             }
 
             spriteBatch.End();

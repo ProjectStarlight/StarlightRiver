@@ -130,6 +130,7 @@ namespace StarlightRiver.Helpers
         public static void DoTilt(float intensity)
         {
             tiltMax = intensity; tiltTime = 0;
+            StarlightRiver.Rotation = 0.01f;
         }
 
         public static void UpdateTilt()
@@ -146,6 +147,7 @@ namespace StarlightRiver.Helpers
                 if (tiltTime >= 40) { StarlightRiver.Rotation = 0; tiltMax = 0; }
             }
         }
+
         public static bool ScanForTypeDown(int startX, int startY, int type, int maxDown = 50)
         {
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)

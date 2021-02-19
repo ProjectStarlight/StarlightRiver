@@ -160,19 +160,23 @@ namespace StarlightRiver
         }
 
         private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
+
         public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
-            if (Rotation != 0)
+            if (Rotation != 0) //ignore this block
             {
 
                 Matrix rotation = Matrix.CreateRotationZ(Rotation);
                 Matrix translation = Matrix.CreateTranslation(new Vector3(Main.screenWidth / 2, Main.screenHeight / 2, 0));
                 Matrix translation2 = Matrix.CreateTranslation(new Vector3(Main.screenWidth / -2, Main.screenHeight / -2, 0));
 
-                _transformMatrix.SetValue(Transform, (translation2 * rotation) * translation);
-                base.ModifyTransformMatrix(ref Transform);
-                Helper.UpdateTilt();
+                //_transformMatrix.SetValue(Transform, ((translation2 * rotation) * translation));
+                //base.ModifyTransformMatrix(ref Transform);
+                //Helper.UpdateTilt();
             }
+
+            Transform.Zoom = ZoomHandler.ScaleVector;
+            ZoomHandler.UpdateZoom();
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)

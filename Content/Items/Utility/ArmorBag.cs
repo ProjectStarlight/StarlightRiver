@@ -41,9 +41,19 @@ namespace StarlightRiver.Content.Items.Utility
 
             newBag.storedArmor = new Item[3];
 
-            for(int k = 0; k < 3; k++)
+            for (int k = 0; k < 3; k++)
             {
                 newBag.storedArmor[k] = storedArmor[k]?.Clone();
+            }
+
+            if (newBag.storedArmor[0] is null || newBag.storedArmor[1] is null || newBag.storedArmor[2] is null)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    var item = new Item();
+                    item.TurnToAir();
+                    newBag.storedArmor[k] = item;
+                }
             }
 
             return newBag;
@@ -104,6 +114,9 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
+            if (storedArmor[0] is null || storedArmor[1] is null || storedArmor[2] is null)
+                return;
+
             TooltipLine armorLineHead = new TooltipLine(mod, "HelmetSlot",
                 (storedArmor[0].IsAir) ? "No helmet" : storedArmor[0].Name)
             {
