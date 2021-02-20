@@ -224,6 +224,19 @@ namespace StarlightRiver.Helpers
                     player = Main.player[k];
             return player;
         }
+
+        /// <summary>
+        /// Linq-less method of combining 2 arrays.
+        /// </summary>
+        public static T[] FastUnion<T>(this T[] front, T[] back)
+        {
+            T[] combined = new T[front.Length + back.Length];
+
+            Array.Copy(front, combined, front.Length);
+            Array.Copy(back, 0, combined, front.Length, back.Length);
+
+            return combined;
+        }
     }
 }
 

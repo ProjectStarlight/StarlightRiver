@@ -153,7 +153,9 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public override string Texture => AssetDirectory.Invisible;
 
-        private Primitives primitives;
+        //private Primitives primitives;
+
+        private Trail trail;
 
         private List<Vector2> cache;
 
@@ -198,7 +200,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
             ManageCaches();
 
-            PopulateVertexBuffer();
+            ManageTrail();
 
             if (projectile.timeLeft < 30)
             {
@@ -271,143 +273,32 @@ namespace StarlightRiver.Content.Items.Astroflora
             }
         }
 
-        private void PopulateVertexBuffer()
+        private void ManageTrail()
         {
-            if (cache.Count < 3 || (primitives?.IsDisposed ?? false))
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new RoundedTip(16), factor => factor * trailMaxWidth, factor =>
             {
-                return;
-            }
+                // 1 = full opacity, 0 = transparent.
+                float normalisedAlpha = 1 - (projectile.alpha / 255f);
 
-            Color color = new Color(31, 250, 131) * (1 - (projectile.alpha / 255f));
-
-            List<VertexPositionColorTexture> vertices = new List<VertexPositionColorTexture>();
-            List<short> indices = new List<short>();
-
-            // We can omit 2 cache positions because the beginning and end are not counted, and then for each other cache position there are 4 vertices (plus 3 for the tip).
-            int maxVertexCount = 3 + ((oldPositionCacheLength - 2) * 4);
-
-            // We can omit 2 cache positions because the beginning and end are not counted, and then for each other cache position there are 6 indices (2 triangles, and 3 more indices for the tip).
-            int maxIndexCount = 3 + ((oldPositionCacheLength - 2) * 6);
-
-            primitives = primitives ?? new Primitives(Main.instance.GraphicsDevice, maxVertexCount, maxIndexCount);
-
-            short currentVertex = 0;
-
-            for (int i = 1; i < cache.Count - 1; i++)
-            {
-                // 1 at the start, 0 at the end of trail.
-                float amountAlongTrail = ((float)(i - 1) / oldPositionCacheLength);
-
-                float width = amountAlongTrail * trailMaxWidth;
-
-                Vector2 previousCenter = cache[i - 1];
-                Vector2 currentCenter = cache[i];
-                Vector2 nextCenter = cache[i + 1];
-
-                Vector2 prevToCur = (currentCenter - previousCenter).SafeNormalize(Vector2.Zero);
-                Vector2 curToNext = (nextCenter - currentCenter).SafeNormalize(Vector2.Zero);
-
-                /* Previous point indicated by prev, Current indicated by cur.
-                 * We want to generate 2 triangles - ACD and ABD.
-                 *   A -------- B
-                 *   |          |
-                 *  prev.      cur.
-                 *   |          |
-                 *   C -------- D
-                */
-
-                // Rotation is always anticlockwise so this is facing towards A from prev.
-                Vector2 prevToA = prevToCur.RotatedBy(MathHelper.PiOver2);
-
-                // And this is facing towards B from cur.
-                Vector2 curToB = curToNext.RotatedBy(MathHelper.PiOver2);
-
-                Vector3 a = (previousCenter + (prevToA * width)).Vec3();
-                Vector3 b = (currentCenter + (curToB * width)).Vec3();
-                Vector3 c = (previousCenter - (prevToA * width)).Vec3();
-                Vector3 d = (currentCenter - (curToB * width)).Vec3();
-
-                float currentUVX = (float)i / oldPositionCacheLength;
-                float previousUVX = amountAlongTrail;
-
-                vertices.AddRange(new VertexPositionColorTexture[]
-                {
-                    new VertexPositionColorTexture(a, color, new Vector2(previousUVX, 0)),
-                    new VertexPositionColorTexture(b, color, new Vector2(currentUVX, 0)),
-                    new VertexPositionColorTexture(c, color, new Vector2(previousUVX, 1)),
-                    new VertexPositionColorTexture(d, color, new Vector2(currentUVX, 1))
-                });
-
-                indices.AddRange(new short[]
-                {
-                    // A, C, D.
-                    currentVertex, (short)(currentVertex + 2), (short)(currentVertex + 3),
-
-                    // D, B, A.
-                    (short)(currentVertex + 3), (short)(currentVertex + 1), currentVertex
-                });
-
-                currentVertex += 4;
-            }
-
-            /* Now we need to make the tip of the trail. It'll look something like this:
-             *     C
-             *    / \
-             *   /   \
-             *  /     \
-             * A ----- B
-             * Forming a pointed triangular tip.
-            */
-
-            Vector2 center = cache[cache.Count - 2];
-
-            Vector2 tipC = center + (projectile.velocity.SafeNormalize(Vector2.Zero) * trailMaxWidth * 4);
-            Vector2 centerToTip = (tipC - center).SafeNormalize(Vector2.Zero);
-            Vector2 centerToA = centerToTip.RotatedBy(MathHelper.PiOver2);
-
-            float tipWidth = ((float)cache.Count / oldPositionCacheLength) * trailMaxWidth;
-
-            Vector2 tipA = center + (centerToA * tipWidth);
-            Vector2 tipB = center - (centerToA * tipWidth);
-
-            if (HitATarget)
-            {
-                tipA = tipB = tipC = projectile.Center;
-            }
-
-            vertices.AddRange(new VertexPositionColorTexture[]
-            {
-                new VertexPositionColorTexture(tipA.Vec3(), color, Vector2.UnitX),
-                new VertexPositionColorTexture(tipB.Vec3(), color, Vector2.One),
-                new VertexPositionColorTexture(tipC.Vec3(), color, Vector2.One)
+                // Scales opacity with the projectile alpha as well as the distance from the beginning of the trail.
+                return new Color(31, 250, 131) * normalisedAlpha * factor.X;
             });
 
-            indices.AddRange(new short[]
-            {
-                // A, B, C.
-                currentVertex, (short)(currentVertex + 1), (short)(currentVertex + 2),
-            });
-
-            primitives.SetVertices(vertices.ToArray());
-            primitives.SetIndices(indices.ToArray());
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + projectile.velocity;
         }
 
         public void DrawPrimitives()
         {
-            if (primitives != null && !primitives.IsDisposed)
-            {
-                Effect effect = Filters.Scene["AstrofloraPrimitives"].GetShader().Shader;
+            Effect effect = Filters.Scene["Primitives"].GetShader().Shader;
 
-                Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-                Matrix view = Main.GameViewMatrix.ZoomMatrix;
-                Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-                effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-                //effect.Parameters["noise"].SetValue(ModContent.GetTexture("Terraria/Misc/Perlin"));
-
-                primitives.Render(effect);
-            }
+            trail?.Render(effect);
         }
 
         public override bool? CanHitNPC(NPC target)
@@ -427,7 +318,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public override void Kill(int timeLeft)
         {
-            primitives?.Dispose();
+            trail?.Dispose();
 
             if (TargetNPCIndex > -1)
             {

@@ -1,11 +1,6 @@
-﻿matrix transformMatrix;
+﻿// This shader is the default shader for primitives; i.e. it will render them without any special changes. You can use this as a base for your own shaders.
 
-Texture2D noise;
-
-sampler2D noiseSampler = sampler_state
-{
-    Texture = <noise>;
-};
+matrix transformMatrix;
 
 struct VertexShaderInput
 {
@@ -34,18 +29,12 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-    //float4 noiseColor = tex2D(noiseSampler, input.TexCoords);
-    
-    //float brightness = ((noiseColor.r + noiseColor.g + noiseColor.b) / 3) / 2; // Division by 2 decreases intensity a bit.
-    
-    float darkness = input.TexCoords.x;
-    
-    return input.Color * darkness;
+    return input.Color;
 }
 
 technique Technique1
 {
-    pass AstrofloraPrimitivesPass
+    pass PrimitivesPass
     {
         VertexShader = compile vs_2_0 VertexShaderFunction();
         PixelShader = compile ps_2_0 PixelShaderFunction();
