@@ -153,8 +153,6 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public override string Texture => AssetDirectory.Invisible;
 
-        //private Primitives primitives;
-
         private Trail trail;
 
         private List<Vector2> cache;
@@ -275,7 +273,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new RoundedTip(16), factor => factor * trailMaxWidth, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
             {
                 // 1 = full opacity, 0 = transparent.
                 float normalisedAlpha = 1 - (projectile.alpha / 255f);
