@@ -226,6 +226,11 @@ namespace StarlightRiver.Helpers
                     player = Main.player[k];
             return player;
         }
+
+        public static float BezierEase(float time)
+        {
+            return time * time / (2f * (time * time - time) + 1f);
+        }
     }
 }
 

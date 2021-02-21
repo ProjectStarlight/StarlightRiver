@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -16,7 +17,7 @@ namespace StarlightRiver.Content.NPCs.Town
     class EnchantNPC : ModNPC
     {
         int textState = 0;
-        bool enchanting;
+        public bool enchanting;
 
         public override string Texture => "StarlightRiver/Assets/NPCs/Town/EnchantNPC";
 
@@ -58,12 +59,15 @@ namespace StarlightRiver.Content.NPCs.Town
 
         private void OpenEnchantUI()
         {
-            Main.NewText("IMPLEMENT THE UI YOU LAZY BITCH");
-            ZoomHandler.SetZoomAnimation(2.5f, 60);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center + new Vector2(0, -200);
+            EnchantmentMenu.SetActive(npc.Center + new Vector2(0, -300), this);
+            //ZoomHandler.SetZoomAnimation(2.5f, 60);
+            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center + new Vector2(0, -300);
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 120;
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = true;
+            Main.LocalPlayer.talkNPC = -1;
             enchanting = true;
+
+            UILoader.GetUIState<RichTextBox>().Visible = false;
         }
 
         private void PackUp()
@@ -83,6 +87,16 @@ namespace StarlightRiver.Content.NPCs.Town
                     RichTextBox.SetData(null, "", "");
                 }
             }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) //Temporary solution untill this can be drawn by the structure
+        {
+            spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.GUI + "EnchantOver"), npc.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
+
+            if(!enchanting)
+                spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.GUI + "EnchantSlotClosed"), npc.Center + new Vector2(0, -500) - Main.screenPosition, new Rectangle(0, 0, 34, 34), Color.White, 0, Vector2.One * 17, 1, 0, 0);
+
+            return true;
         }
 
         private void SetData()
