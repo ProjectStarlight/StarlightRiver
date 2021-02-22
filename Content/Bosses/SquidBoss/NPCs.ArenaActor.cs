@@ -145,7 +145,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         }
 
         public void DrawWater(SpriteBatch spriteBatch)
-        {
+        {/* This GetTexture call throws a missing resource exception on unload!
+          * 
             Texture2D tex = GetTexture(AssetDirectory.SquidBoss + "CathedralWater");
             Vector2 pos = npc.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
             var source = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, (int)npc.ai[0] - 5 * 16);
@@ -154,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var source2 = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, 2);
 
             Helper.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);
-            spriteBatch.Draw(tex, pos2, source2, Color.White * 0.6f, 0, Vector2.Zero, 1, 0, 0);
+            spriteBatch.Draw(tex, pos2, source2, Color.White * 0.6f, 0, Vector2.Zero, 1, 0, 0);*/
         }
 
         private static readonly VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];

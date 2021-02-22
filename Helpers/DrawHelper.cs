@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
+using System.Runtime.InteropServices;
 
 namespace StarlightRiver.Helpers
 {

@@ -63,6 +63,7 @@ namespace StarlightRiver.Core
         public const string SlimeItem =             Assets + "Items/Slime/";
         public const string StarwoodItem =          Assets + "Items/Starwood/";
         public const string PalestoneItem =         Assets + "Items/Palestone/";
+        public const string AstrofloraItem =        Assets + "Items/Astroflora/";
         public const string IvyItem =               Assets + "Items/ForestIvy/";
         public const string MiscItem =              Assets + "Items/Misc/";
 
@@ -93,5 +94,7 @@ namespace StarlightRiver.Core
         public const string UndergroundTempleTile = Assets + "Tiles/UndergroundTemple/";
 
         public const string TownNPC =               Assets + "NPCs/Town/";
+
+        public const string Astroflora =            Assets + "Items/Astroflora/";
     }
 }

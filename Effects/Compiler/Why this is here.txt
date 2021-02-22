@@ -1,0 +1,1 @@
+For convenience's sake. This can be removed in release, but for now it's just nice to not have to copy everything to and from a dir with FXC in it.

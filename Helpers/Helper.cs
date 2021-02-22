@@ -231,6 +231,16 @@ namespace StarlightRiver.Helpers
         {
             return time * time / (2f * (time * time - time) + 1f);
         }
+
+        public static T[] FastUnion<T>(this T[] front, T[] back)
+        {
+            T[] combined = new T[front.Length + back.Length];
+
+            Array.Copy(front, combined, front.Length);
+            Array.Copy(back, 0, combined, front.Length, back.Length);
+
+            return combined;
+        }
     }
 }
 
