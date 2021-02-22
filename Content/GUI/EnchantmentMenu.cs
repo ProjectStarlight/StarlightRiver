@@ -149,6 +149,7 @@ namespace StarlightRiver.Content.GUI
         {
             var closedTex = GetTexture(AssetDirectory.GUI + "EnchantSlotClosed");
             var openTex = GetTexture(AssetDirectory.GUI + "EnchantSlotOpen");
+            var iconTex = GetTexture(AssetDirectory.GUI + "EnchantSlotIcon");
 
             leafParticles.DrawParticles(spriteBatch);
 
@@ -168,12 +169,14 @@ namespace StarlightRiver.Content.GUI
             }
             else if (animationTimer <= 160)
             {
-                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 0, 98, 108), Color.White, 0, Vector2.One * 49, 1, 0, 0);
-                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 108, 98, 108), Color.Lerp(Color.LightYellow, Color.Transparent, (animationTimer - 140) / 20f), 0, Vector2.One * 49, 1, 0, 0);
+                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 0, 98, 106), Color.White, 0, Vector2.One * 49, 1, 0, 0);
+                spriteBatch.Draw(iconTex, GetDimensions().Center() + Vector2.UnitY * 6, new Rectangle(0, 18 * slotIndex, 20, 18), Color.White, 0, Vector2.One * 9, 1, 0, 0);
+                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 106, 98, 106), Color.Lerp(Color.LightYellow, Color.Transparent, (animationTimer - 140) / 20f), 0, Vector2.One * 49, 1, 0, 0);
             }
             else //drawing while open
             {
-                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 0, 98, 108), Color.White, 0, Vector2.One * 49, 1, 0, 0);
+                spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 0, 98, 106), Color.White, 0, Vector2.One * 49, 1, 0, 0);
+                spriteBatch.Draw(iconTex, GetDimensions().Center() + Vector2.UnitY * 6, new Rectangle(0, 18 * slotIndex, 20, 18), Color.White, 0, Vector2.One * 9, 1, 0, 0);
 
                 if (!item.IsAir)
                 {
@@ -198,7 +201,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if (item.IsAir && !Main.mouseItem.IsAir)
+            if (item.IsAir && !Main.mouseItem.IsAir && CheckValid(Main.mouseItem))
             {
                 item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
@@ -216,6 +219,21 @@ namespace StarlightRiver.Content.GUI
 
                 Main.PlaySound(SoundID.MenuTick);
             }
+        }
+
+        public bool CheckValid(Item item)
+        {
+            if (item.vanity)
+                return false;
+
+            switch(slotIndex)
+            {
+                case 0: if (item.headSlot != -1) return true; break;
+                case 1: if (item.bodySlot != -1) return true; break;
+                case 2: if (item.legSlot != -1) return true; break;
+            }
+
+            return false;
         }
         
         public void SetCenter(Vector2 pos)
