@@ -28,6 +28,8 @@ namespace StarlightRiver.Content.GUI
 
         public override bool Visible => visible;
 
+        public override InterfaceScaleType Scale => InterfaceScaleType.Game;
+
         public static EnchantNPC activeEnchanter;
 
         private static Vector2 centerPoint;

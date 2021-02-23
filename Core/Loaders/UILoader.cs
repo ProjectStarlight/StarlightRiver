@@ -40,7 +40,7 @@ namespace StarlightRiver.Core.Loaders
             UIStates = null;
         }
 
-        public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible)
+        public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)
         {
             string name = state == null ? "Unknown" : state.ToString();
             layers.Insert(index, new LegacyGameInterfaceLayer("StarlightRiver: " + name,
@@ -52,7 +52,7 @@ namespace StarlightRiver.Core.Loaders
                         state.Draw(Main.spriteBatch);
                     }
                     return true;
-                }, InterfaceScaleType.UI));
+                }, scale));
         }
 
         public static T GetUIState<T>() where T : SmartUIState => UIStates.FirstOrDefault(n => n is T) as T;

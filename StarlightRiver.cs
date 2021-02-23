@@ -184,7 +184,7 @@ namespace StarlightRiver
             for (int k = 0; k < UILoader.UIStates.Count; k++)
             {
                 var state = UILoader.UIStates[k];
-                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible);
+                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
             }
         }
 
