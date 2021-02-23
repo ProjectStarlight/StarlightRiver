@@ -13,11 +13,13 @@ namespace StarlightRiver.Content.Items.Astroflora
 	public class AstrofloraFlail : BaseFlailItem
 	{
 		public override string Texture => AssetDirectory.AstrofloraItem + "AstrofloraFlail";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Astroflora Flail");
 			Tooltip.SetDefault("Spinning the flail creates a toxic mist\nThe toxic mist ignites when the flail is thrown");
 		}
+
 		public override void SafeSetDefaults()
 		{
 			item.Size = new Vector2(34, 30);
@@ -33,16 +35,17 @@ namespace StarlightRiver.Content.Items.Astroflora
 	public class AstrofloraProj : BaseFlailProj, IDrawAdditive
 	{
 		public override string Texture => AssetDirectory.AstrofloraItem + "AstrofloraProj";
+
 		public AstrofloraProj() : base(new Vector2(0.7f, 1.3f), new Vector2(0.5f, 3f)) { }
+
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Astroflora Flail");
 
 		public override void SpinExtras(Player player)
 		{
 			if(++projectile.localAI[0] % 4 == 0)
-			{
 				Projectile.NewProjectile(projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[projectile.owner].velocity / 5), mod.ProjectileType("AstrofloraGas"), projectile.damage * 3, 0, projectile.owner);
-			}
 		}
+
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (released)
@@ -53,6 +56,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 			}
 		}
+
 		public override void NotSpinningExtras(Player player)
 		{
 			Lighting.AddLight(projectile.Center, Color.LightGoldenrodYellow.ToVector3());
@@ -79,6 +83,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					}
 				}
 			}
+
 			if (++projectile.localAI[0] % 15 == 0)
 			{
 				Main.PlaySound(new LegacySoundStyle(SoundID.Item, 122).WithPitchVariance(0.2f).WithVolume(0.3f), projectile.Center);
@@ -89,32 +94,35 @@ namespace StarlightRiver.Content.Items.Astroflora
 			}
 		}
 	}
+
 	public class AstrofloraGas : ModProjectile, IDrawAdditive
 	{
 		public override string Texture => AssetDirectory.AstrofloraItem + "AstrofloraProj";
+
 		public override void SetDefaults()
 		{
 			projectile.friendly = true;
 			projectile.melee = true;
 			projectile.Size = new Vector2(40, 40);
-			projectile.tileCollide = false;
+			projectile.tileCollide = true;
 			projectile.timeLeft = 60;
 			projectile.penetrate = -1;
 			projectile.hide = true;
 		}
+
 		private bool Ignited => projectile.ai[0] == 1;
 		private static Color green = new Color(228, 255, 196);
 		private static Color gray = new Color(209, 209, 209);
 		private static Color orange = new Color(252, 139, 45) * 1.2f;
 		private static Color white = new Color(255, 255, 255) * 1.2f;
 		private static readonly float chargetime = 50;
+
 		public override void AI()
 		{
 			projectile.velocity *= 0.97f;
 			if (!Ignited)
-			{
 				Dustcloud(green);
-			}
+
 			else
 			{
 				if (++projectile.ai[1] < chargetime)
@@ -163,6 +171,13 @@ namespace StarlightRiver.Content.Items.Astroflora
 				}
 			}
 		}
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			projectile.velocity = new Vector2(
+				projectile.velocity.X == oldVelocity.X ? oldVelocity.X : -oldVelocity.X / 2,
+				projectile.velocity.Y == oldVelocity.Y ? oldVelocity.Y : -oldVelocity.Y / 2);
+			return false;
+		}
 		private void Dustcloud(Color color, float velocity = 3)
 		{
 			for (int i = 0; i < 5; i++)
@@ -174,22 +189,24 @@ namespace StarlightRiver.Content.Items.Astroflora
 				dust.color = color;
 			}
 		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (!Ignited)
 			{
 				if (target.Hitbox.Intersects(projectile.Hitbox))
-				{
 					target.AddBuff(BuffID.Poisoned, 30);
-				}
 				return false;
 			}
 			else if (projectile.ai[1] < chargetime)
 				return false;
 			return null;
 		}
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => target.AddBuff(BuffID.OnFire, 90);
+
 		public override void ModifyDamageHitbox(ref Rectangle hitbox) => hitbox.Inflate(hitbox.Width, hitbox.Height);
+
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (Ignited && projectile.ai[1] < chargetime)
@@ -214,9 +231,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 			}
 		}
 	}
+
 	public class AstrofloraSpark : ModProjectile
 	{
 		public override string Texture => AssetDirectory.AstrofloraItem + "AstrofloraProj";
+
 		public override void SetDefaults()
 		{
 			projectile.Size = new Vector2(2, 2);

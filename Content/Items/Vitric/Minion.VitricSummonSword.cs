@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             doDamage = false;
 
-            if (globalTimer == 1)
+            if (++globalTimer == 1)
             {
                 SwordFrame = 1;
                 projectile.rotation = projectile.ai[0];

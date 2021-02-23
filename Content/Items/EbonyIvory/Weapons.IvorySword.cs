@@ -27,7 +27,6 @@ namespace StarlightRiver.Content.Items.EbonyIvory
             item.shoot = ProjectileType<IvorySwordProjectile>();
             item.rare = ItemRarityID.LightRed;
             item.autoReuse = false;
-            item.useTurn = true;
             item.noMelee = true;
             item.melee = true;
             item.noUseGraphic = true;

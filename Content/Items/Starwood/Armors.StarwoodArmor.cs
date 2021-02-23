@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using StarlightRiver.Items.Armor;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -130,7 +131,7 @@ namespace StarlightRiver.Content.Items.Starwood
     {
         public override bool OnPickup(Item item, Player player)
         {
-            if (item.type == ItemID.Star)
+            if (new int[] { ItemID.Star, ItemID.SoulCake, ItemID.SugarPlum }.Contains(item.type))
             {
                 StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
                 mp.StartStarwoodEmpowerment();

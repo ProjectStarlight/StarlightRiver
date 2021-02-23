@@ -20,7 +20,9 @@ namespace StarlightRiver.Core
 			item.UseSound = SoundID.Item19;
 			SafeSetDefaults();
 		}
+
 		public virtual void SafeSetDefaults() { }
+
 		public override bool CanUseItem(Player player) => player.ownedProjectileCounts[item.shoot] == 0;
 	}
 
@@ -29,21 +31,25 @@ namespace StarlightRiver.Core
 		internal bool released = false;
 		internal bool falling = false;
 		internal bool strucktile = false;
+
 		private float Timer
 		{
 			get => projectile.ai[0];
 			set => projectile.ai[0] = value;
 		}
+
 		private float ChargeTime
 		{
 			get => projectile.ai[1];
 			set => projectile.ai[1] = value;
 		}
+
 		public float MaxChargeTime;
 		public Vector2 SpeedMult;
 		public Vector2 DamageMult;
 		public float spinningdistance;
 		public float degreespertick;
+
 		public BaseFlailProj(Vector2 SpeedMult, Vector2 DamageMult, float MaxChargeTime = 2, float spinningdistance = 50, float degreespertick = 10)
 		{
 			this.SpeedMult = SpeedMult;
@@ -53,6 +59,7 @@ namespace StarlightRiver.Core
 			this.degreespertick = degreespertick;
 			projectile.netUpdate = true;
 		}
+
 		public override void SetDefaults()
 		{
 			projectile.Size = new Vector2(34, 34);
@@ -60,29 +67,34 @@ namespace StarlightRiver.Core
 			projectile.melee = true;
 			projectile.penetrate = -1;
 		}
+
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.Write(released);
 			writer.Write(falling);
 			writer.Write(strucktile);
 		}
+
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			released = reader.ReadBoolean();
 			falling = reader.ReadBoolean();
 			strucktile = reader.ReadBoolean();
 		}
+
 		public override void AI()
 		{
 			Player Owner = Main.player[projectile.owner];
 			Owner.itemTime = 2;
 			Owner.itemAnimation = 2;
+			Owner.heldProj = projectile.whoAmI;
 			if (!Owner.channel && !released) //check to see if player stops channelling
 			{
 				released = true;
 				Timer = 0;
 				projectile.netUpdate = true;
 			}
+
 			if (Owner.channel && !released) //spinning around the player
 			{
 				Owner.itemRotation = 0;
@@ -91,6 +103,7 @@ namespace StarlightRiver.Core
 				projectile.rotation = projectile.AngleFrom(Owner.MountedCenter);
 				if (++Timer % 20 == 0)
 					Main.PlaySound(new LegacySoundStyle(SoundID.Item, 19).WithPitchVariance(0.1f).WithVolume(0.5f), projectile.Center);
+
 				ChargeTime = MathHelper.Clamp(Timer / 60, MaxChargeTime / 6, MaxChargeTime);
 
 				float radians = MathHelper.ToRadians(degreespertick * Timer * (1 + ChargeTime/MaxChargeTime)) * Owner.direction;
@@ -102,6 +115,7 @@ namespace StarlightRiver.Core
 
 				SpinExtras(Owner);
 			}
+
 			else
 			{
 				projectile.rotation += projectile.velocity.X * 0.03f;
@@ -120,8 +134,10 @@ namespace StarlightRiver.Core
 					projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * launchspeed;
 					OnLaunch(Owner);
 				}
+
 				if (Timer >= MathHelper.Min(60 * (ChargeTime / MaxChargeTime), 30)) //max out on time halfway through charge
 					Return(launchspeed, Owner);
+
 				else
 					LaunchExtras(Owner);
 
@@ -137,6 +153,7 @@ namespace StarlightRiver.Core
 			{
 				if(strucktile || ++Timer >= 180)
 					Return(launchspeed, Owner);
+
 				else
 				{
 					FallingExtras(Owner);
@@ -148,6 +165,7 @@ namespace StarlightRiver.Core
 				}
 			}
 		}
+
 		private void Return(float launchspeed, Player Owner)
 		{
 			projectile.tileCollide = false;
@@ -156,21 +174,31 @@ namespace StarlightRiver.Core
 				projectile.Kill();
 			ReturnExtras(Owner);
 		}
+
         #region extra hooks
         public virtual void SpinExtras(Player player) { }
+
 		public virtual void NotSpinningExtras(Player player) { }
+
 		public virtual void OnLaunch(Player player) { }
+
 		public virtual void LaunchExtras(Player player) { NotSpinningExtras(player); }
+
 		public virtual void FallingExtras(Player player) { NotSpinningExtras(player); }
+
 		public virtual void ReturnExtras(Player player) { NotSpinningExtras(player); }
+
 		public virtual void SafeTileCollide(Vector2 oldVelocity) { }
+
 		public virtual void FallingTileCollide(Vector2 oldVelocity) { }
 		#endregion
+
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if(ChargeTime > 0)
 				damage = (int)(damage * MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime));
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (falling)
@@ -188,6 +216,7 @@ namespace StarlightRiver.Core
 			Timer = 30;
 			return false;
 		}
+
 		public override bool PreDrawExtras(SpriteBatch spriteBatch)
 		{
 			Texture2D ChainTexture = mod.GetTexture(Texture.Remove(0, mod.Name.Length + 1) + "_chain");
