@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
     class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
     {
-        public override string Texture => AssetDirectory.StarwoodItem + "StarwoodSlingshotGlowTrail";
+        public override string Texture => AssetDirectory.StarwoodItem + "StarwoodStarfallGlowTrail";
         public override void SetStaticDefaults() {
             DisplayName.SetDefault("Falling Star");
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
