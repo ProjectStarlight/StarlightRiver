@@ -31,7 +31,6 @@ float offset(float a, float n)
 {
 	float d = abs(a - n) % 6.28;
 	return d > 3.14 ? 6.28 - d : d;
-
 }
 
 VertexShaderOutput MainVS(in VertexShaderInput input)

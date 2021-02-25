@@ -163,7 +163,7 @@ namespace StarlightRiver
 
         public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
-            if (Rotation != 0) //ignore this block
+            if (false) //ignore this block
             {
 
                 Matrix rotation = Matrix.CreateRotationZ(Rotation);

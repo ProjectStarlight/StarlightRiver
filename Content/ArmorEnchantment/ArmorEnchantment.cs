@@ -7,18 +7,28 @@ using Terraria;
 using Microsoft.Xna.Framework;
 using Terraria.ModLoader.IO;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.ArmorEnchantment
 {
     abstract class ArmorEnchantment
     {
+        public Guid Guid;
+
         public virtual Color Color => Color.White;
 
-        public Guid Guid;
+        public virtual string Texture => AssetDirectory.Debug;
+
+        public ArmorEnchantment() => Guid = Guid.Empty;
 
         public ArmorEnchantment(Guid guid)
         {
             Guid = guid;
+        }
+
+        public virtual bool IsAvailable(Item head, Item chest, Item legs)
+        {
+            return false;
         }
 
         public virtual void UpdateSet(Player player)
@@ -72,6 +82,16 @@ namespace StarlightRiver.Content.ArmorEnchantment
         public static void EnchantArmor(Item item, ArmorEnchantment enchant)
         {
             item.GetGlobalItem<EnchantedArmorGlobalItem>().Enchantment = enchant;
+        }
+
+        public ArmorEnchantment MakeRealCopy() //this is dumb and there is a better way to do this probably but i really dont feel like figuring it out rn
+        {
+            var type = GetType();
+            var copy = MemberwiseClone();
+            ArmorEnchantment realCopy = (ArmorEnchantment)Convert.ChangeType(copy, type);
+            realCopy.Guid = Guid.NewGuid();
+
+            return realCopy;
         }
     }
 }

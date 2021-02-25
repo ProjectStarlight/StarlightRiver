@@ -12,7 +12,16 @@ namespace StarlightRiver.Content.ArmorEnchantment
 {
     class DebugEnchant : ArmorEnchantment
     {
+        public DebugEnchant() : base() { }
+
         public DebugEnchant(Guid guid) : base(guid) { }
+
+        public override string Texture => AssetDirectory.ArmorEnchant + "DebugEnchant";
+
+        public override bool IsAvailable(Item head, Item chest, Item legs)
+        {
+            return true;
+        }
 
         public override void UpdateSet(Player player)
         {

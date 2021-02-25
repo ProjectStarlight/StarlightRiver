@@ -19,6 +19,7 @@ using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using Terraria.ID;
 using StarlightRiver.Content.NPCs.Town;
 using Terraria.GameContent.UI;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -39,9 +40,11 @@ namespace StarlightRiver.Content.GUI
         public static bool visible;
         private static List<ArmorSlot> slots = new List<ArmorSlot>();
 
+        private static List<EnchantButton> buttons = new List<EnchantButton>();
+
         public override void OnInitialize()
         {
-            for(int k = 0; k < 3; k++)
+            for (int k = 0; k < 3; k++)
             {
                 var newSlot = new ArmorSlot(k);
                 slots.Add(newSlot);
@@ -56,22 +59,96 @@ namespace StarlightRiver.Content.GUI
             centerPoint = worldPoint;
             visible = true;
             active = true;
-            
-            for(int k = 0; k < 3; k++)
+
+            for (int k = 0; k < 3; k++)
             {
                 slots[k].animationTimer = 0;
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
-        { 
+        {
             base.Draw(spriteBatch);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            foreach(UIElement element in Elements.Where(n => n is EnchantButton))
+            {
+                (element as EnchantButton).DrawAdditive(spriteBatch);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             if (Main.LocalPlayer.controlHook) //Temporary closing logic
             {
                 active = false;
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = false;
             }
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (buttons.Count == 0 && CheckFull())
+                CheckForSets();
+
+            if (!CheckFull())
+            {
+                foreach (UIElement element in buttons)
+                {
+                    RemoveChild(element);
+                }
+
+                buttons.Clear();
+            }
+
+            base.Update(gameTime);
+        }
+
+        public static bool CheckFull()
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                if (slots[k].item.IsAir || slots[k].item.GetGlobalItem<ArmorEnchantment.EnchantedArmorGlobalItem>().Enchantment != null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public static void CheckForSets() //false implies some slots are empty/invalid, will return true even if no valid enchants exist but a full set is in the UI
+        {
+            for (int k = 0; k < ArmorEnchantLoader.Enchantments.Count; k++)
+            {
+                var enchant = ArmorEnchantLoader.Enchantments[k];
+                if (enchant.IsAvailable(slots[0].item, slots[1].item, slots[2].item))
+                {
+                    var button = new EnchantButton(enchant);
+                    buttons.Add(button);
+                    UILoader.GetUIState<EnchantmentMenu>().Append(button);
+                }
+            }
+
+            if(buttons.Count > 0)
+            {
+                for(int k = 0; k < buttons.Count; k++)
+                {
+                    float rot = (float)(Math.PI * 2 * (k / buttons.Count));
+                    buttons[k].SetCenter(CenterPoint + Vector2.UnitY.RotatedBy(rot) * -300);
+                }
+            }
+        }
+
+        public static bool TryEnchantSet(ArmorEnchantment.ArmorEnchantment enchant) //Minigame goes here eventually
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                if (slots[k].item.IsAir) return false;
+            }
+
+            ArmorEnchantment.ArmorEnchantment.EnchantArmor(slots[0].item, slots[1].item, slots[2].item, enchant);
+            return true;
         }
     }
 
@@ -133,7 +210,7 @@ namespace StarlightRiver.Content.GUI
             if (particle.StoredPosition == Vector2.One)
                 particle.Velocity *= 0.9f;
 
-            if (particle.Scale <= 0.1f) 
+            if (particle.Scale <= 0.1f)
                 particle.Timer = 0;
         }
 
@@ -210,7 +287,7 @@ namespace StarlightRiver.Content.GUI
 
                 Main.PlaySound(SoundID.DD2_DarkMageHealImpact);
 
-                for(int k = 0; k < 50; k++)
+                for (int k = 0; k < 50; k++)
                     slotParticles.AddParticle(new Particle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(item.rare), 1, Vector2.One));
             }
 
@@ -228,7 +305,7 @@ namespace StarlightRiver.Content.GUI
             if (item.vanity)
                 return false;
 
-            switch(slotIndex)
+            switch (slotIndex)
             {
                 case 0: if (item.headSlot != -1) return true; break;
                 case 1: if (item.bodySlot != -1) return true; break;
@@ -237,11 +314,59 @@ namespace StarlightRiver.Content.GUI
 
             return false;
         }
-        
+
         public void SetCenter(Vector2 pos)
         {
             Left.Set(pos.X - Width.Pixels / 2, 0);
             Top.Set(pos.Y - Height.Pixels / 2, 0);
+        }
+    }
+
+    class EnchantButton : UIElement
+    {
+        private readonly ArmorEnchantment.ArmorEnchantment enchant;
+        private int animationTimer = 0;
+
+        public EnchantButton(ArmorEnchantment.ArmorEnchantment enchant)
+        {
+            this.enchant = enchant;
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            var tex = GetTexture(enchant.Texture);
+            var pos = GetDimensions().Center();
+
+            spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch) //batched and drawn in parent
+        {
+            var tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            var pos = GetDimensions().Center();
+            var scale = 1 + animationTimer / 30f;
+            var opacity = 1 - animationTimer / 30f;
+
+            spriteBatch.Draw(tex, pos, null, enchant.Color * opacity, 0, tex.Size() / 2, scale, 0, 0);
+
+            animationTimer++;
+        }
+
+        public void SetCenter(Vector2 pos)
+        {
+            Width.Set(48, 0);
+            Height.Set(48, 0);
+
+            Left.Set(pos.X - Width.Pixels / 2, 0);
+            Top.Set(pos.Y - Height.Pixels / 2, 0);
+
+            Recalculate();
+        }
+
+        public override void Click(UIMouseEvent evt)
+        {
+            if (EnchantmentMenu.TryEnchantSet(enchant.MakeRealCopy()))
+                EnchantmentMenu.CheckForSets();
         }
     }
 }

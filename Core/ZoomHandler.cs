@@ -13,7 +13,7 @@ namespace StarlightRiver.Core
         private static int zoomTimer;
         private static float zoomOverride = 1;
         private static float oldZoom = 1;
-        private static int maxTimer = 60;
+        private static int maxTimer = 0;
 
         private static float extraZoomTarget = 1;
 
@@ -44,6 +44,12 @@ namespace StarlightRiver.Core
 
             if (zoomOverride == Main.GameZoomTarget)
                 oldZoom = Main.GameZoomTarget;
+
+            if (zoomTimer == maxTimer && extraZoomTarget == Main.GameZoomTarget)
+                maxTimer = 0;
+
+            if (maxTimer == 0)
+                zoomOverride = Main.GameZoomTarget;
         }
     }
 }

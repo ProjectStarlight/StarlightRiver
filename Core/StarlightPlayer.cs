@@ -56,8 +56,6 @@ namespace StarlightRiver.Core
 
         public override void PreUpdate()
         {
-            ZoomHandler.UpdateZoom();
-
             if (PickupTarget != null)
             {
                 PickupTimer++;
