@@ -34,6 +34,7 @@ namespace StarlightRiver.Core
         public int ScreenMoveTime = 0;
         public Vector2 ScreenMoveTarget = new Vector2(0, 0);
         public Vector2 ScreenMovePan = new Vector2(0, 0);
+        public bool ScreenMoveHold = false;
         private int ScreenMoveTimer = 0;
         private int panDown = 0;
 
@@ -172,13 +173,26 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    if (ScreenMovePan == Vector2.Zero) Main.screenPosition = ScreenMoveTarget + off; //stay on target
-                    else if (ScreenMoveTimer <= ScreenMoveTime - 150) Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
-                    else Main.screenPosition = ScreenMovePan + off;
+                    if (ScreenMovePan == Vector2.Zero) 
+                        Main.screenPosition = ScreenMoveTarget + off; //stay on target
+
+                    else if (ScreenMoveTimer <= ScreenMoveTime - 150)
+                        Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
+
+                    else 
+                        Main.screenPosition = ScreenMovePan + off;
                 }
 
-                if (ScreenMoveTimer == ScreenMoveTime) { ScreenMoveTime = 0; ScreenMoveTimer = 0; ScreenMoveTarget = Vector2.Zero; ScreenMovePan = Vector2.Zero; }
-                ScreenMoveTimer++;
+                if (ScreenMoveTimer == ScreenMoveTime) 
+                { 
+                    ScreenMoveTime = 0;
+                    ScreenMoveTimer = 0; 
+                    ScreenMoveTarget = Vector2.Zero; 
+                    ScreenMovePan = Vector2.Zero;
+                }
+
+                if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
+                    ScreenMoveTimer++;
             }
 
             bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();

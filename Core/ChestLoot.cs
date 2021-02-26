@@ -25,7 +25,6 @@ namespace StarlightRiver
 
     public partial class StarlightRiver
     {
-
         static internal List<ChestLootData> ChestLoots;
 
         static public void AddToGeneratedChests(int type, Func<Chest, int> stack, Func<Chest, bool> condition)

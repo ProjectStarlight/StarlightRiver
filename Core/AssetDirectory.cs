@@ -96,5 +96,7 @@ namespace StarlightRiver.Core
         public const string TownNPC =               Assets + "NPCs/Town/";
 
         public const string Astroflora =            Assets + "Items/Astroflora/";
+
+        public const string ArmorEnchant =          Assets + "ArmorEnchantment/";
     }
 }

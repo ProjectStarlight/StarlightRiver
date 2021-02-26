@@ -143,6 +143,7 @@ namespace StarlightRiver.Content.GUI
                 float opacity = IsMouseHovering ? 1 : 0.6f;
 
                 spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, 0, 0);
+
                 if (!Item.IsAir)
                 {
                     Texture2D tex2 = Item.type > ItemID.Count ? GetTexture(Item.modItem.Texture) : GetTexture("Terraria/Item_" + Item.type);
@@ -151,6 +152,7 @@ namespace StarlightRiver.Content.GUI
                     spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, 1, 0, 0);
                     if (Item.stack > 1) Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 36, Color.White, 0.75f);
                 }
+
                 if (IsMouseHovering)
                 {
                     float offY = 40 - Item.ToolTip.Lines * 14;

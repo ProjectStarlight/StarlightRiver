@@ -130,6 +130,7 @@ namespace StarlightRiver.Helpers
         public static void DoTilt(float intensity)
         {
             tiltMax = intensity; tiltTime = 0;
+            StarlightRiver.Rotation = 0.01f;
         }
 
         public static void UpdateTilt()
@@ -146,6 +147,7 @@ namespace StarlightRiver.Helpers
                 if (tiltTime >= 40) { StarlightRiver.Rotation = 0; tiltMax = 0; }
             }
         }
+
         public static bool ScanForTypeDown(int startX, int startY, int type, int maxDown = 50)
         {
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
@@ -225,9 +227,11 @@ namespace StarlightRiver.Helpers
             return player;
         }
 
-        /// <summary>
-        /// Linq-less method of combining 2 arrays.
-        /// </summary>
+        public static float BezierEase(float time)
+        {
+            return time * time / (2f * (time * time - time) + 1f);
+        }
+
         public static T[] FastUnion<T>(this T[] front, T[] back)
         {
             T[] combined = new T[front.Length + back.Length];

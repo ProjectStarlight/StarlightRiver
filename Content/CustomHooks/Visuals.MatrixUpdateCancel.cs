@@ -14,6 +14,6 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Graphics.SpriteViewMatrix.ShouldRebuild += UpdateMatrixFirst;
         }
 
-        private bool UpdateMatrixFirst(On.Terraria.Graphics.SpriteViewMatrix.orig_ShouldRebuild orig, SpriteViewMatrix self) => StarlightRiver.Rotation == 0 && orig(self);
+        private bool UpdateMatrixFirst(On.Terraria.Graphics.SpriteViewMatrix.orig_ShouldRebuild orig, SpriteViewMatrix self) => orig(self);
     }
 }
