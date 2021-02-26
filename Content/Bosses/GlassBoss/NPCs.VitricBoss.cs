@@ -13,6 +13,7 @@ using StarlightRiver.NPCs;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Foregrounds;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -305,11 +306,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case (int)AIStates.FirstToSecond:
 
                     if (GlobalTimer == 2)
+                    {
+                        Vignette.visible = false;
+                        music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossAmbient");
+
                         foreach (NPC crystal in crystals)
                         {
                             crystal.ai[0] = 0;
                             crystal.ai[2] = 5; //turn the crystals to transform mode
                         }
+                    }
 
                     if (GlobalTimer == 120)
                     {
@@ -334,14 +340,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                                 break;
                             }
 
-                    /*if (GlobalTimer > 900) //after waiting too long, wipe all players
-                    {
-                        foreach (Player player in Main.player.Where(n => n.Hitbox.Intersects(arena)))
-                        {
-                            player.KillMe(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was shattered..."), double.MaxValue, 0);
-                        }
-                        ChangePhase(AIStates.Leaving, true);
-                    }*/
                     break;
 
                 case (int)AIStates.SecondPhase:
@@ -353,9 +351,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
 
                     if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
-                    if (GlobalTimer == 2) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossTransition");
-                    if (GlobalTimer == 701) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy");
-                    if (GlobalTimer == 702) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
+                    if (GlobalTimer == 2) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
 
                     if (GlobalTimer > 702 && GlobalTimer < 760) //no fadein
                         for (int k = 0; k < Main.musicFade.Length; k++)
@@ -395,11 +391,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         startPos = npc.Center;
                     }
 
-                    if (GlobalTimer < 60) npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 60f);
+                    if (GlobalTimer < 60) 
+                        npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 60f);
 
-                    if (GlobalTimer == 60) Main.PlaySound(SoundID.DD2_WinScene, npc.Center); //SFX
+                    if (GlobalTimer == 60)
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));
 
-                    if (GlobalTimer > 60 && GlobalTimer < 120) Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 60) / 60f;
+                    if (GlobalTimer > 60 && GlobalTimer < 120) 
+                        Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 60) / 60f;
 
                     if (GlobalTimer > 120)
                     {

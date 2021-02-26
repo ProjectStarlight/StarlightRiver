@@ -145,8 +145,6 @@ namespace StarlightRiver
                 lightingTest = new RenderTest();
             }
 
-            foregrounds = new List<Foreground>();
-
             //Autoload Rift Recipes
             RiftRecipes = new List<RiftRecipe>();
             AutoloadRiftRecipes(RiftRecipes);

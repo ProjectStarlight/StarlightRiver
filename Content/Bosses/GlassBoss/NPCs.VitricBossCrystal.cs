@@ -8,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Helpers;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Foregrounds;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -17,9 +18,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public Vector2 TargetPos;
         public VitricBoss Parent;
 
+        public ref float state => ref npc.ai[0];
+        public ref float timer => ref npc.ai[1];
+        public ref float phase => ref npc.ai[2];
+        public ref float altTimer => ref npc.ai[3];
+
+        private int playerTrapTimer;
+        private Vector2 storedVelocity;
+
         public override string Texture => AssetDirectory.GlassBoss + Name;
 
-        public override bool CheckActive() => npc.ai[2] == 4;
+        public override bool CheckActive() => phase == 4;
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -47,6 +56,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.noTileCollide = true;
             npc.dontTakeDamage = true;
             npc.dontTakeDamageFromHostiles = true;
+            npc.behindTiles = true;
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -56,9 +66,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (npc.ai[2] == 0 && npc.velocity.Y <= 0) 
+            if (phase == 0 && npc.velocity.Y <= 0) 
                 return false; //can only do damage when moving downwards
-            return !(npc.ai[0] == 0 || npc.ai[0] == 1); //too tired of dealing with this sheeeet
+            return !(state == 0 || state == 1); //too tired of dealing with this sheeeet
         }
 
         public override void AI()
@@ -70,17 +80,26 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 3: alt timer
              */
             if (Parent == null) npc.Kill();
-            npc.frame = new Rectangle(0, npc.height * (int)npc.ai[0], npc.width, npc.height); //frame finding based on state
+            npc.frame = new Rectangle(0, npc.height * (int)state, npc.width, npc.height); //frame finding based on state
 
-            npc.ai[1]++; //ticks the timers
-            npc.ai[3]++;
+            timer++; //ticks the timers
+            altTimer++;
 
-            if (npc.ai[0] == 0)
+            if (state == 0) //appears to be the "vulnerable" phase
+            {
+                Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
+                Vignette.visible = true;
+
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
                     Player player = Main.player[i];
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
+                        Vignette.visible = false; //disable overlay
+                        npc.target = player.whoAmI;
+                        playerTrapTimer = 60;
+                        storedVelocity = player.velocity;
+
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
 
                         for (int k = 0; k < 20; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
@@ -88,22 +107,23 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         for (int k = 0; k < 40; k++) Dust.NewDustPerfect(Parent.npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
                         for (int k = 0; k < 5; k++) Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
-                        npc.ai[0] = 1; //It's all broken and on the floor!
-                        npc.ai[2] = 0; //go back to doing nothing
-                        npc.ai[1] = 0; //reset timer
+                        state = 1; //It's all broken and on the floor!
+                        phase = 0; //go back to doing nothing
+                        timer = 0; //reset timer
 
                         Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                         Parent.ResetAttack();
 
                         foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
                         {
-                            npc.ai[2] = 0;
+                            phase = 0;
                             npc.friendly = false; //damaging again
                         }
                     }
                 }
+            }
 
-            switch (npc.ai[2])
+            switch (phase)
             {
                 case 0: //nothing / spawning animation, sensitive to friendliness
                     if (npc.rotation != 0) //normalize rotation
@@ -111,44 +131,59 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         npc.rotation += 0.5f;
                         if (npc.rotation >= 5f) npc.rotation = 0;
                     }
-                    if (npc.friendly && npc.ai[0] != 0)
+                    if (npc.friendly && state != 0)
                     {
-                        if (npc.ai[3] > 0 && npc.ai[3] <= 90)
-                            npc.Center = Vector2.SmoothStep(StartPos, TargetPos, npc.ai[3] / 90);
-                        if (npc.ai[3] == 90)
+                        if (altTimer > 0 && altTimer <= 90)
+                            npc.Center = Vector2.SmoothStep(StartPos, TargetPos, altTimer / 90);
+                        if (altTimer == 90)
                         {
                             npc.friendly = false;
                             ResetTimers();
                         }
                     }
                     npc.scale = 1; //resets scale, just incase
+
+                    if(playerTrapTimer > 0)
+                    {
+                        playerTrapTimer--;
+
+                        var player = Main.player[npc.target];
+                        player.Center = npc.Center;
+                        player.velocity *= 0;
+
+                        if (playerTrapTimer == 1)
+                            player.velocity = storedVelocity * 5;
+                    }
+
                     break;
 
                 case 1: //nuke attack
                     npc.velocity *= 0; //make sure we dont fall into oblivion
-                    if (npc.ai[0] == 0) npc.friendly = true; //vulnerable crystal shouldnt do damage
+                    if (state == 0) npc.friendly = true; //vulnerable crystal shouldnt do damage
                     if (npc.rotation != 0) //normalize rotation
                     {
                         npc.rotation += 0.5f;
                         if (npc.rotation >= 5f) npc.rotation = 0;
                     }
 
-                    if (npc.ai[1] > 60 && npc.ai[1] <= 120)
-                        npc.Center = Vector2.SmoothStep(StartPos, TargetPos, (npc.ai[1] - 60) / 60f); //go to the platform
-                    if (npc.ai[1] >= 719) //when time is up... uh oh
+                    if (timer > 60 && timer <= 120)
+                        npc.Center = Vector2.SmoothStep(StartPos, TargetPos, (timer - 60) / 60f); //go to the platform
+                    if (timer >= 719) //when time is up... uh oh
                     {
-                        if (npc.ai[0] == 0) //only the vulnerable crystal
+                        if (state == 0) //only the vulnerable crystal
                         {
-                            npc.ai[0] = 2; //make invulnerable again
+                            state = 2; //make invulnerable again
                             Parent.npc.life += 250; //heal the boss
                             Parent.npc.HealEffect(250, true);
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
 
+                            Vignette.visible = false; //reset vignette
+
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());
                         }
-                        npc.ai[2] = 0; //go back to doing nothing
-                        npc.ai[1] = 0; //reset timer
+                        phase = 0; //go back to doing nothing
+                        timer = 0; //reset timer
                         npc.friendly = false; //damaging again
                     }
                     break;
@@ -164,9 +199,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case 3: //falling for smash attack
 
-                    if (npc.ai[1] < 30)
+                    if (timer < 30)
                     {
-                        npc.position.Y -= (30 - npc.ai[1]) / 3f;
+                        npc.position.Y -= (30 - timer) / 2.5f;
                         break;
                     }
 
@@ -187,26 +222,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             Rectangle hitbox = new Rectangle((int)point.X - 110, (int)point.Y + 48, 220, 16); //grabs the platform hitbox
                             if (npc.Hitbox.Intersects(hitbox))
                             {
-                                npc.velocity *= 0;
                                 npc.position.Y = hitbox.Y - 40; //embed into the platform
-                                npc.ai[2] = 0; //turn it idle
-                                Main.PlaySound(Terraria.ID.SoundID.NPCHit42); //boom
+                                Impact();
                             }
                         }
 
                     Tile tile = Framing.GetTileSafely((int)npc.Center.X / 16, (int)(npc.Center.Y + 24) / 16);
-                    if (tile.collisionType == 1 && tile.type != TileType<Tiles.Vitric.VitricBossBarrier>() && npc.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
-                    {
-                        npc.velocity *= 0;
-                        npc.ai[2] = 0; //turn it idle
-                        Main.PlaySound(Terraria.ID.SoundID.NPCHit42); //boom
-                    }
 
+                    if (tile.collisionType == 1 && tile.type != TileType<Tiles.Vitric.VitricBossBarrier>() && npc.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
+                        Impact();
+                    
                     break;
 
                 case 4: //fleeing
                     npc.velocity.Y += 0.7f;
-                    if (npc.ai[1] >= 120) npc.active = false;
+                    if (timer >= 120) npc.active = false;
                     break;
 
                 case 5: //transforming the boss
@@ -215,29 +245,38 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     break;
             }
         }
+        
+        private void Impact()
+        {
+            npc.velocity *= 0;
+            phase = 0; //turn it idle
+            Main.PlaySound(Terraria.ID.SoundID.NPCHit42); //boom
+            Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
+            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
+        }
 
         private void ResetTimers()
         {
-            npc.ai[1] = 0;
-            npc.ai[3] = 0;
+            timer = 0;
+            altTimer = 0;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
-            if (npc.ai[0] == 0)
+            if (state == 0)
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
-            if (npc.ai[2] == 3 && npc.ai[1] < 30)
+            if (phase == 3 && timer < 30)
             {
-                float factor = npc.ai[1] / 30f;
+                float factor = timer / 30f;
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2, 0, 0);
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch) //helper method to draw a tell line between two points.
         {
-            if (npc.ai[2] == 1 && npc.ai[1] < 180) //tell line for going to a platform in the nuke attack
+            if (phase == 1 && timer < 180) //tell line for going to a platform in the nuke attack
             {
                 Texture2D tex = GetTexture(AssetDirectory.MiscTextures + "TellBeam");
                 for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)

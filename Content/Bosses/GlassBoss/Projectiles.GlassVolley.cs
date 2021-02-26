@@ -7,6 +7,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (projectile.ai[0] == 45 + k * 3)
                     {
                         float rot = (k - 4) / 10f; //rotational offset
-                        Projectile.NewProjectile(projectile.Center, new Vector2(-3.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
+                        Projectile.NewProjectile(projectile.Center, new Vector2(-7.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
             if (projectile.ai[0] == 65) projectile.Kill(); //kill it when it expires
@@ -60,14 +61,33 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             projectile.height = 32;
             projectile.timeLeft = 600;
             projectile.scale = 0.5f;
-            projectile.extraUpdates = 4;
+            projectile.extraUpdates = 3;
         }
 
         public override void AI()
         {
+            if (projectile.timeLeft > 550)
+                projectile.velocity *= 0.97f;
+
+            if (projectile.timeLeft < 460)
+                projectile.velocity *= 1.02f;
+
             projectile.rotation = projectile.velocity.ToRotation() + 1.58f;
-            Dust d = Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Air>(), Vector2.Zero, 0, default, 1);
+
+            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((640 - projectile.timeLeft), 120));
+
+            Dust d = Dust.NewDustPerfect(projectile.Center, 264, projectile.velocity * 0.5f, 0, color, 1.5f);
             d.noGravity = true;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((600 - projectile.timeLeft), 120));
+
+            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, projectile.rotation, new Vector2(16, 64), projectile.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, projectile.rotation, new Vector2(16, 64), projectile.scale, 0, 0);
+
+            return false;
         }
     }
 }

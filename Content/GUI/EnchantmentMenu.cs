@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.GUI
             {
                 for(int k = 0; k < buttons.Count; k++)
                 {
-                    float rot = (float)(Math.PI * 2 * (k / buttons.Count));
+                    float rot = (float)(Math.PI * 2f * (k / (float)buttons.Count));
                     buttons[k].SetCenter(CenterPoint + Vector2.UnitY.RotatedBy(rot) * -300);
                 }
             }
