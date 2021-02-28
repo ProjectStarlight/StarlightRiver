@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         private Texture2D GlowingTrail => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlowTrail");
         private Texture2D GlowingTexture => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlow");
-        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");//TEXTURE PATH
+        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Items/Starwood/GlowRang");//TEXTURE PATH
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Starwood/GlowRang");
 
                 spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
