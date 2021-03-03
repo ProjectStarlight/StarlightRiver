@@ -23,9 +23,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public ref float phase => ref npc.ai[2];
         public ref float altTimer => ref npc.ai[3];
 
-        private int playerTrapTimer;
-        private Vector2 storedVelocity;
-
         public override string Texture => AssetDirectory.GlassBoss + Name;
 
         public override bool CheckActive() => phase == 4;
@@ -96,11 +93,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
                         Vignette.visible = false; //disable overlay
-                        npc.target = player.whoAmI;
-                        playerTrapTimer = 60;
-                        storedVelocity = player.velocity;
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 60;
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
+                        Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 2, -0.5f);
+
+                        player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
+                        player.velocity = Vector2.Normalize(player.velocity) * -10f;
 
                         for (int k = 0; k < 20; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
 
@@ -142,18 +143,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         }
                     }
                     npc.scale = 1; //resets scale, just incase
-
-                    if(playerTrapTimer > 0)
-                    {
-                        playerTrapTimer--;
-
-                        var player = Main.player[npc.target];
-                        player.Center = npc.Center;
-                        player.velocity *= 0;
-
-                        if (playerTrapTimer == 1)
-                            player.velocity = storedVelocity * 5;
-                    }
 
                     break;
 

@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Items.Hell
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (target.Hitbox.Intersects(projectile.Hitbox)) target.GetGlobalNPC<StarlightNPC>().DoT += (int)(5f * projectile.timeLeft / 180f);
+            if (target.Hitbox.Intersects(projectile.Hitbox)) target.GetGlobalNPC<StarlightNPC>().DoT += (int)((float)projectile.damage * projectile.timeLeft / 180f);
             return false;
         }
 

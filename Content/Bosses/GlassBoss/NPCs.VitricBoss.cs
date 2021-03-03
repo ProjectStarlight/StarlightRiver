@@ -17,7 +17,7 @@ using StarlightRiver.Content.Foregrounds;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon
+    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
     {
         public Vector2 startPos;
         public Vector2 endPos;
@@ -28,6 +28,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private int favoriteCrystal = 0;
         private bool altAttack = false;
+
+        private List<VitricBossEye> Eyes;
+        private List<VitricBossSwoosh> Swooshes;
 
         internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
@@ -49,8 +52,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.damage = 30;
             npc.defense = 18;
             npc.knockBackResist = 0f;
-            npc.width = 256;
-            npc.height = 256;
+            npc.width = 192;
+            npc.height = 160;
             npc.value = Item.buyPrice(0, 20, 0, 0);
             npc.npcSlots = 15f;
             npc.dontTakeDamage = true;
@@ -64,6 +67,20 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.dontTakeDamageFromHostiles = true;
             npc.scale = 0.5f;
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
+
+            Eyes = new List<VitricBossEye>()
+            { 
+            new VitricBossEye(new Vector2(20, 46), 0),
+            new VitricBossEye(new Vector2(74, 46), 1)
+            };
+
+            Swooshes = new List<VitricBossSwoosh>()
+            {
+            new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
+            new VitricBossSwoosh(new Vector2(16, -40), 6, this),
+            new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
+            new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+            };
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -71,6 +88,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.lifeMax = (int)(7500 * bossLifeScale);
             npc.damage = 40;
             npc.defense = 21;
+        }
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return Phase == (int)AIStates.FirstPhase && AttackPhase == 4 && AttackTimer % 240 < 120;
         }
 
         public override bool CheckDead()
@@ -101,25 +123,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            npc.frame.Width = 128;
-            npc.frame.Height = 128;
+            Swooshes.ForEach(n => n.Draw(spriteBatch));
+
+            npc.frame.Width = 192;
+            npc.frame.Height = 160;
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
             return false;
         }
-
-        private readonly List<VitricBossEye> Eyes = new List<VitricBossEye>()
-        {
-            new VitricBossEye(new Vector2(24, 32), 0),
-            new VitricBossEye(new Vector2(58, 28), 1),
-            new VitricBossEye(new Vector2(36, 52), 2),
-            new VitricBossEye(new Vector2(20, 70), 3),
-            new VitricBossEye(new Vector2(12, 78), 4),
-            new VitricBossEye(new Vector2(38, 96), 5),
-            new VitricBossEye(new Vector2(66, 102), 6),
-            new VitricBossEye(new Vector2(80, 80), 7),
-            new VitricBossEye(new Vector2(106, 66), 8),
-            new VitricBossEye(new Vector2(64, 60), 9)
-        };
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
@@ -137,6 +147,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/TransitionPhaseGlow");
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
             }
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
         }
 
         public override void NPCLoot()
@@ -196,6 +211,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             SecondPhase = 5,
             Leaving = 6,
             Dying = 7
+        }
+
+        public override void PostAI()
+        {
+            //TODO: Remove later, debug only
+            if (Main.LocalPlayer.controlHook)
+            {
+                for(int k = 0; k < 12; k++)
+                    AI();
+            }
         }
 
         public override void AI()
@@ -305,9 +330,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.FirstToSecond:
 
+                    Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.9f;
+                    Vignette.extraOpacity = 0.5f + (float)Math.Sin(GlobalTimer / 25f) * 0.5f;
+
                     if (GlobalTimer == 2)
                     {
-                        Vignette.visible = false;
                         music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossAmbient");
 
                         foreach (NPC crystal in crystals)
@@ -337,6 +364,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                                 foreach (NPC wall in Main.npc.Where(n => n.modNPC is VitricBackdropLeft)) wall.ai[1] = 3; //make the walls scroll
                                 foreach (NPC plat in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp)) plat.ai[0] = 1; //make the platforms scroll
 
+                                Vignette.visible = true;
+
                                 break;
                             }
 
@@ -344,10 +373,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.SecondPhase:
 
+                    Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.8f;
+                    Vignette.extraOpacity = 0.5f;
+
                     if (GlobalTimer == 60)
                     {
                         npc.dontTakeDamage = false; //damagable again
                         npc.friendly = false;
+                        Vignette.visible = true;
                     }
 
                     if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
@@ -385,6 +418,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.Dying:
 
+                    Vignette.offset = Vector2.Zero;
+                    Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
+
                     if (GlobalTimer == 1)
                     {
                         foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.ai[1] = 4;
@@ -412,6 +448,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200));
                         //for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Sand>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), 80, default, 3);
                         npc.Kill();
+
+                        Vignette.visible = false;
                     }
 
                     break;

@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -8,6 +11,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         public const int MaxHeight = 880;
         public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatform";
+
+        public VitricBackdropLeft parent;
 
         public override bool CheckActive() => false;
         public override void DrawEffects(ref Color drawColor) => drawColor *= 1.4f;
@@ -25,6 +30,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             /*AI fields:
              * 0: state
              * 1: rise time left
+             * 2: acceleration delay
              */
 
             if (npc.ai[0] == 0)
@@ -37,10 +43,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (npc.ai[0] == 1)
             {
-                npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * 0.999f;
+                npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.npc.ai[3]);
                 if (npc.position.Y <= StarlightWorld.VitricBiome.Y * 16 + 16 * 16)
                     npc.position.Y += MaxHeight;
+
+                npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
             }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            var tex = ModContent.GetTexture(Texture);
+            spriteBatch.Draw(tex, npc.Center + npc.visualOffset - Main.screenPosition, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+            return false;
         }
     }
 
@@ -51,6 +66,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             /*AI fields:
              * 0: state
              * 1: rise time left
+             * 2: acceleration delay
              */
 
             if (npc.ai[0] == 0)
@@ -63,9 +79,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (npc.ai[0] == 1)
             {
-                npc.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * 0.999f;
+                npc.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.npc.ai[3]);
                 if (npc.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
                     npc.position.Y -= MaxHeight;
+
+                npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
             }
         }
     }

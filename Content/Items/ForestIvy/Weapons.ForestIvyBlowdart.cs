@@ -132,14 +132,14 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            if (forestIvyPoisonVineCount <= 0)
+            /*if (forestIvyPoisonVineCount <= 0) fix this later, its broken AF man >.<
                 return;
 
             if (npc.lifeRegen > 0)
                 npc.lifeRegen = 0;
 
             npc.lifeRegen -= forestIvyPoisonVineCount * 2 * 5;
-            damage += forestIvyPoisonVineCount * 5;
+            damage += forestIvyPoisonVineCount * 5;*/
         }
     }
 }

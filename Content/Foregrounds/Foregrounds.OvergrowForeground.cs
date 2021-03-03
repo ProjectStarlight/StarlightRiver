@@ -9,7 +9,10 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class OvergrowForeground : Foreground
     {
-        public override ParticleSystem ParticleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
+        public override void OnLoad()
+        {
+            ParticleSystem = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
+        }
 
         public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow;
 

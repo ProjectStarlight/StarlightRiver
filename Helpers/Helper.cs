@@ -241,6 +241,16 @@ namespace StarlightRiver.Helpers
 
             return combined;
         }
+
+        public static bool IsEdgeTile(int x, int y)
+        {
+            return
+                !Framing.GetTileSafely(x - 1, y).active() ||
+                !Framing.GetTileSafely(x + 1, y).active() ||
+                !Framing.GetTileSafely(x, y - 1).active() ||
+                !Framing.GetTileSafely(x, y + 1).active();
+
+        }
     }
 }
 

@@ -11,9 +11,12 @@ namespace StarlightRiver.Content.Foregrounds
 {
     class AshHellForeground : Foreground
     {
-        public override ParticleSystem ParticleSystem => new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
-
         public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell;
+
+        public override void OnLoad()
+        {
+            ParticleSystem = new ParticleSystem("StarlightRiver/Assets/GUI/Fire", UpdateAshParticles);
+        }
 
         private void UpdateAshParticles(Particle particle)
         {
