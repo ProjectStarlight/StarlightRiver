@@ -188,18 +188,21 @@ namespace StarlightRiver.Physics
             buffer = buff;
         }
 
-        private static readonly BasicEffect effect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
+        private static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
         {
             VertexColorEnabled = true
         };
 
-        public void DrawStrip(Func<Vector2, VertexBuffer> prepareFunction, Vector2 offset = default)
+        public void DrawStrip(Func<Vector2, VertexBuffer> prepareFunction, Effect effect = null, Vector2 offset = default)
         {
             if (ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             var buffer = prepareFunction(offset);
             graphics.SetVertexBuffer(buffer);
+
+            if (effect is null)
+                effect = basicEffect;
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
@@ -216,7 +219,7 @@ namespace StarlightRiver.Physics
             PrepareStrip(out var buffer, offset);
             graphics.SetVertexBuffer(buffer);
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
