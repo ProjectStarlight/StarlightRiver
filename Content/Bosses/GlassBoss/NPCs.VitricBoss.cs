@@ -29,8 +29,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private int favoriteCrystal = 0;
         private bool altAttack = false;
 
-        private List<VitricBossEye> Eyes;
-        private List<VitricBossSwoosh> Swooshes;
+        private List<VitricBossEye> eyes;
+        private List<VitricBossSwoosh> swooshes;
+        private BodyHandler body;
 
         internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
@@ -68,19 +69,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.scale = 0.5f;
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
 
-            Eyes = new List<VitricBossEye>()
+            eyes = new List<VitricBossEye>()
             { 
             new VitricBossEye(new Vector2(20, 46), 0),
             new VitricBossEye(new Vector2(74, 46), 1)
             };
 
-            Swooshes = new List<VitricBossSwoosh>()
+            swooshes = new List<VitricBossSwoosh>()
             {
             new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
             new VitricBossSwoosh(new Vector2(16, -40), 6, this),
             new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
             new VitricBossSwoosh(new Vector2(46, -34), 10, this)
             };
+
+            body = new BodyHandler(npc);
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -123,18 +126,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Swooshes.ForEach(n => n.Draw(spriteBatch));
+            swooshes.ForEach(n => n.Draw(spriteBatch));
+            body.DrawBody(spriteBatch);
 
             npc.frame.Width = 192;
             npc.frame.Height = 160;
-            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
             return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (Eyes.Any(n => n.Parent == null)) Eyes.ForEach(n => n.Parent = this);
-            if (npc.frame.X == 0) Eyes.ForEach(n => n.Draw(spriteBatch));
+            if (eyes.Any(n => n.Parent == null)) eyes.ForEach(n => n.Parent = this);
+            if (npc.frame.X == 0) eyes.ForEach(n => n.Draw(spriteBatch));
 
             if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
@@ -151,7 +155,30 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
+            swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            position.Y += 40;
+
+            var spriteBatch = Main.spriteBatch;
+
+            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarUnder");
+            var texOver = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarOver");
+            var progress = (float)npc.life / npc.lifeMax;
+
+            Rectangle target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y), (int)(progress * tex.Width - 4), tex.Height);
+            Rectangle source = new Rectangle(2, 0, (int)(progress * tex.Width - 4), tex.Height);
+
+            var color = progress > 0.5f ?
+                Color.Lerp(Color.Yellow, Color.LimeGreen, progress * 2 - 1) :
+                Color.Lerp(Color.Red, Color.Yellow, progress * 2);
+
+            spriteBatch.Draw(tex, position - Main.screenPosition, null, color, 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(texOver, target, source, color, 0, tex.Size() / 2, 0, 0);
+
+            return false;
         }
 
         public override void NPCLoot()
@@ -228,6 +255,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //Ticks the timer
             GlobalTimer++;
             AttackTimer++;
+
+            body.UpdateBody(); //update the physics on the body
+            Lighting.AddLight(npc.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
             if (Phase != (int)AIStates.Leaving && arena != new Rectangle() && !Main.player.Any(n => n.active && n.statLife > 0 && n.Hitbox.Intersects(arena))) //if no valid players are detected
             {
@@ -314,7 +344,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             if (AttackPhase > 4) AttackPhase = 1;
                         }
 
-                    switch (AttackPhase) //switch for crystal behavior
+                    switch (AttackPhase) //Attacks
                     {
                         case 0: NukePlatforms(); break;
                         case 1: CrystalCage(); break;

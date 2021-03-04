@@ -265,6 +265,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch) //helper method to draw a tell line between two points.
         {
+            /*
             if (phase == 1 && timer < 180) //tell line for going to a platform in the nuke attack
             {
                 Texture2D tex = GetTexture(AssetDirectory.MiscTextures + "TellBeam");
@@ -272,6 +273,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,
                         (npc.Center - TargetPos).ToRotation(), tex.Frame().Size() / 2, 1, 0, 0);
             }
+            */
         }
     }
 }

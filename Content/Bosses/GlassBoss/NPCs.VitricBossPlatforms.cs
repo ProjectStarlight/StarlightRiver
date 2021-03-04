@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public VitricBackdropLeft parent;
 
         public override bool CheckActive() => false;
-        public override void DrawEffects(ref Color drawColor) => drawColor *= 1.4f;
 
         public override void SafeSetDefaults()
         {
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             var tex = ModContent.GetTexture(Texture);
-            spriteBatch.Draw(tex, npc.Center + npc.visualOffset - Main.screenPosition, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, npc.Center + npc.visualOffset + Vector2.UnitY * 4 - Main.screenPosition, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
             return false;
         }
     }

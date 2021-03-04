@@ -33,14 +33,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer == 1)
             {
                 List<Vector2> possibleLocations = new List<Vector2>(crystalLocations);
-                possibleLocations.ForEach(n => n += new Vector2(0, -32));
+                possibleLocations.ForEach(n => n += new Vector2(0, -48));
+                possibleLocations = Helper.RandomizeList(possibleLocations);
+
                 for (int k = 0; k < crystals.Count; k++)
                 {
                     NPC crystalNpc = crystals[k];
                     VitricBossCrystal crystal = crystalNpc.modNPC as VitricBossCrystal;
 
                     crystal.StartPos = crystalNpc.Center;
-                    Vector2 target = possibleLocations.OrderBy(n => Vector2.Distance(crystalNpc.Center, n)).ToList()[0]; //sort the remaining possible unique platforms by distance, this ensures crystals go to theirn earest unique platform
+                    Vector2 target = possibleLocations[k];
                     crystal.TargetPos = target;
                     possibleLocations.Remove(target);
                     crystalNpc.ai[1] = 0; //reset the crystal's timers

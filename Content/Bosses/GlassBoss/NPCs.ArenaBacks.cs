@@ -142,9 +142,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     targetHeight);
 
                 Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
-                Color color = new Color(180, 225, 255);
+                //Color color = new Color(180, 225, 255);
 
-                spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
+                //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
+                Helpers.Helper.DrawWithLighting(target, tex, source);
             }
         }
 
@@ -161,8 +162,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source1 = new Rectangle(0, 0, tex.Width, height1);
             Rectangle source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
-            sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
-            sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+            //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
+            //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+
+            Helpers.Helper.DrawWithLighting(target1, tex, source1);
+            Helpers.Helper.DrawWithLighting(target2, tex, source2);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -209,8 +213,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source2 = new Rectangle(0, 0, tex.Width, height2);
             Rectangle source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
-            sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
-            sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+            //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
+            //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+
+            Helpers.Helper.DrawWithLighting(target1, tex, source1);
+            Helpers.Helper.DrawWithLighting(target2, tex, source2);
         }
 
         public override void SpawnPlatforms(bool rising = true)
