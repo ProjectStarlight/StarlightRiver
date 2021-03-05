@@ -44,7 +44,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     crystal.StartPos = crystalNpc.Center;
                     Vector2 target = possibleLocations[k];
                     crystal.TargetPos = target;
-                    possibleLocations.Remove(target);
                     crystalNpc.ai[1] = 0; //reset the crystal's timers
                     crystalNpc.ai[2] = 1; //set them into this attack's mode
                 }

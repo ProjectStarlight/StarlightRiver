@@ -133,6 +133,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Vector2 dpos = pos - Main.screenPosition;
             Rectangle target = new Rectangle((int)dpos.X - 564, (int)dpos.Y - 564, 1128, 1128);
 
+            if (!Helpers.Helper.OnScreen(target))
+                return;
+
             //background
             Texture2D backtex1 = GetTexture(AssetDirectory.OvergrowTile + "Window4");
             spriteBatch.Draw(backtex1, target, GetSource(0, backtex1), Color.White, 0, Vector2.Zero, 0, 0);

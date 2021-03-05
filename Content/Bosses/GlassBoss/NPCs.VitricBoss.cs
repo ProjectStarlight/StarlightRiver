@@ -66,13 +66,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath1;
             npc.dontTakeDamageFromHostiles = true;
-            npc.scale = 0.5f;
+            npc.behindTiles = true;
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
 
             eyes = new List<VitricBossEye>()
             { 
-            new VitricBossEye(new Vector2(20, 46), 0),
-            new VitricBossEye(new Vector2(74, 46), 1)
+            new VitricBossEye(new Vector2(70, 86), 0),
+            new VitricBossEye(new Vector2(120, 86), 1)
             };
 
             swooshes = new List<VitricBossSwoosh>()
@@ -245,8 +245,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.LocalPlayer.controlHook)
             {
-                for(int k = 0; k < 12; k++)
-                    AI();
+                //for(int k = 0; k < 12; k++)
+                    //AI();
             }
         }
 
@@ -295,8 +295,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
 
                     if (GlobalTimer <= 200) npc.Center += new Vector2(0, -4f); //rise up
-
-                    if (GlobalTimer > 200 && GlobalTimer <= 300) npc.scale = 0.5f + (GlobalTimer - 200) / 200f; //grow
 
                     if (GlobalTimer > 280) //summon crystal babies
                         for (int k = 0; k <= 4; k++)
