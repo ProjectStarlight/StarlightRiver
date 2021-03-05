@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Foregrounds
         public override void Draw(SpriteBatch spriteBatch, float opacity)
         {
             var tex = ModContent.GetTexture(AssetDirectory.Assets + "Foregrounds/Vignette");
-            var targetRect = new Rectangle(Main.screenWidth / 2 + (int)offset.X, Main.screenHeight / 2 + (int)offset.Y, (int)(Main.screenWidth * 1.5f), (int)(Main.screenHeight * 1.5f));
+            var targetRect = new Rectangle(Main.screenWidth / 2 + (int)offset.X, Main.screenHeight / 2 + (int)offset.Y, (int)(Main.screenWidth * 2.5f), (int)(Main.screenHeight * 2.5f));
 
             spriteBatch.Draw(tex, targetRect, null, Color.White * opacity * extraOpacity, 0, tex.Size() / 2, 0, 0);
 
