@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					if (projectile.ai[1] <= chargetime)
 						projectile.scale -= 0.01f;
 
-					Lighting.AddLight(projectile.Center, Color.LightGoldenrodYellow.ToVector3());
+					Lighting.AddLight(projectile.Center, Color.Yellow.ToVector3() * 0.75f);
 					projectile.timeLeft = 20;
 					if (Main.rand.NextBool(3))
 					{
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 						Main.PlaySound(new LegacySoundStyle(SoundID.Item, 14).WithVolume(0.4f).WithPitchVariance(0.1f), projectile.Center);
 						Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 8;
 					}
-					Lighting.AddLight(projectile.Center, Color.Orange.ToVector3());
+					Lighting.AddLight(projectile.Center, Color.OrangeRed.ToVector3());
 					if (Main.rand.NextBool())
 					{
 						Dustcloud(orange, 4);
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		{
 			if (!Ignited)
 			{
-				if (target.Hitbox.Intersects(projectile.Hitbox))
+				if (target.Hitbox.Intersects(projectile.Hitbox) && target.CanBeChasedBy(this))
 					target.AddBuff(BuffID.Poisoned, 30);
 				return false;
 			}
