@@ -47,6 +47,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     crystalNpc.ai[1] = 0; //reset the crystal's timers
                     crystalNpc.ai[2] = 1; //set them into this attack's mode
                 }
+
+                Twist(60, 0);
             }
 
             if (AttackTimer == 180)
@@ -73,6 +75,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 RandomizeTarget();
                 int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<SandCone>(), 1, 0); //spawn a sand cone attack
                 Main.projectile[index].rotation = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
+
+                Twist(40);
             }
 
             for (int k = 0; k < 4; k++) //each crystal
@@ -152,7 +156,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private void CrystalSmash()
         {
             //boss during the attack
-            if (AttackTimer == 1) endPos = npc.Center; //set the ending point to the center of the arena so we can come back later
+            if (AttackTimer == 1)
+            {
+                endPos = npc.Center; //set the ending point to the center of the arena so we can come back later
+                Twist(60, 0);
+            }
 
             //actual movement
             if (AttackTimer < 270)
@@ -228,11 +236,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 if (AttackTimer >= 120 + k * 120 && AttackTimer < 120 + (k + 1) * 120) //move between each platform
                 {
                     int timer = (int)AttackTimer - (120 + k * 120); //0 to 240, grabs the relative timer for ease of writing code
-                    if (timer == 0) { startPos = npc.Center; endPos = crystalLocations[k] + new Vector2(0, -30); RandomizeTarget(); } //set positions and randomize the target
-                    if (timer < 60)
+
+                    if (timer == 0) 
                     {
+                        startPos = npc.Center; 
+                        endPos = crystalLocations[k] + new Vector2(0, -30); 
+                        RandomizeTarget(); 
+                    } //set positions and randomize the target
+
+                    if (timer < 60)
                         npc.Center = Vector2.SmoothStep(startPos, endPos, timer / 60f); //move our big sandy boi into the position of a platform
-                    }
+
+                    if (timer == 60)
+                        Twist(40);
 
                     if (k % 2 == 0) //pick one of these 2 projectile-based attacks, alternating every other platform
                     {

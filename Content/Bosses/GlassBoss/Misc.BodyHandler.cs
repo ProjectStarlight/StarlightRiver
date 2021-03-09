@@ -14,10 +14,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 {
     class BodyHandler
     {
-        private NPC parent;
+        private VitricBoss parent;
         private VerletChainInstance chain;
 
-        public BodyHandler(NPC parent)
+        public BodyHandler(VitricBoss parent)
         {
             this.parent = parent;
 
@@ -54,19 +54,52 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 default: source = new Rectangle(40, 204, 34, 28); break;
             }
 
+            int thisTimer = parent.twistTimer;
+            int threshold = (int)(parent.maxTwistTimer / 8f * (index + 1)) - 1;
+
+            bool shouldBeTwistFrame = false;
+            if (Math.Abs(parent.lastTwistState - parent.twistTarget) == 2) //flip from 1 side to the other
+            {
+                int diff = parent.maxTwistTimer / 8 / 3;
+                shouldBeTwistFrame = thisTimer < threshold - diff|| thisTimer > threshold + diff;
+            }
+
+            if (Math.Abs(parent.twistTarget) == 1) //flip from front to side
+                shouldBeTwistFrame = thisTimer > threshold;
+            else if (parent.twistTarget == 0) //flip from side to front
+                shouldBeTwistFrame = thisTimer < threshold;
+
+            SpriteEffects flip = (
+                (parent.twistTarget == -1 && parent.twistTimer > threshold) ||
+                (parent.lastTwistState == -1 && parent.twistTimer < threshold)
+                ) && shouldBeTwistFrame ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            if (shouldBeTwistFrame)
+                source.X += 114;
+
+            if(index == 0) //change this so the head is drawn from here later maybe? and move all visuals into this class?
+            {
+                parent.npc.spriteDirection = (int)flip;
+
+                if (shouldBeTwistFrame) //this is dumb, mostly just to test
+                    parent.npc.frame.X = parent.npc.frame.Width;
+                else
+                    parent.npc.frame.X = 0;
+            }
+
             var brightness = (0.5f + (float)Math.Sin(StarlightWorld.rottime + index));
 
             if (index == 1) brightness += 0.25f;
 
-            sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, 0, 0);
-            sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, 0, 0);
+            sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
+            sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, flip, 0);
 
             Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
         }
 
         public void UpdateBody()
         {
-            chain.UpdateChain(parent.Center);
+            chain.UpdateChain(parent.npc.Center);
             chain.IterateRope(updateBodySegment);
         }
 

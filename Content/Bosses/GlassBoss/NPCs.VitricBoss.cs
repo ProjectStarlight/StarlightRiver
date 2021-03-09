@@ -26,6 +26,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public List<Vector2> crystalLocations = new List<Vector2>();
         public Rectangle arena;
 
+        public int twistTimer;
+        public int maxTwistTimer;
+        public int lastTwistState;
+        public int twistTarget;
+
         private int favoriteCrystal = 0;
         private bool altAttack = false;
 
@@ -53,7 +58,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.damage = 30;
             npc.defense = 18;
             npc.knockBackResist = 0f;
-            npc.width = 192;
+            npc.width = 80;
             npc.height = 160;
             npc.value = Item.buyPrice(0, 20, 0, 0);
             npc.npcSlots = 15f;
@@ -71,8 +76,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             eyes = new List<VitricBossEye>()
             { 
-            new VitricBossEye(new Vector2(70, 86), 0),
-            new VitricBossEye(new Vector2(120, 86), 1)
+            new VitricBossEye(new Vector2(16, 86), 0),
+            new VitricBossEye(new Vector2(66, 86), 1)
             };
 
             swooshes = new List<VitricBossSwoosh>()
@@ -83,7 +88,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             new VitricBossSwoosh(new Vector2(46, -34), 10, this)
             };
 
-            body = new BodyHandler(npc);
+            body = new BodyHandler(this);
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -129,9 +134,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             swooshes.ForEach(n => n.Draw(spriteBatch));
             body.DrawBody(spriteBatch);
 
-            npc.frame.Width = 192;
+            npc.frame.Width = 194;
             npc.frame.Height = 160;
-            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
+            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             return false;
         }
 
@@ -225,6 +231,31 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (resetTime) GlobalTimer = 0;
         }
 
+        private void Twist(int duration)
+        {
+            int direction = Main.player[npc.target].Center.X > npc.Center.X ? 1 : -1;
+            float angle = (Main.player[npc.target].Center - npc.Center).ToRotation();
+            if (Math.Abs(angle) > MathHelper.PiOver4 && Math.Abs(angle) < MathHelper.PiOver4 * 3)
+                direction = 0;
+
+            if (direction != lastTwistState)
+            {
+                twistTimer = 0;
+                twistTarget = direction;
+                maxTwistTimer = duration;
+            }
+        }
+
+        private void Twist(int duration, int direction)
+        {
+            if (direction != lastTwistState)
+            {
+                twistTimer = 0;
+                 twistTarget = direction;
+                maxTwistTimer = duration;
+            }
+        }
+
         #endregion helper methods
 
         #region AI
@@ -256,6 +287,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             GlobalTimer++;
             AttackTimer++;
 
+            //twisting
+            if (twistTimer < maxTwistTimer)
+                twistTimer++;
+
+            if (twistTimer == maxTwistTimer)
+            {
+                lastTwistState = twistTarget;
+            }
+
+            //Main AI
             body.UpdateBody(); //update the physics on the body
             Lighting.AddLight(npc.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
