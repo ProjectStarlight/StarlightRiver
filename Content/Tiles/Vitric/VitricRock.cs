@@ -24,15 +24,18 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Main.tileCut[Type] = true;
             Main.tileFrameImportant[Type] = true;
 
+            TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.RandomStyleRange = 6;
-            TileObjectData.newTile.AnchorAlternateTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand"),
+                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+                TileID.HardenedSand, TileID.FossilOre };
             TileObjectData.addTile(Type);
             soundType = SoundID.Shatter;
             dustType = DustType<Dusts.GlassGravity>();
-            AddMapEntry(new Color(114, 78, 80));
+            AddMapEntry(new Color(80, 131, 142));
         }
     }
 }

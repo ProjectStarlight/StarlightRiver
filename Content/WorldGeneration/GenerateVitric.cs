@@ -13,6 +13,7 @@ using static Terraria.WorldGen;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using Terraria.ID;
 
 namespace StarlightRiver.Core
 {
@@ -26,7 +27,9 @@ namespace StarlightRiver.Core
         private static int crystalsPlaced = 0;
         private static Mod instance => StarlightRiver.Instance;
 
-        private static int[] ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
+        private static int[] ValidGround;
+
+        private static int[] ValidDesertGround;
 
         public static List<Point> VitricIslandLocations { get; private set; }
         public static List<Point> RuinedPillarPositions { get; private set; }
@@ -39,6 +42,9 @@ namespace StarlightRiver.Core
 
             int vitricHeight = 140;
             ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
+            ValidDesertGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"), TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+                TileID.HardenedSand, TileID.FossilOre };
+            
             //Basic biome information
             VitricBiome = new Rectangle(UndergroundDesertLocation.X - 80, UndergroundDesertLocation.Y + UndergroundDesertLocation.Height, UndergroundDesertLocation.Width + 150, vitricHeight);
 
@@ -162,6 +168,21 @@ namespace StarlightRiver.Core
             GenDecoration();
             //GenMoss();
             GenTemple();
+
+            GenDesertDecoration();
+
+            //debug
+            Helper.OutlineRect(VitricBiome, TileID.RubyGemspark);
+
+            for (int i = 0; i < Main.maxTilesX; i++)
+                PlaceTile(i, (int)Main.worldSurface, TileID.SapphireGemspark, true, true);
+
+            for (int i = 0; i < Main.maxTilesX; i++)
+                PlaceTile(i, (int)WorldGen.worldSurface, TileID.AmethystGemspark, true, true);
+
+            Helper.OutlineRect(UndergroundDesertLocation, TileID.AmberGemspark);
+
+            PlaceTile(VitricBiome.X, VitricBiome.Y, TileID.EmeraldGemspark, true, true);
 
             VitricBiome.Y -= 8; //Adjust a bit
         }
@@ -420,6 +441,47 @@ namespace StarlightRiver.Core
 
                                 if (!Main.tile[i + k, j].active() || !ValidGround.Any(x => x == Main.tile[i + k, j].type)) vGround = false;
                             if (vGround && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(3, 2))) PlaceTile(i, j - 2, TileType<VitricDecorLarge>(), true, false, -1, genRand.Next(6));
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void GenDesertDecoration()
+        {
+            for (int i = UndergroundDesertLocation.X; i < UndergroundDesertLocation.X + UndergroundDesertLocation.Width; i++) //Add vines & decor
+            {
+                double xDist = Helper.Distribution(i - UndergroundDesertLocation.X, UndergroundDesertLocation.Width, 0.5f, 40);
+                for (int j = UndergroundDesertLocation.Y; j < UndergroundDesertLocation.Y + UndergroundDesertLocation.Height; j++)
+                {
+                    double yDist = Helper.Distribution(UndergroundDesertLocation.Y - (j - UndergroundDesertLocation.Height), UndergroundDesertLocation.Height * 2, 0f, 25);
+                    if (genRand.Next(100) < (xDist + yDist) / 2)
+                    {
+                        int type = genRand.Next(3);//Generates multitile decoration randomly
+                        if (type == 0)//small rock
+                        {
+                            if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 1), new Point16(1, 1)))
+                                //PlaceTile(i, j - 1, TileID.AmethystGemsparkOff, false, false, -1, genRand.Next(4));
+                                //PlaceTile(i, j - 1, genRand.Next(2) == 0 ? TileType<VitricSmallCactus>() : TileType<VitricRock>(), false, false, -1, genRand.Next(4));
+                                PlaceTile(i, j - 1, TileType<VitricRock>(), false, false, -1, genRand.Next(4));
+                        }
+                        else if (type == 1)
+                        {
+                            if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(2, 2)) &&
+                                Main.tile[i + 1, j].active() && Main.tile[i + 1, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i + 1, j].type))
+                                //PlaceTile(i, j - 2, TileID.DiamondGemspark, false, false, -1, genRand.Next(4));
+                                //PlaceTile(i, j - 2, genRand.Next(2) == 0 ? TileType<VitricRoundCactus>() : TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
+                                PlaceTile(i, j - 2, TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
+                        }
+                        else if (type == 2)//large rock
+                        {
+                            bool vGround = true;
+                            for (int k = 0; k < 3; k++)
+                                if (!Main.tile[i + k, j].active() || Main.tile[i + k, j].slope() != 0 || !ValidDesertGround.Any(x => x == Main.tile[i + k, j].type)) vGround = false;
+
+                            if (vGround && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(3, 2)))
+                                //PlaceTile(i, j - 2, TileID.DiamondGemsparkOff, true, false, -1, genRand.Next(6));
+                                PlaceTile(i, j - 2, TileType<VitricDecorLarge>(), true, false, -1, genRand.Next(6));
                         }
                     }
                 }
