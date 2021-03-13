@@ -95,6 +95,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void PostLoad()
         {
             AddMerge("VitricSoftSand", "VitricSand");
+
+            AddMerge("VitricSoftSand", new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
+                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone, 
+                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand });
+
+            AddMerge("VitricSand", new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
+                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand });
+
             AddMerge("AncientSandstone", "AncientSandstoneTile");
         }
     }
