@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f * 0.5f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");//TEXTURE PATH
+                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/Glow");//TEXTURE PATH
 
                 spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.5f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default); }
         }
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
     class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
     {
-        public override string Texture => AssetDirectory.StarwoodItem + "StarwoodStarfallGlowTrail";
+        public override string Texture => AssetDirectory.StarwoodItem + "StarwoodStarfallProjectile";
         public override void SetStaticDefaults() {
             DisplayName.SetDefault("Falling Star");
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
@@ -148,17 +148,28 @@ namespace StarlightRiver.Content.Items.Starwood
             Texture2D tex = Main.projectileTexture[projectile.type];
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, projectile.rotation, new Vector2(11, 12), projectile.scale, default, default);
             return false; }
-         
+
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            for (int k = 0; k < projectile.oldPos.Length; k++) {
+            for (int k = 0; k < projectile.oldPos.Length; k++)
+            {
                 Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
                 float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");//TEXTURE PATH
+                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/Glow");//TEXTURE PATH
 
-                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default); }
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+            }
+            for (int k = 0; k < projectile.oldPos.Length; k++)
+            {
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                if (k <= 4) color *= 1.2f;
+                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
+                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodStarfallGlowTrail");//TEXTURE PATH
+
+                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+            }
         }
     }
 

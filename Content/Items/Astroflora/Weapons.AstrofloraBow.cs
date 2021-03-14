@@ -52,6 +52,8 @@ namespace StarlightRiver.Content.Items.Astroflora
             item.value = Item.sellPrice(0, 1, 0, 0);
         }
 
+
+
         public override void HoldItem(Player player)
         {
             if (CursorShouldBeRed && --counter <= 0)
@@ -99,13 +101,15 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public override bool CanUseItem(Player player)
         {
+            locks = locks ?? new List<NPC>();
+
             if (locks.Count > 0)
             {
                 return true;
             }
             else
             {
-                player.GetModPlayer<StarlightPlayer>().Shake = 10;
+                player.GetModPlayer<StarlightPlayer>().Shake = 5;
 
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, $"{SoundPath}Failure"), player.Center);
 
