@@ -14,13 +14,35 @@ using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ObjectData;
 using Terraria.UI;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
+using static Terraria.WorldGen;
 
 
 namespace StarlightRiver.Helpers
 {
     public static partial class Helper
     {
+        public static double Distribution(int pos, int maxVal, float posOffset = 0.5f, float maxChance = 100f)
+        {
+            return -Math.Pow((20 * (pos - (posOffset * maxVal))) / maxVal, 2) + maxChance;
+        }
+
+        public static void OutlineRect(Rectangle rect, int tileType)
+        {
+            for (int i = 0; i < rect.Width; i++)
+                PlaceTile(rect.X + i, rect.Y, tileType, true, true);
+
+            for (int i = 0; i < rect.Width; i++)
+                PlaceTile(rect.X + i, rect.Y + rect.Height, tileType, true, true);
+
+            for (int i = 0; i < rect.Height; i++)
+                PlaceTile(rect.X, rect.Y + i, tileType, true, true);
+
+            for (int i = 0; i < rect.Height; i++)
+                PlaceTile(rect.X + rect.Width, rect.Y + i, tileType, true, true);
+        }
+
         public static void PlaceMultitile(Point16 position, int type, int style = 0)
         {
             TileObjectData data = TileObjectData.GetTileData(type, style); //magic numbers and uneccisary params begone!

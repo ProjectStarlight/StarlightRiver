@@ -19,12 +19,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
+            TileObjectData.newTile.DrawYOffset = 2;
+
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand"), TileID.FossilOre,
+                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
+
             TileObjectData.newTile.RandomStyleRange = 4;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            (this).QuickSetFurniture(2, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(2, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(80, 131, 142));
         }
     }
 
@@ -39,12 +44,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
+            TileObjectData.newTile.DrawYOffset = 2;
+
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand") };
+            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand"), TileID.FossilOre,
+                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
+
             TileObjectData.newTile.RandomStyleRange = 6;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            (this).QuickSetFurniture(3, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(114, 78, 80));
+            (this).QuickSetFurniture(3, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(80, 131, 142));
         }
     }
 }

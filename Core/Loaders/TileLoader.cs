@@ -26,6 +26,37 @@ namespace StarlightRiver.Core.Loaders
             mod.AddTile(internalName, new LoaderFurniture(data, mod.ItemType(internalName + "Item")), AssetRoot + internalName);
         }
 
+
+
+        public void AddMerge(int type1, int[] type2arr)
+        {
+            foreach(int type2 in type2arr)
+            {
+                Main.tileMerge[type1][type2] = true;
+                Main.tileMerge[type2][type1] = true;
+            }
+        }
+
+        public void AddMerge(string type1, string[] type2arr)
+        {
+            foreach (string type2 in type2arr)
+            {
+                Main.tileMerge[mod.TileType(type1)][mod.TileType(type2)] = true;
+                Main.tileMerge[mod.TileType(type2)][mod.TileType(type1)] = true;
+            }
+        }
+
+        public void AddMerge(string type1, int[] type2arr)
+        {
+            foreach (int type2 in type2arr)
+            {
+                Main.tileMerge[mod.TileType(type1)][type2] = true;
+                Main.tileMerge[type2][mod.TileType(type1)] = true;
+            }
+        }
+
+
+
         public void AddMerge(int type1, int type2)
         {
             Main.tileMerge[type1][type2] = true;
@@ -43,6 +74,8 @@ namespace StarlightRiver.Core.Loaders
             Main.tileMerge[mod.TileType(type1)][type2] = true;
             Main.tileMerge[type2][mod.TileType(type1)] = true;
         }
+
+
 
         public float Priority { get => 1f; }
 
