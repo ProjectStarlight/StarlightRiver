@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Helpers;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -83,7 +84,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            projectile.width = 160;
+            projectile.width = 250;
             projectile.height = 50;
             projectile.friendly = true;
             projectile.tileCollide = false;
@@ -125,6 +126,15 @@ namespace StarlightRiver.Content.Items.Misc
                 if (++projectile.frame >= 10) 
                     projectile.frame = 0;
             }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            int frameHeight = (tex.Height / 10);
+            Vector2 pos = Main.player[projectile.owner].Center - Main.screenPosition;
+            spriteBatch.Draw(tex, new Rectangle((int)pos.X, (int)pos.Y, tex.Width * 2, frameHeight * 2), new Rectangle(0, projectile.frame * frameHeight, tex.Width, frameHeight), Color.White, 0, new Vector2(tex.Width * 0.5f, frameHeight * 0.5f), SpriteEffects.None, default);
+            return false;
         }
     }
 }

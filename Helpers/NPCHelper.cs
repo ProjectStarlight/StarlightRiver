@@ -22,7 +22,6 @@ namespace StarlightRiver.Helpers
     public static partial class Helper
     {
         public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;
-
         public static void Kill(this NPC npc)
         {
             bool modNPCDontDie = npc.modNPC?.CheckDead() == false;
@@ -88,7 +87,6 @@ namespace StarlightRiver.Helpers
                 }
             }
         }
-
     }
 }
 

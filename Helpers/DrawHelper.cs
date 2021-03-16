@@ -347,6 +347,8 @@ namespace StarlightRiver.Helpers
             }
         }
 
+        public static Vector2 PointAccur(this Vector2 input) => input.ToPoint().ToVector2();
+
         public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
 
         public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);

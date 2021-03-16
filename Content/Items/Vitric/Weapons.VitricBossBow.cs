@@ -58,7 +58,11 @@ namespace StarlightRiver.Content.Items.Vitric
                 Projectile held = Main.projectile[player.heldProj];
                 Vector2 off = Vector2.Normalize(held.velocity) * 16;
 
-                var data = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), off.ToRotation(), item.Size / 2, 1, 0, 0);
+                //Vector2 mousePos = Main.MouseWorld - new Vector2(0, player.gfxOffY);
+                //Vector2 diff2 = mousePos - player.Center;
+                //Vector2 off = Vector2.Normalize(diff2) * 16;
+
+                var data = new DrawData(Main.itemTexture[item.type], (player.Center.PointAccur() + off - Main.screenPosition) + new Vector2(0, player.gfxOffY), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), off.ToRotation(), item.Size / 2, 1, 0, 0);
                 Main.playerDrawData.Add(data);
 
                 if (held.modProjectile != null && held.modProjectile is VitricBowProjectile)
@@ -66,7 +70,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     float fraction = held.ai[0] / VitricBowProjectile.MaxCharge;
                     Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction) * Math.Min(held.timeLeft / 20f, 1f);
 
-                    var data2 = new DrawData(GetTexture(Texture), player.Center + off - Main.screenPosition, null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
+                    var data2 = new DrawData(Main.itemTexture[item.type], (player.Center.PointAccur() + off - Main.screenPosition) + new Vector2(0, player.gfxOffY), null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
                     Main.playerDrawData.Add(data2);
                 }
 
@@ -125,13 +129,13 @@ namespace StarlightRiver.Content.Items.Vitric
             }
         }
 
-        public void Holding(Player player)
+        private void Holding(Player player)
         {
             player.itemTime = 3;
             player.itemAnimation = 3;
             player.heldProj = projectile.whoAmI;
 
-            Vector2 mousePos = Main.MouseWorld;
+            Vector2 mousePos = Main.MouseWorld - new Vector2(0, Main.player[projectile.owner].gfxOffY);
 
             if (projectile.owner == Main.myPlayer && mousePos != projectile.Center)
             {
@@ -149,7 +153,7 @@ namespace StarlightRiver.Content.Items.Vitric
             player.itemRotation = (float)Math.Atan2(distz.Y * dir, distz.X * dir);
         }
 
-        public void Charging()
+        private void Charging()
         {
             projectile.ai[0] = Math.Min(projectile.ai[0] + (1f / ItemFirerate), MaxCharge);
             MaxFireTime = 6 + (int)(projectile.ai[0] / 8f);
@@ -158,7 +162,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.timeLeft = MaxFireTime + AddedFireBuffer;
         }
 
-        public void LetGo(Player player)
+        private void LetGo(Player player)
         {
             bool doFire = (projectile.ai[0] < ChargeNeededToFire && projectile.localAI[1] == 1)
                 || (projectile.ai[0] >= ChargeNeededToFire && projectile.localAI[1] % FireRate == 0);
@@ -209,7 +213,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 float alpha = Math.Min(projectile.ai[0] / 60f, maxalpha) * Math.Min((float)projectile.timeLeft / 8, 1f);
                 Vector2 maxspread = new Vector2(Math.Min(projectile.ai[0] / MaxCharge, 1) * 0.5f, 0.4f);
 
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
+                spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
             }
         }
     }

@@ -117,8 +117,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOut");
                 Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOutGlow");
 
-                DrawData data = new DrawData(tex, player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), 0, tex.Size() / 2, 1, info.spriteEffects, 0);
-                DrawData data2 = new DrawData(tex2, player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY), null, color * charge * 0.5f, 0, tex.Size() / 2, 1, info.spriteEffects, 0);
+                DrawData data = new DrawData(tex, (player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY)).PointAccur(), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), 0, tex.Size() / 2, 1, info.spriteEffects, 0);
+                DrawData data2 = new DrawData(tex2, (player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY)).PointAccur(), null, color * charge * 0.5f, 0, tex.Size() / 2, 1, info.spriteEffects, 0);
                 Main.playerDrawData.Add(data);
                 Main.playerDrawData.Add(data2);
             }
