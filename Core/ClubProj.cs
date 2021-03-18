@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -48,15 +49,17 @@ namespace StarlightRiver.Core
             projectile.alpha = 255;
             SafeSetDefaults();
         }
+
         public bool released = false;
         float angularMomentum = 1;
         public double radians = 0;
         int lingerTimer = 0;
         int flickerTime = 0;
+
         public sealed override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Color color = lightColor;
-            Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], Main.player[projectile.owner].Center - Main.screenPosition, new Rectangle(0, 0, Size, Size), color, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), new Rectangle(0, 0, Size, Size), color, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 0);
             SafeDraw(spriteBatch, lightColor);
             if (projectile.ai[0] >= chargeTime && !released && flickerTime < 16)
             {
@@ -65,17 +68,17 @@ namespace StarlightRiver.Core
                 float flickerTime2 = (float)(flickerTime / 20f);
                 float alpha = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
                 if (alpha < 0)
-                {
                     alpha = 0;
-                }
-                Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], Main.player[projectile.owner].Center - Main.screenPosition, new Rectangle(0, Size, Size, Size), color * alpha, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 1);
+                Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)), new Rectangle(0, Size, Size, Size), color * alpha, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 1);
             }
             return false;
         }
+
         public virtual void Smash(Vector2 position)
         {
 
         }
+
         public sealed override bool PreAI()
         {
             SafeAI();

@@ -43,14 +43,16 @@ namespace StarlightRiver.Content.Items.Palestone
         public override Vector2? HoldoutOffset() => new Vector2(-10, 0);
     }
      class PalecrusherProj : ClubProj
-    {
+     {
         public override string Texture => AssetDirectory.PalestoneItem + "PalecrusherProj";
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pale Crusher");
             Main.projFrames[projectile.type] = 2;
         }
+
         int[] targets = new int[3];
+
         public override void Smash(Vector2 position)
         {
             Player player = Main.player[projectile.owner];
@@ -107,7 +109,8 @@ namespace StarlightRiver.Content.Items.Palestone
             }
         }
         public PalecrusherProj() : base(52, 16, 40, -1, 48, 4, 8, 2.1f, 18f) { }
-    }
+     }
+
     public class PalePillar : ModProjectile
     {
         public override string Texture => AssetDirectory.PalestoneItem + "PalePillar";

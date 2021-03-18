@@ -84,24 +84,20 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
     internal abstract class PhasespearProjectile : SpearProjectile
     {
-        private readonly Color glowColor;
-
-        public PhasespearProjectile(Color color) : base(30, 40, 120) { glowColor = color; }
-
         public override string Texture => AssetDirectory.AluminumItem + "PhasespearProjectile";
 
-        public override void SafeAI()
-        {
-            Lighting.AddLight(projectile.Center, glowColor.ToVector3() * 0.5f);
-        }
+        private readonly Color glowColor;
+        public PhasespearProjectile(Color color) : base(30, 40, 120) => glowColor = color;
+
+        public override void SafeAI() => Lighting.AddLight(projectile.Center, glowColor.ToVector3() * 0.5f);
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture(AssetDirectory.AluminumItem + "PhasespearProjectileGlow");
             Texture2D tex2 = GetTexture(AssetDirectory.AluminumItem + "PhasespearProjectileGlow2");
 
-            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), Color.White, projectile.rotation, Vector2.Zero, 1, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), glowColor, projectile.rotation, Vector2.Zero, 1, 0, 0);
+            spriteBatch.Draw(tex2, (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), tex2.Frame(), Color.White, projectile.rotation, Vector2.Zero, projectile.scale, 0, 0);
+            spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), tex.Frame(), glowColor, projectile.rotation, Vector2.Zero, projectile.scale, 0, 0);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

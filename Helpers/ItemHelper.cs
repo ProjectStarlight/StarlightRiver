@@ -108,7 +108,6 @@ namespace StarlightRiver.Helpers
             if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
             else return GetTexture(item.modItem.Texture);
         }
-
         public static Texture2D GetItemTexture(int type)
         {
             if (type < Main.maxItemTypes) return Main.itemTexture[type];

@@ -3,6 +3,8 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Projectiles
 {
@@ -51,6 +53,12 @@ namespace StarlightRiver.Content.Projectiles
             projectile.rotation = MathHelper.Pi * (3 / 4f) + projectile.velocity.ToRotation();
             float progress = projectile.timeLeft > realDuration / 2f ? (realDuration - projectile.timeLeft) / (realDuration / 2f) : projectile.timeLeft / (realDuration / 2f);
             projectile.Center = player.MountedCenter + Vector2.SmoothStep(projectile.velocity * Min, projectile.velocity * Max, progress);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            spriteBatch.Draw(Main.projectileTexture[projectile.type], (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), Main.projectileTexture[projectile.type].Frame(), Color.White, projectile.rotation, Vector2.Zero, projectile.scale, 0, 0);
+            return false;
         }
     }
 }

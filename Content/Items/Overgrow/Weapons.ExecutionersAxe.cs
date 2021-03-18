@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using System;
 using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Items.Overgrow
 {
@@ -51,6 +52,8 @@ namespace StarlightRiver.Items.Overgrow
             return new Vector2(-10, 0);
         }
     }
+
+
     public class AxeHead : ModProjectile
     {
          public override string Texture => AssetDirectory.OvergrowItem + Name;
@@ -71,6 +74,7 @@ namespace StarlightRiver.Items.Overgrow
             projectile.tileCollide = false;
             projectile.alpha = 255;
         }
+
         bool released = false;
         readonly int chargeTime = 60;
         float angularMomentum = 1;
@@ -79,20 +83,19 @@ namespace StarlightRiver.Items.Overgrow
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Rectangle? sourceRectangle = null;
-            Main.spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "AxeHead"), Main.player[projectile.owner].Center - Main.screenPosition, sourceRectangle, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "AxeHead"), ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), null, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-
             if (projectile.ai[0] >= 60)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
+                Vector2 pos = (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY);
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
             }
         }
 
@@ -130,22 +133,16 @@ namespace StarlightRiver.Items.Overgrow
                     float rot = Main.rand.NextFloat(6.28f);
                     Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Content.Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
                     if (projectile.ai[0] < chargeTime / 1.5f || projectile.ai[0] % 2 == 0)
-                    {
                         angularMomentum = -1;
-                    }
                     else
-                    {
                         angularMomentum = 0;
-                    }
                 }
                 else
                 {
                     if (projectile.ai[0] == chargeTime)
                     {
                         for (int k = 0; k <= 100; k++)
-                        {
                             Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
-                        }
                         Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
                         projectile.ai[0]++;
                     }
@@ -216,6 +213,8 @@ namespace StarlightRiver.Items.Overgrow
             return true;
         }
     }
+
+
     public class AxeFire : ModProjectile
     {
         public override string Texture => AssetDirectory.OvergrowItem + Name;

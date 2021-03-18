@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Overgrow
 {
@@ -61,22 +62,23 @@ namespace StarlightRiver.Content.Items.Overgrow
         }
     }
 
-    public class AnimationHandler : ModPlayer
-    {
-        public bool Lifting = false;
+     public class AnimationHandler : ModPlayer
+     {
+         public bool Lifting = false;
 
-        public override void PostUpdate()
-        {
-            if (Lifting) player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
-        }
-
-        public override void ResetEffects()
-        {
-            Lifting = false;
-        }
-    }
+         public override void PostUpdate()
+         {
+             if (Lifting) 
+                 player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
+         }
+ 
+         public override void ResetEffects()
+         {
+             Lifting = false;
+         }
+     }
      internal class ShakerBall : ModProjectile
-    {
+     {
         public override string Texture => AssetDirectory.OvergrowItem + Name;
         public override void SetDefaults()
         {
@@ -110,7 +112,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (projectile.ai[1] == 0)
             {
-                projectile.position = player.position + new Vector2(-15, -64);
+                projectile.position = player.Top + (projectile.position - projectile.Bottom);
             }
 
             if (projectile.ai[1] == 0 && projectile.ai[0] < 100)
@@ -184,10 +186,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             }
         }
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-            return false;
-        }
+        public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -196,11 +195,14 @@ namespace StarlightRiver.Content.Items.Overgrow
                 Player player = Main.player[projectile.owner];
                 for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(player.Center, projectile.Center) / 16))
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Items/Overgrow/ShakerChain"), Vector2.Lerp(projectile.Center, player.Center, k) - Main.screenPosition,
+                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Items/Overgrow/ShakerChain"), (Vector2.Lerp(projectile.Center, player.Center + new Vector2(0, Main.player[projectile.owner].gfxOffY), k) - Main.screenPosition),
                         new Rectangle(0, 0, 8, 16), lightColor, (projectile.Center - player.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
                 }
             }
-            return true;
+
+            spriteBatch.Draw(Main.projectileTexture[projectile.type], ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), Main.projectileTexture[projectile.type].Frame(), Color.White, projectile.rotation, projectile.Size / 2, projectile.scale, 0, 0);
+
+            return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -210,15 +212,17 @@ namespace StarlightRiver.Content.Items.Overgrow
                 float colormult = projectile.ai[0] / 100f * 0.7f;
                 float scale = 1.2f - projectile.ai[0] / 100f * 0.5f;
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * colormult, 0, tex.Size() / 2, scale, 0, 0);
+                Vector2 pos = ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur();
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * colormult, 0, tex.Size() / 2, scale, 0, 0);
             }
 
             if (projectile.ai[0] == 100)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
+                Vector2 pos = ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur();
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
             }
         }
     }
