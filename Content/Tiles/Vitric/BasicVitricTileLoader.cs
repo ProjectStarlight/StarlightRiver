@@ -96,13 +96,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             AddMerge("VitricSoftSand", "VitricSand");
 
-            AddMerge("VitricSoftSand", new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
-                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone, 
-                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand });
-
-            AddMerge("VitricSand", new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
+            var sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
-                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand });
+                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
+
+            AddMerge("VitricSoftSand", sands);
+
+            AddMerge("VitricSand", sands);
 
             AddMerge("AncientSandstone", "AncientSandstoneTile");
         }

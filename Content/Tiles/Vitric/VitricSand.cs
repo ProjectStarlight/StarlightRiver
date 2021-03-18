@@ -10,34 +10,40 @@ using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    /*internal class VitricSand : ModTile
+    /*internal class VitricSandGrad : ModTile
     {
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 0, DustType<Content.Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), mod.ItemType("VitricSandItem"));
-            Main.tileMerge[Type][TileType<VitricSpike>()] = true;
-            Main.tileMerge[Type][mod.TileType("AncientSandstone")] = true;
-            Main.tileMerge[Type][mod.TileType("VitricSoftSand")] = true;
-            Main.tileMerge[Type][TileType<VitricMoss>()] = true;
+            Main.tileMerge[Type][TileID.Sandstone] = true;
+            Main.tileMerge[Type][TileID.HardenedSand] = true;
         }
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            Color light = Lighting.GetColor(i, j);
-            Color airColor = new Color(190, 255, 245);
-            if (Main.rand.Next(200) == 0 && light.R >= 10 && light.B >= 10 && light.G >= 10)
-            {
-                Dust.NewDustPerfect(new Vector2(i * 16, j * 16), DustType<Content.Dusts.AirGravity>(), Vector2.Zero, 0, airColor * ((light.R + light.G + light.B) / 765f));
-            }
+            return base.TileFrame(i, j, ref resetFrame, ref noBreak);
         }
     }
-    internal class VitricSandItem : QuickTileItem { public VitricSandItem() : base("Glassy Sand", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { } }*/
 
-    internal class VitricSandWall : ModWall {
-        public override bool Autoload(ref string name, ref string texture)  {
+    internal class VitricSandGradItem : QuickTileItem 
+    {
+        public VitricSandGradItem() : base("Glassy Sand Test", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { }
+    }*/
+
+    internal class VitricSandWall : ModWall
+    {
+        public override bool Autoload(ref string name, ref string texture) 
+        {
             texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture); }
-        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); }
+            return base.Autoload(ref name, ref texture);
+        }
 
-    internal class VitricSandWallItem : QuickWallItem { public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0, AssetDirectory.VitricTile) { } }
+        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); 
+    }
+
+    internal class VitricSandWallItem : QuickWallItem
+    { 
+        public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0, AssetDirectory.VitricTile) { } 
+    }
 }
 

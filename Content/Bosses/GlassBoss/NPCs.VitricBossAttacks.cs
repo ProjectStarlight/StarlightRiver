@@ -365,6 +365,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (AttackTimer == 60) ResetAttack();
         }
+
+        private void LaserBeam()
+        {
+            if (AttackTimer == 1)
+            {
+                int i = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassBossLaser>(), 1, 0);
+                (Main.projectile[i].modProjectile as GlassBossLaser).parent = this;
+            }
+        }
         #endregion
 
         private void AngerAttack()

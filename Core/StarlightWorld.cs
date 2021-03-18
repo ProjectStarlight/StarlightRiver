@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
         public static List<string> knownRecipies = new List<string>();
 
         //Players have a timer, can't the world get one synced one too?
-        public static int Timer;
+        public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
 
         //Im so sorry for putting these here.  TODO: Move it later
         public static Cutaway cathedralOverlay;
@@ -47,6 +47,7 @@ namespace StarlightRiver.Core
 
         public static Rectangle VitricBiome = new Rectangle();
 
+        public static int SquidNPCProgress = 0;
         public static Rectangle SquidBossArena = new Rectangle();
 
         //Handling Keys
@@ -172,6 +173,7 @@ namespace StarlightRiver.Core
                 ["VitricBiomePos"] = VitricBiome.TopLeft(),
                 ["VitricBiomeSize"] = VitricBiome.Size(),
 
+                ["SquidNPCProgress"] = SquidNPCProgress,
                 ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
                 ["SquidBossArenaSize"] = SquidBossArena.Size(),
                 ["PermafrostCenter"] = permafrostCenter,
@@ -197,6 +199,7 @@ namespace StarlightRiver.Core
             VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
             VitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
+            SquidNPCProgress = tag.GetInt("SquidNPCProgress");
             SquidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;

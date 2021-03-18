@@ -388,7 +388,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         case 0: NukePlatforms(); break;
                         case 1: CrystalCage(); break;
                         case 2: CrystalSmash(); break;
-                        case 3: RandomSpikes(); break;
+                        //case 3: RandomSpikes(); break;
+                        case 3: LaserBeam(); break; //TODO: Revert this test change
                         case 4: PlatformDash(); break;
                     }
                     break;

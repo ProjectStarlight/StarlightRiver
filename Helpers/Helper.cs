@@ -174,6 +174,11 @@ namespace StarlightRiver.Helpers
             return (baseAngle - targetAngle + (float)Math.PI * 3) % MathHelper.TwoPi - (float)Math.PI;
         }
 
+        public static float ConvertAngle(float angleIn)
+        {
+            return CompareAngle(0, angleIn) + (float)Math.PI;
+        }
+
         public static string WrapString(string input, int length, DynamicSpriteFont font, float scale)
         {
             string output = "";
