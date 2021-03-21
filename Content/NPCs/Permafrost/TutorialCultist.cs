@@ -51,21 +51,14 @@ namespace StarlightRiver.Content.NPCs.Permafrost
         private void Debug()
         {
             textState++;
-
-            if (textState == 3)
-            {
-                RichTextBox.ClearButtons();
-                RichTextBox.AddButton("[]Recieve Blessing", Bless);
-            }
         }
 
-        private void Bless()
+        private void Close()
         {
             UILoader.GetUIState<RichTextBox>().Visible = false;
             RichTextBox.SetData(null, "", "");
             Main.player[Main.myPlayer].talkNPC = -1;
-
-            Main.LocalPlayer.AddBuff(BuffType<SpikeImmuneBuff>(), 3600); //TODO: this may need manual sync later? not sure (Remember this is really being called from a UI)
+            textState = 0;
         }
 
         public override void AI()
@@ -84,36 +77,64 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
         private void SetData()
         {
-            switch (textState)
+            switch (StarlightWorld.SquidNPCProgress) //yeah, I really should make a full system for this with localization files and everything, and not hardcode this into huge gross switch statements. Remind me to do that at some point. TODO
             {
-                case 0:
-                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
-                        "[]Hello hello generic greeting message thing"
-                    ); break;
+                case 0: //initial encounter, may be on the surface or in the lower temples. This is only ever skipped if your first encounter happens to be already in the permafrost (unlikely)
+                    switch (textState)
+                    {
+                        case 0:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]This message should appear on first visit"
+                            ); break;
 
-                case 1:
-                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
-                        "[]You can pick up those" +
-                        MakeAuroraText("Magical Orbs ") +
-                        "[]To shield yourself from" +
-                        "[<color:255, 80, 80>]spikes" +
-                        "[]. Be careful though, they wont come back untill the" +
-                        "[<color:120, 160, 255>]next night"
-                    ); break;
+                        case 1:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]This message is the second one to appear on first visit"
+                            ); break;
 
-                case 2:
-                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
-                        "[]Something Something scary ominous" +
-                        "[<color:255,0,0>]WARNING!!!" +
-                        "[]something something dont touch squigga"
-                    ); break;
+                        default:
+                            Close();
+                            StarlightWorld.SquidNPCProgress = 1; //move to next quotes
+                            break;
+                    } break;
 
-                case 3:
-                    RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
-                        "[]Ooohh let me give you magic no spike spell!" +
-                        MakeAuroraText("OohhHhhhh gimmie them tiddies bitch!")
-                    ); break;
+                case 1: //example case for a second encounter
+                    switch (textState)
+                    {
+                        case 0:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]This message should appear on the next visit"
+                            ); break;
 
+                        case 1:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]This message too... i guess"
+                            ); break;
+
+                        default:
+                            Close();
+                            break;
+                    }
+                    break;
+
+                case -1: //when he is found in the permafrost, this ends his """quest"""
+                    switch (textState)
+                    {
+                        case 0:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]damn found me"
+                            ); break;
+
+                        case 1:
+                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            "[]Bend over."
+                            ); break;
+
+                        default:
+                            Close();
+                            break;
+                    }
+                    break;
             }
         }
 

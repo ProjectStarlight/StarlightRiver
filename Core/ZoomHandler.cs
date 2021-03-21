@@ -11,7 +11,7 @@ namespace StarlightRiver.Core
     public static class ZoomHandler
     {
         private static int zoomTimer;
-        private static float zoomOverride = 1;
+        public static float zoomOverride = 1;
         private static float oldZoom = 1;
         private static int maxTimer = 0;
 
