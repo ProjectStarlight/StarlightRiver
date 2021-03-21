@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-    class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
+    public class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
         public override void SetStaticDefaults()
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Starwood
         //These stats get scaled when empowered
         private int ScaleMult = 2;
         private Vector3 lightColor = new Vector3(0.4f, 0.2f, 0.1f);
-        private int dustType = DustType<Content.Dusts.Stamina>();
+        private int dustType = DustType<Dusts.Stamina>();
         private bool empowered = false;
 
         private const int MaxTimeLeft = 1200;
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         private Texture2D GlowingTrail => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlowTrail");
         private Texture2D GlowingTexture => GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerangGlow");
-        private Texture2D AuraTexture => GetTexture("StarlightRiver/Assets/Items/Starwood/GlowRang");//TEXTURE PATH
+        private Texture2D AuraTexture => GetTexture(AssetDirectory.StarwoodItem + "Glow");//TEXTURE PATH
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
@@ -184,15 +184,21 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
+            Texture2D tex = AuraTexture;
             for (int k = 0; k < projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
-                if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Starwood/GlowRang");
+                if (!(projectile.ai[0] == 1 && (projectile.oldPos[k] / 5).ToPoint() == (projectile.position / 5).ToPoint()))
+                {
+                    Color color = (empowered ? new Color(70, 90, 100) : new Color(100, 90, 60)) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                    if (k <= 4)
+                        color *= 1.2f;
+                    float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
 
-                spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                    spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() * 0.5f, scale * 0.5f, default, default);
+                }
             }
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * (projectile.ai[1] / maxChargeTime), 0, tex.Size() * 0.5f, (-chargeMult + 1) * 1.5f, 0, 0);
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -206,8 +212,6 @@ namespace StarlightRiver.Content.Items.Starwood
                 projectile.rotation,
                 new Vector2(GlowingTexture.Width / 2, GlowingTexture.Height / 4),
                 1f, default, default);
-
-            spriteBatch.Draw(AuraTexture, projectile.Center - Main.screenPosition, AuraTexture.Frame(), Color.White * (projectile.ai[1] / maxChargeTime), 0, AuraTexture.Size() / 2, (-chargeMult + 1) / 1.2f, 0, 0);
 
             //Chain.DrawRope(spriteBatch, ChainDrawMethod); //chain example
         }

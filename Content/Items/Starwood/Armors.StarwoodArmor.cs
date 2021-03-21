@@ -36,11 +36,10 @@ namespace StarlightRiver.Content.Items.Starwood
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
         {
             Color color = Lighting.GetColor((int)info.position.X / 16, (int)info.position.Y / 16);
-            ArmorHelper.QuickDrawHelmet(info, AssetDirectory.StarwoodItem + "StarwoodHat_Worn", color, 1, new Vector2(10, 4));
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
-            {
-                ArmorHelper.QuickDrawHelmet(info, AssetDirectory.StarwoodItem + "StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 4));
-            }
+                ArmorHelper.QuickDrawHelmet(info, AssetDirectory.StarwoodItem + "StarwoodHat_Worn_Alt", color, 1, new Vector2(10, 18));
+            else
+                ArmorHelper.QuickDrawHelmetFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Worn", color, 1, new Vector2(10, 18));
         }
     }
 
