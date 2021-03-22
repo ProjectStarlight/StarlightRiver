@@ -198,7 +198,8 @@ namespace StarlightRiver.Content.Items.Starwood
                 }
             }
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * (projectile.ai[1] / maxChargeTime), 0, tex.Size() * 0.5f, (-chargeMult + 1) * 1.5f, 0, 0);
+            Texture2D tex2 = GetTexture(AssetDirectory.StarwoodItem + "Glow2");//a
+            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (projectile.ai[1] / maxChargeTime), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1f, 0, 0);
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

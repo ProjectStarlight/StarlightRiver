@@ -12,7 +12,7 @@ using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Overgrow
 {
-    internal class Shaker : ModItem
+     internal class Shaker : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + "Shaker";
 
