@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private int favoriteCrystal = 0;
         private bool altAttack = false;
+        public Color glowColor = Color.Transparent;
 
         private List<VitricBossEye> eyes;
         private List<VitricBossSwoosh> swooshes;
@@ -112,18 +113,26 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 return true;
             }
 
-            ChangePhase(AIStates.Dying, true);
-            npc.dontTakeDamage = true;
-            npc.friendly = true;
-            npc.life = 1;
-
-            foreach (Player player in Main.player.Where(n => n.Hitbox.Intersects(arena)))
+            if (Phase == (int)AIStates.SecondPhase)
             {
-                player.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = homePos;
-                player.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 720;
-                player.immuneTime = 720;
-                player.immune = true;
+                ChangePhase(AIStates.LastStand, true);
+                npc.dontTakeDamage = true;
+                npc.friendly = true;
+                npc.life = 300;
+                return false;
             }
+
+            if (Phase == (int)AIStates.LastStand)
+            {
+                foreach (Player player in Main.player.Where(n => n.Hitbox.Intersects(arena)))
+                {
+                    player.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = homePos;
+                    player.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 720;
+                    player.immuneTime = 720;
+                    player.immune = true;
+                }
+            }
+
 
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659) return true;
             else return false;
@@ -138,6 +147,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.frame.Height = 160;
             var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+
+            //glow for last stand phase
+            if(Phase == (int)AIStates.LastStand)
+                spriteBatch.Draw(GetTexture(Texture + "Shape"), npc.Center - Main.screenPosition, new Rectangle(npc.frame.X, 0, npc.frame.Width, npc.frame.Height), glowColor, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             return false;
         }
 
@@ -267,8 +280,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Anger = 3,
             FirstToSecond = 4,
             SecondPhase = 5,
-            Leaving = 6,
-            Dying = 7
+            LastStand = 6,
+            Leaving = 7,
+            Dying = 8
         }
 
         public override void PostAI()
@@ -276,8 +290,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.LocalPlayer.controlHook)
             {
-                //for(int k = 0; k < 12; k++)
-                    //AI();
+                if (Phase != (int)AIStates.LastStand)
+                    for (int k = 0; k < 12; k++)
+                        AI();
+                else
+                {
+                    GlobalTimer = 1;
+                    npc.frame.Y = 0;
+                }
             }
         }
 
@@ -388,8 +408,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         case 0: NukePlatforms(); break;
                         case 1: CrystalCage(); break;
                         case 2: CrystalSmash(); break;
-                        //case 3: RandomSpikes(); break;
-                        case 3: LaserBeam(); break; //TODO: Revert this test change
+                        case 3: RandomSpikes(); break;
                         case 4: PlatformDash(); break;
                     }
                     break;
@@ -444,7 +463,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case (int)AIStates.SecondPhase:
 
                     Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.8f;
-                    Vignette.extraOpacity = 0.5f;
+                    Vignette.extraOpacity = 0.3f;
 
                     if (GlobalTimer == 60)
                     {
@@ -475,6 +494,38 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
                     break;
 
+                case (int)AIStates.LastStand:
+
+                    if (GlobalTimer == 1)
+                    {
+                        foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.ai[1] = 4;
+                        Vignette.extraOpacity = 0;
+                        startPos = npc.Center;
+                    }
+
+                    if (GlobalTimer < 60)
+                        npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), GlobalTimer / 60f);
+
+                    if (GlobalTimer > 120 && GlobalTimer <= 140)
+                        glowColor = Color.Lerp(Color.Transparent, Color.White, (GlobalTimer - 120) / 20f);
+
+                    if (GlobalTimer == 140)
+                        npc.frame.Y += 160;
+
+                    if (GlobalTimer > 140 && GlobalTimer <= 200)
+                        glowColor = Color.Lerp(Color.White, Color.Red * 0.5f, (GlobalTimer - 140) / 60f);
+
+                    if (GlobalTimer > 200 && GlobalTimer <= 240)
+                        glowColor = Color.Lerp(Color.Red * 0.5f, Color.Transparent, (GlobalTimer - 200) / 40f);
+
+                    if (GlobalTimer == 300)
+                    {
+                        int i = NPC.NewNPC((int)npc.Center.X - 200, (int)npc.Center.Y - 150, NPCType<GlassMinibossHelpful>());
+                        (Main.npc[i].modNPC as GlassMinibossHelpful).parent = this;
+                    }
+
+                    break;
+
                 case (int)AIStates.Leaving:
 
                     npc.position.Y += 7;
@@ -490,15 +541,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     Vignette.offset = Vector2.Zero;
                     Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
-
-                    if (GlobalTimer == 1)
-                    {
-                        foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.ai[1] = 4;
-                        startPos = npc.Center;
-                    }
-
-                    if (GlobalTimer < 60) 
-                        npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 60f);
 
                     if (GlobalTimer == 60)
                         Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));

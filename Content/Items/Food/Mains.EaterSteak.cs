@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Food
     {
         public EaterSteak() : base("+3% damage reduction", 900, IngredientType.Main) { }
 
+        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+
         public override bool Autoload(ref string name)
         {
             StarlightNPC.NPCLootEvent += LootEaterSteak;

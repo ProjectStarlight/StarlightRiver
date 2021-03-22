@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Items.Food
     {
         public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
 
+        public override void SafeSetDefaults() => item.rare = ItemRarityID.White;
+
         public override bool Autoload(ref string name)
         {
             StarlightNPC.NPCLootEvent += LootRabbit;

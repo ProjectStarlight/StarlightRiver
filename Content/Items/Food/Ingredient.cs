@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Utility;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -29,6 +30,16 @@ namespace StarlightRiver.Content.Items.Food
         }
 
         public override string Texture => AssetDirectory.FoodItem + Name;
+
+        public override bool Autoload(ref string name)
+        {
+            return base.Autoload(ref name);
+        }
+
+        public override void AddRecipes() //this is dumb, too bad!
+        {
+            ChefBag.ingredientTypes.Add(item.type);
+        }
 
         ///<summary>Where the effects of this food item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
         public virtual void BuffEffects(Player player, float multiplier) { }

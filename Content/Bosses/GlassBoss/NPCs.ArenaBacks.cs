@@ -111,9 +111,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 if (ScrollTimer != 0) ScrollTimer++; //stops once we're reset.
                 else
                 {
+                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                    {
+                        npc.Center = (npc.modNPC as VitricBossPlatformUp).storedCenter;
+                        npc.ai[0] = 0;
+                    }
+
                     State = 2;
                     ScrollDelay = 20; //reset acceleration delay
-                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp)) Timer = 0;
                 }
 
                 if (ScrollTimer > Scrolltime) ScrollTimer = 0;

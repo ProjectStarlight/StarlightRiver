@@ -13,6 +13,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatform";
 
         public VitricBackdropLeft parent;
+        public Vector2 storedCenter;
 
         public override bool CheckActive() => false;
 
@@ -31,6 +32,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 1: rise time left
              * 2: acceleration delay
              */
+
+            if (storedCenter == Vector2.Zero)
+                storedCenter = npc.Center;
 
             if (npc.ai[0] == 0)
                 if (npc.ai[1] > 0)
@@ -67,6 +71,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 1: rise time left
              * 2: acceleration delay
              */
+
+            if (storedCenter == Vector2.Zero)
+                storedCenter = npc.Center;
 
             if (npc.ai[0] == 0)
                 if (npc.ai[1] > 0)

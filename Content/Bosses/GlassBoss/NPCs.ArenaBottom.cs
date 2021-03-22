@@ -11,10 +11,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class ArenaBottom : ModNPC
+    internal class ArenaBottom : ModNPC, IDrawAdditive
     {
         public VitricBoss Parent;
-        public override string Texture => AssetDirectory.GlassBoss + "CrystalWave";
+        public override string Texture => AssetDirectory.GlassBoss + "CrystalWaveHot";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.noTileCollide = false;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
+            npc.behindTiles = true;
         }
 
         public override void AI()
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     break;
 
                 case 2: //only happens when the boss goes into phase 2
-                    if (npc.ai[0] < 120) npc.ai[0]++; //cap timer at 120
+                    npc.ai[0]++; //cap timer at 120
                     if (npc.ai[0] < 90) //dust before rising
                         Dust.NewDust(npc.position, npc.width, npc.height, DustType<Content.Dusts.Air>());
                     if (npc.ai[0] >= 120)
@@ -102,25 +103,55 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     break;
             }
         }
+
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 820, npc.width, npc.height);
             if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (npc.ai[1] == 2 && npc.ai[0] > 90) //in the second phase after the crystals have risen
             {
-                float off = (npc.ai[0] - 90) / 30 * 32;
+                Random rand = new Random(18267312);
+
+                float off = Math.Min((npc.ai[0] - 90) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];
                 for (int k = 0; k < npc.width; k += 16)
                 {
-                    Vector2 pos = npc.position + new Vector2(k, 32 - off) - Main.screenPosition; //actually draw the crystals lol
-                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off) - Main.screenPosition; //actually draw the crystals lol
-                    spriteBatch.Draw(tex, pos, Color.White);
-                    spriteBatch.Draw(tex, pos2, Color.White);
+                    Vector2 pos = npc.position + new Vector2(k, 32 - off + rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
+                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
+                    spriteBatch.Draw(tex, pos, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    spriteBatch.Draw(tex, pos2, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
                 }
+            }
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            var tex = GetTexture(AssetDirectory.GlassBoss + "LongGlow");
+
+            if (npc.ai[1] == 2) 
+            {
+                Color color;
+
+                if (npc.ai[0] < 90)
+                    color = Color.Lerp(Color.Transparent, Color.Red, npc.ai[0] / 90f);
+
+                else if (npc.ai[0] < 120)
+                    color = Color.Lerp(Color.Red, Color.Red * 0.6f, (npc.ai[0] - 90f) / 30f);
+
+                else
+                {
+                    color = Color.Red * (0.5f + ((float)Math.Sin(npc.ai[0] / 20f) + 1) * 0.1f);
+                    color.G += (byte)((Math.Sin(npc.ai[0] / 50f) + 1) * 25);
+                }
+
+                spriteBatch.Draw(tex, new Rectangle(npc.Hitbox.X - (int)Main.screenPosition.X, npc.Hitbox.Y - 66 - (int)Main.screenPosition.Y, npc.Hitbox.Width, 100), null, color, 0, default, default, default);
+                spriteBatch.Draw(tex, new Rectangle(npc.Hitbox.X - (int)Main.screenPosition.X, npc.Hitbox.Y - 862 - (int)Main.screenPosition.Y, npc.Hitbox.Width, 100), null, color, 0, default, SpriteEffects.FlipVertically, default);
             }
         }
     }

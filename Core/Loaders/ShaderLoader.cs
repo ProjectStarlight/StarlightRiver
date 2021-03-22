@@ -33,7 +33,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-
+            
         }
 
         public static void LoadShader(string name, string path)

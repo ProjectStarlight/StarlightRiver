@@ -2,6 +2,7 @@
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles.Cooking;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -12,6 +13,7 @@ namespace StarlightRiver.Content.Items.Food
         public override void SafeSetDefaults()
         {
             item.createTile = TileType<Tiles.Cooking.SeaSalt>();
+            item.rare = ItemRarityID.Blue;
         }
 
         public override void BuffEffects(Player player, float multiplier)

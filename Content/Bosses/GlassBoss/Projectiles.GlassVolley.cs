@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (projectile.ai[0] == 45 + k * 3)
                     {
                         float rot = (k - 4) / 10f; //rotational offset
-                        Projectile.NewProjectile(projectile.Center, new Vector2(-7.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
+                        Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
             if (projectile.ai[0] == 65) projectile.Kill(); //kill it when it expires

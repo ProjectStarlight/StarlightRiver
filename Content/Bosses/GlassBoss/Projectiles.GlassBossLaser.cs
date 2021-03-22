@@ -44,7 +44,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             projectile.rotation = (projectile.Center - Main.LocalPlayer.Center).ToRotation();
-            nodes[0] = findPointOnRectangle(projectile.rotation, parent.arena, parent.npc.Center);
+            nodes[0] = findPointOnRectangle(projectile.rotation,
+                parent.arena//new Rectangle((int)parent.npc.Center.X - 200, (int)parent.npc.Center.Y - 200, 400, 400)
+                , parent.npc.Center);
 
             projectile.timeLeft = 10; //temporrary for testing
         }
@@ -60,8 +62,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 for (float i = 0; i < 1; i += tex.Width / distance)
                 {
-                    spriteBatch.Draw(tex, Vector2.Lerp(projectile.Center, node, i) - Main.screenPosition, Color.White);
+                    spriteBatch.Draw(tex, Vector2.Lerp(projectile.Center, node, i) - Main.screenPosition, null, Color.White, (projectile.Center - node).ToRotation(), Vector2.Zero, 1, 0, 0);
                 }
+            }
+
+            for (float i = 0; i < 1; i += tex.Width / 100f)
+            {
+                spriteBatch.Draw(tex, Vector2.Lerp(projectile.Center, projectile.Center + Vector2.UnitX.RotatedBy((Main.LocalPlayer.Center - projectile.Center).ToRotation()) * 100f, i) - Main.screenPosition, null, Color.Red, (projectile.Center - Main.LocalPlayer.Center ).ToRotation(), Vector2.Zero, 1, 0, 0);
             }
 
             return false;
@@ -70,6 +77,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private Vector2 findPointOnRectangle(float rotation, Rectangle box, Vector2 center)
         {
             Vector2 output = new Vector2();
+            var saveRotation = rotation;
             rotation = Helper.ConvertAngle(rotation);
 
             if (!box.Contains(center.ToPoint()))
@@ -80,12 +88,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             float firstCriticalAngle = Helper.ConvertAngle((box.BottomLeft() - center).ToRotation());
             float secondCriticalAngle = Helper.ConvertAngle((box.BottomRight() - center).ToRotation());
 
+            float ratio = box.Width / (float)box.Height;
+            float ratio2 = box.Height / (float)box.Width;
+
             if ((rotation > firstCriticalAngle && rotation < secondCriticalAngle) || 
                 (rotation > thirdCriticalAngle && rotation < fourthCriticalAngle))
             {
                 float known = (rotation > firstCriticalAngle && rotation < secondCriticalAngle) ? box.Y - center.Y : (box.Y + box.Height) - center.Y;
                 output.Y = center.Y + known;
-                output.X = center.X + Math.Abs(known) / -(float)Math.Sin(rotation);
+                output.X = center.X + Math.Abs(known) * (float)Math.Sin((rotation + (float)Math.PI / 2) % ((float)Math.PI * 2));
             }
             else
             {
@@ -94,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 output.Y = center.Y + Math.Abs(known) * -(float)Math.Sin(rotation);
             }
 
-            Main.NewText(rotation);
+            Main.NewText("Error: " + (Math.Abs(Helper.CompareAngle(saveRotation, (output - center).ToRotation())) - (float)Math.PI));
 
             return output;
         }

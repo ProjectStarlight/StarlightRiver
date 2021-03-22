@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBody");
             var glowTex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyGlow");
+            var shapeTex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyShape");
 
             float rot = 0;
 
@@ -91,8 +92,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (index == 1) brightness += 0.25f;
 
+            if (parent.Phase == (int)VitricBoss.AIStates.LastStand && parent.GlobalTimer >= 140) //fuck you immediate rendering fuck you fuck you fuck you
+                source.Y += 232;
+
             sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
             sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, flip, 0);
+
+            if (parent.Phase == (int)VitricBoss.AIStates.LastStand) //fuck you immediate rendering fuck you fuck you fuck you
+                sb.Draw(shapeTex, pos - Main.screenPosition, new Rectangle(source.X, source.Y % 232, source.Width, source.Height), parent.glowColor, rot, source.Size() / 2, 1, flip, 0);
 
             Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
         }
