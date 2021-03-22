@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.Items.Vanity
         public override void UpdateEquip(Player player) =>
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
 
+        public override void UpdateVanity(Player player, EquipType type) =>
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
@@ -67,6 +70,9 @@ namespace StarlightRiver.Content.Items.Vanity
         public override void UpdateEquip(Player player) =>
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
 
+        public override void UpdateVanity(Player player, EquipType type) => 
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
@@ -96,6 +102,9 @@ namespace StarlightRiver.Content.Items.Vanity
         }
 
         public override void UpdateEquip(Player player) =>
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+
+        public override void UpdateVanity(Player player, EquipType type) => 
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)

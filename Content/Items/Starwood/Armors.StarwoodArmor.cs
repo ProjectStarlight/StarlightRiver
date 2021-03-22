@@ -36,6 +36,9 @@ namespace StarlightRiver.Content.Items.Starwood
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
 
+        public override void UpdateVanity(Player player, EquipType type) =>
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
@@ -75,6 +78,9 @@ namespace StarlightRiver.Content.Items.Starwood
             player.statManaMax2 += 20;
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
+
+        public override void UpdateVanity(Player player, EquipType type) =>
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ItemType<StarwoodHat>() && legs.type == ItemType<StarwoodBoots>();//what items are required for set
 
@@ -135,6 +141,9 @@ namespace StarlightRiver.Content.Items.Starwood
             player.magicCrit += 5;
             isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
         }
+
+        public override void UpdateVanity(Player player, EquipType type) =>
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
