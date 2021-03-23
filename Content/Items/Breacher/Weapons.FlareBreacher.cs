@@ -16,11 +16,11 @@ using System;
 //-glowmasks
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Breacher
 {
     public class FlareBreacher : ModItem
     {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.BreacherItem + Name;
         public override void SetDefaults()
         {
             item.useStyle = ItemUseStyleID.HoldingOut;
@@ -43,15 +43,6 @@ namespace StarlightRiver.Content.Items.Misc
             //item.holdStyle = 1;
         }
 
-        //public override void HoldItem(Player player)
-        //{
-        //unused
-        //}
-        //public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-        //{
-        //unused
-        //}
-
         public override Vector2? HoldoutOffset() => new Vector2(0, 0);
         public override void SetStaticDefaults()
         {
@@ -64,9 +55,10 @@ namespace StarlightRiver.Content.Items.Misc
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
+
     internal class ExplosiveFlare : ModProjectile
     {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.BreacherItem + Name;
         public override void SetDefaults()
         {
             projectile.width = 10;

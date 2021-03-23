@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			projectile.penetrate = 1;
 			projectile.tileCollide = false;
 			projectile.alpha = 255;
-			projectile.timeLeft = 999999;
+			projectile.timeLeft = 9999;
 		}
 		
 		const int minDamage = 15;
@@ -146,11 +146,11 @@ namespace StarlightRiver.Content.Items.Starwood
                 {
                     for (int i = 0; i < 3; i++)
                     {
-                        Vector2 dustVel = direction.RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)) * 3;
-                        Dust dust = Dust.NewDustPerfect(player.Center + (direction.RotatedBy(-0.06f) * 25), 6, dustVel);
-                        dust.noGravity = true;
+                        Vector2 dustVel = direction.RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)) * Main.rand.NextFloat(0.8f, 2);
                         if (empowered)
-                            dust.color = Color.Blue;
+                            Dust.NewDustPerfect(player.Center + (direction.RotatedBy(-0.06f) * 25), ModContent.DustType<BlueStamina>(), dustVel);
+                        else
+                            Dust.NewDustPerfect(player.Center + (direction.RotatedBy(-0.06f) * 25), ModContent.DustType<Stamina>(), dustVel);
                     }
                 }
                 if (projectile.timeLeft == 8)
