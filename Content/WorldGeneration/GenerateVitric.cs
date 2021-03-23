@@ -171,6 +171,13 @@ namespace StarlightRiver.Core
 
             GenDesertDecoration();
 
+            //DebugSquares();
+
+            VitricBiome.Y -= 8; //Adjust a bit
+        }
+
+        private static void DebugSquares()
+        {
             //debug
             Helper.OutlineRect(VitricBiome, TileID.RubyGemspark);
 
@@ -183,8 +190,6 @@ namespace StarlightRiver.Core
             Helper.OutlineRect(UndergroundDesertLocation, TileID.AmberGemspark);
 
             PlaceTile(VitricBiome.X, VitricBiome.Y, TileID.EmeraldGemspark, true, true);
-
-            VitricBiome.Y -= 8; //Adjust a bit
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>

@@ -17,6 +17,8 @@ namespace StarlightRiver.Items.Armor
 
         public static void QuickDrawArmor(PlayerDrawInfo info, string texture, Color color, float scale, Vector2 offset)
         {
+            if (info.drawPlayer.ActiveAbility<Wisp>())
+                return;
             Texture2D tex = GetTexture(texture);
             Main.playerDrawData.Add(new DrawData(tex, (info.position - Main.screenPosition + offset).ToPoint16().ToVector2(), null, color * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f), info.drawPlayer.headRotation, tex.Size() * 0.5f, scale, info.spriteEffects, 0));
         }
@@ -33,6 +35,8 @@ namespace StarlightRiver.Items.Armor
         /// <param name="immuneFade"></param>
         public static void QuickDrawHeadFramed(PlayerDrawInfo info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)//TODO fix framing (uses leg frame since head is always zero)
         {
+            if (info.drawPlayer.ActiveAbility<Wisp>())
+                return;
             Texture2D tex = GetTexture(texture);
             int frame = (int)(info.drawPlayer.legFrame.Y/*TODO*/ * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.headPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
@@ -53,6 +57,8 @@ namespace StarlightRiver.Items.Armor
         /// <param name="immuneFade"></param>
         public static void QuickDrawBodyFramed(PlayerDrawInfo info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
         {
+            if (info.drawPlayer.ActiveAbility<Wisp>())
+                return;
             Texture2D tex = GetTexture(texture);
             int frame = (int)(info.drawPlayer.bodyFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.bodyPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
@@ -73,6 +79,8 @@ namespace StarlightRiver.Items.Armor
         /// <param name="immuneFade"></param>
         public static void QuickDrawLegsFramed(PlayerDrawInfo info, string texture, float scale, Vector2 offset, Color? color = null, bool immuneFade = false)
         {
+            if (info.drawPlayer.ActiveAbility<Wisp>())
+                return;
             Texture2D tex = GetTexture(texture);
             int frame = (int)(info.drawPlayer.legFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.legPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
