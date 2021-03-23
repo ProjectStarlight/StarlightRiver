@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private void RandomizeTarget()
         {
             List<int> players = new List<int>();
-            foreach (Player player in Main.player.Where(n => n.active))
+            foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint()) ))
             {
                 players.Add(player.whoAmI);
             }

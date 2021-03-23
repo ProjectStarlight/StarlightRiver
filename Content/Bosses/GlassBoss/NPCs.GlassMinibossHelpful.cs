@@ -46,13 +46,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 savedPos = npc.Center;
             }
 
-            if (Timer < 40)
+            if (Timer < 30)
             {
-                npc.Center = Vector2.SmoothStep(savedPos, parent.npc.Center + new Vector2(-50, -50), Timer / 40f);
-                npc.frame.Y = (int)((Timer / 40f) * 9) * npc.height;
+                Vector2 target = parent.npc.Center + new Vector2(-50, -50);
+                Vector2 adjusted = savedPos + (target - savedPos) * 2;
+                npc.Center = Vector2.SmoothStep(savedPos, adjusted, Timer / 60f); //twice the length, half the max progress, acceleration in 1 direction achieved. Im so sorry.
+                npc.frame.Y = (int)((Timer / 30f) * 9) * npc.height;
             }
 
-            if(Timer == 75)
+            if(Timer == 35)
             {
                 npc.frame.Y += npc.height;
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
@@ -60,7 +62,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Main.PlaySound(Terraria.ID.SoundID.DD2_ExplosiveTrapExplode, npc.Center);                
             }
 
-            if (Timer == 100)
+            if (Timer == 80)
             {
                 npc.frame.Y += npc.height;
                 savedPos = npc.Center;
@@ -68,9 +70,18 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 for (int k = 0; k < 100; k++)
                 {
                     Dust d = Dust.NewDustPerfect(parent.npc.Center, ModContent.DustType<Dusts.GlassAttracted>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20, 40), 0, default, Main.rand.NextFloat(1, 5));
-                    d.customData = savedPos + new Vector2(400, 400);
+                    d.customData = savedPos + new Vector2(350, 300);
                 }
             }
+
+            for(int k = 0; k < 7; k++)
+                if(Timer == 80 + (k * 7))
+                    for (int i = 0; i < 30; i++)
+                    {
+                        Dust d = Dust.NewDustPerfect(parent.npc.Center + Vector2.UnitY * (k * 80), ModContent.DustType<Dusts.GlassAttracted>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10, 20), 0, default, Main.rand.NextFloat(1, 3));
+                        d.customData = savedPos + new Vector2(350, 300);
+                        Main.PlaySound(Terraria.ID.SoundID.Shatter, parent.npc.Center + Vector2.UnitY * (k * 80));
+                    }
 
             if (Timer == 120)
             {
@@ -85,11 +96,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if(Timer == 140)
             {
-                npc.Center = npc.Center + new Vector2(400, 400);
+                npc.Center = npc.Center + new Vector2(350, 300);
                 npc.frame.X += npc.width;
                 npc.frame.Y = 0;
 
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<PlayerShield>(), 0, 0);
+                int i = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<PlayerShield>(), 0, 0);
+                (Main.projectile[i].modProjectile as PlayerShield).parent = parent;
             }
 
             if (Timer > 140 && Timer < 180)
@@ -117,7 +129,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             {
                 float progress = (Timer - 75) / 15f;
                 float progress2 = 1 - progress;
-                spriteBatch.Draw(tex, npc.Center + new Vector2(10, 10) - Main.screenPosition, null, Color.Yellow * progress2, 0, tex.Size() / 2, 2 + progress, default, default);
+                var color = Items.Vitric.VitricSummonOrb.MoltenGlow((Timer - 75) / 15f * 60f);
+
+                spriteBatch.Draw(tex, npc.Center + new Vector2(10, 10) - Main.screenPosition, null, color * progress2, 0, tex.Size() / 2, progress * 20, default, default);
             }
         }
     }

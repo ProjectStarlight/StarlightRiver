@@ -33,9 +33,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 2: acceleration delay
              */
 
-            if (storedCenter == Vector2.Zero)
-                storedCenter = npc.Center;
-
             if (npc.ai[0] == 0)
                 if (npc.ai[1] > 0)
                 {
@@ -52,6 +49,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
             }
+
+            if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
+                storedCenter = npc.Center;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -72,9 +72,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 2: acceleration delay
              */
 
-            if (storedCenter == Vector2.Zero)
-                storedCenter = npc.Center;
-
             if (npc.ai[0] == 0)
                 if (npc.ai[1] > 0)
                 {
@@ -91,6 +88,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
             }
+
+            if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
+                storedCenter = npc.Center;
+
         }
     }
 

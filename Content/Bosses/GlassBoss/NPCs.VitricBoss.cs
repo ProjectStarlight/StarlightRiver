@@ -344,6 +344,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (npc?.active == true && (npc.type == NPCType<VitricBossPlatformUp>() || npc.type == NPCType<VitricBossPlatformDown>())) crystalLocations.Add(npc.Center + new Vector2(0, -48));
                     }
 
+                    const int arenaWidth = 1408;
+                    const int arenaHeight = 900;
+                    arena = new Rectangle((int)npc.Center.X - arenaWidth / 2, (int)npc.Center.Y - 800 - arenaHeight / 2, arenaWidth, arenaHeight);
+
                     ChangePhase(AIStates.SpawnAnimation, true);
                     break;
 
@@ -378,10 +382,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         (Main.npc[index].modNPC as ArenaBottom).Parent = this;
                         ChangePhase(AIStates.FirstPhase, true);
                         ResetAttack();
-
-                        const int arenaWidth = 1408;
-                        const int arenaHeight = 900;
-                        arena = new Rectangle((int)npc.Center.X - arenaWidth / 2, (int)npc.Center.Y - arenaHeight / 2, arenaWidth, arenaHeight);
                     }
                     break;
 
@@ -506,6 +506,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (GlobalTimer < 60)
                         npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), GlobalTimer / 60f);
 
+                    if (GlobalTimer == 90)
+                        Twist(30);
+
                     if (GlobalTimer > 120 && GlobalTimer <= 140)
                         glowColor = Color.Lerp(Color.Transparent, Color.White, (GlobalTimer - 120) / 20f);
 
@@ -520,7 +523,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (GlobalTimer == 300)
                     {
-                        int i = NPC.NewNPC((int)npc.Center.X - 200, (int)npc.Center.Y - 150, NPCType<GlassMinibossHelpful>());
+                        int i = NPC.NewNPC((int)npc.Center.X - 200, (int)npc.Center.Y - 180, NPCType<GlassMinibossHelpful>());
                         (Main.npc[i].modNPC as GlassMinibossHelpful).parent = this;
                     }
 
@@ -559,9 +562,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200));
                         //for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Sand>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), 80, default, 3);
-                        npc.Kill();
-
                         Vignette.visible = false;
+                        npc.Kill();
                     }
 
                     break;
