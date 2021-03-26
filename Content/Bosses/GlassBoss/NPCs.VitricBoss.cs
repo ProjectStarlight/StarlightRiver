@@ -131,6 +131,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     player.immuneTime = 720;
                     player.immune = true;
                 }
+
+                ChangePhase(AIStates.Dying, true);
+                npc.life = 1;
             }
 
 
@@ -168,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Phase == (int)AIStates.FirstToSecond)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/TransitionPhaseGlow");
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
             }
         }
 
@@ -291,7 +294,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Main.LocalPlayer.controlHook)
             {
                 if (Phase != (int)AIStates.LastStand)
-                    for (int k = 0; k < 12; k++)
+                    for (int k = 0; k < 12; k++) 
                         AI();
                 else
                 {
@@ -420,7 +423,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case (int)AIStates.FirstToSecond:
 
                     Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.9f;
-                    Vignette.extraOpacity = 0.5f + (float)Math.Sin(GlobalTimer / 25f) * 0.5f;
+                    Vignette.extraOpacity = 0.5f + (float)Math.Sin(GlobalTimer / 25f) * 0.2f;
 
                     if (GlobalTimer == 2)
                     {
@@ -439,24 +442,48 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         foreach (NPC crystal in crystals) //kill all the crystals
                             crystal.Kill();
                         npc.friendly = true; //so we wont get contact damage
+
+                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp2.ScreenMoveTarget = npc.Center;
+                        mp2.ScreenMoveTime = 660;
                     }
 
-                    if (GlobalTimer > 120)
-                        foreach (Player player in Main.player)
-                            if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox)) //boss should be dashable now, when dashed:
-                            {
-                                player.immune = true;
-                                player.immuneTime = 60;
-                                SetFrameX(2);
-                                ChangePhase(AIStates.SecondPhase, true); //go on to the next phase
-                                ResetAttack(); //reset attack
-                                foreach (NPC wall in Main.npc.Where(n => n.modNPC is VitricBackdropLeft)) wall.ai[1] = 3; //make the walls scroll
-                                foreach (NPC plat in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp)) plat.ai[0] = 1; //make the platforms scroll
+                    if(GlobalTimer > 120 && GlobalTimer < 240)
+                    {
+                        npc.Center = Vector2.SmoothStep(homePos, homePos + new Vector2(0, 650), (GlobalTimer - 120) / 120f);
+                    }
 
-                                Vignette.visible = true;
+                    if(GlobalTimer > 240 && GlobalTimer < 700 && GlobalTimer % 120 == 0)
+                    {
+                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp2.Shake += (int)(GlobalTimer / 20);
+                    }
 
-                                break;
-                            }
+                    if(GlobalTimer >= 700 && GlobalTimer < 730)
+                    {
+                        npc.Center = Vector2.SmoothStep(homePos + new Vector2(0, 650), homePos, (GlobalTimer - 700) / 30f);
+                    }
+
+                    if(GlobalTimer == 760)
+                    {
+                        Main.PlaySound(SoundID.Roar, npc.Center);
+
+                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp2.Shake += 60;
+                    }
+
+                    if (GlobalTimer > 850)
+                    {
+                        SetFrameX(2);
+                        ChangePhase(AIStates.SecondPhase, true); //go on to the next phase
+                        ResetAttack(); //reset attack
+                        foreach (NPC wall in Main.npc.Where(n => n.modNPC is VitricBackdropLeft)) wall.ai[1] = 3; //make the walls scroll
+                        foreach (NPC plat in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp)) plat.ai[0] = 1; //make the platforms scroll
+
+                        Vignette.visible = true;
+
+                        break;
+                    }
 
                     break;
 
@@ -527,11 +554,24 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         (Main.npc[i].modNPC as GlassMinibossHelpful).parent = this;
                     }
 
+                    if(GlobalTimer > 660)
+                    {
+                        if(GlobalTimer % 120 == 0)
+                        {
+                            Main.NewText("ShootFire");
+                            Main.PlaySound(SoundID.DD2_BetsyScream);
+
+                            int i = Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * 3, ProjectileType<FinalFire>(), 100, 0, Main.myPlayer);
+                            (Main.projectile[i].modProjectile as FinalFire).parent = this;
+                        }
+                    }
+
                     break;
 
                 case (int)AIStates.Leaving:
 
                     npc.position.Y += 7;
+                    Vignette.visible = false;
 
                     if (GlobalTimer >= 180)
                     {

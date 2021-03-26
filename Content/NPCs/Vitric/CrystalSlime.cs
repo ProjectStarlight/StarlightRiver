@@ -9,6 +9,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
@@ -110,7 +111,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         {
             if (shielded)
             {
-                Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
+                Color color = Helper.IndicatorColor;
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
             }

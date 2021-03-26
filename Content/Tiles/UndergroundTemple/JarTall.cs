@@ -43,7 +43,7 @@ namespace StarlightRiver.Tiles.Temple
                 spriteBatch.Begin();
 
                 spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, Color.White);
-                spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+                spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColor);
 
             }
         }

@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.GUI
                 if (player.CodexState != 0 && player.Entries.Any(n => n.New))
                 {
                     Texture2D tex = BookButton.IsMouseHovering ? GetTexture("StarlightRiver/Assets/GUI/BookGlowOpen") : GetTexture("StarlightRiver/Assets/GUI/BookGlowClosed");
-                    spriteBatch.Draw(tex, BookButton.GetDimensions().Position() + new Vector2(-1, 0), Color.White * (float)Math.Sin(StarlightWorld.rottime));
+                    spriteBatch.Draw(tex, BookButton.GetDimensions().Position() + new Vector2(-1, 0), Helper.IndicatorColor);
                 }
                 if (BookButton.IsMouseHovering)
                 {

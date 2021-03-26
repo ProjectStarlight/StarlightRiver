@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
                 Color color = Color.White * (0.2f + timer / 300f * 0.8f);
 
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchReal"), pos, Lighting.GetColor(i, j));
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow0"), pos - Vector2.One, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow0"), pos - Vector2.One, Helper.IndicatorColor);
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow1"), pos, color);
                 if (timer > 0)
                     spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2"), pos + Vector2.One * 16, new Rectangle(0, 0, 96, 96), Color.LightYellow * (timer / 300f), 0, new Vector2(48, 48), timer * 0.002f, 0, 0);

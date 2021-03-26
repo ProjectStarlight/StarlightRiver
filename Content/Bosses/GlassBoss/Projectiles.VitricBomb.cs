@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture(Texture + "Glow");
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)

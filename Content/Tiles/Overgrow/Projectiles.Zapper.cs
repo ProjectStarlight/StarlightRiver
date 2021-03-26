@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -88,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Vector2 pos = projectile.position - Main.screenPosition + new Vector2(1, -23);
-            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow0"), pos, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow0"), pos, Helper.IndicatorColor);
             spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
         }
     }

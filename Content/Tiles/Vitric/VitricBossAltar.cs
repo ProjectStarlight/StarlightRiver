@@ -9,6 +9,7 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Bosses.GlassBoss;
 using StarlightRiver.Helpers;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -64,6 +65,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
     internal class VitricBossAltarDummy : Dummy
     {
         public VitricBossAltarDummy() : base(TileType<VitricBossAltar>(), 80, 112) { }
+
+        public override void SafeSetDefaults()
+        {
+            projectile.hide = true;
+        }
+
+        public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+        {
+            drawCacheProjsBehindNPCsAndTiles.Add(index);
+        }
 
         public override void Collision(Player player)
         {
@@ -145,20 +156,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
             else if (parent.frameX < 90)
             {
                 Texture2D glow = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarGlow");
-                spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(3, -1), glow.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, Vector2.Zero, 1, 0, 0);
+                spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(3, -1), glow.Frame(), Helper.IndicatorColor, 0, Vector2.Zero, 1, 0, 0);
             }
 
             //Barriers
             Vector2 center = projectile.Center + new Vector2(0, 56);
             Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrier");
-            Color color = new Color(180, 225, 255);
+            Texture2D tex2 = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrierTop");
+            //Color color = new Color(180, 225, 255);
             int off = (int)(projectile.ai[0] / 120f * tex.Height);
+            int off2 = (int)(projectile.ai[0] / 120f * tex2.Width / 2);
 
-            spriteBatch.Draw(tex, new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
-                new Rectangle(0, 0, tex.Width, off), color);
+            Helper.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
+            Helper.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
 
-            spriteBatch.Draw(tex, new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
-                new Rectangle(0, 0, tex.Width, off), color);
+            Helper.DrawWithLighting(new Rectangle((int)center.X - 1192 + off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(tex2.Width / 2, 0, off2, tex2.Height));
+            Helper.DrawWithLighting(new Rectangle((int)center.X + 606 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(0, 0, off2, tex2.Height));
+
+            //spriteBatch.Draw(tex, new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
+            //new Rectangle(0, 0, tex.Width, off), color);
+
+            //spriteBatch.Draw(tex, new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
+            //new Rectangle(0, 0, tex.Width, off), color);
         }
 
         public void SpawnBoss() => NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 500, NPCType<VitricBoss>());

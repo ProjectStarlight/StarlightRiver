@@ -36,7 +36,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.noTileCollide = false;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
-            npc.behindTiles = true;
+            //npc.behindTiles = true;
+            npc.hide = true;
+        }
+
+        public override void DrawBehind(int index)
+        {
+            Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
         }
 
         public override void AI()
@@ -46,11 +52,24 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 1: state
              * 2: mirrored?
              */
-            if (Parent?.npc.active != true) { npc.active = false; return; }
-            if (Parent.npc.ai[1] == (int)VitricBoss.AIStates.FirstToSecond) npc.ai[1] = 2;
+            if (Parent?.npc.active != true) 
+            { 
+                npc.active = false; 
+                return; 
+            }
+
+            if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0 && npc.ai[1] != 2)
+            {
+                npc.ai[1] = 2;
+                npc.ai[0] = 0;
+            }
+
             switch (npc.ai[1])
             {
                 case 0:
+                    if (Parent.Phase == (int)VitricBoss.AIStates.LastStand)
+                        return;
+
                     if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
                         npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
 
@@ -79,11 +98,25 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
                     break;
 
-                case 2: //only happens when the boss goes into phase 2
-                    npc.ai[0]++; //cap timer at 120
-                    if (npc.ai[0] < 90) //dust before rising
-                        Dust.NewDust(npc.position, npc.width, npc.height, DustType<Content.Dusts.Air>());
-                    if (npc.ai[0] >= 120)
+                case 2: //during every crystal phase
+
+                    if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0)
+                        npc.ai[0]++;
+                    else if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase || Parent.Phase == (int)VitricBoss.AIStates.LastStand)
+                    {
+                        if (npc.ai[0] > 150)
+                            npc.ai[0] = 150;
+
+                        npc.ai[0]--;
+
+                        if (npc.ai[0] <= 0)
+                            npc.ai[1] = 0;
+                    }
+
+                    if (npc.ai[0] < 120) //dust before rising
+                        Dust.NewDust(npc.position, npc.width, npc.height, Terraria.ID.DustID.Fire);
+
+                    if (npc.ai[0] >= 150)
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
                             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 840, npc.width, npc.height);
@@ -114,16 +147,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (npc.ai[1] == 2 && npc.ai[0] > 90) //in the second phase after the crystals have risen
+            if (npc.ai[1] == 2 && npc.ai[0] > 120) //in the second phase after the crystals have risen
             {
                 Random rand = new Random(18267312);
 
-                float off = Math.Min((npc.ai[0] - 90) / 30f * 32, 32);
+                float off = Math.Min((npc.ai[0] - 120) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];
                 for (int k = 0; k < npc.width; k += 16)
                 {
                     Vector2 pos = npc.position + new Vector2(k, 32 - off + rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
-                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
+                    Vector2 pos2 = npc.position + new Vector2(k, -930 + 32 + off - rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
                     spriteBatch.Draw(tex, pos, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
                     spriteBatch.Draw(tex, pos2, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
                 }
@@ -138,11 +171,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             {
                 Color color;
 
-                if (npc.ai[0] < 90)
-                    color = Color.Lerp(Color.Transparent, Color.Red, npc.ai[0] / 90f);
+                if (npc.ai[0] < 360)
+                    color = Color.Lerp(Color.Transparent, Color.Red, npc.ai[0] / 360f);
 
-                else if (npc.ai[0] < 120)
-                    color = Color.Lerp(Color.Red, Color.Red * 0.6f, (npc.ai[0] - 90f) / 30f);
+                else if (npc.ai[0] < 390)
+                    color = Color.Lerp(Color.Red, Color.Red * 0.6f, (npc.ai[0] - 360f) / 30f);
 
                 else
                 {
@@ -151,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 spriteBatch.Draw(tex, new Rectangle(npc.Hitbox.X - (int)Main.screenPosition.X, npc.Hitbox.Y - 66 - (int)Main.screenPosition.Y, npc.Hitbox.Width, 100), null, color, 0, default, default, default);
-                spriteBatch.Draw(tex, new Rectangle(npc.Hitbox.X - (int)Main.screenPosition.X, npc.Hitbox.Y - 862 - (int)Main.screenPosition.Y, npc.Hitbox.Width, 100), null, color, 0, default, SpriteEffects.FlipVertically, default);
+                spriteBatch.Draw(tex, new Rectangle(npc.Hitbox.X - (int)Main.screenPosition.X, npc.Hitbox.Y - 848 - (int)Main.screenPosition.Y, npc.Hitbox.Width, 100), null, color, 0, default, SpriteEffects.FlipVertically, default);
             }
         }
     }

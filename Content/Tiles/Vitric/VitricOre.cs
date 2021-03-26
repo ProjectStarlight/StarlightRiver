@@ -8,6 +8,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Abilities;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -69,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
-            Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
+            Color color = Helper.IndicatorColor;
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
         }
@@ -97,8 +98,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
-            Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
+            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreFloatGlow");
+            Color color = Helper.IndicatorColor;
 
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
         }

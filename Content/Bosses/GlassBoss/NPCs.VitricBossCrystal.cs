@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.defense = 0;
             npc.knockBackResist = 0f;
             npc.width = 32;
-            npc.height = 48;
+            npc.height = 50;
             npc.value = 0;
             npc.friendly = true;
             npc.lavaImmune = true;
@@ -84,8 +84,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (state == 0) //appears to be the "vulnerable" phase
             {
+                if(!Vignette.visible)
+                    Vignette.visible = true;
+
                 Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
-                Vignette.visible = true;
+                
 
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
@@ -93,15 +96,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
                         Vignette.visible = false; //disable overlay
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 60;
+                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
+                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 60;
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
                         Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 2, -0.5f);
 
                         player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
-                        player.velocity = Vector2.Normalize(player.velocity) * -10f;
+                        player.velocity = Vector2.Normalize(player.velocity) * -5f;
 
                         for (int k = 0; k < 20; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
 
@@ -148,15 +151,20 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case 1: //nuke attack
                     npc.velocity *= 0; //make sure we dont fall into oblivion
-                    if (state == 0) npc.friendly = true; //vulnerable crystal shouldnt do damage
+
+                    if (state == 0) 
+                        npc.friendly = true; //vulnerable crystal shouldnt do damage
+
                     if (npc.rotation != 0) //normalize rotation
                     {
                         npc.rotation += 0.5f;
-                        if (npc.rotation >= 5f) npc.rotation = 0;
+                        if (npc.rotation >= 5f)
+                            npc.rotation = 0;
                     }
 
                     if (timer > 60 && timer <= 120)
                         npc.Center = Vector2.SmoothStep(StartPos, TargetPos, (timer - 60) / 60f); //go to the platform
+
                     if (timer >= 719) //when time is up... uh oh
                     {
                         if (state == 0) //only the vulnerable crystal
@@ -171,6 +179,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());
                         }
+
                         phase = 0; //go back to doing nothing
                         timer = 0; //reset timer
                         npc.friendly = false; //damaging again
@@ -228,9 +237,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (timer >= 120) npc.active = false;
                     break;
 
-                case 5: //transforming the boss
-                    for (float k = 0; k < 1; k += 0.03f)
-                        Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Content.Dusts.Air>());
+                case 5: //transforming the boss 
+                        //TODO: Give this a new animation
                     break;
             }
         }
@@ -254,7 +262,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
             if (state == 0)
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Helper.IndicatorColor, npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
             if (phase == 3 && timer < 30)
             {

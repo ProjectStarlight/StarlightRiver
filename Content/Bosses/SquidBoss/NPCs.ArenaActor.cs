@@ -139,9 +139,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     }
                 }
             }
-
-            if (Main.LocalPlayer.controlQuickHeal) npc.ai[0] += 5;
-            if (Main.LocalPlayer.controlQuickMana) npc.ai[0] -= 5;
         }
 
         public void DrawWater(SpriteBatch spriteBatch)

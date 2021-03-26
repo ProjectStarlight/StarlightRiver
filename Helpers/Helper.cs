@@ -46,6 +46,8 @@ namespace StarlightRiver.Helpers
 
         public static Vector3 ScreenCoord(this Vector3 vector) => new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
 
+        public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.rottime)) / 2f);
+
         public static float LerpFloat(float min, float max, float val)
         {
             float difference = max - min;

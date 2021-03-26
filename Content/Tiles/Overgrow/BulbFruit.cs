@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -83,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             {
                 Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "BulbFruitGlow");
 
-                spriteBatch.Draw(tex, projectile.Center + new Vector2(offset, 6) - Main.screenPosition, tex.Frame(), Color.White * (float)Math.Sin(StarlightWorld.rottime), 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center + new Vector2(offset, 6) - Main.screenPosition, tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
                 Dust.NewDust(projectile.position, 32, 32, DustType<Dusts.GoldNoMovement>(), 0, 0, 0, default, 0.3f);
                 Lighting.AddLight(projectile.Center, new Vector3(1, 0.8f, 0.4f));
             }

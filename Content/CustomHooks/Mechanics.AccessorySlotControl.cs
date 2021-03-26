@@ -60,9 +60,9 @@ namespace StarlightRiver.Content.CustomHooks
         private void DrawSpecial(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
         {
             //TODO: Rewrite this later to be less... noob looking.
-            if ((inv[slot].modItem is CursedAccessory || inv[slot].modItem is BlessedAccessory) && context == 10)
+            if ((inv[slot].modItem is CursedAccessory) && context == 10)
             {
-                Texture2D back = inv[slot].modItem is CursedAccessory ? ModContent.GetTexture("StarlightRiver/Assets/GUI/CursedBack") : ModContent.GetTexture("StarlightRiver/Assets/GUI/BlessedBack");
+                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/CursedBack");
                 Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);

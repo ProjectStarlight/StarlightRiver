@@ -56,10 +56,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 crystals.FirstOrDefault(n => n.ai[0] == 2).ai[0] = 0;
             }
 
-            if (AttackTimer > 180 && AttackTimer % 15 == 0)
+            if (AttackTimer > 180 && AttackTimer % 25 == 0)
             {
-                Vector2 pos = crystalLocations[Main.rand.Next(crystalLocations.Count)] + new Vector2(0, -20);
-                Projectile.NewProjectile(pos + new Vector2(Main.rand.Next(-100, 60), 64), Vector2.Zero, ProjectileType<BossSpikeSmall>(), 5, 0);
+                Projectile.NewProjectile(homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 15, 0);
             }
 
             if (AttackTimer >= 720)

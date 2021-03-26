@@ -7,6 +7,7 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -97,7 +98,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             if (!player.GetModPlayer<StarlightPlayer>().inTutorial) 
                 return;
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Color.White * (float)Math.Sin(StarlightWorld.rottime));
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Helper.IndicatorColor);
         }
     }
 
