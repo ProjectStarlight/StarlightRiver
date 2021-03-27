@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
             IL.Terraria.Item.Prefix += ApplyTwice;
         }
 
-        private void ApplyTwice(ILContext il) //this is horrid. Find a better way to do this (without IL ideally) later.
+        private void ApplyTwice(ILContext il) //this is horrid.
         {
             var c = new ILCursor(il);
 

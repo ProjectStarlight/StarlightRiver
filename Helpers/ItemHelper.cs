@@ -34,6 +34,55 @@ namespace StarlightRiver.Helpers
             player.meleeCrit += crit;
             player.magicCrit += crit;
         }
+
+        public static void NewItemSpecific(Vector2 position, Item item)
+        {
+            int targetIndex = 400;
+            Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+
+            if (Main.netMode != NetmodeID.MultiplayerClient) //Main.Item index finder from vanilla
+            {
+                for (int j = 0; j < 400; j++)
+                {
+                    if (!Main.item[j].active && Main.itemLockoutTime[j] == 0)
+                    {
+                        targetIndex = j;
+                        break;
+                    }
+                }
+            }
+
+            if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
+            {
+                int num2 = 0;
+                for (int k = 0; k < 400; k++)
+                {
+                    if (Main.item[k].spawnTime - Main.itemLockoutTime[k] > num2)
+                    {
+                        num2 = Main.item[k].spawnTime - Main.itemLockoutTime[k];
+                        targetIndex = k;
+                    }
+                }
+            }
+
+            Main.item[targetIndex] = item;
+            Main.item[targetIndex].position = position;
+
+            if (ItemSlot.Options.HighlightNewItems && item.type >= ItemID.None && !ItemID.Sets.NeverShiny[item.type]) //vanilla item highlight system
+            {
+                item.newAndShiny = true;
+            }
+            if (Main.netMode == NetmodeID.Server) //syncing
+            {
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, targetIndex, 0, 0f, 0f, 0, 0, 0);
+                item.FindOwner(item.whoAmI);
+            }
+            else if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                item.owner = Main.myPlayer;
+            }
+        }
+
         public static Item NewItemPerfect(Vector2 position, Vector2 velocity, int type, int stack = 1, bool noBroadcast = false, int prefixGiven = 0, bool noGrabDelay = false, bool reverseLookup = false)
         {
             int targetIndex = 400;
@@ -103,11 +152,13 @@ namespace StarlightRiver.Helpers
             }
             return item;
         }
+
         public static Texture2D GetItemTexture(Item item)
         {
             if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
             else return GetTexture(item.modItem.Texture);
         }
+
         public static Texture2D GetItemTexture(int type)
         {
             if (type < Main.maxItemTypes) return Main.itemTexture[type];

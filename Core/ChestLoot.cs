@@ -5,6 +5,9 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Tiles.Misc;
+using Terraria.DataStructures;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver
 {
@@ -51,13 +54,50 @@ namespace StarlightRiver
         static public void FIllChests()
         {
 
-            foreach (ChestLootData lootindachest in ChestLoots)//Cycle all, again
+            for (int index = 0; index < 1000; index++)
             {
+                Chest chest = Main.chest[index];
 
-                for (int chestIndexx = 0; chestIndexx < 1000; chestIndexx++)
+                if (chest is null)
+                    continue;
+
+                var tile = Framing.GetTileSafely(chest.x, chest.y);
+
+                if (!tile.active())
+                    continue;
+
+                //Display case replacement possibility
+                if (WorldGen.genRand.Next(10) == 0 && ChestFrameWhitelist(tile.frameX))
                 {
-                    Chest chest = Main.chest[chestIndexx];
-                    if (chest != null && lootindachest.condition(chest))
+                    int type = 0;
+
+                    for (int k = 0; k < chest.item.Length; k++)
+                    {
+                        var item = chest.item[k];
+
+                        if (item.accessory || (item.damage > 0 && item.notAmmo && (item.melee || item.ranged || item.magic || item.summon))) //might need more checks?
+                        {
+                            type = chest.item[k].type;
+                            break;
+                        }
+                    }
+
+                    if (type != 0)
+                    {
+                        Item item = new Item();
+                        item.SetDefaults(type);
+                        item.GetGlobalItem<RelicItem>().isRelic = true;
+                        item.Prefix(ItemLoader.ChoosePrefix(item, Main.rand));
+
+                        Helpers.Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+                        TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
+                        (TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = item;
+                    }
+                }
+
+                foreach (ChestLootData lootindachest in ChestLoots)//Cycle all, again
+                {
+                    if (lootindachest.condition(chest))
                     {
 
                         int item = lootindachest.type;
@@ -76,6 +116,19 @@ namespace StarlightRiver
                 }
             }
 
+        }
+
+        private static bool ChestFrameWhitelist(short frameX)
+        {
+            if (frameX == 36 || //gold
+                frameX == 72 || //demonite
+                frameX == 288 || //mahogany
+                frameX == 360 || //ivy
+                frameX == 396 || //ice
+                frameX == 468) //sky
+                return true;
+
+            return false;
         }
     }
 }
