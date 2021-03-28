@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = "StarlightRiver/Assets/Tiles/Misc/" + name;
+            texture = "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
             return base.Autoload(ref name, ref texture);
         }
 
@@ -44,12 +44,24 @@ namespace StarlightRiver.Content.Tiles.Misc
 
                 DisplayCaseEntity entity = (DisplayCaseEntity)TileEntity.ByID[index];
 
+                if (entity.containedItem is null)
+                    return true;
+
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive);
 
                 var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
                 var pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition - Vector2.One * 16;
                 spriteBatch.Draw(tex2, pos, new Color(255, 255, 200) * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)) );
+
+                var texShine = ModContent.GetTexture("StarlightRiver/Assets/Keys/Shine");
+                pos += Vector2.One * 32;
+
+                spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 -GetProgress(0)), Main.GameUpdateCount / 250f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(0), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(34)), Main.GameUpdateCount / 350f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.09f * GetProgress(34), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(70)), Main.GameUpdateCount / 320f + 5.4f, new Vector2(texShine.Width / 2, texShine.Height), 0.09f * GetProgress(70), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(15)), Main.GameUpdateCount / 300f + 3.14f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(15), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(98)), Main.GameUpdateCount / 360f + 4.0f, new Vector2(texShine.Width / 2, texShine.Height), 0.09f * GetProgress(98), 0, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin();
@@ -62,6 +74,12 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             return true;
         }
+
+        private float GetProgress(float off)
+        {
+            //return (0.5f + ((float)Math.Sin(Main.GameUpdateCount / 50f + off) * 0.5f));
+            return (Main.GameUpdateCount + off * 3) % 300 / 300f;
+        }
     }
 
     internal sealed class DisplayCaseEntity : ModTileEntity
@@ -70,8 +88,9 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override bool ValidTile(int i, int j)
         {
-            Tile tile = Main.tile[i, j];
-            return tile.type == ModContent.TileType<DisplayCase>() && tile.active() && tile.frameX == 0 && tile.frameY == 0;
+            Tile tile = Framing.GetTileSafely(i, j);
+            return (tile.type == ModContent.TileType<DisplayCase>() || tile.type == ModContent.TileType<DisplayCaseFriendly>())
+                && tile.active() && tile.frameX == 0 && tile.frameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -87,33 +106,41 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void Update()
         {
-            Lighting.AddLight(Position.ToVector2() * 16, new Vector3(1, 1, 0.7f) * 0.8f * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)));
-
-            for (int k = 0; k < Main.maxPlayers; k++)
+            if (containedItem != null)
             {
-                var player = Main.player[k];
-                if (AbilityHelper.CheckDash(player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
+                Lighting.AddLight(Position.ToVector2() * 16, new Vector3(1, 1, 0.7f) * 0.8f * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)));
+
+                if (Main.rand.Next(6) == 0)
                 {
-                    WorldGen.KillTile(Position.X, Position.Y);
-                    Helpers.Helper.NewItemSpecific(player.Center, containedItem);
-                    Kill(Position.X, Position.Y);
-
-                    Main.PlaySound(SoundID.Shatter, player.Center);
-
-                    for(int n = 0; n < 30; n++)
-                    {
-                        int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
-                        Main.dust[i].noGravity = true;
-                    }
-
-                    break;
+                    int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
+                    Main.dust[i].noGravity = true;
                 }
             }
 
-            if (Main.rand.Next(6) == 0)
+            Tile tile = Framing.GetTileSafely(Position.X, Position.Y);
+
+            if (tile.type == ModContent.TileType<DisplayCase>())
             {
-                int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
-                Main.dust[i].noGravity = true;
+                for (int k = 0; k < Main.maxPlayers; k++)
+                {
+                    var player = Main.player[k];
+                    if (AbilityHelper.CheckDash(player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
+                    {
+                        WorldGen.KillTile(Position.X, Position.Y);
+                        Helpers.Helper.NewItemSpecific(player.Center, containedItem);
+                        Kill(Position.X, Position.Y);
+
+                        Main.PlaySound(SoundID.Shatter, player.Center);
+
+                        for (int n = 0; n < 30; n++)
+                        {
+                            int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
+                            Main.dust[i].noGravity = true;
+                        }
+
+                        break;
+                    }
+                }
             }
         }
 

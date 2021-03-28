@@ -67,7 +67,7 @@ namespace StarlightRiver
                     continue;
 
                 //Display case replacement possibility
-                if (WorldGen.genRand.Next(10) == 0 && ChestFrameWhitelist(tile.frameX))
+                if (WorldGen.genRand.Next(8) == 0 && ChestFrameWhitelist(tile.frameX))
                 {
                     int type = 0;
 
@@ -75,7 +75,7 @@ namespace StarlightRiver
                     {
                         var item = chest.item[k];
 
-                        if (item.accessory || (item.damage > 0 && item.notAmmo && (item.melee || item.ranged || item.magic || item.summon))) //might need more checks?
+                        if (item.accessory || (item.damage > 0 && item.notAmmo && (item.melee || item.ranged || item.magic || item.summon) && item.maxStack == 1)) //might need more checks?
                         {
                             type = chest.item[k].type;
                             break;
@@ -121,7 +121,8 @@ namespace StarlightRiver
         private static bool ChestFrameWhitelist(short frameX)
         {
             if (frameX == 36 || //gold
-                frameX == 72 || //demonite
+                frameX == 72 || //lockedGold
+                frameX == 144 || //lockedDemonite
                 frameX == 288 || //mahogany
                 frameX == 360 || //ivy
                 frameX == 396 || //ice
