@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Lavas
     {
         public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {
-            LavaLoader.lavas.Add(this);
+            LavaLoader.lavas?.Add(this);
             return SafeAutoload(ref name, ref texture, ref blockTexture);
         }
 

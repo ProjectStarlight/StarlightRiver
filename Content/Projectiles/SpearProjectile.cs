@@ -10,9 +10,9 @@ namespace StarlightRiver.Content.Projectiles
 {
     public abstract class SpearProjectile : ModProjectile
     {
-        private readonly int Duration;
-        private readonly float Min;
-        private readonly float Max;
+        public int Duration;
+        public float Min;
+        public float Max;
 
         protected SpearProjectile(int duration, float minOff, float maxOff)
         {

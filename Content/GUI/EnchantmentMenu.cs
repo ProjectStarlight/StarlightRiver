@@ -44,6 +44,11 @@ namespace StarlightRiver.Content.GUI
 
         public override void OnInitialize()
         {
+            slots.Clear();
+            buttons.Clear();
+            active = false;
+            visible = false;
+
             for (int k = 0; k < 3; k++)
             {
                 var newSlot = new ArmorSlot(k);

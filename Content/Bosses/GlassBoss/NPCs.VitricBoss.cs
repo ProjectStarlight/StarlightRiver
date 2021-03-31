@@ -208,10 +208,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Main.expertMode) npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
             else
             {
-                int weapon = Main.rand.Next(5);
+                int weapon = Main.rand.Next(1);
                 switch (weapon)
                 {
-                    case 0: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricPick>()); break;
+                    case 0: Item.NewItem(npc.Center, ItemType<Items.Vitric.BossSpear>()); break;
                     case 1: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricAxe>()); break;
                     case 2: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricHammer>()); break;
                     case 3: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricSword>()); break;

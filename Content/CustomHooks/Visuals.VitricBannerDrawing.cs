@@ -18,6 +18,11 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += DrawVerletBannerTarget;
         }
 
+        public override void Unload()
+        {
+            Main.OnPreDraw -= DrawVerletBannerTarget;
+        }
+
         public void DrawVerletBannerTarget(GameTime obj)
         {
             GraphicsDevice graphics = Main.instance.GraphicsDevice;

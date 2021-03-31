@@ -28,16 +28,16 @@ namespace StarlightRiver.Core.Loaders
                     var userInterface = new UserInterface();
                     userInterface.SetState(state);
 
-                    UIStates.Add(state);
-                    UserInterfaces.Add(userInterface);
+                    UIStates?.Add(state);
+                    UserInterfaces?.Add(userInterface);
                 }
             }
         }
 
         public void Unload()
         {
-            UserInterfaces = null;
-            UIStates = null;
+            UserInterfaces.Clear();
+            UIStates.Clear();
         }
 
         public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)

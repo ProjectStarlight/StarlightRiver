@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.CustomHooks
             vitricBackgroundBannerTarget = null;
             BackgroundBanner = null;
 
+            Main.OnPreDraw -= BannerTarget;
         }
 
         private static Effect crystalEffect;
