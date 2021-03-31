@@ -363,3 +363,8 @@ FodyWeavers.xsd
 
 # Custom
 Properties/launchSettings.json
+*.idx
+FETCH_HEAD
+*.pack
+refs/remotes/origin/ArmorEnchantAndBags
+FETCH_HEAD
