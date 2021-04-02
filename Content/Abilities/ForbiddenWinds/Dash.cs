@@ -33,9 +33,9 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
         public override Color Color => new Color(188, 255, 246);
 
-        public override int CooldownMax => 90;
+        public override int CooldownMax => 80;
 
-        public const int defaultTime = 7;
+        public const int defaultTime = 12;
 
         public Vector2 Dir { get; private set; }
         public Vector2 Vel { get; private set; }
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override void Reset()
         {
-            Boost = 0.1f;
+            Boost = 0.2f;
             Speed = 28;
             Time = defaultTime;
             CooldownBonus = 0;
@@ -79,29 +79,22 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         {
             base.UpdateActive();
 
-            Player.velocity = SignedLesserBound(Dir * Speed, Player.velocity); // "conservation of momentum"
+            var progress = Time > 7 ? 1 - (Time - 7) / 5f : 1;
+
+            Player.velocity = SignedLesserBound((Dir * Speed) * progress, Player.velocity * progress); // "conservation of momentum"
 
             Player.frozen = true;
             Player.gravity = 0;
             Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
             if (Time-- <= 0) Deactivate();
-
-            // Notable differences with new Ability:
-            // - you can tech building momentum
-            // - less bug prone
-            // - supports gamepad i think
-            // - it just.. feels better..
-
-            // Notable issues found with Ability:
-            // - new and old:
-            //   - you can tech a jump if you hold jump during the ability (I like this, very celeste-y)
-            // - old:
-            //   - you can double-jump mid dash and f*ck up your dash
         }
 
         public override void UpdateActiveEffects()
         {
+            if (Time >= 9)
+                return;
+
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
             int direction = Time % 2 == 0 ? -1 : 1;
 
@@ -111,7 +104,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 Dust dus = Dust.NewDustPerfect(
                     prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f),
                     DustType<AirDash>(),
-                    Vector2.UnitX.RotatedByRandom(Math.PI) / 3f
+                    Vector2.UnitX
                     );
                 dus.fadeIn = k - Time * 3;
             }

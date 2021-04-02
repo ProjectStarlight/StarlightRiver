@@ -40,12 +40,23 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Ability.Time = 10;
         }
 
+        public override void UpdateActive()
+        {
+            Player.velocity = Dash.SignedLesserBound(Ability.Dir * Ability.Speed, Player.velocity); // "conservation of momentum"
+
+            Player.frozen = true;
+            Player.gravity = 0;
+            Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Ability.Speed);
+
+            if (Ability.Time-- <= 0) Ability.Deactivate();
+        }
+
         public override void UpdateActiveEffects()
         {
             Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
             for (float k = -2; k <= 2; k += 0.1f)
             {
-                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (Dash.defaultTime - 3 - Ability.Time);
+                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (4 - Ability.Time);
 
                 if (Ability.Time == 0)
                 {
