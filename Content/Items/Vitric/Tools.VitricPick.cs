@@ -5,12 +5,25 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
+using System;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VitricPick : ModItem
+    internal class VitricPick : ModItem, IGlowingItem
     {
+        public int heat = 0;
+        public int heatTime = 0;
+
         public override string Texture => AssetDirectory.VitricItem + Name;
+
+        public override bool Autoload(ref string name)
+        {
+            On.Terraria.Player.PickTile += GenerateHeat;
+
+            return base.Autoload(ref name);
+        }
 
         public override void SetDefaults()
         {
@@ -33,17 +46,60 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Pickaxe");
-            Tooltip.SetDefault("Attracts dropped item to its user");
+            Tooltip.SetDefault("Hellstone does not drop lava\nMining hellstone generates heat\n Heat increases speed");
         }
 
-        public override bool UseItem(Player player)
+        private void GenerateHeat(On.Terraria.Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
         {
-            foreach (Item item in Main.item.Where(item => Vector2.Distance(item.Center, player.Center) <= 200 && item.active))
+            var myPick = self.HeldItem.modItem as VitricPick;
+            var tile = Framing.GetTileSafely(x, y);
+
+            if (myPick != null && tile.type == TileID.Hellstone)
             {
-                item.velocity = Vector2.Normalize(item.Center - player.Center) * -6;
-                Dust.NewDustPerfect(item.Center, DustType<Content.Dusts.Air>(), Vector2.Normalize(item.Center - player.Center) * -1);
+                if (myPick.heat < 20)
+                    myPick.heat++;
+
+                tile.liquid = 0; //succ the lava
+                tile.lava(false);
             }
-            return true;
+
+            orig(self, x, y, pickPower);
+        }
+
+        public override float UseTimeMultiplier(Player player)
+        {
+            return 1 + heat / 20f;
+        }
+
+        public override void UpdateInventory(Player player)
+        {
+            heatTime++;
+
+            if(heatTime >= 20)
+            {
+                if (heat > 0)
+                    heat--;
+
+                heatTime = 0;
+            }
+        }
+
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            var tex = GetTexture(Texture + "Glow");
+            var color = Color.White * (heat / 20f);
+
+
+            spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
+        }
+
+        public void DrawGlowmask(PlayerDrawInfo info)
+        {
+            var tex = GetTexture(Texture + "Glow");
+            var color = Color.White * (heat / 20f);
+
+            var data = new DrawData(tex, info.itemLocation, null, color, info.drawPlayer.itemRotation, default, item.scale, 0, 0);
+            Main.playerDrawData.Add(data);
         }
 
         public override void AddRecipes()
