@@ -320,6 +320,7 @@ namespace StarlightRiver.Content.Abilities
             {
                 if (infusion == null) continue;
                 infusion.UpdateFixed();
+
                 if (infusion.Ability != null)
                 {
                     if (infusion.AbilityType == ActiveAbility?.GetType())
