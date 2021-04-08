@@ -1,8 +1,6 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
     internal partial class StarlightItem : GlobalItem
