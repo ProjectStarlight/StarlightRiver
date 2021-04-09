@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
                 RandomizeTarget();
-                int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<SandCone>(), 1, 0); //spawn a sand cone attack
+                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<SandCone>(), 1, 0); //spawn a sand cone attack
                 Main.projectile[index].rotation = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
 
                 Twist(40);
@@ -112,10 +112,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     //the chosen "favorite" or master crystal is the one where our opening should be
                     if (k != favoriteCrystal)
                     {
-                        for (int i = 0; i < 8; i++)
-                        {
-                            Dust d = Dust.NewDustPerfect(npc.Center + (crystal.Center - npc.Center).RotatedBy(Main.rand.NextFloat(1.57f)), DustType<Dusts.BlueStamina>(), Vector2.Zero, 0, default, 2);
-                        }
+                        crystalModNPC.shouldDrawArc = true;
+
+                        if(Main.rand.Next(5) == 0)
+                            Dust.NewDustPerfect(npc.Center + (crystal.Center - npc.Center).RotatedBy(Main.rand.NextFloat(1.57f)), DustType<Dusts.Stamina>(), Vector2.Zero, 0, default, 0.5f);
                     }
                 }
 
@@ -254,14 +254,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (timer >= 80 && timer % 10 == 0) //burst of 4 spikes
                         {
                             Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8, ProjectileType<GlassSpike>(), 15, 0);
+
+                            var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
+                            var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
+
+                            Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
+                            Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                         }
                     }
                     else
                     {
                         if (timer == 60) //sand cone
                         {
-                            int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<SandCone>(), 1, 0);
+                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<SandCone>(), 1, 0);
                             Main.projectile[index].rotation = (npc.Center - Main.player[npc.target].Center).ToRotation(); //sand cones always need their rotation set on spawn
                         }
                     }

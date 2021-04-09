@@ -10,26 +10,13 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public VitricOre() : base("Vitric Ore", "", 999, 200, 2)
-        {
-        }
+        public VitricOre() : base("Vitric Sliver", "", 999, 200, 2) { }
     }
 
-    public class VitricGem : QuickMaterial
+    public class SandstoneChunk : QuickMaterial
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public VitricGem() : base("Vitric Gem", "Many Facters Shimmer Within", 250, 500, 2)
-        {
-        }
-
-        public override void AddRecipes()
-        {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<VitricOre>(), 8);
-            recipe.AddTile(TileID.Furnaces);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
-        }
+        public SandstoneChunk() : base("Ancient Sandstone", "", 999, 200, 2) { }
     }
 }

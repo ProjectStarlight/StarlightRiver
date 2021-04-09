@@ -23,11 +23,6 @@ namespace StarlightRiver.Content.CustomHooks
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
-            //TODO: move all below
-
-
-            //Main.spriteBatch.End();
-
             graphics.SetRenderTarget(null);
         }
     }

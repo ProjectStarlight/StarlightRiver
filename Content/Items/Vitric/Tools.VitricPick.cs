@@ -117,8 +117,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.FossilOre, 10);
-            recipe.AddIngredient(ItemType<VitricGem>(), 5);
+            recipe.AddIngredient(ItemType<SandstoneChunk>(), 10);
+            recipe.AddIngredient(ItemType<VitricOre>(), 20);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();

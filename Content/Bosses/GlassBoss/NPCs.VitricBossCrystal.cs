@@ -17,8 +17,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public Vector2 StartPos;
         public Vector2 TargetPos;
         public VitricBoss Parent;
+		public bool shouldDrawArc;
 
-        public ref float state => ref npc.ai[0];
+		public ref float state => ref npc.ai[0];
         public ref float timer => ref npc.ai[1];
         public ref float phase => ref npc.ai[2];
         public ref float altTimer => ref npc.ai[3];
@@ -212,7 +213,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
 
                     for (int k = 0; k < 3; k++)
-                        Dust.NewDustPerfect(npc.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<Dusts.Starlight>(), new Vector2(0, -15));
+                    {
+                        var d = Dust.NewDustPerfect(npc.Center + new Vector2(Main.rand.Next(-10, 10), Main.rand.Next(-10, 10)), DustType<PowerupDust>(), new Vector2(0, -Main.rand.NextFloat(3)), 0, new Color(255, 230, 100), 0.75f);
+                        d.fadeIn = 10;
+                    }
 
                     if (npc.Center.Y > TargetPos.Y)
                         foreach (Vector2 point in Parent.crystalLocations) //Better than cycling througn Main.npc, still probably a better way to do this
@@ -250,6 +254,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Main.PlaySound(Terraria.ID.SoundID.NPCHit42); //boom
             Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
+
+            for (int k = 0; k < 40; k++)
+                Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
         }
 
         private void ResetTimers()
@@ -271,17 +278,34 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-        public void DrawAdditive(SpriteBatch spriteBatch) //helper method to draw a tell line between two points.
+        public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            /*
-            if (phase == 1 && timer < 180) //tell line for going to a platform in the nuke attack
-            {
-                Texture2D tex = GetTexture(AssetDirectory.MiscTextures + "TellBeam");
-                for (float k = 0; k < 1; k += 1 / Vector2.Distance(npc.Center, TargetPos) * tex.Width)
-                    spriteBatch.Draw(tex, Vector2.Lerp(npc.Center, TargetPos, k) - Main.screenPosition, tex.Frame(), new Color(180, 220, 250) * 0.8f,
-                        (npc.Center - TargetPos).ToRotation(), tex.Frame().Size() / 2, 1, 0, 0);
-            }
-            */
+            if(phase == 3)
+			{
+                var tex = GetTexture(AssetDirectory.GlassBoss + "GlassSpikeGlow");
+                var speed = npc.velocity.Y / 20f;
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
+			}
+
+            if(shouldDrawArc)
+			{
+                var tex = GetTexture(AssetDirectory.GlassBoss + "Ring");
+                var source = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height / 2);
+                float alpha = 0;
+
+                if (Parent.AttackTimer < 380)
+                    alpha = (Parent.AttackTimer - 360) / 20f;
+                else if (Parent.AttackTimer > 800)
+                    alpha = 1 - (Parent.AttackTimer - 800) / 40f;
+                else
+                    alpha = 1;
+
+                var off = Vector2.Normalize(npc.Center - Parent.npc.Center);
+
+                spriteBatch.Draw(tex, npc.Center + off - Main.screenPosition, source, new Color(255, 150, 50) * alpha, npc.rotation, Vector2.Zero, Vector2.Distance(npc.Center, Parent.npc.Center) / (tex.Width / 2), 0, 0);
+
+                shouldDrawArc = false;
+			}
         }
     }
 }

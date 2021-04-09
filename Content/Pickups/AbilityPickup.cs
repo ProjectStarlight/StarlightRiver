@@ -65,6 +65,7 @@ namespace StarlightRiver.Pickups
         public sealed override void AI()
         {
             StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local player since ability pickup visuals are clientside
+
             if (Visible)
             {
                 Visuals();

@@ -132,15 +132,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         }
 
         //TODO: Give this another look/find a better way to deplete main HP
+
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (npc.life < damage) damage = npc.life;
+            if (npc.life - damage <= 0) damage = npc.life;
             Parent.npc.life -= damage;
         }
 
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
-            if (npc.life < damage) damage = npc.life;
+            if (npc.life - damage <= 0) damage = npc.life;
             Parent.npc.life -= damage;
         }
 

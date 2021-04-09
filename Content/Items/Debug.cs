@@ -42,7 +42,9 @@ namespace StarlightRiver.Content.Items
 
         public override void UpdateInventory(Player player)
         {
+            float rot = Main.rand.NextFloat(6.28f);
 
+            Dust.NewDustPerfect(player.Center + Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot) * 300, ModContent.DustType<Bosses.GlassBoss.LavaSpew>(), Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot));
         }
 
         public override bool UseItem(Player player)
