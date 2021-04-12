@@ -77,7 +77,6 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         private float GetProgress(float off)
         {
-            //return (0.5f + ((float)Math.Sin(Main.GameUpdateCount / 50f + off) * 0.5f));
             return (Main.GameUpdateCount + off * 3) % 300 / 300f;
         }
     }

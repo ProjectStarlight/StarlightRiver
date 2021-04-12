@@ -112,10 +112,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
                         player.velocity = Vector2.Normalize(player.velocity) * -5f;
 
-                        for (int k = 0; k < 20; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
+                        for (int k = 0; k < 20; k++)
+                        {
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(150, 230, 255), 0.8f); //Crystal
+                        }
 
-                        for (int k = 0; k < 40; k++) Dust.NewDustPerfect(Parent.npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
-                        for (int k = 0; k < 5; k++) Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
+                        for (int k = 0; k < 40; k++)
+                            Dust.NewDustPerfect(Parent.npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
+
+                        for (int k = 0; k < 5; k++) 
+                            Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
@@ -289,6 +296,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
+            if(state == 0) //extra FX while vulnerable
+			{
+                var texGlow = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+                var pos = npc.Center - Main.screenPosition;
+                spriteBatch.Draw(texGlow, pos, null, new Color(200, 255, 255) * 0.7f * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)), 0, texGlow.Size() / 2, 2, 0, 0);
+
+                var texShine = GetTexture("StarlightRiver/Assets/Keys/Shine");
+
+                spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(0)), Main.GameUpdateCount / 100f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(0), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(34)), Main.GameUpdateCount / 90f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.19f * GetProgress(34), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(70)), Main.GameUpdateCount / 80f + 5.4f, new Vector2(texShine.Width / 2, texShine.Height), 0.19f * GetProgress(70), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(15)), Main.GameUpdateCount / 90f + 3.14f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(15), 0, 0);
+                spriteBatch.Draw(texShine, pos, null, new Color(200, 255, 255) * 0.5f * (1 - GetProgress(98)), Main.GameUpdateCount / 100f + 4.0f, new Vector2(texShine.Width / 2, texShine.Height), 0.19f * GetProgress(98), 0, 0);
+            }
+
             if(phase == 3)
 			{
                 var tex = GetTexture(AssetDirectory.GlassBoss + "GlassSpikeGlow");
@@ -355,6 +377,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 255, 150) * (4 - progress * 4), 0, tex.Size() / 2, 4 * progress, 0, 0);
                 }
             }
+        }
+
+        private float GetProgress(float off)
+        {
+            return (Main.GameUpdateCount + off * 3) % 80 / 80f;
         }
 
         private float ArcWidth(float progress)
