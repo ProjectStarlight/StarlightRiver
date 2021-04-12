@@ -105,6 +105,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - 120) / 240) - npc.Center).RotatedBy((AttackTimer - 120) / 240 * 3.14f);
                 }
 
+                if (AttackTimer == 360)
+                    Main.PlaySound(SoundID.DD2_BetsyFireballImpact, npc.Center);
+
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
                     crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - npc.Center).RotatedBy(-(AttackTimer - 360) / 480 * 4.72f);
@@ -114,8 +117,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         crystalModNPC.shouldDrawArc = true;
 
-                        if(Main.rand.Next(5) == 0)
-                            Dust.NewDustPerfect(npc.Center + (crystal.Center - npc.Center).RotatedBy(Main.rand.NextFloat(1.57f)), DustType<Dusts.Stamina>(), Vector2.Zero, 0, default, 0.5f);
+                        float alpha = 0;
+
+                        if (AttackTimer < 420)
+                            alpha = (AttackTimer - 360) / 60f;
+                        else if (AttackTimer > 760)
+                            alpha = 1 - (AttackTimer - 760) / 80f;
+                        else
+                            alpha = 1;
+
+                        for (int i = 0; i < 4 - (int)(AttackTimer - 360) / 100; i++)
+                        {
+                            var rot = Main.rand.NextFloat(1.57f);
+                            Dust.NewDustPerfect(npc.Center + (crystal.Center - npc.Center).RotatedBy(rot), DustType<Dusts.Glow>(),
+                                -Vector2.UnitX.RotatedBy(crystal.rotation + rot + Main.rand.NextFloat(-0.45f, 0.45f)) * Main.rand.NextFloat(1, 4) * alpha, 0, new Color(255, 160, 100) * alpha, Main.rand.NextFloat(0.4f, 0.8f) * alpha);
+                        }
                     }
                 }
 

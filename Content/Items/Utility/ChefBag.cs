@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +24,9 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
 
-        public override void SetStaticDefaults()
+        public override bool CanRightClick() => true;
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Chef's Bag");
             Tooltip.SetDefault("Stores a full stack of every ingredient\nRight click an ingredient to make it with others in the bag");
@@ -35,15 +39,13 @@ namespace StarlightRiver.Content.Items.Utility
             item.rare = ItemRarityID.Blue;
         }
 
-        public override ModItem Clone()
-        {
-            return this;
-        }
-
         public override void RightClick(Player player)
         {
-            item.stack++;
+            UpdateBagSlots();
 
+            item.stack++;
+            ChefBagUI.openBag = this;
+            UILoader.GetUIState<ChefBagUI>().OnInitialize();
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -58,6 +60,8 @@ namespace StarlightRiver.Content.Items.Utility
 
         private void UpdateBagSlots()
         {
+            items.Clear();
+
             ingredientTypes.Sort((n, t) => SortIngredient(n, t));
 
             for (int k = 0; k < ingredientTypes.Count; k++)

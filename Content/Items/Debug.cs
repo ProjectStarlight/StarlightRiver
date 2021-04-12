@@ -49,7 +49,19 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            return base.UseItem(player);
+            for(int x = 0; x < Main.maxTilesX; x++)
+                for(int y = 0; y < Main.maxTilesY; y++)
+				{
+                    var tile = Framing.GetTileSafely(x, y);
+                    if (tile.collisionType == 1)
+                        tile.type = TileID.Stone;
+                    else
+					{
+                        tile.active(true);
+                        tile.type = TileID.Dirt;
+                    }
+				}
+            return true;
         }
     }
 }

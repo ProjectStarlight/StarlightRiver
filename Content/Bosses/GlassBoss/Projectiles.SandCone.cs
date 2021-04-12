@@ -36,8 +36,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 var pos2 = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation + 0.2f) * Main.rand.Next(-550, -450);
                 var posRand = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.Next(-420, -380);
 
-                Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - projectile.Center) * -0.03f, 0, new Color(255, 220, 100), projectile.ai[0] / 25f);
-                Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - projectile.Center) * -0.03f, 0, new Color(255, 220, 100), projectile.ai[0] / 25f);
+                Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
+                Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
                 Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - projectile.Center) * -0.03f, 0, new Color(255, 220, 100), projectile.ai[0] / 25f);
 
             }
@@ -65,8 +65,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (projectile.ai[0] <= 66) //draws the proejctile's tell ~1 second before it goes off
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ConeTell");
-                float alpha = (projectile.ai[0] * 2 / 33 - (float)Math.Pow(projectile.ai[0], 2) / 1086) * 0.45f;
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 150, 80) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+                float alpha = (projectile.ai[0] * 2 / 33 - (float)Math.Pow(projectile.ai[0], 2) / 1086) * 0.5f;
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
         }
 
