@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.Items.Vitric
             item.width = 30;
             item.height = 26;
             item.value = Terraria.Item.sellPrice(0, 10, 0, 0);
-            item.rare = ItemRarityID.Purple;
+            item.rare = ItemRarityID.Green;
             item.crit += 4;
-            item.damage = 115;
+            item.damage = 18;
             item.knockBack = 4f;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.useTime = 25;

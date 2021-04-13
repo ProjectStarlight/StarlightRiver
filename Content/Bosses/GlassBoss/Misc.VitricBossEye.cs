@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         VitricBoss parent;
         Vector2 position;
         VerletChainInstance chain;
+        Effect fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
 
         public VitricBossSwoosh(Vector2 offset, int length, VitricBoss parent)
         {
@@ -70,12 +71,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             };
         }
 
-        Effect fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
-
         public void Draw(SpriteBatch spriteBatch)
         {
-            fireEffect = Filters.Scene["FireShader"].GetShader().Shader; //remove this later
-
             fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
             fireEffect.Parameters["upscale"].SetValue(Main.GameViewMatrix.ZoomMatrix);
             fireEffect.Parameters["sampleTexture"].SetValue(GetTexture(AssetDirectory.Assets + "FireTrail"));

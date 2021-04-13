@@ -10,6 +10,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Bosses.GlassBoss;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -50,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override bool NewRightClick(int i, int j)
         {
-            Tile tile = Framing.GetTileSafely(i, j);
+            Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player player = Main.LocalPlayer;
 
             if (tile.frameX >= 90 && player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()))
@@ -58,6 +59,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
                 return true;
             }
+			else
+			{
+                for (int x = 0; x < 5; x++)
+                    for (int y = 0; y < 7; y++)
+                    {
+                        int realX = x + i - (tile.frameX - 90) / 18;
+                        int realY = y + j - (tile.frameY) / 18;
+
+                        Framing.GetTileSafely(realX, realY).frameX -= 90;
+                    }
+
+                StarlightWorld.FlipFlag(WorldFlags.GlassBossOpen);
+            }
+
             return false;
         }
     }
@@ -89,6 +104,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 for (int x = parentPos.X; x < parentPos.X + 5; x++)
                     for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
                         Framing.GetTileSafely(x, y).frameX += 90;
+
+                projectile.ai[1] = 0;
             }
         }
 
@@ -102,10 +119,18 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
                 Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
                 Dust.NewDust(projectile.Center + new Vector2(72, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
-                //Main.PlaySound(SoundID.); TODO: Rumble sound
+
+                if (projectile.ai[1] > 120 && projectile.ai[1] <= 240)
+                    Main.musicFade[Main.curMusic] = 1 - ((projectile.ai[1] - 120) / 120f);
+
+                if (projectile.ai[1] == 180)
+                {
+                    var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ArenaRise");
+                    Main.PlaySound(slot, projectile.Center);
+                }
 
                 projectile.ai[1]++;
-                if (projectile.ai[1] > 120)
+                if (projectile.ai[1] > 180)
                 {
                     StarlightWorld.Flag(WorldFlags.GlassBossOpen);
                     if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
@@ -114,9 +139,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = projectile.Center;
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = VitricBackdropLeft.Risetime + 120;
                     }
-                    projectile.ai[1] = 0;
                 }
             }
+
+            if(projectile.ai[1] > 240 && projectile.ai[1] < 660)
+                Main.musicFade[Main.curMusic] = 0;
+
+            projectile.ai[1]++;
 
             //This controls spawning the rest of the arena
             if (!Main.npc.Any(n => n.active && (n.type == NPCType<VitricBackdropLeft>() || n.type == NPCType<VitricBoss>()))) //TODO: Need to find a better check
@@ -125,10 +154,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 int timerset = StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) ? 360 : 0; //the arena should already be up if it was opened before
 
                 int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
-                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropRight) (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
+
+                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
+                    (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
 
                 index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
-                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft) (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
+
+                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
+                    (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
             }
 
             //controls the drawing of the barriers

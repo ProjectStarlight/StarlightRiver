@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.NPCs.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -30,9 +31,11 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
         {
-            // TODO this needs synced somehow
             if (self.controlDown)
+            {
                 self.GetModPlayer<StarlightPlayer>().platformTimer = 5;
+                NetMessage.SendData(MessageID.PlayerControls);
+            }
 
             if (self.controlDown || self.GetModPlayer<StarlightPlayer>().platformTimer > 0 || self.GoingDownWithGrapple)
             {

@@ -186,24 +186,38 @@ namespace StarlightRiver.Content.CustomHooks
         private void DrawTilingBackground()
         {
             Texture2D tex = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSand");
-            Texture2D tex2 = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandBottom");
+            Texture2D texBot = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandBottom");
+            Texture2D texTop = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandTop");
+            Texture2D texLeft = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandLeft");
+            Texture2D texRight = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandRight");
+
             Rectangle blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y - 2, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height);
 
-            for (int x = 0; x <= Main.screenWidth + tex.Width; x += tex.Width)
-                for (int y = 0; y <= Main.screenHeight + tex.Height; y += tex.Height)
+            for (int x = -tex.Width; x <= Main.screenWidth + tex.Width; x += tex.Width)
+                for (int y = -tex.Height; y <= Main.screenHeight + tex.Height; y += tex.Height)
                 {
                     Vector2 pos = new Vector2(x, y) - new Vector2(Main.screenPosition.X % tex.Width, Main.screenPosition.Y % tex.Height);
+                    Texture2D drawtex = null;
 
-                    if (CheckBackground(pos, tex.Size(), blacklist))
-                        Helper.DrawWithLighting(pos, tex);
-                    else if (CheckBackground(pos + Vector2.UnitY * -tex.Height, tex.Size(), blacklist)) 
-                        Helper.DrawWithLighting(pos, tex2);
+                    if (CheckBackground(pos + new Vector2(0, -tex.Height), tex.Size(), blacklist, true))
+                        drawtex = texBot;
+                    else if (CheckBackground(pos + new Vector2(0, tex.Height), tex.Size(), blacklist, true))
+                        drawtex = texTop;
+                    else if (CheckBackground(pos + new Vector2(tex.Width, 0), tex.Size(), blacklist, true))
+                        drawtex = texLeft;
+                    else if (CheckBackground(pos + new Vector2(-tex.Width, 0), tex.Size(), blacklist, true))
+                        drawtex = texRight;
+                    else
+                        drawtex = tex;
+
+                    if (CheckBackground(pos, drawtex.Size(), blacklist))
+                        Helper.DrawWithLighting(pos, drawtex);
                 }
         }
 
-        private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome)
+        private bool CheckBackground(Vector2 pos, Vector2 size, Rectangle biome, bool dontCheckScreen = false)
         {
-            if (Helper.OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
+            if (dontCheckScreen || Helper.OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
             {
                 if (!Main.BackgroundEnabled) return true;
                 else if (!biome.Contains(((pos + Main.screenPosition) / 16).ToPoint()) || !biome.Contains(((pos + size + Main.screenPosition) / 16).ToPoint())) return true;

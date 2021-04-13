@@ -80,8 +80,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
+            recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
+            recipe.AddIngredient(ItemType<VitricOre>(), 15);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -133,8 +133,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
+            recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
+            recipe.AddIngredient(ItemType<VitricOre>(), 25);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -169,8 +169,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<VitricGem>(), 10);
-            recipe.AddIngredient(mod.ItemType("VitricSandItem"), 20);
+            recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
+            recipe.AddIngredient(ItemType<VitricOre>(), 20);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();

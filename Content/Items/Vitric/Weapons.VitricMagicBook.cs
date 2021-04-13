@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Book");
-            Tooltip.SetDefault("Summons waves that leave behind broken glass traps on nearby ground, with spacing between them\nThese rapidly spike enemies who step on them");
+            Tooltip.SetDefault("Summons stabbing spikes on nearby ground");
         }
 
         public override void SetDefaults()

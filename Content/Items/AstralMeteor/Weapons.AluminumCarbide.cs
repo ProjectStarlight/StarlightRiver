@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             if (projectile.ai[0] == 1)
             {
                 crit = true;
-                target.AddBuff(BuffType<Buffs.AstralBuff>(), 1200);
+                target.AddBuff(BuffType<Buffs.Overcharge>(), 1200);
             }
         }
 

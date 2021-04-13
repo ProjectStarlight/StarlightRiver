@@ -58,12 +58,6 @@ namespace StarlightRiver.Content.CustomHooks
                     if (i > 0 && j > 0 && i < Main.maxTilesX && j < Main.maxTilesY && Main.tile[i, j] != null && Main.tile[i, j].type == TileType<GrassOvergrow>())
                         GrassOvergrow.CustomDraw(i, j, Main.spriteBatch);
                 }
-
-            //Temple shroud, TODO: move this somewhere more sane later. Im crunched for time rn.
-            if (Helper.OnScreen(BiomeHandler.GlassTempleZone) && (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !drawPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple))
-            {
-                //Main.spriteBatch.Draw(GetTexture("StarlightRiver/Assets/TempleBlock"), (BiomeHandler.GlassTempleZone.TopLeft() + new Vector2(1, 8)) * 16 - Main.screenPosition, Color.Black);
-            }
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)

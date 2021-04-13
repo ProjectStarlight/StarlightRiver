@@ -37,6 +37,6 @@ namespace StarlightRiver.Content.Tiles
             }
         }
 
-        public override void FloorVisuals(Player player) => player.AddBuff(BuffType<Buffs.AstralBuff>(), 120);
+        public override void FloorVisuals(Player player) => player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
     }
 }

@@ -21,15 +21,5 @@ namespace StarlightRiver.Content.Items.Vitric
             item.width = 32;
             item.height = 32;
         }
-
-        public override void AddRecipes()
-        {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<VitricGem>(), 3);
-            recipe.AddIngredient(ItemID.Sandstone, 20);
-            recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
-        }
     }
 }

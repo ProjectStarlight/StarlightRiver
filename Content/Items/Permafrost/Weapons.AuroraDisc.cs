@@ -326,7 +326,6 @@ namespace StarlightRiver.Content.Items.Permafrost
         }
     }
 
-    //TODO: Move this class somewhere better
     class AuroraDoT : SmartBuff
     {
         public AuroraDoT() : base("Aurora DoT", "What the fuck you shouldn't have this its NPC only", true) { }

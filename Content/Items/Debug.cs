@@ -42,12 +42,26 @@ namespace StarlightRiver.Content.Items
 
         public override void UpdateInventory(Player player)
         {
+            float rot = Main.rand.NextFloat(6.28f);
 
+            Dust.NewDustPerfect(player.Center + Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot) * 300, ModContent.DustType<Bosses.GlassBoss.LavaSpew>(), Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot));
         }
 
         public override bool UseItem(Player player)
         {
-            return base.UseItem(player);
+            for(int x = 0; x < Main.maxTilesX; x++)
+                for(int y = 0; y < Main.maxTilesY; y++)
+				{
+                    var tile = Framing.GetTileSafely(x, y);
+                    if (tile.collisionType == 1)
+                        tile.type = TileID.Stone;
+                    else
+					{
+                        tile.active(true);
+                        tile.type = TileID.Dirt;
+                    }
+				}
+            return true;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Items/StarlightGem"), item.Center - Main.screenPosition, new Rectangle(0, 0, 18, 20), new Color(120, 245 - gemID, 175 + gemID) * 0.7f,
+            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Items/Misc/StarlightGem"), item.Center - Main.screenPosition, new Rectangle(0, 0, 18, 20), new Color(120, 245 - gemID, 175 + gemID) * 0.7f,
                 rotation, new Vector2(9, 10), 1, 0, 0);
             return false;
         }

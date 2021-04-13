@@ -264,7 +264,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass) ? 1f : 0f;
+            return (spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneOvergrow) ? 1f : 0f;
         }
 
         public override void NPCLoot()

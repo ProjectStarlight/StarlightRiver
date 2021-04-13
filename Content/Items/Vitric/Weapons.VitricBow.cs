@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
@@ -10,6 +11,12 @@ namespace StarlightRiver.Content.Items.Vitric
     public class VitricBow : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Vitric Bow");
+            Tooltip.SetDefault("Could use a rework");
+        }
 
         public override void SetDefaults()
         {
@@ -44,10 +51,14 @@ namespace StarlightRiver.Content.Items.Vitric
             return true;
         }
 
-        public override void SetStaticDefaults()
+        public override void AddRecipes()
         {
-            DisplayName.SetDefault("Vitric Bow");
-            Tooltip.SetDefault("Shoots two extra smaller arrows");
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemType<SandstoneChunk>(), 10);
+            recipe.AddIngredient(ItemType<VitricOre>(), 20);
+            recipe.AddTile(TileID.Anvils);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }

@@ -11,19 +11,21 @@ using System.Linq;
 
 namespace StarlightRiver.Buffs
 {
-    class AstralBuff : SmartBuff
+    class Overcharge : SmartBuff
     {
-        public AstralBuff() : base("Zapped!", "Losing life, but zapping nearby enemies!", true) { }
+        public Overcharge() : base("Overcahrged", "Greatly reduced armor, shocking nearby enemies!", true) { }
 
         public override void Update(Player player, ref int buffIndex)
         {
-            player.lifeRegen -= 40;
+            player.statDefense /= 4;
 
             if (Main.rand.Next(10) == 0)
             {
                 Vector2 pos = player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(player.width);
-                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3);
+                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
+
+            return;
 
             if (Main.rand.Next(20) == 0)
             {
@@ -32,9 +34,11 @@ namespace StarlightRiver.Buffs
                     NPC npc = Main.npc[k];
                     if (npc.active && Vector2.Distance(npc.Center, player.Center) < 100)
                     {
-                        Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<LightningNode>(), 20, 0, player.whoAmI, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, player.whoAmI, 2, 100);
+                        proj.friendly = false;
+                        proj.modProjectile.OnHitNPC(npc, 2, 0, false);
                         Helper.DrawElectricity(player.Center, npc.Center, DustType<Content.Dusts.Electric>());
-                        return;
+                        break;
                     }
                 }
             }
@@ -42,22 +46,28 @@ namespace StarlightRiver.Buffs
 
         public override void Update(NPC npc, ref int buffIndex)
         {
+            npc.defense /= 4;
+
             if (Main.rand.Next(10) == 0)
             {
                 Vector2 pos = npc.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(npc.width);
-                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3);
+                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
+
+            return;
 
             if (Main.rand.Next(20) == 0)
             {
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
                     NPC target = Main.npc[k];
-                    if (target.active && Vector2.Distance(target.Center, npc.Center) < 100)
+                    if (target.active && Vector2.Distance(target.Center, npc.Center) < 200)
                     {
-                        Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 20, 0, 0, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
+                        proj.friendly = false;
+                        proj.modProjectile.OnHitNPC(npc, 2, 0, false);
                         Helper.DrawElectricity(npc.Center, target.Center, DustType<Content.Dusts.Electric>());
-                        return;
+                        break;
                     }
                 }
             }

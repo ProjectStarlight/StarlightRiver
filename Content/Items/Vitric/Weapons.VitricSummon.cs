@@ -58,8 +58,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Glassweaver's Staff");
-            Tooltip.SetDefault("Summons the Glassweaver's arsonal");
+            DisplayName.SetDefault("Glassweaver's Punty");
+            Tooltip.SetDefault("Summons the Glassweaver's arsenal");
         }
     }
 }

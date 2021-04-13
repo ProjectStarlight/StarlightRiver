@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitreous Blade");
+            DisplayName.SetDefault("Ancient Vitric Blade");
             Tooltip.SetDefault("Shatters into enchanted glass shards \nUnable to be used while shattered");
         }
 
@@ -66,16 +66,6 @@ namespace StarlightRiver.Content.Items.Vitric
             else
                 Broken = false;
             return true;
-        }
-
-        public override void AddRecipes()
-        {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemID.FossilOre, 10);
-            recipe.AddIngredient(ItemType<VitricGem>(), 4);
-            recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
