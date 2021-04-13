@@ -107,8 +107,8 @@ namespace StarlightRiver.Content.CustomHooks
             particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.25f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 20;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.1f);
 
-            particle.Color = new Color(155, 200 + (particle.GetHashCode() % 2 == 0 ? 55 : 0), 255) * (particle.Timer / 1800f * 0.8f);
-            particle.Scale = (particle.Timer / 1800f * 1.1f);
+            particle.Color = new Color(130, 170, 255) * particle.Scale;
+            particle.Scale = (particle.Timer / 1800f) * 2;
             particle.Rotation += 0.015f;
         }
 
@@ -116,10 +116,11 @@ namespace StarlightRiver.Content.CustomHooks
         {
             particle.Timer--;
             particle.StoredPosition += particle.Velocity;
-            particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / 400f * 6.28f) * 10;
+            var randTime = (particle.GetHashCode() % 50) + 100f;
+            particle.Position.X = particle.StoredPosition.X - Main.screenPosition.X + GetParallaxOffset(particle.StoredPosition.X, 0.5f) + (float)Math.Sin(particle.Timer / randTime * 6.28f) * 6;
             particle.Position.Y = particle.StoredPosition.Y - Main.screenPosition.Y + GetParallaxOffsetY(particle.StoredPosition.Y, 0.2f);
-            particle.Color = Color.Lerp(Color.Red, Color.White, particle.Timer / 1800f);
-            particle.Scale = (particle.Timer / 1800f * 0.8f);
+            particle.Color = Color.Lerp(Color.Red, new Color(255, 255, 200), particle.Timer / 2400f);
+            particle.Scale = (particle.Timer / 2400f);
             particle.Rotation += 0.02f;
         }
 
@@ -151,16 +152,19 @@ namespace StarlightRiver.Content.CustomHooks
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                BackgroundParticles.DrawParticles(Main.spriteBatch);
-
                 for (int k = 4; k >= 0; k--)
                 {
-                    int off = 140 + (440 - k * 110);
-                    if (k == 4) off = 400;
+                    if(k == 3)
+                        BackgroundParticles.DrawParticles(Main.spriteBatch);
+
+                    int off = 140 + (340 - k * 110);
+                    if (k == 0) off -= 100;
+                    if (k == 1) off -= 25;
+                    if (k == 4) off = 100;
 
                     DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass" + k), k + 1, off, default, false); //the crystal layers and front sand
 
-                    if (k == 0) DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
+                    //if (k == 0) DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass1"), 0.5f, 100, new Color(180, 220, 235), true); //the sand on top
                     if (k == 2) ForegroundParticles.DrawParticles(Main.spriteBatch);
                 }
 
@@ -168,10 +172,10 @@ namespace StarlightRiver.Content.CustomHooks
                 for (int k = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f); k += 30)
                 {
                     Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(8000), 1800);
-                    if (Main.rand.Next(600) == 0)
-                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
+                    if (Main.rand.Next(550) == 0)
+                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.3f, -0.3f)), 0, 0, Color.White, 2400, spawnPos));
 
-                    if (Main.rand.Next(1400) == 0)
+                    if (Main.rand.Next(2000) == 0)
                         ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.6f, -0.6f)), 0, 0, Color.White, 1800, spawnPos));
                 }
 
