@@ -49,6 +49,20 @@ namespace StarlightRiver.Core
                 line.isModifierBad = false;
                 tooltips.Add(line);
             }
+
+            //Ammo display, maybe move this later? TODO?
+
+            if(item.useAmmo != 0)
+            {
+                TooltipLine line = new TooltipLine(mod, "AmmoInfo", "Uses:");
+
+                var critLine = tooltips.Find(n => n.Name == "Knockback");
+                int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
+
+                line.text += $"[i:{ item.useAmmo}]";
+
+                tooltips.Insert(index + 1, line);
+            }
         }
     }
 }

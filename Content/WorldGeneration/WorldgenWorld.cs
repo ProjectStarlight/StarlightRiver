@@ -42,7 +42,7 @@ namespace StarlightRiver.Core
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
-            StarlightRiver.FIllChests();
+            ModContent.GetInstance<StarlightRiver>().PopulateChests();
         }
     }
 }

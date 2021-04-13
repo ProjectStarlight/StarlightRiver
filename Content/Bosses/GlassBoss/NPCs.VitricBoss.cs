@@ -212,8 +212,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 switch (weapon)
                 {
                     case 0: Item.NewItem(npc.Center, ItemType<Items.Vitric.BossSpear>()); break;
-                    case 1: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricAxe>()); break;
-                    case 2: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricHammer>()); break;
+                    case 1: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricHamaxe>()); break;
                     case 3: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricSword>()); break;
                     case 4: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricBow>()); break;
                 }

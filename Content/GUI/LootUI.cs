@@ -12,6 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
+using System;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void OnInitialize()
         {
-            Quotes = new List<string>()
+            Quotes = new List<string>() //TODO somthing with localization
             {
                 "Loot?",
                 "Loot!",
@@ -41,6 +42,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Update(GameTime gameTime)
         {
+            if(Main.gameMenu)
+                Visible = false;
+
             if (Selections[1] != null)
             {
                 Visible = false;
@@ -53,22 +57,35 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            //additive stuff, shame I have to do this but terraria really do be terraria
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+
+            var glowTex = GetTexture(AssetDirectory.GUI + "ItemGlow");
+            var sin = (float)Math.Sin(Main.GameUpdateCount / 20f);
+            spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.Gold * (0.4f + sin * 0.05f), Main.GameUpdateCount / 120f, glowTex.Size() / 2, 0.65f + sin * 0.03f, 0, 0);
+            spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.White * (0.4f + sin * 0.05f), -Main.GameUpdateCount / 60f, glowTex.Size() / 2, 0.5f + sin * 0.03f, 0, 0);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+
+
             Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/LootSlotOn");
 
-            Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) - 2.2f * Main.fontItemStack.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.75f);
+            Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) -  1.5f * Main.fontItemStack.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
 
             string str = "You get:";
             string str2 = "Pick two:";
 
             Utils.DrawBorderString(spriteBatch, str, GetDimensions().Center() + new Vector2(0, -40) - Main.fontItemStack.MeasureString(str) / 2, Color.White, 0.8f);
-            Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, +50) - Main.fontItemStack.MeasureString(str2) / 2, Color.White, 0.8f);
+            Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, 40) - Main.fontItemStack.MeasureString(str2) / 2, Color.White, 0.8f);
 
             spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White * 0.75f, 0, tex.Size() / 2, 1, 0, 0);
 
             if (!BigItem.IsAir)
             {
                 Texture2D tex2 = BigItem.type > ItemID.Count ? GetTexture(BigItem.modItem.Texture) : GetTexture("Terraria/Item_" + BigItem.type);
-                float scale = tex2.Frame().Size().Length() < 52 ? 1 : 52f / tex2.Frame().Size().Length();
+                float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                 spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, scale, 0, 0);
 
@@ -109,7 +126,7 @@ namespace StarlightRiver.Content.GUI
                 Item item2 = new Item();
                 item2.SetDefaults(smallItemIDs[k].Type);
                 item2.stack = smallItemIDs[k].GetCount();
-                AppendSlot(item2, (-2 + k) * 70);
+                AppendSlot(item2, (-2 + k) * 60);
             }
             QuoteID = Main.rand.Next(Quotes.Count);
         }
@@ -118,9 +135,9 @@ namespace StarlightRiver.Content.GUI
         {
             LootSelection slot = new LootSelection(item);
             slot.Left.Set(offX - 30, 0.5f);
-            slot.Top.Set(60, 0.5f);
-            slot.Width.Set(60, 0);
-            slot.Height.Set(60, 0);
+            slot.Top.Set(50, 0.5f);
+            slot.Width.Set(50, 0);
+            slot.Height.Set(50, 0);
             Append(slot);
         }
     }
@@ -147,10 +164,10 @@ namespace StarlightRiver.Content.GUI
                 if (!Item.IsAir)
                 {
                     Texture2D tex2 = Item.type > ItemID.Count ? GetTexture(Item.modItem.Texture) : GetTexture("Terraria/Item_" + Item.type);
-                    float scale = tex2.Frame().Size().Length() < 52 ? 1 : 52f / tex2.Frame().Size().Length();
+                    float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                     spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, 1, 0, 0);
-                    if (Item.stack > 1) Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 36, Color.White, 0.75f);
+                    if (Item.stack > 1) Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White, 0.75f);
                 }
 
                 if (IsMouseHovering)
@@ -158,8 +175,10 @@ namespace StarlightRiver.Content.GUI
                     float offY = 40 - Item.ToolTip.Lines * 14;
                     Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + new Vector2(60, offY);
                     for (int k = 0; k <= Item.ToolTip.Lines; k++)
-                        if (k == 0) Utils.DrawBorderString(spriteBatch, Item.Name, pos + new Vector2(0, k * 14), ItemRarity.GetColor(Item.rare), 0.75f);
-                        else Utils.DrawBorderString(spriteBatch, Item.ToolTip.GetLine(k - 1), pos + new Vector2(0, k * 14), Color.White, 0.75f);
+                        if (k == 0) 
+                            Utils.DrawBorderString(spriteBatch, Item.Name, pos + new Vector2(-20, k * 14 - 10), ItemRarity.GetColor(Item.rare), 0.75f);
+                        else 
+                            Utils.DrawBorderString(spriteBatch, Item.ToolTip.GetLine(k - 1), pos + new Vector2(-20, k * 14 - 10), Color.White, 0.75f);
                 }
             }
         }

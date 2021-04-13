@@ -241,8 +241,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            ShieldLife -= damage / 2;
-            CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), damage / 2);
+            ShieldLife -= target.damage / 2;
+            CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), target.damage / 2);
 
             var player = Main.player[projectile.owner];
             player.velocity += Vector2.Normalize(player.Center - target.Center) * 3;

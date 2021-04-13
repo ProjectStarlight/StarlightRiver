@@ -4,44 +4,38 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+
 using StarlightRiver.Core;
-using System;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VitricPick : ModItem, IGlowingItem
+    internal class VitricHamaxe : ModItem, IGlowingItem
     {
         public int heat = 0;
         public int heatTime = 0;
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public override bool Autoload(ref string name)
-        {
-            On.Terraria.Player.PickTile += GenerateHeat;
-
-            return base.Autoload(ref name);
-        }
-
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitric Pickaxe");
-            Tooltip.SetDefault("Hellstone does not drop lava\nMining hellstone generates heat\n Heat increases speed");
+            DisplayName.SetDefault("Vitric Hamaxe");
+            Tooltip.SetDefault("Right click to charge heat\nHeat increases speed\nHeat dissipates over time");
         }
 
         public override void SetDefaults()
         {
-            item.damage = 10;
+            item.damage = 26;
             item.melee = true;
-            item.width = 38;
-            item.height = 38;
-            item.useTime = 18;
-            item.useAnimation = 18;
-            item.pick = 85;
+            item.width = 36;
+            item.height = 32;
+            item.useTime = 15;
+            item.useAnimation = 32;
+            item.axe = 20;
+            item.hammer = 60;
             item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 5f;
+            item.knockBack = 3.5f;
             item.value = 1000;
             item.rare = ItemRarityID.Green;
             item.autoReuse = true;
@@ -49,39 +43,61 @@ namespace StarlightRiver.Content.Items.Vitric
             item.useTurn = true;
         }
 
-        private void GenerateHeat(On.Terraria.Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool CanUseItem(Player player)
         {
-            var myPick = self.HeldItem.modItem as VitricPick;
-            var tile = Framing.GetTileSafely(x, y);
-            var type = tile.type;
-
-            orig(self, x, y, pickPower);
-
-            tile = Framing.GetTileSafely(x, y);
-
-            if (myPick != null && type == TileID.Hellstone)
+            if(player.altFunctionUse == 2)
             {
-                if (myPick.heat < 20)
-                    myPick.heat++;
+                item.axe = 0;
+                item.hammer = 0;
+                item.noMelee = true;
+            }
+            else
+            {
+                item.axe = 20;
+                item.hammer = 60;
+                item.noMelee = false;
+            }
 
-                tile.lava(false);
-                tile.liquid = 0;
-                tile.liquidType(0);
-                tile.skipLiquid(true);
-                NetMessage.SendTileRange(0, x, y, 1, 1);
+            return true;
+        }
+
+        public override void HoldItem(Player player)
+        {
+            if (item.hammer > 0)
+                return;
+
+            if(Main.mouseRight)
+            {
+                if (player.itemAnimation == 12)
+                {
+                    player.itemAnimation = 13;
+
+                    if (heat < 100)
+                    {
+                        heat++;
+
+                        var off = Vector2.One.RotatedByRandom(6.28f) * 20;
+                        Dust.NewDustPerfect(player.MountedCenter + (Vector2.One * 40).RotatedBy(player.itemRotation - (player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
+                    }
+
+                    if (heat == 98)
+                        Main.PlaySound(SoundID.DD2_BetsyFireballShot, player.Center);
+                }
             }
         }
 
         public override float UseTimeMultiplier(Player player)
         {
-            return 1 + heat / 40f;
+            return 1 + heat / 100f;
         }
 
         public override void UpdateInventory(Player player)
         {
             heatTime++;
 
-            if(heatTime >= 40)
+            if (heatTime >= 10)
             {
                 if (heat > 0)
                     heat--;
@@ -93,8 +109,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             var tex = GetTexture(Texture + "Glow");
-            var color = Color.White * (heat / 20f);
-
+            var color = Color.White * (heat / 100f);
 
             spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
         }
@@ -107,7 +122,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 return;
 
             var tex = GetTexture(Texture + "Glow");
-            var color = Color.White * (heat / 20f);
+            var color = Color.White * (heat / 100f);
             var origin = player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
             var data = new DrawData(tex, info.itemLocation - Main.screenPosition, null, color, player.itemRotation, origin, item.scale, player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
@@ -118,7 +133,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.FossilOre, 10);
-            recipe.AddIngredient(ItemType<VitricGem>(), 5);
+            recipe.AddIngredient(ItemType<VitricGem>(), 4);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();

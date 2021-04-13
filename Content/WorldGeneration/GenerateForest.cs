@@ -9,6 +9,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Tiles.Herbology;
+using System;
 
 namespace StarlightRiver.Core
 {
@@ -79,22 +80,36 @@ namespace StarlightRiver.Core
                 if (WorldGen.genRand.Next(30) == 0 && AnyGrass(k))
                 {
                     int size = WorldGen.genRand.Next(10, 15);
+                    int oldSurface = 0;
 
                     for (int x = 0; x < size; x++)
                     {
                         int surface = 0;
 
+                        if (oldSurface != 0 && Math.Abs(oldSurface - surface) > 2)
+                            break;
+                                                   
                         for (int j = 50; j < Main.worldSurface; j++) //Wall Bushes
-                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<LeafWall>()) { surface = j; break; }
+                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<LeafWall>()) 
+                            {
+                                surface = j; 
+                                break; 
+                            }
 
                         int xOff = x > size / 2 ? size - x : x;
 
-                        for (int y = surface - (xOff / 2 + WorldGen.genRand.Next(2)) - 3; true; y++)
+                        var noisePre = genNoise.GetPerlin(x % 1000 * 10, x % 1000 * 10);
+                        var noise = (int)(noisePre * 15);
+
+                        for (int y = surface - Math.Min((xOff / 2 + noise + 5), 9); true; y++)
                         {
                             WorldGen.PlaceWall(k + x, y, WallType<LeafWall>());
 
-                            if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].wall != 0) break;
+                            if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].wall != 0) 
+                                break;
                         }
+
+                        oldSurface = surface;
                     }
                 }
             }

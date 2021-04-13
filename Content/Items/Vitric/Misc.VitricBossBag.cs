@@ -33,8 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 switch (weapon % 5)
                 {
                     case 0: Item.NewItem(player.Center, ItemType<Vitric.VitricPick>()); break;
-                    case 1: Item.NewItem(player.Center, ItemType<Vitric.VitricAxe>()); break;
-                    case 2: Item.NewItem(player.Center, ItemType<Vitric.VitricHammer>()); break;
+                    case 1: Item.NewItem(player.Center, ItemType<Vitric.VitricHamaxe>()); break;
                     case 3: Item.NewItem(player.Center, ItemType<Vitric.VitricSword>()); break;
                     case 4: Item.NewItem(player.Center, ItemType<Vitric.VitricBow>()); break;
                 }

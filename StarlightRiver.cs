@@ -207,7 +207,9 @@ namespace StarlightRiver
         public override void PostSetupContent()
         {
             NetEasy.NetEasy.Register(this);
-            InitWorldGenChests();
+
+            AutoloadChestItems();
+
             //CallBossChecklist();
 
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
@@ -215,6 +217,7 @@ namespace StarlightRiver
                 if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
                 {
                     var toLoad = Activator.CreateInstance(type);
+
                     ((IPostLoadable)toLoad).PostLoad();
                 }
             }
