@@ -52,6 +52,7 @@ namespace StarlightRiver.Physics
         public int segmentCount = 10;
         public int constraintRepetitions = 2;
         public float drag = 1;
+        public float scale = 1;
 
         //gravity
         public Vector2 forceGravity = new Vector2(0f, 1f);//x, y (positive = down)
@@ -150,7 +151,7 @@ namespace StarlightRiver.Physics
                 iterateMethod(i);
         }
 
-        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset)
+        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset, float scale)
         {
             var buff = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
@@ -165,7 +166,6 @@ namespace StarlightRiver.Physics
             for (int k = 1; k < segmentCount - 1; k++)
             {
                 float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
-                float scale = 0.6f;
 
                 int point = k * 9 - 6;
 
@@ -211,12 +211,12 @@ namespace StarlightRiver.Physics
             }
         }
 
-        public void DrawStrip(Vector2 offset = default)
+        public void DrawStrip(float scale, Vector2 offset = default)
         {
             if (ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-            PrepareStrip(out var buffer, offset);
+            PrepareStrip(out var buffer, offset, scale);
             graphics.SetVertexBuffer(buffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
@@ -229,7 +229,10 @@ namespace StarlightRiver.Physics
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)
         {
             if (Main.dedServ) return;
-            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+            var pos = (Main.screenLastPosition - Main.screenPosition).ToPoint16();
+
+            spriteBatch.Draw(target, new Rectangle(pos.X, pos.Y, Main.screenWidth, Main.screenHeight), Color.White);
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

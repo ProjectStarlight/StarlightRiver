@@ -4,6 +4,7 @@ using StarlightRiver.Physics;
 using Terraria;
 
 using StarlightRiver.Core;
+using System;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -15,33 +16,37 @@ namespace StarlightRiver.Content.CustomHooks
         public override void Load()
         {
             On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
-            Main.OnPreDraw += DrawVerletBannerTarget;
+            On.Terraria.Main.SetResolution += RefreshBannerTarget;
+            On.Terraria.Main.Draw += DrawVerletBannerTarget;
         }
 
-        public override void Unload()
-        {
-            Main.OnPreDraw -= DrawVerletBannerTarget;
-        }
-
-        public void DrawVerletBannerTarget(GameTime obj)
-        {
-            GraphicsDevice graphics = Main.instance.GraphicsDevice;
-
-            graphics.SetRenderTarget(VerletChainInstance.target);
-            graphics.Clear(Color.Transparent);
-
-            foreach (var i in VerletChainInstance.toDraw)
-                i.DrawStrip();
-
-            graphics.SetRenderTarget(null);
-        }
-
-        private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
+		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             VerletChainInstance.DrawStripsPixelated(Main.spriteBatch);
             Main.spriteBatch.End();
             orig(self);
+        }
+
+        private void RefreshBannerTarget(On.Terraria.Main.orig_SetResolution orig, int width, int height)
+        {
+            orig(width, height);
+            VerletChainInstance.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        }
+
+        private void DrawVerletBannerTarget(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
+        {
+            GraphicsDevice graphics = self.GraphicsDevice;
+
+            graphics.SetRenderTarget(VerletChainInstance.target);
+            graphics.Clear(Color.Transparent);
+
+            foreach (var i in VerletChainInstance.toDraw)
+                i.DrawStrip(i.scale);
+
+            graphics.SetRenderTarget(null);
+
+            orig(self, gameTime);
         }
     }
 }
