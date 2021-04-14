@@ -200,11 +200,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             int off = (int)(projectile.ai[0] / 120f * tex.Height);
             int off2 = (int)(projectile.ai[0] / 120f * tex2.Width / 2);
 
-            Helper.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
-            Helper.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off));
 
-            Helper.DrawWithLighting(new Rectangle((int)center.X - 1192 + off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(tex2.Width / 2, 0, off2, tex2.Height));
-            Helper.DrawWithLighting(new Rectangle((int)center.X + 606 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(0, 0, off2, tex2.Height));
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 1192 + off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(tex2.Width / 2, 0, off2, tex2.Height));
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, tex2.Height), tex2, new Rectangle(0, 0, off2, tex2.Height));
 
             //spriteBatch.Draw(tex, new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off),
             //new Rectangle(0, 0, tex.Width, off), color);

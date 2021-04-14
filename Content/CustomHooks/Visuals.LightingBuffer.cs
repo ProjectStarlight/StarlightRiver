@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -14,16 +15,26 @@ namespace StarlightRiver.Content.CustomHooks
         public override void Load()
         {
             Main.OnPreDraw += LightingTarget;
+            On.Terraria.Main.SetDisplayMode += RefreshLightingTarget;
+        }
+
+        private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+        {
+            if (width != Main.screenWidth || height != Main.screenHeight)
+                StarlightRiver.lightingTest.ResizeBuffers();
+
+            orig(width, height, fullscreen);
         }
 
         private void LightingTarget(GameTime obj)
         {
-            if (Main.dedServ) return;
-            if (!Main.gameMenu) StarlightRiver.lightingTest.DebugDraw();
+            if (Main.dedServ)
+                return;
 
-            GraphicsDevice graphics = Main.instance.GraphicsDevice;
+            if (!Main.gameMenu) 
+                StarlightRiver.lightingTest.DebugDraw();
 
-            graphics.SetRenderTarget(null);
+            Main.instance.GraphicsDevice.SetRenderTarget(null);
         }
     }
 }

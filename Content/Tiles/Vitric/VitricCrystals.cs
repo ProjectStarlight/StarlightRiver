@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             {
                 Texture2D tex = Main.tileTexture[Type];
                 spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, 2), tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(80, 176), 1, 0, 0);
-                //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
+                //LightingBufferRenderer.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }
         }
 
@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             {
                 Texture2D tex = Main.tileTexture[Type];
                 spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, 2), tex.Frame(2, 1, t.frameX - 1), Color.White, 0, new Vector2(32, 48), 1, 0, 0);
-                //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
+                //LightingBufferRenderer.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
             }
         }
     }

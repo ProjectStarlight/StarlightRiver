@@ -14,6 +14,9 @@ namespace StarlightRiver.Content.CustomHooks
 {
     class VitricBackground : HookGroup
     {
+        internal static ParticleSystem ForegroundParticles;
+        internal static ParticleSystem BackgroundParticles;
+
         //Its just drawing, but its alot of drawing, and some questionable vanilla RenderBlack replication stuff that likely needs to be removed at some point.
         public override SafetyLevel Safety => SafetyLevel.Questionable;
 
@@ -30,9 +33,6 @@ namespace StarlightRiver.Content.CustomHooks
             ForegroundParticles = null;
             BackgroundParticles = null;
         }
-
-        internal static ParticleSystem ForegroundParticles;
-        internal static ParticleSystem BackgroundParticles;
 
         private static void UpdateForegroundBody(Particle particle)
         {
@@ -65,12 +65,12 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self);
 
-            if (Main.gameMenu || Main.dedServ) return;
+            if (Main.gameMenu || Main.dedServ) 
+                return;
 
-            Player player = null;
-            if (Main.playerLoaded) { player = Main.LocalPlayer; }
+            Player player = Main.LocalPlayer;
 
-            if (player != null && StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16)))
+            if (player != null && StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
             {
                 Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.CustomHooks
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                for (int k = 4; k >= 0; k--)
+                for (int k = 5; k >= 0; k--)
                 {
                     if(k == 3)
                         BackgroundParticles.DrawParticles(Main.spriteBatch);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.CustomHooks
                     int off = 140 + (340 - k * 110);
                     if (k == 0) off -= 100;
                     if (k == 1) off -= 25;
-                    if (k == 4) off = 100;
+                    if (k == 5) off = 100;
 
                     DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass" + k), k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
 
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.CustomHooks
                         drawtex = tex;
 
                     if (CheckBackground(pos, drawtex.Size(), blacklist))
-                        Helper.DrawWithLighting(pos, drawtex);
+                        LightingBufferRenderer.DrawWithLighting(pos, drawtex);
                 }
         }
 
@@ -206,7 +206,10 @@ namespace StarlightRiver.Content.CustomHooks
             return (int)((Main.screenPosition.X + Main.screenWidth / 2 - startpoint) * factor * vanillaParallax);
         }
 
-        private static int GetParallaxOffsetY(float startpoint, float factor) => (int)((Main.screenPosition.Y + Main.screenHeight / 2 - startpoint) * factor);
+        private static int GetParallaxOffsetY(float startpoint, float factor)
+        {
+            return (int)((Main.screenPosition.Y + Main.screenHeight / 2 - startpoint) * factor);
+        }
     }
 }
 

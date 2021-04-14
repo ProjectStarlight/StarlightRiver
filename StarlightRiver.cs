@@ -33,7 +33,7 @@ namespace StarlightRiver
 
         public static float Rotation;
 
-        public static RenderTest lightingTest = null;
+        public static LightingBuffer lightingTest = null;
 
         public static StarlightRiver Instance { get; set; }
 
@@ -142,7 +142,7 @@ namespace StarlightRiver
 
             if (!Main.dedServ)
             {
-                lightingTest = new RenderTest();
+                lightingTest = new LightingBuffer();
             }
 
             //Autoload Rift Recipes
