@@ -1,6 +1,5 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -9,9 +8,8 @@ using System;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Content.Items
+namespace StarlightRiver.Core
 {
-
     public abstract class HeldItemProjectile : ModProjectile
     {
         private readonly float Distance;
@@ -61,7 +59,7 @@ namespace StarlightRiver.Content.Items
             if (Main.player[projectile.owner].direction != 1)
                 spriteEffect = SpriteEffects.FlipVertically;
 
-            Main.spriteBatch.Draw(tex, ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur() + offset + (direction * Distance), null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, projectile.scale, spriteEffect, 0);
+            Main.spriteBatch.Draw(tex, (Main.player[projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur() + offset + direction * Distance, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, projectile.scale, spriteEffect, 0);
 
             return SafePreDraw(spriteBatch, lightColor);
         }
@@ -70,7 +68,7 @@ namespace StarlightRiver.Content.Items
         private void AdjustDirection(float deviation = 0f)
         {
             Player player = Main.player[projectile.owner];
-            direction = (Main.MouseWorld - (player.Center - new Vector2(4, 4))) - new Vector2(0, Main.player[projectile.owner].gfxOffY);
+            direction = Main.MouseWorld - (player.Center - new Vector2(4, 4)) - new Vector2(0, Main.player[projectile.owner].gfxOffY);
             direction.Normalize();
             direction = direction.RotatedBy(deviation);
             player.itemRotation = direction.ToRotation();
@@ -171,7 +169,7 @@ namespace StarlightRiver.Content.Items
             item.useTime = 10;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.consumable = true;
-            item.createTile = (Tiletype == 0 && Tilename != null) ? mod.TileType(Tilename) : Tiletype;
+            item.createTile = Tiletype == 0 && Tilename != null ? mod.TileType(Tilename) : Tiletype;
             item.rare = Rare;
 
             SafeSetDefaults();

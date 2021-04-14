@@ -10,7 +10,7 @@ using Terraria.Enums;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public abstract class BasePointer : ModItem
+    public abstract class BasePointer : ModItem
 	{
 		private readonly string ColorName;
 		private readonly int ProjectileType;

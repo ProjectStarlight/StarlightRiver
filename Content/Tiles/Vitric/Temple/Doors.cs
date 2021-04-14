@@ -3,7 +3,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {

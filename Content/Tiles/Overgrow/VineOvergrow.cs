@@ -11,34 +11,19 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class VineOvergrow : ModTile
+    internal class VineOvergrow : VineTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = AssetDirectory.Invisible;
             return true;
         }
-        public override void SetDefaults()
-        {
-            Main.tileCut[Type] = true;
-            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-            TileObjectData.newTile.Origin = new Point16(0, 0);
-            TileObjectData.newTile.AnchorAlternateTiles = new int[]
-            {
-                TileType<GrassOvergrow>(),
-                TileType<VineOvergrow>()
-            };
-            TileObjectData.addTile(Type);
-            soundType = SoundID.Grass;
-            dustType = DustType<Dusts.Leaf>();
-            AddMapEntry(new Color(202, 157, 49));
-        }
+
+        public VineOvergrow() : base(new string[] { "GrassOvergrow" }, DustType<Dusts.Leaf>(), new Color(202, 157, 49), 5, 6) { }
+
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             float sway = 0;
@@ -46,13 +31,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             for (int k = 1; k > 0; k++)
                 if (Main.tile[i, j - k].type == Type && sway <= 2.4f) sway += 0.3f; else break; spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Overgrow/VineOvergrowFlow"),
                     (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2((float)(1 + Math.Cos(rot * 2) + Math.Sin(rot)) * sway * sway, 0),
-                    new Rectangle(Main.tile[i, j + 1].type != TileType<VineOvergrow>() ? 32 : j % 2 * 16, 0, 16, 16), Lighting.GetColor(i, j));
+                    new Rectangle(Main.tile[i, j + 1].type != Type ? 32 : j % 2 * 16, 0, 16, 16), Lighting.GetColor(i, j));
             return false;
         }
     }
+
     internal class VineOvergrowItem : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
-        public VineOvergrowItem() : base("OG Vine", "", ModContent.TileType<VineOvergrow>(), 0) { }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
+        public VineOvergrowItem() : base("Overgrowth Vine", "", ModContent.TileType<VineOvergrow>(), 0) { }
     }
 }

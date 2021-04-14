@@ -6,7 +6,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-    internal class PalestoneItem : Items.QuickTileItem
+    internal class PalestoneItem : QuickTileItem
     {
         public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, AssetDirectory.ForestTile) { }
     }
