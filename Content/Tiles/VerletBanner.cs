@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using Terraria;
@@ -20,6 +21,11 @@ namespace StarlightRiver.Content.Tiles
             this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
     }
+
+    class VerletBannerItem : QuickTileItem
+	{
+        public VerletBannerItem() : base("Verlet banner", "DRAGON DICK IN MY MOUTH", TileType<VerletBanner>(), 1, AssetDirectory.Debug, true) { }
+	}
 
     internal class VerletBannerDummy : Dummy
     {

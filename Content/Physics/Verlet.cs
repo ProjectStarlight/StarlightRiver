@@ -168,9 +168,10 @@ namespace StarlightRiver.Physics
                 float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
 
                 int point = k * 9 - 6;
+                int off = Math.Min(k, segmentCount - (segmentCount / 4));
 
-                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
                 verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
 
                 int extra = k == 1 ? 0 : 6;

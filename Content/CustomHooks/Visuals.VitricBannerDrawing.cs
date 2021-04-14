@@ -5,6 +5,7 @@ using Terraria;
 
 using StarlightRiver.Core;
 using System;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -22,9 +23,15 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
-            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            Filters.Scene["Outline"].GetShader().Shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            Filters.Scene["Outline"].GetShader().Shader.Parameters["outlineColor"].SetValue(new Vector3(0.12f, 0, 0));
+
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+
             VerletChainInstance.DrawStripsPixelated(Main.spriteBatch);
+
             Main.spriteBatch.End();
+
             orig(self);
         }
 
