@@ -5,8 +5,6 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Vitric

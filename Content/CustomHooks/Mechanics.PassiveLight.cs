@@ -78,21 +78,24 @@ namespace StarlightRiver.Content.CustomHooks
             bool tileBlock = Main.tile[i, j].active() && Main.tileBlockLight[Main.tile[i, j].type] && !(Main.tile[i, j].slope() != 0 || Main.tile[i, j].halfBrick());
             bool wallBlock = Main.wallLight[Main.tile[i, j].wall];
             bool lava = Main.tile[i, j].liquidType() == 1;
+            bool lit = Main.tileLighted[Main.tile[i, j].type];
 
             if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass && Main.tile[i, j] != null && lava)
             {
                 (r, g, b) = (1, 0, 0);
             }
 
-            if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock && !lava)
+            if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock && !lava && !lit)
             {
-                r = .4f;
-                g = .57f;
-                b = .65f;
+                var yOff = j - StarlightWorld.VitricBiome.Y;
+
+                r = .3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0);
+                g = .48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0);
+                b = .65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0);
             }
 
             //underworld lighting
-            if (Vector2.Distance(Main.LocalPlayer.Center, StarlightWorld.RiftLocation) <= 1500 && j >= Main.maxTilesY - 200 && Main.tile[i, j] != null && !tileBlock && wallBlock)
+            if (Vector2.Distance(Main.LocalPlayer.Center, StarlightWorld.RiftLocation) <= 1500 && j >= Main.maxTilesY - 200 && Main.tile[i, j] != null && !tileBlock && wallBlock && !lit)
             {
                 r = 0;
                 g = 0;
@@ -101,7 +104,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //I really need to stop bloating this method so much
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell && !tileBlock && wallBlock)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell && !tileBlock && wallBlock && !lit)
             {
                 r = 0.0f;
                 g = 0.4f;

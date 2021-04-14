@@ -5,10 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Items.Herbology.Materials;
 
 namespace StarlightRiver.Content.Tiles.Crafting

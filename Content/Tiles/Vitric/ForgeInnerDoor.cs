@@ -6,7 +6,6 @@ using static Terraria.ModLoader.ModContent;
 using System;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Tiles.Vitric

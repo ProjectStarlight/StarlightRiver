@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items;
+﻿using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;

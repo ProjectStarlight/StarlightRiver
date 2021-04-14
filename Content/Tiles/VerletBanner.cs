@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using Terraria;
@@ -21,6 +22,11 @@ namespace StarlightRiver.Content.Tiles
         }
     }
 
+    class VerletBannerItem : QuickTileItem
+	{
+        public VerletBannerItem() : base("Verlet banner", "DRAGON DICK IN MY MOUTH", TileType<VerletBanner>(), 1, AssetDirectory.Debug, true) { }
+	}
+
     internal class VerletBannerDummy : Dummy
     {
         public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
@@ -36,7 +42,8 @@ namespace StarlightRiver.Content.Tiles
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
                 forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-                gravityStrengthMult = 1f
+                gravityStrengthMult = 1f,
+                scale = 0.6f
             };
         }
 

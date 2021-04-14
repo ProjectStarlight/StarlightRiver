@@ -52,6 +52,7 @@ namespace StarlightRiver.Physics
         public int segmentCount = 10;
         public int constraintRepetitions = 2;
         public float drag = 1;
+        public float scale = 1;
 
         //gravity
         public Vector2 forceGravity = new Vector2(0f, 1f);//x, y (positive = down)
@@ -150,7 +151,7 @@ namespace StarlightRiver.Physics
                 iterateMethod(i);
         }
 
-        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset)
+        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset, float scale)
         {
             var buff = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
@@ -165,12 +166,12 @@ namespace StarlightRiver.Physics
             for (int k = 1; k < segmentCount - 1; k++)
             {
                 float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
-                float scale = 0.6f;
 
                 int point = k * 9 - 6;
+                int off = Math.Min(k, segmentCount - (segmentCount / 4));
 
-                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - k) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
                 verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
 
                 int extra = k == 1 ? 0 : 6;
@@ -211,12 +212,12 @@ namespace StarlightRiver.Physics
             }
         }
 
-        public void DrawStrip(Vector2 offset = default)
+        public void DrawStrip(float scale, Vector2 offset = default)
         {
             if (ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-            PrepareStrip(out var buffer, offset);
+            PrepareStrip(out var buffer, offset, scale);
             graphics.SetVertexBuffer(buffer);
 
             foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
@@ -229,7 +230,10 @@ namespace StarlightRiver.Physics
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)
         {
             if (Main.dedServ) return;
-            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+            var pos = (Main.screenLastPosition - Main.screenPosition).ToPoint16();
+
+            spriteBatch.Draw(target, new Rectangle(pos.X, pos.Y, Main.screenWidth, Main.screenHeight), Color.White);
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

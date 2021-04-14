@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Vector2 pos2 = npc.Center + new Vector2(-840, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
             var source2 = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, 2);
 
-            Helper.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);
+            LightingBufferRenderer.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);
             spriteBatch.Draw(tex, pos2, source2, Color.White * 0.6f, 0, Vector2.Zero, 1, 0, 0);
         }
 
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             ApplyEffect.Parameters["draw"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterOver"));
             ApplyEffect.Parameters["distort"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterDistort"));
-            ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingTest.screenLightingTexture);
+            ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingTest.ScreenLightingTexture);
             ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
             ApplyEffect.Parameters["xOff"].SetValue(0.5f + Helper.ConvertX(target.X) / 2f);
             ApplyEffect.Parameters["zoom"].SetValue(zoom);
@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
             Texture2D backdrop = GetTexture(AssetDirectory.SquidBoss + "Window");
-            Helper.DrawWithLighting(npc.Center - backdrop.Size() / 2 + new Vector2(0, -114) - Main.screenPosition, backdrop);
+            LightingBufferRenderer.DrawWithLighting(npc.Center - backdrop.Size() / 2 + new Vector2(0, -114) - Main.screenPosition, backdrop);
 
             var shinePos = npc.Center - backdrop.Size() / 2 + new Vector2(0, 920 - npc.ai[0]) - Main.screenPosition;
             DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));
@@ -370,7 +370,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D texOver = GetTexture(AssetDirectory.SquidBoss + "SmallWindow");
 
             Vector2 pos = npc.Center - texOver.Size() / 2 + off * 16;
-            Helper.DrawWithLighting(pos - Main.screenPosition, texOver);
+            LightingBufferRenderer.DrawWithLighting(pos - Main.screenPosition, texOver);
         }
 
         private void DrawWindowGlass(SpriteBatch spriteBatch, Texture2D tex, Vector2 off)

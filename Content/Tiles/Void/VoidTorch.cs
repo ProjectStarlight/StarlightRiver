@@ -8,7 +8,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Tiles.Void

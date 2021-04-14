@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
         public void Draw()
         {
             if (Helper.OnScreen(pos - Main.screenPosition, tex.Size()))
-                Helper.DrawWithLighting(pos - Main.screenPosition, tex, Color.White * fadeTime);
+                LightingBufferRenderer.DrawWithLighting(pos - Main.screenPosition, tex, Color.White * fadeTime);
 
             if (fade) fadeTime -= 0.025f;
             else fadeTime += 0.025f;

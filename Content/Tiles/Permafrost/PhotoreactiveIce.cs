@@ -8,7 +8,6 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {

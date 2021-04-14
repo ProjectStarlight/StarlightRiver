@@ -7,7 +7,6 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
@@ -77,8 +76,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void RandomUpdate(int i, int j)
         {
             if (!Main.tile[i, j - 1].active())
-                if (Main.rand.Next(1) == 0)
+                if (Main.rand.NextBool())
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassOvergrow>(), true);
+
+            if (Main.rand.Next(10) == 0)
+                if (!Main.tile[i, j + 1].active() && (Main.tile[i, j].slope() == 0 || Main.tile[i, j].topSlope()))
+                    WorldGen.PlaceTile(i, j + 1, TileType<VineOvergrow>(), true);
         }
     }
     internal class GrassOvergrowItem : QuickTileItem { public GrassOvergrowItem() : base("Overgrowth Grass", "They have a pulse...", ModContent.TileType<GrassOvergrow>(), 1, AssetDirectory.OvergrowTile) { } }
