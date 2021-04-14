@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.CustomHooks
         public override void Load()
         {
             On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
-            On.Terraria.Main.SetResolution += RefreshBannerTarget;
+            On.Terraria.Main.SetDisplayMode += RefreshBannerTarget;
             On.Terraria.Main.Draw += DrawVerletBannerTarget;
         }
 
@@ -28,10 +28,12 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self);
         }
 
-        private void RefreshBannerTarget(On.Terraria.Main.orig_SetResolution orig, int width, int height)
+        private void RefreshBannerTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
-            orig(width, height);
-            VerletChainInstance.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            if (width != Main.screenWidth || height != Main.screenHeight)
+                VerletChainInstance.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+            orig(width, height, fullscreen);
         }
 
         private void DrawVerletBannerTarget(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
