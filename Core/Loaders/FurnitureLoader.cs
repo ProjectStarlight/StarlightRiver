@@ -6,9 +6,6 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
-
 namespace StarlightRiver.Core
 {
     public abstract class FurnitureLoader : ILoadable

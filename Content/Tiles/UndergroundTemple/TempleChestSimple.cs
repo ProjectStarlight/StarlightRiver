@@ -5,7 +5,6 @@ using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Content.Tiles;
 
 namespace StarlightRiver.Tiles.Temple
