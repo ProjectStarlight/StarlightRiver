@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles
             if (Main.rand.Next(300) == 0)
             {
                 Vector2 pos = new Vector2(i + 0.5f, j + 0.5f) * 16;
-                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(15, 35), DustType<Dusts.Electric2>(), 0.4f, 9);
+                DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(15, 35), DustType<Dusts.Electric2>(), 0.4f, 9);
             }
         }
 

@@ -9,7 +9,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Foregrounds
 {
-    class AshHellForeground : Foreground
+    class AshHellForeground : ParticleForeground
     {
         public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell;
 

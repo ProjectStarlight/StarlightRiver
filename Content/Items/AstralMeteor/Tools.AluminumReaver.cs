@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
                     if (target.active && Vector2.Distance(target.Center, player.Center) < 100)
                     {
                         Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<ReaverLightningNode>(), 20, 0, 0, 2, 100);
-                        Helper.DrawElectricity(player.Center, target.Center, DustType<Dusts.Electric>());
+                        DrawHelper.DrawElectricity(player.Center, target.Center, DustType<Dusts.Electric>());
                     }
                 }
             return true;
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             if (projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
                 Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<ReaverLightningNode>(), damage, knockback, projectile.owner, projectile.ai[0] - 1, projectile.ai[1]);
-                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Dusts.Electric>());
+                DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Dusts.Electric>());
             }
             projectile.timeLeft = 0;
         }

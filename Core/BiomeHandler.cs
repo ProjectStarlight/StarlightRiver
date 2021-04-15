@@ -141,7 +141,7 @@ namespace StarlightRiver.Core
                     .UseOpacity(2.5f)
                     .UseIntensity(7f)
                     .UseProgress(6)
-                    .UseImage(StarlightRiver.lightingTest.ScreenLightingTexture, 0);                 
+                    .UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);                 
             }
             else
             {

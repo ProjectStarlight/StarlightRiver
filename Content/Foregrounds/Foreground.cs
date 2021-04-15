@@ -5,17 +5,16 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Foregrounds
 {
-    public abstract class Foreground : ILoadable
+    public abstract class Foreground
     {
-        public ParticleSystem ParticleSystem { get; set; }
+        protected float opacity = 0;
 
         public virtual bool Visible => false;
 
-        public Foreground() { }
-
-        public Foreground(ParticleSystem system) => ParticleSystem = system;
-
-        protected float opacity = 0;
+        public Foreground() 
+        {
+            OnLoad();
+        }
 
         public void Render(SpriteBatch spriteBatch)
         {
@@ -34,15 +33,21 @@ namespace StarlightRiver.Content.Foregrounds
         public virtual void Draw(SpriteBatch spriteBatch, float opacity) { }
 
         public virtual void OnLoad() { }
+    }
 
-        public float Priority { get => 1f; }
+	public abstract class ParticleForeground : Foreground
+	{
+        public ParticleSystem ParticleSystem { get; set; }
 
-        public void Load()
+        public ParticleForeground()
         {
             OnLoad();
-            StarlightRiver.Instance.foregrounds.Add(this);
         }
 
-        public void Unload() => StarlightRiver.Instance.foregrounds.Remove(this);
+        public ParticleForeground(ParticleSystem system)
+        {
+            ParticleSystem = system;
+            OnLoad();
+        }
     }
 }
