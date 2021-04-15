@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
             On.Terraria.Main.SetDisplayMode += RefreshBannerTarget;
-            On.Terraria.Main.Draw += DrawVerletBannerTarget;
+            Main.OnPreDraw += DrawVerletBannerTarget;
         }
 
 		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
@@ -43,9 +43,9 @@ namespace StarlightRiver.Content.CustomHooks
             orig(width, height, fullscreen);
         }
 
-        private void DrawVerletBannerTarget(On.Terraria.Main.orig_Draw orig, Main self, GameTime gameTime)
+        private void DrawVerletBannerTarget(GameTime obj)
         {
-            GraphicsDevice graphics = self.GraphicsDevice;
+            GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
             graphics.SetRenderTarget(VerletChainInstance.target);
             graphics.Clear(Color.Transparent);
@@ -54,8 +54,6 @@ namespace StarlightRiver.Content.CustomHooks
                 i.DrawStrip(i.scale);
 
             graphics.SetRenderTarget(null);
-
-            orig(self, gameTime);
         }
     }
 }

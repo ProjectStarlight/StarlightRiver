@@ -88,10 +88,12 @@ namespace StarlightRiver.Content.CustomHooks
             if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock && !lava && !lit)
             {
                 var yOff = j - StarlightWorld.VitricBiome.Y;
+                var progress = 0.5f + (yOff / ((float)StarlightWorld.VitricBiome.Height)) * 0.7f;
+                progress = MathHelper.Max(0.5f, progress);
 
-                r = .3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0);
-                g = .48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0);
-                b = .65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0);
+                r = (0.3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0)) * progress;
+                g = (0.48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0)) * progress;
+                b = (0.65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0)) * progress;
             }
 
             //underworld lighting

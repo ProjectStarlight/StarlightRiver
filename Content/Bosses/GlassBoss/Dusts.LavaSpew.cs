@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             dust.fadeIn++;
 
+            Lighting.AddLight(dust.position, new Vector3(1, 0.6f, 0.1f) * 0.8f);
+
             if (dust.fadeIn > 30)
                 dust.active = false;
             return false;

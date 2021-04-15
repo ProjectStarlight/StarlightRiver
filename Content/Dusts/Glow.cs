@@ -45,6 +45,8 @@ namespace StarlightRiver.Content.Dusts
             dust.color *= 0.95f;
             dust.scale *= 0.95f;
 
+            Lighting.AddLight(dust.position, dust.color.ToVector3());
+
             if (dust.scale < 0.05f)
                 dust.active = false;
 

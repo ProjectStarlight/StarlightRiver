@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Abilities
             return player.ActiveAbility<Smash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
+        public static bool UsingAnyAbility(this Player player) => player.GetHandler().ActiveAbility != null;
+
         public static bool ActiveAbility<T>(this Player player) where T : Ability => player.GetHandler().ActiveAbility is T;
 
         public static AbilityHandler GetHandler(this Player player) => player.GetModPlayer<AbilityHandler>();
