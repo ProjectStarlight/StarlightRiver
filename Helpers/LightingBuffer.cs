@@ -138,20 +138,20 @@ namespace StarlightRiver.Helpers
 
             ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
-            ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["zoom"].SetValue(zoom);
             ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
             ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
 
-            verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size());
-            verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + pos.Width), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
-            verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y + pos.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+            verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
+            verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+            verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
 
-            verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + pos.Width), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
-            verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + pos.Width), DrawHelper.ConvertY(pos.Y + pos.Height), 0), source.BottomRight() / tex.Size());
-            verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y + pos.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+            verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+            verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
+            verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
 
             buffer.SetData(verticies);
 
@@ -168,7 +168,7 @@ namespace StarlightRiver.Helpers
 
         public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default)
         {
-            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, tex.Width, tex.Height), tex, source, color);
+            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
         }
 
         public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default)
