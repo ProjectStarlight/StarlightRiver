@@ -7,7 +7,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Foregrounds
 {
-    class OvergrowForeground : Foreground
+    class OvergrowForeground : ParticleForeground
     {
         public override void OnLoad()
         {

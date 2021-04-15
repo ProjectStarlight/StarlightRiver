@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             //lightning
             if (projectile.ai[0] == 88 && Main.rand.Next(8) == 0)
             {
-                Helper.DrawElectricity(projectile.position + new Vector2(Main.rand.Next(176), 60), projectile.position + new Vector2(Main.rand.Next(2) == 0 ? 0 : 176, 0), DustType<Dusts.GoldNoMovement>(), 0.5f);
+                DrawHelper.DrawElectricity(projectile.position + new Vector2(Main.rand.Next(176), 60), projectile.position + new Vector2(Main.rand.Next(2) == 0 ? 0 : 176, 0), DustType<Dusts.GoldNoMovement>(), 0.5f);
             }
 
             if (projectile.ai[1] != 0)

@@ -25,15 +25,11 @@ namespace StarlightRiver
     {
         public AbilityHotkeys AbilityKeys { get; private set; }
 
-        public List<RiftRecipe> RiftRecipes;
-
-        public List<Foreground> foregrounds;
-
         private List<ILoadable> loadCache;
 
         public static float Rotation;
 
-        public static LightingBuffer lightingTest = null;
+        public static LightingBuffer LightingBufferInstance = null;
 
         public static StarlightRiver Instance { get; set; }
 
@@ -108,21 +104,9 @@ namespace StarlightRiver
             return;
         }
 
-        public static void AutoloadRiftRecipes(List<RiftRecipe> target)
-        {
-            if (Instance.Code != null)
-            {
-                foreach (Type type in Instance.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(RiftRecipe))))
-                {
-                    target.Add((RiftRecipe)Activator.CreateInstance(type));
-                }
-            }
-        }
-
         public override void Load()
         {
             loadCache = new List<ILoadable>();
-            foregrounds = new List<Foreground>();
 
             foreach (Type type in Code.GetTypes())
             {
@@ -135,35 +119,27 @@ namespace StarlightRiver
                 loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
             }
 
-            for(int k = 0; k < loadCache.Count; k++)
+            for (int k = 0; k < loadCache.Count; k++)
             {
                 loadCache[k].Load();
             }
 
             if (!Main.dedServ)
             {
-                lightingTest = new LightingBuffer();
-            }
+                LightingBufferInstance = new LightingBuffer();
 
-            //Autoload Rift Recipes
-            RiftRecipes = new List<RiftRecipe>();
-            AutoloadRiftRecipes(RiftRecipes);
-
-            if (!Main.dedServ)
-            {
                 //Hotkeys
                 AbilityKeys = new AbilityHotkeys(this);
                 AbilityKeys.LoadDefaults();
             }
         }
 
-        private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
+        //private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
 
         public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
             if (false) //ignore this block
             {
-
                 Matrix rotation = Matrix.CreateRotationZ(Rotation);
                 Matrix translation = Matrix.CreateTranslation(new Vector3(Main.screenWidth / 2, Main.screenHeight / 2, 0));
                 Matrix translation2 = Matrix.CreateTranslation(new Vector3(Main.screenWidth / -2, Main.screenHeight / -2, 0));
@@ -196,8 +172,6 @@ namespace StarlightRiver
 
             if (!Main.dedServ)
             {
-                RiftRecipes = null;
-
                 Instance = null;
                 AbilityKeys.Unload();
             }

@@ -178,26 +178,26 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 );
 
             ApplyEffect.Parameters["drawSize"].SetValue(target.Size());
-            ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + Helper.ConvertY(WaterLevel - Main.screenPosition.Y) / 2f));
+            ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevel - Main.screenPosition.Y) / 2f));
             ApplyEffect.Parameters["time"].SetValue(Main.GameUpdateCount / 75f);
 
             ApplyEffect.Parameters["draw"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterOver"));
             ApplyEffect.Parameters["distort"].SetValue(GetTexture(AssetDirectory.SquidBoss + "WaterDistort"));
-            ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingTest.ScreenLightingTexture);
+            ApplyEffect.Parameters["light"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
             ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
-            ApplyEffect.Parameters["xOff"].SetValue(0.5f + Helper.ConvertX(target.X) / 2f);
+            ApplyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
             ApplyEffect.Parameters["zoom"].SetValue(zoom);
 
             //var verticies = new VertexPositionColorTexture[6];
             //var buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
 
-            verticies[0] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X), Helper.ConvertY(target.Y), 0), Color.White, Vector2.Zero);
-            verticies[1] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X + target.Width), Helper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
-            verticies[2] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X), Helper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
+            verticies[0] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.Zero);
+            verticies[1] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
+            verticies[2] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
 
-            verticies[3] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X + target.Width), Helper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
-            verticies[4] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X + target.Width), Helper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.One);
-            verticies[5] = new VertexPositionColorTexture(new Vector3(Helper.ConvertX(target.X), Helper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
+            verticies[3] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y), 0), Color.White, Vector2.UnitX);
+            verticies[4] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X + target.Width), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.One);
+            verticies[5] = new VertexPositionColorTexture(new Vector3(DrawHelper.ConvertX(target.X), DrawHelper.ConvertY(target.Y + target.Height), 0), Color.White, Vector2.UnitY);
 
             buffer.SetData(verticies);
 
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var sourcePos1 = new Vector2(500, 1800) + off * 16 + FindOffset(npc.Center, -0.1f);
             var source1 = new Rectangle((int)sourcePos1.X, (int)sourcePos1.Y, 160, 668);
 
-            Helper.DrawTriangle(background1, new Vector2[]
+            DrawHelper.DrawTriangle(background1, new Vector2[]
             {
                 target.TopLeft() + new Vector2(target.Width / 2, -200),
                 target.TopRight(),
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
             );
 
-            Helper.DrawTriangle(background1, new Vector2[]
+            DrawHelper.DrawTriangle(background1, new Vector2[]
             {
                 target.TopLeft() + new Vector2(target.Width / 2, -200),
                 target.TopRight(),
@@ -353,7 +353,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
             );
 
-            Helper.DrawTriangle(background2, new Vector2[]
+            DrawHelper.DrawTriangle(background2, new Vector2[]
             {
                 target.TopLeft() + new Vector2(target.Width / 2, -200),
                 target.TopRight(),

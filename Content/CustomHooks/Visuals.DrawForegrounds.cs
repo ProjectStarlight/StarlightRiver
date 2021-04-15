@@ -2,6 +2,7 @@
 using Terraria;
 
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -19,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             Main.spriteBatch.Begin();
 
-            foreach (var fg in StarlightRiver.Instance.foregrounds)
+            foreach (var fg in ForegroundLoader.Foregrounds)
                 fg.Render(Main.spriteBatch);
 
             Main.spriteBatch.End();

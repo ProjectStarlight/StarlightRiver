@@ -22,7 +22,7 @@ namespace StarlightRiver.Buffs
             if (Main.rand.Next(10) == 0)
             {
                 Vector2 pos = player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(player.width);
-                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
+                DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
 
             return;
@@ -37,7 +37,7 @@ namespace StarlightRiver.Buffs
                         var proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, player.whoAmI, 2, 100);
                         proj.friendly = false;
                         proj.modProjectile.OnHitNPC(npc, 2, 0, false);
-                        Helper.DrawElectricity(player.Center, npc.Center, DustType<Content.Dusts.Electric>());
+                        DrawHelper.DrawElectricity(player.Center, npc.Center, DustType<Content.Dusts.Electric>());
                         break;
                     }
                 }
@@ -51,7 +51,7 @@ namespace StarlightRiver.Buffs
             if (Main.rand.Next(10) == 0)
             {
                 Vector2 pos = npc.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(npc.width);
-                Helper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
+                DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
 
             return;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Buffs
                         var proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
                         proj.friendly = false;
                         proj.modProjectile.OnHitNPC(npc, 2, 0, false);
-                        Helper.DrawElectricity(npc.Center, target.Center, DustType<Content.Dusts.Electric>());
+                        DrawHelper.DrawElectricity(npc.Center, target.Center, DustType<Content.Dusts.Electric>());
                         break;
                     }
                 }
@@ -103,7 +103,7 @@ namespace StarlightRiver.Buffs
             if (projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
                 Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, projectile.owner, projectile.ai[0] - 1, projectile.ai[1]);
-                Helper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
+                DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
             }
             projectile.timeLeft = 0;
         }

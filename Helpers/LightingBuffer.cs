@@ -143,7 +143,7 @@ namespace StarlightRiver.Helpers
             ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
-            ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.lightingTest.ScreenLightingTexture);
+            ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
 
             verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size());
             verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + pos.Width), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
