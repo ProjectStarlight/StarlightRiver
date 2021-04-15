@@ -38,7 +38,7 @@ namespace StarlightRiver.Helpers
         private void PopulateTileTexture(Vector2 start)
         {
             GettingColors = true;
-            Color[] tileLightingBuffer = new Color[(XMax) * (YMax)];
+            Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
 
             for (int x = 0; x < XMax; x++)
                 for (int y = 0; y < YMax; y++)
