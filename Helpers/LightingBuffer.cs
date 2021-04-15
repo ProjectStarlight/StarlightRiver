@@ -28,11 +28,11 @@ namespace StarlightRiver.Helpers
         static int XMax => Main.screenWidth / 16 + PADDING * 2;
         static int YMax => (int)(Main.screenHeight / 16 + (PADDING * 2 * factor));
 
-        public void ResizeBuffers()
+        public void ResizeBuffers(int width, int height)
         {
-            factor = Main.screenHeight / (float)Main.screenWidth;
-            ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            float factor = height / (float)width;
+            ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
 
         private void PopulateTileTexture(Vector2 start)
@@ -40,10 +40,10 @@ namespace StarlightRiver.Helpers
             GettingColors = true;
             Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
 
-            for (int x = 0; x < XMax; x++)
-                for (int y = 0; y < YMax; y++)
+            for (int x = 0; x < TileLightingTexture.Width; x++)
+                for (int y = 0; y < TileLightingTexture.Height; y++)
                 {
-                    int index = y * XMax + x;
+                    int index = y * TileLightingTexture.Width + x;
                     if (tileLightingBuffer.Length > index) tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
                 }
 

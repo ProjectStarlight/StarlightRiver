@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (width != Main.screenWidth || height != Main.screenHeight)
-                StarlightRiver.LightingBufferInstance.ResizeBuffers();
+                StarlightRiver.LightingBufferInstance.ResizeBuffers(width, height);
 
             orig(width, height, fullscreen);
         }
