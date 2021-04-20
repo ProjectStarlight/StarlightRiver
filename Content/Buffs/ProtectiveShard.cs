@@ -1,6 +1,6 @@
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class ProtectiveShard : SmartBuff
     {

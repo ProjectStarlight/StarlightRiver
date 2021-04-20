@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Buffs.Summon;
+using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;

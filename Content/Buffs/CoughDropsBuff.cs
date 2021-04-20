@@ -1,7 +1,7 @@
 using Terraria;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class CoughDropsBuff : SmartBuff
     {

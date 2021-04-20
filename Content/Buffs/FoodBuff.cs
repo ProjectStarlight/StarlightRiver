@@ -4,7 +4,7 @@ using Terraria;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Food;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class FoodBuff : SmartBuff
     {

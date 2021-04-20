@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Buffs;
+﻿using StarlightRiver.Content.Buffs;
 using Terraria;
 using Terraria.ModLoader;
 using StarlightRiver.Core;

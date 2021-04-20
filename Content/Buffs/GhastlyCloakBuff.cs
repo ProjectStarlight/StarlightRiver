@@ -2,7 +2,7 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class GhastlyCloakBuff : SmartBuff
     {

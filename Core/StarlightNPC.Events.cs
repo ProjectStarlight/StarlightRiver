@@ -34,5 +34,19 @@ namespace StarlightRiver.Core
         {
             ModifyHitByProjectileEvent?.Invoke(npc, projectile, ref damage, ref knockback, ref crit, ref hitDirection);
         }
-    }
+
+        public delegate void ModifyHitPlayerDelegate(NPC npc, Player target, ref int damage, ref bool crit);
+        public static event ModifyHitPlayerDelegate ModifyHitPlayerEvent;
+        public override void ModifyHitPlayer(NPC npc, Player target, ref int damage, ref bool crit)
+		{
+            ModifyHitPlayerEvent?.Invoke(npc, target, ref damage, ref crit);
+        }
+
+        public delegate void ResetEffectsDelegate(NPC npc);
+        public static event ResetEffectsDelegate ResetEffectsEvent;
+		public override void ResetEffects(NPC npc)
+		{
+            ResetEffectsEvent?.Invoke(npc);
+		}
+	}
 }

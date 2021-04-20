@@ -2,7 +2,7 @@
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs.Summon
+namespace StarlightRiver.Content.Buffs.Summon
 {
     class VitricSummonBuff : SmartBuff
     {

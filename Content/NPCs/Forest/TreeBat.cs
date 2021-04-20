@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                     npc.velocity.Y = Math.Max(npc.velocity.Y, -4);
                     npc.rotation = npc.velocity.ToRotation();
 
-                    if (GlobalTimer >= 300) //timeout
+                    if (GlobalTimer >= 450) //timeout
                         npc.active = false;
 
                 break;
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            if (!spawnInfo.player.ZoneForest())
+            if (!spawnInfo.player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
                 return 0;
 
             for (int x = -30; x < 30; x++)
