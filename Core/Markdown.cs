@@ -27,12 +27,9 @@ namespace StarlightRiver.Core
 
         public static void DrawMessage(SpriteBatch sb, Vector2 pos, string message, float scale, int wrapWidth = 0)
         {
-            List<string> messages;
-            List<string> mods;
+			SplitMessage(wrapWidth > 0 ? WrapMarkdownText(message, wrapWidth) : message, out List<string> messages, out List<string> mods);
 
-            SplitMessage(wrapWidth > 0 ? WrapMarkdownText(message, wrapWidth) : message, out messages, out mods);
-
-            float xOff = 0;
+			float xOff = 0;
             float yOff = 0;
             for (int k = 0; k < messages.Count; k++)
             {
