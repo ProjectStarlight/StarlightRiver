@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.GUI
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
         private static bool Moving = false;
+        private static Vector2 MoveOffset = Vector2.Zero;
         private static int scrollStart = 0;
         private static int lineCount = 0;
 
@@ -47,10 +48,17 @@ namespace StarlightRiver.Content.GUI
 
         public override void Update(GameTime gameTime)
         {
-            if (TopBar.IsMouseHovering && Main.mouseLeft) Moving = true;
+            if (TopBar.IsMouseHovering && Main.mouseLeft)
+            {
+                if (!Moving)
+                    MoveOffset = Main.MouseScreen - Basepos;
+
+                Moving = true;
+            }
+
             if (!Main.mouseLeft) Moving = false;
 
-            if (Moving) Basepos = Main.MouseScreen;
+            if (Moving) Basepos = Main.MouseScreen - MoveOffset;
             if (Basepos.X < 20) Basepos.X = 20;
             if (Basepos.Y < 20) Basepos.Y = 20;
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
@@ -77,6 +85,8 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
+
             base.Draw(spriteBatch);
             Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
             Utils.DrawBorderString(spriteBatch, "Info/Stats", Basepos + new Vector2(202, 8), Color.White, 0.8f);
@@ -131,8 +141,8 @@ namespace StarlightRiver.Content.GUI
                 {
                     var tex = GetTexture("StarlightRiver/Assets/GUI/Arrow");
 
-                    spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 358, (int)Basepos.Y + 60, 4, 80), new Color(120, 80, 60));
-                    spriteBatch.Draw(tex, Basepos + new Vector2(360, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
+                    spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
                 }
             }
         }
@@ -157,6 +167,8 @@ namespace StarlightRiver.Content.GUI
                 CookIngredient(item, SeasonSlot);
                 item.position = Main.LocalPlayer.Center;
                 Main.LocalPlayer.QuickSpawnClonedItem(item);
+
+                Main.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
             }
         }
 
@@ -202,11 +214,14 @@ namespace StarlightRiver.Content.GUI
             }
 
             spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
+
             if (!Item.IsAir)
             {
                 Texture2D tex2 = GetTexture(Item.modItem.Texture);
-                spriteBatch.Draw(tex2, new Rectangle((int)GetDimensions().X + 16, (int)GetDimensions().Y + 16, 28, 28), tex2.Frame(), Color.White);
-                if (Item.stack > 1) spriteBatch.DrawString(Main.fontItemStack, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White);
+                spriteBatch.Draw(tex2, new Rectangle((int)GetDimensions().X + 30, (int)GetDimensions().Y + 30, (int)MathHelper.Min(tex2.Width, 28), (int)MathHelper.Min(tex2.Height, 28)), tex2.Frame(), Color.White, 0, tex2.Size() / 2, 0, 0);
+
+                if (Item.stack > 1)
+                    Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 32, Color.White, 0.75f);
             }
         }
 
@@ -220,18 +235,50 @@ namespace StarlightRiver.Content.GUI
                 Item.TurnToAir();
                 Main.PlaySound(SoundID.Grab);
             }
+
             if (Item.IsAir && player.HeldItem.type == Item.type) //if the cursor is the same type as the item already in the slot, add to the slot
             {
                 Item.stack += player.HeldItem.stack;
                 player.HeldItem.TurnToAir();
                 Main.PlaySound(SoundID.Grab);
             }
+
             if (player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && Item.IsAir) //if the slot is empty and the cursor has an item, put it in the slot
             {
                 Item = player.HeldItem.Clone();
                 player.HeldItem.TurnToAir();
+                Main.mouseItem.TurnToAir();
                 Main.PlaySound(SoundID.Grab);
             }
+
+            if(player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && !Item.IsAir) //swap or stack
+			{
+                if(player.HeldItem.type == Item.type) //stack
+				{
+                    if (Item.stack + player.HeldItem.stack > Item.maxStack)
+                    {
+                        Main.mouseItem.stack = Item.stack + player.HeldItem.stack - Item.maxStack;
+                        Item.stack = Item.maxStack;                    
+                        Main.PlaySound(SoundID.Grab);
+                    }
+                    else
+                    {
+                        Item.stack += player.HeldItem.stack;
+                        player.HeldItem.TurnToAir();
+                        Main.mouseItem.TurnToAir();
+                        Main.PlaySound(SoundID.Grab);
+                    }
+                }
+				else //swap
+				{
+                    var temp = Item;
+                    Item = player.HeldItem;
+                    Main.mouseItem = temp;
+                    Main.PlaySound(SoundID.Grab);
+                }
+			}
+
+
             Main.isMouseLeftConsumedByUI = true;
         }
 
