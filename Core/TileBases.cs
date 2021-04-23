@@ -15,7 +15,7 @@ using Terraria.Enums;
 
 namespace StarlightRiver.Core
 {
-    public abstract class VineTile : ModTile
+    public abstract class ModVine : ModTile
     {
         private readonly string[] AnchorableTiles;
         private int[] AnchorTileTypes;
@@ -27,16 +27,16 @@ namespace StarlightRiver.Core
         private readonly int DustAmount;
         private readonly int Sound;
 
-        public VineTile(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, int itemType = 0, int dustAmount = 1, int sound = SoundID.Grass)
+        public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, int drop = 0, int dustAmount = 1, int soundType = SoundID.Grass)
         {
             AnchorableTiles = anchorableTiles;
             DustType = dustType;
             MapColor = mapColor;
             GrowthChance = growthChance;
             MaxVineLength = maxVineLength;
-            ItemType = itemType;
+            ItemType = drop;
             DustAmount = dustAmount;
-            Sound = sound;
+            Sound = soundType;
         }
 
         public sealed override void SetDefaults()

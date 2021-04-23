@@ -7,8 +7,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
     class AstralMeteor : HookGroup
@@ -54,13 +52,13 @@ namespace StarlightRiver.Content.CustomHooks
 
                             if (dist > 8 && dist < 15)
                             {
-                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Tiles.OreAluminum>(), true, true);
+                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Content.Tiles.AstralMeteor.AluminumOre>(), true, true);
                                 WorldGen.SlopeTile(target.X + x, target.Y + y, 0);
                             }
 
                             if (dist > 15 && dist < 30 && Main.rand.Next((int)dist - 15) == 0)
                             {
-                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Tiles.OreAluminum>(), true, true);
+                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Content.Tiles.AstralMeteor.AluminumOre> (), true, true);
                                 WorldGen.SlopeTile(target.X + x, target.Y + y, 0);
                             }
                         }

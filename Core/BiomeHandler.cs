@@ -14,11 +14,11 @@ using StarlightRiver.Content.Tiles.JungleHoly;
 using StarlightRiver.Content.Tiles.JungleBloody;
 using StarlightRiver.Content.Tiles.JungleCorrupt;
 using StarlightRiver.Content.Tiles.Overgrow;
-using StarlightRiver.Content.Tiles;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.AshHell;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Tiles.AstralMeteor;
 
 namespace StarlightRiver.Core
 {
@@ -178,7 +178,7 @@ namespace StarlightRiver.Core
             corruptJungleTiles = tileCounts[TileType<GrassJungleCorrupt>()];
             bloodJungleTiles = tileCounts[TileType<GrassJungleBloody>()];
             holyJungleTiles = tileCounts[TileType<GrassJungleHoly>()];
-            aluminumTiles = tileCounts[TileType<OreAluminum>()];
+            aluminumTiles = tileCounts[TileType<AluminumOre>()];
             permafrostTiles = tileCounts[TileType<PermafrostIce>()];
             ashHellTiles = tileCounts[TileType<MagicAsh>()]; 
         }

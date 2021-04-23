@@ -11,7 +11,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
-    public class VineJungleCorrupt : VineTile
+    public class VineJungleCorrupt : ModVine
     {
         public override bool Autoload(ref string name, ref string texture)
         {

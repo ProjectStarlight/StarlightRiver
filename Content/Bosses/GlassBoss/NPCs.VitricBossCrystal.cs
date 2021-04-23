@@ -411,7 +411,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             return Color.Lerp(new Color(255, 70, 40), new Color(255, 160, 60), (float)Math.Sin(coord.X * 6.28f + Main.GameUpdateCount / 20f)) * alpha;
 
-            return Color.Lerp(new Color(80, 160, 255), new Color(100, 255, 255), (float)Math.Sin(coord.X * 6.28f + Main.GameUpdateCount / 20f)) * alpha;
+            //return Color.Lerp(new Color(80, 160, 255), new Color(100, 255, 255), (float)Math.Sin(coord.X * 6.28f + Main.GameUpdateCount / 20f)) * alpha;
         }
     }
 }

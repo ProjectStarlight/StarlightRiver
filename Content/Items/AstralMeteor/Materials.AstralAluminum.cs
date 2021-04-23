@@ -4,20 +4,20 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles;
+using StarlightRiver.Content.Tiles.AstralMeteor;
 
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
     public class AluminumOre : QuickTileItem
     {
-        public AluminumOre() : base("Astral Aluminum", "", TileType<OreAluminum>(), ItemRarityID.White, AssetDirectory.AluminumItem) { }
+        public AluminumOre() : base("Astral Aluminum", "", "AluminumOre", ItemRarityID.Blue, AssetDirectory.AluminumItem) { }
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
     }
 
     public class AluminumBar : QuickTileItem
     {
-        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", TileType<OreAluminum>(), ItemRarityID.Blue, AssetDirectory.AluminumItem) { }  //TODO: Fix place type
+        public AluminumBar() : base("Astral Aluminum Bar", "'Shimmering with Beautiful Light'", "AluminumBar", ItemRarityID.White, AssetDirectory.AluminumItem) { }  //TODO: Fix place type
 
         public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 14, 0);
 
