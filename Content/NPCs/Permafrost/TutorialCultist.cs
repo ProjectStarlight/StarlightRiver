@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Buffs;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System;

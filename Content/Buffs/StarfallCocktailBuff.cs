@@ -4,7 +4,7 @@ using Terraria.ID;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class StarfallCocktailBuff : SmartBuff
     {

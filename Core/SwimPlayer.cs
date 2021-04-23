@@ -6,6 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Buffs;
 
 namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 {
@@ -17,7 +18,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
         public override void PostUpdate()
         {
-            if (!player.HasBuff(BuffType<Buffs.PrismaticDrown>())) //TODO: Better check later
+            if (!player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Better check later
             {
                 if (boostCD > 0)
                 {

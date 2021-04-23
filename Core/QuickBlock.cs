@@ -5,6 +5,8 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 using StarlightRiver.Core;
+using Terraria.Enums;
+using Terraria.ID;
 
 namespace StarlightRiver.Core
 {
@@ -26,6 +28,30 @@ namespace StarlightRiver.Core
             ModTranslation name = tile.CreateMapEntryName();
             name.SetDefault(mapName);
             tile.AddMapEntry(mapColor, name);
+        }
+
+        public static void QuickSetBar(this ModTile tile, int drop, int dustType, Color? mapColor = null, int soundType = SoundID.Tink)
+        {
+            Main.tileMergeDirt[tile.Type] = false;
+            Main.tileFrameImportant[tile.Type] = true;
+
+            Main.tileSolid[tile.Type] = true;
+            Main.tileSolidTop[tile.Type] = true;
+            Main.tileNoAttach[tile.Type] = true;
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+            TileObjectData.newTile.LavaDeath = false;
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            TileObjectData.addTile(tile.Type);
+
+            ModTranslation name = tile.CreateMapEntryName();
+            name.SetDefault("Metal Bar"); //all bars are called metal bar in vanilla
+            if (mapColor != null)
+                tile.AddMapEntry(mapColor ?? Color.Transparent, name);
+
+            tile.dustType = dustType;
+            tile.soundType = soundType;
+            tile.drop = drop;
         }
 
         public static void QuickSetWall(this ModWall wall, int dustType, int soundType, int drop, bool safe, Color mapColor)

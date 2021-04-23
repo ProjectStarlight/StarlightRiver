@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Buffs;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;

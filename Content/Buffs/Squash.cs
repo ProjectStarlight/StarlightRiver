@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     class Squash : ModBuff
     {

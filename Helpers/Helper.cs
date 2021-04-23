@@ -50,6 +50,30 @@ namespace StarlightRiver.Helpers
 
         public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.rottime)) / 2f);
 
+        public static Vector2 Centeroid (List<NPC> input) //Helper overload for NPCs for support NPCs
+		{
+            List<Vector2> centers = new List<Vector2>();
+
+            for (int k = 0; k < input.Count; k++)
+                centers.Add(input[k].Center);
+
+            return Centeroid(centers);
+		}
+
+        public static Vector2 Centeroid (List<Vector2> input) //this gets the centeroid of the points. see: https://math.stackexchange.com/questions/1801867/finding-the-centre-of-an-abritary-set-of-points-in-two-dimensions
+        {
+            float sumX = 0;
+            float sumY = 0;
+
+            for (int k = 0; k < input.Count; k++)
+            {
+                sumX += input[k].X;
+                sumY += input[k].Y;
+            }
+
+            return new Vector2(sumX / input.Count, sumY / input.Count); 
+        }
+
         public static float LerpFloat(float min, float max, float val)
         {
             float difference = max - min;

@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Core;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
     public class HookGroup : ILoadable

@@ -42,7 +42,7 @@ namespace StarlightRiver.Core
 
         public const string FoodItem =              Assets + "Items/Food/";
 
-        public const string EbonyIvoryItem =        Assets + "Items/EbonyIvory/";
+        public const string BalancedItem =          Assets + "Items/Balanced/";
 
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
@@ -75,6 +75,10 @@ namespace StarlightRiver.Core
         public const string VoidTile =              Assets + "Tiles/Void/";
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
+
+        public const string AluminumTile =          Assets + "Tiles/AstralMeteor/";
+
+        public const string BalancedTile =          Assets + "Tiles/Balanced/";
 
         public const string DecorationTile =        Assets + "Tiles/Decoration/";
 

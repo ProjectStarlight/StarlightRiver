@@ -5,8 +5,6 @@ using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using Terraria.ID;
 

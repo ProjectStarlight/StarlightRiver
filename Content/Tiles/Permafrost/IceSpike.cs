@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Buffs;
+using StarlightRiver.Content.Buffs;
 using System;
 using Terraria;
 using Terraria.DataStructures;

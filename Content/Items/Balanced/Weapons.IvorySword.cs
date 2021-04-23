@@ -7,11 +7,11 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 
 
-namespace StarlightRiver.Content.Items.EbonyIvory
+namespace StarlightRiver.Content.Items.Balanced
 {
     public class IvorySword : ModItem
     {
-        public override string Texture => AssetDirectory.EbonyIvoryItem + Name;
+        public override string Texture => AssetDirectory.BalancedItem + Name;
 
         private int combostate = 0;
 
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
 
     public class IvorySwordProjectile : ModProjectile
     {
-        public override string Texture => AssetDirectory.EbonyIvoryItem + Name;
+        public override string Texture => AssetDirectory.BalancedItem + Name;
 
         public override void SetDefaults()
         {
@@ -93,9 +93,7 @@ namespace StarlightRiver.Content.Items.EbonyIvory
             {
                 projectile.frameCounter = 0;
                 if (++projectile.frame >= 7 + 7 * (int)projectile.localAI[1])
-                {
                     projectile.frame = 7 * (int)projectile.localAI[1];
-                }
             }
 
             if (projectile.localAI[1] == 2 && projectile.localAI[0] == 0)

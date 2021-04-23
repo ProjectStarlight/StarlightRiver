@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Buffs;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using System;
 using System.Collections.Generic;

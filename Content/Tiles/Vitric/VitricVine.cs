@@ -10,7 +10,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricVine : VineTile
+    internal class VitricVine : ModVine
     {
         public override bool Autoload(ref string name, ref string texture)
         {

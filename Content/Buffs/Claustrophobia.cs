@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class Claustrophobia : SmartBuff
     {

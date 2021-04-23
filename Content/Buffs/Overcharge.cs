@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     class Overcharge : SmartBuff
     {

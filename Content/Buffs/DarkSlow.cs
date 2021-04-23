@@ -2,7 +2,7 @@ using Terraria;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Buffs
+namespace StarlightRiver.Content.Buffs
 {
     public class DarkSlow : SmartBuff
     {

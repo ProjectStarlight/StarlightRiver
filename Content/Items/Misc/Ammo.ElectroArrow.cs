@@ -6,7 +6,7 @@ using StarlightRiver.Core;
 using Terraria;
 using System;
 using Microsoft.Xna.Framework;
-using StarlightRiver.Buffs;
+using StarlightRiver.Content.Buffs;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;

@@ -14,7 +14,7 @@ using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class VineOvergrow : VineTile
+    internal class VineOvergrow : ModVine
     {
         public override bool Autoload(ref string name, ref string texture)
         {

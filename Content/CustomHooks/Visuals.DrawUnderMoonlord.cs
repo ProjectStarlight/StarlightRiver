@@ -2,8 +2,6 @@
 using StarlightRiver.Core;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
     class DrawUnderMoonlord : HookGroup

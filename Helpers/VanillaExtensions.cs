@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,31 @@ namespace StarlightRiver.Helpers
 				&& !player.ZoneBeach
 				&& !player.ZoneDesert
 				&& player.ZoneOverworldHeight;
+		}
+
+		public static NPC FindNearestNPC(this NPC npc)
+		{
+			return FindNearestNPC(npc, n => true);
+		}
+
+		public static NPC FindNearestNPC(this NPC npc, Predicate<NPC> predicate)
+		{
+			NPC toReturn = null;
+			float cacheDistance = int.MaxValue;
+
+			for(int k = 0; k < Main.maxNPCs; k++)
+			{
+				NPC check = Main.npc[k];
+				float distance = Vector2.Distance(npc.Center, check.Center);
+
+				if (check != npc && predicate(check) && distance < cacheDistance)
+				{
+					toReturn = check;
+					cacheDistance = distance;
+				}
+			}
+
+			return toReturn;
 		}
 	}
 }
