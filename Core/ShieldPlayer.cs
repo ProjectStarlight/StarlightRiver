@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using StarlightRiver.Helpers;
 using StarlightRiver.Codex.Entries;
+using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
@@ -39,6 +41,8 @@ namespace StarlightRiver.Core
 				}
 				else
 				{
+					Main.PlaySound(Terraria.ID.SoundID.NPCDeath57, player.Center);
+
 					CombatText.NewText(player.Hitbox, Color.Cyan, Shield);
 					int overblow = damage - Shield;
 					damage = (int)(Shield * reduction) + overblow;
@@ -48,20 +52,18 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
-			ModifyDamage(ref damage, ref crit);
-			TimeSinceLastHit = 0;
+			if (Shield > 0)
+			{
+				damage = (int)Main.CalculatePlayerDamage(damage, player.statDefense);
 
-			base.ModifyHitByProjectile(proj, ref damage, ref crit);
-		}
+				ModifyDamage(ref damage, ref crit);
+				TimeSinceLastHit = 0;
+				player.statDefense = 0;
+			}
 
-		public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
-		{
-			ModifyDamage(ref damage, ref crit);
-			TimeSinceLastHit = 0;
-
-			base.ModifyHitByNPC(npc, ref damage, ref crit);
+			return true;
 		}
 
 		public override void UpdateBadLifeRegen()
@@ -71,6 +73,9 @@ namespace StarlightRiver.Core
 
 			if (MaxShield > 0)
 				TimeSinceLastHit++;
+
+			if (MaxShield == 0)
+				TimeSinceLastHit = 0;
 
 			if (TimeSinceLastHit >= RechargeDelay && Shield < MaxShield)
 			{
@@ -101,6 +106,20 @@ namespace StarlightRiver.Core
 						Shield--;
 				}
 			}
+		}
+
+		public override void UpdateDead()
+		{
+			Shield = 0;
+			TimeSinceLastHit = 0;
+		}
+
+		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		{
+			if (player.statLifeMax2 == 0 && Shield > 0) //if the player has no max life, its implied they can live off of shield
+				return false;
+
+			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
 		}
 
 		public override void ResetEffects()
