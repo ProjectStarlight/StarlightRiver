@@ -29,12 +29,12 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(self))
 			{
-				int rageToAdd = healAmount / 2;
+				int rageToAdd = healAmount * 20;
 
 				if (rageToAdd > 0)
 				{
-					rage += rageToAdd;
-					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd);
+					(GetEquippedInstance(self) as BloodlessAmulet).rage += rageToAdd;
+					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 20);
 				}
 			}
 			else orig(self, healAmount, broadcast);
@@ -43,19 +43,31 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
-			Tooltip.SetDefault("+100 Maximum Barrier\nBarrier absorbs ALL damage\nYou cannot have life\nSlightly reduced barrier recharge\nHealing grant a decaying rage effect instead of healing\n'Leave your flesh behind, for your rage is all you need to live'");
+			Tooltip.SetDefault("+100 Maximum Barrier\nBarrier absorbs ALL damage" +
+				"\nYou can survive without life"+
+				"\nYou cannot have life" +
+				"\nSlightly reduced barrier recharge" +
+				"\nHealing grants a decaying damage boost instead of life" +
+				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 
 		public override void SafeUpdateEquip(Player player)
 		{
-			player.meleeDamageMult += rage / 100f;
+			player.allDamageMult += rage / 2000f;
 
 			if(rage > 0)
 				rage--;
 
+			if (rage > 800)
+				rage = 800;
+
 			player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
 			player.GetModPlayer<ShieldPlayer>().ShieldResistance = 1;
-			player.statLifeMax2 = 0;
+			player.GetModPlayer<ShieldPlayer>().LiveOnOnlyShield = true;
+			player.GetModPlayer<ShieldPlayer>().RechargeRate -= 10;
+			player.statLife = 0;
+			player.lifeRegen = 0;
+			player.lifeRegenCount = 0;
 		}
 	}
 }

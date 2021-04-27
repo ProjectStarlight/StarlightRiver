@@ -17,6 +17,7 @@ namespace StarlightRiver.Core
 	{
 		public int MaxShield = 0;
 		public int Shield = 0;
+		public bool LiveOnOnlyShield = false;
 
 		public bool DontDrainOvershield = false;
 		public int OvershieldDrainRate = 60;
@@ -116,7 +117,7 @@ namespace StarlightRiver.Core
 
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
-			if (player.statLifeMax2 == 0 && Shield > 0) //if the player has no max life, its implied they can live off of shield
+			if (LiveOnOnlyShield && Shield > 0) //if the player has no max life, its implied they can live off of shield
 				return false;
 
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
@@ -125,6 +126,8 @@ namespace StarlightRiver.Core
 		public override void ResetEffects()
 		{
 			MaxShield = 0;
+			LiveOnOnlyShield = false;
+
 			DontDrainOvershield = false;
 			OvershieldDrainRate = 60;
 
