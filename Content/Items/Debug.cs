@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.CrashTech;
+﻿using StarlightRiver.Codex;
+using StarlightRiver.Content.Tiles.CrashTech;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -36,11 +37,17 @@ namespace StarlightRiver.Content.Items
             item.autoReuse = true;
             item.UseSound = SoundID.Item18;
             item.useTurn = true;
+            item.accessory = true;
 
             item.createTile = ModContent.TileType<CrashPod>();
         }
 
-        public override void UpdateInventory(Player player)
+		public override void UpdateEquip(Player player)
+		{
+            player.GetModPlayer<ShieldPlayer>().MaxShield += 35;
+		}
+
+		public override void UpdateInventory(Player player)
         {
             float rot = Main.rand.NextFloat(6.28f);
 
@@ -49,18 +56,19 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            for(int x = 0; x < Main.maxTilesX; x++)
-                for(int y = 0; y < Main.maxTilesY; y++)
-				{
-                    var tile = Framing.GetTileSafely(x, y);
-                    if (tile.collisionType == 1)
-                        tile.type = TileID.Stone;
-                    else
-					{
-                        tile.active(true);
-                        tile.type = TileID.Dirt;
-                    }
-				}
+            player.GetModPlayer<CodexHandler>().CodexState = 2;
+
+            foreach (CodexEntry entry in player.GetModPlayer<CodexHandler>().Entries)
+                entry.Locked = false;
+
+            player.GetModPlayer<ShieldPlayer>().Shield = 0;
+
+            foreach(NPC npc in Main.npc)
+			{
+                if (npc != null && npc.active)
+                    npc.GetGlobalNPC<ShieldNPC>().Shield = 500;
+			}
+
             return true;
         }
     }

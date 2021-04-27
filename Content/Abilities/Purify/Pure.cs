@@ -106,11 +106,11 @@ namespace StarlightRiver.Content.Abilities.Purify
                     ProjectileType<PurifierReturn>(), 0, 0, projectile.owner);
             }
 
-            else if (projectile.timeLeft == 60)
-                if (Filters.Scene["PurityFilter"].IsActive())
-                {
+            //else if (projectile.timeLeft == 60)
+                //if (Filters.Scene["PurityFilter"].IsActive())
+                //{
                     //Filters.Scene.Deactivate("PurityFilter");
-                }
+                //}
         }
 
         private readonly Texture2D cirTex = GetTexture("StarlightRiver/Assets/Abilities/ArcaneCircle");
