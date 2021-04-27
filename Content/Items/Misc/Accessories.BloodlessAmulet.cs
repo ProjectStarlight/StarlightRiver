@@ -29,12 +29,12 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(self))
 			{
-				int rageToAdd = healAmount * 20;
+				int rageToAdd = healAmount * 10;
 
 				if (rageToAdd > 0)
 				{
 					(GetEquippedInstance(self) as BloodlessAmulet).rage += rageToAdd;
-					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 20);
+					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 10);
 				}
 			}
 			else orig(self, healAmount, broadcast);
@@ -43,7 +43,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Amulet of the Bloodless Warrior");
-			Tooltip.SetDefault("+100 Maximum Barrier\nBarrier absorbs ALL damage" +
+			Tooltip.SetDefault("+100 Maximum Barrier" +
+				"\nUnaffected by damage over time" +
+				"\nBarrier absorbs ALL damage" +
 				"\nYou can survive without life"+
 				"\nYou cannot have life" +
 				"\nSlightly reduced barrier recharge" +
