@@ -35,4 +35,7 @@
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Tiles\Paintings\" />
+  </ItemGroup>
 </Project>

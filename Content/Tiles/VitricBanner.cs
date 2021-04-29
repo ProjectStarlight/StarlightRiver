@@ -11,9 +11,15 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles
 {
-    class VerletBanner : DummyTile
+    class VitricBanner : DummyTile
     {
-        public override int DummyType => ProjectileType<VerletBannerDummy>();
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
+        public override int DummyType => ProjectileType<VitricBannerDummy>();
 
         public override void SetDefaults()
         {
@@ -22,14 +28,14 @@ namespace StarlightRiver.Content.Tiles
         }
     }
 
-    class VerletBannerItem : QuickTileItem
+    class VitricBannerItem : QuickTileItem
 	{
-        public VerletBannerItem() : base("Verlet banner", "DRAGON DICK IN MY MOUTH", TileType<VerletBanner>(), 1, AssetDirectory.Debug, true) { }
+        public VitricBannerItem() : base("Long Flowing Banner", "", TileType<VitricBanner>(), 1, AssetDirectory.VitricTile, false) { }
 	}
 
-    internal class VerletBannerDummy : Dummy
+    internal class VitricBannerDummy : Dummy
     {
-        public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
+        public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }
 
         private VerletChainInstance Chain;
 
@@ -51,7 +57,9 @@ namespace StarlightRiver.Content.Tiles
         {
             Chain.UpdateChain(projectile.Center);
 
-            if (Chain.init) Chain.IterateRope(WindForce);
+            if (Chain.init) 
+                Chain.IterateRope(WindForce);
+
             projectile.ai[0] += 0.005f;
         }
 
@@ -72,9 +80,7 @@ namespace StarlightRiver.Content.Tiles
             Chain.ropeSegments[index].color = color;
         }
 
-        public override void Kill(int timeLeft)
-        {
+        public override void Kill(int timeLeft) => 
             VerletChainInstance.toDraw.Remove(Chain);
-        }
     }
 }

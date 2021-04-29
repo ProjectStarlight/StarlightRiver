@@ -29,25 +29,25 @@ namespace StarlightRiver.Content.Tiles.Vitric
             switch (Main.rand.Next(5))
             {
                 case 0:
-                    Item.NewItem(pos, ItemID.DirtBlock, Main.rand.Next(5));
+                    Item.NewItem(pos, ItemID.DirtBlock, Main.rand.Next(1, 5));
                     break;
                 case 1:
-                    Item.NewItem(pos, ItemID.StoneBlock, Main.rand.Next(5));
+                    Item.NewItem(pos, ItemID.StoneBlock, Main.rand.Next(1, 5));
                     break;
                 case 2:
-                    Item.NewItem(pos, ItemID.ClayBlock, Main.rand.Next(5));
+                    Item.NewItem(pos, ItemID.ClayBlock, Main.rand.Next(1, 5));
                     break;
                 case 3:
-                    Item.NewItem(pos, ItemID.SandBlock, Main.rand.Next(5));
+                    Item.NewItem(pos, ItemID.SandBlock, Main.rand.Next(1, 5));
                     break;
                 case 4:
-                    Item.NewItem(pos, ItemID.SiltBlock, Main.rand.Next(5));
+                    Item.NewItem(pos, ItemID.SiltBlock, Main.rand.Next(1, 5));
                     break;
             }
 
             ///coins
-            Item.NewItem(pos, ItemID.SilverCoin, Main.rand.Next(5));
-            Item.NewItem(pos, ItemID.CopperCoin, Main.rand.Next(100));
+            Item.NewItem(pos, ItemID.SilverCoin, Main.rand.Next(1, 5));
+            Item.NewItem(pos, ItemID.CopperCoin, Main.rand.Next(1, 100));
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
