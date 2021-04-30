@@ -17,25 +17,25 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class RedBannerShort : DummyTile
+    class VitricBannerSmall : DummyTile
     {
-        public override int DummyType => ProjectileType<RedBannerShortDummy>();
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.VitricTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-            texture = "StarlightRiver/Assets/Tiles/Vitric/RedBanner";
-			return base.Autoload(ref name, ref texture);
-		}
+        public override int DummyType => ProjectileType<VitricBannerSmallDummy>();
 
-		public override void SetDefaults()
+        public override void SetDefaults()
         {
             this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
     }
 
-    internal class RedBannerShortDummy : Dummy
+    internal class VitricBannerSmallDummy : Dummy
     {
-        public RedBannerShortDummy() : base(TileType<RedBannerShort>(), 16, 16) { }
+        public VitricBannerSmallDummy() : base(TileType<VitricBannerSmall>(), 16, 16) { }
 
         private VerletChainInstance Chain;
 
@@ -78,14 +78,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Chain.ropeSegments[index].color = color;
         }
 
-        public override void Kill(int timeLeft)
-        {
+        public override void Kill(int timeLeft) => 
             VerletChainInstance.toDraw.Remove(Chain);
-        }
     }
 
-    class RedBannerShortItem : QuickTileItem
+    class VitricBannerSmallItem : QuickTileItem
 	{
-        public RedBannerShortItem() : base("Short Flowing Banner", "IM GLOOPING DADDAY", TileType<RedBannerShort>(), 2, AssetDirectory.Debug, true) { }
+        public VitricBannerSmallItem() : base("Short Flowing Banner", "", TileType<VitricBannerSmall>(), 2, AssetDirectory.VitricTile, false) { }
 	}
 }

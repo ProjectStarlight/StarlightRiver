@@ -104,5 +104,22 @@ namespace StarlightRiver.Core
             tile.soundType = soundType;
             tile.disableSmartCursor = true;
         }
+
+        public static void QuickSetPainting(this ModTile tile, int width, int height, int dustType, Color mapColor, string mapName = "", int soundType = SoundID.Dig)
+        {
+            TileObjectData.newTile.AnchorWall = TileObjectData.Style3x3Wall.AnchorWall;
+            tile.QuickSetFurniture(width, height, dustType, soundType, false, mapColor, false, false, mapName);
+        }
+
+        public static void QuickSetBreakableVase(this ModTile tile, int dustType, Color mapColor, int randomVariants, int width = 2, int height = 2, int soundType = SoundID.Shatter, string mapName = "Pot", bool tileCut = true, bool tallBottom = false, int paddingX = 2, AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
+        {
+            Main.tileCut[tile.Type] = tileCut;
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+            TileObjectData.newTile.StyleHorizontal = true;
+            TileObjectData.newTile.RandomStyleRange = randomVariants;
+            TileObjectData.newTile.CoordinatePadding = paddingX;
+            tile.QuickSetFurniture(width, height, dustType, soundType, tallBottom, mapColor, false, false, mapName, bottomAnchor, topAnchor, anchorTiles);
+        }
     }
 }
