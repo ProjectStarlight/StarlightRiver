@@ -9,13 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.ModLoader.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
-
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Helpers
 {
@@ -90,8 +91,12 @@ namespace StarlightRiver.Helpers
             {
                 entry.Locked = false;
                 entry.New = true;
-                if (mp.CodexState != 0) UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title);
-                Main.PlaySound(SoundID.Item30);
+
+                if (mp.CodexState != 0)
+                {
+                    UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
+                    Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Yeehaw"));
+                }
             }
         }
 

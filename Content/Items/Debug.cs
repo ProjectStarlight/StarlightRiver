@@ -51,23 +51,15 @@ namespace StarlightRiver.Content.Items
         {
             float rot = Main.rand.NextFloat(6.28f);
 
-            Dust.NewDustPerfect(player.Center + Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot) * 300, ModContent.DustType<Bosses.GlassBoss.LavaSpew>(), Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot));
+            //Dust.NewDustPerfect(player.Center + Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot) * 300, ModContent.DustType<Bosses.GlassBoss.LavaSpew>(), Microsoft.Xna.Framework.Vector2.UnitX.RotatedBy(rot));
         }
 
         public override bool UseItem(Player player)
         {
-            player.GetModPlayer<CodexHandler>().CodexState = 2;
+            player.GetModPlayer<CodexHandler>().CodexState = 1;
 
             foreach (CodexEntry entry in player.GetModPlayer<CodexHandler>().Entries)
-                entry.Locked = false;
-
-            player.GetModPlayer<ShieldPlayer>().Shield = 0;
-
-            foreach(NPC npc in Main.npc)
-			{
-                if (npc != null && npc.active)
-                    npc.GetGlobalNPC<ShieldNPC>().Shield = 500;
-			}
+                entry.Locked = true;
 
             return true;
         }

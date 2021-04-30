@@ -17,25 +17,56 @@ namespace StarlightRiver.Content.GUI
         public override bool Visible => Timer > 0;
 
         private string Text;
+        private Texture2D Texture;
         public int Timer;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             CodexHandler mp = Main.LocalPlayer.GetModPlayer<CodexHandler>();
-            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
-            string str = "New Entry: " + Text;
-            float xOff = Main.screenWidth / 2 - Main.fontDeathText.MeasureString(str).X / 4;
 
-            Vector2 pos = Timer > 120 ? new Vector2(xOff, Main.screenHeight - 60) : new Vector2(xOff, Main.screenHeight - 60 + (120 - Timer));
-            Color col = Timer > 120 ? Color.White : Color.White * (Timer / 120f);
-            spriteBatch.Draw(tex, pos, col);
-            Utils.DrawBorderString(spriteBatch, str, pos + new Vector2(40, 8), col);
+            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
+
+            string str = "New Entry: " + Text;
+            float stringWidth = Main.fontDeathText.MeasureString(str).X / 1.65f;
+            float xOff = Main.screenWidth / 2 - stringWidth / 2;
+
+            Vector2 pos = Timer > 60 ? new Vector2(xOff, Main.screenHeight - 60) : new Vector2(xOff, Main.screenHeight - 60 + (120 - Timer * 2));
+            float alpha = Timer > 60 ? 1 : (Timer / 60f);
+            if (Timer > 230) alpha = ((240 - Timer) / 10f);
+
+            Rectangle target = new Rectangle((int)(pos.X - 40), (int)(pos.Y - 40), (int)(stringWidth + 100), 80);
+            var bgTex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+
+            spriteBatch.Draw(bgTex, target, new Rectangle(7, 7, bgTex.Width - 14, bgTex.Height - 14), Color.Black * alpha);
+
+            float alpha2 = 0;
+
+            if (Texture != null)
+            {
+                if (Timer > 160 && Timer < 180)
+                    alpha2 = 1 - (Timer - 160) / 20f;
+                if (Timer <= 160 && Timer >= 120)
+                    alpha2 = 1;
+                if (Timer > 100 && Timer < 120)
+                    alpha2 = (Timer - 100) / 20f;
+
+                spriteBatch.Draw(Texture, pos, null, Color.White * alpha * alpha2, 0, Texture.Size() / 2, 1.5f, 0, 0);
+            }
+
+            float inverseAlpha2 = 1 - alpha2;
+
+            spriteBatch.Draw(tex, pos, null, Color.White * alpha * inverseAlpha2, 0, tex.Size() / 2, 1.5f, 0, 0);
+            
+
+            Utils.DrawBorderStringBig(spriteBatch, str, pos + new Vector2(40, -16), Color.White * alpha, 0.6f);
+
             Timer--;
         }
 
-        public void TripEntry(string text)
+        public void TripEntry(string text, Texture2D texture = null)
         {
             Text = text;
+            Texture = texture;
             Timer = 240;
         }
     }
