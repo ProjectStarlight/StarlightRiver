@@ -34,10 +34,10 @@ namespace StarlightRiver.Content.GUI
             float alpha = Timer > 60 ? 1 : (Timer / 60f);
             if (Timer > 230) alpha = ((240 - Timer) / 10f);
 
-            Rectangle target = new Rectangle((int)(pos.X - 40), (int)(pos.Y - 40), (int)(stringWidth + 100), 80);
+            Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 30), (int)(stringWidth + 200), 60);
             var bgTex = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
-            spriteBatch.Draw(bgTex, target, new Rectangle(7, 7, bgTex.Width - 14, bgTex.Height - 14), Color.Black * alpha);
+            spriteBatch.Draw(bgTex, target, new Rectangle(7, 7, bgTex.Width - 14, bgTex.Height - 14), Color.Black * alpha * 0.65f);
 
             float alpha2 = 0;
 
