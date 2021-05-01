@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -14,11 +16,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
         private readonly Texture2D Glow = null;
         private Vector2 drawpos = Vector2.Zero;
 
+        private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
+        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/Dark", UpdateCursed);
+
         protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
         {
             Glow = glow;
         }
-        private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
 
         private static void UpdateCursedBody(Particle particle)
         {
@@ -28,8 +32,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
             particle.Position += particle.Velocity;
             particle.Timer--;
         }
-
-        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/Dark", UpdateCursed);
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
@@ -51,6 +53,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
             return true;
         }
+
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             TooltipLine line = new TooltipLine(mod, "StarlightRiverCursedWarning", "Cursed, Cannot be removed normally once equipped")
@@ -59,5 +62,29 @@ namespace StarlightRiver.Content.Items.BaseTypes
             };
             tooltips.Add(line);
         }
-    }
+
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+            if(line.mod == "Terraria" && line.Name == "ItemName")
+			{
+                var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
+
+                effect.Parameters["speed"].SetValue(20);
+                effect.Parameters["power"].SetValue(0.02f);
+                effect.Parameters["uTime"].SetValue(Main.GameUpdateCount / 100f);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.UIScaleMatrix);
+
+                Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.Red);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+
+                return false;
+			}
+
+			return base.PreDrawTooltipLine(line, ref yOffset);
+		}
+	}
 }
