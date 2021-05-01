@@ -49,10 +49,12 @@ namespace StarlightRiver.Core
 
         public const string OvergrowTile =          Assets + "Tiles/Overgrow/";
         public const string OvergrowItem =          Assets + "Items/Overgrow/";
+        public const string OvergrowNpc =           Assets + "NPCs/Overgrow/";
         public const string OvergrowBoss =          Assets + "Bosses/OvergrowBoss/";
 
         public const string VitricTile =            Assets + "Tiles/Vitric/";
         public const string VitricItem =            Assets + "Items/Vitric/";
+        public const string VitricNpc =             Assets + "NPCs/Vitric/";
         public const string GlassMiniboss =         Assets + "Bosses/GlassMiniboss/";
         public const string GlassBoss =             Assets + "Bosses/GlassBoss/";
 

@@ -15,6 +15,78 @@ using Terraria.Enums;
 
 namespace StarlightRiver.Core
 {
+    public abstract class ModBanner : ModTile
+    {
+        private readonly string ItemName;
+        private int ItemType;
+        private readonly int NpcType;
+        private readonly int Width;
+        private readonly int Height;
+        private readonly Color? MapColor;
+        private readonly string TexturePath;
+        public ModBanner(string drop, int npcType, string path = null, int width = 1, int height = 3, Color? mapColor = null)
+        {
+            ItemName = drop;
+            NpcType = npcType;
+            Width = width;
+            Height = height;
+            MapColor = mapColor;
+            TexturePath = path;
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            if(!string.IsNullOrEmpty(TexturePath))
+                texture = TexturePath + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
+        public override void SetDefaults()
+        {
+            Main.tileFrameImportant[Type] = true;
+            Main.tileNoAttach[Type] = true;
+            Main.tileLavaDeath[Type] = true;
+
+            TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
+            TileObjectData.newTile.Height = Height;
+            TileObjectData.newTile.Width = Width;
+            TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, Height).ToArray();
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
+            TileObjectData.addTile(Type);
+
+            //disableSmartCursor = true;
+            ModTranslation name = CreateMapEntryName();
+            name.SetDefault("Banner");
+            AddMapEntry(MapColor ?? new Color(13, 88, 130));
+            ItemType = mod.ItemType(ItemName);
+            dustType = -1;
+
+            SafeSetDefaults();
+        }
+
+        public virtual void SafeSetDefaults() { }
+
+        public override void NearbyEffects(int i, int j, bool closer)
+        {
+            if (closer)
+            {
+                Player player = Main.LocalPlayer;
+                player.NPCBannerBuff[NpcType] = true;
+                player.hasBanner = true;
+            }
+        }
+
+        public override void SetSpriteEffects(int i, int j, ref SpriteEffects spriteEffects)
+        {
+            if (i % 2 == 1)
+                spriteEffects = SpriteEffects.FlipHorizontally;
+        }
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => 
+            Item.NewItem(i * 16, j * 16, 16 * Width, 16 * Height, ItemType);
+    }
+
+
     public abstract class ModVine : ModTile
     {
         private readonly string[] AnchorableTiles;
@@ -23,20 +95,29 @@ namespace StarlightRiver.Core
         private readonly int MaxVineLength;
         private readonly int GrowthChance;//lower is faster (one out of this amount)
         private readonly Color? MapColor;
-        private readonly int ItemType;
+        private readonly string ItemName;
         private readonly int DustAmount;
         private readonly int Sound;
+        private readonly string TexturePath;
 
-        public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, int drop = 0, int dustAmount = 1, int soundType = SoundID.Grass)
+        public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, string drop = null, int dustAmount = 1, int soundType = SoundID.Grass, string path = null)
         {
             AnchorableTiles = anchorableTiles;
             DustType = dustType;
             MapColor = mapColor;
             GrowthChance = growthChance;
             MaxVineLength = maxVineLength;
-            ItemType = drop;
+            ItemName = drop;
             DustAmount = dustAmount;
             Sound = soundType;
+            TexturePath = path;
+        }
+
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            if (!string.IsNullOrEmpty(TexturePath))
+                texture = TexturePath + name;
+            return base.Autoload(ref name, ref texture);
         }
 
         public sealed override void SetDefaults()
@@ -61,7 +142,8 @@ namespace StarlightRiver.Core
 
             if(MapColor != null)
                 AddMapEntry(MapColor ?? Color.Transparent);
-            drop = ItemType;
+            if(ItemName != null)
+                drop = mod.ItemType(ItemName);
             dustType = DustType;
             soundType = Sound;
 

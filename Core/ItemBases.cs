@@ -116,6 +116,18 @@ namespace StarlightRiver.Core
         }
     }
 
+    public class QuickBannerItem : QuickTileItem
+    {
+        public QuickBannerItem(string placetype, string npcDisplayName, string texturePath = null, int rare = ItemRarityID.Blue, int itemValue = 1000) : //todo maybe: bool for tooltip
+            base(npcDisplayName + " Banner", "Nearby players get a bonus against: " + npcDisplayName, placetype, rare, texturePath, false, itemValue) { }
+
+        public override void SetDefaults()
+        {
+            base.SetDefaults();
+            item.maxStack = 99;
+        }
+    }
+
     public class QuickTileItem : ModItem //this is no longer abstract to facilitate quick tile registration
     {
         public string Itemname;
@@ -125,8 +137,9 @@ namespace StarlightRiver.Core
         private readonly int Rare;
         private readonly string TexturePath;
         private readonly bool PathHasName;
+        private readonly int ItemValue;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare, string texturePath = null, bool pathHasName = false)
+        public QuickTileItem(string name, string tooltip, int placetype, int rare, string texturePath = null, bool pathHasName = false, int itemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -136,7 +149,7 @@ namespace StarlightRiver.Core
             PathHasName = pathHasName;
         }
 
-        public QuickTileItem(string name, string tooltip, string placetype, int rare, string texturePath = null, bool pathHasName = false)
+        public QuickTileItem(string name, string tooltip, string placetype, int rare, string texturePath = null, bool pathHasName = false, int itemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -144,6 +157,7 @@ namespace StarlightRiver.Core
             Rare = rare;
             TexturePath = texturePath;
             PathHasName = pathHasName;
+            ItemValue = itemValue;
         }
 
         public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
@@ -171,7 +185,7 @@ namespace StarlightRiver.Core
             item.consumable = true;
             item.createTile = Tiletype == 0 && Tilename != null ? mod.TileType(Tilename) : Tiletype;
             item.rare = Rare;
-
+            item.value = ItemValue;
             SafeSetDefaults();
         }
     }
