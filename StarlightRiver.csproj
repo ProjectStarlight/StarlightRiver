@@ -31,6 +31,9 @@
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
     </Reference>
+    <Reference Include="ProjectStarlight.Interchange">
+      <HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
+    </Reference>
     <Reference Include="StructureHelper">
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
     </Reference>
