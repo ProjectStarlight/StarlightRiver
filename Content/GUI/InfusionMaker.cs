@@ -10,6 +10,8 @@ using Terraria;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Media;
+using ProjectStarlight.Interchange;
+using ProjectStarlight.Interchange.Utilities;
 using Terraria.GameContent.UI.Elements;
 using StarlightRiver.Content.Abilities;
 using Terraria.ModLoader;
@@ -34,7 +36,7 @@ namespace StarlightRiver.Content.GUI
         InfusionMakerSlot inSlot = new InfusionMakerSlot(true);
         InfusionMakerSlot outSlot = new InfusionMakerSlot(false);
         UIImageButton craftButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "BackButton"));
-        GifPlayer previewPlayer = new GifPlayer();
+        TextureGIF previewPlayer = GIFBuilder.FromGIFFile(ModLoader.ModPath + "/TestGif.gif", Main.instance.GraphicsDevice, 2);
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -67,10 +69,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            previewPlayer.Update();
-            previewPlayer.framerate = 2;
-            spriteBatch.Draw(previewPlayer.CurrentFrame, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);
-
+            previewPlayer.ShouldLoop = true;
+            previewPlayer.UpdateGIF();
+            previewPlayer.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);
 
             var tex = GetTexture(AssetDirectory.GUI + "InfusionBack");
             spriteBatch.Draw(tex, basePos, Color.White);
