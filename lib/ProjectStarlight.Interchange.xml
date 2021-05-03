@@ -96,6 +96,11 @@
                 Increments the specified amount of ticks. You can use this to skip frames as well.
             </summary>
         </member>
+        <member name="T:ProjectStarlight.Interchange.Utilities.FrameUtilities">
+            <summary>
+                Simple class providing small, useful methods for some common tasks.
+            </summary>
+        </member>
         <member name="M:ProjectStarlight.Interchange.Utilities.FrameUtilities.VerifyGIFDimensions(System.Collections.Generic.IEnumerable{Microsoft.Xna.Framework.Graphics.Texture2D})">
             <summary>
                 Validates GIF framing given the provided frames.
