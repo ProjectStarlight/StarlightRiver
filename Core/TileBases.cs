@@ -50,7 +50,7 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
             TileObjectData.newTile.Width = Width;
             TileObjectData.newTile.Height = Height;
-            TileObjectData.newTile.Origin = new Point16(Width / 2, Height / 2);
+            TileObjectData.newTile.Origin = new Point16(Width / 2, Height / 2 + 1);
             TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, Height).ToArray();
             TileObjectData.addTile(Type);
 
@@ -67,6 +67,9 @@ namespace StarlightRiver.Core
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => 
             Item.NewItem(i * 16, j * 16, 32, 48, ItemType);
+
+        public override void NumDust(int i, int j, bool fail, ref int num) => 
+            num = 1;
 
         public override void AnimateTile(ref int frame, ref int frameCounter)
         {
@@ -109,11 +112,11 @@ namespace StarlightRiver.Core
 
         public override void HitWire(int i, int j)
         {
-            int x = i - (Main.tile[i, j].frameX / 18) % 2;
-            int y = j - (Main.tile[i, j].frameY / 18) % 4;
+            int x = i - (Main.tile[i, j].frameX / 18) % Width;
+            int y = j - (Main.tile[i, j].frameY / 18) % Height;
 
-            for (int l = x; l < x + 2; l++)
-                for (int m = y; m < y + 4; m++)
+            for (int l = x; l < x + Width; l++)
+                for (int m = y; m < y + Height; m++)
                 {
                     if (Main.tile[l, m] == null)
                         Main.tile[l, m] = new Tile();
@@ -129,7 +132,7 @@ namespace StarlightRiver.Core
                     for (int h = 0; h < Height; h++)
                         Wiring.SkipWire(x + g, y + h);
 
-            NetMessage.SendTileSquare(-1, x, y + 1, 3);
+            NetMessage.SendTileSquare(-1, x, y + 1, 6);
         }
 
         public override void NearbyEffects(int i, int j, bool closer)

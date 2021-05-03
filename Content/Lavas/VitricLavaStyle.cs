@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Lavas
         public override bool ChooseLavaStyle()
         {
             BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneGlass || modPlayer.FountainVitric;
+            return modPlayer.ZoneGlass;// || modPlayer.FountainVitric;//disabled because lava styles break water styles
         }
 
         public override bool SafeAutoload(ref string name, ref string texture, ref string blockTexture)

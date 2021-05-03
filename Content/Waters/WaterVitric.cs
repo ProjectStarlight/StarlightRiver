@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Waters
             mod.GetWaterfallStyleSlot<WaterfallVitric>();
 
         public override int GetSplashDust() => 
-            DustType<Dusts.HolyJungleSplash>();
+            DustType<Dusts.QuickSplash>();
 
         public override int GetDropletGore() => 0;
 
