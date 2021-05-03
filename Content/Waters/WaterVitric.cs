@@ -7,7 +7,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Waters
 {
-    public class WaterJungleBloody : ModWaterStyle
+    public class WaterVitric : ModWaterStyle
     {
         public override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {
@@ -19,38 +19,28 @@ namespace StarlightRiver.Content.Waters
         public override bool ChooseWaterStyle()
         {
             BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneJungleBloody || modPlayer.FountainJungleBloody;
+            return modPlayer.ZoneGlass|| modPlayer.FountainVitric;
         }
 
-        public override int ChooseWaterfallStyle()
-        {
-            return mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
-        }
+        public override int ChooseWaterfallStyle() => 
+            mod.GetWaterfallStyleSlot<WaterfallVitric>();
 
-        public override int GetSplashDust()
-        {
-            return DustType<Dusts.BloodyJungleSplash>();
-        }
+        public override int GetSplashDust() => 
+            DustType<Dusts.HolyJungleSplash>();
 
-        public override int GetDropletGore()
-        {
-            return 0;// mod.GetGoreSlot("Gores/DropJungleBloody");
-        }
+        public override int GetDropletGore() => 0;
 
         public override void LightColorMultiplier(ref float r, ref float g, ref float b)
         {
-            r = 1;
-            g = 1;
-            b = 0.8f;
+            r = 0.75f;
+            g = 0.95f;
+            b = 0.95f;
         }
 
-        public override Color BiomeHairColor()
-        {
-            return Color.DarkRed;
-        }
+        public override Color BiomeHairColor() => Color.DeepSkyBlue;
     }
 
-    public class WaterfallJungleBloody : ModWaterfallStyle
+    public class WaterfallVitric : ModWaterfallStyle
     {
         public override bool Autoload(ref string name, ref string texture)
         {
