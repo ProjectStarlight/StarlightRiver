@@ -45,6 +45,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (npc.ai[0] < 150) npc.ai[0] = 150; //water clamping and return logic
 
+            if (Main.LocalPlayer.controlQuickHeal)
+                npc.ai[0] += 4;
+
             if (!Main.npc.Any(n => n.active && n.modNPC is SquidBoss) && npc.ai[0] > 150) npc.ai[0]--;
 
             if (npc.ai[1] > 6.28f) npc.ai[1] = 0;
@@ -124,6 +127,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Item item = Main.item[k];
 
+                if (item is null || !item.active)
+                    continue;
+
                 if (item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y + 8, 200 * 16, (int)npc.ai[0])) && item.velocity.Y > -4) item.velocity.Y -= 0.2f;
 
                 if (item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y - 8, 200 * 16, 16)))
@@ -133,6 +139,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (item.type == ItemType<SquidBossSpawn>() && npc.ai[0] == 150 && !Main.npc.Any(n => n.active && n.modNPC is SquidBoss)) //ready to spawn another squid              
                     {
                         NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y + 630, NPCType<SquidBoss>());
+                        item.active = false;
                         item.TurnToAir();
 
                         for (int n = 0; n < 50; n++) Dust.NewDustPerfect(item.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20));
@@ -245,7 +252,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             system.DrawParticles(spriteBatch);
 
             if (Main.rand.Next(4) == 0)
-                system.AddParticle(new Particle(Vector2.Zero, Vector2.UnitY * -Main.rand.NextFloat(0.6f, 1.2f), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500)));
+                system.AddParticle(new Particle(Vector2.Zero, Vector2.UnitY * -Main.rand.NextFloat(0.6f, 1.2f), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
             spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 

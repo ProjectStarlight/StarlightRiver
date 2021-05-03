@@ -143,6 +143,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 item.TurnToAir();
 
                 Main.PlaySound(SoundID.Shatter);
+                Main.PlaySound(SoundID.NPCHit55);
+                Main.PlaySound(SoundID.Item123);
 
                 for (int k = 0; k <= 70; k++)
                 {

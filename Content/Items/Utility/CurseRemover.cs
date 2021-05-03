@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool CanEquipAccessory(Player player, int slot)
 		{
-			if (player.armor[slot].modItem is CursedAccessory)
+			if (player.armor[slot].modItem is CursedAccessory && slot <= 7 + player.extraAccessorySlots)
 			{
 				(player.armor[slot].modItem as CursedAccessory).GoingBoom = true;
 
