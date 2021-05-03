@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            previewPlayer.ShouldLoop = true;
             previewPlayer.UpdateGIF();
             previewPlayer.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);
 
