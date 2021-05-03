@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ProjectStarlight.Interchange</name>
+    </assembly>
+    <members>
+        <member name="T:ProjectStarlight.Interchange.TextureGIF">
+            <summary>
+                Simple class containing GIF data for drawing and updating.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.Width">
+            <summary>
+                The width of the GIF.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.Height">
+            <summary>
+                The height of the GIF.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.IsPaused">
+            <summary>
+                Whether the GIF is paused.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.HasEnded">
+            <summary>
+                Whether the GIF has ended. Never true of the GIF loops (<seealso cref="P:ProjectStarlight.Interchange.TextureGIF.ShouldLoop"/>).
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.ShouldLoop">
+            <summary>
+                Whether the GIF loops. Prevents the GIF from ending unless <seealso cref="M:ProjectStarlight.Interchange.TextureGIF.Stop"/> is called.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.TicksPerFrame">
+            <summary>
+                The amount of ticks per frame. Once the tick threshold is reached, goes to a new frame.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.FrameTick">
+            <summary>
+                The current tick the frame is on.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.FrameIndex">
+            <summary>
+                The index of <seealso cref="P:ProjectStarlight.Interchange.TextureGIF.Frames"/> that should be drawn.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.Frames">
+            <summary>
+                An array of <seealso cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s representing the frames of a GIF.
+            </summary>
+        </member>
+        <member name="P:ProjectStarlight.Interchange.TextureGIF.CurrentFrame">
+            <summary>
+                Gets the current frame in accordance to <seealso cref="P:ProjectStarlight.Interchange.TextureGIF.Frames"/>, using <seealso cref="P:ProjectStarlight.Interchange.TextureGIF.FrameIndex"/> as the index.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.#ctor(Microsoft.Xna.Framework.Graphics.Texture2D[],System.Int32)">
+            <summary>
+                Creates a <see cref="T:ProjectStarlight.Interchange.TextureGIF"/> instance from an array of <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s, where the <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s serve as frames.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Play">
+            <summary>
+                Restarts (or officially starts, if not started previously) the GIF. Render the GIF with <seealso cref="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)"/> or one of its overloads.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Stop">
+            <summary>
+                Completely stops a GIF. If you want to pause a GIF, use <see cref="M:ProjectStarlight.Interchange.TextureGIF.SwitchPauseState"/>.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.TryChangeGIF(Microsoft.Xna.Framework.Graphics.Texture2D[])">
+            <summary>
+                Attempts to change the array of <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s to draw.
+            </summary>
+            <param name="frames">The <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s to set.</param>
+            <returns>Returns <c>true</c> if successful, otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.SwitchPauseState">
+            <summary>
+                Pauses and unpauses the GIF depending on its current state.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Color)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color,System.Single,Microsoft.Xna.Framework.Vector2,System.Single,Microsoft.Xna.Framework.Graphics.SpriteEffects,System.Single)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Vector2,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color,System.Single,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Graphics.SpriteEffects,System.Single)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,System.Nullable{Microsoft.Xna.Framework.Rectangle},Microsoft.Xna.Framework.Color,System.Single,Microsoft.Xna.Framework.Vector2,Microsoft.Xna.Framework.Graphics.SpriteEffects,System.Single)">
+            <summary>
+                Draws the current GIF frame.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.UpdateGIF">
+            <summary>
+                Increment ticks by one if the GIF is not paused and has not ended.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.TextureGIF.ForwardTicks(System.Int32)">
+            <summary>
+                Increments the specified amount of ticks. You can use this to skip frames as well.
+            </summary>
+        </member>
+        <member name="T:ProjectStarlight.Interchange.Utilities.FrameUtilities">
+            <summary>
+                Simple class providing small, useful methods for some common tasks.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.Utilities.FrameUtilities.VerifyGIFDimensions(System.Collections.Generic.IEnumerable{Microsoft.Xna.Framework.Graphics.Texture2D})">
+            <summary>
+                Validates GIF framing given the provided frames.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.Utilities.FrameUtilities.VerifyGIFDimensions(System.Collections.Generic.IEnumerable{Microsoft.Xna.Framework.Graphics.Texture2D},System.Int32@,System.Int32@)">
+            <summary>
+                Validates GIF framing given the provided frames.
+            </summary>
+        </member>
+        <member name="T:ProjectStarlight.Interchange.Utilities.GIFBuilder">
+            <summary>
+                Provides methods for creating <see cref="T:ProjectStarlight.Interchange.TextureGIF"/>s.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.Utilities.GIFBuilder.FromArray(Microsoft.Xna.Framework.Graphics.Texture2D[],System.Int32)">
+            <summary>
+                Creates a <see cref="T:ProjectStarlight.Interchange.TextureGIF"/> from an array of <see cref="T:Microsoft.Xna.Framework.Graphics.Texture2D"/>s.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.Utilities.GIFBuilder.FromGIFFile(System.String,Microsoft.Xna.Framework.Graphics.GraphicsDevice,System.Int32)">
+            <summary>
+                Creates a <see cref="T:ProjectStarlight.Interchange.TextureGIF"/> from a <see cref="T:System.IO.FileStream"/>, opened and read from the <paramref name="filePath"/>.
+            </summary>
+        </member>
+        <member name="M:ProjectStarlight.Interchange.Utilities.GIFBuilder.FromGIFFile(System.IO.FileStream,Microsoft.Xna.Framework.Graphics.GraphicsDevice,System.Int32)">
+            <summary>
+                Creates a <see cref="T:ProjectStarlight.Interchange.TextureGIF"/> from a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+        </member>
+    </members>
+</doc>
