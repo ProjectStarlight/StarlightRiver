@@ -139,7 +139,7 @@ namespace StarlightRiver.Core
         private readonly bool PathHasName;
         private readonly int ItemValue;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare, string texturePath = null, bool pathHasName = false, int itemValue = 0)
+        public QuickTileItem(string name, string tooltip, int placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int itemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -149,7 +149,7 @@ namespace StarlightRiver.Core
             PathHasName = pathHasName;
         }
 
-        public QuickTileItem(string name, string tooltip, string placetype, int rare, string texturePath = null, bool pathHasName = false, int itemValue = 0)
+        public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int itemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;

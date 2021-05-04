@@ -22,20 +22,13 @@ namespace StarlightRiver.Content.Waters
             return modPlayer.ZoneJungleBloody || modPlayer.FountainJungleBloody;
         }
 
-        public override int ChooseWaterfallStyle()
-        {
-            return mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
-        }
+        public override int ChooseWaterfallStyle() =>
+            mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
 
-        public override int GetSplashDust()
-        {
-            return DustType<Dusts.BloodyJungleSplash>();
-        }
+        public override int GetSplashDust() =>
+            DustType<Dusts.BloodyJungleSplash>();
 
-        public override int GetDropletGore()
-        {
-            return 0;// mod.GetGoreSlot("Gores/DropJungleBloody");
-        }
+        public override int GetDropletGore() => 0;
 
         public override void LightColorMultiplier(ref float r, ref float g, ref float b)
         {
