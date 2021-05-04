@@ -32,6 +32,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.noUseGraphic = true;
             item.noMelee = true;
             item.knockBack = 2.5f;
+            item.autoReuse = true;
 
             item.UseSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword");
 
