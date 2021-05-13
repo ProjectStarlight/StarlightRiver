@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.GUI
         InfusionMakerSlot inSlot = new InfusionMakerSlot(true);
         InfusionMakerSlot outSlot = new InfusionMakerSlot(false);
         UIImageButton craftButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "BackButton"));
-        TextureGIF previewPlayer = GIFBuilder.FromGIFFile(ModLoader.ModPath + "/TestGif.gif", Main.instance.GraphicsDevice, 2);
+        //TextureGIF previewPlayer = GIFBuilder.FromGIFFile(ModLoader.ModPath + "/TestGif.gif", Main.instance.GraphicsDevice, 2);
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -69,9 +69,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            previewPlayer.ShouldLoop = true;
+            /*previewPlayer.ShouldLoop = true;
             previewPlayer.UpdateGIF();
-            previewPlayer.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);
+            previewPlayer.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 190, 194, 194), Color.White);*/
 
             var tex = GetTexture(AssetDirectory.GUI + "InfusionBack");
             spriteBatch.Draw(tex, basePos, Color.White);
