@@ -19,17 +19,11 @@
   </Target>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
-    <Reference Include="Microsoft.Xna.Framework">
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Game">
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Game\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Game.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Xna.Framework.Graphics">
-      <HintPath>..\..\..\..\..\..\..\..\Windows\Microsoft.NET\assembly\GAC_32\Microsoft.Xna.Framework.Graphics\v4.0_4.0.0.0__842cf8be1de50553\Microsoft.Xna.Framework.Graphics.dll</HintPath>
-    </Reference>
     <Reference Include="NetEasy">
       <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
+    </Reference>
+    <Reference Include="ProjectStarlight.Interchange">
+      <HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
     </Reference>
     <Reference Include="StructureHelper">
       <HintPath>lib\StructureHelper_v0.1.8.dll</HintPath>
