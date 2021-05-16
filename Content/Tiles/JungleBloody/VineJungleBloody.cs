@@ -13,13 +13,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
 {
     public class VineJungleBloody : ModVine
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleBloodyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
-
-        public VineJungleBloody() : base(new string[] { "GrassJungleBloody" }, 14, new Color(122, 38, 38), 2) { }
+        public VineJungleBloody() : base(new string[] { "GrassJungleBloody" }, 14, new Color(122, 38, 38), 2, path: AssetDirectory.JungleBloodyTile) { }
 
         public override void NearbyEffects(int i, int j, bool closer) => Grow(i, j, 120);//grows quickly if nearby
     }

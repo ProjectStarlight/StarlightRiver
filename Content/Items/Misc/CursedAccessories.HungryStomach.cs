@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
             return true;
         }
 
-        public override void UpdateAccessory(Player player, bool hideVisual) => GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/StaminaBlood");
+        public override void SafeUpdateAccessory(Player player, bool hideVisual) => GUI.Stam.overrideTexture = GetTexture("StarlightRiver/Assets/GUI/StaminaBlood");
 
         private void DisableRegen(StarlightPlayer player)
         {

@@ -46,4 +46,19 @@ namespace StarlightRiver.Codex.Entries
             Icon = Image;
         }
     }
+
+    internal class BarrierEntry : CodexEntry
+    {
+        public BarrierEntry()
+        {
+            Category = Categories.Misc;
+            Title = "Barrier";
+            Body = "Barrier acts as a way to wrap your body in magical energies, protecting it from physical harm. While not normally attainable, adventerers can wear magical accessories or armors that allow them to keep and accumulate barrier on themselves, or quaff potions which grant a brief period of fleeting barrier. NEWBLOCK " +
+                "While powerful, barrier is not capable of fully absorbing damage, normal barriers will only protect from about 75% of damage, while also taking the full brunt of the attack to itself. Barrier will also not protect it's user against all forms of bodily harm, ailments that directly affect it's bearer such as fire and poisions or magics which directly drain one's body such as chaos state will cause full harm, through any amount of barrier NEWBLOCK " +
+                "It should also be noted that barrier cannot accumulate on a being in pain, one must wait around 3 seconds after being harmed for their barrier to begin to recharge without the aid of potions or equipment to expediate the effect.";
+            Hint = "Use equipment or potions which grant barrier...";
+            Image = GetTexture(AssetDirectory.GUI + "ShieldHeartOver");
+            Icon = Image;
+        }
+    }
 }

@@ -107,4 +107,15 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             }
         }
     }
+
+
+    internal class OvergrowNightmareBanner : ModBanner
+    {
+        public OvergrowNightmareBanner() : base("OvergrowNightmareBannerItem", ModContent.NPCType<OvergrowNightmare>(), AssetDirectory.OvergrowNpc) { }
+    }
+
+    internal class OvergrowNightmareBannerItem : QuickBannerItem
+    {
+        public OvergrowNightmareBannerItem() : base("OvergrowNightmareBanner", "Overgrowth Nightmare", AssetDirectory.OvergrowNpc) { }
+    }
 }

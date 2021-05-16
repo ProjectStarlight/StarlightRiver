@@ -15,7 +15,7 @@ namespace StarlightRiver.Core
         public delegate void Update(Particle particle);
 
         private readonly List<Particle> Particles = new List<Particle>();
-        private readonly Texture2D Texture;
+        private Texture2D Texture;
         private readonly Update UpdateDelegate;
         private readonly int Styles;
 
@@ -34,11 +34,10 @@ namespace StarlightRiver.Core
                     Particle particle = Particles[k];
 
                     if (!Main.gameInactive) UpdateDelegate(particle);
-                    if (Helper.OnScreen(particle.Position))
-                    {
-                        int height = Texture.Height / Styles;
-                        spriteBatch.Draw(Texture, particle.Position, new Rectangle(0, particle.GetHashCode() % Styles * height, Texture.Width, height), particle.Color, particle.Rotation, Texture.Size() / 2, particle.Scale, 0, 0);
-                    }
+
+                    if (Helper.OnScreen(particle.Position))                 
+                        spriteBatch.Draw(Texture, particle.Position, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
+                    
                     if (particle.Timer <= 0) Particles.Remove(particle);
                 }
         }
@@ -49,6 +48,10 @@ namespace StarlightRiver.Core
                 Particles.Add(particle);
         }
 
+        public void SetTexture(Texture2D texture)
+		{
+            Texture = texture;
+		}
     }
 
     public class Particle
@@ -58,12 +61,14 @@ namespace StarlightRiver.Core
         internal Vector2 StoredPosition;
         internal float Rotation;
         internal float Scale;
+        internal float Alpha;
         internal Color Color;
         internal int Timer;
+        internal Rectangle Frame;
 
-        public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition)
+        public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = new Rectangle(), float alpha = 1)
         {
-            Position = position; Velocity = velocity; Rotation = rotation; Scale = scale; Color = color; Timer = timer; StoredPosition = storedPosition;
+            Position = position; Velocity = velocity; Rotation = rotation; Scale = scale; Color = color; Timer = timer; StoredPosition = storedPosition; Frame = frame; Alpha = alpha;
         }
     }
 }

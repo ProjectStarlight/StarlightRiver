@@ -16,11 +16,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
         private const int animFramesLoop = 6; //amount of frames in the main loop
         private readonly float AnimSpeedMult = 0.3f;
 
-        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/CrystalPopper";
+        public override string Texture => AssetDirectory.VitricNpc + Name;
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sandbat");
+            DisplayName.SetDefault("Sand Bat");
             Main.npcFrameCount[npc.type] = 7;
         }
 
@@ -119,5 +119,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     npc.frame.Y = (int)(npc.frameCounter * AnimSpeedMult) * frameHeight; break;
             }
         }
+    }
+
+    internal class VitricBatBanner : ModBanner
+    {
+        public VitricBatBanner() : base("VitricBatBannerItem", NPCType<CrystalPopper>(), AssetDirectory.VitricNpc) { }
+    }
+
+    internal class VitricBatBannerItem : QuickBannerItem
+    {
+        public VitricBatBannerItem() : base("VitricBatBanner", "Sand Bat", AssetDirectory.VitricNpc) { }
     }
 }

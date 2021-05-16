@@ -25,7 +25,10 @@ namespace StarlightRiver.Content.CustomHooks
         private void HandleSpecialItemInteractions(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
         {
             if ((inv[slot].modItem is CursedAccessory || inv[slot].modItem is Blocker) && context == 10)
+            {
+                ItemLoader.CanEquipAccessory(Main.mouseItem, slot);
                 return;
+            }
 
             if (Main.mouseItem.modItem is SoulboundItem && (context != 0 || inv != Main.LocalPlayer.inventory))
                 return;
@@ -43,7 +46,9 @@ namespace StarlightRiver.Content.CustomHooks
             for (int i = 0; i < player.armor.Length; i++)
             {
                 if ((player.armor[i].modItem is CursedAccessory || player.armor[i].modItem is Blocker) && ItemSlot.ShiftInUse && inv[slot].accessory)
+				{              
                     return;
+                }                  
             }
 
             if (inv == player.armor)
