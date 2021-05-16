@@ -133,18 +133,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
             if (GoingBoom)
                 boomTimer++;
 
-            if (boomTimer == 60)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ImpactHeal"));
+            if (boomTimer == 1)
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 120)
             {
                 var tex = Main.itemTexture[item.type];
 
                 item.TurnToAir();
-
-                Main.PlaySound(SoundID.Shatter);
-                Main.PlaySound(SoundID.NPCHit55);
-                Main.PlaySound(SoundID.Item123);
+;
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {

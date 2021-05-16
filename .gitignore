@@ -362,7 +362,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Custom
-Properties/launchSettings.json
 *.idx
 FETCH_HEAD
 *.pack
