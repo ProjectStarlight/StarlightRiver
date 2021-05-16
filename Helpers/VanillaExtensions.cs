@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +24,6 @@ namespace StarlightRiver.Helpers
 				&& !player.ZoneBeach
 				&& !player.ZoneDesert
 				&& player.ZoneOverworldHeight;
-		}
-
-		public static int GetAge(this NPC npc)
-		{
-			return npc.GetGlobalNPC<StarlightNPC>().Age;
 		}
 
 		public static NPC FindNearestNPC(this NPC npc)

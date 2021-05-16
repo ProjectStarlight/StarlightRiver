@@ -93,6 +93,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
             Item.NewItem(new Vector2(i * 16, j * 16), ItemType<BerryBush>()); //drop a bush item
+
             if (frameX > 35)
                 Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
         }

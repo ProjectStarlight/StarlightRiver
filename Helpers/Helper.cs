@@ -17,6 +17,7 @@ using Terraria.ObjectData;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework.Audio;
 
 namespace StarlightRiver.Helpers
 {
@@ -294,6 +295,23 @@ namespace StarlightRiver.Helpers
                 !Framing.GetTileSafely(x, y - 1).active() ||
                 !Framing.GetTileSafely(x, y + 1).active();
 
+        }
+
+        public static SoundEffectInstance PlayPitched(string path, float volume, float pitch)
+        {
+            var instance = StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/" + path);
+            return Main.PlaySound(instance.SoundId, -1, -1, instance.Style, volume, pitch);
+        }
+
+        public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch)
+        {
+            var instance = style;
+            return Main.PlaySound(instance.SoundId, -1, -1, instance.Style, volume, pitch);
+        }
+
+        public static SoundEffectInstance PlayPitched(int style, float volume, float pitch)
+        {
+            return Main.PlaySound(style, -1, -1, 1, volume, pitch);
         }
     }
 }

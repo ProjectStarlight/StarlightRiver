@@ -28,7 +28,11 @@ namespace StarlightRiver.Core
                         {
                             if (Main.tile[k, y].type == TileID.Grass && Main.tile[k + 1, y].type == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
-                                Helper.PlaceMultitile(new Point16(k, y - 2), TileType<ForestBerryBush>());
+                                var type = TileType<ForestBerryBush>();
+                                /*if(WorldGen.genRand.Next(4) == 0)
+                                    type = TileType<SlimeberryBush>();*/
+
+                                Helper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
                                 k += 3;
                             }
                         }
@@ -55,7 +59,7 @@ namespace StarlightRiver.Core
                                 break;
                             }
                         }
-                        k += 15;
+                        k += 11;
                     }
                 }
 
@@ -70,7 +74,7 @@ namespace StarlightRiver.Core
                             {
                                 if (Main.tile[x, y].active() && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].slope() == 0) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
                                 {
-                                    WorldGen.PlaceTile(x, y - 1, TileType<Tiles.Herbology.ForestIvyWild>());
+                                    WorldGen.PlaceTile(x, y - 1, TileType<Tiles.Herbology.ForestIvyWild>()); //this line throws a stack overflow on worldgen SOMEHOW?!?! ONLY WHEN IT ROLLS FOR SLIME BUSHES VERSUS BERRIES?!?!?! WHAT
                                     break;
                                 }
                             }
@@ -81,11 +85,10 @@ namespace StarlightRiver.Core
                 {
                     int size = WorldGen.genRand.Next(10, 15);
                     int oldSurface = 0;
+                    int surface = 0;
 
                     for (int x = 0; x < size; x++)
-                    {
-                        int surface = 0;
-
+                    {                    
                         if (oldSurface != 0 && Math.Abs(oldSurface - surface) > 2)
                             break;
                                                    
@@ -117,12 +120,14 @@ namespace StarlightRiver.Core
 
         private void PalestoneChunk(int k, int y)
         {
-            int width = WorldGen.genRand.Next(4, 14);
-            y += WorldGen.genRand.Next(0, 3); //Adjusts how deep in the ground it is
+            int width = WorldGen.genRand.Next(4, 18);
+            y += WorldGen.genRand.Next(2, 6); //Adjusts how deep in the ground it is
+
             for (int x = k - (width / 2); x < k + (width / 2); x++) //Modified code from probably Scalie; I adjusted the pre-existing code.
             {
                 int xRel = x - k;
                 int xSqr = (-1 * xRel * xRel) / 8 + xRel + 1;
+
                 for (int y2 = y - xSqr; y2 < y + xSqr; y2++)
                 {
                     WorldGen.KillTile(x, y2);

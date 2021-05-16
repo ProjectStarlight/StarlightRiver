@@ -9,6 +9,8 @@ using Terraria.ID;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Items.Potions
 {
@@ -29,7 +31,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault(prefix + " Barrier Brew");
+			DisplayName.SetDefault(prefix + " Barrier Potion");
 			Tooltip.SetDefault($"Grants {amount} barrier\nGreatly reduces overcharge barrier loss for {duration / 60} seconds");
 		}
 
@@ -39,7 +41,7 @@ namespace StarlightRiver.Content.Items.Potions
 			item.height = 32;
 			item.consumable = true;
 			item.maxStack = 30;
-			item.UseSound = Terraria.ID.SoundID.Item3;
+			item.UseSound = SoundID.Item3;
 			item.useStyle = ItemUseStyleID.EatingUsing;
 			item.useTime = 15;
 			item.useAnimation = 15;
@@ -63,16 +65,58 @@ namespace StarlightRiver.Content.Items.Potions
 	public class LesserBarrierPotion  : BarrierPotion
 	{
 		public LesserBarrierPotion() : base(40, 180, "Lesser") { }
+
+		public override void AddRecipes()
+		{
+			var recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 2);
+			recipe.AddIngredient(ItemID.Glass, 5);
+			recipe.AddIngredient(ItemID.BottledWater);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 	}
 
 	public class RegularBarrierPotion : BarrierPotion
 	{
 		public RegularBarrierPotion() : base(80, 240, "") { }
+
+		public override void AddRecipes()
+		{
+			var recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<LesserBarrierPotion>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 2);
+			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
+			recipe.AddTile(TileID.Bottles);
+			recipe.SetResult(this, 5);
+			recipe.AddRecipe();
+		}
 	}
 
 	public class GreaterBarrierPotion : BarrierPotion
 	{
 		public GreaterBarrierPotion() : base(120, 300, "Greater") { }
+
+		public override void AddRecipes()
+		{
+			var recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<RegularBarrierPotion>(), 5);
+			recipe.AddIngredient(ItemID.SoulofLight);
+			recipe.AddIngredient(ItemID.SoulofNight);
+			recipe.SetResult(this, 5);
+			recipe.AddTile(TileID.Bottles);
+			recipe.AddRecipe();
+
+			recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ItemID.BottledWater, 5);
+			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 10);
+			recipe.AddIngredient(ItemID.SoulofLight);
+			recipe.AddIngredient(ItemID.SoulofNight);
+			recipe.SetResult(this, 5);
+			recipe.AddTile(TileID.Bottles);
+			recipe.AddRecipe();
+		}
 	}
 
 	public class NoShieldPot : SmartBuff
