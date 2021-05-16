@@ -46,6 +46,7 @@ namespace StarlightRiver.Core
 
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
+        public const string DungeonItem =            Assets + "Items/Dungeon/";
 
         public const string OvergrowTile =          Assets + "Tiles/Overgrow/";
         public const string OvergrowItem =          Assets + "Items/Overgrow/";
