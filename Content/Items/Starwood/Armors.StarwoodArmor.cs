@@ -33,15 +33,15 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void UpdateEquip(Player player)
         {
             player.magicDamage += 0.05f;
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
         public override void UpdateVanity(Player player, EquipType type) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(10, 18));
         }
     }
@@ -76,29 +76,30 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void UpdateEquip(Player player)
         {
             player.statManaMax2 += 20;
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
         public override void UpdateVanity(Player player, EquipType type) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
-        public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ItemType<StarwoodHat>() && legs.type == ItemType<StarwoodBoots>();//what items are required for set
+        public override bool IsArmorSet(Item head, Item body, Item legs) => 
+            head.type == ItemType<StarwoodHat>() && legs.type == ItemType<StarwoodBoots>();//what items are required for set
 
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = "Picking up mana stars empowers starwood items";
             StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
 
-            if (mp.EmpowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, player)) //checks if complete to disable empowerment if set is removed
+            if (mp.empowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, player)) //checks if complete to disable empowerment if set is removed
             {
                 for (int k = 0; k < 1; k++)//temp gfx 
                     Dust.NewDustPerfect(player.position + new Vector2(Main.rand.Next(player.width), Main.rand.Next(player.height)), DustType<Dusts.BlueStamina>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1.0f, 1.4f), 0, default, 1.2f);
-                mp.EmpowermentTimer--;
+                mp.empowermentTimer--;
             }
             else 
             { 
-                mp.EmpowermentTimer = 0; 
-                mp.Empowered = false; 
+                mp.empowermentTimer = 0; 
+                mp.empowered = false; 
             }
         }
 
@@ -110,7 +111,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(10, 18));
         }
     }
@@ -139,15 +140,15 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void UpdateEquip(Player player)
         {
             player.magicCrit += 5;
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
         public override void UpdateVanity(Player player, EquipType type) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.StarwoodItem + "StarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));
         }
     }
@@ -187,15 +188,14 @@ namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer
     {
-        public bool starwoodArmorComplete = false;
-        public bool Empowered = false;
-        public int EmpowermentTimer = 0;
+        public bool empowered = false;
+        public int empowermentTimer = 0;
 
         public void StartStarwoodEmpowerment()
         {
             if (player.armor[1].modItem is Content.Items.Starwood.StarwoodChest && ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment
             {
-                if (!Empowered)
+                if (!empowered)
                     for (int k = 0; k < 80; k++)//pickup sfx
                         Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.8f, 1.2f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
                 
@@ -203,8 +203,8 @@ namespace StarlightRiver.Core
                     for (int k = 0; k < 40; k++)//reduced pickup sfx if its already active
                         Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.BlueStamina>(), (Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 0.8f)) * new Vector2(1f, 1.5f), 0, default, 1.5f);
                 
-                Empowered = true;
-                EmpowermentTimer = 600;//resets timer
+                empowered = true;
+                empowermentTimer = 600;//resets timer
             }
         }
     }

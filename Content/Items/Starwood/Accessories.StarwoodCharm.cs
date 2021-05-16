@@ -46,10 +46,10 @@ namespace StarlightRiver.Content.Items.Starwood
         {
             var mp = player.GetModPlayer<StarlightPlayer>();
 
-            player.meleeCrit += mp.Empowered ? 3 : -3;
-            player.rangedCrit += mp.Empowered ? 3 : -3;
-            player.magicCrit += mp.Empowered ? 3 : -3;
-            player.thrownCrit += mp.Empowered ? 3 : -3;
+            player.meleeCrit += mp.empowered ? 3 : -3;
+            player.rangedCrit += mp.empowered ? 3 : -3;
+            player.magicCrit += mp.empowered ? 3 : -3;
+            player.thrownCrit += mp.empowered ? 3 : -3;
         }
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Starwood
             scale = Main.inventoryScale;
             position += new Vector2(-4, 4);
 
-            if (!mp.Empowered)
+            if (!mp.empowered)
             {
                 spriteBatch.Draw(ModContent.GetTexture(Texture), position, frame, drawColor, 0, origin, scale, 0, 0);
                 return false;

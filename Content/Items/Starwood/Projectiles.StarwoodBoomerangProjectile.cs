@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
             if (projectile.timeLeft == MaxTimeLeft) {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered) {
+                if (mp.empowered) {
                     projectile.frame = 1;
                     lightColor = new Vector3(0.1f, 0.2f, 0.4f);
                     ScaleMult = 3;

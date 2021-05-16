@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Items.Starwood
             if (projectile.ai[0] == 0)
             {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered)
+                if (mp.empowered)
                     empowered = true;
                 projectile.netUpdate = true;
                 projectile.ai[0]++;
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Items.Starwood
             projectile.rotation = projectile.velocity.ToRotation() + 1.57f + rotationVar;
             rotationVar += 0.4f;
             StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-            if (!empowered && mp.Empowered)
+            if (!empowered && mp.empowered)
             {
                 projectile.frame += 5;
                 lightColor = new Vector3(0.05f, 0.1f, 0.2f);

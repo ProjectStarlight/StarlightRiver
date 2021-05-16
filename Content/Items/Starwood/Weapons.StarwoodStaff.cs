@@ -38,10 +38,10 @@ namespace StarlightRiver.Content.Items.Starwood
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             StarlightPlayer mp = Main.player[player.whoAmI].GetModPlayer<StarlightPlayer>();
-            int amount = mp.Empowered ? 4 : 3;
-            int projDamage = (int)(damage * (mp.Empowered ? 1.3f : 1f));//TODO: actually change the item itself's damage
-            float projSpeedX = speedX * (mp.Empowered ? 1.05f : 1f);
-            float projSpeedY = speedY * (mp.Empowered ? 1.05f : 1f);
+            int amount = mp.empowered ? 4 : 3;
+            int projDamage = (int)(damage * (mp.empowered ? 1.3f : 1f));//TODO: actually change the item itself's damage
+            float projSpeedX = speedX * (mp.empowered ? 1.05f : 1f);
+            float projSpeedY = speedY * (mp.empowered ? 1.05f : 1f);
 
             Vector2 staffEndPosition = player.Center + Vector2.Normalize(Main.MouseWorld - position) * 45;//this makes it spawn a distance from the player, useful for other stuff
 
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 Projectile.NewProjectile(staffEndPosition, new Vector2(projSpeedX, projSpeedY).RotatedBy(Main.rand.NextFloat(-0.05f, 0.05f) * (k * 0.10f + 1)) * Main.rand.NextFloat(0.9f, 1.1f) * (k * 0.15f + 1), type, projDamage, knockBack, player.whoAmI, Main.rand.NextFloat(-0.025f, 0.025f), Main.rand.Next(50));
 
             for (int k = 0; k < 10; k++)
-                Dust.NewDustPerfect(staffEndPosition + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-5f, 15f)), mp.Empowered ? ModContent.DustType<Dusts.BlueStamina>() : ModContent.DustType<Dusts.Stamina>(), (new Vector2(projSpeedX, projSpeedY) * Main.rand.NextFloat(0.01f, 0.1f)).RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) + player.velocity * 0.5f, 0, default, 1.5f);
+                Dust.NewDustPerfect(staffEndPosition + new Vector2(Main.rand.NextFloat(-10f, 10f), Main.rand.NextFloat(-5f, 15f)), mp.empowered ? ModContent.DustType<Dusts.BlueStamina>() : ModContent.DustType<Dusts.Stamina>(), (new Vector2(projSpeedX, projSpeedY) * Main.rand.NextFloat(0.01f, 0.1f)).RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) + player.velocity * 0.5f, 0, default, 1.5f);
             return false;
         }
 

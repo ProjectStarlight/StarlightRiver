@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Starwood
         {
             if (projectile.timeLeft == MaxTimeLeft) {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered) {
+                if (mp.empowered) {
                     projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     counterScore = 2;
@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Items.Starwood
         {
             if (projectile.timeLeft == MaxTimeLeft) {
                 StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
-                if (mp.Empowered) {
+                if (mp.empowered) {
                     projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     ScaleMult = 1.5f;
@@ -196,7 +196,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     float rotationAmount = Main.rand.NextFloat(-0.3f, 0.3f);
 
                     StarlightPlayer mp = Main.player[lasthitPlayer].GetModPlayer<StarlightPlayer>();
-                    float speed = (mp.Empowered ? 16 : 14) * Main.rand.NextFloat(0.9f, 1.1f);
+                    float speed = (mp.empowered ? 16 : 14) * Main.rand.NextFloat(0.9f, 1.1f);
 
                     Vector2 position = new Vector2(npc.Center.X, npc.Center.Y - 700).RotatedBy(rotationAmount, npc.Center);
                     Vector2 velocity = (Vector2.Normalize(npc.Center + new Vector2(0, -20) - position) * speed + npc.velocity / (speed / 1.5f) * 10f) * (Math.Abs(rotationAmount) + 1f);

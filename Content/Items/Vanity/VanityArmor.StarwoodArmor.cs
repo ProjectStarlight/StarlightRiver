@@ -32,14 +32,14 @@ namespace StarlightRiver.Content.Items.Vanity
         }
 
         public override void UpdateEquip(Player player) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public override void UpdateVanity(Player player, EquipType type) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(10, 4));
             else
                 ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(10, 4));
@@ -68,14 +68,14 @@ namespace StarlightRiver.Content.Items.Vanity
         }
 
         public override void UpdateEquip(Player player) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public override void UpdateVanity(Player player, EquipType type) => 
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.VanityItem + "AncientStarwoodChest_Body_Alt", 1, new Vector2(10, 18));
         }
     }
@@ -102,14 +102,14 @@ namespace StarlightRiver.Content.Items.Vanity
         }
 
         public override void UpdateEquip(Player player) =>
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public override void UpdateVanity(Player player, EquipType type) => 
-            isEmpowered = player.GetModPlayer<StarlightPlayer>().Empowered;
+            isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
-            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().Empowered)
+            if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.VanityItem + "AncientStarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));
         }
     }
