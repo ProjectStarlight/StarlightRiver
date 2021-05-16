@@ -80,10 +80,10 @@ namespace StarlightRiver.Content.CustomHooks
 				return Helper.PlayPitched("Pickups/PickupVanity", 1, 0.2f + pitch);
 
 			else if (item.accessory) //non-vanity non-shield accessories
-				return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
+				return Helper.PlayPitched("Pickups/PickupAccessory", 1, 0.5f + pitch);
 
 			else if (item.pick > 0 || item.axe > 0 || item.hammer > 0) //tools
-				return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
+				return Helper.PlayPitched("Pickups/PickupTool", 1, 0.5f + pitch);
 
 			else if (item.damage > 0) //weapons and ammo
 			{
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.CustomHooks
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 
 				else //edge cases
-					return Helper.PlayPitched("Pickups/PickupMelee", 1, 0.5f + pitch);
+					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 			}
 
 			else
