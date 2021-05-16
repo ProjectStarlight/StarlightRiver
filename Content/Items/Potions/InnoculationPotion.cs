@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Innoculation Potion");
-			Tooltip.SetDefault("+30% to DoT resistance");
+			Tooltip.SetDefault("+30% DoT resistance");
 		}
 
 		public override void SetDefaults()

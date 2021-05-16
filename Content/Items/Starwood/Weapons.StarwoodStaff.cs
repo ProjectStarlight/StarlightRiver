@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Staff");
-            Tooltip.SetDefault("Yabba Dabba Doo");
+            Tooltip.SetDefault("Creates a burst of small stars\nStriking an enemy with every star causes a larger star to drop on them");
             Item.staff[item.type] = true;
         }
 

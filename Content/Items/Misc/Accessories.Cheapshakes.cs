@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public ChestRegionFlags Regions => ChestRegionFlags.Ice;
 
-        public Cheapskates() : base("Cheapskates", "Movement speed is doubled\nYou take 30% more damage") { }
+        public Cheapskates() : base("Cheapskates", "Maximum movement speed is doubled\nYou take 30% more damage and acceleration is reduced") { }
 
         public override bool Autoload(ref string name)
         {

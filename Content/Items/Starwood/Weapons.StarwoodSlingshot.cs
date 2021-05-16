@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Starwood Slingshot");
-            Tooltip.SetDefault("Shoots fallen stars \nConsumes ammo every 50 shots");
+            Tooltip.SetDefault("Weaves together fallen stars \nConsumes ammo every 50 shots");
         }
 
         public override void SetDefaults()

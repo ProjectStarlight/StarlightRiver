@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
-        public TempleLens() : base("Ancient Lens", "+3% Critical Strike Chance\nCritical strikes inflict glowing") { }
+        public TempleLens() : base("Ancient Lens", "Critical strikes cause enemies around the struck enemy to glow\n+3% critical strike chance") { }
 
         public override void SafeSetDefaults()
         {

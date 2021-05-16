@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Beach
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public SeaglassRing() : base("Seaglass Ring", "+10 Maximum Barrier\nBarrier recharge starts slightly faster") { }
+		public SeaglassRing() : base("Seaglass Ring", "+10 barrier\nBarrier recharge starts slightly faster\n'The battering waves have not diminished its shine'") { }
 
 		public override void SafeSetDefaults()
 		{

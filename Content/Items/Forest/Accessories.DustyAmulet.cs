@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
         public override string Texture => AssetDirectory.ForestItem + Name;
 
-        public DustyAmulet() : base("Dusty Amulet", "+20 maximum life\n+20 maximum mana\n0.8x critical strike chance") { }
+        public DustyAmulet() : base("Dusty Amulet", "+20 maximum life\n+20 maximum mana\n0.8x critical strike chance\n'An old heirloom with an inscription lost to time'") { }
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
 

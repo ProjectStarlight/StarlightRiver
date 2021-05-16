@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Point of Light");
-            Tooltip.SetDefault("Struck foes glow\nSlain foes leave behind a bright light");
+            Tooltip.SetDefault("Struck enemies glow\nSlain enemies leave behind a bright light");
         }
 
         public override void SetDefaults()

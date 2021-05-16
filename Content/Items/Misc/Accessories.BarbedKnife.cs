@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public ChestRegionFlags Regions => ChestRegionFlags.Surface;
 
-        public BarbedKnife() : base("Barbed Knife", "Critical hits apply a bleeding debuff that stacks up to 5 times") { }
+        public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to 5 times") { }
 
         public override bool Autoload(ref string name)
         {

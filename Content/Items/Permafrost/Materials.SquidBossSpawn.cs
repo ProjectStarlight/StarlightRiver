@@ -11,8 +11,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("[PH] Auroracle Bait");
-            Tooltip.SetDefault("Drop in prismatic waters to summon a fearsome creature");
+            DisplayName.SetDefault("Suspicious Looking Offering");
+            Tooltip.SetDefault("Drop in prismatic waters to summon the one the Squiddites worship");
         }
 
         public override void SetDefaults()

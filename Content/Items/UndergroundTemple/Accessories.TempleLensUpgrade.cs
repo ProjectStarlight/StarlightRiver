@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
-        public TempleLensUpgrade() : base("Truestrike Lens", "+4% Critical Strike Chance\n+10% Critical Strike Damage\nCritical strikes inflict exposure") { }
+        public TempleLensUpgrade() : base("Truestrike Lens", "Critical strikes expose enemies near the struck enemy\nExposed enemies take significantly more damage on the first hit\n+4% critical strike chance\n+10% critical strike damage") { }
 
         public override void SafeSetDefaults()
         {

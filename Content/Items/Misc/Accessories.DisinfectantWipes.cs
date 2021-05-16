@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public DisinfectantWipes() : base("Disinfectant Wipes", "Critical strikes have a 10% chance reduce all debuff durations by 3 seconds\nThis will not affect mana or potion sickness") { }
+        public DisinfectantWipes() : base("Disinfectant Wipes", "Critical strikes have a 10% chance to reduce all debuff durations by 3 seconds\nDoes not affect potion sickness debuffs") { }
 
         public override bool Autoload(ref string name)
         {

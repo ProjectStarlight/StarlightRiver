@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "Hold space to enter hover mode!";
+            player.setBonus = "Hold space to hover over tiles";
             //starlightPlayer.ivyArmorComplete = true;
         }
 

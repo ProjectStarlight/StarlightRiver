@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flare Breacher");
-            Tooltip.SetDefault("Left click to launch explosive flares \nRight click to launch a target flare");
+            Tooltip.SetDefault("LMB to launch explosive flares\nRMB to launch a marker flare, calling down fury upon your enemies after a long chargeup");
         }
 
         public override void SetDefaults()

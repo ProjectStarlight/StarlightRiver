@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Forest
     {
         public override string Texture => AssetDirectory.ForestItem + Name;
 
-        public OldWhetstone() : base("Old Whetstone", "+1 to all damage\n'why in tarnation are you sharpening your wand?!'") { }
+        public OldWhetstone() : base("Old Whetstone", "+1 to all damage\n'Why in tarnation are you sharpening your wand?!'") { }
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
 

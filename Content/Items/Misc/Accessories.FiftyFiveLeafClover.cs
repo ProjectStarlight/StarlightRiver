@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public FiftyFiveLeafClover() : base("Fifty Five Leaf Clover", "Critical strike chance increases up to 20% over 10 seconds\nThis effect will reset when you take damage") { }
+        public FiftyFiveLeafClover() : base("Fifty Five Leaf Clover", "Critical strike chance increases up to 20% over 10 seconds\nEffect resets upon taking damage") { }
 
         public override bool Autoload(ref string name)
         {

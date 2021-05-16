@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scroll of Undoing");
-			Tooltip.SetDefault("Place over an equipped curse to destroy it");
+			Tooltip.SetDefault("Place over an equipped cursed item to destroy it\n'There's no turning back, most of the time'");
 		}
 
 		public override void SetDefaults()

@@ -68,19 +68,19 @@ namespace StarlightRiver.Content.CustomHooks
 				return Helper.PlayPitched(SoundID.Coins, 1, 0.3f + pitch);
 
 			else if (item.dye > 0) //dyes
-				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.95f + pitch * 0.25f);
+				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.9f + pitch * 0.25f);
 
 			else if (item.createTile != -1) //placables
 				return Helper.PlayPitched("Pickups/PickupGeneric", 1, 1 + pitch);
 
 			else if (item.defense > 0) //armor and shields
-				return Helper.PlayPitched("Pickups/PickupArmor", 1, 0.2f + pitch);
+				return Helper.PlayPitched("Pickups/PickupArmor", 1, 0.5f + pitch);
 
 			else if (item.vanity) //vanity
-				return Helper.PlayPitched("Pickups/PickupVanity", 1, 0.2f + pitch);
+				return Helper.PlayPitched("Pickups/PickupVanity", 1, 0.5f + pitch);
 
 			else if (item.accessory) //non-vanity non-shield accessories
-				return Helper.PlayPitched("Pickups/PickupAccessory", 1, 0.5f + pitch);
+				return Helper.PlayPitched("Pickups/PickupAmogus", 1, 0.1f + pitch);
 
 			else if (item.pick > 0 || item.axe > 0 || item.hammer > 0) //tools
 				return Helper.PlayPitched("Pickups/PickupTool", 1, 0.5f + pitch);
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
 					return Helper.PlayPitched("Pickups/PickupGun", 1, 0 + pitch);
 
 				else if (item.ranged) //other ranged weapons
-					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
+					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.9f + pitch * 0.5f);
 
 				else if (item.magic || item.summon) //magic and summoning weapons
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);

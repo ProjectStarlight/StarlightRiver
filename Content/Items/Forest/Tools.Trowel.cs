@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Cumlayers Trowel");
+			DisplayName.SetDefault("Bricklayer's Trowel");
 			Tooltip.SetDefault("Extends blocks in a straight line\nDirection is based on your position\nHold SHIFT for reverse direction\n30 block range");
 		}
 
@@ -31,8 +31,9 @@ namespace StarlightRiver.Content.Items.Forest
 			item.width = 16;
 			item.height = 16;
 			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.useTime = 20;
+			item.useTime = 10;
 			item.useAnimation = 20;
+			item.autoReuse = true;
 		}
 
 		private Point16 FindNextTile(Player player)
@@ -125,8 +126,8 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Automatic Cumlayers Trowel");
-			Tooltip.SetDefault("Extends blocks in a straight line\nDirection is based on your position\nHold SHIFT for reverse direction\n40 block range");
+			DisplayName.SetDefault("Autotrowel 9000");
+			Tooltip.SetDefault("Extends blocks in a straight line extremely quickly\nDirection is based on your position\nHold SHIFT for reverse direction\n40 block range\n'The perfect tool for every esteemed bridgebuilder!'");
 		}
 
 		public override void SetDefaults()
@@ -134,7 +135,7 @@ namespace StarlightRiver.Content.Items.Forest
 			item.width = 16;
 			item.height = 16;
 			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.useTime = 10;
+			item.useTime = 2;
 			item.useAnimation = 10;
 			item.autoReuse = true;
 			maxRange = 40;

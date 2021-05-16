@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (ItemIsDerivativeOfShoeSpikes(item))
             {
-                TooltipLine tooltipLine = new TooltipLine(mod, "StarlightRiver:ShoeSpikesInfo", "Greatly increases running acceleration if the player is touching the ground");
+                TooltipLine tooltipLine = new TooltipLine(mod, "StarlightRiver:ShoeSpikesInfo", "Massively increased acceleration when touching the ground");
 
                 tooltips.Add(tooltipLine);
             }

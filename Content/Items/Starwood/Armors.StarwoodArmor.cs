@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "Picking up mana stars empowers starwood items";
+            player.setBonus = "Picking up mana stars empowers starwood items, temporarily granting them new effects";
             StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
 
             if (mp.empowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, player)) //checks if complete to disable empowerment if set is removed

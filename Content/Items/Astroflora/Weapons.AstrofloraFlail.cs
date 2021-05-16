@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Astroflora Flail");
-			Tooltip.SetDefault("Spinning the flail creates a toxic mist\nThe toxic mist ignites when the flail is thrown");
+			Tooltip.SetDefault("Spinning the flail releases toxic spores that ignite when the flail is thrown");
 		}
 
 		public override void SafeSetDefaults()

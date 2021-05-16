@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             if (boomTimer == 1)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
 
-            if (boomTimer >= 120)
+            if (boomTimer >= 90)
             {
                 var tex = Main.itemTexture[item.type];
 
