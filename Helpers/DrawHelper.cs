@@ -98,5 +98,49 @@ namespace StarlightRiver.Helpers
                 }
             }
         }
+
+        /// <summary>
+        /// Draws a flat colored block that respects slopes, for making multitile structures
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="spriteBatch"></param>
+        public static void TileDebugDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+            Tile tile = Main.tile[i, j];
+            int height = tile.frameY == 36 ? 18 : 16;
+            if (tile.slope() == 0 && !tile.halfBrick())
+                spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, height), Color.Magenta * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            else if (tile.halfBrick())
+                spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2(0, 10), new Rectangle(tile.frameX, tile.frameY + 10, 16, 6), Color.Red * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            else
+            {
+                byte b3 = tile.slope();
+                int num34;
+                for (int num226 = 0; num226 < 8; num226 = num34 + 1)
+                {
+                    int num227 = num226 << 1;
+                    Rectangle value5 = new Rectangle(tile.frameX, tile.frameY + num226 * 2, num227, 2);
+                    int num228 = 0;
+                    switch (b3)
+                    {
+                        case 2:
+                            value5.X = 16 - num227;
+                            num228 = 16 - num227;
+                            break;
+                        case 3:
+                            value5.Width = 16 - num227;
+                            break;
+                        case 4:
+                            value5.Width = 14 - num227;
+                            value5.X = num227 + 2;
+                            num228 = num227 + 2;
+                            break;
+                    }
+                    spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2((float)num228, (num226 * 2)), value5, Color.Blue * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                    num34 = num226;
+                }
+            }
+        }
     }
 }

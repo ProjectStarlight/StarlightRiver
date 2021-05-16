@@ -106,5 +106,12 @@ namespace StarlightRiver.Core
         public const string Astroflora =            Assets + "Items/Astroflora/";
 
         public const string ArmorEnchant =          Assets + "ArmorEnchantment/";
+
+        //structures
+        public const string StructureFolder =       "Structures/";
+
+        public const string VitricStructures =      StructureFolder + "Vitric/";
+
+        public const string VitricCrystalStructs =  VitricStructures + "WalkableCrystals/";
     }
 }
