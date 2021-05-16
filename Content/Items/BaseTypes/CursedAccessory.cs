@@ -63,12 +63,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, 0, 0);
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+                Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
                 spriteBatch.Draw(tex, position, frame, Color.White * (boomTimer / 30f), 0, origin, scale, 0, 0);
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
                 return false;
 			}
@@ -189,12 +189,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 Main.spriteBatch.Draw(tex, target, new Rectangle(4, 4, tex.Width - 4, tex.Height - 4), Color.Black * (0.675f * tooltipProgress + (float)(Math.Sin(Main.GameUpdateCount / 25f)) * -0.1f), 0, (tex.Size() - Vector2.One * 8) / 2, 0, 0);
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.UIScaleMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.UIScaleMatrix);
 
                 Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.Lerp(Color.White, new Color(180, 100, 225), tooltipProgress), 1.1f);
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
                 if(tooltipProgress < 1)
                     tooltipProgress += 0.05f;

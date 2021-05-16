@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.CustomHooks
                 }
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 foreach ((NPC, float) info in drawInfo)
                 {
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.CustomHooks
                 }
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             };
         }
     }

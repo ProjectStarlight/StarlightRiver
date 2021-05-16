@@ -10,28 +10,18 @@ namespace StarlightRiver.Content.Items.BaseTypes
         private readonly string ThisName;
         private readonly string ThisTooltip;
 
+        public bool Equipped(Player player)
+        {
+            //See? It's correct here, but it wasn't in Helper.cs, lol-IDG
+            for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
+                if (player.armor[k].type == item.type) return true;
+            return false;
+        }
+
         protected SmartAccessory(string name, string tooltip) : base()
         {
             ThisName = name;
             ThisTooltip = tooltip;
-        }
-
-        public bool Equipped(Player player)
-        {
-            for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
-                if (player.armor[k].type == item.type)
-                    return true;
-
-            return false;
-        }
-
-        public SmartAccessory GetEquippedInstance(Player player)
-		{
-            for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
-                if (player.armor[k].type == item.type)
-                    return player.armor[k].modItem as SmartAccessory;
-
-            return null;
         }
 
         public virtual void SafeSetDefaults() { }

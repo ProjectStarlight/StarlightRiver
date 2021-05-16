@@ -36,10 +36,10 @@ namespace StarlightRiver.Tiles.Temple
                 Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2");
 
                 spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive);
+                spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
                 spriteBatch.End();
-                spriteBatch.Begin();
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
                 spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, Color.White);
                 spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColor);

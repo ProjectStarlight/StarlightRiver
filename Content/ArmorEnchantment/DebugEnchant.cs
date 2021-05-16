@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
         public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
             var tex = Main.itemTexture[item.type];
 
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
             }
 
             spriteBatch.End();
-            spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
             return true;
         }

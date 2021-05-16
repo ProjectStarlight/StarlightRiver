@@ -59,12 +59,12 @@ namespace StarlightRiver.Content.Items.Misc
             spriteBatch.Draw(over, position + frame.Size() / 2 * scale, over.Frame(), Color.White, 0, over.Size() / 2, scale, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive);
+            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
             spriteBatch.Draw(glow, position + frame.Size() / 2 * scale, glow.Frame(), Main.DiscoColor * 0.5f, 0, glow.Size() / 2, scale, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
             return false;
         }
@@ -86,12 +86,12 @@ namespace StarlightRiver.Content.Items.Misc
             spriteBatch.Draw(over, position, over.Frame(), lightColor, 0, Vector2.Zero, scale, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive);
+            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
             spriteBatch.Draw(glow, position + frame.Size() / 2 * scale, glow.Frame(), Main.DiscoColor * 0.5f, 0, glow.Size() / 2, scale, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
             Lighting.AddLight(item.Center, Main.DiscoColor.ToVector3());
             return false;
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Items.Misc
             spriteBatch.Draw(over, position + projectile.Size / 2 * scale, over.Frame(), lightColor * fade, projectile.rotation, over.Size() / 2, scale, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive);
+            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
             spriteBatch.Draw(glow, position + projectile.Size / 2 * scale, glow.Frame(), Main.DiscoColor * 0.5f * fade, projectile.rotation, glow.Size() / 2, scale, 0, 0);
 
@@ -200,7 +200,7 @@ namespace StarlightRiver.Content.Items.Misc
                 spriteBatch.Draw(glow, position + projectile.Size / 2 * scale, glow.Frame(), Main.DiscoColor * (1 - pulse) * fade, projectile.rotation, glow.Size() / 2, scale * (1 + pulse * 2), 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
             Lighting.AddLight(projectile.Center, Main.DiscoColor.ToVector3() * 0.5f * fade);
             return false;

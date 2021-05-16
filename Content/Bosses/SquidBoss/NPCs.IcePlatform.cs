@@ -12,7 +12,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     class IcePlatform : MovingPlatform
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
-
         public override void SafeSetDefaults()
         {
             npc.width = 200;
@@ -40,9 +39,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (npc.position.Y >= npc.ai[2]) npc.ai[1] = 0;
 
-                if (npc.position.Y + 18 >= actor.WaterLevel) npc.ai[1] = 1;
+                if (npc.position.Y + 16 >= actor.WaterLevel) npc.ai[1] = 1;
 
-                if (npc.ai[1] == 1 && (!Main.tile[(int)npc.Center.X / 16, (int)npc.Center.Y / 16 - 5].active() || actor.WaterLevel - 18 > npc.position.Y)) npc.position.Y = actor.WaterLevel - 18;
+                if (npc.ai[1] == 1 && (!Main.tile[(int)npc.Center.X / 16, (int)npc.Center.Y / 16 - 5].active() || actor.WaterLevel - 16 > npc.position.Y)) npc.position.Y = actor.WaterLevel - 16;
             }
         }
     }

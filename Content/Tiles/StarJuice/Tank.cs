@@ -73,12 +73,12 @@ namespace StarlightRiver.Content.Tiles.StarJuice
                 int charge = (int)(entity.charge / 5000f * 32f);
 
                 spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+                spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);//spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
 
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0"), pos + Vector2.One * -16, new Color(80, 150, 200) * (entity.charge / 5000f * 0.7f));
 
                 spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
+                spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);//spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/StarJuice/OrbIn"), new Rectangle((int)pos.X, (int)pos.Y + (32 - charge), 32, charge),
                     new Rectangle(0, 0, 32, charge), Color.White, 0, Vector2.Zero, SpriteEffects.FlipVertically, 0);

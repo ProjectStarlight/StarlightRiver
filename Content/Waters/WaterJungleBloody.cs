@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Waters
+namespace StarlightRiver.Waters
 {
     public class WaterJungleBloody : ModWaterStyle
     {
@@ -19,16 +19,23 @@ namespace StarlightRiver.Content.Waters
         public override bool ChooseWaterStyle()
         {
             BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneJungleBloody || modPlayer.FountainJungleBloody;
+            return (modPlayer.ZoneJungleBloody || modPlayer.FountainJungleBloody);
         }
 
-        public override int ChooseWaterfallStyle() =>
-            mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
+        public override int ChooseWaterfallStyle()
+        {
+            return mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
+        }
 
-        public override int GetSplashDust() =>
-            DustType<Dusts.BloodyJungleSplash>();
+        public override int GetSplashDust()
+        {
+            return DustType<Content.Dusts.BloodyJungleSplash>();
+        }
 
-        public override int GetDropletGore() => 0;
+        public override int GetDropletGore()
+        {
+            return 0;// mod.GetGoreSlot("Gores/DropJungleBloody");
+        }
 
         public override void LightColorMultiplier(ref float r, ref float g, ref float b)
         {
@@ -43,7 +50,7 @@ namespace StarlightRiver.Content.Waters
         }
     }
 
-    public class WaterfallJungleBloody : ModWaterfallStyle
+    public class WaterfallJungleBloody : ModWaterfallStyle 
     {
         public override bool Autoload(ref string name, ref string texture)
         {

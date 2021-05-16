@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class CrystalSlime : ModNPC
     {
-        public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
+        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/CrystalSlime";
 
         public override void SetStaticDefaults()
         {
@@ -116,15 +116,5 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
             }
         }
-    }
-
-    internal class CrystalSlimeBanner : ModBanner
-    {
-        public CrystalSlimeBanner() : base("CrystalSlimeBannerItem", NPCType<CrystalSlime>(), AssetDirectory.VitricNpc) { }
-    }
-
-    internal class CrystalSlimeBannerItem : QuickBannerItem
-    {
-        public CrystalSlimeBannerItem() : base("CrystalSlimeBanner", "Crystal Slime", AssetDirectory.VitricNpc) { }//a
     }
 }

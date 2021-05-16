@@ -11,11 +11,11 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 {
     internal class OvergrowSkeletonKnight : ModNPC
     {
-        public override string Texture => AssetDirectory.OvergrowNpc + "OvergrowSkeletonKnight";
+        public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/OvergrowSkeletonKnight";
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Undead Swordsman");
+            DisplayName.SetDefault("Swordsman Skeleton");
             Main.npcFrameCount[npc.type] = 6;
         }
 
@@ -270,15 +270,5 @@ namespace StarlightRiver.Content.NPCs.Overgrow
         public override void NPCLoot()
         {
         }
-    }
-
-    internal class OvergrowSkeletonKnightBanner : ModBanner
-    {
-        public OvergrowSkeletonKnightBanner() : base("OvergrowSkeletonKnightBannerItem", ModContent.NPCType<OvergrowSkeletonKnight>(), AssetDirectory.OvergrowNpc) { }
-    }
-
-    internal class OvergrowSkeletonKnightBannerItem : QuickBannerItem
-    {
-        public OvergrowSkeletonKnightBannerItem() : base("OvergrowSkeletonKnightBanner", "Undead Swordsman", AssetDirectory.OvergrowNpc) { }
     }
 }

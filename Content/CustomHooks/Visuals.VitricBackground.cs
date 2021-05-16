@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.CustomHooks
                 float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 for (int k = 5; k >= 0; k--)
                 {
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.CustomHooks
                         DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + progress * 0.2f), false);
 
                         Main.spriteBatch.End();
-                        Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                        Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
                     }
 
                     if (k == 1)
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 Main.spriteBatch.End();
                 DrawTilingBackground();
-                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 DrawBlack();
             }

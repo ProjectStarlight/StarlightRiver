@@ -5,7 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Waters
+namespace StarlightRiver.Waters
 {
     public class WaterJungleCorrupt : ModWaterStyle
     {
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Waters
 
         public override int GetSplashDust()
         {
-            return DustType<Dusts.CorruptJungleSplash>();
+            return DustType<Content.Dusts.CorruptJungleSplash>();
         }
 
         public override int GetDropletGore()
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Waters
         }
     }
 
-    public class WaterfallJungleCorrupt : ModWaterfallStyle
+    public class WaterfallJungleCorrupt : ModWaterfallStyle 
     {
         public override bool Autoload(ref string name, ref string texture)
         {

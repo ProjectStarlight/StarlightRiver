@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.White * (0.4f + sin * 0.05f), -Main.GameUpdateCount / 60f, glowTex.Size() / 2, 0.5f + sin * 0.03f, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 
             Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/LootSlotOn");

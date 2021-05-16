@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Lavas
         private int LavaBody(int arg)
         {
             foreach(var style in lavas)
-                if (style.ChooseLavaStyle()) return style.Type;
+                if (style.ChooseLavaStyle) return style.Type;
 
             return arg;
         }
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Lavas
         private Texture2D LavaBlockBody(Texture2D arg)
         {
             foreach (var style in lavas)
-                if (style.ChooseLavaStyle())
+                if (style.ChooseLavaStyle)
                 {
                     string path = "";
                     string garbage = "", garbage2 = "";
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Lavas
         private bool SwapLava(int x, int y)
         {
             foreach (var style in lavas)
-                if (style.ChooseLavaStyle())
+                if (style.ChooseLavaStyle)
                 {
                     return style.DrawEffects(x, y);
                 }

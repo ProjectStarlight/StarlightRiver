@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Texture2D tex2 = GetTexture(AssetDirectory.RiftCrafting + "Glow1");
 
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.Additive);
+            spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 8 - Main.screenPosition;
             for (int k = 0; k < 3; k++)
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.rottime) * 0.10f), 2 + -(float)Math.Sin(StarlightWorld.rottime + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
         }
     }
 }

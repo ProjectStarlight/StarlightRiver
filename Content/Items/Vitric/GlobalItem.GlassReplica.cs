@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (isReplica)
             {
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.UIScaleMatrix);
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.UIScaleMatrix);
                 Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.rottime);
             }
 
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (isReplica)
             {
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
             }
         }
 
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (firstTime)
                 {
                     spriteBatch.End();
-                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                    spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                     var tex = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
                     float scale1 = Main.itemTexture[item.type].Size().Length() / tex.Size().Length();
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 }
 
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
                 Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.rottime);
             }
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (isReplica)
             {
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
         }
 

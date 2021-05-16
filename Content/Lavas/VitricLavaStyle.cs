@@ -11,17 +11,22 @@ namespace StarlightRiver.Content.Lavas
 {
     class VitricLavaStyle : LavaStyle
     {
-        public override int ChooseWaterfallStyle() => 0;
-
-        public override int GetSplashDust() => 0;
-
-        public override int GetDropletGore() => 0;
-
-        public override bool ChooseLavaStyle()
+        public override int ChooseWaterfallStyle()
         {
-            BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneGlass;// || modPlayer.FountainVitric;//disabled because lava styles break water styles
+            return 0;
         }
+
+        public override int GetSplashDust()
+        {
+            return 0;
+        }
+
+        public override int GetDropletGore()
+        {
+            return 0;
+        }
+
+        public override bool ChooseLavaStyle => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass;
 
         public override bool SafeAutoload(ref string name, ref string texture, ref string blockTexture)
         {

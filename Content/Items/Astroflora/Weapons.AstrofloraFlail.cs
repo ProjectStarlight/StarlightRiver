@@ -50,10 +50,14 @@ namespace StarlightRiver.Content.Items.Astroflora
 		{
 			if (released)
 			{
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
+
 				Texture2D bloom = mod.GetTexture(Texture.Remove(0, mod.Name.Length + 1) + "_bloom");
 				spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, Color.LightGoldenrodYellow * 0.5f, projectile.rotation, bloom.Size() / 2, projectile.scale * 1.2f, SpriteEffects.None, 0);
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+				
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default);
 			}
 		}
 
@@ -211,23 +215,31 @@ namespace StarlightRiver.Content.Items.Astroflora
 		{
 			if (Ignited && projectile.ai[1] < chargetime)
 			{
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
+				
 				Texture2D bloom = mod.GetTexture(Texture.Remove(0, mod.Name.Length + 1) + "_bloom");
 				float opacity = (projectile.ai[1] / chargetime) * 0.75f;
 				Color color = (projectile.ai[1] < chargetime / 2) ? Color.White : Color.Lerp(Color.White, Color.Orange, (projectile.ai[1] - chargetime / 2) / (chargetime / 2));
 				spriteBatch.Draw(bloom, projectile.Center - (2 * projectile.velocity) - Main.screenPosition, null, color * opacity,
 					projectile.rotation, bloom.Size() / 2, MathHelper.Lerp(projectile.scale, 1, 0.15f) * 1.2f, SpriteEffects.None, 0);
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+				
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 			}
 			else if (Ignited)
 			{
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
+
 				Texture2D bloom = mod.GetTexture(Texture.Remove(0, mod.Name.Length + 1) + "_bloom");
 				float opacity = (projectile.timeLeft / 20f) * 2f;
 				Color color = Color.Orange;
 				spriteBatch.Draw(bloom, projectile.Center - (2 * projectile.velocity) - Main.screenPosition, null, color * opacity,
 					projectile.rotation, bloom.Size() / 2, 0.2f + (((20 - projectile.timeLeft) / 20f) * 2.5f), SpriteEffects.None, 0);
-				spriteBatch.End(); spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+				
+				spriteBatch.End(); 
+				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 			}
 		}
 	}

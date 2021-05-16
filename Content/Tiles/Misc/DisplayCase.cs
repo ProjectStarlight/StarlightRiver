@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                     return true;
 
                 spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive);
+                spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
                 var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
                 var pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition - Vector2.One * 16;
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 - GetProgress(98)), Main.GameUpdateCount / 360f + 4.0f, new Vector2(texShine.Width / 2, texShine.Height), 0.09f * GetProgress(98), 0, 0);
 
                 spriteBatch.End();
-                spriteBatch.Begin();
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
                 var tex = Main.itemTexture[entity.containedItem.type];
                 var target = new Rectangle((i + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X + 4, (j + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y + 6, 20, 20);

@@ -56,12 +56,12 @@ namespace StarlightRiver.Content.GUI
             Color color = Color.White * (Timer / 120f);
 
             spriteBatch.End();
-            spriteBatch.Begin(default, BlendState.AlphaBlend);
+            spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
             spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Keys/Glow"), new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
             if (reverse)
             {

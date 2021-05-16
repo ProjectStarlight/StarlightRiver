@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 }
 
                 spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
             }
         }
 

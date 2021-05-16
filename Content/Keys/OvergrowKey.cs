@@ -19,7 +19,7 @@ namespace StarlightRiver.Keys
         public override void PreDraw(SpriteBatch spriteBatch)
         {
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.PointClamp, default, default);
 
             Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
             spriteBatch.Draw(tex, Position + Vector2.One * 16 - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * 0.3f, StarlightWorld.rottime, tex.Frame().Size() / 2, 1 + (float)Math.Cos(StarlightWorld.rottime) * 0.25f, 0, 0);
@@ -27,7 +27,7 @@ namespace StarlightRiver.Keys
             spriteBatch.Draw(tex, Position + Vector2.One * 16 - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * 0.7f, StarlightWorld.rottime, tex.Frame().Size() / 2, 0.5f + (float)Math.Cos(StarlightWorld.rottime + 1) * 0.1f, 0, 0);
 
             spriteBatch.End();
-            spriteBatch.Begin();
+            spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
         }
 
         public override void PreUpdate()
