@@ -9,8 +9,6 @@ namespace StarlightRiver.Core
 {
     public partial class StarlightNPC : GlobalNPC
     {
-        public int Age;
-
         public int DoT;
 
         //TODO: Make a better system for this, stacking DoTs
@@ -28,8 +26,6 @@ namespace StarlightRiver.Core
 
         public override bool PreAI(NPC npc)
         {
-            Age++;
-
             if (!npc.noTileCollide && !npc.justHit && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 VitricSpike.CollideWithSpikes(npc, out int damage);

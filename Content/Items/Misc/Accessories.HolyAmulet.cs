@@ -20,16 +20,13 @@ namespace StarlightRiver.Content.Items.Misc
         public override bool Autoload(ref string name)
         {
             On.Terraria.Player.HealEffect += HealEffect;
-
             return true;
         }
 
         private void HealEffect(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
         {
             if (Equipped(self))
-            {
                 self.GetModPlayer<HolyAmuletHealingTracker>().Healed(healAmount);
-            }
 
             orig(self, healAmount, broadcast);
         }
@@ -44,7 +41,6 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddTile(TileID.Anvils);
 
             recipe.SetResult(this);
-
             recipe.AddRecipe();
 
             recipe = new ModRecipe(mod);
@@ -55,7 +51,6 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddTile(TileID.Anvils);
 
             recipe.SetResult(this);
-
             recipe.AddRecipe();
         }
     }
@@ -91,17 +86,11 @@ namespace StarlightRiver.Content.Items.Misc
     // This is basically a carbon copy of the astroflora bow. Consider making a base "TrailProjectile" to cut down on the boilerplate.
     public class HolyAmuletOrb : ModProjectile, IDrawPrimitive
     {
-        // 20 Tiles.
-        private const float detectionRange = 320;
-
+        private const float detectionRange = 320;         // 20 Tiles.
         private const int oldPositionCacheLength = 24;
-
         private const int trailMaxWidth = 4;
 
-        public override string Texture => AssetDirectory.Invisible;
-
         private Trail trail;
-
         private List<Vector2> cache;
 
         private int TargetNPCIndex
@@ -116,6 +105,8 @@ namespace StarlightRiver.Content.Items.Misc
             set => projectile.ai[1] = value ? 1 : 0;
         }
 
+        public override string Texture => AssetDirectory.Invisible;
+
         public override void SetStaticDefaults()
         {
             ProjectileID.Sets.Homing[projectile.type] = true;
@@ -125,13 +116,9 @@ namespace StarlightRiver.Content.Items.Misc
         {
             projectile.width = 16;
             projectile.height = 16;
-
             projectile.friendly = true;
-
             projectile.timeLeft = 300;
-
             projectile.tileCollide = false;
-
             projectile.penetrate = -1;
         }
 
@@ -141,13 +128,10 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.netUpdate = true;
 
             ManageCaches();
-
             ManageTrail();
 
             if (projectile.timeLeft < 30)
-            {
                 projectile.alpha += 8;
-            }
 
             if (!HitATarget && TargetNPCIndex == -1)
             {
@@ -158,7 +142,6 @@ namespace StarlightRiver.Content.Items.Misc
                     if (npc.CanBeChasedBy() && npc.DistanceSQ(projectile.Center) < detectionRange * detectionRange)
                     {
                         TargetNPCIndex = i;
-
                         break;
                     }
                 }
@@ -168,7 +151,6 @@ namespace StarlightRiver.Content.Items.Misc
                 if (!Main.npc[TargetNPCIndex].CanBeChasedBy())
                 {
                     TargetNPCIndex = -1;
-
                     return;
                 }
 
@@ -179,29 +161,24 @@ namespace StarlightRiver.Content.Items.Misc
         private void Homing(NPC target)
         {
             Vector2 move = target.Center - projectile.Center;
-
             AdjustMagnitude(ref move);
 
             projectile.velocity = (10 * projectile.velocity + move) / 11f;
-
             AdjustMagnitude(ref projectile.velocity);
         }
 
         private void AdjustMagnitude(ref Vector2 vector)
         {
             float adjustment = 24;
-
             float magnitude = vector.Length();
 
             if (magnitude > adjustment)
-            {
                 vector *= adjustment / magnitude;
-            }
         }
 
         private void ManageCaches()
         {
-            if (cache == null)
+            if (cache is null)
             {
                 cache = new List<Vector2>();
 
@@ -253,7 +230,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             projectile.timeLeft = 30;
-
             HitATarget = true;
 
             // This is hacky, but it lets the projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".

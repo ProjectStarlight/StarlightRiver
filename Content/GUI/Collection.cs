@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.GUI
                     Vector2 pos = new Vector2(100, 300) + new Vector2(-60, 0).RotatedBy(-k / (float)(abilities.Length - 1) * 3.14f);
                     AddAbility(ability, pos);
                 }
+
                 ShouldReset = false;
             }
         }

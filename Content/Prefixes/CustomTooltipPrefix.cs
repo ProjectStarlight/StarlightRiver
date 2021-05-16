@@ -12,6 +12,8 @@ namespace StarlightRiver.Prefixes
 
         protected CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
 
+        public virtual void Update(Item item, Player player) { }
+
         public virtual void SafeApply(Item item) { }
 
         public override void Apply(Item item)

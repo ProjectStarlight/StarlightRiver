@@ -2,31 +2,32 @@
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Prefixes.Accessory
 {
     internal abstract class StaminaPrefix : CustomTooltipPrefix
     {
-        private readonly int _power;
-        private readonly string _name;
+        private readonly int power;
+        private readonly string name;
 
         internal StaminaPrefix(int power, string name, string tip) : base(tip)
         {
-            _power = power;
-            _name = name;
+            this.power = power;
+            this.name = name;
         }
 
         public override bool CanRoll(Item item) => item.accessory;
 
         public override PrefixCategory Category => PrefixCategory.Accessory;
 
-        public override void SetDefaults() => DisplayName.SetDefault(_name);
+        public override void SetDefaults() => DisplayName.SetDefault(name);
 
-        public override void ModifyValue(ref float valueMult) => valueMult *= 1 + 0.05f * _power;
+        public override void ModifyValue(ref float valueMult) => valueMult *= 1 + 0.05f * power;
 
-        public override void SafeApply(Item item)
+        public override void Update(Item item, Player player)
         {
-            item.GetGlobalItem<Core.StarlightItem>().staminaRegenUp += _power;
+            player.GetHandler().StaminaRegenRate += power;
         }
     }
 

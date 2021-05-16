@@ -16,7 +16,6 @@ namespace StarlightRiver.Core
         public string prefixLine = "";
 
         //Prefix handlers
-        public int staminaRegenUp = 0;
 
         public override bool InstancePerEntity => true;
 
@@ -26,16 +25,18 @@ namespace StarlightRiver.Core
 
         public override void UpdateAccessory(Item item, Player player, bool hideVisual)
         {
-            base.UpdateAccessory(item, player, hideVisual);
+            var prefix = ModPrefix.GetPrefix(item.prefix);
 
-            player.GetHandler().StaminaRegenRate += staminaRegenUp;
+            if (prefix is CustomTooltipPrefix)
+                (prefix as CustomTooltipPrefix).Update(item, player);
+
+            base.UpdateAccessory(item, player, hideVisual);
         }
 
         public override int ChoosePrefix(Item item, UnifiedRandom rand)
         {
             //resetting for custom prefix stuff
             prefixLine = "";
-            staminaRegenUp = 0;
 
             return -1;
         }
@@ -44,10 +45,13 @@ namespace StarlightRiver.Core
         {
             if (ModPrefix.GetPrefix(item.prefix) is CustomTooltipPrefix)
             {
+                var critLine = tooltips.Find(n => n.Name == "Knockback");
+                int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
+
                 TooltipLine line = new TooltipLine(mod, "CustomPrefix", prefixLine);
                 line.isModifier = true;
                 line.isModifierBad = false;
-                tooltips.Add(line);
+                tooltips.Insert(index + 1, line);
             }
 
             //Ammo display, maybe move this later? TODO?

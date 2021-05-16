@@ -26,6 +26,6 @@ namespace StarlightRiver.Content.Tiles.Paintings
 
     class AuroraclePaintingItem : QuickTileItem
     {
-        public AuroraclePaintingItem() : base("Prismatic Waters", "K. Ra", TileType<AuroraclePainting>(), 1, AssetDirectory.PaintingTile) { }
+        public AuroraclePaintingItem() : base("Prismatic Waters", "'K. Ra'", TileType<AuroraclePainting>(), 1, AssetDirectory.PaintingTile) { }
     }
 }

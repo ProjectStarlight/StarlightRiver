@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Buffs
 
 		private void BuffDamage(NPC npc, Player target, ref int damage, ref bool crit)
 		{
-			if(InflictedNPC(npc))
+			if(Inflicted(npc))
 			{
 				damage = (int)(damage * 1.2f); //20% more damage
 				crit = true;
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Buffs
 
 		private void ResetRageBuff(NPC npc)
 		{
-			if(InflictedNPC(npc)) //reset effects
+			if(Inflicted(npc)) //reset effects
 			{
 				npc.knockBackResist *= 2f;
 				npc.scale -= 0.2f;

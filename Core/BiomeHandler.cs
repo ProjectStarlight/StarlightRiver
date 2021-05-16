@@ -39,8 +39,6 @@ namespace StarlightRiver.Core
         public bool FountainJungleCorrupt = false;
         public bool FountainJungleBloody = false;
         public bool FountainJungleHoly = false;
-        public bool FountainVitric = false;
-        //public bool FountainVitricLava = false;
 
         public static Rectangle GlassTempleZone => new Rectangle(StarlightWorld.VitricBiome.Center.X - 50, StarlightWorld.VitricBiome.Center.Y - 4, 101, 400);
 
@@ -187,11 +185,9 @@ namespace StarlightRiver.Core
 
         public override void ResetNearbyTileEffects()
         {
-            BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            modPlayer.FountainJungleCorrupt = false;
-            modPlayer.FountainJungleBloody = false;
-            modPlayer.FountainJungleHoly = false;
-            modPlayer.FountainVitric = false;
+            Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainJungleCorrupt = false;
+            Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainJungleBloody = false;
+            Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainJungleHoly = false;
         }
     }
 }

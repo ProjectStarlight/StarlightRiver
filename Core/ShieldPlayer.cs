@@ -93,6 +93,8 @@ namespace StarlightRiver.Core
 				}
 			}
 
+			OvershieldDrainRate = Math.Max(0, OvershieldDrainRate);
+
 			if (Shield > MaxShield && !DontDrainOvershield)
 			{
 				int drainRateWhole = OvershieldDrainRate / 60;
