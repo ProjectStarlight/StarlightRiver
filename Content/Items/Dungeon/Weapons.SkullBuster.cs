@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System;
 using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Audio;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -18,8 +19,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public float recoil = 0;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Skull Buster");
-			Tooltip.SetDefault("Funny");
+			DisplayName.SetDefault("Skullbuster");
+			Tooltip.SetDefault("Striking enemies with all four bullets creates a fifth guarunteed crit bullet\nSlaying an enemy with this empowered shot instantly reloads\n'Four in the chamber'");
 
 		}
 
@@ -64,7 +65,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/Revolver"), position);
+			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"), position);
 			if (shotCounter < 1)
 			{
 				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, player.whoAmI);

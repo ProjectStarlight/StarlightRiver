@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Sounds.Guns
+namespace StarlightRiver.Sounds.Custom
 {
 	public class Revolver : ModSound
 	{
