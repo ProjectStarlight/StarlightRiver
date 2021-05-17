@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
             ModRecipe recipe = new ModRecipe(mod);
 
             recipe.AddIngredient(ItemType<StaminaUp>());
-            recipe.AddRecipeGroup(ItemType<MossSalve>());
+            recipe.AddIngredient(ItemType<MossSalve>());
             recipe.AddTile(TileID.TinkerersWorkbench);
 
             recipe.SetResult(ItemType<StaminaRing>());

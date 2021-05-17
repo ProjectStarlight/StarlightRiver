@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (shotCounter >= 4)
 			{
 				shotCounter = 0;
-				reloadCounter = 90;
+				reloadCounter = 120;
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), player.Center);
 				item.noUseGraphic = true;
 				Projectile.NewProjectile(player.Center,Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, player.whoAmI);
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			direction = direction.RotatedBy(recoil);
 			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
-			recoil = Main.rand.NextFloat(0.5f,0.8f) * (Main.rand.NextBool() ? 1 : -1);
+			recoil = Main.rand.NextFloat(0.8f) * (player.direction * -1);
 			return false;
 		}
 
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			projectile.timeLeft = 999999;
 			projectile.ignoreWater = true;
 			projectile.alpha = 255;
-			Main.projFrames[projectile.type] = 17;
+			Main.projFrames[projectile.type] = 22;
 		}
 		public override void AI()
 		{
