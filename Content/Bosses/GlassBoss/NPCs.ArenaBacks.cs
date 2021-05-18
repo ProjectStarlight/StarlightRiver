@@ -131,7 +131,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
-            if (State == 3 || State == 4) ScrollDraw(spriteBatch);
+            if (State == 3 || State == 4) 
+                ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
             {
                 Texture2D tex = Main.npcTexture[npc.type];

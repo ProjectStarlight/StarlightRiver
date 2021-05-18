@@ -124,13 +124,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             {
                                 target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
                                 target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
-                                target.velocity.Y += 12;
+                                target.velocity.Y = Main.rand.Next(9, 13);
                             }
                             if (target.Hitbox.Intersects(npc.Hitbox))
                             {
                                 target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
                                 target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
-                                target.velocity.Y -= 12;
+                                target.velocity.Y = -Main.rand.Next(9, 13);
                             }
                         }
                     break;

@@ -127,31 +127,41 @@ namespace StarlightRiver.Helpers
             if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height))) return;
             if (color == default) color = Color.White;
 
-            Matrix zoom = //Main.GameViewMatrix.ZoomMatrix;
-                new Matrix
-                (
-                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
-                    0, 0, 1, 0,
-                    0, 0, 0, 1
-                );
+            Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
+            new Matrix
+            (
+                Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
 
             ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
-            ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
+            ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
             ApplyEffect.Parameters["zoom"].SetValue(zoom);
             ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
             ApplyEffect.Parameters["targetTexture"].SetValue(tex);
             ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
 
+            verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X),                DrawHelper.ConvertY(pos.Y), 0),                  source.TopLeft() / tex.Size());
+            verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y), 0),                  source.TopRight() / tex.Size());
+            verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X),                DrawHelper.ConvertY(pos.Y + source.Height), 0),  source.BottomLeft() / tex.Size());
+
+            verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y), 0),                  source.TopRight() / tex.Size());
+            verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Height), 0),  source.BottomRight() / tex.Size());
+            verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X),                DrawHelper.ConvertY(pos.Y + source.Height), 0),  source.BottomLeft() / tex.Size());
+
+            /*
             verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
             verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
             verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
-
+            
             verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
             verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
             verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+            */
 
             buffer.SetData(verticies);
 

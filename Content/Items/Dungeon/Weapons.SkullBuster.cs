@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using System;
 using StarlightRiver.Core;
 using Microsoft.Xna.Framework.Audio;
+using StarlightRiver.Sounds.Custom;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"), position);
+			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
 			if (shotCounter < 1)
 			{
 				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, player.whoAmI);
@@ -73,10 +74,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 			shotCounter++;
 			Vector2 direction = new Vector2(speedX,speedY);
-			direction = direction.RotatedBy(recoil);
+			direction = direction.RotatedBy(recoil * ((Main.rand.Next(2) * 2) - 1));
 			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
-			recoil = Main.rand.NextFloat(0.8f) * (player.direction * -1);
+			recoil = 0.8f * (player.direction * -1);
 			return false;
 		}
 
