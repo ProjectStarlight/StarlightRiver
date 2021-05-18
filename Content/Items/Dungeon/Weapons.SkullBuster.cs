@@ -52,6 +52,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 				spread -= 0.02f;
 			if (spread < -0.1f)
 				spread += 0.02f;
+			if (recoil > 0.01f)
+				recoil -= 0.01f;
+			if (recoil < -0.01f)
+				recoil += 0.01f;
 			if (shotCounter >= 4)
 			{
 				shotCounter = 0;
@@ -84,7 +88,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
 			recoil = 0.8f * (player.direction * -1);
-			spread = Main.rand.NextFloat(-0.8f, 0.8f);
+			spread = Main.rand.NextFloat(-1.5f, 1.5f);
 			return false;
 		}
 
