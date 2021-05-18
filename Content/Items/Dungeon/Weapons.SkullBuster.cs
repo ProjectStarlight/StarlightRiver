@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public int shotCounter = 0;
 		public int reloadCounter = 0;
 		public float recoil = 0;
+		public float spread = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Skullbuster");
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			item.damage = 20;
+			item.damage = 21;
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
@@ -45,7 +46,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void HoldItem(Player player)
 		{
 			reloadCounter--;
-			recoil *= 0.96f;
+			recoil *= 0.965f;
+			spread *= 0.97f;
+			if (spread > 0.1f)
+				spread -= 0.02f;
+			if (spread < -0.1f)
+				spread += 0.02f;
 			if (shotCounter >= 4)
 			{
 				shotCounter = 0;
@@ -74,10 +80,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 			shotCounter++;
 			Vector2 direction = new Vector2(speedX,speedY);
-			direction = direction.RotatedBy(recoil * ((Main.rand.Next(2) * 2) - 1));
+			direction = direction.RotatedBy(spread);
 			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
 			recoil = 0.8f * (player.direction * -1);
+			spread = Main.rand.NextFloat(-0.8f, 0.8f);
 			return false;
 		}
 
