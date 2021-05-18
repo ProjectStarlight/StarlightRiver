@@ -1,34 +1,59 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using System;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class CeirosExpert : ModItem
+    class CeirosExpert : SmartAccessory
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public override void SetStaticDefaults()
+        public CeirosExpert() : base("Shattered Aegis", "Taking damage releases a burst of fire that knocks back and damages enemies\n'Meet your foes head-on, and give them a scorching embrace'") { }
+
+        public override void SafeSetDefaults()
         {
-            Tooltip.SetDefault("Reduces the cooldown of forbidden winds by 16%");
-            DisplayName.SetDefault("Wind Crystal");
+            item.rare = ItemRarityID.Blue;
         }
 
-        public override void SetDefaults()
+        public override bool Autoload(ref string name)
         {
-            item.width = 32;
-            item.height = 32;
-            item.rare = -12;
-            item.accessory = true;
+            StarlightPlayer.PreHurtEvent += PreHurtKnockback;
+            return true;
         }
 
-        public override void UpdateEquip(Player player)
+        private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            if (player.GetHandler().GetAbility<Dash>(out var dash))
-                dash.CooldownBonus += 16;
+            if (Equipped(player) && damage > player.statLifeMax2 * 0.1f)
+            {
+                float magnitude = 1 + player.statLife / damage * 4;
+                Array.ForEach(Main.npc, (npc) =>
+                {
+                    if (npc.active && Helper.IsTargetValid(npc) && !npc.friendly && Vector2.Distance(npc.Center, player.MountedCenter) < 250)
+                    {
+                        Vector2 vel = Vector2.Normalize(npc.Center - player.position) * magnitude * npc.knockBackResist;
+                        if (npc.noGravity)
+                            npc.velocity += vel;
+                        else
+                        {
+                            npc.HitEffect(player.Center.X < npc.Center.X ? -1 : 1, 0);
+                            player.ApplyDamageToNPC(npc, 0, magnitude * 0.8f * (1 + (1 - npc.knockBackResist)), player.Center.X < npc.Center.X ? 1 : -1, false);
+                        }
+
+                        for (int i = 0; i < 6; ++i)
+                        {
+                            Dust.NewDust(npc.position, 22, 22, ModContent.DustType<Dusts.GlassGravity>(), vel.RotatedByRandom(0.05f).X * 0.5f, vel.RotatedByRandom(0.05f).Y * 0.5f);
+                            Dust.NewDust(npc.position, 22, 22, ModContent.DustType<Content.Dusts.Air>());
+                        }
+                    }
+                });
+            }
+            return true;
         }
     }
 }

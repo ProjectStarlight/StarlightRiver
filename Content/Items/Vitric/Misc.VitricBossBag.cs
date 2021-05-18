@@ -40,7 +40,8 @@ namespace StarlightRiver.Content.Items.Vitric
                 weapon++;
             }
 
-            Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(40, 60));
+            Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(25, 35));
+            Item.NewItem(player.Center, ItemType<MagmaCore>(), Main.rand.Next(2, 3));
             Item.NewItem(player.Center, ItemType<Misc.StaminaUp>());
             Item.NewItem(player.Center, ItemType<CeirosExpert>());
         }
