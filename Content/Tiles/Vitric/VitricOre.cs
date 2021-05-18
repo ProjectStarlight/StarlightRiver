@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                WorldGen.KillTile((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
+                WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
 
                 for (int k = 0; k <= 10; k++)
                 {
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                WorldGen.KillTile((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
+                WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
 
                 for (int k = 0; k <= 10; k++)
                 {

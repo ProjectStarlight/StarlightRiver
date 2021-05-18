@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
             drawpos = position + frame.Size() / 4;
 
-            if(GoingBoom && boomTimer < 100)
+            if(GoingBoom && boomTimer < 60)
 			{
                 float rot = Main.rand.NextFloat(6.28f);
                 CursedSystem.AddParticle(new Particle(pos + Vector2.One.RotatedBy(rot) * 30, -Vector2.One.RotatedBy(rot) * 1.5f, 0, 0.6f * boomTimer / 100f, Color.White, 20, Vector2.Zero));
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             if (boomTimer == 1)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
 
-            if (boomTimer >= 90)
+            if (boomTimer >= 85)
             {
                 var tex = Main.itemTexture[item.type];
 
