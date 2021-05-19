@@ -124,14 +124,13 @@ namespace StarlightRiver.Content.CustomHooks
                 }
 
                 Main.spriteBatch.End();
-                DrawTilingBackground();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
+                DrawTilingBackground(Main.spriteBatch);
                 DrawBlack();
             }
         }
 
-        private void DrawTilingBackground()
+        private void DrawTilingBackground(SpriteBatch spriteBatch)
         {
             Texture2D tex = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSand");
             Texture2D texBot = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandBottom");
@@ -145,8 +144,7 @@ namespace StarlightRiver.Content.CustomHooks
                 for (int y = -tex.Height; y <= Main.screenHeight + tex.Height; y += tex.Height)
                 {
                     Vector2 pos = new Vector2(x, y) - new Vector2(Main.screenPosition.X % tex.Width, Main.screenPosition.Y % tex.Height);
-                    Texture2D drawtex = null;
-
+                    Texture2D drawtex;
                     if (CheckBackground(pos + new Vector2(0, -tex.Height), tex.Size(), blacklist, true))
                         drawtex = texBot;
                     else if (CheckBackground(pos + new Vector2(0, tex.Height), tex.Size(), blacklist, true))
@@ -159,7 +157,7 @@ namespace StarlightRiver.Content.CustomHooks
                         drawtex = tex;
 
                     if (CheckBackground(pos, drawtex.Size(), blacklist))
-                        LightingBufferRenderer.DrawWithLighting(pos, drawtex);
+                        LightingBufferRenderer.DrawWithLighting(pos, drawtex, default, spriteBatch, LightImportance.Some);
                 }
         }
 

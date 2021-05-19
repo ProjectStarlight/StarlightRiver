@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //Color color = new Color(180, 225, 255);
 
                 //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
-                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Helpers.LightImportance.Some);
             }
         }
 
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
-            Color color = new Color(180, 225, 255);
+            //Color color = new Color(180, 225, 255);
             Vector2 off = Vector2.One.RotatedByRandom(6.28f) * shake;
 
             Rectangle target1 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - height1 - Main.screenPosition.Y + off.Y), tex.Width, height1);
@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Helpers.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Helpers.LightImportance.Some);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
-            Color color = new Color(180, 225, 255);
+            //Color color = new Color(180, 225, 255);
             Vector2 off = Vector2.One.RotatedByRandom(6.28f) * shake;
 
             Rectangle target1 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - tex.Height * 2 + height1 + height2 - Main.screenPosition.Y + off.Y), tex.Width, height1);
@@ -224,8 +224,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Helpers.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Helpers.LightImportance.Some);
         }
 
         public override void SpawnPlatforms(bool rising = true)

@@ -1,6 +1,7 @@
 ﻿using Terraria.ModLoader.Config;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Configs
 {
@@ -25,6 +26,12 @@ namespace StarlightRiver.Configs
 
         [Label("Extra Particles")]
         [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
-        public bool Active = true;
+        public bool ParticlesActive = true;
+
+        [Label("Texture Lighting")]
+        [Tooltip("Enables/Disables lighting on large textures particles. Disable this if you have performance issues.")]
+        public LightImportance TextureLighting;
+
+
     }
 }

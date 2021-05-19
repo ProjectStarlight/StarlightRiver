@@ -28,7 +28,7 @@ namespace StarlightRiver.Core
 
         public void DrawParticles(SpriteBatch spriteBatch)
         {
-            if (GetInstance<Config>().Active)
+            if (GetInstance<Config>().ParticlesActive)
                 for (int k = 0; k < Particles.Count; k++)
                 {
                     Particle particle = Particles[k];
@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 
         public void AddParticle(Particle particle)
         {
-            if (GetInstance<Config>().Active && !Main.gameInactive)
+            if (GetInstance<Config>().ParticlesActive && !Main.gameInactive)
                 Particles.Add(particle);
         }
 
