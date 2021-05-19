@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Vector2 pos = npc.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -npc.ai[0]);
 
             //Lighting
-            if (StarlightWorld.cathedralOverlay.fade)
+            if (StarlightWorld.cathedralOverlay != null && StarlightWorld.cathedralOverlay.fade)
             {
                 for (int k = 0; k < 45; k++)
                 {
