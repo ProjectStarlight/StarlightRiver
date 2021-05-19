@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.height = 16;
             projectile.timeLeft = 600;
             projectile.friendly = true;
-            projectile.damage = 50;
+            projectile.damage = 60;
         }
 
         public override void AI()

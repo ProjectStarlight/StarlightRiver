@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void SetDefaults()
         {
-            item.damage = 20;
+            item.damage = 10;
             item.melee = true;
             item.width = 18;
             item.height = 34;

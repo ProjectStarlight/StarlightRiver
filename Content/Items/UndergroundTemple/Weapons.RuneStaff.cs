@@ -24,10 +24,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         public override void SetDefaults()
         {
             item.magic = true;
-            item.mana = 60;
+            item.mana = 10;
             item.width = 32;
             item.height = 32;
-            item.damage = 32;
+            item.damage = 12;
             item.crit = 5;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.useTime = 30;

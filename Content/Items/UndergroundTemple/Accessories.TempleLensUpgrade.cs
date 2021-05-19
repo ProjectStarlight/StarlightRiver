@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			//spawn dust maybe?
+			//spawn dust and do a spelunker-esque glow maybe?
 		}
 	}
 }

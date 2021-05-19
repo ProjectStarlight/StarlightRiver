@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.shootSpeed = 8f;
             item.shoot = ProjectileID.WoodenArrowFriendly;
             item.knockBack = 2f;
-            item.damage = 12;
+            item.damage = 25;
             item.useAmmo = AmmoID.Arrow;
             item.rare = ItemRarityID.Green;
             item.UseSound = SoundID.Item5;

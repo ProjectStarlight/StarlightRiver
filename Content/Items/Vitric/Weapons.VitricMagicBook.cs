@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.autoReuse = true;
             item.shootSpeed = 12f;
             item.knockBack = 0f;
-            item.damage = 12;
+            item.damage = 15;
             item.shoot = ProjectileType<VitricBookProjectile>();
             item.rare = ItemRarityID.Green;
             item.noMelee = true;

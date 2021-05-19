@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 45;
+            item.damage = 20;
             item.knockBack = 3f;
             item.mana = 10;
             item.width = 32;

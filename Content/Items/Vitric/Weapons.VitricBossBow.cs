@@ -20,12 +20,12 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Greatbow");
-            Tooltip.SetDefault("Charges a volley of cystal shards that fire in an arc\nCharging increases the arc size, shot count, and overall power of shots");
+            Tooltip.SetDefault("Charges a volley of crystal shards that fire in an arc\nCharging increases the arc size, shot count, and overall power of shots");
         }
 
         public override void SetDefaults()
         {
-            item.damage = 15;
+            item.damage = 10;
             item.ranged = true;
             item.width = 16;
             item.height = 64;

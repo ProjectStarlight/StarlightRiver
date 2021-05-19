@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		}
 		
 		const int minDamage = 15;
-        const int maxDamage = 40;
+        const int maxDamage = 20;
         const int minVelocity = 4;
         const int maxVelocity = 25;
         const float chargeRate = 0.02f;

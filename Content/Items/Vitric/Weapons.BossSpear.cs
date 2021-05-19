@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             item.melee = true;
-            item.damage = 40;
+            item.damage = 35;
             item.useTime = 35;
             item.useAnimation = 35;
             item.width = 32;

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            item.damage = 34;
+            item.damage = 10;
             item.useTime = 45;
             item.useAnimation = 45;
             item.mana = 15;
