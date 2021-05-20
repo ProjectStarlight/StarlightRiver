@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Helpers;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Abilities;
@@ -143,7 +144,7 @@ namespace StarlightRiver.Content.GUI
         {
             Player player = Main.LocalPlayer;
             AbilityHandler mp = player.GetHandler();
-            Vector2 basepos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - Vector2.UnitY * 64;
+            Vector2 basepos = ((player.Center - Main.screenPosition) - new Vector2(0, (32 * Main.GameViewMatrix.Zoom.Y) + 32 - player.gfxOffY)).PointAccur(); //new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) - Vector2.UnitY * 64;
 
             var flagTex = GetTexture("StarlightRiver/Assets/GUI/StaminaFlag");
             var emptyTex = GetTexture("StarlightRiver/Assets/GUI/StaminaSmallEmpty");
