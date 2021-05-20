@@ -130,13 +130,7 @@ namespace StarlightRiver.Helpers
             if (color == default)
                 color = Color.White;
 
-            if (importance < ModContent.GetInstance<Configs.Config>().TextureLighting && spritebatch != null)
-            {
-                spritebatch.Draw(tex, pos, source, importance == LightImportance.Some ? new Color(65, 100, 135) : Lighting.GetColor((pos.Center.X + (int)Main.screenPosition.X) / 16, (pos.Center.Y + (int)Main.screenPosition.Y) / 16, color));
-                return;
-            }
-
-            if (importance < ModContent.GetInstance<Configs.Config>().TextureLighting && spritebatch != null)
+            if (importance < ModContent.GetInstance<Config>().TextureLighting && spritebatch != null)
             {
                 Rectangle checkZone = Rectangle.Intersect(pos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
                 Vector3 colorAver = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
