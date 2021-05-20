@@ -137,17 +137,20 @@ namespace StarlightRiver.Core
 
             if(ZoneGlass)
             {
-                var a = Filters.Scene;
-
-                Filters.Scene.Activate("GradientDistortion").GetShader()
-                    .UseOpacity(2.5f)
-                    .UseIntensity(7f)
-                    .UseProgress(6)
-                    .UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);                 
+                //var a = Filters.Scene;
+                if (!Filters.Scene["GradientDistortion"].IsActive())
+                {
+                    Filters.Scene.Activate("GradientDistortion").GetShader()
+                        .UseOpacity(2.5f)
+                        .UseIntensity(7f)
+                        .UseProgress(6)
+                        .UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+                }
             }
             else
             {
-                Filters.Scene.Deactivate("GradientDistortion");
+                if (Filters.Scene["GradientDistortion"].IsActive())
+                    Filters.Scene.Deactivate("GradientDistortion");
             }
 
             //Codex Unlocks

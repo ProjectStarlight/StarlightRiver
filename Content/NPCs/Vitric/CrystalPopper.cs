@@ -39,21 +39,38 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             npc.direction = Main.rand.Next(2) == 0 ? 1 : -1;
             npc.spriteDirection = npc.direction;
-        }      
+        }
+
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit) =>
+            OnHit(Main.player[projectile.owner], damage);
+
+        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit) =>
+            OnHit(player, damage);
+
+        const int maxIgnoreDamage = 1;
+        private void OnHit(Player player, int damage)
+        {
+            if (npc.ai[0] == 0 && damage > maxIgnoreDamage)
+                ExitSleep();
+        }
+
+        private void ExitSleep()
+        {
+            npc.ai[0] = 1;
+            npc.noGravity = true;
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+                npc.netUpdate = true;
+        }
 
         public override void AI()
         {
             npc.TargetClosest(true);
             switch (npc.ai[0])
             {
-                case 0://in ground checking for player
+                case 0://sleepinh: in ground checking for player
+                    npc.velocity.X *= 0.9f;
                     if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) <= 180)
-                    {
-                        npc.ai[0] = 1;
-                        npc.noGravity = true;
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
-                            npc.netUpdate = true;
-                    }
+                        ExitSleep();
                     break;
 
                 case 1://shoot out of ground and attack
