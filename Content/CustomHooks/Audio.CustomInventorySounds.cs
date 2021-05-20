@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Configs;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -46,6 +48,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private SoundEffectInstance PlayNewSound(int originalSoundID, Item item)
 		{
+			Config config = GetInstance<Config>();
+
+			if (config.InvSounds == CustomSounds.None)
+				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
+
 			float pitch = -0.6f;
 
 			if (item.IsAir)
@@ -58,8 +65,11 @@ namespace StarlightRiver.Content.CustomHooks
 				pitch += 0.3f;
 
 			//this is gross. The alternative is moving this into a GlobalItem instead. Thus its here.
-			if(item.modItem is ICustomInventorySound)
+			if (item.modItem is ICustomInventorySound)
 				return (item.modItem as ICustomInventorySound).InventorySound(pitch);
+
+			else if (config.InvSounds == CustomSounds.Specific)
+				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 
 			else if (item.potion || item.healMana != 0 || (item.buffType != -1 && (item.Name.Contains("potion") || item.Name.Contains("Potion")))) //should probably figure a better check for this somehow? 1.4 content tags maybe?
 				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.5f + pitch * 0.5f);

@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Helpers;
+using StarlightRiver.Configs;
 
 namespace StarlightRiver.Content.CustomHooks
 {

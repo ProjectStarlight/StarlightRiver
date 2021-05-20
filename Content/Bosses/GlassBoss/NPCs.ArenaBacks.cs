@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //Color color = new Color(180, 225, 255);
 
                 //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
-                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Helpers.LightImportance.Some);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Configs.LightImportance.Some);
             }
         }
 
@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Helpers.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Helpers.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -224,8 +224,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Helpers.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Helpers.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
         }
 
         public override void SpawnPlatforms(bool rising = true)

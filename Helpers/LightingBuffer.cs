@@ -7,6 +7,7 @@ using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
 using System.Runtime.InteropServices;
 using Terraria.ModLoader;
+using StarlightRiver.Configs;
 
 namespace StarlightRiver.Helpers
 {
@@ -112,15 +113,6 @@ namespace StarlightRiver.Helpers
 
             PopulateScreenTexture();
         }
-    }
-
-    //feel free to rename if you think you have a better one
-    public enum LightImportance
-    {
-        All = 0,
-        Most = 1,
-        Some = 2,
-        Minimal = 3
     }
 
     public static class LightingBufferRenderer
