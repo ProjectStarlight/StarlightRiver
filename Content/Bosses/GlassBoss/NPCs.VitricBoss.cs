@@ -290,7 +290,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void PostAI()
         {
             //TODO: Remove later, debug only
-            if (Main.LocalPlayer.controlHook)
+            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
                 if (Phase != (int)AIStates.LastStand)
                     for (int k = 0; k < 12; k++) 
