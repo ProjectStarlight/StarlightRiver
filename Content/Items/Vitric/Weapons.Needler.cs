@@ -167,11 +167,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Main.projectileTexture[projectile.type];
 			spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), color * (needleLerp / 10f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
-
-			tex = ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerBloom");
-			color = Color.Lerp(Color.Orange, Color.Red, needleLerp / 20f);
-			color.A = 0;
-			spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), null, color * 0.66f, projectile.rotation, new Vector2(tex.Width, tex.Height) / 2, ((projectile.scale * (needleLerp / 10f)) + 0.25f) * new Vector2(1f,1.25f), SpriteEffects.None, 0f);
+			if (stuck)
+			{
+				tex = ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerBloom");
+				color = Color.Lerp(Color.Orange, Color.Red, needleLerp / 20f);
+				color.A = 0;
+				spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), null, color * 0.66f, projectile.rotation, new Vector2(tex.Width, tex.Height) / 2, ((projectile.scale * (needleLerp / 10f)) + 0.25f) * new Vector2(1f, 1.25f), SpriteEffects.None, 0f);
+			}
 			return false;
 		}
 	}
