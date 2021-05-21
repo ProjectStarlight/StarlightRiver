@@ -135,15 +135,15 @@ namespace StarlightRiver.Helpers
                 Rectangle checkZone = Rectangle.Intersect(pos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
                 Vector3 colorAver = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
                 
-                colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-                colorAver += Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-                colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-                colorAver += Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
+            //    colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
+            //    colorAver += Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
+            //    colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
+            //    colorAver += Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
                 
-                spritebatch.Draw(tex, pos, source, new Color(colorAver / 5));
-                //spritebatch.Draw(Main.blackTileTexture, checkZone, Color.Purple * 0.15f);
-                return;
-            }
+            //    spritebatch.Draw(tex, pos, source, new Color(colorAver / 5));
+            //    //spritebatch.Draw(Main.blackTileTexture, checkZone, Color.Purple * 0.15f);
+            //    return;
+            //}
 
             Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
             new Matrix
