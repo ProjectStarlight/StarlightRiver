@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 
         private void OnHit(int targetPlayer, int damage)
         {
-            Main.NewText("hit");
+            //Main.NewText("hit");
             if (npc.HasValidTarget)
             {
                 if (damage >= changeAgroDamage)
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             else
             {
                 npc.target = targetPlayer;
-                Main.NewText(targetPlayer);
+                //Main.NewText(targetPlayer);
                 npc.ai[IntrestTimer] = 0;
                 npc.ai[DashAndJumpCounter] = 0;
             }
