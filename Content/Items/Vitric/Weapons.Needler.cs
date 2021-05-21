@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Dusts;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -100,7 +101,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (Main.rand.Next(Math.Max(((10 - needles) * 30) + 300, 50)) == 0)
 					Gore.NewGoreDirect(projectile.Center, Vector2.Zero, ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.4f, 0.8f));
 
-				if (needles == 0)
+				if (target.GetGlobalNPC<NeedlerNPC>().needleTimer == 1)
 				{
 					//Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), projectile.damage * 3, projectile.knockBack, projectile.owner);
 					projectile.active = false;
@@ -192,14 +193,18 @@ namespace StarlightRiver.Content.Items.Vitric
 			projectile.tileCollide = false;
 			projectile.hostile = false;
 			projectile.friendly = true;
-			projectile.width = projectile.height = 300;
+			projectile.width = projectile.height = 200;
 			projectile.timeLeft = 20;
 			projectile.extraUpdates = 1;
 		}
-
+        public override void AI()
+        {
+			for (int i = 0; i < 2; i++)
+				Gore.NewGoreDirect(projectile.Center + Main.rand.NextVector2Circular(25, 25), Main.rand.NextFloat(3.14f,6.28f).ToRotationVector2() * 7, ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.4f, 0.8f));
+		}
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-			Main.spriteBatch.End();
+			/*Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 			float progress = ((float)((20 - projectile.timeLeft) / 20f) - 1.5f) * 0.66f;
 			Color color = Color.Orange;
@@ -210,12 +215,43 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["progress2"].SetValue((20 - projectile.timeLeft) / 20f);
 			effect.Parameters["noise"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Noise/ShaderNoise"));
 			effect.CurrentTechnique.Passes[0].Apply();
-			Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], (projectile.Center - Main.screenPosition), null, Color.White, 0f, new Vector2(150, 150), 1, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], (projectile.Center - Main.screenPosition), null, Color.White, 0f, new Vector2(200, 200), 1, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);*/
 			return false;
         }
+    }
+	public class NeedlerEmber : ModProjectile
+    {
+		public override string Texture => AssetDirectory.VitricItem + Name;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Needle");
+		}
+		public override void SetDefaults()
+		{
+			projectile.penetrate = 1;
+			projectile.tileCollide = true;
+			projectile.hostile = false;
+			projectile.friendly = true;
+			projectile.aiStyle = 1;
+			projectile.width = projectile.height = 12;
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+			projectile.extraUpdates = 1;
+			projectile.alpha = 255;
+		}
+        public override void AI()
+        {
+			projectile.scale *= 0.98f;
+			if (Main.rand.Next(2) == 0)
+			{
+				Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<NeedlerDustThree>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
+				dust.scale = 0.6f * projectile.scale;
+				dust.rotation = Main.rand.NextFloatDirection();
+			}
+		}
     }
 	public class NeedlerNPC : GlobalNPC
 	{
@@ -234,9 +270,44 @@ namespace StarlightRiver.Content.Items.Vitric
             {
 				needles++;
 				needleTimer = 60;
-            }
-			if (needleTimer == 1)
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireCast"), npc.Center);
+			}
+			if (needleTimer == 1) //TODO: Make damage scale with the needler's damage
+			{
+				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
+				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), 50, 0, npc.target);
+				for (int i = 0; i < 10; i++)
+				{
+					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDust>());
+					dust.velocity = Main.rand.NextVector2Circular(10, 10);
+					dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+					dust.alpha = 70 + Main.rand.Next(60);
+					dust.rotation = Main.rand.NextFloat(6.28f);
+				}
+				for (int i = 0; i < 10; i++)
+				{
+					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDustTwo>());
+					dust.velocity = Main.rand.NextVector2Circular(10, 10);
+					dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+					dust.alpha = Main.rand.Next(80) + 40;
+					dust.rotation = Main.rand.NextFloat(6.28f);
+
+					Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<NeedlerDustFour>()).scale = 0.9f;
+				}
+				for (int i = 0; i < 5; i++)
+                {
+					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, npc.target).scale = Main.rand.NextFloat(0.85f,1.15f);
+                }
+				Main.player[npc.target].GetModPlayer<StarlightPlayer>().Shake = 20;
 				needles = 0;
+			}
+			if (needleTimer > 30)
+            {
+				float angle = Main.rand.NextFloat(6.28f);
+				Dust dust = Dust.NewDustPerfect((npc.Center - new Vector2(15,15)) - (angle.ToRotationVector2() * 70), ModContent.DustType<NeedlerDustFive>());
+				dust.scale = 0.05f;
+				dust.velocity = angle.ToRotationVector2() * 0.2f;
+			}
 			base.AI(npc);
         }
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
@@ -248,16 +319,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Color color = Color.Lerp(Color.Orange, Color.White, (60 - needleTimer) / 60f);
 				Effect effect = Filters.Scene["NeedlerRays"].GetShader().Shader;
-				effect.Parameters["breakCounter"].SetValue((90 - needleTimer) / 90f);
+				effect.Parameters["breakCounter"].SetValue((60 - needleTimer) / 60f);
 				effect.Parameters["colorMod"].SetValue(color.ToVector4());
 				effect.Parameters["noise"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Noise/ShaderNoise"));
 				effect.CurrentTechnique.Passes[0].Apply();
-				Main.spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerShaderMask"), (npc.Center - Main.screenPosition) - new Vector2(0, 6), null, Color.White, 0f, new Vector2(50, 50), 1, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerShaderMask"), (npc.Center - Main.screenPosition) - new Vector2(0, 6), null, Color.White, 0f, new Vector2(50, 50), new Vector2(npc.width,npc.height) / 50, SpriteEffects.None, 0f);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
 			}*/
-			if (needleTimer == 1)
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), 50, 0, npc.target);
             return base.PreDraw(npc, spriteBatch, drawColor);
         }
     }
