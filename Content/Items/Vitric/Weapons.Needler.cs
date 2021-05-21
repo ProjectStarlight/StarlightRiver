@@ -23,6 +23,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		}
 
+
+		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
 		{
 			item.damage = 15;
@@ -220,6 +222,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);*/
 			return false;
+        }
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			crit = true;
+            base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
     }
 	public class NeedlerEmber : ModProjectile
