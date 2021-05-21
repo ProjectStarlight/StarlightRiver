@@ -228,7 +228,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			crit = true;
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
-    }
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(BuffID.OnFire, 180);
+		}
+	}
 	public class NeedlerEmber : ModProjectile
     {
 		public override string Texture => AssetDirectory.VitricItem + Name;
