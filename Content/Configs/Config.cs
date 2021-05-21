@@ -1,6 +1,7 @@
 ﻿using Terraria.ModLoader.Config;
 
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Configs
 {
@@ -15,6 +16,22 @@ namespace StarlightRiver.Configs
         None = 6
     }
 
+    public enum LightImportance //feel free to rename
+    {
+        All = 0,
+        Most = 1,
+        Some = 2,
+        Minimal = 3
+    }
+
+    public enum CustomSounds
+    {
+        All = 0,
+        Specific = 1,
+        None = 2
+
+    }
+
     public class Config : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
@@ -25,6 +42,14 @@ namespace StarlightRiver.Configs
 
         [Label("Extra Particles")]
         [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
-        public bool Active = true;
+        public bool ParticlesActive = true;
+
+        [Label("Texture Lighting")]
+        [Tooltip("Enables/Disables lighting on large textures particles. Disable this if you have performance issues.")]
+        public LightImportance TextureLighting;
+
+        [Label("Custom Inventory Sounds")]
+        [Tooltip("If custom inventory sounds should play for all items or a select few, or none at all.")]
+        public CustomSounds InvSounds = CustomSounds.All;
     }
 }
