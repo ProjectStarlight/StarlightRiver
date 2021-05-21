@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public TutorialDoor1Item() : base("TutorialDoor1", "", TileType<TutorialDoor1>(), 1, AssetDirectory.Debug, true) { }
+        public TutorialDoor1Item() : base("TutorialDoor1", "Titties", TileType<TutorialDoor1>(), 1, AssetDirectory.Debug, true) { }
     }
 
     class TutorialDoor2 : DummyTile

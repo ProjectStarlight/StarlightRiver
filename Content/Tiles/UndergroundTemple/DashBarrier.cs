@@ -37,6 +37,6 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public DashBarrierItem() : base("Dash Barrier", "L", TileType<DashBarrier>(), -12) { }
+        public DashBarrierItem() : base("Dash Barrier", "Cum in my pussy.", TileType<DashBarrier>(), -12) { }
     }
 }

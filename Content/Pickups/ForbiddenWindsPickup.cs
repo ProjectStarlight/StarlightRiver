@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -88,8 +87,8 @@ namespace StarlightRiver.Pickups
             if (timer == 569) //popup + codex entry
             {
                 string message = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count > 0 ?
-                    "Press W/A/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
-                    "Press W/A/S/D + [Please Bind a Key] to dash.";
+                    "Press A/W/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
+                    "Press A/W/S/D + [Please Bind a Key] to dash.";
 
                 Main.LocalPlayer.GetHandler().GetAbility<Dash>(out var dash);
                 UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
@@ -114,13 +113,6 @@ namespace StarlightRiver.Pickups
     public class ForbiddenWindsPickupTile : AbilityPickupTile
     {
         public override int PickupType => NPCType<ForbiddenWindsPickup>();
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch) //get rid of this after demo
-        {   
-                Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-85, -62);
-                Utils.DrawBorderString(spriteBatch, "Dash into", pos, Color.White, 0.7f);
-                Utils.DrawBorderString(spriteBatch, "bright blue", pos + new Vector2(60, 0), Color.Cyan, 0.7f);
-                Utils.DrawBorderString(spriteBatch, "outlines", pos + new Vector2(127, 0), Color.White, 0.7f);
-        }
     }
 
     public class WindsTileItem : QuickTileItem

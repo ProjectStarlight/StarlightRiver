@@ -70,8 +70,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public WindsCrystalItem() : base("Winds Crystal Item", "", TileType<WindsCrystal>(), 1, AssetDirectory.Debug, true) { }
     }
-    class WindsCrystalDestroyedItem : QuickTileItem
-    {
-        public WindsCrystalDestroyedItem() : base("Destroyed Winds Crystal Item", "", TileType<WindsCrystalDestroyed>(), 1, AssetDirectory.Debug, true) { }
-    }
 }
