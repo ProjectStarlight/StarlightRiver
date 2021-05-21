@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Debug Stick");
-            Tooltip.SetDefault("How did you get this?");
+            Tooltip.SetDefault("Resets codex atm");
         }
 
         public override void SetDefaults()

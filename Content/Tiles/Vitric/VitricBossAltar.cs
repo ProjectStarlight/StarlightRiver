@@ -76,6 +76,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return false;
         }
     }
+    class VitricBossAltarItem : QuickTileItem
+    {
+        public VitricBossAltarItem() : base("Vitric Boss Altar Item", "places it", TileType<VitricBossAltar>(), 1, AssetDirectory.Debug, true) { }
+    }
 
     internal class VitricBossAltarDummy : Dummy
     {
