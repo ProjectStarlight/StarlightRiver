@@ -36,15 +36,7 @@ namespace StarlightRiver.Content.CustomHooks
                 return;
             }
 
-            else
-                try
-                {
-                    orig(self);
-                }
-                catch(System.NullReferenceException)
-                {
-                    //shush
-                }
+            else orig(self);
         }
     }
 }
