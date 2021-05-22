@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needler");
-			Tooltip.SetDefault("Stick spikes to enemies to build up heat \nOverheated enemies explode");
+			Tooltip.SetDefault("Stick spikes to enemies to build up heat \nOverheated enemies explode, dealing massive damage");
 
 		}
 
@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
 		{
-			item.damage = 15;
+			item.damage = 11;
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
@@ -149,6 +149,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				projectile.penetrate++;
 				target.GetGlobalNPC<NeedlerNPC>().needles++;
+				target.GetGlobalNPC<NeedlerNPC>().needleDamage = projectile.damage;
+				target.GetGlobalNPC<NeedlerNPC>().needlePlayer = projectile.owner;
 				stuck = true;
 				projectile.friendly = false;
 				projectile.tileCollide = false;
@@ -228,7 +230,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			crit = true;
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
-    }
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(BuffID.OnFire, 180);
+			if (target.GetGlobalNPC<NeedlerNPC>().needles >= 1 && target.GetGlobalNPC<NeedlerNPC>().needleTimer <= 0)
+            {
+				target.GetGlobalNPC<NeedlerNPC>().needleTimer = 60;
+			}
+				
+		}
+	}
 	public class NeedlerEmber : ModProjectile
     {
 		public override string Texture => AssetDirectory.VitricItem + Name;
@@ -265,6 +276,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool InstancePerEntity => true;
 		public int needles = 0;
 		public int needleTimer = 0;
+		public int needleDamage = 0;
+		public int needlePlayer = 0;
 
         public override void ResetEffects(NPC npc)
         {
@@ -273,16 +286,16 @@ namespace StarlightRiver.Content.Items.Vitric
         }
         public override void AI(NPC npc)
         {
-			if (needles == 10)
+			if (needles >= 8 && needleTimer <= 0)
             {
 				needles++;
 				needleTimer = 60;
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireCast"), npc.Center);
 			}
-			if (needleTimer == 1) //TODO: Make damage scale with the needler's damage
+			if (needleTimer == 1)
 			{
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), 50, 0, npc.target);
+				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);
 				for (int i = 0; i < 10; i++)
 				{
 					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDust>());
@@ -303,7 +316,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				for (int i = 0; i < 5; i++)
                 {
-					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, npc.target).scale = Main.rand.NextFloat(0.85f,1.15f);
+					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f,1.15f);
                 }
 				Main.player[npc.target].GetModPlayer<StarlightPlayer>().Shake = 20;
 				needles = 0;
