@@ -45,7 +45,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Add holdoffset
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/SMG2"), position);
+			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/SMG2"), position);
+			Helper.PlayPitched("Guns/SMG2", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Vector2 direction = new Vector2(speedX, speedY);
 			float itemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
 			direction = direction.RotatedBy(itemRotation * 2);
