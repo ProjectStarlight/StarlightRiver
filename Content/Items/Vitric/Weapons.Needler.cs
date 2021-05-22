@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
 		{
-			item.damage = 15;
+			item.damage = 11;
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Items.Vitric
         }
         public override void AI(NPC npc)
         {
-			if (needles == 10)
+			if (needles >= 8 && needleTimer <= 0)
             {
 				needles++;
 				needleTimer = 60;
