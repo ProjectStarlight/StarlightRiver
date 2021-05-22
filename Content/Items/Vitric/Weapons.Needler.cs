@@ -149,6 +149,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				projectile.penetrate++;
 				target.GetGlobalNPC<NeedlerNPC>().needles++;
+				target.GetGlobalNPC<NeedlerNPC>().needleDamage = projectile.damage;
 				stuck = true;
 				projectile.friendly = false;
 				projectile.tileCollide = false;
@@ -231,6 +232,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
+			if (target.GetGlobalNPC<NeedlerNPC>().needles >= 1 && target.GetGlobalNPC<NeedlerNPC>().needleTimer <= 0)
+            {
+				target.GetGlobalNPC<NeedlerNPC>().needleTimer = 60;
+			}
+				
 		}
 	}
 	public class NeedlerEmber : ModProjectile
@@ -269,6 +275,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool InstancePerEntity => true;
 		public int needles = 0;
 		public int needleTimer = 0;
+		public int needleDamage = 0;
 
         public override void ResetEffects(NPC npc)
         {
@@ -283,10 +290,10 @@ namespace StarlightRiver.Content.Items.Vitric
 				needleTimer = 60;
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireCast"), npc.Center);
 			}
-			if (needleTimer == 1) //TODO: Make damage scale with the needler's damage
+			if (needleTimer == 1)
 			{
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), 50, 0, npc.target);
+				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, npc.target);
 				for (int i = 0; i < 10; i++)
 				{
 					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDust>());
