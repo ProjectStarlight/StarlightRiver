@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needler");
-			Tooltip.SetDefault("Stick spikes to enemies to build up heat \nOverheated enemies explode");
+			Tooltip.SetDefault("Stick spikes to enemies to build up heat \nOverheated enemies explode, dealing massive damage");
 
 		}
 
