@@ -150,6 +150,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				projectile.penetrate++;
 				target.GetGlobalNPC<NeedlerNPC>().needles++;
 				target.GetGlobalNPC<NeedlerNPC>().needleDamage = projectile.damage;
+				target.GetGlobalNPC<NeedlerNPC>().needlePlayer = projectile.owner;
 				stuck = true;
 				projectile.friendly = false;
 				projectile.tileCollide = false;
@@ -276,6 +277,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public int needles = 0;
 		public int needleTimer = 0;
 		public int needleDamage = 0;
+		public int needlePlayer = 0;
 
         public override void ResetEffects(NPC npc)
         {
@@ -293,7 +295,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (needleTimer == 1)
 			{
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, npc.target);
+				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);
 				for (int i = 0; i < 10; i++)
 				{
 					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDust>());
@@ -314,7 +316,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				for (int i = 0; i < 5; i++)
                 {
-					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, npc.target).scale = Main.rand.NextFloat(0.85f,1.15f);
+					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f,1.15f);
                 }
 				Main.player[npc.target].GetModPlayer<StarlightPlayer>().Shake = 20;
 				needles = 0;
