@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Sounds.Guns
 {
 	interface SMG2
 	{
