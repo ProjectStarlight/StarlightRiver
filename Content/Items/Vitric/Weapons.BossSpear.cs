@@ -266,12 +266,19 @@ namespace StarlightRiver.Content.Items.Vitric
                 player.itemTime = 20;
                 player.itemAnimation = 20;
             }
+            if (Main.mouseRight && player == Main.LocalPlayer && projectile.timeLeft < 10)
+            {
+                projectile.timeLeft = 10;
+                player.itemTime = 20;
+                player.itemAnimation = 20;
+            }
+
+            projectile.ai[1] = (Main.MouseWorld - player.Center).ToRotation() - (float)Math.PI;
 
             if (projectile.timeLeft == 60)
             {
                 projectile.damage = 10;
 
-                projectile.ai[1] = (Main.MouseWorld - player.Center).ToRotation() - (float)Math.PI;
                 ShieldLife = 50;
             }
 
@@ -283,7 +290,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             player.heldProj = projectile.whoAmI;
 
-            if(projectile.timeLeft < 40)
+            if(projectile.timeLeft < 40 && ShieldLife > 10)
                 ShieldLife --;
 
             for(int k = 0; k < Main.maxProjectiles; k++)
