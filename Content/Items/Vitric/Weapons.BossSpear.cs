@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AI()
         {
             var player = Main.player[projectile.owner];
-
+            projectile.frameCounter++;
             if (projectile.timeLeft > 5 && player == Main.LocalPlayer && !Main.mouseRight)
             {
                 projectile.timeLeft = 5;
@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 spriteBatch.Draw(barTex2, target, color * 0.8f * opacity);
             }
 
-            if (projectile.timeLeft % 8 == 0) projectile.frame++;
+            if (projectile.frameCounter % 8 == 0) projectile.frame++;
             projectile.frame %= 3;
 
             return false;
