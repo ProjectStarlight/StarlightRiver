@@ -31,6 +31,8 @@ namespace StarlightRiver
 
         public static LightingBuffer LightingBufferInstance = null;
 
+        public static PrimTrailManager primitives;
+
         public static StarlightRiver Instance { get; set; }
 
         public StarlightRiver() { Instance = this; }
