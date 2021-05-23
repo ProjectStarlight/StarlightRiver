@@ -288,6 +288,16 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.scale = progress;
             projectile.rotation = projectile.ai[1] + (float)Math.PI;
 
+            if (Main.MouseWorld.X > player.Center.X)
+                player.direction = 1;
+            else
+                player.direction = -1;
+            player.itemRotation = projectile.ai[1] + (float)Math.PI; //TODO: Wrap properly when facing left
+            if (player.direction != 1)
+            {
+                player.itemRotation -= 3.14f;
+            }
+
             player.heldProj = projectile.whoAmI;
 
             if(projectile.timeLeft < 40 && ShieldLife > 10)
