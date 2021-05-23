@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Impale");
             Main.PlaySound(slot.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot.Style, 1, Main.rand.NextFloat(0.6f, 0.9f));
-
+            hitDirection = Main.player[projectile.owner].direction;
             if (BuffPower > 0)
             {
                 var slot2 = SoundID.DD2_BetsyFireballImpact;
