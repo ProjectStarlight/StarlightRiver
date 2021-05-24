@@ -11,7 +11,7 @@ namespace StarlightRiver.Core
 
         public RenderTarget2D primTarget; // We'll use a rendertarget to draw primitives pixellated. 
 
-        public BasicEffect basicEffect;
+        public BasicEffect basicEffect; //The basiceffect is the same for all trails
         public void LoadContent(GraphicsDevice GD) //Load the rendertarget and the basic effect
         {
             basicEffect = new BasicEffect(GD); //Load the basic effect that all primtrails in this list will use.
