@@ -1,12 +1,8 @@
-﻿using Terraria.ModLoader;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Terraria;
 using System.Collections.Generic;
-using System.Linq;
 using System;
-using static Terraria.ModLoader.ModContent;
-using System.Reflection;
 using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
@@ -16,16 +12,15 @@ namespace StarlightRiver.Core
         public interface ITrailShader
         {
             string ShaderPass { get; }
-            void ApplyShader<T>(Effect effect, T trail, List<Vector2> positions, string ESP, float progressParam);
+            void ApplyShader<T>(Effect effect, T trail, List<Vector2> positions, string ESP);
         }
         public class DefaultShader : ITrailShader
         {
             public string ShaderPass => "DefaultPass";
-            public void ApplyShader<T>(Effect effect, T trail, List<Vector2> positions, string ESP, float progressParam)
+            public void ApplyShader<T>(Effect effect, T trail, List<Vector2> positions, string ESP)
             {
                 try
                 {
-                    effect.Parameters["progress"].SetValue(progressParam);
                     effect.CurrentTechnique.Passes[ESP].Apply();
                     effect.CurrentTechnique.Passes[ShaderPass].Apply();
                 }
@@ -54,7 +49,7 @@ namespace StarlightRiver.Core
         {
             return new Vector2(-vector.Y, vector.X);
         }
-        protected void PrepareShader(Effect effects, string PassName, float progress, Color? color = null)
+        protected void PrepareShader(Effect effects, string PassName)
         {
             int width = _device.Viewport.Width;
             int height = _device.Viewport.Height;
@@ -62,13 +57,8 @@ namespace StarlightRiver.Core
             Matrix view = Matrix.CreateLookAt(Vector3.Zero, Vector3.UnitZ, Vector3.Up) * Matrix.CreateTranslation(width / 2, height / -2, 0) * Matrix.CreateRotationZ(MathHelper.Pi) * Matrix.CreateScale(zoom.X, zoom.Y, 1f);
             Matrix projection = Matrix.CreateOrthographic(width, height, 0, 1000);
             effects.Parameters["WorldViewProjection"].SetValue(view * projection);
-            Color Color = color ?? Color.White;
-            if (effects.HasParameter("uColor"))
-            {
-                effects.Parameters["uColor"].SetValue(Color.ToVector3());
-            }
 
-            _trailShader.ApplyShader(effects, this, _points, PassName, progress);
+            _trailShader.ApplyShader(effects, this, _points, PassName);
         }
         protected void PrepareBasicShader()
         {
@@ -143,7 +133,7 @@ namespace StarlightRiver.Core
         }
         protected void DrawBasicTrail(Color c1, float widthVar)
         {
-            int currentIndex = 0;
+            currentIndex = 0;
             VertexPositionColorTexture[] vertices = new VertexPositionColorTexture[_noOfPoints];
             for (int i = 0; i < _points.Count; i++)
             {
