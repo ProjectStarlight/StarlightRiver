@@ -28,7 +28,7 @@ namespace StarlightRiver.Core.Loaders
         private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             StarlightRiver.primitives.DrawTarget(Main.spriteBatch);
-
+            orig(self);
         }
 
         private void Main_OnPreDraw(GameTime obj)
