@@ -21,11 +21,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             this.parent = parent;
 
-            chain = new VerletChainInstance(true);
-            chain.segmentCount = 8;
-            chain.customDistances = true;
+            chain = new VerletChainInstance(8, true, parent.npc.Center, null, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 32, 32, 32, 32 });
             chain.drag = 1.1f;
-            chain.segmentDistanceList = new List<float>() {100, 100, 48, 36, 32, 32, 32, 32 };
         }
 
         public void DrawBody(SpriteBatch sb)

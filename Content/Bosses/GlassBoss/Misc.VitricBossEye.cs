@@ -60,14 +60,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             position = offset;
             this.parent = parent;
 
-            chain = new VerletChainInstance(true)
+            chain = new VerletChainInstance(length, true, parent.npc.Center + position, 8)
             {
-                segmentCount = length,
-                segmentDistance = 8,
                 constraintRepetitions = 2,
                 drag = 1.5f,
                 forceGravity = new Vector2(0f, 0.25f),
-                gravityStrengthMult = 1f
             };
         }
 

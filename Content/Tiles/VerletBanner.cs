@@ -35,14 +35,11 @@ namespace StarlightRiver.Content.Tiles
 
         public override void SafeSetDefaults()
         {
-            Chain = new VerletChainInstance(false)
+            Chain = new VerletChainInstance(16, false, projectile.Center, 16)
             {
-                segmentCount = 16,
-                segmentDistance = 16,//if your using a texture to connect all the points, keep this near the texture size
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
                 forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-                gravityStrengthMult = 1f,
                 scale = 0.6f
             };
         }
@@ -51,7 +48,7 @@ namespace StarlightRiver.Content.Tiles
         {
             Chain.UpdateChain(projectile.Center);
 
-            if (Chain.init) Chain.IterateRope(WindForce);
+            Chain.IterateRope(WindForce);
             projectile.ai[0] += 0.005f;
         }
 
