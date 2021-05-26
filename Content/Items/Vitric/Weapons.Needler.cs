@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
 		{
-			item.damage = 11;
+			item.damage = 8;
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
