@@ -14,6 +14,7 @@ using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Foregrounds;
+using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.defense = 18;
             npc.knockBackResist = 0f;
             npc.width = 80;
-            npc.height = 160;
+            npc.height = 120;
             npc.value = Item.buyPrice(0, 20, 0, 0);
             npc.npcSlots = 15f;
             npc.dontTakeDamage = true;
@@ -173,6 +174,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/TransitionPhaseGlow");
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
             }
+
+            //spriteBatch.DrawHitbox(npc, Color.Purple * 0.5f);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
