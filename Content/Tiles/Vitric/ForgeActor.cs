@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Vector2 pos = (new Vector2(i - 9, j + 3) + Helper.TileAdj) * 16 + new Vector2(-464, -336) - Main.screenPosition;
             Texture2D backdrop = GetTexture(AssetDirectory.GlassMiniboss + "Backdrop");
             var frame = new Rectangle(0, (backdrop.Height / 3) * (int)(Main.GameUpdateCount / 2 % 3), backdrop.Width, backdrop.Height / 3);
-            LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame, default, spriteBatch, Configs.LightImportance.Some);
+            LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame, default);
             //spriteBatch.Draw(backdrop, pos, frame, Color.White);
         }
     }

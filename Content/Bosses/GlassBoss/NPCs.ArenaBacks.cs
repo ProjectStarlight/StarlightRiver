@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
             if (State == 3 || State == 4) 
-                ScrollDraw(spriteBatch);
+                ScrollDraw();
             else  //animation for rising out of the sand
             {
                 Texture2D tex = Main.npcTexture[npc.type];
@@ -153,11 +153,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //Color color = new Color(180, 225, 255);
 
                 //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
-                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Configs.LightImportance.Some);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
             }
         }
 
-        public virtual void ScrollDraw(SpriteBatch sb) //im lazy
+        public virtual void ScrollDraw() //im lazy
         {
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
     {
-        public override void ScrollDraw(SpriteBatch sb)
+        public override void ScrollDraw()
         {
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
@@ -224,8 +224,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
         }
 
         public override void SpawnPlatforms(bool rising = true)

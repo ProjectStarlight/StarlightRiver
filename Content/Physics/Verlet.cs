@@ -189,7 +189,7 @@ namespace StarlightRiver.Physics
             buffer = buff;
         }
 
-        private static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
+        private static readonly BasicEffect basicEffectColor = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
         {
             VertexColorEnabled = true
         };
@@ -203,7 +203,7 @@ namespace StarlightRiver.Physics
             graphics.SetVertexBuffer(buffer);
 
             if (effect is null)
-                effect = basicEffect;
+                effect = basicEffectColor;
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
@@ -220,7 +220,7 @@ namespace StarlightRiver.Physics
             PrepareStrip(out var buffer, offset, scale);
             graphics.SetVertexBuffer(buffer);
 
-            foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in basicEffectColor.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);

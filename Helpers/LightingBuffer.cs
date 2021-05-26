@@ -8,6 +8,8 @@ using StarlightRiver.Core;
 using System.Runtime.InteropServices;
 using Terraria.ModLoader;
 using StarlightRiver.Configs;
+using StarlightRiver.Physics;
+using static StarlightRiver.Helpers.DrawHelper;
 
 namespace StarlightRiver.Helpers
 {
@@ -24,7 +26,8 @@ namespace StarlightRiver.Helpers
 
         private readonly Effect upscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
 
-        public int RefreshRate = 5;
+        private Config config = ModContent.GetInstance<Config>();
+        //public int RefreshRate = 5;
         private int refreshTimer;
 
         static int XMax => Main.screenWidth / 16 + PADDING * 2;
@@ -106,12 +109,15 @@ namespace StarlightRiver.Helpers
 
         public void DebugDraw()
         {
-            refreshTimer++;
+            if (ModContent.GetInstance<Config>().HighQualityLighting)
+            {
+                refreshTimer++;
 
-            if (refreshTimer % RefreshRate == 0) 
-                PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+                if (refreshTimer % config.LightingUpdateDelay == 0)
+                    PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
 
-            PopulateScreenTexture();
+                PopulateScreenTexture();
+            }
         }
     }
 
@@ -120,84 +126,123 @@ namespace StarlightRiver.Helpers
         private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
 
         private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
+        private static readonly VertexPositionColorTexture[] verticiesColor = new VertexPositionColorTexture[12];
 
         private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+        private static readonly VertexBuffer bufferColor = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 12, BufferUsage.WriteOnly);
 
-        public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default, SpriteBatch spritebatch = null, LightImportance importance = LightImportance.Minimal)
+        public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default)
         {
             if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
                 return;
             if (color == default)
                 color = Color.White;
 
-            if (importance < ModContent.GetInstance<Config>().TextureLighting && spritebatch != null)
+            Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
+                new Matrix
+                (
+                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                    0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                    0, 0, 1, 0,
+                    0, 0, 0, 1
+                );
+
+            if (!ModContent.GetInstance<Config>().HighQualityLighting)
             {
                 Rectangle checkZone = Rectangle.Intersect(pos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-                Vector3 colorAver = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-                
-            //    colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-            //    colorAver += Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-            //    colorAver += Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-            //    colorAver += Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color).ToVector3();
-                
-            //    spritebatch.Draw(tex, pos, source, new Color(colorAver / 5));
-            //    //spritebatch.Draw(Main.blackTileTexture, checkZone, Color.Purple * 0.15f);
-            //    return;
-            //}
+                Color topLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
+                Color topRightColor = Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
+                Color bottomLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color);
+                Color bottomRightColor = Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color);
+                Color centerColor = Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color);
 
-            Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
-            new Matrix
-            (
-                Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-                0, Main.GameViewMatrix.Zoom.X, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-            );
+                verticiesColor[0] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft()), 0),
+                    topLeftColor,       source.TopLeft() / tex.Size());
+                verticiesColor[1] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight()), 0),
+                    topRightColor,      source.TopRight() / tex.Size());
+                verticiesColor[2] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center()), 0),
+                    centerColor,        source.Center() / tex.Size());
 
-            ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-            ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
-            ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
-            ApplyEffect.Parameters["zoom"].SetValue(zoom);
-            ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
+                verticiesColor[3] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight()), 0),
+                   topRightColor,       source.TopRight() / tex.Size());
+                verticiesColor[4] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight()), 0),
+                    bottomRightColor,   source.BottomRight() / tex.Size());
+                verticiesColor[5] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center()), 0),
+                    centerColor,        source.Center() / tex.Size());
 
-            ApplyEffect.Parameters["targetTexture"].SetValue(tex);
-            ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+                verticiesColor[6] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center()), 0),
+                    centerColor,        source.Center() / tex.Size());
+                verticiesColor[7] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight()), 0),
+                    bottomRightColor,   source.BottomRight() / tex.Size());
+                verticiesColor[8] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft()), 0),
+                    bottomLeftColor,    source.BottomLeft() / tex.Size());
 
-            verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y), 0), source.TopLeft() / tex.Size());
-            verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y), 0), source.TopRight() / tex.Size());
-            verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y + source.Height), 0), source.BottomLeft() / tex.Size());
+                verticiesColor[9] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft()), 0),
+                    topLeftColor,       source.TopLeft() / tex.Size());
+                verticiesColor[10] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center()), 0),
+                    centerColor,        source.Center() / tex.Size());
+                verticiesColor[11] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft()), 0),
+                    bottomLeftColor,    source.BottomLeft() / tex.Size());
 
-            verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y), 0), source.TopRight() / tex.Size());
-            verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Height), 0), source.BottomRight() / tex.Size());
-            verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X), DrawHelper.ConvertY(pos.Y + source.Height), 0), source.BottomLeft() / tex.Size());
+                basicEffect.TextureEnabled = true;
+                basicEffect.VertexColorEnabled = true;
+                basicEffect.Texture = tex;
+                basicEffect.View = zoom;
 
-            /*
-            verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
-            verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
-            verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
-            
-            verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
-            verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
-            verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
-            */
+                bufferColor.SetData(verticiesColor);
+                Main.instance.GraphicsDevice.SetVertexBuffer(bufferColor);
 
-            buffer.SetData(verticies);
-
-            Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
-
-            foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 4);
+                }
+            }
+            else
             {
-                pass.Apply();
-                Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+                ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
+                ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
+                ApplyEffect.Parameters["zoom"].SetValue(zoom);
+                ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
+
+                ApplyEffect.Parameters["targetTexture"].SetValue(tex);
+                ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+
+                verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopLeft()), 0),        source.TopLeft() / tex.Size());
+                verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight()), 0),       source.TopRight() / tex.Size());
+                verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft()), 0),     source.BottomLeft() / tex.Size());
+
+                verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight()), 0),       source.TopRight() / tex.Size());
+                verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomRight()), 0),    source.BottomRight() / tex.Size());
+                verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft()), 0),     source.BottomLeft() / tex.Size());
+
+              /*verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
+                verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+                verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
+
+                verticies[3] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
+                verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
+                verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);*/
+
+                buffer.SetData(verticies);
+
+                Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
+
+                foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                }
             }
 
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
-        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default, SpriteBatch spritebatch = null, LightImportance importance = LightImportance.Minimal) =>
-            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color, spritebatch, importance);
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
+            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
 
-        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default, SpriteBatch spritebatch = null, LightImportance importance = LightImportance.Minimal) =>
-            DrawWithLighting(pos, tex, tex.Frame(), color, spritebatch, importance);
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default) =>
+            DrawWithLighting(pos, tex, tex.Frame(), color);
     }
 }

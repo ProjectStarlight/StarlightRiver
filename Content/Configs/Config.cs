@@ -2,6 +2,7 @@
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System.ComponentModel;
 
 namespace StarlightRiver.Configs
 {
@@ -14,14 +15,6 @@ namespace StarlightRiver.Configs
         CrimsonJungle = 4,
         HallowJungle = 5,
         None = 6
-    }
-
-    public enum LightImportance //feel free to rename
-    {
-        All = 0,
-        Most = 1,
-        Some = 2,
-        Minimal = 3
     }
 
     public enum CustomSounds
@@ -44,9 +37,17 @@ namespace StarlightRiver.Configs
         [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
         public bool ParticlesActive = true;
 
-        [Label("Texture Lighting")]
-        [Tooltip("Enables/Disables lighting on large textures particles. Disable this if you have performance issues.")]
-        public LightImportance TextureLighting;
+        [Label("Lighting buffer update delay")]
+        [Tooltip("The delay between updating the lighting buffer")]
+        [Range(2, 20)]
+        [DrawTicks]
+        [Slider]
+        [DefaultValue(5f)]
+        public int LightingUpdateDelay = 5;
+
+        [Label("High quality lit textures")]
+        [Tooltip("Enables/Disables fancy lighting on large textures. Disable this if you have performance issues.")]
+        public bool HighQualityLighting = true;
 
         [Label("Custom Inventory Sounds")]
         [Tooltip("If custom inventory sounds should play for all items or a select few, or none at all.")]
