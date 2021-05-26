@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Impale");
             Main.PlaySound(slot.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot.Style, 1, Main.rand.NextFloat(0.6f, 0.9f));
-
+            hitDirection = Main.player[projectile.owner].direction;
             if (BuffPower > 0)
             {
                 var slot2 = SoundID.DD2_BetsyFireballImpact;
@@ -259,19 +259,26 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AI()
         {
             var player = Main.player[projectile.owner];
-
+            projectile.frameCounter++;
             if (projectile.timeLeft > 5 && player == Main.LocalPlayer && !Main.mouseRight)
             {
                 projectile.timeLeft = 5;
                 player.itemTime = 20;
                 player.itemAnimation = 20;
             }
+            if (Main.mouseRight && player == Main.LocalPlayer && projectile.timeLeft < 10)
+            {
+                projectile.timeLeft = 10;
+                player.itemTime = 20;
+                player.itemAnimation = 20;
+            }
+
+            projectile.ai[1] = (Main.MouseWorld - player.Center).ToRotation() - (float)Math.PI;
 
             if (projectile.timeLeft == 60)
             {
                 projectile.damage = 10;
 
-                projectile.ai[1] = (Main.MouseWorld - player.Center).ToRotation() - (float)Math.PI;
                 ShieldLife = 50;
             }
 
@@ -281,9 +288,19 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.scale = progress;
             projectile.rotation = projectile.ai[1] + (float)Math.PI;
 
+            if (Main.MouseWorld.X > player.Center.X)
+                player.direction = 1;
+            else
+                player.direction = -1;
+            player.itemRotation = projectile.ai[1] + (float)Math.PI; //TODO: Wrap properly when facing left
+            if (player.direction != 1)
+            {
+                player.itemRotation -= 3.14f;
+            }
+
             player.heldProj = projectile.whoAmI;
 
-            if(projectile.timeLeft < 40)
+            if(projectile.timeLeft < 40 && ShieldLife > 10)
                 ShieldLife --;
 
             for(int k = 0; k < Main.maxProjectiles; k++)
@@ -343,7 +360,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 spriteBatch.Draw(barTex2, target, color * 0.8f * opacity);
             }
 
-            if (projectile.timeLeft % 8 == 0) projectile.frame++;
+            if (projectile.frameCounter % 8 == 0) projectile.frame++;
             projectile.frame %= 3;
 
             return false;

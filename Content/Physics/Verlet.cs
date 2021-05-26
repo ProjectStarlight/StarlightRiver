@@ -6,11 +6,17 @@ using Terraria;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System.Linq;
 
 namespace StarlightRiver.Physics
 {
     public class VerletChainInstance
     {
+        //static
+        public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
+
+
         #region verlet chain example
         /*Chain = new VerletChainInstance //chain example
         {
@@ -36,89 +42,164 @@ namespace StarlightRiver.Physics
         //Chain.UpdateChain(projectile.Center); //chain example
         #endregion
 
-        //base
-        public bool ChainActive = true;
-        public bool init = false;
+        //basic variables
+        public bool Init = false;
+        public bool Active = false;//check Active for most init checks, since this also covers that
 
-        public List<RopeSegment> ropeSegments = new List<RopeSegment>();
+        public int segmentCount;
+        public int segmentDistance;
 
-        //distances
-        public int segmentDistance = 5;
-
-        public bool customDistances = false;
-        public List<float> segmentDistanceList = new List<float>();//length must match the segment count
-
-        //general
-        public int segmentCount = 10;
         public int constraintRepetitions = 2;
-        public float drag = 1;
+        public float drag = 1f;
+        public Vector2 forceGravity = Vector2.Zero;
+
+        //medium variables
+        public bool useStartPoint = true;
+        public Vector2 startPoint = Vector2.Zero;
+        public bool useEndPoint = false;
+        public Vector2 endPoint = Vector2.Zero;
         public float scale = 1;
 
-        //gravity
-        public Vector2 forceGravity = new Vector2(0f, 1f);//x, y (positive = down)
-        public float gravityStrengthMult = 1f;
+        //advanced variables
+        public bool customDistances = false;
+        public List<int> segmentDistances;//length must match the segment count
 
         public bool customGravity = false;
-        public List<Vector2> forceGravityList = new List<Vector2>();//length must match the segment count
+        public List<Vector2> forceGravities;//length must match the segment count
 
-        public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-        public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
+        public List<RopeSegment> ropeSegments;
 
-        public VerletChainInstance(bool specialDraw)
+        public VerletChainInstance(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         {
-            if (!specialDraw) toDraw.Add(this);
+            segmentCount = SegCount;
+            segmentDistance = SegDistance;
+            startPoint = StartPoint;
+
+            if (!specialDraw)
+                toDraw.Add(this);
+
+            //Start(false);
         }
 
-        private void Start(Vector2 targetPosition)
+        public VerletChainInstance(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
         {
-            Vector2 ropeStartPoint = targetPosition;
+            segmentCount = SegCount;
+            segmentDistance = SegDistance;
+
+            forceGravity = Grav ?? Vector2.Zero;
+
+            startPoint = StartPoint ?? Vector2.Zero;
+
+            endPoint = EndPoint ?? Vector2.Zero;
+
+            if (!specialDraw)
+                toDraw.Add(this);
+
+            //Start(EndPoint != null);
+        }
+
+        public VerletChainInstance(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null,
+            bool CustomGravs = false, List<Vector2> SegGravs = null,
+            bool CustomDists = false, List<int> SegDists = null)
+        {
+            segmentCount = SegCount;
+            segmentDistance = SegDistance;
+
+            forceGravity = Grav ?? (CustomGravs ? Vector2.One : Vector2.Zero);
+
+            startPoint = StartPoint ?? Vector2.Zero;
+
+            endPoint = EndPoint ?? Vector2.Zero;
+
+            if (customGravity = CustomGravs)
+                forceGravities = SegGravs ?? Enumerable.Repeat(forceGravity, segmentCount).ToList();
+
+            if (customDistances = CustomDists)
+                segmentDistances = SegDists ?? Enumerable.Repeat(segmentDistance, segmentCount).ToList();
+
+            if (!specialDraw) 
+                toDraw.Add(this);
+
+            //Start(EndPoint != null);
+        }
+
+        public void Start(bool SpawnEndPoint = false)//public in case you want to reset the chain
+        {
+            Init = true;
+            Active = true;
+            ropeSegments = new List<RopeSegment>();
+
+            Vector2 nextRopePoint = startPoint;
 
             for (int i = 0; i < segmentCount; i++)
             {
-                ropeSegments.Add(new RopeSegment(ropeStartPoint));
+                ropeSegments.Add(new RopeSegment(nextRopePoint));
 
-                if ((customGravity ? forceGravityList[i] : forceGravity) != Vector2.Zero)
-                    ropeStartPoint += Vector2.Normalize(customGravity ? forceGravityList[i] : forceGravity) * (customDistances ? segmentDistanceList[i] : segmentDistance);
-                else
-                    ropeStartPoint.Y += customDistances ? segmentDistanceList[i] : segmentDistance;
-            }
-        }
-
-
-        public void UpdateChain(Vector2 targetPosition)
-        {
-            if (ChainActive)//the below else can be renabled for this to reset the chain, or this check can be removed
-            {
-                if (init == false)
+                if (SpawnEndPoint)
                 {
-                    Start(targetPosition); //run once
-                    init = true;
+                    float distance = (int)(Vector2.Distance(startPoint, endPoint) / segmentCount);
+                    nextRopePoint += Vector2.Normalize(endPoint - nextRopePoint) * distance * i;
                 }
-                Simulate(targetPosition);
+                else
+                {
+                    int distance = customDistances ? segmentDistances[i] : segmentDistance;
+                    Vector2 spawnGrav = customGravity ? forceGravities[i] * forceGravity : forceGravity;
+                    if (spawnGrav != Vector2.Zero)
+                        nextRopePoint += Vector2.Normalize(spawnGrav) * distance;
+                    else
+                        nextRopePoint.Y += distance;
+                }
             }
         }
 
-        private void Simulate(Vector2 targetPosition)
+        public void UpdateChain(Vector2 Start, Vector2 End)
         {
-            for (int i = 1; i < segmentCount; i++)
+            endPoint = End;
+            startPoint = Start;
+            UpdateChain();
+        }
+
+        public void UpdateChain(Vector2 Start)
+        {
+            startPoint = Start;
+            UpdateChain();
+        }
+
+        public void UpdateChain()
+        {
+            if (!Init)//hacky solution to the setdefaults problem
+                Start();
+
+            if (Active)
+                Simulate();
+        }
+
+        private void Simulate()
+        {
+            for (int i = 0; i < segmentCount; i++)
             {
-                Vector2 velocity = (ropeSegments[i].posNow - ropeSegments[i].posOld) / drag;
-                ropeSegments[i].posOld = ropeSegments[i].posNow;
-                ropeSegments[i].posNow += velocity;
-                ropeSegments[i].posNow += (customGravity ? forceGravityList[i] : forceGravity) * gravityStrengthMult;
+                RopeSegment segment = ropeSegments[i];
+                Vector2 velocity = (segment.posNow - segment.posOld) / drag;
+                segment.posOld = segment.posNow;
+                segment.posNow += velocity;
+                segment.posNow += customGravity ? forceGravities[i] * forceGravity : forceGravity;
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
-                ApplyConstraint(targetPosition);
+            {
+                if (useStartPoint)
+                    ropeSegments[0].posNow = startPoint;
+                if (useEndPoint)
+                    ropeSegments[segmentCount - 1].posNow = endPoint;
+                ApplyConstraint();
+            }
         }
 
-        private void ApplyConstraint(Vector2 targetPosition)
+        private void ApplyConstraint()
         {
-            ropeSegments[0].posNow = targetPosition;
-
             for (int i = 0; i < segmentCount - 1; i++)
             {
-                float segmentDist = customDistances ? segmentDistanceList[i] : segmentDistance;
+                float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
 
                 float dist = (ropeSegments[i].posNow - ropeSegments[i + 1].posNow).Length();
                 float error = Math.Abs(dist - segmentDist);
@@ -147,8 +228,9 @@ namespace StarlightRiver.Physics
 
         public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index
         {
-            for (int i = 0; i < segmentCount; i++)
-                iterateMethod(i);
+            if(Active)
+                for (int i = 0; i < segmentCount; i++)
+                    iterateMethod(i);
         }
 
         public void PrepareStrip(out VertexBuffer buffer, Vector2 offset, float scale)
@@ -214,7 +296,7 @@ namespace StarlightRiver.Physics
 
         public void DrawStrip(float scale, Vector2 offset = default)
         {
-            if (ropeSegments.Count < 1 || Main.dedServ) return;
+            if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             PrepareStrip(out var buffer, offset, scale);

@@ -36,7 +36,8 @@ namespace StarlightRiver.Content.GUI
                 "Treasure!",
                 "For your troubles...",
                 "This looks valuable...",
-                "Not a mimmic!"
+                "Not a mimic!",
+                "Shiny!"
             };
         }
 
