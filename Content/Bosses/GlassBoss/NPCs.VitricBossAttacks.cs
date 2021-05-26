@@ -158,15 +158,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     float angleDiff = Helper.CompareAngle(angleOff, crystalOff);
 
                     // if the player's distance from the boss is within 2 player widths of the ring and if the player isnt in the gab where they would be safe
-                    if ((dist <= crystalDist + player.width && dist >= crystalDist - player.width) && !(angleDiff > 0 && angleDiff < 1.57f))
+                    if ((dist > (minCageBounceDist) && dist <= crystalDist + player.width && dist >= crystalDist - player.width) && !(angleDiff > 0 && angleDiff < 1.57f))
                     {
+                        Vector2 maxSpeed = new Vector2(maxCageBounceSpeed);
                         player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(npc.whoAmI), Main.expertMode ? 90 : 65, 0); //do big damag
-                        player.velocity += Vector2.Normalize(player.Center - npc.Center) * -3; //knock into boss
+                        player.velocity = Vector2.Clamp( player.velocity + Vector2.Normalize(player.Center - npc.Center) * -3, -maxSpeed, maxSpeed); //knock into boss
                         Main.PlaySound(SoundID.DD2_LightningAuraZap); //bzzt!
                     }
                 }
             }
         }
+
+        private const int maxCageBounceSpeed = 12;
+        private const int minCageBounceDist = 30;
 
         private void CrystalSmash()
         {

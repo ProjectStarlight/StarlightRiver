@@ -332,6 +332,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 for (int k = 0; k < 20; k++)
                 {
                     positions[k] = Parent.npc.Center + (npc.Center - Parent.npc.Center).RotatedBy(k / 19f * MathHelper.PiOver2);
+                    //spriteBatch.Draw(Main.blackTileTexture, new Rectangle((int)(positions[k].X - Main.screenPosition.X), (int)(positions[k].Y - Main.screenPosition.Y), 8, 8), Color.Green);
                 }
 
                 trail.Positions = positions;
@@ -360,8 +361,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 if (Parent.AttackTimer < 420)
                     alpha = (Parent.AttackTimer - 360) / 60f;
-                else if (Parent.AttackTimer > 760)
-                    alpha = 1 - (Parent.AttackTimer - 760) / 80f;
+                else if (Parent.AttackTimer > 720)
+                    alpha = 1 - (Parent.AttackTimer - 720) / 40f;
                 else
                     alpha = 1;
 
@@ -369,7 +370,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 var tex2 = GetTexture(Texture + "Outline");
 
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
-                spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.5f, npc.rotation, tex2.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex2, (npc.Center - Main.screenPosition) + new Vector2(0, 4), null, new Color(255, 160, 100) * alpha * 0.50f, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
 
                 if (Parent.AttackTimer < 380)
                 {
@@ -389,9 +390,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             float alpha = 0;
 
             if (Parent.AttackTimer < 420)
-                alpha = (Parent.AttackTimer - 360) / 60f;
-            else if (Parent.AttackTimer > 760)
-                alpha = 1 - (Parent.AttackTimer - 760) / 80f;
+                alpha = (Parent.AttackTimer - 360) / 60f;//fadein speed (higher is slower)
+            else if (Parent.AttackTimer > 720)
+                alpha = 1 - (Parent.AttackTimer - 720) / 80f;//fadeout speed (higher is slower)
             else
                 alpha = 1;
 
@@ -400,12 +401,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private Color ArcColor(Vector2 coord)
 		{
-            float alpha = 0;
-
+            float alpha;
             if (Parent.AttackTimer < 420)
-                alpha = (Parent.AttackTimer - 360) / 60f;
-            else if (Parent.AttackTimer > 760)
-                alpha = 1 - (Parent.AttackTimer - 760) / 80f;
+                alpha = (Parent.AttackTimer - 360) / 60f;//fadein speed (higher is slower)
+            else if (Parent.AttackTimer > 740)
+                alpha = 1 - (Parent.AttackTimer - 740) / 30f;//fadeout speed (higher is slower)
             else
                 alpha = 1;
 

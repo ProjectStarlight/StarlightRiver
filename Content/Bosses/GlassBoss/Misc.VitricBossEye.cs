@@ -50,10 +50,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     internal class VitricBossSwoosh
     {
-        VitricBoss parent;
+        readonly VitricBoss parent;
+        readonly VerletChainInstance chain;
+        readonly Effect fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
         Vector2 position;
-        VerletChainInstance chain;
-        Effect fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
 
         public VitricBossSwoosh(Vector2 offset, int length, VitricBoss parent)
         {

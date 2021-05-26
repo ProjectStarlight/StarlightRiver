@@ -32,6 +32,13 @@ namespace StarlightRiver.Pickups
             npc.friendly = false;
         }
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+        {
+            crit = false;
+            knockback = 0;
+            damage = 0;
+        }
+
         public override bool CheckActive() => false;
 
         public sealed override bool? CanBeHitByItem(Player player, Item item) => false;
@@ -65,7 +72,6 @@ namespace StarlightRiver.Pickups
         public sealed override void AI()
         {
             StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local player since ability pickup visuals are clientside
-
             if (Visible)
             {
                 Visuals();
