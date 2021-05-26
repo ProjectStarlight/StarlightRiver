@@ -278,7 +278,7 @@ namespace StarlightRiver.Physics
 
         public void DrawStrip(Func<Vector2, VertexBuffer> prepareFunction, Effect effect = null, Vector2 offset = default)
         {
-            if (ropeSegments.Count < 1 || Main.dedServ) return;
+            if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             var buffer = prepareFunction(offset);

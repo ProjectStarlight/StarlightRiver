@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
 using System.Runtime.InteropServices;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Helpers
 {
@@ -20,6 +21,9 @@ namespace StarlightRiver.Helpers
         public static float ConvertY(float input) => -1 * (input / (Main.screenHeight * 0.5f) - 1);
 
         public static Vector2 ConvertVec2(Vector2 input) => new Vector2(1, -1) * (input / (new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f) - Vector2.One);
+
+        public static void DrawHitbox(this SpriteBatch spriteBatch, NPC npc, Color color) => spriteBatch.Draw(Main.blackTileTexture, npc.getRect().WorldToScreenCoords(), color);
+        public static Rectangle WorldToScreenCoords(this Rectangle rect) => new Rectangle(rect.X - (int)Main.screenPosition.X, rect.Y - (int)Main.screenPosition.Y, rect.Width, rect.Height);
 
         public static void DrawTriangle(Texture2D tex, Vector2[] target, Vector2[] source)
         {
