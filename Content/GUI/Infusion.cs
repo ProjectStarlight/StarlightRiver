@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.GUI
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
         private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
+        private readonly UIElement infusionElement = new UIElement();
 
         /// <summary>
         /// Returns a copy of the internal slots array.
@@ -34,6 +35,23 @@ namespace StarlightRiver.Content.GUI
             // The texture is centered at 100, 300 so its top-left is 68, 272
             // The top slot's top-left corner is at 20, 4 on the texture
             // So the top-left slot should be positioned at 88, 276 in screenspace. (Add top-left of texture and top-left corner of top slot)
+
+            // Hey, it's Ariam.
+            // I decided to make this into a UIElement. I'll leave the previous stuff commented out, as I don't know what a lot of it is trying to do.
+            // If I did anything wrong, feel free to correct it.
+            /* Editor's Notes:
+             * Made a UIElement out of the infusion thingy, as mentioned above.
+             * Added a kind of redundant static method for returning if conditions aren't true.
+             * Ignored stuff I didn't know about - Scalie originally made this document, so there should be a reason for it?
+             * I initially tried to change the slots, but eh. It isn't very worth it.
+             */
+
+            infusionElement.Width.Set(64, 0);
+            infusionElement.Height.Set(58, 0);
+            // Calculating these instead of using magic numbers.
+            infusionElement.Left.Set(100 - (infusionElement.Width.Pixels / 2), 0);
+            infusionElement.Top.Set(300 - (infusionElement.Height.Pixels / 2), 0);
+
 
             const float width = 20;
             const float height = 22;
@@ -58,10 +76,16 @@ namespace StarlightRiver.Content.GUI
             InitSlot(topSlotLeft + width / 2 + 4, topSlotTop + height);
         }
 
+        internal static bool ReturnConditions()
+            => Main.InReforgeMenu;
+
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (ReturnConditions())
+                return;
+
             Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Infusions");
-            spriteBatch.Draw(texture, new Vector2(68, 272), Color.White);
+            spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels, infusionElement.Top.Pixels), Color.White);
 
             if(true) //TODO: Figure out some sort of cool condition for this
             {
@@ -86,6 +110,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (Infusion.ReturnConditions())
+                return;
+
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
@@ -127,6 +154,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Update(GameTime gameTime)
         {
+            if (Infusion.ReturnConditions())
+                return;
+
             if (Unlocked && IsMouseHovering && ItemSlot.ShiftInUse && Main.LocalPlayer.GetHandler().GetInfusion(TargetSlot) != null)
                 // Set cursor to the little chest icon
                 Main.cursorOverride = 9;
@@ -134,6 +164,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
+            if (Infusion.ReturnConditions())
+                return;
+
             if (!Unlocked)
             {
                 Main.PlaySound(SoundID.Unlock);

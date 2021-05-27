@@ -52,14 +52,21 @@ namespace StarlightRiver.Content.GUI
         private readonly Ability ability;
 
         public AbilityDisplay(Ability ability) => this.ability = ability;
-
+        static bool ReturnConditions()
+            => Main.InReforgeMenu;
         public override void Click(UIMouseEvent evt)
         {
+            if (ReturnConditions())
+                return;
+
             if (ability != null) Collection.ActiveAbility = ability;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (ReturnConditions())
+                return;
+
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
