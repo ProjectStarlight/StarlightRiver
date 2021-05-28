@@ -303,8 +303,17 @@ namespace StarlightRiver.Helpers
             for(int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
-                if (instance.State == SoundState.Stopped)
+                if (instance == null)
+                {
                     instances.RemoveAt(i);
+                    i--;
+                }
+                if (instance.State == SoundState.Stopped)
+                {
+                    instances[i].Dispose();
+                    instances.RemoveAt(i);
+                    i--;
+                }
             }
 
             var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance();
