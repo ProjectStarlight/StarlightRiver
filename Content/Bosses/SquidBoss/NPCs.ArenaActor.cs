@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Vector2 pos2 = npc.Center + new Vector2(-840, 35 * 16) + new Vector2(0, -npc.ai[0]) - Main.screenPosition;
             var source2 = new Rectangle(0, tex.Height - (int)npc.ai[0] + 5 * 16, tex.Width, 2);
 
-            LightingBufferRenderer.DrawWithLighting(pos, tex, source, new Color(200, 230, 255) * 0.4f);
+            LightingBufferRenderer.DrawWithLightingWorld(pos, tex, source, new Color(200, 230, 255) * 0.4f);
             spriteBatch.Draw(tex, pos2, source2, Color.White * 0.6f, 0, Vector2.Zero, 1, 0, 0);
         }
 
@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
             Texture2D backdrop = GetTexture(AssetDirectory.SquidBoss + "Window");
-            LightingBufferRenderer.DrawWithLighting(npc.Center - backdrop.Size() / 2 + new Vector2(0, -114) - Main.screenPosition, backdrop, default);
+            LightingBufferRenderer.DrawWithLightingWorld(npc.Center - backdrop.Size() / 2 + new Vector2(0, -114) - Main.screenPosition, backdrop, default);
 
 
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D texOver = GetTexture(AssetDirectory.SquidBoss + "SmallWindow");
 
             Vector2 pos = npc.Center - texOver.Size() / 2 + off * 16;
-            LightingBufferRenderer.DrawWithLighting(pos - Main.screenPosition, texOver, default);
+            LightingBufferRenderer.DrawWithLightingWorld(pos - Main.screenPosition, texOver, default);
         }
 
         private void DrawWindowGlass(SpriteBatch spriteBatch, Texture2D tex, Vector2 off)

@@ -36,12 +36,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (held)
             {
                 WalkableCrystal modtile = ((GetModTile(item.createTile) as WalkableCrystal));
-                Vector2 offset = new Vector2(((modtile.MaxWidth / 2) - 1) * 16, ((modtile.MaxHeight - 1) * 16) - 1);
-                spriteBatch.Draw(Main.tileTexture[item.createTile], (((Main.MouseWorld / 16).PointAccur() * 16) - Main.screenPosition) - offset,
+                float zoom = Main.GameViewMatrix.Zoom.X;
+                Vector2 offset = new Vector2(((modtile.MaxWidth / 2) - 1) * 16, ((modtile.MaxHeight - 1) * 16) - 1) * zoom;
+                spriteBatch.Draw(Main.tileTexture[item.createTile], ((((Main.MouseWorld) / (16 * zoom)).PointAccur() * (16 * zoom)) - Main.screenPosition) - offset,
                     Main.tileTexture[item.createTile].Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
-                    Color.White * 0.75f);
+                    Color.White * 0.75f, 0, default, zoom, default, default);
             }
-            base.PostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
         }
         public override bool CanUseItem(Player player)
         {

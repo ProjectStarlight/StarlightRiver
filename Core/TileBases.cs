@@ -229,7 +229,7 @@ namespace StarlightRiver.Core
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public virtual Vector2 DrawOffset => new Vector2(9, 18);
+        public virtual Vector2 DrawOffset => new Vector2(-7, 18);
         public virtual Color DrawColor => Color.Gray;
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
@@ -241,10 +241,11 @@ namespace StarlightRiver.Core
                 {
                     Texture2D tex = Main.tileTexture[Type];
                     Rectangle frame = tex.Frame(VariantCount, 1, t.frameX - 1);
-                    spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset, frame, DrawColor, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
+                    //spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset, frame, DrawColor, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
                     //LightingBufferRenderer.DrawWithLighting((((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height), tex, frame, Color.Blue);
-                    //Vector2 pos = ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset;
-                    //LightingBufferRenderer.DrawWithLighting(pos, Main.blackTileTexture, Color.Blue);
+                    Vector2 pos = (((new Vector2(i, j)) * 16 - Main.screenPosition) + DrawOffset) + new Vector2(frame.Width * 0.5f, frame.Height * 0.5f);
+                    //LightingBufferRenderer.DrawWithLightingTile(pos, Main.blackTileTexture, frame, Color.White);
+                    LightingBufferRenderer.DrawWithLightingTile(pos, tex, frame, Color.White);
                 }
                 AfterPostDraw(i, j, spriteBatch);
             }

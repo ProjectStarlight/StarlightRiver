@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //Color color = new Color(180, 225, 255);
 
                 //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
-                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+                Helpers.LightingBufferRenderer.DrawWithLightingWorld(target, tex, source, default);
             }
         }
 
@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
+            Helpers.LightingBufferRenderer.DrawWithLightingWorld(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLightingWorld(target2, tex, source2, default);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -224,8 +224,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
             //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
+            Helpers.LightingBufferRenderer.DrawWithLightingWorld(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLightingWorld(target2, tex, source2, default);
         }
 
         public override void SpawnPlatforms(bool rising = true)
