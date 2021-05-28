@@ -49,7 +49,14 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow) //TODO: Generalize this for later use, and possibly optimize it also
         {
-            orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+            try
+            {
+                orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+            }
+            catch (NullReferenceException e)
+            {
+                // be quiet
+            }
             if (Main.gameMenu) return;
 
             for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)

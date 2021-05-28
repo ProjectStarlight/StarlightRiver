@@ -297,15 +297,29 @@ namespace StarlightRiver.Helpers
 
         }
 
+        static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
         public static SoundEffectInstance PlayPitched(string path, float volume, float pitch)
         {
-            var instance = StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/" + path);
-            return Main.PlaySound(instance.SoundId, -1, -1, instance.Style, volume, pitch);
+            for(int i = 0; i < instances.Count; i++)
+            {
+                var instance = instances[i];
+                if (instance.State == SoundState.Stopped)
+                    instances.RemoveAt(i);
+            }
+
+            var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance();
+            soundEffect.Volume = volume * Main.soundVolume;
+            soundEffect.Pitch = pitch;
+
+            instances.Add(soundEffect);
+            soundEffect.Play();
+            return soundEffect;
         }
 
         public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch)
         {
             var instance = style;
+
             return Main.PlaySound(instance.SoundId, -1, -1, instance.Style, volume, pitch);
         }
 
