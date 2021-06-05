@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Buffs.Summon
 {
     class VitricSummonBuff : SmartBuff
     {
-        public VitricSummonBuff() : base("Glassweaver's Arsonal", "Strike your foes with enchanted glass forged weapons!", false, true) { }
+        public VitricSummonBuff() : base("Glassweaver's Arsonal", "Strike your foes with glass-forged weapons!", false, true) { }
 
         public override void Update(Player player, ref int buffIndex)
         {
