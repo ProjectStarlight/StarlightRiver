@@ -70,6 +70,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 {
                     projectile.rotation = (Main.MouseWorld - owner.Center).ToRotation();
                 }
+
+                if (!NPC.AnyNPCs(NPCType<VitricBoss>())) //Kill if the boss is over with
+                    projectile.Kill();
             }
         }
 

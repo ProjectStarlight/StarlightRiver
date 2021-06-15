@@ -433,7 +433,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                         foreach (NPC crystal in crystals)
                         {
-                            crystal.ai[0] = 0;
+                            crystal.ai[0] = 3;
                             crystal.ai[2] = 5; //turn the crystals to transform mode
                         }
                     }

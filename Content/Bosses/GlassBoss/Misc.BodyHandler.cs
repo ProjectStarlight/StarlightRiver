@@ -4,9 +4,6 @@ using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
@@ -21,7 +18,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             this.parent = parent;
 
-            chain = new VerletChainInstance(8, true, parent.npc.Center, null, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 32, 32, 32, 32 });
+            Vector2 end = new Vector2(parent.arena.Center.X, parent.arena.Bottom); //WIP, dunno how this works yet - will not change anything in-game
+            chain = new VerletChainInstance(9, true, parent.npc.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
             chain.drag = 1.1f;
         }
 
@@ -48,7 +46,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case 0: source = new Rectangle(0, 0, 0, 0); break;
                 case 1: source = new Rectangle(0, 0, 114, 114); break;
                 case 2: source = new Rectangle(18, 120, 78, 44); break;
-                case 3: source = new Rectangle(26, 168, 62, 30); break;
+                case 3:
+                case 4:
+                    source = new Rectangle(26, 168, 62, 30); break;
                 default: source = new Rectangle(40, 204, 34, 28); break;
             }
 
