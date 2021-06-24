@@ -40,6 +40,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             npc.rotation = npc.velocity.X * 0.25f;
         }
 
+        public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+        {
+            target.noKnockback = true;
+        }
+
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D tex = GetTexture(AssetDirectory.SquidBoss + "AuroralingGlow");
