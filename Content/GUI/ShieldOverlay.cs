@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,29 @@ namespace StarlightRiver.Content.GUI
 			var player = Main.LocalPlayer;
 			var sp = player.GetModPlayer<ShieldPlayer>();
 
-			Utils.DrawBorderString(spriteBatch, sp.Shield + "/" + sp.MaxShield, new Vector2(Main.screenWidth - 400, 32f + (Main.heartTexture.Height - Main.heartTexture.Height) / 2f), Color.White);
+			if (sp.Shield > 0 || sp.MaxShield > 0)
+			{
+				int num4 = (int)((float)Main.player[Main.myPlayer].statLifeMax2 / 20);
+				if (num4 >= 10)
+					num4 = 10;
+
+				string text = string.Concat(new string[]
+				{
+				Lang.inter[0].Value,
+				" ",
+				Main.player[Main.myPlayer].statLifeMax2.ToString(),
+				"/",
+				Main.player[Main.myPlayer].statLifeMax2.ToString()
+				});
+
+				Vector2 vector = Main.fontMouseText.MeasureString(text);
+
+				var shieldText = $"  {sp.Shield}/{sp.MaxShield}";
+				float textWidth = Main.fontMouseText.MeasureString(shieldText).X / 2;
+				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
+
+				spriteBatch.DrawString(Main.fontMouseText, shieldText, pos2, Main.mouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
+			}
 
 			if (sp.Shield > 0)
 			{

@@ -120,17 +120,27 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
                             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 840, npc.width, npc.height);
+
                             if (target.Hitbox.Intersects(rect))
                             {
                                 target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
                                 target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
                                 target.velocity.Y = Main.rand.Next(9, 13);
                             }
+
                             if (target.Hitbox.Intersects(npc.Hitbox))
                             {
                                 target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
                                 target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
                                 target.velocity.Y = -Main.rand.Next(9, 13);
+
+                                target.rocketTime = target.rocketTimeMax;
+                                target.wingTime = target.wingTimeMax;
+                                target.jumpAgainCloud = true;
+                                target.jumpAgainBlizzard = true;
+                                target.jumpAgainSandstorm = true;
+                                target.jumpAgainFart = true;
+                                target.jumpAgainSail = true;
                             }
                         }
                     break;
@@ -140,7 +150,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 820, npc.width, npc.height);
-            if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+
+            if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) //duplicate?? leaving in for now since unsure
+                target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;

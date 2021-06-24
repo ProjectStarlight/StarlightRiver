@@ -5,6 +5,7 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Content.Items.UndergroundTemple;
 
 namespace StarlightRiver.Tiles.Temple
 {
@@ -20,24 +21,8 @@ namespace StarlightRiver.Tiles.Temple
         {
             get => new List<Loot>
             {
-                new Loot(1, 1),
-                new Loot(2, 1),
-                new Loot(3, 1),
-                new Loot(4, 1),
-                new Loot(5, 1),
-                new Loot(6, 1),
-                new Loot(7, 1),
-                new Loot(8, 1),
-                new Loot(9, 1),
-                new Loot(10, 1),
-                new Loot(11, 1),
-                new Loot(12, 1),
-                new Loot(13, 1),
-                new Loot(14, 1),
-                new Loot(15, 1),
-                new Loot(16, 1),
-                new Loot(17, 1),
-                new Loot(18, 1)
+                new Loot(ItemType<RuneStaff>(), 1),
+                new Loot(ItemType<TempleLens>(), 1)
             };
         }
 
