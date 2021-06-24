@@ -14,6 +14,7 @@ using static Terraria.WorldGen;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Terraria.ID;
+using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Core
 {
@@ -38,7 +39,7 @@ namespace StarlightRiver.Core
         /// <param name="progress"></param>
         public static void VitricGen(GenerationProgress progress)
         {
-            progress.Message = "Digging Vitric Desert";
+            progress.Message = "Digging the Vitric Desert";
 
             int vitricHeight = 140;
             ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
@@ -47,6 +48,8 @@ namespace StarlightRiver.Core
             
             //Basic biome information
             VitricBiome = new Rectangle(UndergroundDesertLocation.X - 80, UndergroundDesertLocation.Y + UndergroundDesertLocation.Height, UndergroundDesertLocation.Width + 150, vitricHeight);
+            //Boss arena protection
+            ProtectionWorld.ProtectedRegions.Add(new Rectangle(VitricBiome.X + VitricBiome.Width / 2 - 59, VitricBiome.Y - 1, 108, 66));
 
             int minCeilingDepth = (int)((VitricBiome.Y + (VitricBiome.Height / 2)) - (17f * Math.Log(VitricSlopeOffset - 8))); //Various informational variables - not to be changed
             int maxCeilingDepth = minCeilingDepth + 7;
@@ -112,27 +115,23 @@ namespace StarlightRiver.Core
 
             //Mini islands throughout main area
             List<Point> MiniIslandLocations = new List<Point>();
-            for (int i = 0; i < 20;) //I may or may not be doing this because I find this form of a for loop neat.
+            for (int i = 0; i < 20;) 
             {
                 int x = genRand.Next(2) == 0 ? genRand.Next(VitricBiome.X + VitricSlopeOffset + 20, VitricBiome.Center.X - 61) : genRand.Next(VitricBiome.Center.X + 62, VitricBiome.Right - VitricSlopeOffset - 20);
                 int y = (maxCeilingDepth + 18) + (genRand.Next((int)(VitricBiome.Height / 2.8f)));
 
                 if (MiniIslandLocations.Any(v => Vector2.Distance(v.ToVector2(), new Vector2(x, y)) < 1) || ScanRectangle(x - 13, y - 4, 26, 14) > 8)
-                {
                     i++;
-                    continue;
-                }
                 else
-                {
                     MiniIslandLocations.Add(new Point(x, y));
-                }
             }
+
             for (int i = 0; i < MiniIslandLocations.Count; ++i)
             {
                 if (genRand.NextFloat() > 0.7f)
                     CreateIsland(MiniIslandLocations[i].X, MiniIslandLocations[i].Y, true);
             }
-
+            
             fail = 0;
             for (int i = 0; i < VitricBiome.Width / 160; ++i)
             {
@@ -158,7 +157,26 @@ namespace StarlightRiver.Core
                 }
             } //Mini islands
 
-            progress.Message = "Populating the Vitric";
+            for (int i = VitricBiome.Left; i < VitricBiome.Right; ++i) //Smooth out the biome easily
+            {
+                for (int j = VitricBiome.Top; j < VitricBiome.Bottom; ++j)
+                {
+                    if (genRand.Next(3) <= 1)
+                    {
+                        Tile.SmoothSlope(i, j, false);
+
+                        Tile left = Framing.GetTileSafely(i - 1, j);
+                        Tile right = Framing.GetTileSafely(i + 1, j);
+                        Tile me = Framing.GetTileSafely(i, j);
+                        bool sloped = (me.leftSlope() || me.rightSlope()) && me.topSlope() && !me.bottomSlope(); //top and bottom are mutually exclusive but you never know
+                        if (left.active() || right.active())
+                            if (sloped && genRand.NextBool(3))
+                                Framing.GetTileSafely(i, j).halfBrick(true);
+                    }
+                }
+            }
+
+            progress.Message = "Melting Glass";
 
             GenConsistentMiniIslands();
             GenSandstonePillars();
@@ -170,26 +188,9 @@ namespace StarlightRiver.Core
             GenTemple();
 
             GenDesertDecoration();
-
-            //DebugSquares();
+            FinalCleanup();
 
             VitricBiome.Y -= 8; //Adjust a bit
-        }
-
-        private static void DebugSquares()
-        {
-            //debug
-            Helper.OutlineRect(VitricBiome, TileID.RubyGemspark);
-
-            for (int i = 0; i < Main.maxTilesX; i++)
-                PlaceTile(i, (int)Main.worldSurface, TileID.SapphireGemspark, true, true);
-
-            for (int i = 0; i < Main.maxTilesX; i++)
-                PlaceTile(i, (int)WorldGen.worldSurface, TileID.AmethystGemspark, true, true);
-
-            Helper.OutlineRect(UndergroundDesertLocation, TileID.AmberGemspark);
-
-            PlaceTile(VitricBiome.X, VitricBiome.Y, TileID.EmeraldGemspark, true, true);
         }
 
         /// <summary>Generates basic biome shape, such as curved walls, noise on floor and ceiling, and spikes on the bottom.</summary>
@@ -212,6 +213,10 @@ namespace StarlightRiver.Core
 
             //Controls Y location of the top, ceiling, floor and bottom of the biome
             Dictionary<string, int> layers = new Dictionary<string, int> { { "TOP", 0 }, { "CEILING", 0 }, { "FLOOR", 0 }, { "BOTTOM", 0 } };
+
+            bool makingLake = false;
+            int lakeStart = 0;
+            int lakeWidth = 30;
 
             for (int x = VitricBiome.X; x < VitricBiome.X + VitricBiome.Width; x++) //Basic biome shape
             {
@@ -299,17 +304,61 @@ namespace StarlightRiver.Core
                     }
                 }
 
-                for (int y = layers["FLOOR"] - (9 - genRand.Next(2)); y < layers["BOTTOM"] + 8; ++y)
+                if (!makingLake && xDif > 50 && xDif < VitricBiome.Width - 50 && (xDif < VitricBiome.Width / 2 - 100 || xDif > VitricBiome.Width / 2 + 100) && WorldGen.genRand.Next(30) == 0)
                 {
-                    bool validSpike = y < layers["FLOOR"] && y >= (VitricBiome.Y + (VitricBiome.Height / 2f));
+                    makingLake = true;
+                    lakeStart = xDif;
+                    lakeWidth = genRand.Next(20, 35);
+                }
+
+                for (int y = layers["FLOOR"] - 9; y < layers["BOTTOM"] + 8; ++y)
+                {
+                    Tile t = Framing.GetTileSafely(x, y);
+
                     int xRand = xDif < 20 ? xDif : VitricBiome.Width - xDif;
-                    Tile t = Main.tile[x, y];
+                    
                     if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.active() && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
                     {
-                        PlaceTile(x, y, validSpike ? TileType<VitricSpike>() : instance.TileType("VitricSand"), false, true);
+                        if(t.type != TileType<VitricSpike>())
+                            PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
+
                         t.slope(0);
                         KillWall(x, y, false);
                     }
+
+                    var targetY = layers["FLOOR"] - 9 + (int)(Math.Sin((xDif - lakeStart) / (float)lakeWidth * 3.14f) * 8);
+
+                    if (makingLake && y <= targetY )
+                    {
+                        var lakeProgress = xDif - lakeStart;
+
+                        if (lakeProgress == 0)
+                            PlaceTile(x - 1, y, TileType<VitricSpike>(), false, true);
+
+                        if (lakeProgress == 30)
+                            PlaceTile(x + 1, y, TileType<VitricSpike>(), false, true);
+
+                        t.liquidType(1);
+                        t.liquid = 200;
+                        t.active(false);
+
+                        if (y == targetY)
+                        {
+                            for (int k = 0; k < genRand.Next(2, 3); k++)
+                            {
+                                PlaceTile(x, y + k, TileType<VitricSpike>(), false, true);
+                                t.active(true);
+                            }
+                        }
+                    }
+                }
+
+                if (makingLake)
+                {
+                    var lakeProgress = xDif - lakeStart;
+
+                    if (lakeProgress > lakeWidth)
+                        makingLake = false;
                 }
             }
         }
@@ -359,7 +408,7 @@ namespace StarlightRiver.Core
             int failCount = 0;
             for (int i = 0; i < 6; ++i)
             {
-                if (failCount > 120) break; //To many fails, stop
+                if (failCount > 120) break; //Too many fails, stop
                 int x = VitricBiome.X + VitricSlopeOffset + genRand.Next(VitricBiome.Width - (VitricSlopeOffset * 2));
                 while (x > VitricBiome.X + VitricBiome.Width / 2 - 71 && x < VitricBiome.X + VitricBiome.Width / 2 + 70)
                     x = VitricBiome.X + genRand.Next(VitricBiome.Width);
@@ -428,7 +477,7 @@ namespace StarlightRiver.Core
                     }
                     else
                     {
-                        int type = genRand.Next(7); //Generates multitile decoration randomly
+                        int type = genRand.Next(17); //Generates multitile decoration randomly
                         if (type == 0)
                         {
                             if (ValidGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 1), new Point16(1, 1)))
@@ -467,8 +516,6 @@ namespace StarlightRiver.Core
                         {
                             if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 1), new Point16(1, 1)))
                             {
-                                //PlaceTile(i, j - 1, TileID.AmethystGemspark, false, false, -1, genRand.Next(4));
-                                //PlaceTile(i, j - 1, genRand.Next(2) == 0 ? TileType<VitricSmallCactus>() : TileType<VitricRock>(), false, false, -1, genRand.Next(4));
                                 PlaceTile(i, j - 1, TileType<VitricRock>(), false, false, -1, genRand.Next(6));
                                 if (genRand.NextBool())
                                     Main.tile[i, j].type = (ushort)instance.TileType("VitricSand");
@@ -479,8 +526,6 @@ namespace StarlightRiver.Core
                             if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(2, 2)) &&
                                 Main.tile[i + 1, j].active() && Main.tile[i + 1, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i + 1, j].type))
                             {
-                                //PlaceTile(i, j - 2, TileID.DiamondGemspark, false, false, -1, genRand.Next(4));
-                                //PlaceTile(i, j - 2, genRand.Next(2) == 0 ? TileType<VitricRoundCactus>() : TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
                                 PlaceTile(i, j - 2, TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
                                 DesertVitricPatch(i + (genRand.NextBool() ? 1 : 0), j - 2, genRand.Next(1, 4));
                             }
@@ -493,7 +538,6 @@ namespace StarlightRiver.Core
 
                             if (vGround && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(3, 2)))
                             {
-                                //PlaceTile(i, j - 2, TileID.DiamondGemsparkOff, true, false, -1, genRand.Next(6));
                                 PlaceTile(i, j - 2, TileType<VitricDecorLarge>(), true, false, -1, genRand.Next(6));
                                 DesertVitricPatch(i + 1, j - 2, genRand.Next(2, 5));
                             }
@@ -506,9 +550,6 @@ namespace StarlightRiver.Core
         /// <summary>
         /// generates a small patch of sand for the vitric decoration
         /// </summary>
-        /// <param name="i"></param>
-        /// <param name="j"></param>
-        /// <param name="range"></param>
         private static void DesertVitricPatch(int i, int j, int range)
         {
             for (int g = 0; g < (range * 2) + 1; g++)//x
@@ -577,8 +618,6 @@ namespace StarlightRiver.Core
         }
 
         /// <summary>Generates a large island at X/Y.</summary>
-        /// <param name="x">X position.</param>
-        /// <param name="y">Y position.</param>
         private static void CreateIsland(int x, int y, bool small = false)
         {
             int wid = genRand.Next(32, 42);
@@ -590,6 +629,7 @@ namespace StarlightRiver.Core
             int peakEnd = 0;
             int peakStart = 0;
             int offset = 0;
+            int maxDepth = 0;
 
             for (int i = x - (int)(wid / 2f); i < x + (wid / 2f); ++i)
             {
@@ -636,9 +676,22 @@ namespace StarlightRiver.Core
 
                 for (int j = y - top + offset; j < y + depth + offset; j++)
                 {
-                    int t = j > (y + depth + offset) - 4 ? instance.TileType("VitricSand") : instance.TileType("VitricSoftSand");
+                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.TileType("VitricSoftSand");
                     PlaceTile(i, j, t, false, true);
                 }
+
+                if (maxDepth < depth)
+                    maxDepth = depth;
+            }
+
+            int hardSandClusterCount = genRand.Next(3, 10);
+            for (int i = 0; i < hardSandClusterCount; ++i)
+            {
+                int posX = genRand.Next(x - (int)(wid / 2f), x + (int)(wid / 2f));
+                int posY = genRand.Next(y, y + maxDepth);
+
+                if (Framing.GetTileSafely(posX, posY).type == instance.TileType("VitricSand"))
+                    TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.TileType("VitricSoftSand"), false, 0, 0, true, true);
             }
 
             //Place crystal if needed
@@ -700,8 +753,6 @@ namespace StarlightRiver.Core
         }
 
         /// <summary>Generates a large crystal at X/Y.</summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
         private static bool FloorCrystal(int x, int y)
         {
             int cY = y - 16;
@@ -775,6 +826,21 @@ namespace StarlightRiver.Core
             RuinedPillarPositions.Add(new Point(x, y));
             return true;
         }
+
+        public static void FinalCleanup()
+		{
+            for(int x = VitricBiome.X; x < VitricBiome.X + VitricBiome.Width; x++)
+                for(int y = VitricBiome.Y; y < VitricBiome.Y + VitricBiome.Height; y++)
+				{
+                    Tile tile = Framing.GetTileSafely(x, y);
+
+                    if (tile.liquidType() == 0)
+                        tile.liquid = 0;
+
+                    if (tile.type == TileID.Obsidian)
+                        tile.active(false);
+				}
+		}
 
         /// <summary>Goes down until it hits a tile of any type in types; or until maxDepth is reached or somehow exceeded.</summary>
         /// <param name="x">X position.</param>

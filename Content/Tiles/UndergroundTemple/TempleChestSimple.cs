@@ -23,8 +23,7 @@ namespace StarlightRiver.Tiles.Temple
             {
                 new Loot(ItemType<Content.Items.UndergroundTemple.TemplePick>(), 1),
                 new Loot(ItemType<Content.Items.UndergroundTemple.TempleSpear>(), 1),
-                new Loot(ItemType<Content.Items.UndergroundTemple.TempleRune>(), 1),
-                new Loot(ItemType<Content.Items.UndergroundTemple.TempleLens>(), 1)
+                new Loot(ItemType<Content.Items.UndergroundTemple.TempleRune>(), 1)
             };
         }
 

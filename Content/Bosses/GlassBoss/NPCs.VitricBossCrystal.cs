@@ -290,6 +290,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 float factor = timer / 30f;
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2, 0, 0);
             }
+
+            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, 1, 0, 0);
         }
 
         Trail trail;

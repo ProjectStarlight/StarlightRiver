@@ -17,12 +17,17 @@ namespace StarlightRiver.Tiles.Temple
             return base.Autoload(ref name, ref texture);
         }
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false);
+        public override void SetDefaults()
+        {
+            QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
+            minPick = int.MaxValue;
+        }
     }
 
     internal class DashBarrierDummy : Dummy
     {
         public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
+
         public override void Collision(Player player)
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
@@ -37,6 +42,6 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public DashBarrierItem() : base("Dash Barrier", "L", TileType<DashBarrier>(), -12) { }
+        public DashBarrierItem() : base("Dash Barrier", "Cum in my pussy.", TileType<DashBarrier>(), -12) { }
     }
 }
