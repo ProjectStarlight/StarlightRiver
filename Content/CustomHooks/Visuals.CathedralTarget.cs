@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.CustomHooks
             graphics.SetRenderTarget(CatherdalWaterTarget);
 
             graphics.Clear(Color.Transparent);
-            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {

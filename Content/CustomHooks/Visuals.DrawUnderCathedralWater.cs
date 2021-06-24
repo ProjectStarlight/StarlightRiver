@@ -59,6 +59,8 @@ namespace StarlightRiver.Content.CustomHooks
 
                 effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
                 effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
+                effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+                effect.Parameters["sampleTexture"].SetValue(PermafrostGlobalTile.auroraBackTarget);
                 effect.Parameters["speed"].SetValue(50f);
 
                 Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero - Main.LocalPlayer.velocity, Color.White);
