@@ -136,6 +136,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             else  //animation for rising out of the sand
             {
                 Texture2D tex = Main.npcTexture[npc.type];
+                Texture2D tex2 = GetTexture(Texture + "Top");
                 int targetHeight = (int)(Timer / Risetime * tex.Height);
 
                 if (State >= 3) //ignore timer after rising is done
@@ -150,10 +151,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     targetHeight);
 
                 Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
-                //Color color = new Color(180, 225, 255);
 
-                //spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 0, 0);
                 Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Configs.LightImportance.Some);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, spriteBatch, Configs.LightImportance.Some);
             }
         }
 

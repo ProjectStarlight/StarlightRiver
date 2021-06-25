@@ -222,6 +222,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (projectile.timeLeft == 30)
             {
                 Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+
+                for (int k = 0; k < Main.rand.Next(6); k++)
+                {
+                    var type = ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
+                    Gore.NewGoreDirect(projectile.Center - Vector2.UnitY * 16, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
+                    Dust.NewDustPerfect(projectile.Center - Vector2.UnitY * 16, DustType<Dusts.Glow>(), (Vector2.UnitY * Main.rand.Next(-5, -2)).RotatedByRandom(0.8f), 0, new Color(255, 200, 100), 0.3f);
+                }
+
                 startY = projectile.position.Y;
             }
             projectile.position.Y = startY - off;
@@ -234,7 +242,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.position - Main.screenPosition, Color.White);
+            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 2) * 1.4f );
+
+            var color = Color.White * (projectile.timeLeft / 30f);
+            spriteBatch.Draw(GetTexture(Texture + "Hot"), projectile.position - Main.screenPosition, color);
         }
     }
 }

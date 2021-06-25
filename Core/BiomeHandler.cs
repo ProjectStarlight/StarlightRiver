@@ -153,6 +153,9 @@ namespace StarlightRiver.Core
                     Filters.Scene.Deactivate("GradientDistortion");
             }
 
+            if (ZoneGlassTemple)
+                ZoomHandler.AddFlatZoom(0.2f);
+
             //Codex Unlocks
             if (ZoneGlass && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))
                 Helper.UnlockEntry<VitricEntry>(player);

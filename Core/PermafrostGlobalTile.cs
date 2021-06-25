@@ -44,8 +44,10 @@ namespace StarlightRiver.Core
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
 			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-			auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
-			auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
+			{
+				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
+				auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
+			}
 
 			orig(width, height, fullscreen);
 		}

@@ -136,9 +136,14 @@ namespace StarlightRiver
             }
         }
 
-        //private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
+		public override void PostUpdateEverything()
+		{
+            ZoomHandler.TickZoom();
+		}
 
-        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+		//private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
         {
             if (false) //ignore this block
             {

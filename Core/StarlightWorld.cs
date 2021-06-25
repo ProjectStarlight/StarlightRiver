@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Balanced;
 using StarlightRiver.Content.Tiles.Permafrost;
@@ -32,14 +33,13 @@ namespace StarlightRiver.Core
 
         public static float Chungus;
 
+        public static Cutaway cathedralOverlay;
+
         //Recipe """database""" TODO: More robust system for this? do we really need one?
         public static List<string> knownRecipies = new List<string>();
 
         //Players have a timer, can't the world get one synced one too?
         public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
-
-        //Im so sorry for putting these here.  TODO: Move it later
-        public static Cutaway cathedralOverlay;
 
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
@@ -122,23 +122,6 @@ namespace StarlightRiver.Core
             foreach (Key key in Keys) key.Update();
         }
 
-        public override void PostDrawTiles()
-        {
-            if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
-            {
-                Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-
-                if (tile != null && cathedralOverlay != null)
-                {
-                    cathedralOverlay.fade =
-                        tile.wall == WallType<AuroraBrickWall>() &&
-                        !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
-
-                    cathedralOverlay.Draw();
-                }
-            }
-        }
-
         public override void Initialize()
         {
             VitricBiome.X = 0;
@@ -193,6 +176,23 @@ namespace StarlightRiver.Core
             };
         }
 
+        private static bool CheckForSquidArena(Player player)
+		{
+            if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
+            {
+                Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
+
+                if (tile != null)
+                {
+                    return
+                        tile.wall == WallType<AuroraBrickWall>() &&
+                        !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
+                }
+            }
+
+            return false;
+        }
+
         public override void Load(TagCompound tag)
         {
             VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
@@ -200,12 +200,20 @@ namespace StarlightRiver.Core
             VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
             VitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
+            var templeCutaway = new Cutaway( GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16 );
+            templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
+            CutawayHandler.NewCutaway(templeCutaway);
+
             SquidNPCProgress = tag.GetInt("SquidNPCProgress");
             SquidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
             permafrostCenter = tag.GetInt("PermafrostCenter");
+
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay.inside = CheckForSquidArena;
+            CutawayHandler.NewCutaway(cathedralOverlay);
 
             flags = (WorldFlags)tag.GetInt(nameof(flags));
 
@@ -241,7 +249,7 @@ namespace StarlightRiver.Core
             }
 
             //setup overlays
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+
         }
 
         public static void LearnRecipie(string key)

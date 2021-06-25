@@ -15,6 +15,12 @@ namespace StarlightRiver.Core
         private static float oldZoom = 1;
         private static int maxTimer = 0;
 
+        private static int flatZoomTimer = 0;
+        private static float oldFlatZoom = 0;
+        private static float oldFlatZoomTarget = 0;
+        private static float flatZoomTarget = 0;
+        private static float flatZoom = 0;
+
         private static float extraZoomTarget = 1;
 
         public static float ExtraZoomTarget
@@ -29,18 +35,40 @@ namespace StarlightRiver.Core
             }
         }
 
+        public static void AddFlatZoom(float value)
+		{
+            flatZoomTarget += value;
+        }
+
         public static void SetZoomAnimation(float zoomValue, int maxTimer = 60)
         {
             ExtraZoomTarget = zoomValue;
             ZoomHandler.maxTimer = maxTimer;
         }
 
-        public static Vector2 ScaleVector => new Vector2(zoomOverride, zoomOverride);
+        public static Vector2 ScaleVector => new Vector2(zoomOverride + flatZoom, zoomOverride + flatZoom);
+
+        public static void TickZoom()
+		{
+            if (zoomTimer < maxTimer) zoomTimer++;
+
+            if (flatZoomTimer < 30) flatZoomTimer++;
+
+            if (flatZoomTarget != oldFlatZoomTarget)
+            {
+                flatZoomTimer = 0;
+                oldFlatZoom = flatZoom;
+            }
+
+            flatZoom = Vector2.SmoothStep(new Vector2(oldFlatZoom, 0), new Vector2(flatZoomTarget, 0), flatZoomTimer / 30f).X;
+
+            oldFlatZoomTarget = flatZoomTarget;
+            flatZoomTarget = 0;
+        }
 
         public static void UpdateZoom()
         {
-            if (zoomTimer < maxTimer) zoomTimer++;
-            zoomOverride = Vector2.Lerp(new Vector2(oldZoom), new Vector2(extraZoomTarget), zoomTimer / (float)maxTimer).X;
+            zoomOverride = Vector2.Lerp(new Vector2(oldZoom, 0), new Vector2(extraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
 
             if (zoomOverride == Main.GameZoomTarget)
                 oldZoom = Main.GameZoomTarget;
