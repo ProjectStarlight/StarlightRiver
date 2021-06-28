@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -134,27 +135,30 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (State == 3 || State == 4) 
                 ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
-            {
-                Texture2D tex = Main.npcTexture[npc.type];
-                Texture2D tex2 = GetTexture(Texture + "Top");
-                int targetHeight = (int)(Timer / Risetime * tex.Height);
+                MainDraw(spriteBatch);
+        }
 
-                if (State >= 3) //ignore timer after rising is done
-                    targetHeight = tex.Height; 
+        public virtual void MainDraw(SpriteBatch sb)
+        {
+            Texture2D tex = Main.npcTexture[npc.type];
+            Texture2D tex2 = GetTexture(Texture + "Top");
+            int targetHeight = (int)(Timer / Risetime * tex.Height);
 
-                const int yOffset = 3; // Fit perfectly in the gap
+            if (State >= 3) //ignore timer after rising is done
+                targetHeight = tex.Height;
 
-                Rectangle target = new Rectangle(
-                    (int)(npc.position.X - Main.screenPosition.X),
-                    (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
-                    tex.Width,
-                    targetHeight);
+            const int yOffset = 3; // Fit perfectly in the gap
 
-                Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
+            Rectangle target = new Rectangle(
+                (int)(npc.position.X - Main.screenPosition.X),
+                (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
+                tex.Width,
+                targetHeight);
 
-                Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, spriteBatch, Configs.LightImportance.Some);
-                Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, spriteBatch, Configs.LightImportance.Some);
-            }
+            Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
+
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
         }
 
         public virtual void ScrollDraw(SpriteBatch sb) //im lazy
@@ -208,6 +212,32 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
     {
+        public override void MainDraw(SpriteBatch sb)
+        {
+            Texture2D tex = Main.npcTexture[npc.type];
+            Texture2D tex2 = GetTexture(Texture + "Top");
+            int targetHeight = (int)(Timer / Risetime * tex.Height);
+
+            if (State >= 3) //ignore timer after rising is done
+                targetHeight = tex.Height;
+
+            const int yOffset = 3; // Fit perfectly in the gap
+
+            Rectangle target = new Rectangle(
+                (int)(npc.position.X - Main.screenPosition.X),
+                (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
+                tex.Width,
+                targetHeight);
+
+            Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
+
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
+
+            Texture2D tex3 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricRightEasterEgg");
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex3, source, Color.White * ((((float)Math.Sin(Main.GameUpdateCount  / 50f) + 1) / 2f) + 0.1f), sb, Configs.LightImportance.Some);//a
+        }
+
         public override void ScrollDraw(SpriteBatch sb)
         {
             Texture2D tex = Main.npcTexture[npc.type];
@@ -226,6 +256,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+
+            Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricRightEasterEgg");
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex2, source1, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex2, source2, default, sb, Configs.LightImportance.Some);
         }
 
         public override void SpawnPlatforms(bool rising = true)
