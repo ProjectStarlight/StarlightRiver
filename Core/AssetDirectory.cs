@@ -45,8 +45,9 @@ namespace StarlightRiver.Core
         public const string BalancedItem =          Assets + "Items/Balanced/";
 
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
+        public const string MoonstoneItem =         Assets + "Items/Moonstone/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
-        public const string DungeonItem =            Assets + "Items/Dungeon/";
+        public const string DungeonItem =           Assets + "Items/Dungeon/";
 
         public const string OvergrowTile =          Assets + "Tiles/Overgrow/";
         public const string OvergrowItem =          Assets + "Items/Overgrow/";
@@ -86,6 +87,8 @@ namespace StarlightRiver.Core
         public const string PaintingTile =          Assets + "Tiles/Paintings/";
 
         public const string AluminumTile =          Assets + "Tiles/AstralMeteor/";
+
+        public const string MoonstoneTile =         Assets + "Tiles/Moonstone/";
 
         public const string BalancedTile =          Assets + "Tiles/Balanced/";
 

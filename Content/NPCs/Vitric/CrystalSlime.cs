@@ -125,6 +125,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
     internal class CrystalSlimeBannerItem : QuickBannerItem
     {
-        public CrystalSlimeBannerItem() : base("CrystalSlimeBanner", "Crystal Slime", AssetDirectory.VitricNpc) { }//a
+        public CrystalSlimeBannerItem() : base("CrystalSlimeBanner", "Crystal Slime", AssetDirectory.VitricNpc) { }
     }
 }
