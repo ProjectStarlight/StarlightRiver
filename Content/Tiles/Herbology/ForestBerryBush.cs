@@ -10,36 +10,23 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Tiles.Herbology
+namespace StarlightRiver.Content.Tiles.Forest
 {
-    internal class ForestBerryBush : ModTile
+    public class ForestBerryBush : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = AssetDirectory.HerbologyTile + name;
+            texture = AssetDirectory.ForestTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
         public override void SetDefaults()
         {
-            Main.tileFrameImportant[Type] = true; //Tells the game that the frame of this tile cannot be randomized
+            AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
+            int[] valid = new int[] { TileID.Grass };
 
-            //Sets the appropriate TileObjectData for a 2x2 multitile.
-            TileObjectData.newTile.Width = 2; //width in tiles
-            TileObjectData.newTile.Height = 2; //height in tiles
-            TileObjectData.newTile.CoordinateHeights = new int[] { 16, 16 }; //height of each tile frame in the multitile complex in pixels
-            TileObjectData.newTile.UsesCustomCanPlace = true; //Tells the game that this tile is placed as a multitile for the purpose of createTile in items.
-            TileObjectData.newTile.CoordinateWidth = 16; //width of each tile frame in the multitile complex in pixels
-            TileObjectData.newTile.CoordinatePadding = 2; //spacing between each frame in pixels
-            TileObjectData.newTile.Origin = new Point16(0, 0); //where the tile is placed from for the purpose of createTile in items. (1, 1) would make the tile place from the top left of the bottom right tile instead
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { TileID.Grass };
             TileObjectData.newTile.RandomStyleRange = 3;
-            TileObjectData.addTile(Type); //Adds the data to this type of tile. Make sure you call this after setting everything else.
-
-            AddMapEntry(new Color(255, 255, 0)); //the color of your tile on the map.
-            dustType = DustID.Grass; //the dust your tile gives off when its broken.
-            disableSmartCursor = true; //Reccomended for multitiles.
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, true, new Color(200, 255, 220), false, false, "", anchor, default, valid);
         }
 
         public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's shitty ass way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.
@@ -92,10 +79,40 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<BerryBush>()); //drop a bush item
+            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<ForestBerryBushItem>()); //drop a bush item
 
             if (frameX > 35)
                 Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
         }
     }
+
+    public class ForestBerries : ModItem
+    {
+        public override string Texture => AssetDirectory.ForestTile + Name;
+
+        public override void SetDefaults()
+        {
+            item.width = 16;
+            item.height = 16;
+            item.consumable = true;
+            item.maxStack = 99;
+            item.useTime = 15;
+            item.useAnimation = 15;
+            item.useStyle = ItemUseStyleID.EatingUsing;
+            item.healLife = 5;
+            item.potion = true;
+            item.UseSound = SoundID.Item2;
+        }
+
+        public override bool UseItem(Player player)
+        {
+            player.AddBuff(BuffID.PotionSickness, 15);
+            return true;
+        }
+    }
+    public class ForestBerryBushItem : QuickTileItem
+    {
+        public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries!", TileType<ForestBerryBush>(), 1, AssetDirectory.ForestTile) { }
+    }
+
 }

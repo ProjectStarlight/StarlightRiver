@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-    internal class SlimeberryBush : ModTile
+    public class SlimeberryBush : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<BerryBush>()); //drop a bush item
+            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<SlimeberryBushItem>()); //drop a bush item
 
             if (frameX > 35)
                 Item.NewItem(new Vector2(i, j) * 16, ItemType<Slimeberry>()); //Drops berries if harvestable

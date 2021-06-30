@@ -95,6 +95,7 @@ namespace StarlightRiver.Core
         public const string DecorationTile =        Assets + "Tiles/Decoration/";
 
         public const string ForestTile =            Assets + "Tiles/Forest/";
+        public const string PalestoneTile =         Assets + "Tiles/Palestone/";
         public const string ForestNPC =             Assets + "NPCs/Forest/";
 
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";

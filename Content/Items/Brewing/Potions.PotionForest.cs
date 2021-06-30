@@ -6,6 +6,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Potions;
 using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Content.Tiles.Forest;
 
 namespace StarlightRiver.Content.Items.Brewing
 {
