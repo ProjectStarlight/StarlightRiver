@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 return true;
             }
 
-            if (Phase == (int)AIStates.SecondPhase)
+            if (Phase == (int)AIStates.SecondPhase || Phase == (int)AIStates.FirstPhase)
             {
                 ChangePhase(AIStates.LastStand, true);
                 npc.dontTakeDamage = true;
@@ -300,8 +300,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         AI();
                 else
                 {
-                    GlobalTimer = 1;
-                    npc.frame.Y = 0;
+                    //GlobalTimer = 1;
+                    //npc.frame.Y = 0;
                 }
             }
         }
@@ -556,16 +556,22 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         (Main.npc[i].modNPC as GlassMinibossHelpful).parent = this;
                     }
 
-                    if(GlobalTimer > 660)
-                    {
-                        if(GlobalTimer % 120 == 0)
-                        {
-                            Main.NewText("ShootFire");
-                            Main.PlaySound(SoundID.DD2_BetsyScream);
+                    if(GlobalTimer == 590) //TODO: Fix timing and change this sequence to fit the assets we get (lol)
+					{
+                        for(int k = 0; k < 3; k++)
+						{
+                            int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<FinalOrbital>(), ai2: k / 3f * (float)Math.PI * 2);
+                            var newShield = Main.npc[i];
 
-                            int i = Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * 3, ProjectileType<FinalFire>(), 100, 0, Main.myPlayer);
-                            (Main.projectile[i].modProjectile as FinalFire).parent = this;
-                        }
+                            if(newShield.modNPC is FinalOrbital)
+                                (newShield.modNPC as FinalOrbital).parent = npc;
+						}
+
+                        int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
+                        var laserCore = Main.projectile[i2];
+
+                        if (laserCore.modProjectile is FinalLaser)
+                            (laserCore.modProjectile as FinalLaser).parent = this;
                     }
 
                     break;

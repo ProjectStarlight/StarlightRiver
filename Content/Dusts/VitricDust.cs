@@ -3,6 +3,7 @@ using Terraria;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Dusts
 {
@@ -13,42 +14,57 @@ namespace StarlightRiver.Content.Dusts
             texture = AssetDirectory.Dust + "Glass";
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
             dust.noLight = false;
         }
 
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return lightColor;
+        }
+
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Player)
-            {
-                Vector2 origin = ((Player)dust.customData).Center;
+            dust.fadeIn++;
+            Vector2 origin = Vector2.Zero;
 
-                dust.position += dust.velocity;
-                dust.position += Vector2.Normalize(origin - dust.position) * 6;
-                dust.velocity *= 0.94f;
-                dust.rotation = (origin - dust.position).Length() * 0.1f;
-                dust.scale *= 0.99f;
-                if (Vector2.Distance(dust.position, origin) <= 5)
-                    dust.active = false;
-            }
+            if (dust.customData is Player)
+                origin = ((Player)dust.customData).Center;
+
+            if (dust.customData is NPC)
+                origin = ((NPC)dust.customData).Center;
 
             if (dust.customData is Vector2)
-            {
-                Vector2 origin = (Vector2)dust.customData;
+                origin = (Vector2)dust.customData;
 
-                dust.position += dust.velocity;
-                dust.position += Vector2.Normalize(origin - dust.position) * 6;
-                dust.velocity *= 0.94f;
-                dust.rotation = (origin - dust.position).Length() * 0.1f;
-                dust.scale *= 0.99f;
-                if (Vector2.Distance(dust.position, origin) <= 5)
-                    dust.active = false;
-            }
+            dust.position += dust.velocity;
+            dust.position += Vector2.Normalize(origin - dust.position) * 6;
+            dust.velocity *= 0.94f;
+            dust.rotation = (origin - dust.position).Length() * 0.1f;
+            dust.scale *= 0.99f;
+            if (Vector2.Distance(dust.position, origin) <= 5)
+                dust.active = false;
+
             return false;
         }
     }
+
+    public class GlassAttractedGlow : GlassAttracted
+	{
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.Dust + "GlassWhite";
+            return true;
+        }
+
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return VitricSummonOrb.MoltenGlow(dust.fadeIn * 3);
+        }
+	}
 
     public class GlassGravity : ModDust
     {
