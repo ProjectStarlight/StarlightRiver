@@ -349,9 +349,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (npc?.active == true && (npc.type == NPCType<VitricBossPlatformUp>() || npc.type == NPCType<VitricBossPlatformDown>())) crystalLocations.Add(npc.Center + new Vector2(0, -48));
                     }
 
-                    const int arenaWidth = 1408;
-                    const int arenaHeight = 900;
-                    arena = new Rectangle((int)npc.Center.X - arenaWidth / 2, (int)npc.Center.Y - 800 - arenaHeight / 2, arenaWidth, arenaHeight);
+                    const int arenaWidth = 1280;
+                    const int arenaHeight = 884;
+                    arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
 
                     ChangePhase(AIStates.SpawnAnimation, true);
                     break;

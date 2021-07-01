@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
             }
 
-            if (LaserTimer > 150) //teh actual laser
+            if (LaserTimer > 150) //the actual laser
             {
                 var texBeam = GetTexture(AssetDirectory.MiscTextures + "BeamCore");
                 var texBeam2 = GetTexture(AssetDirectory.MiscTextures + "BeamTrail");
@@ -129,12 +129,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 float height = texBeam.Height / 2f;
                 int width = 0;
 
-                for(int k = 0; k < 80; k++)
+                for(int k = 0; k < 160; k++)
 				{
-                    Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 16;
+                    Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
                     if (parent.arena.Contains(posCheck.ToPoint()))
-                        width += 16;
+                        width += 8;
                     else break;
                 }
 
@@ -179,10 +179,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 var impactTex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
+                var impactTex2 = GetTexture(AssetDirectory.GUI + "ItemGlow");
                 var glowTex = GetTexture(AssetDirectory.Assets + "GlowTrail");
 
-                spriteBatch.Draw(impactTex, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.015f), 0, impactTex.Size() / 2, 4.4f, 0, 0);
                 spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
+
+                spriteBatch.Draw(impactTex, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.006f), 0, impactTex.Size() / 2, 6.4f, 0, 0);
+                spriteBatch.Draw(impactTex2, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
 
                 for (int k = 0; k < 4; k++)
                 {
