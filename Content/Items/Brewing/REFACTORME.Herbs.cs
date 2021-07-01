@@ -18,36 +18,6 @@ namespace StarlightRiver.Items.Herbology.Materials
         public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1, AssetDirectory.BrewingItem) { }
     }
 
-    public class ForestBerries : ModItem
-    {
-        public override string Texture => AssetDirectory.BrewingItem + Name;
-
-        public override void SetDefaults()
-        {
-            item.width = 16;
-            item.height = 16;
-            item.consumable = true;
-            item.maxStack = 99;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.useStyle = ItemUseStyleID.EatingUsing;
-            item.healLife = 5;
-            item.potion = true;
-            item.UseSound = SoundID.Item2;
-        }
-
-        public override bool UseItem(Player player)
-        {
-            player.AddBuff(BuffID.PotionSickness, 15);
-            return true;
-        }
-    }
-
-    public class BerryBush : QuickTileItem
-    {
-        public BerryBush() : base("Berry bush", "Plant to grow your own berries!", TileType<ForestBerryBush>(), 1, AssetDirectory.BrewingItem) { }
-    }
-
     public class Deathstalk : ModItem
     {
         public override string Texture => AssetDirectory.BrewingItem + Name;

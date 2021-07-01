@@ -20,20 +20,22 @@ namespace StarlightRiver.Content.Items.Palestone
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Palestone Helm");
-            Tooltip.SetDefault("2% increased melee critial strike chance");
+            DisplayName.SetDefault("Palestone Helmet");
+            Tooltip.SetDefault("5% increased building speed");
         }
 
         public override void SetDefaults()
         {
             item.width = 22;
             item.height = 22;
-            item.value = 8000;
-            item.defense = 2;
+            item.value = Item.sellPrice(0, 0, 2, 0);
+            item.defense = 1;
         }
+
         public override void UpdateEquip(Player player)
         {
-            player.meleeCrit += 2;
+            player.tileSpeed += 5;
+            player.wallSpeed += 5;
         }
     }
 
@@ -45,19 +47,19 @@ namespace StarlightRiver.Content.Items.Palestone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Palestone Chestplate");
-            Tooltip.SetDefault("2% increased melee critial strike change");
+            Tooltip.SetDefault("1% increased melee speed");
         }
 
         public override void SetDefaults()
         {
             item.width = 40;
             item.height = 22;
-            item.value = 6000;
-            item.defense = 3;
+            item.value = Item.sellPrice(0, 0, 1, 50);
+            item.defense = 2;
         }
         public override void UpdateEquip(Player player)
         {
-            player.meleeCrit += 2;
+            player.meleeSpeed += 1;
         }
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
@@ -65,87 +67,14 @@ namespace StarlightRiver.Content.Items.Palestone
         }
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "anyway palestone set bonus i had in mind was that getting kills forms a big stone tablet to spin around the player (not in a circle, more like an orbit (think the overgrowth enemy that throws boulders)) which would provide damage resistance per tablet with a cap of 3, and taking damage would damage the tablets (a tablet can be damaged 3x before breaking)";
-            PalestonePlayer palestonePlayer = player.GetModPlayer<PalestonePlayer>();
-            foreach (int i in palestonePlayer.tablets)
-                if (i > 0)
-                    player.endurance += 0.1f;
-        }
-    }
-    public class PalestonePlayer : ModPlayer
-    {
-        public float counter = 0;
-        public int[] tablets = new int[3];
-        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
-        {
-            if (item.melee && target.life <= 0)
-                for (int i = 0; i < tablets.Length; i++)
-                    if (tablets[i] == 0)
-                    {
-                        tablets[i] = 3;
-                        break;
-                    }
-        }
-
-        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            if (proj.melee && target.life <= 0)
-                for (int i = 0; i < tablets.Length; i++)
-                    if (tablets[i] == 0)
-                    {
-                        tablets[i] = 3;
-                        break;
-                    }
-        }
-
-        public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
-        {
-            for (int i = 0; i < tablets.Length; i++)
-                if (tablets[i] > 0)
-                    tablets[i]--;
-        }
-
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
-        {
-            Action<PlayerDrawInfo> backTarget = s => DrawGlowmasks(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
-            PlayerLayer backLayer = new PlayerLayer("PalestoneLayer", "Armor Glowmask", backTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-            layers.Insert(layers.IndexOf(layers.First()), backLayer); //Insert the layer at the appropriate index. 
-
-            Action<PlayerDrawInfo> frontTarget = s => DrawGlowmasks(s, true); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
-            PlayerLayer frontLayer = new PlayerLayer("PalestoneLayer", "Armor Glowmask", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-            layers.Insert(layers.IndexOf(layers.Last()), frontLayer); //Insert the layer at the appropriate index. 
-
-            float getTabletRotation(int currentTablet) => currentTablet / (tablets.FirstOrDefault(x => x == 0) + 1) * 6.28f + (float)player.GetModPlayer<StarlightPlayer>().Timer % 120 / 120 * 6.28f;
-            Vector2 getTabletPosition(int currentTablet)
-            {
-                float dist = 50;
-                float rot = getTabletRotation(currentTablet);
-
-                float posX = player.Center.X + (float)(Math.Cos(rot) * dist);
-                float posY = player.Center.Y + (float)(Math.Sin(rot) * dist) / 2;
-                return new Vector2(posX, posY);
-            }
-            void DrawGlowmasks(PlayerDrawInfo info, bool back)
-            {
-                for (int k = 0; k < tablets.Length; k++)
-                {
-                    float rot = getTabletRotation(k);
-                    if ((back && rot % 6.28f < 3.14f || !back && rot % 6.28f >= 3.14f) && tablets[k] > 0)
-                    {
-                        Vector2 pos = getTabletPosition(k);
-                        Texture2D texture = GetTexture("StarlightRiver/Assets/Items/Palestone/Tablet");
-                        Main.playerDrawData.Add(new DrawData(
-                            texture,
-                            pos,  //position
-                            new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)), //source
-                            Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), //color
-                            0, //rotation
-                            new Vector2(texture.Width / 2, texture.Height / 2), //origin
-                            1f, //scale
-                            SpriteEffects.None, 0));
-                    }
-                }
-            }
+            player.setBonus = "10% increased mining and building speed";
+            player.pickSpeed += 10;
+            player.tileSpeed += 10;
+            player.wallSpeed += 10;
+            //PalestonePlayer palestonePlayer = player.GetModPlayer<PalestonePlayer>();
+            //foreach (int i in palestonePlayer.tablets)
+            //    if (i > 0)
+            //        player.endurance += 0.1f;
         }
     }
 
@@ -157,23 +86,104 @@ namespace StarlightRiver.Content.Items.Palestone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Palestone Leggings");
-            Tooltip.SetDefault("Slightly increases movement speed");
+            Tooltip.SetDefault("Slightly increased movement speed");
         }
 
         public override void SetDefaults()
         {
             item.width = 30;
             item.height = 20;
-            item.value = 4000;
-            item.defense = 2;
+            item.value = Item.sellPrice(0, 0, 1, 25);
+            item.defense = 1;
         }
 
         public override void UpdateEquip(Player player)
         {
-            player.moveSpeed += 0.1f;
+            player.moveSpeed += 0.05f;
         }
     }
-     internal class PalestoneArmorProjectile : ModProjectile
+
+    /*
+public class PalestonePlayer : ModPlayer
+{
+    public float counter = 0;
+    public int[] tablets = new int[3];
+    public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+    {
+        if (item.melee && target.life <= 0)
+            for (int i = 0; i < tablets.Length; i++)
+                if (tablets[i] == 0)
+                {
+                    tablets[i] = 3;
+                    break;
+                }
+    }
+
+    public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+    {
+        if (proj.melee && target.life <= 0)
+            for (int i = 0; i < tablets.Length; i++)
+                if (tablets[i] == 0)
+                {
+                    tablets[i] = 3;
+                    break;
+                }
+    }
+
+    public override void PostHurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+    {
+        for (int i = 0; i < tablets.Length; i++)
+            if (tablets[i] > 0)
+                tablets[i]--;
+    }
+
+    public override void ModifyDrawLayers(List<PlayerLayer> layers)
+    {
+        Action<PlayerDrawInfo> backTarget = s => DrawGlowmasks(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
+        PlayerLayer backLayer = new PlayerLayer("PalestoneLayer", "Armor Glowmask", backTarget); //Instantiate a new instance of PlayerLayer to insert into the list
+        layers.Insert(layers.IndexOf(layers.First()), backLayer); //Insert the layer at the appropriate index. 
+
+        Action<PlayerDrawInfo> frontTarget = s => DrawGlowmasks(s, true); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
+        PlayerLayer frontLayer = new PlayerLayer("PalestoneLayer", "Armor Glowmask", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
+        layers.Insert(layers.IndexOf(layers.Last()), frontLayer); //Insert the layer at the appropriate index. 
+
+        float getTabletRotation(int currentTablet) => currentTablet / (tablets.FirstOrDefault(x => x == 0) + 1) * 6.28f + (float)player.GetModPlayer<StarlightPlayer>().Timer % 120 / 120 * 6.28f;
+        Vector2 getTabletPosition(int currentTablet)
+        {
+            float dist = 50;
+            float rot = getTabletRotation(currentTablet);
+
+            float posX = player.Center.X + (float)(Math.Cos(rot) * dist);
+            float posY = player.Center.Y + (float)(Math.Sin(rot) * dist) / 2;
+            return new Vector2(posX, posY);
+        }
+        void DrawGlowmasks(PlayerDrawInfo info, bool back)
+        {
+            for (int k = 0; k < tablets.Length; k++)
+            {
+                float rot = getTabletRotation(k);
+                if ((back && rot % 6.28f < 3.14f || !back && rot % 6.28f >= 3.14f) && tablets[k] > 0)
+                {
+                    Vector2 pos = getTabletPosition(k);
+                    Texture2D texture = GetTexture("StarlightRiver/Assets/Items/Palestone/Tablet");
+                    Main.playerDrawData.Add(new DrawData(
+                        texture,
+                        pos,  //position
+                        new Microsoft.Xna.Framework.Rectangle?(new Rectangle(0, 0, texture.Width, texture.Height)), //source
+                        Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), //color
+                        0, //rotation
+                        new Vector2(texture.Width / 2, texture.Height / 2), //origin
+                        1f, //scale
+                        SpriteEffects.None, 0));
+                }
+            }
+        }
+    }
+}
+*/
+
+    /*
+    internal class PalestoneArmorProjectile : ModProjectile
     {
         public override string Texture => AssetDirectory.PalestoneItem + "PalestoneArmorProjectile";
         private int MaxCharge = 300;
@@ -253,5 +263,5 @@ namespace StarlightRiver.Content.Items.Palestone
             }
 
         }
-    }
+    }*/
 }

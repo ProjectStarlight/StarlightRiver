@@ -14,6 +14,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Items.Herbology.Materials;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Tiles.Forest;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {

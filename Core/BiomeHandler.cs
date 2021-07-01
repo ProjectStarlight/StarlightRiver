@@ -187,7 +187,7 @@ namespace StarlightRiver.Core
             bloodJungleTiles = tileCounts[TileType<GrassJungleBloody>()];
             holyJungleTiles = tileCounts[TileType<GrassJungleHoly>()];
             aluminumTiles = tileCounts[TileType<AluminumOre>()];
-            permafrostTiles = tileCounts[TileType<PermafrostIce>()];
+            permafrostTiles = tileCounts[TileType<PermafrostIce>()] + tileCounts[TileType<PermafrostSnow>()] + tileCounts[TileType<AuroraBrick>()];
             ashHellTiles = tileCounts[TileType<MagicAsh>()]; 
         }
 

@@ -10,6 +10,7 @@ using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Tiles.Herbology;
 using System;
+using StarlightRiver.Content.Tiles.Palestone;
 
 namespace StarlightRiver.Core
 {
