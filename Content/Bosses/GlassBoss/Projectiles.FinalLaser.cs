@@ -21,9 +21,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public ref float Timer => ref projectile.ai[0];
         public ref float LaserRotation => ref projectile.ai[1];
 
-        public int direction = -1;
-
         private float LaserTimer => (Timer - 120) % 400;
+
+        public int direction = -1;
+        public Vector2 endpoint = Vector2.Zero;
 
         public override void SetStaticDefaults()
         {
@@ -42,13 +43,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Timer++;
             projectile.timeLeft = 2;
 
-            projectile.scale = Math.Min(2, (Timer / 30f));
-
             if(Timer < 60)
 			{
                 var rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(-rot), 0, Color.Yellow, (1 - (Timer / 60f)));
-			}
+                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (1 - (Timer / 60f)));
+
+                projectile.scale = Math.Min(1, (Timer / 60f));
+            }
 
             if(Timer > 120)
 			{
@@ -59,21 +60,52 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 				{
                     projectile.netUpdate = true;
                     LaserRotation = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation();
-				}
+
+                    var rot = Main.rand.NextFloat(6.28f);
+                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow,  (LaserTimer - 30) / 45f);
+                }
 
                 if (LaserTimer == 150)
                     Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
-                if(LaserTimer > 150)
+                if(LaserTimer > 150) //laser is actually active
 				{
                     LaserRotation += 0.01f * direction;
+
+                    for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
+                    {
+                        Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
+
+                        if (!parent.arena.Contains(posCheck.ToPoint()))
+						{
+                            endpoint = posCheck;
+                            break;
+						}
+                    }
+
+                    for (int k = 0; k < Main.maxPlayers; k++) //laser colission
+					{
+                        Vector2 point;
+                        var player = Main.player[k];
+
+                        if (player.active && !player.dead && Helpers.Helper.CheckLinearCollision(projectile.Center, endpoint, player.Hitbox, out point))
+                        {
+                            player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was reduced to ash"), 10, 0, false, false, false, 5);
+                            endpoint = point;
+                            break;
+                        }
+                    }
 				}
 			}
 
-            if(Timer > 890)
+            if(Timer > 1350)
 			{
+                projectile.scale -= 0.05f;
 
+                if (projectile.scale <= 0)
+                    projectile.active = false;
 			}
+
         }
 
         public override void Kill(int timeLeft)
@@ -127,16 +159,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 float height = texBeam.Height / 2f;
-                int width = 0;
-
-                for(int k = 0; k < 160; k++)
-				{
-                    Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
-
-                    if (parent.arena.Contains(posCheck.ToPoint()))
-                        width += 8;
-                    else break;
-                }
+                int width = (int)(projectile.Center - endpoint).Length();
 
                 if (LaserTimer - 150 < 20)
                     height = texBeam.Height / 2f * (LaserTimer - 150) / 20f;

@@ -574,6 +574,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             (laserCore.modProjectile as FinalLaser).parent = this;
                     }
 
+                    if(GlobalTimer > 590 && (GlobalTimer - 590) % (1350 + 120) == 0)
+					{
+                        int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
+                        var laserCore = Main.projectile[i2];
+
+                        if (laserCore.modProjectile is FinalLaser)
+                            (laserCore.modProjectile as FinalLaser).parent = this;
+                    }
+
                     break;
 
                 case (int)AIStates.Leaving:
