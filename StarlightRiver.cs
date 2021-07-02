@@ -33,9 +33,11 @@ namespace StarlightRiver
 
         public static PrimTrailManager primitives;
 
+        public bool HasLoaded;
+
         public static StarlightRiver Instance { get; set; }
 
-        public StarlightRiver() { Instance = this; }
+        public StarlightRiver() => Instance = this;
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
         {
@@ -184,9 +186,15 @@ namespace StarlightRiver
             }
         }
 
+        public override void PostAddRecipes()
+        {
+            HasLoaded = true;
+        }
+
         #region NetEasy
         public override void PostSetupContent()
         {
+
             NetEasy.NetEasy.Register(this);
 
             AutoloadChestItems();
@@ -197,7 +205,7 @@ namespace StarlightRiver
             {
                 if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
                 {
-                    var toLoad = Activator.CreateInstance(type);
+                    object toLoad = Activator.CreateInstance(type);
 
                     ((IPostLoadable)toLoad).PostLoad();
                 }
