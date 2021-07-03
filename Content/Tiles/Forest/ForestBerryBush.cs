@@ -9,10 +9,11 @@ using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-    public class ForestBerryBush : ModTile
+    internal class ForestBerryBush : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             int[] valid = new int[] { TileID.Grass };
 
             TileObjectData.newTile.RandomStyleRange = 3;
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, true, new Color(200, 255, 220), false, false, "", anchor, default, valid);
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
         }
 
         public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's shitty ass way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.

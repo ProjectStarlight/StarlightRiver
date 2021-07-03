@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             var valid = new int[] { TileID.Grass };
 
             TileObjectData.newTile.RandomStyleRange = 3;
-            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, true, new Color(200, 255, 220), false, false, "", anchor, default, valid);
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
         }
 
         public override void RandomUpdate(int i, int j) 
