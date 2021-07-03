@@ -10,6 +10,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Bosses.GlassBoss;
 
 namespace StarlightRiver.Content.Items
 {
@@ -118,7 +119,7 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            InworldItem.CreateItem<TestRock>(Main.MouseWorld);
+            InworldItem.CreateItem<PlayerShield>(Main.MouseWorld);
 
             return true;
         }

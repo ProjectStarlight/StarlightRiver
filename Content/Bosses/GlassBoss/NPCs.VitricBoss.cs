@@ -27,6 +27,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public List<Vector2> crystalLocations = new List<Vector2>();
         public Rectangle arena;
 
+        public NPC shield;
+        public List<NPC> orbitals = new List<NPC>();
+
         public int twistTimer;
         public int maxTwistTimer;
         public int lastTwistState;
@@ -135,11 +138,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 ChangePhase(AIStates.Dying, true);
                 npc.life = 1;
+
+                return false;
             }
 
+            if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
+                return true;
 
-            if (Phase == (int)AIStates.Dying && GlobalTimer >= 659) return true;
-            else return false;
+            else 
+                return false;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -561,10 +568,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         for(int k = 0; k < 3; k++)
 						{
                             int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<FinalOrbital>(), ai2: k / 3f * (float)Math.PI * 2);
-                            var newShield = Main.npc[i];
+                            var newOrbital = Main.npc[i];
 
-                            if(newShield.modNPC is FinalOrbital)
-                                (newShield.modNPC as FinalOrbital).parent = npc;
+                            if(newOrbital.modNPC is FinalOrbital)
+                                (newOrbital.modNPC as FinalOrbital).parent = npc;
+
+                            orbitals.Add(newOrbital);
 						}
 
                         int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
@@ -582,6 +591,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (laserCore.modProjectile is FinalLaser)
                             (laserCore.modProjectile as FinalLaser).parent = this;
                     }
+
+                    if(orbitals.All(n => n.ai[1] == 1 && n.ai[0] > 60))
+					{
+                        foreach(NPC orbital in orbitals)
+						{
+                            var orb = orbital.modNPC as FinalOrbital;
+                            orb.Timer = 0;
+                            orb.Phase = 2;
+						}
+					}
 
                     break;
 

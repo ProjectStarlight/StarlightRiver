@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 if(LaserTimer > 150) //laser is actually active
 				{
-                    LaserRotation += 0.01f * direction;
+                    float laserSpeed = 0.008f;
 
                     for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
                     {
@@ -82,6 +82,28 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             break;
 						}
                     }
+
+                    if (parent.shield != null && parent.shield.scale > 0.5f)
+                    {
+                        Vector2 shieldEdge1 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * 31 * parent.shield.scale;
+                        Vector2 shieldEdge2 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * -31 * parent.shield.scale;
+                        Vector2 intersection = Vector2.Zero;
+
+                        if (Helpers.Helper.LinesIntersect(projectile.Center, endpoint, shieldEdge1, shieldEdge2, out intersection))
+                        {
+                            endpoint = intersection;
+                            (parent.shield.modNPC as PlayerShieldNPC).startPoint = intersection;
+
+                            laserSpeed = 0.002f;
+                            Main.NewText("TESTIFICATE");
+                        }
+						else
+						{
+                            (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
+                        }
+                    }
+
+                    LaserRotation += laserSpeed * direction;
 
                     for (int k = 0; k < Main.maxPlayers; k++) //laser colission
 					{
@@ -96,7 +118,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         }
                     }
 				}
-			}
+
+                else
+                    (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
+            }
 
             if(Timer > 1350)
 			{
@@ -106,11 +131,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     projectile.active = false;
 			}
 
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            base.Kill(timeLeft);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
@@ -207,8 +227,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
-                spriteBatch.Draw(impactTex, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.006f), 0, impactTex.Size() / 2, 6.4f, 0, 0);
-                spriteBatch.Draw(impactTex2, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
+                spriteBatch.Draw(impactTex, endpoint - Main.screenPosition, null, color * (height * 0.006f), 0, impactTex.Size() / 2, 6.4f, 0, 0);
+                spriteBatch.Draw(impactTex2, endpoint - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
 
                 for (int k = 0; k < 4; k++)
                 {

@@ -30,6 +30,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
 		public override string Texture => AssetDirectory.GlassBoss + Name;
 
+		public override bool? CanBeHitByItem(Player player, Item item) => false;
+
+		public override bool? CanBeHitByProjectile(Projectile projectile) => false;
+
 		public override void SetDefaults()
 		{
 			npc.dontTakeDamage = true;
@@ -45,54 +49,88 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 		{
 			Timer++;
 
-			npc.dontTakeDamage = false;
+			npc.dontTakeDamage = !CanBeHit;
 
-			if (Timer == 1)
+			if(Phase == 0)
 			{
-				npc.life = 100;
-
-				for (int k = 0; k < 20; k++)
+				if (Timer == 1)
 				{
-					var velocity = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20);
-					var scale = Main.rand.NextFloat(0.8f, 2.0f);
+					npc.life = 100;
 
-					var d = Dust.NewDustPerfect(parent.Center, DustType<Dusts.GlassAttracted>(), velocity, Scale: scale);
-					d.customData = npc;
+					for (int k = 0; k < 20; k++)
+					{
+						var velocity = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20);
+						var scale = Main.rand.NextFloat(0.8f, 2.0f);
 
-					var d2 = Dust.NewDustPerfect(parent.Center, DustType<Dusts.GlassAttractedGlow>(), velocity, Scale: scale);
-					d2.customData = npc;
-					d2.frame = d.frame;
+						var d = Dust.NewDustPerfect(parent.Center, DustType<Dusts.GlassAttracted>(), velocity, Scale: scale);
+						d.customData = npc;
+
+						var d2 = Dust.NewDustPerfect(parent.Center, DustType<Dusts.GlassAttractedGlow>(), velocity, Scale: scale);
+						d2.customData = npc;
+						d2.frame = d.frame;
+					}
+				}
+
+				if (Timer <= 60)
+				{
+					RotationPosition += 0.05f * (Timer / 60f);
+					npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * Timer * 2;
+					npc.scale = Timer / 60f;
+
+					npc.rotation = RotationPosition - (1 - Timer / 60f) + (float)Math.PI / 2;
+				}
+
+				else
+				{
+					RotationPosition += 0.025f;
+					npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * 120;
+
+					npc.rotation = RotationPosition + (float)Math.PI / 2;
 				}
 			}
 
-			if (Timer <= 60)
+			if (Phase == 1)
 			{
-				RotationPosition += 0.05f * (Timer / 60f);
-				npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * Timer * 2;
-				npc.scale = Timer / 60f;
+				float progress = (Timer / 60f);
 
-				npc.rotation = RotationPosition - (1 - Timer / 60f) + (float)Math.PI / 2;
-			}
+				if (progress > 1)
+					progress = 1;
 
-			else
-			{
-				RotationPosition += 0.025f;
+				float rotationAdd = progress * 3.14f + (float)Math.Sin(Timer * (1.5f - progress)) * (1 - progress);
+
 				npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * 120;
+				npc.rotation = RotationPosition + (float)Math.PI / 2 + rotationAdd;
+			}
 
-				npc.rotation = RotationPosition + (float)Math.PI / 2;
+			if (Phase == 2)
+			{
+				float distance = 0;
 
-				if (Phase >= 1)
+				if (Timer < 10)
+					distance = 120 + BezierEase(Timer/ 10f) * 40f;
+
+				else if (Timer >= 10)
+					distance = 160 - BezierEase((Timer - 10) / 60f) * 320;
+
+				npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * distance;
+
+				if (Timer > 40)
 				{
-					float rotationAdd = 0;
-					float progress = ((Timer - 60) / 60f);
+					parent.dontTakeDamage = false;
+					parent.immortal = false;
+					parent.friendly = false;
 
-					if (progress > 1)
-						progress = 1;
+					for (int k = 0; k < 30; k++)
+					{
+						var d = Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassAttracted>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, Main.rand.NextFloat(2));
+						d.customData = parent;
+					}
 
-					rotationAdd = progress * 3.14f + (float)Math.Sin(Timer * (1.5f - progress)) * (1 - progress);
-
-					npc.rotation = RotationPosition + (float)Math.PI / 2 + rotationAdd;
+					Main.PlaySound(SoundID.Shatter, npc.Center);
+					npc.active = false;
 				}
+
+				return;
 			}
 		}
 
@@ -101,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 			if (Phase < 1)
 				Phase = 1;
 
-			Timer = 60;
+			Timer = 0;
 
 			npc.life = 1;
 
