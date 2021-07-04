@@ -57,6 +57,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		private int frameX = 0;
 		private int SlashWindow = 0;
+		private Vector2 direction = Vector2.Zero;
+		private Vector2 directionTwo = Vector2.Zero;
 		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerSwing";
 		public override void SetStaticDefaults()
 		{
@@ -108,28 +110,45 @@ namespace StarlightRiver.Content.Items.Astroflora
 				return Vector2.Zero;
             }
 		}
-
 		public override void AI()
 		{
 			projectile.velocity = Vector2.Zero;
 			if (FirstTickOfSwing)
 			{
+				directionTwo = Main.MouseWorld - Player.MountedCenter;
+				directionTwo.Normalize();
+				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
 				projectile.frame = 0;
 				projectile.frameCounter = 0;
 				SlashWindow = 30;
 				FirstTickOfSwing = false;
 				if (Player.controlUp)
+				{
+					direction = new Vector2(Player.direction, -1);
 					SwingFrame = 2;
-				else if (Player.controlDown)
+				}
+				else if (Player.controlDown && Player.GetModPlayer<GravediggerPlayer>().Combo >= 2)
+				{
+					Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
+					direction = new Vector2(Player.direction, -1);
 					SwingFrame = 3;
+				}
 				else
+				{
+					Player.GetModPlayer<GravediggerPlayer>().Combo++;
 					SwingFrame = Player.GetModPlayer<GravediggerPlayer>().SwingFrame == 1 ? 0 : 1;
-
+					if (SwingFrame == 0)
+					{
+						direction = new Vector2(Player.direction, 1);
+					}
+					else
+                    {
+						direction = new Vector2(Player.direction, -1);
+					}
+				}
+				direction.Normalize();
 				Player.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
 			}
-			Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
-			Vector2 direction = Main.MouseWorld - Player.MountedCenter;
-			direction.Normalize();
 			Player.heldProj = projectile.whoAmI;
 			Player.itemTime = 2;
 			Player.itemAnimation = 2;
@@ -143,12 +162,30 @@ namespace StarlightRiver.Content.Items.Astroflora
 			projectile.position = Player.MountedCenter - frameOrigin;
 			if (SwingFrame < 2)
 			{
-				projectile.position += (direction * 10);
-				Player.itemRotation = MathHelper.WrapAngle(Player.AngleFrom(projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
-				projectile.rotation = Player.itemRotation;
+				if (!CheckFrameDeath())
+				{
+					if (SwingFrame == 0 && projectile.frame < 3) 
+						direction = direction.RotatedBy(Player.direction * 0.3f);
+					else if (SwingFrame == 1) 
+						direction = direction.RotatedBy(Player.direction * -0.45f);
+				}
+				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
+				projectile.position += (directionTwo * 10);
+				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation()  - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				projectile.rotation = MathHelper.WrapAngle(Player.AngleFrom(projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 			}
 			else
+			{
+				if (!CheckFrameDeath())
+				{
+					if (SwingFrame == 2) //swing UP
+						direction = direction.RotatedBy(Player.direction * -0.3f);
+					else if (SwingFrame == 3) //swing DOWN
+						direction = direction.RotatedBy(Player.direction * -0.2f);
+				}
+				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 				projectile.rotation = 0;
+			}
 
 			#region hardcoding
 			if (SwingFrame == 3 && Player.direction < 0)
@@ -177,7 +214,10 @@ namespace StarlightRiver.Content.Items.Astroflora
 					if (Main.mouseLeft && SlashWindow < 20)
 						FirstTickOfSwing = true;
 					else if (SlashWindow < 0)
+					{
+						Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
 						projectile.active = false;
+					}
 				}
 			}
 		}
@@ -228,12 +268,38 @@ namespace StarlightRiver.Content.Items.Astroflora
 				return false;
 			return base.CanHitNPC(target);
 		}
-	}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (target.knockBackResist != 0)
+			{
+				switch (SwingFrame)
+				{
+					case 0:
+						if (!target.noGravity && !target.collideY)
+							target.velocity.Y = -3;
+						break;
+					case 1:
+						if (!target.noGravity && !target.collideY)
+							target.velocity.Y = -3;
+						break;
+                    case 2:
+						if (!target.noGravity)
+							target.velocity.Y = -10;
+						break;
+                    case 3:
+						target.velocity.Y = 45;
+						break;
+				}
+			}
+		}
+    }
 
 	internal class GravediggerPlayer : ModPlayer
 	{
 		public int SwingDelay = 0;
 		public int SwingFrame = 0;
+		public int Combo = 0;
 		public override void ResetEffects() => SwingDelay = Math.Max(SwingDelay - 1, 0);
 	}
 }
