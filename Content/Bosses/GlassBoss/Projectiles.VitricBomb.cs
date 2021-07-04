@@ -16,18 +16,26 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         public override string Texture => AssetDirectory.GlassBoss + Name;
 
-        public override void SetDefaults()
+		public override bool Autoload(ref string name)
+		{
+            for(int k = 0; k < 4; k++)
+                mod.AddGore(AssetDirectory.GlassBoss + "Gore/Mine" + k);
+
+            return base.Autoload(ref name);
+		}
+
+		public override void SetDefaults()
         {
             projectile.width = 46;
-            projectile.height = 46;
+            projectile.height = 48;
             projectile.hostile = true;
             projectile.timeLeft = 300;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Rectangle rect = new Rectangle(0, 46 * projectile.frame, 46, 46);
-            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, rect, lightColor, 0, Vector2.One * 23, 1, 0, 0);
+            Rectangle rect = new Rectangle(0, 48 * projectile.frame, 46, 48);
+            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, rect, lightColor * 4, 0, Vector2.One * 23, 1, 0, 0);
             return false;
         }
 
@@ -62,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void AI()
         {
             projectile.velocity *= 0.97f;
-            if (projectile.timeLeft % 2 == 0)
+            if (projectile.timeLeft % 4 == 0)
             {
                 projectile.frame++;
                 if (projectile.frame >= 8) projectile.frame = 0;
@@ -71,8 +79,29 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
+            Main.PlaySound(SoundID.DD2_KoboldExplosion, projectile.Center);
+
             for (int k = 0; k < 80; k++)
-                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4));
+            {
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.LavaSpark>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(255, 155, 0), Main.rand.NextFloat(0.1f, 0.8f));
+            }
+
+            for (int k = 0; k < 60; k++)
+            {
+                var velocity = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30);
+                var scale = Main.rand.NextFloat(1.2f, 2.7f);
+
+                var d = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassAttracted>(), velocity, Scale: scale);
+                d.customData = projectile.Center;
+
+                var d2 = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassAttractedGlow>(), velocity, Scale: scale);
+                d2.customData = projectile.Center;
+                d2.frame = d.frame;
+            }
+
+            for (int k = 0; k < 4; k++)
+                Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Mine" + k) );
+
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
                 player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), 60, 0);
         }

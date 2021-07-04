@@ -222,7 +222,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void NPCLoot()
         {
-            if (Main.expertMode) npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
+            body.SpawnGores();
+
+            if (Main.expertMode) 
+                npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
+
             else
             {
                 int weapon = Main.rand.Next(1);
@@ -309,11 +313,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
-                if(GlobalTimer % 60 == 0)
-                    body.SpawnGores();
-
-                return;
-
                 if (Phase != (int)AIStates.LastStand)
                     for (int k = 0; k < 12; k++) 
                         AI();
