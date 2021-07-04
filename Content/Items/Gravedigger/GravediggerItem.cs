@@ -94,17 +94,16 @@ namespace StarlightRiver.Content.Items.Astroflora
         { 
 			get
             {
-				Vector2 frameSize = new Vector2(FRAMEWIDTH, FRAMEHEIGHT);
 				switch (SwingFrame)
                 {
                     case 0:
-						return frameSize * new Vector2(0.5f, 0.5f);
+						return new Vector2(FRAMEWIDTH * 0.5f, FRAMEHEIGHT * 0.5f);
 					case 1:
-						return frameSize * new Vector2(0.75f, 0.45f);
+						return new Vector2(FRAMEWIDTH * 0.33f, FRAMEHEIGHT * 0.4f);
 					case 2:
-						return frameSize * new Vector2(0.75f, 0.45f);
+						return new Vector2(FRAMEWIDTH * 0.5f, FRAMEHEIGHT * 0.5f);
 					case 3:
-						return frameSize * new Vector2(0.5f, 0.5f);
+						return new Vector2(FRAMEWIDTH * 0.35f, FRAMEHEIGHT * 0.6f);
 				}
 				return Vector2.Zero;
             }
@@ -112,6 +111,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void AI()
 		{
+			projectile.velocity = Vector2.Zero;
 			if (FirstTickOfSwing)
 			{
 				projectile.frame = 0;
@@ -134,12 +134,32 @@ namespace StarlightRiver.Content.Items.Astroflora
 			Player.itemTime = 2;
 			Player.itemAnimation = 2;
 			Player.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
-			projectile.position = (Player.MountedCenter - SwingOrigin) + (direction * 10);
-			Player.itemRotation = MathHelper.WrapAngle(Player.AngleFrom(projectile.position + SwingOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+			Vector2 frameOrigin;
+			if (Player.direction < 0)
+				frameOrigin = new Vector2(FRAMEWIDTH, FRAMEHEIGHT) - SwingOrigin;
+			else
+				frameOrigin = SwingOrigin;
+
+			projectile.position = Player.MountedCenter - frameOrigin;
 			if (SwingFrame < 2)
+			{
+				projectile.position += (direction * 10);
+				Player.itemRotation = MathHelper.WrapAngle(Player.AngleFrom(projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 				projectile.rotation = Player.itemRotation;
+			}
 			else
 				projectile.rotation = 0;
+
+			#region hardcoding
+			if (SwingFrame == 3 && Player.direction < 0)
+				projectile.position -= new Vector2(5, 20);
+
+			if (SwingFrame == 2)
+				projectile.position.X += 14 * Player.direction;
+
+			if (SwingFrame == 1 && Player.direction < 0)
+				projectile.position.Y += 12;
+			#endregion
 
 			if (!CheckFrameDeath())
 				projectile.frameCounter++;
@@ -189,18 +209,16 @@ namespace StarlightRiver.Content.Items.Astroflora
 			Texture2D tex = Main.projectileTexture[projectile.type];
 			Rectangle frame = new Rectangle(frameX, projectile.frame * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
 			SpriteEffects effects;
-			Vector2 frameOrigin;
+
+			Vector2 frameOrigin = SwingOrigin;
 			if (Player.direction < 0)
-			{
+				frameOrigin.X = FRAMEWIDTH - SwingOrigin.X;
+
+			if (Player.direction < 0)
 				effects = SpriteEffects.None;
-				frameOrigin = SwingOrigin;
-			}
 			else
-			{
 				effects = SpriteEffects.FlipHorizontally;
-				frameOrigin = frame.Size() - SwingOrigin;
-			}
-			spriteBatch.Draw(tex, projectile.position - Main.screenPosition + SwingOrigin, frame, projectile.GetAlpha(lightColor), projectile.rotation, frameOrigin, projectile.scale, effects, 0);
+			spriteBatch.Draw(tex, projectile.position - Main.screenPosition + frameOrigin, frame, projectile.GetAlpha(lightColor), projectile.rotation, frameOrigin, projectile.scale, effects, 0);
 			return false;
 		}
 
