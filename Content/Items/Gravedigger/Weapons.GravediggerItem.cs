@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
-using Terraria.Audio;
+using StarlightRiver.Helpers;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void SetDefaults()
 		{
-			item.damage = 16;
+			item.damage = 32;
 			item.melee = true;
 			item.width = 36;
 			item.height = 44;
@@ -148,6 +148,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 				}
 				direction.Normalize();
 				Player.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
+
+				DoSFX();
 			}
 			Player.heldProj = projectile.whoAmI;
 			Player.itemTime = 2;
@@ -242,6 +244,23 @@ namespace StarlightRiver.Content.Items.Astroflora
 			}
 			return projectile.frame >= deathFrame;
 		}
+
+		private void DoSFX()
+        {
+			switch (SwingFrame)
+            {
+                case 0:
+					break;
+				case 1:
+					break;
+				case 2: //UP
+					Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+					break;
+				case 3: //DOWN
+					Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+					break;
+            }
+        }
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
