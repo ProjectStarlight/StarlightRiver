@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             Filters.Scene["Outline"].GetShader().Shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-            Filters.Scene["Outline"].GetShader().Shader.Parameters["outlineColor"].SetValue(new Vector3(0.13f, 0, 0));
+            Filters.Scene["Outline"].GetShader().Shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
 
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
 

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Codex;
 using StarlightRiver.Content.Tiles.CrashTech;
+using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<CrashPod>();
+            item.createTile = ModContent.TileType<MonkSpear>();
         }
 
 		public override void UpdateEquip(Player player)
