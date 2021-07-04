@@ -98,6 +98,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
 				float rotationAdd = progress * 3.14f + (float)Math.Sin(Timer * (1.5f - progress)) * (1 - progress);
 
+				RotationPosition += 0.025f;
+
 				npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * 120;
 				npc.rotation = RotationPosition + (float)Math.PI / 2 + rotationAdd;
 			}
@@ -111,6 +113,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
 				else if (Timer >= 10)
 					distance = 160 - BezierEase((Timer - 10) / 60f) * 320;
+
+				RotationPosition += 0.025f;
 
 				npc.Center = parent.Center + Vector2.One.RotatedBy(RotationPosition) * distance;
 

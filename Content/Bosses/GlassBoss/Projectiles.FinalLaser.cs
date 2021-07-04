@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
             }
 
-            if(Timer > 1350)
+            if(Timer > 1350 || parent.Phase == (int)VitricBoss.AIStates.Dying || parent.Phase == (int)VitricBoss.AIStates.Leaving)
 			{
                 projectile.scale -= 0.05f;
 

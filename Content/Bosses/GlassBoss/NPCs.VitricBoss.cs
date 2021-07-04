@@ -56,7 +56,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Ceiros");
 
-        public override void SetDefaults()
+		public override bool Autoload(ref string name)
+		{
+            BodyHandler.LoadGores();
+			return base.Autoload(ref name);
+		}
+
+		public override void SetDefaults()
         {
             npc.aiStyle = -1;
             npc.lifeMax = 5000;
@@ -137,6 +143,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 ChangePhase(AIStates.Dying, true);
+                npc.dontTakeDamage = true;
                 npc.life = 1;
 
                 return false;
@@ -302,6 +309,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
+                if(GlobalTimer % 60 == 0)
+                    body.SpawnGores();
+
+                return;
+
                 if (Phase != (int)AIStates.LastStand)
                     for (int k = 0; k < 12; k++) 
                         AI();
