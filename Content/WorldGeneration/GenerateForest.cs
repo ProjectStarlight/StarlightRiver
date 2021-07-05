@@ -30,8 +30,8 @@ namespace StarlightRiver.Core
                             if (Main.tile[k, y].type == TileID.Grass && Main.tile[k + 1, y].type == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
                                 var type = TileType<ForestBerryBush>();
-                                /*if(WorldGen.genRand.Next(4) == 0)
-                                    type = TileType<SlimeberryBush>();*/
+                                if (WorldGen.genRand.Next(4) == 0)
+                                    type = TileType<SlimeberryBush>();
 
                                 Helper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
                                 k += 3;

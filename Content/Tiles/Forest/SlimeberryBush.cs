@@ -23,10 +23,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void SetDefaults()
         {
-            var anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
-            var valid = new int[] { TileID.Grass };
+            AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
+            int[] valid = new int[] { TileID.Grass };
 
             TileObjectData.newTile.RandomStyleRange = 3;
+            TileObjectData.newTile.DrawYOffset = 2;
             QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
         }
 

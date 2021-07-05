@@ -72,18 +72,20 @@ namespace StarlightRiver.Core
 
             TileObjectData.newTile.Width = width;
             TileObjectData.newTile.Height = height;
+
+
             TileObjectData.newTile.CoordinateHeights = new int[height];
 
             for (int k = 0; k < height; k++)
-            {
                 TileObjectData.newTile.CoordinateHeights[k] = 16;
-            }
 
-            if (tallBottom) TileObjectData.newTile.CoordinateHeights[height - 1] = 18;
+            if (tallBottom) 
+                TileObjectData.newTile.CoordinateHeights[height - 1] = 18;
+
             TileObjectData.newTile.UsesCustomCanPlace = true;
             TileObjectData.newTile.CoordinateWidth = 16;
             TileObjectData.newTile.CoordinatePadding = 2;
-            TileObjectData.newTile.Origin = new Point16(0, 0);
+            TileObjectData.newTile.Origin = new Point16(width / 2, height / 2);
 
             if (bottomAnchor != default)
                 TileObjectData.newTile.AnchorBottom = bottomAnchor;

@@ -26,7 +26,14 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void OffsetDrawing(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidOnly, int waterStyleOverride)
         {
-            orig(self, solidOnly, waterStyleOverride);
+            try
+            {
+                orig(self, solidOnly, waterStyleOverride);
+            }
+            catch
+            {
+
+            }
         }
 
         private void ChangeTargets(ILContext il)
