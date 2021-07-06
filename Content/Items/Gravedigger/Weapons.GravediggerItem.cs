@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
-			npc.velocity.Y = 20;
+			npc.velocity.Y = 40;
 			if (npc.collideY)
             {
 				Player player = Main.player[npc.target];
