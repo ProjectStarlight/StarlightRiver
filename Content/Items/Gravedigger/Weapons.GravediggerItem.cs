@@ -6,6 +6,7 @@ using Terraria;
 using StarlightRiver.Helpers;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Content.Buffs;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void SetDefaults()
 		{
-			item.damage = 32;
+			item.damage = 24;
 			item.melee = true;
 			item.width = 36;
 			item.height = 44;
@@ -304,21 +305,98 @@ namespace StarlightRiver.Content.Items.Astroflora
 						break;
                     case 2:
 						if (!target.noGravity)
-							target.velocity.Y = -10;
+						{
+							target.AddBuff(ModContent.BuffType<ShovelSlowFall>(), 120);
+							target.velocity.Y = -8f;
+						}
 						break;
                     case 3:
-						target.velocity.Y = 45;
+						if (!target.collideY)
+						{
+							target.AddBuff(ModContent.BuffType<ShovelQuickFall>(), 60);
+							target.GetGlobalNPC<GravediggerNPC>().SlamPlayer = Player;
+						}
 						break;
 				}
 			}
 		}
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			if (target.knockBackResist != 0 && !target.collideY && !target.noGravity && SwingFrame < 2 && target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
+			{
+				damage = (int)(damage * 1.5f);
+			}
+			if (SwingFrame < 2)
+				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
+			else
+				hitDirection = 0;
+
+		}
     }
 
+	internal class GravediggerSlam : ModProjectile
+	{
+		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerItem";
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Grave digger");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.friendly = true;
+			projectile.melee = true;
+			projectile.tileCollide = false;
+			projectile.Size = new Vector2(128, 138);
+			projectile.penetrate = -1;
+			projectile.timeLeft = 10;
+			projectile.alpha = 255;
+		}
+	}
 	internal class GravediggerPlayer : ModPlayer
 	{
 		public int SwingDelay = 0;
 		public int SwingFrame = 0;
 		public int Combo = 0;
 		public override void ResetEffects() => SwingDelay = Math.Max(SwingDelay - 1, 0);
+	}
+
+	public class GravediggerNPC : GlobalNPC
+	{
+		public override bool InstancePerEntity => true;
+		public Player SlamPlayer;
+	}
+
+	class ShovelSlowFall : SmartBuff
+	{
+		public ShovelSlowFall() : base("Slow fall", "Falling Speed Reduced", false) { }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			if (npc.velocity.Y > 0.5f && !npc.HasBuff(ModContent.BuffType<ShovelQuickFall>()))
+				npc.velocity.Y = 0.5f;
+		}
+	}
+	class ShovelQuickFall : SmartBuff
+	{
+		public ShovelQuickFall() : base("Quick fall", "You slammin", false) { }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.velocity.Y = 20;
+			if (npc.collideY)
+            {
+				Player player = Main.player[npc.target];
+				npc.DelBuff(buffIndex--);
+				player.GetModPlayer<StarlightPlayer>().Shake += 10;
+				for (int k = 0; k <= 50; k++)
+				{
+					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
+				}
+				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
+				Main.PlaySound(SoundID.Item70, npc.Center);
+				Main.PlaySound(SoundID.NPCHit42, npc.Center);
+			}
+		}
 	}
 }
