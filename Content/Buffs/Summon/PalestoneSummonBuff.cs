@@ -1,5 +1,4 @@
 ﻿using Terraria;
-
 using StarlightRiver.Core;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Items.Vitric;
@@ -12,7 +11,7 @@ namespace StarlightRiver.Content.Buffs.Summon
 
         public override void Update(Player player, ref int buffIndex)
         {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<VitricSummonOrb>()] > 0)
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<Items.Palestone.PaleKnight>()] > 0)
             {
                 player.buffTime[buffIndex] = 18000;
             }

@@ -319,6 +319,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public int SwingDelay = 0;
 		public int SwingFrame = 0;
 		public int Combo = 0;
-		public override void ResetEffects() => SwingDelay = Math.Max(SwingDelay - 1, 0);
+		public override void ResetEffects() => 
+			SwingDelay = Math.Max(SwingDelay - 1, 0);
 	}
 }

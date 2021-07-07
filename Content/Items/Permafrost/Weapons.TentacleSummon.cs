@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (projectile.ai[1] == -1)//boilerplate, sorry
             {
                 float lowestDist = float.MaxValue;
-                for (int i = 0; i < 200; ++i)
+                for (int i = 0; i < Main.maxNPCs; ++i)
                 {
                     NPC npc = Main.npc[i];
                     if (npc.active && npc.CanBeChasedBy(projectile) && !npc.friendly && !npc.noGravity)

@@ -190,7 +190,6 @@ namespace StarlightRiver.Core
     {
         public bool empowered = false;
         public int empowermentTimer = 0;
-
         public void StartStarwoodEmpowerment()
         {
             if (player.armor[1].modItem is Content.Items.Starwood.StarwoodChest && ArmorHelper.IsSetEquipped(player.armor[1].modItem, player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment

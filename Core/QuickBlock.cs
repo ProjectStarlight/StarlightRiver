@@ -79,7 +79,7 @@ namespace StarlightRiver.Core
             for (int k = 0; k < height; k++)
                 TileObjectData.newTile.CoordinateHeights[k] = 16;
 
-            if (tallBottom) 
+            if (tallBottom) //this breaks for some tiles: the two leads are multitiles and tiles with random styles
                 TileObjectData.newTile.CoordinateHeights[height - 1] = 18;
 
             TileObjectData.newTile.UsesCustomCanPlace = true;
