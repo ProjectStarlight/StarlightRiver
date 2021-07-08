@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (projectile.localAI[0] < 70)//Swing up
                 {
                     float progress = Math.Min(projectile.localAI[0] / 50f, 1f);
-                    if (Helper.IsTargetValid(enemy))
+                    if (enemy.CanBeChasedBy())
                     {
                         strikeWhere = enemy.Center + new Vector2(enemy.velocity.X, enemy.velocity.Y / 2f);
                         enemySize = new Vector2(enemy.width, enemy.height);
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (projectile.localAI[0] >= 70)//Swing Down
                 {
-                    if (Helper.IsTargetValid(enemy))
+                    if (enemy.CanBeChasedBy())
                         strikeWhere.X = enemy.Center.X + enemy.velocity.X * 1.50f;
 
                     projectile.velocity.X += Math.Min(Math.Abs(projectile.velocity.X), 0) * projectile.spriteDirection;

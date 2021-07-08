@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             var rect = projectile.Hitbox;
             rect.Inflate(28, 28);
-            if (State == 0 && Helper.IsTargetValid(target) && rect.Intersects(target.Hitbox)) Extend();
+            if (State == 0 && target.CanBeChasedBy() && rect.Intersects(target.Hitbox)) Extend();
             return null;
         }
 

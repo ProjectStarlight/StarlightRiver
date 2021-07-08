@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 projectile.netUpdate = true;
             }
 
-            if (Helper.IsTargetValid(enemy))
+            if (enemy.CanBeChasedBy())
             {
                 strikeWhere = enemy.Center + new Vector2(enemy.velocity.X * 4, enemy.velocity.Y * 4);
                 enemySize = new Vector2(enemy.width, enemy.height);

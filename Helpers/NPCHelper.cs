@@ -21,7 +21,17 @@ namespace StarlightRiver.Helpers
 {
     public static partial class Helper
     {
-        public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;
+        //use 'npc.CanBeChasedBy' instead. source:
+        /*public bool CanBeChasedBy(object attacker = null, bool ignoreDontTakeDamage = false)
+		{
+			if (active && chaseable && lifeMax > 5 && (!dontTakeDamage | ignoreDontTakeDamage) && !friendly)
+			{
+				return !immortal;
+			}
+			return false;
+		}*/
+
+        //public static bool IsTargetValid(NPC npc) => npc.active && !npc.friendly && !npc.immortal && !npc.dontTakeDamage;//disabled, remove in future commit
         public static void Kill(this NPC npc)
         {
             bool modNPCDontDie = npc.modNPC?.CheckDead() == false;

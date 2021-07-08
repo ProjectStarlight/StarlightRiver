@@ -97,19 +97,21 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override bool? CanCutTiles() => false;
 		//public override bool MinionContactDamage() => true;	// This is mandatory if your minion deals contact damage (further related stuff in AI() in the Movement region)
 
-		const int RunFrames = 8;
+		public const int RunFrames = 8;
 
-		const int FlyFrames = 6;
-		const int FlyOffset = RunFrames;
+		public const int FlyFrames = 6;
+		public const int FlyOffset = RunFrames;
 
-		const int AttackFrames = 6;
-		const int AttackOffset = FlyFrames + RunFrames;
+		public const int AttackFrames = 6;
+		public const int AttackOffset = FlyFrames + RunFrames;
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-			Utils.DrawBorderString(spriteBatch, projectile.frame.ToString(), projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
+			Utils.DrawBorderString(spriteBatch, projectile.ai[1].ToString(), projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
 			Utils.DrawBorderString(spriteBatch, projectile.ai[0].ToString(), projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
 			Utils.DrawBorderString(spriteBatch, projectile.velocity.Length().ToString(), projectile.position + new Vector2(0, -20) - Main.screenPosition, Color.LightBlue);
+			if(projectile.ai[1] >= 0)
+				Utils.DrawLine(spriteBatch, projectile.Center, Main.npc[(int)projectile.ai[1]].Center, Color.LightBlue, Color.IndianRed, 2f);
 		}
 
 		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough)
@@ -120,13 +122,15 @@ namespace StarlightRiver.Content.Items.Palestone
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => 
 			projectile.ai[1] = target.whoAmI;//TODO: possible desync, needs testing
 
-		const float defaultFrameSpeed = 10f;
-		const float defaultRunSpeed = 8f;
-		const float tiltAmount = 0.02f;
-		const float enemyCheckRadius = 700f;
-		const int validZoneSize = 24;
-		const int minionSpacing = 32;
-		const int maxMinionChaseRange = 2000;
+		public const float defaultFrameSpeed = 10f;
+		public const float defaultRunSpeed = 8f;
+		public const float tiltAmount = 0.02f;
+
+		public const int validZoneSize = 24;
+		public const int minionSpacing = 32;
+
+		public const int enemyCheckDelay = 30;
+		public const int maxMinionChaseRange = 2000;
 
 		public override void AI()
 		{
@@ -146,8 +150,7 @@ namespace StarlightRiver.Content.Items.Palestone
 
 			#region Find target
 			// Starting search distance
-			float distanceFromTarget = enemyCheckRadius;
-			Vector2 targetCenter = projectile.position;
+			Vector2 targetCenter = projectile.Center;
 			bool foundTarget = projectile.ai[1] >= 0;
 
 			// This code is required if your minion weapon has the targeting feature
@@ -158,7 +161,6 @@ namespace StarlightRiver.Content.Items.Palestone
 				// Reasonable distance away so it doesn't target across multiple screens
 				if (between < maxMinionChaseRange)
 				{
-					distanceFromTarget = between;
 					targetCenter = npc.Center;
 					projectile.ai[1] = npc.whoAmI;
 					foundTarget = true;
@@ -167,10 +169,9 @@ namespace StarlightRiver.Content.Items.Palestone
             else if (foundTarget)
             {
 				NPC npc = Main.npc[(int)projectile.ai[1]];
-				float between = Vector2.Distance(npc.Center, player.Center);
-				if (Helpers.Helper.IsTargetValid(npc) && npc.CanBeChasedBy() && between < maxMinionChaseRange)
+				float betweenPlayer = Vector2.Distance(npc.Center, player.Center);
+				if (npc.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
 				{
-					distanceFromTarget = Vector2.Distance(npc.Center, projectile.Center);
 					targetCenter = npc.Center;
 				}
 				else
@@ -180,50 +181,50 @@ namespace StarlightRiver.Content.Items.Palestone
 				}
 			}
 
-			if(!foundTarget)
-			{
-				if (projectile.ai[1] < -10)
-				{
-					// This code is required either way, used for finding a target
-					for (int i = 0; i < Main.maxNPCs; i++)
-					{
-						NPC npc = Main.npc[i];
-						if (npc.CanBeChasedBy())
-						{
+            if (!foundTarget)
+            {
+                if (projectile.ai[1] < -enemyCheckDelay)
+                {
+                    // This code is required either way, used for finding a target
+                    for (int i = 0; i < Main.maxNPCs; i++)
+                    {
+                        NPC npc = Main.npc[i];
+                        float betweenPlayer = Vector2.Distance(npc.Center, player.Center);
+                        if (npc.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
+                        {
 							float between = Vector2.Distance(npc.Center, projectile.Center);
-							bool closest = Vector2.Distance(projectile.Center, targetCenter) > between;
-							bool inRange = between < distanceFromTarget;
-							bool lineOfSight = Collision.CanHitLine(projectile.position, projectile.width, projectile.height, npc.position, npc.width, npc.height);
-							// Additional check for this specific minion behavior, otherwise it will stop attacking once it dashed through an enemy while flying though tiles afterwards
-							// The number depends on various parameters seen in the movement code below. Test different ones out until it works alright
-							bool closeThroughWall = between < 100f;
-							if (((closest && inRange) || !foundTarget) && (lineOfSight || closeThroughWall))
-							{
-								distanceFromTarget = between;
-								targetCenter = npc.Center;
-								projectile.ai[1] = npc.whoAmI;
-								foundTarget = true;
-							}
-						}
-					}
-				}
-				else
-					projectile.ai[1]--;
-			}
+							float targetBetween = Vector2.Distance(projectile.Center, targetCenter);
+							bool closest = between < targetBetween;
 
-			// friendly needs to be set to true so the minion can deal contact damage
-			// friendly needs to be set to false so it doesn't damage things like target dummies while idling
-			// Both things depend on if it has a target or not, so it's just one assignment here
-			// You don't need this assignment if your minion is shooting things instead of dealing contact damage
-			//projectile.friendly = foundTarget;
-			#endregion
+							//collision check moved into if statement for performance
+							if ((closest || !foundTarget) && Collision.CanHitLine(projectile.position, 0, 0, npc.position, 0, 0))
+                            {
+                                targetCenter = npc.Center;
+                                projectile.ai[1] = npc.whoAmI;
+                                foundTarget = true;
+                            }
+                        }
+                    }
+                }
+                else
+                    projectile.ai[1]--;
+            }
 
-			#region Movement
-			Rectangle validZone;
+            // friendly needs to be set to true so the minion can deal contact damage
+            // friendly needs to be set to false so it doesn't damage things like target dummies while idling
+            // Both things depend on if it has a target or not, so it's just one assignment here
+            // You don't need this assignment if your minion is shooting things instead of dealing contact damage
+            //projectile.friendly = foundTarget;
+            #endregion
+
+            #region Movement
+            Rectangle validZone;
             if (!foundTarget)
             {
 				Vector2 pos = player.Center + new Vector2((((validZoneSize * 2) + modPlayer.KnightCount * minionSpacing) * player.direction), 16);
 				validZone = new Rectangle((int)(pos.X - validZoneSize), (int)(pos.Y - validZoneSize), validZoneSize * 2, validZoneSize * 2);
+				
+				//!debug
 				for(int i = 0; i < 10; i++)
 					Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
 				Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
@@ -273,7 +274,6 @@ namespace StarlightRiver.Content.Items.Palestone
 				projectile.frameCounter = 0;
 				projectile.frame++;
 			}
-
 			if (projectile.frame >= startOffset + frameCount || projectile.frame < startOffset)
 				projectile.frame = startOffset;
 

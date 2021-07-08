@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 float magnitude = 1 + player.statLife / damage * 4;
                 Array.ForEach(Main.npc, (npc) =>
                 {
-                    if (npc.active && Helper.IsTargetValid(npc) && !npc.friendly && Vector2.Distance(npc.Center, player.MountedCenter) < 250)
+                    if (npc.active && npc.CanBeChasedBy() && !npc.friendly && Vector2.Distance(npc.Center, player.MountedCenter) < 250)
                     {
                         Vector2 vel = Vector2.Normalize(npc.Center - player.position) * magnitude * npc.knockBackResist;
                         if (npc.noGravity)
