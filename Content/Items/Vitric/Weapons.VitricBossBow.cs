@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-
+using System.Linq;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -10,27 +10,29 @@ using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
+using Terraria.Graphics.Effects;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class VitricBossBow : ModItem, IGlowingItem
+    class VitricBossBow : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitric Greatbow");
-            Tooltip.SetDefault("Charges a volley of crystal shards that fire in an arc\nCharging increases the arc size, shot count, and overall power of shots");
+            DisplayName.SetDefault("Coalescence");
+            Tooltip.SetDefault("Charge for a volley of brilliant magic");
         }
 
         public override void SetDefaults()
         {
-            item.damage = 10;
-            item.ranged = true;
+            item.damage = 44;
+            item.magic = true;
             item.width = 16;
             item.height = 64;
-            item.useTime = 30;
-            item.useAnimation = 30;
+            item.useTime = 6;
+            item.useAnimation = 6;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.noMelee = true;
             item.noUseGraphic = true;
@@ -38,298 +40,254 @@ namespace StarlightRiver.Content.Items.Vitric
             item.rare = ItemRarityID.Orange;
             item.channel = true;
             item.shoot = ProjectileType<VitricBowProjectile>();
-            item.shootSpeed = 1f;
-            item.useAmmo = AmmoID.Arrow;
+            item.shootSpeed = 0f;
+            item.autoReuse = true;
+
             item.useTurn = true;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+            tooltips.Find(n => n.Name == "Speed" && n.mod == "Terraria").text = "Slow charge";
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Projectile.NewProjectile(position, new Vector2(speedX, speedY) / 4f, item.shoot, damage, knockBack, player.whoAmI);
+            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<VitricBowProjectile>()))
+                Projectile.NewProjectile(position, new Vector2(speedX, speedY) / 4f, item.shoot, damage, knockBack, player.whoAmI);
+
             return false;
         }
-
-        public void DrawGlowmask(PlayerDrawInfo info)
-        {
-            Player player = info.drawPlayer;
-
-            if (player.heldProj > -1 && Main.projectile[player.heldProj].type == mod.ProjectileType("VitricBowProjectile"))
-            {
-                Projectile held = Main.projectile[player.heldProj];
-                Vector2 off = Vector2.Normalize(held.velocity) * 16;
-
-                //Vector2 mousePos = Main.MouseWorld - new Vector2(0, player.gfxOffY);
-                //Vector2 diff2 = mousePos - player.Center;
-                //Vector2 off = Vector2.Normalize(diff2) * 16;
-
-                var data = new DrawData(Main.itemTexture[item.type], (player.Center.PointAccur() + off - Main.screenPosition) + new Vector2(0, player.gfxOffY), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), off.ToRotation(), item.Size / 2, 1, 0, 0);
-                Main.playerDrawData.Add(data);
-
-                if (held.modProjectile != null && held.modProjectile is VitricBowProjectile)
-                {
-                    float fraction = held.ai[0] / VitricBowProjectile.MaxCharge;
-                    Color colorz = Color.Lerp(Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), Color.Aquamarine, fraction) * Math.Min(held.timeLeft / 20f, 1f);
-
-                    var data2 = new DrawData(Main.itemTexture[item.type], (player.Center.PointAccur() + off - Main.screenPosition) + new Vector2(0, player.gfxOffY), null, colorz, off.ToRotation(), item.Size / 2, 1, 0, 0);
-                    Main.playerDrawData.Add(data2);
-                }
-
-            }
-        }
     }
 
-    internal class VitricBowProjectile : ModProjectile, IDrawAdditive
-    {
-        internal static int MaxCharge { get; set; } = 100;
-        internal static int ChargeNeededToFire => 30;
-        private float MaxAngle => MathHelper.Pi / 8f;
-        private int MaxFireTime { get; set; } = 20;
-        private int AddedFireBuffer { get; set; } = 0;
-        private int FireRate => 6;
-        private float ItemFirerate { get; set; } = default;
+	internal class VitricBowProjectile : ModProjectile, IDrawAdditive
+	{
+        public float chargePercent => charge / 120f;
 
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/VolleyTell";
+        public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
 
-        public override bool? CanHitNPC(NPC target) => false;
+        Player owner => Main.player[projectile.owner];
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
-
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Enchanted Glass");
+        private int charge = 0;
 
         public override void SetDefaults()
-        {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.friendly = true;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 600;
-            projectile.ranged = true;
-            projectile.arrow = true;
+		{
+            projectile.width = 32;
+            projectile.height = 32;
             projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-        }
+		}
 
-        public override void AI()
-        {
-            Player player = projectile.Owner();
+		public override void AI()
+		{
+            projectile.rotation = (owner.Center - Main.MouseWorld).ToRotation() + MathHelper.Pi;
+            projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 24;
+            owner.heldProj = projectile.whoAmI;
 
-            if (ItemFirerate == default)
-                ItemFirerate = player.itemTime / 30f;
+            if (owner.channel && projectile.ai[0] == 0)
+            {                          
+                if (charge < 120)
+                    charge++;
 
-            if (player.dead) projectile.Kill();
-            else
-            {
-                if (projectile.localAI[1] > 0 || !player.channel)
-                    LetGo(player);
-                else
-                    Charging();
+                for (int k = 1; k <= 4; k++)
+				{
+                    if (charge == 30 * k + 1)
+					{
+                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), projectile.damage, 1, projectile.owner, 0, k);
 
-                Holding(player);
-                projectile.Center = player.Center;
-            }
-        }
-
-        private void Holding(Player player)
-        {
-            player.itemTime = 3;
-            player.itemAnimation = 3;
-            player.heldProj = projectile.whoAmI;
-
-            Vector2 mousePos = Main.MouseWorld - new Vector2(0, Main.player[projectile.owner].gfxOffY);
-
-            if (projectile.owner == Main.myPlayer && mousePos != projectile.Center)
-            {
-                Vector2 diff2 = mousePos - player.Center;
-                diff2.Normalize();
-                projectile.velocity = diff2 * (player.HasBuff(BuffID.Archery) ? 1.20f : 1f);
-                projectile.direction = Main.MouseWorld.X > player.position.X ? 1 : -1;
-                projectile.netUpdate = true;
-            }
-
-            int dir = projectile.direction;
-            player.ChangeDir(projectile.direction);
-
-            Vector2 distz = projectile.Center - player.Center;
-            player.itemRotation = (float)Math.Atan2(distz.Y * dir, distz.X * dir);
-        }
-
-        private void Charging()
-        {
-            projectile.ai[0] = Math.Min(projectile.ai[0] + (1f / ItemFirerate), MaxCharge);
-            MaxFireTime = 6 + (int)(projectile.ai[0] / 8f);
-
-            projectile.ai[1] = MaxFireTime;
-            projectile.timeLeft = MaxFireTime + AddedFireBuffer;
-        }
-
-        private void LetGo(Player player)
-        {
-            bool doFire = (projectile.ai[0] < ChargeNeededToFire && projectile.localAI[1] == 1)
-                || (projectile.ai[0] >= ChargeNeededToFire && projectile.localAI[1] % FireRate == 0);
-
-            bool preCharge = projectile.ai[0] < ChargeNeededToFire;
-            float percent = Math.Max((projectile.ai[0] - ChargeNeededToFire) / (MaxCharge - ChargeNeededToFire), 0f);
-
-            int timeLeft = projectile.timeLeft - AddedFireBuffer;
-
-            float partialchargepercent = (projectile.ai[0] / MaxCharge);
-            float maxDelta = MaxAngle * partialchargepercent;
-            float angle = maxDelta * (1f - (timeLeft / projectile.ai[1]));
-
-            projectile.localAI[1] += 1;
-
-            if ((projectile.timeLeft <= MaxFireTime || preCharge) && doFire)
-            {
-                for (int i = -1; i < 2; i += 2)
-                {
-                    if (i > 0 || !projectile.ignoreWater)
-                    {
-
-                        float charge = 1f - (timeLeft / projectile.ai[1]);
-                        float speed = 4f + percent * (2f + charge);
-                        Vector2 velocity = new Vector2(speed * projectile.velocity.Length(), 0).RotatedBy(projectile.velocity.ToRotation() + (angle * (projectile.ignoreWater ? 0f : i)));
-
-                        Projectile.NewProjectile(projectile.Center, velocity, ProjectileType<VitricBowShardProjectile>(), (int)(projectile.damage * (1f + percent)), projectile.knockBack, projectile.owner = player.whoAmI, percent, 0f); //fire the flurry of projectiles
-
-                        if (i > 0)
-                            Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
-
-                        if (projectile.ignoreWater)
-                        {
-                            projectile.ignoreWater = false;
-                            break;
-                        }
+                        if(k > 1)
+                            Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), projectile.damage, 1, projectile.owner, 0, k);
                     }
-                }
+				}
             }
-        }
 
-        public void DrawAdditive(SpriteBatch spriteBatch)
-        {
-            if (Main.LocalPlayer == Main.player[projectile.owner] || Main.netMode == NetmodeID.SinglePlayer)
+            else if (charge > 0)
             {
-                Texture2D tex = Main.projectileTexture[projectile.type];
-                float maxalpha = MathHelper.Clamp((projectile.ai[0] - ChargeNeededToFire) / 20f, 0.25f, 0.5f);
-                float alpha = Math.Min(projectile.ai[0] / 60f, maxalpha) * Math.Min((float)projectile.timeLeft / 8, 1f);
-                Vector2 maxspread = new Vector2(Math.Min(projectile.ai[0] / MaxCharge, 1) * 0.5f, 0.4f);
-
-                spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), tex.Frame(), new Color(200, 255, 255) * alpha, projectile.velocity.ToRotation() + 1.57f, new Vector2(tex.Width / 2, tex.Height), maxspread, 0, 0);
-            }
-        }
-    }
-
-    public class VitricBowShardProjectile : ModProjectile, IDrawAdditive
-    {
-        public override string Texture => AssetDirectory.VitricItem + Name;
-
-        public override void SetDefaults()
-        {
-            projectile.hostile = false;
-            projectile.friendly = true;
-            projectile.tileCollide = true;
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.arrow = true;
-            projectile.ranged = true;//Whoops, now it is ranged-IDG
-            projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = -1;
-            projectile.extraUpdates = 2;
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-        }
-
-        public override void SetStaticDefaults()
-        {
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-        }
-
-        public override void AI()
-        {
-            for (int k = 0; k <= 1; k++)
-            {
-                Dust d = Dust.NewDustPerfect(projectile.Center + projectile.velocity, 264, (projectile.velocity * (Main.rand.NextFloat(-0.25f, -0.1f))).RotatedBy((k == 0) ? 0.4f : -0.4f), 0, default, 1f);
-                d.noGravity = true;
+                projectile.ai[0] = 1;
+                projectile.timeLeft = charge;
+                charge -= 4;
             }
 
-            projectile.velocity.Y += 0.025f;
-            projectile.localAI[0] += 1;
-
-            projectile.rotation = projectile.velocity.ToRotation();
-
-            for (int k = projectile.oldPos.Length - 1; k >= 1; k -= 1)
-            {
-                projectile.oldRot[k] = projectile.oldRot[k - 1];
-            }
-
-            projectile.oldRot[0] = projectile.rotation;
-
-            if (projectile.localAI[0] == 1)
-            {
-                projectile.scale = 0.5f + projectile.ai[0] / 3f;
-                projectile.width = (int)(projectile.width * projectile.scale);
-                projectile.height = (int)(projectile.height * projectile.scale);
-                projectile.penetrate = 1 + ((int)(projectile.ai[0] * 4f));
-            }
+            Lighting.AddLight(owner.Center, new Vector3(0.3f + 0.3f * chargePercent, 0.6f + 0.2f * chargePercent, 1) * chargePercent);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-
-            for (int k = 0; k < projectile.oldPos.Length; k++)
-            {
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation - MathHelper.Pi / 2f, tex.Size() / 2f, projectile.scale, 0, 0);
-            }
+		{
+            var tex = GetTexture(Texture);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, 1, 0, 0);
 
             return false;
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+            var texStar = GetTexture(AssetDirectory.Dust + "Aurora");
+            var texGlow = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+
+            var color1 = new Color(80, 240, 255);
+            var color2 = new Color(90, 200, 255);
+            var color3 = new Color(180, 220, 255);
+
+            var offset = Vector2.UnitX.RotatedBy(projectile.rotation);
+
+            var prog1 = RangeLerp(chargePercent, 0, 0.3f) + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.1f;
+            var prog2 = RangeLerp(chargePercent, 0.3f, 0.6f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 1) * 0.1f;
+            var prog3 = RangeLerp(chargePercent, 0.6f, 0.9f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 2) * 0.1f;
+
+            DrawRing(spriteBatch, projectile.Center + offset * (-30 + prog1 * 40), 1, 1, Main.GameUpdateCount / 40f, prog1, color3);
+            DrawRing(spriteBatch, projectile.Center + offset * (-30 + prog2 * 80), 1.5f, 1.5f, -Main.GameUpdateCount / 30f, prog2, color2);
+            DrawRing(spriteBatch, projectile.Center + offset * (-30 + prog3 * 120), 2, 2, Main.GameUpdateCount / 20f, prog3, color1);
+
+            var prog4 = RangeLerp(chargePercent, 0.2f, 0.5f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 15f), null, color3 * prog4, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog1, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 10f), null, color1 * prog4, Main.GameUpdateCount / 15f, texStar.Size() / 2, prog2, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 25f), null, color3 * prog4, Main.GameUpdateCount / 8f, texStar.Size() / 2, prog1, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 35f), null, color2 * prog4, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 20f), null, color1 * prog4, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3, 0, 0);
+
+            var prog5 = RangeLerp(chargePercent, 0.5f, 0.8f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 12f), null, color2 * prog5, Main.GameUpdateCount / 18f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 18f), null, color3 * prog5, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 42f), null, color1 * prog5, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog2 * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 32f), null, color3 * prog5, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 25f), null, color3 * prog5, Main.GameUpdateCount / 19f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
+
+            spriteBatch.Draw(texGlow, projectile.Center + offset * (-40 + prog2 * 90) - Main.screenPosition, null, color3 * (chargePercent * 0.5f), 0, texGlow.Size() / 2, 3.5f, 0, 0);
         }
 
-        public override void Kill(int timeLeft)
-        {
-            Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.75f);
+        private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color) //optimization nightmare. Figure out smth later
+		{
+            var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+            var effect = Filters.Scene["BowRing"].GetShader().Shader;
 
-            for (float num315 = 0.2f; num315 < 2 + projectile.scale * 1.5f; num315 += 0.25f)
-            {
-                float angle = MathHelper.ToRadians(Main.rand.Next(0, 360));
-                Vector2 vecangle = (new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315) + (projectile.velocity * num315);
-                Dust num316 = Dust.NewDustPerfect(new Vector2(projectile.position.X, projectile.position.Y) + new Vector2(Main.rand.Next(projectile.width), Main.rand.Next(projectile.height)), DustType<GlassGravity>(), vecangle / 3f, 50, default, (8f - num315) / 5f);
-                num316.fadeIn = 0.5f;
+            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uColor"].SetValue(color.ToVector3());
+            effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            effect.Parameters["uOpacity"].SetValue(prog);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+            var target = toRect(pos, (int)(16 * (w + prog)), (int)(60 * (h + prog)));
+            sb.Draw(texRing, target, null, color * prog, projectile.rotation, texRing.Size() / 2, 0, 0);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        private Rectangle toRect(Vector2 pos, int w, int h)
+		{
+            return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
+		}
+
+        private float RangeLerp(float input, float start, float end)
+		{
+            if (input < start) 
+                return 0;
+
+            return MathHelper.Clamp( Helper.BezierEase((input - start) / (end - start)), 0, 1);
+		}
+
+        private Vector2 PosRing(Vector2 center, float w, float h, float rot)
+		{
+            return center + new Vector2((float)Math.Cos(rot) * h, (float)Math.Sin(rot) * w).RotatedBy(projectile.rotation + MathHelper.PiOver2) - Main.screenPosition;
+		}
+	}
+
+    internal class VitricBowShard : ModProjectile, IDrawAdditive
+	{
+        public override string Texture => AssetDirectory.Invisible;
+
+        public Player owner => Main.player[projectile.owner];
+
+        public ref float Timer => ref projectile.ai[0];
+
+        private float storedAngle = 6;
+        private float storedAngle2 = 0;
+        private float storedAngle3 = 0;
+
+		public override void SetDefaults()
+		{
+            projectile.width = 16;
+            projectile.height = 16;
+            projectile.tileCollide = false;
+            projectile.timeLeft = 122;
+            projectile.friendly = true;
+            projectile.penetrate = 20;
+
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = -1;
+        }
+
+        public override bool? CanHitNPC(NPC target)
+		{
+            return projectile.timeLeft < 120;
+		}
+
+		public override void AI()
+		{
+            Timer++;
+
+            if (owner.channel && projectile.timeLeft >= 120)
+			{
+                projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+
+                projectile.timeLeft = 121;
+                projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + projectile.velocity.X * 6) * 10);
+
+                storedAngle2 = (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
             }
-        }
+			else if (Timer >= 30)
+			{
+                if (storedAngle == 6)
+                    storedAngle = projectile.velocity.ToRotation();
+
+                projectile.velocity = Vector2.UnitX.RotatedBy(projectile.rotation) * 25;
+
+                projectile.rotation = projectile.velocity.ToRotation();
+
+                if (projectile.timeLeft > 90)
+                    projectile.rotation -= storedAngle * 0.075f;
+
+                if (projectile.timeLeft == 90)
+                    storedAngle3 = projectile.rotation;
+
+                if (projectile.timeLeft < 100 && projectile.timeLeft >= 85)
+                    projectile.rotation += storedAngle * 0.085f;
+
+
+                if (Main.rand.Next(4) == 0)
+                {
+                    var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
+                    var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
+                    d.customData = Main.rand.NextFloat(0.4f, 1.5f);
+                    d.fadeIn = 30;
+                }
+
+                if (Main.rand.Next(2) == 0)
+                {
+                    var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
+                    var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
+                    d.customData = Main.rand.NextFloat(0.4f, 0.8f);
+                    d.fadeIn = 30;
+                }
+            }
+			else
+			{
+                Timer -= 2;
+
+                if (Timer <= 0)
+                    projectile.timeLeft = 0;
+			}
+		}
 
         public void DrawAdditive(SpriteBatch spriteBatch)
-        {
-            Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "GlassSpikeGlow");
+		{
+            var tex = GetTexture(AssetDirectory.MiscTextures + "DirectionalBeam");
+            var tex2 = GetTexture(AssetDirectory.VitricItem + "BossBowArrow");
+            var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
 
-            Vector2 offsets = Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition;
-
-            Color color2 = new Color(150, 255, 255) * Math.Min(projectile.timeLeft / 100f, 1f);
-
-            //Tried to do a thing but Additive doesn't want to play nicely with alpha, is there a way to blend with alpha?
-
-            /*for (float k = 0; k < projectile.oldPos.Length; k++)
-            {
-                if ((int)k % 4 == 0)
-                {
-                    float alpha = ((float)projectile.oldPos.Length - k) * 0.25f;
-
-                    Vector2 pos = projectile.oldPos[(int)k] + offsets;
-                    pos += new Vector2(projectile.width, projectile.height) / 2f;
-
-                    Color color = color2 * alpha;
-                    float rot = projectile.oldRot[(int)k] - MathHelper.TwoPi * 0.375f;
-
-                    spriteBatch.Draw(tex, pos, tex.Frame(), color, rot, tex.Size() / 2, projectile.scale*alpha, 0, 0);
-
-                }
-            }*/
-
-            Vector2 pos2 = projectile.Center + offsets;
-            float rot2 = projectile.rotation - MathHelper.TwoPi * 0.375f;
-
-            spriteBatch.Draw(tex, pos2, tex.Frame(), color2, rot2, tex.Size() / 2, 1.2f + projectile.scale, 0, 0);
-
-        }
-    }
+            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / 30f, 1)), projectile.rotation + 1.57f, tex2.Size() / 2, 0.5f, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / 30f, 1) * 0.5f), projectile.rotation, new Vector2(tex.Width / 4f, tex.Height / 2f), 2, 0, 0);
+		}
+	}
 }
