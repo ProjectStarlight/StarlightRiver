@@ -80,8 +80,8 @@ namespace StarlightRiver.Content.Items.Palestone
 
         public sealed override void SetDefaults()
         {
-            projectile.width = 18;
-            projectile.height = 28;
+            projectile.width = 28;
+            projectile.height = 32;
 
             projectile.tileCollide = true;
 
@@ -105,7 +105,11 @@ namespace StarlightRiver.Content.Items.Palestone
 		public const int AttackFrames = 6;
 		public const int AttackOffset = FlyFrames + RunFrames;
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		private const int Walking = 0;
+		private const int Flying = 1;
+		private const int Attacking = 2;
+
+		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 			Utils.DrawBorderString(spriteBatch, projectile.ai[1].ToString(), projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
 			Utils.DrawBorderString(spriteBatch, projectile.ai[0].ToString(), projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
@@ -132,6 +136,8 @@ namespace StarlightRiver.Content.Items.Palestone
 		public const int enemyCheckDelay = 30;
 		public const int maxMinionChaseRange = 2000;
 
+		public const int MaxVelocity = 10;
+
 		public override void AI()
 		{
 			Player player = Main.player[projectile.owner];
@@ -145,7 +151,11 @@ namespace StarlightRiver.Content.Items.Palestone
 			#endregion
 
 			#region General behavior
-
+			if (projectile.ai[0] == Walking && projectile.velocity.Length() < 0.1f)
+			{
+				projectile.frame = 0;
+				projectile.frameCounter = 0;
+			}
 			#endregion
 
 			#region Find target
@@ -192,9 +202,9 @@ namespace StarlightRiver.Content.Items.Palestone
                         float betweenPlayer = Vector2.Distance(npc.Center, player.Center);
                         if (npc.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
                         {
-							float between = Vector2.Distance(npc.Center, projectile.Center);
-							float targetBetween = Vector2.Distance(projectile.Center, targetCenter);
-							bool closest = between < targetBetween;
+							float npcBetween = Vector2.Distance(npc.Center, projectile.Center);
+							float targetBetween = Vector2.Distance(targetCenter, projectile.Center);
+							bool closest = npcBetween < targetBetween;
 
 							//collision check moved into if statement for performance
 							if ((closest || !foundTarget) && Collision.CanHitLine(projectile.position, 0, 0, npc.position, 0, 0))
@@ -205,7 +215,10 @@ namespace StarlightRiver.Content.Items.Palestone
                             }
                         }
                     }
-                }
+					if (!foundTarget)
+						projectile.ai[1] = -1;
+
+				}
                 else
                     projectile.ai[1]--;
             }
@@ -219,27 +232,43 @@ namespace StarlightRiver.Content.Items.Palestone
 
             #region Movement
             Rectangle validZone;
-            if (!foundTarget)
-            {
-				Vector2 pos = player.Center + new Vector2((((validZoneSize * 2) + modPlayer.KnightCount * minionSpacing) * player.direction), 16);
-				validZone = new Rectangle((int)(pos.X - validZoneSize), (int)(pos.Y - validZoneSize), validZoneSize * 2, validZoneSize * 2);
-				
-				//!debug
-				for(int i = 0; i < 10; i++)
-					Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
-				Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
-			}
 
 			if (Vector2.Distance(projectile.position, player.position) > 200f && !foundTarget)
-				projectile.ai[0] = 1;
-			else if (projectile.ai[0] == 1)
-				projectile.ai[0] = 0;
+				projectile.ai[0] = Flying;
+			else if (projectile.ai[0] == Flying)
+				projectile.ai[0] = Walking;
 
-			projectile.velocity.Y += 0.35f;
-			if (projectile.ai[0] == 1)
-				projectile.velocity += Vector2.Normalize(player.position - projectile.position) * 0.5f;
 
-			projectile.velocity = Vector2.Clamp(projectile.velocity, -Vector2.One * 10, Vector2.One * 10);
+			projectile.ai[0] = 0;//debug
+
+			switch (projectile.ai[0])
+            {
+				case Walking:
+                    {
+						if (!foundTarget)
+						{
+							Vector2 pos = player.Center + new Vector2((((validZoneSize * 2) + modPlayer.KnightCount * minionSpacing) * player.direction), 16);
+							validZone = new Rectangle((int)(pos.X - validZoneSize), (int)(pos.Y - validZoneSize), validZoneSize * 2, validZoneSize * 2);
+
+							//!debug
+							//for (int i = 0; i < 10; i++)
+							//	Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
+							//Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
+						}
+						projectile.velocity.X += Vector2.Normalize(player.position - projectile.position).X * 0.1f;
+						projectile.velocity.Y += 0.35f;
+					}
+					break;
+				case Flying:
+					projectile.velocity += Vector2.Normalize(player.position - projectile.position) * 0.5f;
+					break;
+				case Attacking:
+
+					break;
+			}
+
+			Vector2 cap = new Vector2(MaxVelocity);
+			projectile.velocity = Vector2.Clamp(projectile.velocity, -cap / 10, cap / 10);
 			#endregion
 
 			#region Animation and visuals
@@ -283,7 +312,51 @@ namespace StarlightRiver.Content.Items.Palestone
 
 			modPlayer.KnightCount++;
 		}
-    }
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (projectile.velocity.Y != oldVelocity.Y) 
+			{
+				//if(extra tile(s))
+				//	jump
+				//else if(projectile.velocity.X != oldVelocity.X)...
+
+				if (projectile.velocity.X != oldVelocity.X)//hit wall
+				{
+					if (projectile.ai[0] == Walking)
+					{
+						int xpos = (int)((projectile.Center.X) / 16);
+						int yposTop = (int)((projectile.position.Y + projectile.height + 12) / 16) - 2;
+						//Dust.NewDustPerfect((new Vector2(xpos + projectile.spriteDirection, yposTop) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Red);
+
+						if (WorldGen.TileEmpty(xpos + projectile.spriteDirection, yposTop))
+						{
+							int yposFront = (int)((projectile.position.Y + projectile.height) / 16) - 1;
+							int yposMid = (int)((projectile.position.Y + projectile.height + 9) / 16) - 1;
+							//Dust.NewDustPerfect((new Vector2(xpos + (projectile.spriteDirection), yposFront) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Blue);
+							//Dust.NewDustPerfect((new Vector2(xpos, yposMid) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Green);
+
+
+							Tile frontTile = Framing.GetTileSafely(xpos + projectile.spriteDirection, yposFront);// - y - 1);
+							Tile midTile = Framing.GetTileSafely(xpos, yposMid);// - y - 1);
+
+							bool frontIsSlab = frontTile.halfBrick();
+							bool midIsSlab = midTile.halfBrick();
+
+							if ((frontIsSlab && !midIsSlab) || (!frontIsSlab && midIsSlab))
+								projectile.position.Y -= 8;
+							else
+								projectile.position.Y -= 16;
+
+							projectile.position.X += projectile.spriteDirection;
+							projectile.velocity.X = oldVelocity.X;
+						}
+					}
+                }
+            }
+            return false;
+		}
+	}
 
 	internal class PaleKnightPlayer : ModPlayer
 	{
