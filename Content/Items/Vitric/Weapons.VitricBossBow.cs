@@ -213,6 +213,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.timeLeft = 122;
             projectile.friendly = true;
             projectile.penetrate = 20;
+            projectile.magic = true;
 
             projectile.usesLocalNPCImmunity = true;
             projectile.localNPCHitCooldown = -1;
