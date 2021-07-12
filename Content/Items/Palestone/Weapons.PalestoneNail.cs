@@ -130,13 +130,16 @@ namespace StarlightRiver.Content.Items.Palestone
 		public const float defaultRunSpeed = 8f;
 		public const float tiltAmount = 0.02f;
 
-		public const int validZoneSize = 24;
-		public const int minionSpacing = 32;
+		public const int validZoneWidth = 8;
+		public const int validZoneHeight = 24;
+		public const int minionSpacing = 24;
 
 		public const int enemyCheckDelay = 30;
 		public const int maxMinionChaseRange = 2000;
 
-		public const int MaxVelocity = 10;
+		public const int MaxVelocity = 7;
+
+		public const int MinionFlybackRange = 450;
 
 		public override void AI()
 		{
@@ -148,14 +151,6 @@ namespace StarlightRiver.Content.Items.Palestone
 				player.ClearBuff(BuffType<PalestoneSummonBuff>());
 			if (player.HasBuff(BuffType<PalestoneSummonBuff>()))
 				projectile.timeLeft = 2;
-			#endregion
-
-			#region General behavior
-			if (projectile.ai[0] == Walking && projectile.velocity.Length() < 0.1f)
-			{
-				projectile.frame = 0;
-				projectile.frameCounter = 0;
-			}
 			#endregion
 
 			#region Find target
@@ -231,36 +226,62 @@ namespace StarlightRiver.Content.Items.Palestone
             #endregion
 
             #region Movement
-            Rectangle validZone;
+			Vector2 pos = player.Center + new Vector2((((validZoneWidth + modPlayer.KnightCount * minionSpacing) + 32) * -player.direction), 16);
+			Rectangle validZone = new Rectangle((int)(pos.X - validZoneWidth), (int)(pos.Y - validZoneHeight), validZoneWidth * 2, validZoneHeight * 2);
 
-			if (Vector2.Distance(projectile.position, player.position) > 200f && !foundTarget)
+
+			if ((Vector2.Distance(projectile.position, player.position) > MinionFlybackRange && Vector2.Distance(projectile.Center, validZone.Center()) > MinionFlybackRange) && !foundTarget)
+			{
+				projectile.tileCollide = false;
 				projectile.ai[0] = Flying;
-			else if (projectile.ai[0] == Flying)
+			}
+			else if (projectile.ai[0] == Flying && !WorldGen.SolidTileAllowBottomSlope((int)(projectile.Center.X / 16), (int)((projectile.position.Y + projectile.height) / 16)))
+			{
+				projectile.tileCollide = true;
 				projectile.ai[0] = Walking;
+			}
 
 
-			projectile.ai[0] = 0;//debug
+			//projectile.ai[0] = 0;//debug
 
 			switch (projectile.ai[0])
             {
 				case Walking:
-                    {
-						if (!foundTarget)
-						{
-							Vector2 pos = player.Center + new Vector2((((validZoneSize * 2) + modPlayer.KnightCount * minionSpacing) * player.direction), 16);
-							validZone = new Rectangle((int)(pos.X - validZoneSize), (int)(pos.Y - validZoneSize), validZoneSize * 2, validZoneSize * 2);
-
-							//!debug
-							//for (int i = 0; i < 10; i++)
-							//	Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
-							//Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
-						}
-						projectile.velocity.X += Vector2.Normalize(player.position - projectile.position).X * 0.1f;
-						projectile.velocity.Y += 0.35f;
+                {
+					if (foundTarget)
+					{
+						projectile.velocity.X += Vector2.Normalize(targetCenter - projectile.Center).X * 0.1f;
 					}
+					else
+					{
+						projectile.velocity.X += Vector2.Normalize(validZone.Center() - projectile.Center).X * 0.1f;
+
+						if (validZone.Intersects(projectile.getRect()))
+                        {
+							projectile.velocity.X *= 0.90f;
+							if(projectile.velocity.Length() < 0.2f && (int)projectile.Center.X == (int)validZone.Center().X)
+                            {
+								projectile.velocity = Vector2.Zero;
+								projectile.direction = player.direction;
+                            }
+						}
+
+                        //!debug
+                        //for (int i = 0; i < 4; i++)
+                        //    Dust.NewDustPerfect(validZone.TopLeft() + new Vector2(Main.rand.Next(validZone.Width), Main.rand.Next(validZone.Height)), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Blue);
+                        //Dust.NewDustPerfect(validZone.Center(), DustType<Dusts.AirDash>(), Vector2.Zero, 0, Color.Red);
+                    }
+					if (projectile.velocity.Length() < 0.1f)
+					{
+						projectile.frame = 0;
+						projectile.frameCounter = 0;
+					}
+
+					projectile.velocity.Y += 0.35f;
+				}
 					break;
 				case Flying:
-					projectile.velocity += Vector2.Normalize(player.position - projectile.position) * 0.5f;
+					projectile.velocity += Vector2.Normalize(player.Center - projectile.Center) * 0.5f;
 					break;
 				case Attacking:
 
@@ -268,13 +289,12 @@ namespace StarlightRiver.Content.Items.Palestone
 			}
 
 			Vector2 cap = new Vector2(MaxVelocity);
-			projectile.velocity = Vector2.Clamp(projectile.velocity, -cap / 10, cap / 10);
+			projectile.velocity = Vector2.Clamp(projectile.velocity, -cap, cap);
 			#endregion
 
 			#region Animation and visuals
-			// So it will lean slightly towards the direction it's moving
 
-			projectile.spriteDirection = projectile.velocity.X > 0 ? 1 : -1;
+			projectile.spriteDirection = projectile.direction;
 
 			int startOffset = 0;
 			int frameCount = FlyFrames;
@@ -306,8 +326,8 @@ namespace StarlightRiver.Content.Items.Palestone
 			if (projectile.frame >= startOffset + frameCount || projectile.frame < startOffset)
 				projectile.frame = startOffset;
 
-			// Some visuals here
-			Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.78f);
+			//Lighting.AddLight(projectile.Center, Color.White.ToVector3() * 0.78f);
+			projectile.direction = projectile.velocity.X > 0 ? 1 : -1;//this is here since I believe this gets synced, if it doesn't this line can be moved above where the sprite direction is set
 			#endregion
 
 			modPlayer.KnightCount++;
@@ -325,11 +345,11 @@ namespace StarlightRiver.Content.Items.Palestone
 				{
 					if (projectile.ai[0] == Walking)
 					{
-						int xpos = (int)((projectile.Center.X) / 16);
+						int xpos = (int)((projectile.Center.X + oldVelocity.X) / 16);
 						int yposTop = (int)((projectile.position.Y + projectile.height + 12) / 16) - 2;
-						//Dust.NewDustPerfect((new Vector2(xpos + projectile.spriteDirection, yposTop) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Red);
+						//Dust.NewDustPerfect((new Vector2(xpos + projectile.direction, yposTop) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Red);
 
-						if (WorldGen.TileEmpty(xpos + projectile.spriteDirection, yposTop))
+						if (!(WorldGen.SolidOrSlopedTile(xpos + projectile.direction, yposTop) || WorldGen.SolidOrSlopedTile(xpos + projectile.direction, yposTop - 1)))//its 2 blocks tall so I just do 2 checks here
 						{
 							int yposFront = (int)((projectile.position.Y + projectile.height) / 16) - 1;
 							int yposMid = (int)((projectile.position.Y + projectile.height + 9) / 16) - 1;
@@ -337,7 +357,7 @@ namespace StarlightRiver.Content.Items.Palestone
 							//Dust.NewDustPerfect((new Vector2(xpos, yposMid) * 16) + new Vector2(8, -92), DustType<Dusts.AirDash>(), new Vector2(0, 100), 0, Color.Green);
 
 
-							Tile frontTile = Framing.GetTileSafely(xpos + projectile.spriteDirection, yposFront);// - y - 1);
+							Tile frontTile = Framing.GetTileSafely(xpos + projectile.direction, yposFront);// - y - 1);
 							Tile midTile = Framing.GetTileSafely(xpos, yposMid);// - y - 1);
 
 							bool frontIsSlab = frontTile.halfBrick();
@@ -348,7 +368,7 @@ namespace StarlightRiver.Content.Items.Palestone
 							else
 								projectile.position.Y -= 16;
 
-							projectile.position.X += projectile.spriteDirection;
+							projectile.position.X += projectile.direction;
 							projectile.velocity.X = oldVelocity.X;
 						}
 					}
