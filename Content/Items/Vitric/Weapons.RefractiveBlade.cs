@@ -19,7 +19,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public override void SetStaticDefaults()
+        public override bool AltFunctionUse(Player player) => true;
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Refractive Blade");
             Tooltip.SetDefault("Swing in any direction \nHold down to launch a laser");
@@ -46,6 +48,13 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+            if(player.altFunctionUse == 2)
+			{
+                Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), damage, knockBack, player.whoAmI);
+
+                return false;
+			}
+
             Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI, 0, combo);
             combo++;
 
@@ -78,7 +87,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             projectile.hostile = false;
             projectile.melee = true;
-            projectile.width = projectile.height = 32;
+            projectile.width = projectile.height = 2;
             projectile.aiStyle = -1;
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -133,8 +142,23 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? CanHitNPC(NPC target)
 		{
+            
+            if (target.active && target.immune[0] <= 0 && !target.friendly && Helper.CheckLinearCollision(Owner.Center, projectile.Center, target.Hitbox, out Vector2 hitPoint))
+			{
+                target.StrikeNPC(projectile.damage, projectile.knockBack, Owner.Center.X > target.Center.X ? -1 : 1);
+                target.immune[0] = 15;
+
+                for (int k = 0; k < 20; k++)
+                {
+                    Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(5), 0, new Color(255, 105, 105), 0.5f);
+
+                    Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(2, 8), 0, default, Main.rand.NextFloat(1, 2));
+                    Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(3, 15), 0, default, Main.rand.NextFloat(1, 2));
+                }
+            }
+
             return false;
-		}
+        }
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
@@ -200,4 +224,14 @@ namespace StarlightRiver.Content.Items.Vitric
             trail?.Render(effect);
         }
     }
+
+	public class RefractiveBladeLaser : ModProjectile, IDrawAdditive
+	{
+
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			
+		}
+	}
 }
