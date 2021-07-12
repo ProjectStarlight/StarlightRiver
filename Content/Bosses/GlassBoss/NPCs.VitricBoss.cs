@@ -27,6 +27,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public List<Vector2> crystalLocations = new List<Vector2>();
         public Rectangle arena;
 
+        public NPC shield;
+        public List<NPC> orbitals = new List<NPC>();
+
         public int twistTimer;
         public int maxTwistTimer;
         public int lastTwistState;
@@ -53,7 +56,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Ceiros");
 
-        public override void SetDefaults()
+		public override bool Autoload(ref string name)
+		{
+            BodyHandler.LoadGores();
+			return base.Autoload(ref name);
+		}
+
+		public override void SetDefaults()
         {
             npc.aiStyle = -1;
             npc.lifeMax = 5000;
@@ -134,12 +143,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 ChangePhase(AIStates.Dying, true);
+                npc.dontTakeDamage = true;
                 npc.life = 1;
+
+                return false;
             }
 
+            if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
+                return true;
 
-            if (Phase == (int)AIStates.Dying && GlobalTimer >= 659) return true;
-            else return false;
+            else 
+                return false;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -208,7 +222,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void NPCLoot()
         {
-            if (Main.expertMode) npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
+            body.SpawnGores();
+
+            if (Main.expertMode) 
+                npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
+
             else
             {
                 int weapon = Main.rand.Next(1);
@@ -349,9 +367,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (npc?.active == true && (npc.type == NPCType<VitricBossPlatformUp>() || npc.type == NPCType<VitricBossPlatformDown>())) crystalLocations.Add(npc.Center + new Vector2(0, -48));
                     }
 
-                    const int arenaWidth = 1408;
-                    const int arenaHeight = 900;
-                    arena = new Rectangle((int)npc.Center.X - arenaWidth / 2, (int)npc.Center.Y - 800 - arenaHeight / 2, arenaWidth, arenaHeight);
+                    const int arenaWidth = 1280;
+                    const int arenaHeight = 884;
+                    arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
 
                     ChangePhase(AIStates.SpawnAnimation, true);
                     break;
@@ -561,10 +579,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         for(int k = 0; k < 3; k++)
 						{
                             int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<FinalOrbital>(), ai2: k / 3f * (float)Math.PI * 2);
-                            var newShield = Main.npc[i];
+                            var newOrbital = Main.npc[i];
 
-                            if(newShield.modNPC is FinalOrbital)
-                                (newShield.modNPC as FinalOrbital).parent = npc;
+                            if(newOrbital.modNPC is FinalOrbital)
+                                (newOrbital.modNPC as FinalOrbital).parent = npc;
+
+                            orbitals.Add(newOrbital);
 						}
 
                         int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
@@ -573,6 +593,25 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         if (laserCore.modProjectile is FinalLaser)
                             (laserCore.modProjectile as FinalLaser).parent = this;
                     }
+
+                    if(GlobalTimer > 590 && (GlobalTimer - 590) % (1350 + 120) == 0)
+					{
+                        int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
+                        var laserCore = Main.projectile[i2];
+
+                        if (laserCore.modProjectile is FinalLaser)
+                            (laserCore.modProjectile as FinalLaser).parent = this;
+                    }
+
+                    if(orbitals.All(n => n.ai[1] == 1 && n.ai[0] > 60))
+					{
+                        foreach(NPC orbital in orbitals)
+						{
+                            var orb = orbital.modNPC as FinalOrbital;
+                            orb.Timer = 0;
+                            orb.Phase = 2;
+						}
+					}
 
                     break;
 

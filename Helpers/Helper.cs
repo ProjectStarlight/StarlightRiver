@@ -107,7 +107,7 @@ namespace StarlightRiver.Helpers
             (Main.item[item].modItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
-        public static void DrawSymbol(SpriteBatch spriteBatch, Vector2 position, Color color)
+        public static void DrawSymbol(SpriteBatch spriteBatch, Vector2 position, Color color) //what even is this?
         {
             Texture2D tex = GetTexture("StarlightRiver/Assets/Symbol");
             spriteBatch.Draw(tex, position, tex.Frame(), color * 0.8f, 0, tex.Size() / 2, 1, 0, 0);
@@ -116,6 +116,49 @@ namespace StarlightRiver.Helpers
 
             float fade = StarlightWorld.rottime / 6.28f;
             spriteBatch.Draw(tex2, position, tex2.Frame(), color * (1 - fade), 0, tex2.Size() / 2f, fade * 1.1f, 0, 0);
+        }
+
+        public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
+		{
+            intersectPoint = Vector2.Zero;
+
+            return
+                LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.TopRight(), out intersectPoint) ||
+                LinesIntersect(point1, point2, hitbox.TopLeft(), hitbox.BottomLeft(), out intersectPoint) ||
+                LinesIntersect(point1, point2, hitbox.BottomLeft(), hitbox.BottomRight(), out intersectPoint) ||
+                LinesIntersect(point1, point2, hitbox.TopRight(), hitbox.BottomRight(), out intersectPoint);
+        }
+
+        public static bool LinesIntersect(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4, out Vector2 intersectPoint) //algorithm taken from http://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
+        {
+            intersectPoint = Vector2.Zero;
+
+            var denominator = (point4.Y - point3.Y) * (point2.X - point1.X) - (point4.X - point3.X) * (point2.Y - point1.Y);
+
+            var a = (point4.X - point3.X) * (point1.Y - point3.Y) - (point4.Y - point3.Y) * (point1.X - point3.X);
+            var b = (point2.X - point1.X) * (point1.Y - point3.Y) - (point2.Y - point1.Y) * (point1.X - point3.X);
+
+            if (denominator == 0)
+            {
+                if (a == 0 || b == 0) //lines are coincident
+                {
+                    intersectPoint = point3; //possibly not the best fallback?
+                    return true;
+                }
+
+                else return false; //lines are parallel
+            }
+
+            var ua = a / denominator;
+            var ub = b / denominator;
+
+            if (ua > 0 && ua < 1 && ub > 0 && ub < 1)
+            {
+                intersectPoint = new Vector2(point1.X + ua * (point2.X - point1.X), point1.Y + ua * (point2.Y - point1.Y));
+                return true;
+            }
+
+            return false;
         }
 
         public static bool CheckCircularCollision(Vector2 center, int radius, Rectangle hitbox)
@@ -294,7 +337,6 @@ namespace StarlightRiver.Helpers
                 !Framing.GetTileSafely(x + 1, y).active() ||
                 !Framing.GetTileSafely(x, y - 1).active() ||
                 !Framing.GetTileSafely(x, y + 1).active();
-
         }
 
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();

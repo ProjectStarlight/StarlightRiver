@@ -96,10 +96,10 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         //this is vanilla code. I cant be assed to try to change this. Only alternative I see is porting this all to IL.
-        private static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
+        internal static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
         {
             Item item = inv[slot];
-            Vector2 scaleVector = back.Size() * Main.inventoryScale;
+            Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;
             Texture2D itemTexture = ModContent.GetTexture(item.modItem.Texture);
             Rectangle source = (itemTexture.Frame(1, 1, 0, 0));
             Color currentColor = color;

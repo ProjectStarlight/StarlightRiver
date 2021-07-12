@@ -100,8 +100,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 npc.frame.X += npc.width;
                 npc.frame.Y = 0;
 
-                int i = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<PlayerShield>(), 0, 0);
-                (Main.projectile[i].modProjectile as PlayerShield).parent = parent;
+                parent.shield = InworldItem.CreateItem<PlayerShield>(npc.Center);
+                (parent.shield.modNPC as PlayerShieldNPC).parent = parent;
             }
 
             if (Timer > 140 && Timer < 180)

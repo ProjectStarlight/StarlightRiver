@@ -5,6 +5,7 @@ using StarlightRiver.Physics;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
@@ -21,6 +22,24 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Vector2 end = new Vector2(parent.arena.Center.X, parent.arena.Bottom); //WIP, dunno how this works yet - will not change anything in-game
             chain = new VerletChainInstance(9, true, parent.npc.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
             chain.drag = 1.1f;
+        }
+
+        public static void LoadGores()
+		{
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadTop", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadNose", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadJaw", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/CheekLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/CheekRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HornLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HornRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/BodyTop", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/BodyBottom", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentLarge", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentMedium", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentSmall", new DebugGore());
         }
 
         public void DrawBody(SpriteBatch sb)
@@ -46,9 +65,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 case 0: source = new Rectangle(0, 0, 0, 0); break;
                 case 1: source = new Rectangle(0, 0, 114, 114); break;
                 case 2: source = new Rectangle(18, 120, 78, 44); break;
+
                 case 3:
                 case 4:
                     source = new Rectangle(26, 168, 62, 30); break;
+
                 default: source = new Rectangle(40, 204, 34, 28); break;
             }
 
@@ -120,5 +141,73 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             chain.ropeSegments[index].posNow.X += (float)Math.Sin(Main.GameUpdateCount / 40f + (index * 0.8f)) * 0.5f;
         }
+
+        public void SpawnGores()
+		{
+            for (int k = 0; k < chain.ropeSegments.Count; k++)
+			{
+                var pos = chain.ropeSegments[k].posNow;
+
+                switch (k)
+                {
+                    case 0:
+                        GoreMe(pos, new Vector2(0, -15), AssetDirectory.GlassBoss + "Gore/HeadTop");
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/HeadNose");
+                        GoreMe(pos, new Vector2(0, 80), AssetDirectory.GlassBoss + "Gore/HeadJaw");
+
+                        GoreMe(pos, new Vector2(-60, -30), AssetDirectory.GlassBoss + "Gore/HeadLeft");
+                        GoreMe(pos, new Vector2(60, -30), AssetDirectory.GlassBoss + "Gore/HeadRight");
+
+                        GoreMe(pos, new Vector2(-45, 40), AssetDirectory.GlassBoss + "Gore/CheekLeft");
+                        GoreMe(pos, new Vector2(45, 40), AssetDirectory.GlassBoss + "Gore/CheekRight");
+
+                        GoreMe(pos, new Vector2(-60, 0), AssetDirectory.GlassBoss + "Gore/HornLeft");
+                        GoreMe(pos, new Vector2(60, 0), AssetDirectory.GlassBoss + "Gore/HornRight");
+
+                        break;
+
+                    case 1:
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/BodyTop");
+                        GoreMe(pos, new Vector2(0, 50), AssetDirectory.GlassBoss + "Gore/BodyBottom");
+                        break;
+
+                    case 2:
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentLarge");
+                        break;
+
+                    case 3:
+                    case 4:
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentMedium");
+                        break;
+
+                    default:
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentSmall");
+                        break;
+                }
+            }
+		}
+
+        private void GoreMe(Vector2 pos, Vector2 offset, string tex)
+		{
+            var texture = GetTexture(tex);
+            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(2, 4), ModGore.GetGoreSlot(tex));
+        }
     }
+
+    class DebugGore : ModGore
+	{
+		public override void OnSpawn(Gore gore)
+		{
+            gore.timeLeft = 30;
+		}
+
+		public override bool Update(Gore gore)
+		{
+            return true;
+
+            gore.timeLeft -= 5;
+            gore.active = gore.timeLeft > 0;
+            return false;
+		}
+	}
 }
