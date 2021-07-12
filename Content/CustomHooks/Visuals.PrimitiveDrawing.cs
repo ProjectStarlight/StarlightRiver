@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            //On.Terraria.Main.DoDraw += DrawPrimitives;
+            On.Terraria.Main.DoDraw += DrawPrimitives;
         }
 
         private void DrawPrimitives(On.Terraria.Main.orig_DoDraw orig, Main self, GameTime gameTime)

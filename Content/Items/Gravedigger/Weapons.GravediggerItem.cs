@@ -54,12 +54,15 @@ namespace StarlightRiver.Content.Items.Astroflora
 		private const int COLUMNTHREEFRAMES = 3;
 		private const int COLUMNFOURFRAMES = 4;
 
-
 		private int frameX = 0;
 		private int SlashWindow = 0;
 		private Vector2 direction = Vector2.Zero;
 		private Vector2 directionTwo = Vector2.Zero;
+
 		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerSwing";
+
+		Player Player => Main.player[projectile.owner];
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grave digger");
@@ -77,8 +80,6 @@ namespace StarlightRiver.Content.Items.Astroflora
 			projectile.localNPCHitCooldown = 16;
 			projectile.ownerHitCheck = true;
 		}
-
-		Player Player => Main.player[projectile.owner];
 
 		private bool FirstTickOfSwing
 		{
@@ -110,9 +111,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 				return Vector2.Zero;
             }
 		}
+
 		public override void AI()
 		{
 			projectile.velocity = Vector2.Zero;
+
 			if (FirstTickOfSwing)
 			{
 				directionTwo = Main.MouseWorld - Player.MountedCenter;
@@ -122,6 +125,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				projectile.frameCounter = 0;
 				SlashWindow = 30;
 				FirstTickOfSwing = false;
+
 				if (Player.controlUp)
 				{
 					direction = new Vector2(Player.direction, -1);
@@ -137,31 +141,33 @@ namespace StarlightRiver.Content.Items.Astroflora
 				{
 					Player.GetModPlayer<GravediggerPlayer>().Combo++;
 					SwingFrame = Player.GetModPlayer<GravediggerPlayer>().SwingFrame == 1 ? 0 : 1;
+
 					if (SwingFrame == 0)
-					{
 						direction = new Vector2(Player.direction, 1);
-					}
 					else
-                    {
 						direction = new Vector2(Player.direction, -1);
-					}
 				}
+
 				direction.Normalize();
 				Player.GetModPlayer<GravediggerPlayer>().SwingFrame = SwingFrame;
 
 				DoSFX();
 			}
+
 			Player.heldProj = projectile.whoAmI;
 			Player.itemTime = 2;
 			Player.itemAnimation = 2;
 			Player.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
+
 			Vector2 frameOrigin;
+
 			if (Player.direction < 0)
 				frameOrigin = new Vector2(FRAMEWIDTH, FRAMEHEIGHT) - SwingOrigin;
 			else
 				frameOrigin = SwingOrigin;
 
 			projectile.position = Player.MountedCenter - frameOrigin;
+
 			if (SwingFrame < 2)
 			{
 				if (!CheckFrameDeath())
@@ -171,6 +177,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					else if (SwingFrame == 1) 
 						direction = direction.RotatedBy(Player.direction * -0.45f);
 				}
+
 				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
 				projectile.position += (directionTwo * 10);
 				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation()  - ((Player.direction < 0) ? 0 : MathHelper.Pi));
@@ -185,6 +192,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					else if (SwingFrame == 3) //swing DOWN
 						direction = direction.RotatedBy(Player.direction * -0.2f);
 				}
+
 				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 				projectile.rotation = 0;
 			}
@@ -208,9 +216,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 				projectile.frame++;
 				projectile.frameCounter = 0;
 			}
+
 			if (CheckFrameDeath()) //TODO: Sync in multiplayer
 			{
 				SlashWindow--;
+
 				if (Player == Main.LocalPlayer)
 				{
 					if (Main.mouseLeft && SlashWindow < 20)
@@ -261,6 +271,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					break;
             }
         }
+
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -314,7 +325,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		}
     }
 
-	internal class GravediggerPlayer : ModPlayer
+	internal class GravediggerPlayer : ModPlayer //??? just hook the ResetEffects event in StarlightPlayer for this?
 	{
 		public int SwingDelay = 0;
 		public int SwingFrame = 0;
