@@ -10,6 +10,7 @@ using StarlightRiver.Content.Projectiles;
 using Terraria.ID;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -156,8 +157,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Impale");
-            Main.PlaySound(slot.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot.Style, 1, Main.rand.NextFloat(0.6f, 0.9f));
             hitDirection = Main.player[projectile.owner].direction;
             if (BuffPower > 0)
             {
@@ -171,9 +170,26 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 BuffPower = 0;
             }
-            
-            for (int k = 0; k < 20; k++)
-                Dust.NewDustPerfect(projectile.Center, DustID.Blood, Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, default, 1.5f);
+
+            if (Helpers.Helper.IsFleshy(target))
+            {
+                Helpers.Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), projectile.Center);
+
+                for (int k = 0; k < 20; k++)
+                {
+                    Dust.NewDustPerfect(projectile.Center, DustID.Blood, Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, default, 1.5f);
+                }
+            }
+
+            else
+			{
+                Helpers.Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), projectile.Center);
+
+                for(int k = 0; k < 15; k++)
+				{
+                    Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Glow>(), Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.5f));
+                }
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

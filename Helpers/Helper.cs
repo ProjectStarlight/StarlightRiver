@@ -52,6 +52,23 @@ namespace StarlightRiver.Helpers
 
         public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.rottime)) / 2f);
 
+        /// <summary>
+        /// determines if an npc is "fleshy" based on it's hit sound
+        /// </summary>
+        /// <param name="npc"></param>
+        /// <returns></returns>
+        public static bool IsFleshy(NPC npc)
+		{
+            return !
+                (
+                    npc.HitSound == SoundID.NPCHit2 ||
+                    npc.HitSound == SoundID.NPCHit3 ||
+                    npc.HitSound == SoundID.NPCHit4 ||
+                    npc.HitSound == SoundID.NPCHit41 ||
+                    npc.HitSound == SoundID.NPCHit42
+                );
+		}
+
         public static Vector2 Centeroid (List<NPC> input) //Helper overload for NPCs for support NPCs
 		{
             List<Vector2> centers = new List<Vector2>();
@@ -340,7 +357,7 @@ namespace StarlightRiver.Helpers
         }
 
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
-        public static SoundEffectInstance PlayPitched(string path, float volume, float pitch)
+        public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
         {
             for(int i = 0; i < instances.Count; i++)
             {
@@ -359,24 +376,35 @@ namespace StarlightRiver.Helpers
             }
 
             var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance();
-            soundEffect.Volume = volume * Main.soundVolume;
+
+            float distFactor = 1;
+
+            if (position != default)
+                distFactor = 1 - MathHelper.Clamp(Vector2.Distance(Main.LocalPlayer.Center, position) / 2000f, 0, 1);
+
+            soundEffect.Volume = volume * Main.soundVolume * distFactor;
             soundEffect.Pitch = pitch;
+            soundEffect.Pan = position.X > Main.screenPosition.X + Main.screenWidth / 2 ? 1 : -1;
 
             instances.Add(soundEffect);
             soundEffect.Play();
             return soundEffect;
         }
 
-        public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch)
+        public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
         {
-            var instance = style;
+            if (position == default)
+                position = Vector2.One * -1;
 
-            return Main.PlaySound(instance.SoundId, -1, -1, instance.Style, volume, pitch);
+            return Main.PlaySound(style.SoundId, (int)position.X, (int)position.Y, style.Style, volume, pitch);
         }
 
-        public static SoundEffectInstance PlayPitched(int style, float volume, float pitch)
+        public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
         {
-            return Main.PlaySound(style, -1, -1, 1, volume, pitch);
+            if (position == default)
+                position = Vector2.One * -1;
+
+            return Main.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
         }
     }
 }

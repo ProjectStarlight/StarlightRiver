@@ -33,8 +33,8 @@ namespace StarlightRiver.Content.Items.Vitric
             item.damage = 56;
             item.width = 60;
             item.height = 60;
-            item.useTime = 30;
-            item.useAnimation = 30;
+            item.useTime = 22;
+            item.useAnimation = 22;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.melee = true;
             item.noMelee = true;
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
                     case 0:
                         direction = 1;
-                        maxTime = 30;
+                        maxTime = 22;
                         maxAngle = 4;
                         break;
                     case 1:
@@ -147,12 +147,13 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
-        }
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-            if (Helper.CheckLinearCollision(Owner.Center, projectile.Center, targetHitbox, out Vector2 hitPoint))
+            Helper.CheckLinearCollision(Owner.Center, projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual npc ref, soo...
+
+            if (Helper.IsFleshy(target))
             {
+                Helper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, projectile.Center);
+
                 for (int k = 0; k < 20; k++)
                 {
                     Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.25f) * Main.rand.NextFloat(5), 0, new Color(255, 105, 105), 0.5f);
@@ -160,9 +161,23 @@ namespace StarlightRiver.Content.Items.Vitric
                     Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(2, 8), 0, default, Main.rand.NextFloat(1, 2));
                     Dust.NewDustPerfect(hitPoint, DustID.Blood, Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(3, 15), 0, default, Main.rand.NextFloat(1, 2));
                 }
-
-                return true;
             }
+
+            else
+            {
+                Helper.PlayPitched("Impacts/Clink", 0.5f, 0, projectile.Center);
+
+                for (int k = 0; k < 30; k++)
+                {
+                    Dust.NewDustPerfect(hitPoint, DustType<Glow>(), Vector2.Normalize(hitPoint - Owner.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 8), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.7f));
+                }
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+            if (Helper.CheckLinearCollision(Owner.Center, projectile.Center, targetHitbox, out Vector2 hitPoint))
+                return true;
 
             return false;
         }
@@ -175,8 +190,8 @@ namespace StarlightRiver.Content.Items.Vitric
             float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
             var pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
 
-            spriteBatch.Draw(tex, pos, null, lightColor, projectile.rotation, new Vector2(0, tex.Height), 1, 0, 0);
-            spriteBatch.Draw(texGlow, pos, null, Color.White, projectile.rotation, new Vector2(0, texGlow.Height), 1, 0, 0);
+            spriteBatch.Draw(tex, pos, null, lightColor, projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
+            spriteBatch.Draw(texGlow, pos, null, Color.White, projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
 
             return false;
 		}
@@ -189,11 +204,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 for (int i = 0; i < 10; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Vector2.Lerp(projectile.Center, Owner.Center, 0.15f));
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Vector2.Lerp(projectile.Center, Owner.Center, 0.15f));
 
             while (cache.Count > 10)
             {
@@ -203,16 +218,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * (20 + 40 * Timer / maxTime), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * (50 + 40 * Timer / maxTime), factor =>
             {
                 if (factor.X >= 0.8f)
                     return Color.White * 0;
 
-                return new Color(255, 160 + (int)(factor.X * 60), 105) * (factor.X * SinProgress );
+                return new Color(255, 120 + (int)(factor.X * 70), 80) * (factor.X * SinProgress );
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Vector2.Lerp(projectile.Center, Owner.Center, 0.15f) + projectile.velocity;
         }
 
         public void DrawPrimitives()
