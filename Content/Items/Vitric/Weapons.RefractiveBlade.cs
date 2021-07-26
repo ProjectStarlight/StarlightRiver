@@ -417,8 +417,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
             spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
-            spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 4.4f, 0, 0);
-            spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.45f, 0, 0);
+            spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 3.8f, 0, 0);
+            spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
 
             for (int k = 0; k < 4; k++)
             {
