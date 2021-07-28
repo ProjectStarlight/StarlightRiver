@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's shitty ass way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.
         {
-            Tile tile = Main.tile[i, j]; //you could probably add more safety checks if you want to be extra giga secure, but we assume RandomUpdate only calls valid tiles here
+            Tile tile = Framing.GetTileSafely(i, j); //you could probably add more safety checks if you want to be extra giga secure, but we assume RandomUpdate only calls valid tiles here
             TileObjectData data = TileObjectData.GetTileData(tile); //grabs the TileObjectData associated with our tile. So we dont have to use as many magic numbers
             int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); //the width of a full frame of our multitile in pixels. We get this by multiplying the size of 1 full frame with padding by the width of our tile in tiles.
 
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Tiles.Forest
         {
             if (Main.tile[i, j].frameX > 35) //Only runs if it has berries
             {
-                Tile tile = Main.tile[i, j]; //Selects current tile
+                Tile tile = Framing.GetTileSafely(i, j); //Selects current tile
 
                 int newX = i; //Here to line 67 adjusts the tile position so we get the top-left of the multitile
                 int newY = j;
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void MouseOver(int i, int j)
         {
-            if (Main.tile[i, j].frameX >= 32)
+            if (Framing.GetTileSafely(i, j).frameX >= 32)
             {
                 Player player = Main.LocalPlayer;
                 player.showItemIcon2 = ItemType<ForestBerries>();

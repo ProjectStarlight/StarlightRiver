@@ -297,6 +297,9 @@ namespace StarlightRiver.Physics
         public void DrawStrip(float scale, Vector2 offset = default)
         {
             if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
+
+            Main.spriteBatch.Begin();
+
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             PrepareStrip(out var buffer, offset, scale);
@@ -307,6 +310,8 @@ namespace StarlightRiver.Physics
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
             }
+
+            Main.spriteBatch.End();
         }
 
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)

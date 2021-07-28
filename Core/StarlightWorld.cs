@@ -230,7 +230,9 @@ namespace StarlightRiver.Core
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 
             Chungus = tag.GetFloat("Chungus");
-            Chungus += 0.01f;
+
+            if(Chungus < 1)
+                Chungus += 0.01f;
 
             knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 

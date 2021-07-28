@@ -21,9 +21,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public ref float Timer => ref projectile.ai[0];
         public ref float LaserRotation => ref projectile.ai[1];
 
-        public int direction = -1;
-
         private float LaserTimer => (Timer - 120) % 400;
+
+        public int direction = -1;
+        public Vector2 endpoint = Vector2.Zero;
 
         public override void SetStaticDefaults()
         {
@@ -42,13 +43,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Timer++;
             projectile.timeLeft = 2;
 
-            projectile.scale = Math.Min(2, (Timer / 30f));
-
             if(Timer < 60)
 			{
                 var rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(-rot), 0, Color.Yellow, (1 - (Timer / 60f)));
-			}
+                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (1 - (Timer / 60f)));
+
+                projectile.scale = Math.Min(1, (Timer / 60f));
+            }
 
             if(Timer > 120)
 			{
@@ -59,26 +60,77 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 				{
                     projectile.netUpdate = true;
                     LaserRotation = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation();
-				}
+
+                    var rot = Main.rand.NextFloat(6.28f);
+                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow,  (LaserTimer - 30) / 45f);
+                }
 
                 if (LaserTimer == 150)
                     Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
-                if(LaserTimer > 150)
+                if(LaserTimer > 150) //laser is actually active
 				{
-                    LaserRotation += 0.01f * direction;
+                    float laserSpeed = 0.008f;
+
+                    for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
+                    {
+                        Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
+
+                        if (!parent.arena.Contains(posCheck.ToPoint()))
+						{
+                            endpoint = posCheck;
+                            break;
+						}
+                    }
+
+                    if (parent.shield != null && parent.shield.scale > 0.5f)
+                    {
+                        Vector2 shieldEdge1 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * 31 * parent.shield.scale;
+                        Vector2 shieldEdge2 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * -31 * parent.shield.scale;
+                        Vector2 intersection = Vector2.Zero;
+
+                        if (Helpers.Helper.LinesIntersect(projectile.Center, endpoint, shieldEdge1, shieldEdge2, out intersection))
+                        {
+                            endpoint = intersection;
+                            (parent.shield.modNPC as PlayerShieldNPC).startPoint = intersection;
+
+                            laserSpeed = 0.002f;
+                            Main.NewText("TESTIFICATE");
+                        }
+						else
+						{
+                            (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
+                        }
+                    }
+
+                    LaserRotation += laserSpeed * direction;
+
+                    for (int k = 0; k < Main.maxPlayers; k++) //laser colission
+					{
+                        Vector2 point;
+                        var player = Main.player[k];
+
+                        if (player.active && !player.dead && Helpers.Helper.CheckLinearCollision(projectile.Center, endpoint, player.Hitbox, out point))
+                        {
+                            player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was reduced to ash"), 10, 0, false, false, false, 5);
+                            endpoint = point;
+                            break;
+                        }
+                    }
 				}
-			}
 
-            if(Timer > 890)
+                else
+                    (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
+            }
+
+            if(Timer > 1350 || parent.Phase == (int)VitricBoss.AIStates.Dying || parent.Phase == (int)VitricBoss.AIStates.Leaving)
 			{
+                projectile.scale -= 0.05f;
 
+                if (projectile.scale <= 0)
+                    projectile.active = false;
 			}
-        }
 
-        public override void Kill(int timeLeft)
-        {
-            base.Kill(timeLeft);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
@@ -110,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
             }
 
-            if (LaserTimer > 150) //teh actual laser
+            if (LaserTimer > 150) //the actual laser
             {
                 var texBeam = GetTexture(AssetDirectory.MiscTextures + "BeamCore");
                 var texBeam2 = GetTexture(AssetDirectory.MiscTextures + "BeamTrail");
@@ -127,16 +179,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 float height = texBeam.Height / 2f;
-                int width = 0;
-
-                for(int k = 0; k < 80; k++)
-				{
-                    Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 16;
-
-                    if (parent.arena.Contains(posCheck.ToPoint()))
-                        width += 16;
-                    else break;
-                }
+                int width = (int)(projectile.Center - endpoint).Length();
 
                 if (LaserTimer - 150 < 20)
                     height = texBeam.Height / 2f * (LaserTimer - 150) / 20f;
@@ -179,10 +222,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 var impactTex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
+                var impactTex2 = GetTexture(AssetDirectory.GUI + "ItemGlow");
                 var glowTex = GetTexture(AssetDirectory.Assets + "GlowTrail");
 
-                spriteBatch.Draw(impactTex, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width - Main.screenPosition, null, color * (height * 0.015f), 0, impactTex.Size() / 2, 4.4f, 0, 0);
                 spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
+
+                spriteBatch.Draw(impactTex, endpoint - Main.screenPosition, null, color * (height * 0.006f), 0, impactTex.Size() / 2, 6.4f, 0, 0);
+                spriteBatch.Draw(impactTex2, endpoint - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
 
                 for (int k = 0; k < 4; k++)
                 {
