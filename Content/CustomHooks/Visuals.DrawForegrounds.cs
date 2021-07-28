@@ -14,6 +14,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             On.Terraria.Main.DrawInterface += DrawForeground;
         }
 

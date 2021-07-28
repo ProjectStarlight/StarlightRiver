@@ -22,6 +22,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load() //funny how the length of these lines line up perfectly. heh.
         {
+            if (Main.dedServ)
+                return;
+
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.DrawSelf += VoidIcon;
             On.Terraria.GameContent.UI.Elements.UIWorldListItem.ctor += AddWorldData;
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += RefreshWorldData;

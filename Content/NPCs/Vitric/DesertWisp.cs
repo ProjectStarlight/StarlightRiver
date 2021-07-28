@@ -62,12 +62,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
     internal class DesertWisp2 : DesertWisp
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
-        public Trail trail = new Trail(Main.graphics.GraphicsDevice, 80, new NoTip(), TrailWidth, TrailColor);
+        public Trail trail;// = new Trail(Main.graphics.GraphicsDevice, 80, new NoTip(), TrailWidth, TrailColor);
 
 		public override void SetStaticDefaults()
 		{
             NPCID.Sets.TrailCacheLength[npc.type] = 80;
             NPCID.Sets.TrailingMode[npc.type] = 1;
+        }
+
+		public override void SetDefaults()
+		{
+            if (!Main.dedServ)
+                trail = new Trail(Main.graphics.GraphicsDevice, 80, new NoTip(), TrailWidth, TrailColor);
         }
 
 		private static Color TrailColor(Vector2 textureCoordinates)

@@ -21,6 +21,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody, 1);
             BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, 1);
 

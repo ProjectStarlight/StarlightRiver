@@ -135,7 +135,7 @@ namespace StarlightRiver.Core
                 DustType<Content.Dusts.OvergrowDust>(), Vector2.Zero, 0, new Color(255, 255, 205) * 0.05f, 2);
             }
 
-            if(ZoneGlass)
+            if(ZoneGlass && !Main.dedServ && player == Main.LocalPlayer)
             {
                 //var a = Filters.Scene;
                 if (!Filters.Scene["GradientDistortion"].IsActive())

@@ -164,17 +164,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             LightingBufferRenderer.DrawWithLighting(pos2, tex, source2, Color.White * 0.8f);
         }
 
-        private static readonly VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
-
-        private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
-
+        private static VertexPositionColorTexture[] verticies;
+        private static VertexBuffer buffer;
         private static Effect ApplyEffect;
 
         private void DrawShine(Rectangle target)
         {
             if (Main.dedServ || !Helper.OnScreen(target)) return;
 
+            //these should only initialize on the client!!!
             if (ApplyEffect is null) ApplyEffect = Main.dedServ ? null : ApplyEffect = Filters.Scene["WaterShine"].GetShader().Shader;
+            if(buffer is null) buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+            if(verticies is null) verticies = new VertexPositionColorTexture[6];
 
             Matrix zoom = new Matrix
                 (

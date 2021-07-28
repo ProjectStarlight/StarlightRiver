@@ -19,6 +19,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             IL.Terraria.Main.DrawTiles += DrawZoomOut;
             IL.Terraria.Main.InitTargets_int_int += ChangeTargets;
             On.Terraria.Main.DrawTiles += OffsetDrawing;

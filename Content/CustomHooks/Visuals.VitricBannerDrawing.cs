@@ -16,6 +16,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
             On.Terraria.Main.SetDisplayMode += RefreshBannerTarget;
             Main.OnPreDraw += DrawVerletBannerTarget;

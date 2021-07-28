@@ -18,6 +18,9 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
+            if (Main.dedServ)
+                return;
+
             Mod mod = StarlightRiver.Instance;
 
             foreach (Type t in mod.Code.GetTypes())

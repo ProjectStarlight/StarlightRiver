@@ -16,8 +16,11 @@ namespace StarlightRiver.Core.Loaders
     {
         public float Priority { get => 0.9f; }
 
-        public void Load() //TODO: Debug and fix this after we can build
+        public void Load() 
         {
+            if (Main.dedServ)
+                return;
+
             MethodInfo info = typeof(Mod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
             var file = (TmodFile)info.Invoke(StarlightRiver.Instance, null);
 

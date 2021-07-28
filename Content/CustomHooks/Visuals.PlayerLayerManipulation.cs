@@ -21,6 +21,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             IL.Terraria.Main.DrawPlayer_DrawAllLayers += ManipulateLayers;
         }
 

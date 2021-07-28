@@ -1,5 +1,5 @@
 ﻿using Terraria.Graphics;
-
+using Terraria;
 using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -11,6 +11,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             On.Terraria.Graphics.SpriteViewMatrix.ShouldRebuild += UpdateMatrixFirst;
         }
 

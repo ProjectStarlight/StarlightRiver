@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             //Under water
             On.Terraria.Main.drawWaters += DrawUnderwaterNPCs;
             //Keys

@@ -17,6 +17,9 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
+            if (Main.dedServ)
+                return;
+
             StarlightRiver.primitives = new PrimTrailManager();
             StarlightRiver.primitives.LoadContent(Main.graphics.GraphicsDevice);
 

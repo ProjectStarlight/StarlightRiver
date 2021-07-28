@@ -15,6 +15,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Load()
 		{
+			if (Main.dedServ)
+				return;
+
 			IL.Terraria.Main.DrawInterface_Resources_Life += ShiftText;
 		}
 

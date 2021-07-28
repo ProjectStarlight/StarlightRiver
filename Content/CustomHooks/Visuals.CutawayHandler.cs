@@ -31,6 +31,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Load()
 		{
+			if (Main.dedServ)
+				return;
+
 			On.Terraria.Main.SetDisplayMode += RefrashCutawayTarget;
 			On.Terraria.Main.DrawInterface += DrawNegative;
 			On.Terraria.Main.DrawDust += DrawPositive;

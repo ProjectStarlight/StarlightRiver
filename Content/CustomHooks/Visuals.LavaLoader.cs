@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.Lavas
 
         public void Load()
         {
+            if (Main.dedServ)
+                return;
+
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw += DrawSpecialLava;
             IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
 

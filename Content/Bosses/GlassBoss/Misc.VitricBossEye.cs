@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         readonly VitricBoss parent;
         readonly VerletChainInstance chain;
-        readonly Effect fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
+        readonly Effect fireEffect;
         Vector2 position;
 
         public VitricBossSwoosh(Vector2 offset, int length, VitricBoss parent)
@@ -60,12 +60,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             position = offset;
             this.parent = parent;
 
-            chain = new VerletChainInstance(length, true, parent.npc.Center + position, 8)
+            if (!Main.dedServ)
             {
-                constraintRepetitions = 2,
-                drag = 1.5f,
-                forceGravity = new Vector2(0f, 0.25f),
-            };
+                fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
+
+                chain = new VerletChainInstance(length, true, parent.npc.Center + position, 8)
+                {
+                    constraintRepetitions = 2,
+                    drag = 1.5f,
+                    forceGravity = new Vector2(0f, 0.25f),
+                };
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

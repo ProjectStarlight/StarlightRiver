@@ -35,14 +35,20 @@ namespace StarlightRiver.Core
 			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
 			Main.OnPreDraw += DrawAuroraTarget;
 
-			auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-			auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			if (!Main.dedServ)
+			{
+				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+				auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			}
 
 			return base.Autoload(ref name);		
 		}
 
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
+			if (Main.dedServ)
+				return;
+
 			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
 			{
 				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
@@ -54,6 +60,9 @@ namespace StarlightRiver.Core
 
 		private void DrawAuroraTarget(GameTime obj)
 		{
+			if (Main.dedServ)
+				return;
+
 			Main.spriteBatch.Begin();
 
 			Main.graphics.GraphicsDevice.SetRenderTarget(auroraTarget);

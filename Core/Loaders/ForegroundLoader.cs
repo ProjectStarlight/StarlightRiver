@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
@@ -18,6 +19,9 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
+            if (Main.dedServ)
+                return;
+
             Mod mod = StarlightRiver.Instance;
 
             foreach (Type t in mod.Code.GetTypes())

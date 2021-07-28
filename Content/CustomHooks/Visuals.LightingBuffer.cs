@@ -14,6 +14,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
+            if (Main.dedServ)
+                return;
+
             Main.OnPreDraw += LightingTarget;
             On.Terraria.Main.SetDisplayMode += RefreshLightingTarget;
         }
