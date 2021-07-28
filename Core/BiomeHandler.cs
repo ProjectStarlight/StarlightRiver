@@ -135,22 +135,25 @@ namespace StarlightRiver.Core
                 DustType<Content.Dusts.OvergrowDust>(), Vector2.Zero, 0, new Color(255, 255, 205) * 0.05f, 2);
             }
 
-            if(ZoneGlass && !Main.dedServ && player == Main.LocalPlayer)
+            if (!Main.dedServ && player == Main.LocalPlayer)
             {
-                //var a = Filters.Scene;
-                if (!Filters.Scene["GradientDistortion"].IsActive())
+                if (ZoneGlass)
                 {
-                    Filters.Scene.Activate("GradientDistortion").GetShader()
-                        .UseOpacity(2.5f)
-                        .UseIntensity(7f)
-                        .UseProgress(6)
-                        .UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+                    //var a = Filters.Scene;
+                    if (!Filters.Scene["GradientDistortion"].IsActive())
+                    {
+                        Filters.Scene.Activate("GradientDistortion").GetShader()
+                            .UseOpacity(2.5f)
+                            .UseIntensity(7f)
+                            .UseProgress(6)
+                            .UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+                    }
                 }
-            }
-            else
-            {
-                if (Filters.Scene["GradientDistortion"].IsActive())
-                    Filters.Scene.Deactivate("GradientDistortion");
+                else
+                {
+                    if (Filters.Scene["GradientDistortion"].IsActive())
+                        Filters.Scene.Deactivate("GradientDistortion");
+                }
             }
 
             if (ZoneGlassTemple)
