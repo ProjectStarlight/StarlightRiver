@@ -70,22 +70,26 @@ namespace StarlightRiver.Content.CustomHooks
 
         private static void EmitVitricDel(int i, int j, ref float r, ref float g, ref float b)
         {
-            if (Main.tile[i, j] == null)
-            {
+            if (!WorldGen.InWorld(i, j))
                 return;
-            }
-            // If the tile is in the vitric biome and doesn't block light, emit light.
-            bool tileBlock = Main.tile[i, j].active() && Main.tileBlockLight[Main.tile[i, j].type] && !(Main.tile[i, j].slope() != 0 || Main.tile[i, j].halfBrick());
-            bool wallBlock = Main.wallLight[Main.tile[i, j].wall];
-            bool lava = Main.tile[i, j].liquidType() == 1;
-            bool lit = Main.tileLighted[Main.tile[i, j].type];
 
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass && Main.tile[i, j] != null && lava)
+            var tile = Framing.GetTileSafely(i, j);
+
+            if (tile is null)
+                return;
+
+            // If the tile is in the vitric biome and doesn't block light, emit light.
+            bool tileBlock = tile.active() && Main.tileBlockLight[tile.type] && !(tile.slope() != 0 || tile.halfBrick());
+            bool wallBlock = Main.wallLight[tile.wall];
+            bool lava = tile.liquidType() == 1;
+            bool lit = Main.tileLighted[tile.type];
+
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass && tile != null && lava)
             {
                 (r, g, b) = (1, 0, 0);
             }
 
-            if (StarlightWorld.VitricBiome.Contains(i, j) && Main.tile[i, j] != null && !tileBlock && wallBlock && !lava && !lit)
+            if (StarlightWorld.VitricBiome.Contains(i, j) && tile != null && !tileBlock && wallBlock && !lava && !lit)
             {
                 var yOff = j - StarlightWorld.VitricBiome.Y;
                 var progress = 0.5f + (yOff / ((float)StarlightWorld.VitricBiome.Height)) * 0.7f;
@@ -97,7 +101,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //underworld lighting
-            if (Vector2.Distance(Main.LocalPlayer.Center, StarlightWorld.RiftLocation) <= 1500 && j >= Main.maxTilesY - 200 && Main.tile[i, j] != null && !tileBlock && wallBlock && !lit)
+            if (Vector2.Distance(Main.LocalPlayer.Center, StarlightWorld.RiftLocation) <= 1500 && j >= Main.maxTilesY - 200 && tile != null && !tileBlock && wallBlock && !lit)
             {
                 r = 0;
                 g = 0;
@@ -114,7 +118,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //waters, probably not the most amazing place to do this but it works and dosent melt people's PCs
-            if (!tileBlock && Main.tile[i, j].liquid != 0 && Main.tile[i, j].liquidType() == 0)
+            if (!tileBlock && tile.liquid != 0 && tile.liquidType() == 0)
             {
                 //the crimson
                 if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleBloody || Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainJungleBloody)
@@ -178,7 +182,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //trees, 100% not the right place to do this. I should probably move this later. I wont. Kill me.
-            if (Main.tile[i, j].type == TileID.Trees && Main.tile[i, j - 1].type != TileID.Trees && Main.tile[i, j + 1].type == TileID.Trees
+            if (tile.type == TileID.Trees && Main.tile[i, j - 1].type != TileID.Trees && Main.tile[i, j + 1].type == TileID.Trees
                 && Helper.ScanForTypeDown(i, j, ModContent.TileType<Tiles.JungleHoly.GrassJungleHoly>())) //at the top of trees in the holy jungle
             {
                 Color color = new Color();

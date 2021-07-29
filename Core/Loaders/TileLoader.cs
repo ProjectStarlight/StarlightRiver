@@ -77,7 +77,7 @@ namespace StarlightRiver.Core.Loaders
 
 
 
-        public float Priority { get => 1f; }
+        public float Priority { get => 2f; }
 
         public virtual void Load() { }
 

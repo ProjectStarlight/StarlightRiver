@@ -447,7 +447,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
             }
 
-            if (StarlightWorld.cathedralOverlay.fade)
+            if (true)
                 for (int k = 0; k < 7; k++)
                     Lighting.AddLight(npc.Center + new Vector2(off.X * 16, off.Y * 16) + new Vector2(0, -80 + k * 50), color.ToVector3() * 0.5f);
 
