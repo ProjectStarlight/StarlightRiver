@@ -14,8 +14,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
     internal class BoomBug : ModNPC, IDrawAdditive
     {
-        private const int AGGRO_RANGE = 400;
-
         public ref float Timer => ref npc.ai[0];
         public ref float State => ref npc.ai[1];
         public ref float SavedRotation => ref npc.ai[2];
@@ -159,7 +157,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return 10;
+            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 1 : 0;
         }
 
         public override void NPCLoot()

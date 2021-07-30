@@ -161,6 +161,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
+            //Debug drawing
+
+            var debugTex = GetTexture(AssetDirectory.Assets + "Symbol");
+            spriteBatch.Draw(debugTex, PickSide() - Main.screenPosition, null, Color.Red, 0, debugTex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(debugTex, PickSideClose() - Main.screenPosition, null, Color.Blue, 0, debugTex.Size() / 2, 1, 0, 0);
+
+            //end debug
+
             var glowTex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/ForgeGlow");
 
             npc.frame.Width = 128;

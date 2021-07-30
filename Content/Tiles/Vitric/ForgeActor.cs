@@ -8,12 +8,13 @@ using static Terraria.ModLoader.ModContent;
 
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class ForgeActor : ModTile
+    class ForgeActor : DummyTile
     {
-        public static GlassMiniboss boss;
+        public override int DummyType => ProjectileType<ForgeActorDummy>();
 
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -22,14 +23,51 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
 
         public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+    }
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            Vector2 pos = (new Vector2(i - 9, j + 3) + Helper.TileAdj) * 16 + new Vector2(-464, -336) - Main.screenPosition;
+    class ForgeActorDummy : Dummy
+    {
+        public ForgeActorDummy() : base(TileType<ForgeActor>(), 16, 16) { }
+
+		public override void SafeSetDefaults()
+		{
+            projectile.hide = true;
+		}
+
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+            drawCacheProjsBehindNPCsAndTiles.Add(index);
+        }
+
+		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+            Vector2 pos = projectile.position + new Vector2(-608, -289) - Main.screenPosition;
             Texture2D backdrop = GetTexture(AssetDirectory.GlassMiniboss + "Backdrop");
-            var frame = new Rectangle(0, (backdrop.Height / 3) * (int)(Main.GameUpdateCount / 2 % 3), backdrop.Width, backdrop.Height / 3);
+            Texture2D backdropGlow = GetTexture(AssetDirectory.GlassMiniboss + "BackdropGlow");
 
-            spriteBatch.Draw(backdrop, pos, frame, Color.White);
+            var frame = new Rectangle(0, (backdrop.Height / 3) * (int)(Main.GameUpdateCount / 8 % 3), backdrop.Width, backdrop.Height / 3);
+
+            LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
+            spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
+
+            Dust.NewDustPerfect(projectile.Center + new Vector2(200, -280), DustType<Dusts.Air>(), Vector2.Zero);
+
+            for (int k = 0; k < 5; k++)
+            {
+                Lighting.AddLight(projectile.Center + new Vector2(200, -280 + k * 35), new Vector3(1, 0.8f, 0.5f));
+            }
+
+            Lighting.AddLight(projectile.Center + new Vector2(-20, -280), new Vector3(1, 0.8f, 0.5f) * 1.1f);
+            Lighting.AddLight(projectile.Center + new Vector2(-80, -220), new Vector3(1, 0.8f, 0.5f) * 1.1f);
+            Lighting.AddLight(projectile.Center + new Vector2(40, -90), new Vector3(1, 0.8f, 0.5f) * 1.1f);
+
+            Lighting.AddLight(projectile.Center + new Vector2(-260, -80), new Vector3(1, 0.8f, 0.5f) * 0.8f);
+
+            for (int k = 0; k < 3; k++)
+            {
+                Lighting.AddLight(projectile.Center + new Vector2(130, 200 + k * 35), new Vector3(1, 0.8f, 0.5f) * 1.1f);
+                Lighting.AddLight(projectile.Center + new Vector2(-130, 200 + k * 35), new Vector3(1, 0.8f, 0.5f) * 1.1f);
+            }
         }
     }
 }
