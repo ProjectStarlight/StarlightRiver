@@ -14,6 +14,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         Vector2 origin;
 
+        public NPC Parent => Main.npc[(int)projectile.ai[1]];
+
         public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassHammer";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
@@ -34,8 +36,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (projectile.timeLeft == 60)
             {
                 origin = projectile.Center; //sets origin when spawned
-                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer); //Shockwave spawners
-                Projectile.NewProjectile(projectile.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer);
+                Projectile.NewProjectile(Parent.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer); //Shockwave spawners
+                Projectile.NewProjectile(Parent.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer);
             }
 
             if (projectile.timeLeft >= 30)
@@ -145,8 +147,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 projectile.hostile = true; //when this projectile goes off
 
-                for (int k = 0; k < 20; k++)
-                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitY * -4, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-4, -2));
+                for (int k = 0; k < 5; k++)
+                {
+                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitY * -8, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-4, -2));
+                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitY * -8, DustType<Dusts.Glow>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-2, 0), 0, new Color(255, 160, 80), 0.4f);
+                }
 
                 Main.PlaySound(SoundID.Item70, projectile.Center);
             }
@@ -187,7 +192,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/SpikeTell");
                 float factor = 2 * projectile.ai[0] / 25f - (float)Math.Pow(projectile.ai[0], 2) / 625f;
-                spriteBatch.Draw(tex, projectile.Center + new Vector2(0, -128) - Main.screenPosition, null, new Color(255, 230, 71) * factor);
+                Color color = new Color(255, 180, 50) * factor;
+
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, 0, new Vector2(tex.Width / 2, tex.Height + 8), 1, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * factor, 0, new Vector2(tex.Width / 2, tex.Height + 8), 0.5f, 0, 0);
+                Lighting.AddLight(projectile.Center, color.ToVector3() * 0.75f);
             }
 
         }

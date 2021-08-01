@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             for (int k = 0; k < ProjectileID.Sets.TrailCacheLength[projectile.type]; k++)
             {
                 float alpha = k / (float)ProjectileID.Sets.TrailCacheLength[projectile.type];
-                spriteBatch.Draw(backTex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, Color.White * alpha, projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(backTex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, lightColor * alpha, projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
             }
 
             if (timer < 30)
@@ -79,6 +79,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
                 spriteBatch.Draw(tex, projectile.oldPos[0] + projectile.Size / 2 - Main.screenPosition, frame, color, projectile.rotation, frame.Size() / 2, 1, 0, 0);
+                Lighting.AddLight(projectile.Center, color.ToVector3() * 0.5f);
             }
 
             return false;

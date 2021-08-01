@@ -56,22 +56,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if(AttackTimer == 1)
                 CurrentAnimation = AnimationSelection.SummonHammer;
 
-            if (AttackTimer <= 40)
+            if (AttackTimer <= 60)
             {
-                Frame = (int)(AttackTimer / 40f * 16);
-                glowStrength = 0.25f + ((40 - AttackTimer) / 40f * 0.75f);
+                Frame = (int)(AttackTimer / 60f * 16);
+                glowStrength = 0.25f + ((60 - AttackTimer) / 60f * 0.75f);
             }
 
             if (AttackTimer < 10) 
-                npc.velocity *= 0.9f; //decelerate into position
+                npc.velocity *= 0.8f; //decelerate into position
 
-            if (AttackTimer == 10) //stop and spawn projectile
+            if (AttackTimer == 30) //stop and spawn projectile
             {
                 npc.velocity *= 0;
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, npc.direction);
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, npc.direction, npc.whoAmI);
             }
 
-            if (AttackTimer >= 90)
+            if (AttackTimer >= 110)
                 ResetAttack();
         }
 
@@ -149,10 +149,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 glowStrength = 0.25f + ((40 - AttackTimer) / 40f * 0.75f);
             }
 
-            if (AttackTimer <= 50) Slash(30);
-            if (AttackTimer <= 80 && AttackTimer > 40) Uppercut(40);
-            if (AttackTimer <= 120 && AttackTimer > 100) Slash(100);
-            if (AttackTimer >= 150) ResetAttack();
+            if (AttackTimer <= 60) Slash(30);
+            if (AttackTimer <= 90 && AttackTimer > 50) Uppercut(50);
+            if (AttackTimer <= 140 && AttackTimer > 110) Slash(110);
+            if (AttackTimer >= 170) ResetAttack();
         }
 
         private void Slash(int startTime)
@@ -163,13 +163,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 npc.spriteDirection = npc.Center.X > Main.player[npc.target].Center.X ? 1 : -1;
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSlash>(), 34, 1, Main.myPlayer, npc.whoAmI, npc.spriteDirection);
 
-                npc.velocity.X += npc.Center.X > Target.Center.X ? -12 : 12;
+                npc.velocity.X += npc.Center.X > Target.Center.X ? -13.5f : 13.5f;
             }
 
-            if (AttackTimer < startTime + 20) //decelerate
+            if (AttackTimer < startTime + 30) //decelerate
                 npc.velocity.X *= 0.93f;
 
-            if (AttackTimer == startTime + 20) //stop
+            if (AttackTimer == startTime + 30) //stop
                 npc.velocity.X = 0;
         }
 

@@ -50,7 +50,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
             LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
             spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-            Dust.NewDustPerfect(projectile.Center + new Vector2(200, -280), DustType<Dusts.Air>(), Vector2.Zero);
+            if(Main.rand.Next(3) == 0)
+                Dust.NewDustPerfect(projectile.Center + new Vector2(204 + Main.rand.Next(-10, 10), -94), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
+
+            if (Main.rand.Next(3) == 0)
+                Dust.NewDustPerfect(projectile.Center + new Vector2(0 + Main.rand.Next(-10, 10), -240), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
+
+            if (Main.rand.Next(5) == 0)
+            {
+                var d = Dust.NewDustPerfect(projectile.Center + new Vector2(-110 + Main.rand.Next(120), -130), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
+                d.noGravity = true;
+
+                d = Dust.NewDustPerfect(projectile.Center + new Vector2(-250 + Main.rand.Next(80), -66), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
+                d.noGravity = true;
+
+                var dist = Main.rand.Next(80);
+                d = Dust.NewDustPerfect(projectile.Center + new Vector2(10 + dist, -130 + dist), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
+                d.noGravity = true;
+
+                dist = Main.rand.Next(60);
+                d = Dust.NewDustPerfect(projectile.Center + new Vector2(-110 + dist, -196 - dist), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
+                d.noGravity = true;
+            }
 
             for (int k = 0; k < 5; k++)
             {

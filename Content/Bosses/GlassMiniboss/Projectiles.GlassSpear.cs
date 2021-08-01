@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             int timer = 130 - projectile.timeLeft;
             Texture2D backTex = GetTexture(Texture);
 
-            spriteBatch.Draw(backTex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, backTex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(backTex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, backTex.Size() / 2, 1, 0, 0);
 
             if (timer < 60)
             {
@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, color, projectile.rotation, frame.Size() / 2, 1, 0, 0);
+                Lighting.AddLight(projectile.Center, color.ToVector3() * 0.5f);
             }
 
             return false;

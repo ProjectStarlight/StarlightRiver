@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Dusts
 
         public override void OnSpawn(Dust dust)
         {
-            dust.noGravity = true;
+            //dust.noGravity = true;
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.fadeIn = 0;
@@ -46,8 +46,10 @@ namespace StarlightRiver.Content.Dusts
 
             dust.position += dust.velocity;
 
+            if(!dust.noGravity)
+                dust.velocity.Y += 0.08f;
+
             dust.velocity.X *= 0.995f;
-            dust.velocity.Y += 0.08f;
             dust.scale *= 0.99f;
 
             if (dust.fadeIn >= 60)
