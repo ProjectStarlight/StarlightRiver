@@ -42,12 +42,16 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Vitric.ForgeActor>();
+            //item.createTile = ModContent.TileType<Tiles.Vitric.ForgeActor>();
         }
 
         public override bool UseItem(Player player)
         {
-            //NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
+            foreach (NPC npc in Main.npc)
+                npc.active = false;
+
+            NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
+            player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
 
             return true;
         }
