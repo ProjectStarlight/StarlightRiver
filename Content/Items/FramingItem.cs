@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items
                     else
                         selectedTile.frameX++;
 
-                Main.NewText("Frame X: " + selectedTile.frameX + " | Frame Y: " + selectedTile.frameY);
+                Main.NewText("Frame X: " + selectedTile.frameX + " | Frame Y: " + selectedTile.frameY + " | Slope: " + selectedTile.slope());
                 //Main.NewText("Frame X: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].frameX + " Frame Y: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].frameY);
 
                 //for(int g = -2; g < 3; g++)
