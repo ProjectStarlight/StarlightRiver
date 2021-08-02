@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.GUI
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
+        public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax != 0 && Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
+
         private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
         private readonly UIElement infusionElement = new UIElement();
 

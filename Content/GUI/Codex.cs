@@ -19,9 +19,8 @@ namespace StarlightRiver.Content.GUI
     public class Codex : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-        public override bool Visible => ButtonVisible;
+        public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
-        public static bool ButtonVisible = false;
         public static bool Open = false;
         private static bool Dragging = false;
 
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (ButtonVisible)
+            if (Visible)
             {
                 CodexHandler player = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 

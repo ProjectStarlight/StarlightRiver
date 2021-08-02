@@ -14,6 +14,7 @@ namespace StarlightRiver.Content.GUI
     public class Collection : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+        public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
         public static Ability ActiveAbility;
         public static bool ShouldReset = false;
