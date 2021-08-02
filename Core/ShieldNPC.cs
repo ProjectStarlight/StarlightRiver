@@ -27,7 +27,7 @@ namespace StarlightRiver.Core
 
 		public override bool InstancePerEntity => true;
 
-		public void ModifyDamage(ref int damage, ref float knockback, ref bool crit)
+		public void ModifyDamage(NPC npc, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Shield > 0)
 			{
@@ -35,11 +35,17 @@ namespace StarlightRiver.Core
 
 				if (Shield > damage)
 				{
+					CombatText.NewText(npc.Hitbox, Color.Cyan, damage);
+
 					Shield -= damage;
 					damage = (int)(damage * reduction);
 				}
 				else
 				{
+					Main.PlaySound(Terraria.ID.SoundID.NPCDeath57, npc.Center);
+
+					CombatText.NewText(npc.Hitbox, Color.Cyan, Shield);
+
 					int overblow = damage - Shield;
 					damage = (int)(Shield * reduction) + overblow;
 
@@ -52,7 +58,7 @@ namespace StarlightRiver.Core
 
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
-			ModifyDamage(ref damage, ref knockback, ref crit);
+			ModifyDamage(npc, ref damage, ref knockback, ref crit);
 			TimeSinceLastHit = 0;
 
 			base.ModifyHitByItem(npc, player, item, ref damage, ref knockback, ref crit);
@@ -60,7 +66,7 @@ namespace StarlightRiver.Core
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			ModifyDamage(ref damage, ref knockback, ref crit);
+			ModifyDamage(npc, ref damage, ref knockback, ref crit);
 			TimeSinceLastHit = 0;
 
 			base.ModifyHitByProjectile(npc, projectile, ref damage, ref knockback, ref crit, ref hitDirection);
@@ -111,12 +117,30 @@ namespace StarlightRiver.Core
 		{
 			if (Shield > 0)
 			{
-				var sb = Main.spriteBatch;
-				var tex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar1");
-				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(Shield / (float)MostShield * tex.Width * scale), (int)(tex.Height * scale));
-				var source = new Rectangle(0, 0, (int)(Shield / (float)MostShield * tex.Width), tex.Height);
+				var bright = Lighting.Brightness((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
 
-				sb.Draw(tex, target, source, new Color(100, 255, 255) * 0.75f, 0, tex.Size() / 2, 0, 0);
+				Main.instance.DrawHealthBar((int)position.X, (int)position.Y, npc.life, npc.lifeMax, bright, scale);
+
+				var tex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar1");
+
+				var factor = Math.Min(Shield / (float)MaxShield, 1);
+
+				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
+				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
+
+				Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+
+				if (Shield < MaxShield)
+				{
+					var texLine = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBarLine");
+
+					var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
+					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));
+
+					Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * bright * 2, 0, new Vector2(tex.Width / 2, 0), 0, 0);
+				}
+
+				return false;
 			}
 
 			return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);

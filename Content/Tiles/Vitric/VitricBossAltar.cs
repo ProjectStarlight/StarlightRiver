@@ -152,8 +152,21 @@ namespace StarlightRiver.Content.Tiles.Vitric
             projectile.ai[1]++;
 
             //This controls spawning the rest of the arena
-            if (!Main.npc.Any(n => n.active && (n.type == NPCType<VitricBackdropLeft>() || n.type == NPCType<VitricBoss>()))) //TODO: Need to find a better check
+            if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropLeft>()) || !Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropRight>())) //TODO: Change to some sort of callback from the arena sides dying. figure out what to do if it dies mid-fight?
             {
+                foreach(NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
+                (
+                n.type == NPCType<VitricBackdropLeft>() ||
+                n.type == NPCType<VitricBackdropRight>() ||
+                n.type == NPCType<VitricBossPlatformDown>() ||
+                n.type == NPCType<VitricBossPlatformDownSmall>() ||
+                n.type == NPCType<VitricBossPlatformUp>() ||
+                n.type == NPCType<VitricBossPlatformUpSmall>()
+                ) ))
+				{
+                    npc.active = false;
+				}
+
                 Vector2 center = projectile.Center + new Vector2(0, 60);
                 int timerset = StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) ? 360 : 0; //the arena should already be up if it was opened before
 

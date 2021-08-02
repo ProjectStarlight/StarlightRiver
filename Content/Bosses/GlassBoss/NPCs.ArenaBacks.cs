@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.height = 1;
             npc.width = 560;
             npc.aiStyle = -1;
-            npc.lifeMax = 2;
+            npc.lifeMax = 10;
             npc.knockBackResist = 0f;
             npc.lavaImmune = true;
             npc.noGravity = true;

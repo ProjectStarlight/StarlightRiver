@@ -47,6 +47,24 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+
+            Player dummy = new Player();
+            dummy.active = true;
+
+            var item = new Item();
+            item.SetDefaults(ModContent.ItemType<UndergroundTemple.TempleRune>());
+
+            dummy.armor[5] = item;
+            dummy.Center = Main.LocalPlayer.Center;
+
+            Main.player[1] = dummy;
+            dummy.team = Main.LocalPlayer.team;
+            dummy.name = "Johnathan Testicle";
+            dummy.statLife = 400;
+            dummy.statLifeMax = 500;
+
+            return true;
+
             foreach (NPC npc in Main.npc)
                 npc.active = false;
 

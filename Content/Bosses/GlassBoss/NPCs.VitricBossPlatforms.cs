@@ -23,6 +23,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.height = 16;
             npc.noTileCollide = true;
             npc.dontCountMe = true;
+            npc.lifeMax = 10;
         }
 
         public override void SafeAI()
@@ -105,6 +106,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.height = 16;
             npc.noTileCollide = true;
             npc.dontCountMe = true;
+            npc.lifeMax = 10;
         }
     }
 
@@ -118,6 +120,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.height = 16;
             npc.noTileCollide = true;
             npc.dontCountMe = true;
+            npc.lifeMax = 10;
         }
     }
 }

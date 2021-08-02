@@ -34,6 +34,9 @@ namespace StarlightRiver.Core
 
 		public override void UpdateInventory(Player player)
 		{
+			if (npc is null)
+				item.TurnToAir();
+
 			if (player.HeldItem.type != item.type)
 				inWorldNPC.Release(true);
 		}	
@@ -85,6 +88,9 @@ namespace StarlightRiver.Core
 
 		public override void PostAI()
 		{
+			if (inWorldItem is null)
+				npc.active = false;
+
 			if (held && owner.HeldItem.type != item.type)
 				Release(true);
 		}
