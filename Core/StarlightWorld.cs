@@ -57,8 +57,18 @@ namespace StarlightRiver.Core
         public static List<Key> KeyInventory = new List<Key>();
 
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
-        public static void Flag(WorldFlags flag) => flags |= flag;
-        public static void FlipFlag(WorldFlags flag) => flags ^= flag;
+
+        public static void Flag(WorldFlags flag)
+        {
+            flags |= flag;
+            NetMessage.SendData(MessageID.WorldData);
+        }
+
+        public static void FlipFlag(WorldFlags flag)
+        {
+            flags ^= flag;
+            NetMessage.SendData(MessageID.WorldData);
+        }
 
         public override void NetSend(BinaryWriter writer)
         {

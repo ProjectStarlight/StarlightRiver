@@ -83,6 +83,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricBossAltarDummy : Dummy
     {
+        public ref float BarrierProgress => ref projectile.ai[0];
+        public ref float CutsceneTimer => ref projectile.ai[1];
+
         public VitricBossAltarDummy() : base(TileType<VitricBossAltar>(), 80, 112) { }
 
         public override void SafeSetDefaults()
@@ -109,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
                         Framing.GetTileSafely(x, y).frameX += 90;
 
-                projectile.ai[1] = 0;
+                CutsceneTimer = 0;
             }
         }
 
@@ -118,23 +121,26 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
+            if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
+                CutsceneTimer = 999;
+
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.GlassBossOpen))
             {
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
                 Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
                 Dust.NewDust(projectile.Center + new Vector2(72, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
 
-                if (projectile.ai[1] > 120 && projectile.ai[1] <= 240)
-                    Main.musicFade[Main.curMusic] = 1 - ((projectile.ai[1] - 120) / 120f);
+                if (CutsceneTimer > 120 && CutsceneTimer <= 240)
+                    Main.musicFade[Main.curMusic] = 1 - ((CutsceneTimer - 120) / 120f);
 
-                if (projectile.ai[1] == 180)
+                if (CutsceneTimer == 180)
                 {
                     var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ArenaRise");
                     Main.PlaySound(slot, projectile.Center);
                 }
 
-                projectile.ai[1]++;
-                if (projectile.ai[1] > 180)
+                CutsceneTimer++;
+                if (CutsceneTimer > 180)
                 {
                     StarlightWorld.Flag(WorldFlags.GlassBossOpen);
                     if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
@@ -146,10 +152,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 }
             }
 
-            if(projectile.ai[1] > 240 && projectile.ai[1] < 660)
+            if(CutsceneTimer > 240 && CutsceneTimer < 660)
                 Main.musicFade[Main.curMusic] = 0;
 
-            projectile.ai[1]++;
+            CutsceneTimer++;
 
             //This controls spawning the rest of the arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropLeft>()) || !Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropRight>())) //TODO: Change to some sort of callback from the arena sides dying. figure out what to do if it dies mid-fight?
@@ -182,17 +188,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
 
             //controls the drawing of the barriers
-            if (projectile.ai[0] < 120 && Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>()))
+            if (BarrierProgress < 120 && Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>()))
             {
-                projectile.ai[0]++;
-                if (projectile.ai[0] % 3 == 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
-                if (projectile.ai[0] == 119) //hitting the top
+                BarrierProgress++;
+                if (BarrierProgress % 3 == 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
+                if (BarrierProgress == 119) //hitting the top
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 25;
                     for (int k = 0; k < 5; k++) Main.PlaySound(SoundID.Tink);
                 }
             }
-            else if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>())) projectile.ai[0] = 0; //TODO fix this later
+            else if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>())) BarrierProgress = 0; //TODO fix this later
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor) //actually drawing the barriers and item indicator
@@ -216,8 +222,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Texture2D texTop = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrierTop");
             //Color color = new Color(180, 225, 255);
 
-            int off = (int)(projectile.ai[0] / 120f * tex.Height);
-            int off2 = (int)(projectile.ai[0] / 120f * texTop.Width / 2);
+            int off = (int)(BarrierProgress / 120f * tex.Height);
+            int off2 = (int)(BarrierProgress / 120f * texTop.Width / 2);
 
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default, spriteBatch, Configs.LightImportance.Most);
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex2, new Rectangle(0, 0, tex.Width, off), default, spriteBatch, Configs.LightImportance.Most);
