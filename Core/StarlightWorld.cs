@@ -76,6 +76,8 @@ namespace StarlightRiver.Core
 
             WriteRectangle(writer, VitricBiome);
             WriteRectangle(writer, SquidBossArena);
+
+            WriteNPCUpgrades(writer);
         }
 
         public override void NetReceive(BinaryReader reader)
@@ -84,6 +86,8 @@ namespace StarlightRiver.Core
 
             VitricBiome = ReadRectangle(reader);
             SquidBossArena = ReadRectangle(reader);
+
+            ReadNPCUpgrades(reader);
         }
 
         private void WriteRectangle(BinaryWriter writer, Rectangle rect)
@@ -95,6 +99,21 @@ namespace StarlightRiver.Core
         }
 
         private Rectangle ReadRectangle(BinaryReader reader) => new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+
+        private void WriteNPCUpgrades(BinaryWriter writer)
+		{
+            foreach (KeyValuePair<string, bool> upgrade in TownUpgrades)
+            {
+                writer.Write(upgrade.Key);
+                writer.Write(upgrade.Value);
+            }
+		}
+
+        private void ReadNPCUpgrades(BinaryReader reader)
+		{
+            foreach (KeyValuePair<string, bool> upgrade in TownUpgrades)
+                TownUpgrades[reader.ReadString()] = reader.ReadBoolean();
+        }
 
         private void EbonyGen(GenerationProgress progress)
         {
