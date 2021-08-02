@@ -57,6 +57,7 @@ namespace StarlightRiver.Content.CustomHooks
                         self.velocity.Y = 0;
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = npc.position.Y - self.height + 4;
+                        NetMessage.SendData(MessageID.SyncPlayer);
                         orig(self);
                     }
                 }
