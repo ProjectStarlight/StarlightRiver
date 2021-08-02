@@ -32,7 +32,8 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
             if (!Main.tile[i, j - 1].active())
             {
-                Color overlayColor = new Color(0.15f, 0.15f, 0.25f, 0f);
+                Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Main.GameUpdateCount * 0.02f) + 4) / 4);
+                float heightScale = ((float)Math.Sin(Main.GameUpdateCount * 0.025f) / 8) + 1;
 
                 bool emptyLeft;
                 bool emptyRight;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyRight = !tileRight0.active() || tileRight0.type != Type || tileRight0.slope() == 2 || Main.tile[i + 1, j].active();
 
                         midTex = GetTexture(AssetDirectory.MoonstoneTile + "GlowSlopeRight");
-                        yOffsetLeft = 0.5f;
+                        yOffsetLeft = 1f;
                         break;
 
                     case 2:// '/' slope
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                             (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].active()));
 
                         midTex = GetTexture(AssetDirectory.MoonstoneTile + "GlowSlopeLeft");
-                        yOffsetRight = 0.5f;
+                        yOffsetRight = 1f;
                         break;
 
                     default:
@@ -97,18 +98,18 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                 int realX = i * 16;
                 int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
                 int realWidth = glowLines.Width - 1;//1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
-                Color drawColor = new Color(0.015f, 0.025f, 0.05f, 0f);
+                Color drawColor = overlayColor * 0.3f;
 
                 float val = ((Main.GameUpdateCount / 3 + realY) % realWidth);
                 int offset = (int)(val + (realX % realWidth) - realWidth);
 
-                //spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, 16, glowLines.Height), new Rectangle(offset + 1, 0, 16, glowLines.Height), drawColor);
+                spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, 16, glowLines.Height), new Rectangle(offset + 1, 0, 16, (int)(glowLines.Height * heightScale)), drawColor);
 
-                //if (offset < 0)
-                //{
-                //    int rectWidth = Math.Min(-offset, 16);
-                //    spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, rectWidth, glowLines.Height), new Rectangle(offset + 1 + realWidth, 0, rectWidth, glowLines.Height), drawColor);
-                //}
+                if (offset < 0)
+                {
+                    int rectWidth = Math.Min(-offset, 16);
+                    spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, rectWidth, glowLines.Height), new Rectangle(offset + 1 + realWidth, 0, rectWidth, (int)(glowLines.Height * heightScale)), drawColor);
+                }
             }
 
             return true;
@@ -116,7 +117,13 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            Lighting.AddLight(new Vector2(i + 0.5f, j - 0.5f) * 16, new Vector3(0.1f, 0.32f, 0.5f) * 0.35f);
+            Vector2 pos = new Vector2(i, j) * 16;
+            Lighting.AddLight(pos, new Vector3(0.1f, 0.32f, 0.5f) * 0.35f);
+            //Dust.NewDustDirect(pos, 16, 16, ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), 0, 0, 0, Color.White, 0.05f);
+            if(Main.rand.Next(50) == 0)
+                if(!Main.tile[i, j - 1].active())
+                    Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-16, -8)), 
+                        ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
         }
 
         public override void FloorVisuals(Player player) => 
