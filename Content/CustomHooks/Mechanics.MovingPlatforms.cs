@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
         {
-            if (self.controlDown && self == Main.LocalPlayer)
+            if (self.controlDown && self == Main.clientPlayer)
             {
                 self.GetModPlayer<StarlightPlayer>().platformTimer = 5;
                 NetMessage.SendData(MessageID.PlayerControls);
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.CustomHooks
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = npc.position.Y - self.height + 4;
 
-                        if(self == Main.LocalPlayer)
+                        if(self == Main.clientPlayer)
                             NetMessage.SendData(MessageID.PlayerControls);
 
                         orig(self);
