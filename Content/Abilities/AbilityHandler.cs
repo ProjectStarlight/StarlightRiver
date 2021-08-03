@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Abilities
         // Internal-only information.
 
         private InfusionItem[] infusions = new InfusionItem[Infusion.InfusionSlots];
-        private Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
+        public Dictionary<Type, Ability> unlockedAbilities = new Dictionary<Type, Ability>();
         private int staminaRegenCD;
         private float stamina;
         private float staminaMaxBonus;
@@ -183,7 +183,12 @@ namespace StarlightRiver.Content.Abilities
 
         public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
 
-        public override TagCompound Save()
+		public override void SendClientChanges(ModPlayer clientPlayer) //TODO: Implement ablity packet
+		{
+			base.SendClientChanges(clientPlayer);
+		}
+
+		public override TagCompound Save()
         {
             return new TagCompound
             {
@@ -259,10 +264,10 @@ namespace StarlightRiver.Content.Abilities
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
             // Beyah
-            foreach (var item in unlockedAbilities.Values)
-                if (item.Available && item.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
+            foreach (var ability in unlockedAbilities.Values)
+                if (ability.Available && ability.HotKeyMatch(triggersSet, StarlightRiver.Instance.AbilityKeys))
                 {
-                    item.Activate(this);
+                    ability.Activate(this);
                     break;
                 }
         }

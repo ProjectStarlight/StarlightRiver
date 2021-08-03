@@ -1,4 +1,4 @@
-﻿/*using NetEasy;
+﻿using NetEasy;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
@@ -9,20 +9,20 @@ namespace StarlightRiver.Packets
     [Serializable]
     public class StartAbility : Module
     {
+        private readonly int fromWho;
+        private readonly string abTypeName;
+
         public StartAbility(int fromWho, Ability ability)
         {
             this.fromWho = fromWho;
             abTypeName = ability.GetType().FullName;
         }
 
-        private readonly int fromWho;
-        private readonly string abTypeName;
-
         protected override void Receive()
         {
             if (Main.netMode == Terraria.ID.NetmodeID.Server)
             {
-                Send(-1, fromWho, true);
+                //Send(-1, fromWho, false);
                 return;
             }
 
@@ -30,6 +30,8 @@ namespace StarlightRiver.Packets
             AbilityHandler handler = player.GetHandler();
 
             Type abType = Type.GetType(abTypeName);
+
+            handler.ActiveAbility = handler.unlockedAbilities[abType];
         }
     }
-}*/
+}

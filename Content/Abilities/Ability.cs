@@ -9,6 +9,7 @@ using Terraria.GameInput;
 using Terraria.ModLoader;
 
 using StarlightRiver.Core;
+using StarlightRiver.Packets;
 
 namespace StarlightRiver.Content.Abilities
 {
@@ -41,10 +42,15 @@ namespace StarlightRiver.Content.Abilities
         public virtual void OnExit() { }
 
         public float ActivationCost(AbilityHandler handler) => (ActivationCostDefault + ActivationCostBonus) * handler.StaminaCostMultiplier + handler.StaminaCostBonus;
+
         public void Activate(AbilityHandler user)
         {
             user.ActiveAbility = this;
+
+            StartAbility packet = new StartAbility(user.player.whoAmI, this);
+            packet.Send(-1, -1, false);
         }
+
         public void Deactivate()
         {
             User.ActiveAbility = null;

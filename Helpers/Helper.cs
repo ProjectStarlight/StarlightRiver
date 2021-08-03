@@ -104,7 +104,9 @@ namespace StarlightRiver.Helpers
             CodexHandler mp = player.GetModPlayer<CodexHandler>();
             CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);
 
-            if (entry.RequiresUpgradedBook && mp.CodexState != 2) return; //dont give the player void entries if they dont have the void book
+            if (entry is null || (entry.RequiresUpgradedBook && mp.CodexState != 2) ) 
+                return; //dont give the player void entries if they dont have the void book
+
             if (entry.Locked)
             {
                 entry.Locked = false;

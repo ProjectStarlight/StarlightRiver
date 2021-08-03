@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
+using StarlightRiver.Packets;
 using System;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -111,6 +113,9 @@ namespace StarlightRiver.Pickups
             {
                 PickupEffects(target);
                 mp.PickupTarget = npc;
+
+                AbilityProgress packet = new AbilityProgress(target.whoAmI, target.GetHandler());
+                packet.Send();
             }
 
             return false;
