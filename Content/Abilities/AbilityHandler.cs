@@ -354,7 +354,7 @@ namespace StarlightRiver.Content.Abilities
                 if (Main.netMode != NetmodeID.Server)
                 {
                     ActiveAbility.UpdateActiveEffects();
-                    NetMessage.SendData(MessageID.SyncPlayer);
+                    NetMessage.SendData(MessageID.PlayerControls);
                 }
             }
         }
