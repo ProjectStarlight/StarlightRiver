@@ -6,6 +6,7 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.GUI;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles
 {
@@ -28,7 +29,6 @@ namespace StarlightRiver.Content.Tiles
         {
             if (CanOpen(Main.LocalPlayer))
             {
-                WorldGen.KillTile(i, j);
                 Loot[] smallLoot = new Loot[5];
 
                 List<Loot> types = Helper.RandomizeList(SmallLootPool);
@@ -36,6 +36,10 @@ namespace StarlightRiver.Content.Tiles
 
                 UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
                 UILoader.GetUIState<LootUI>().Visible = true;
+
+                WorldGen.KillTile(i, j);
+                NetMessage.SendTileRange(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
+
                 return true;
             }
             return false;

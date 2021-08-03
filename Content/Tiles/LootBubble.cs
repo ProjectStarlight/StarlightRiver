@@ -5,6 +5,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles
@@ -64,9 +65,10 @@ namespace StarlightRiver.Content.Tiles
             {
                 Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
                 Item.NewItem(projectile.Center, loot.Type, loot.GetCount());
-                WorldGen.KillTile(ParentX, ParentY);
-
                 bubble.PickupEffects(projectile.Center);
+
+                WorldGen.KillTile(ParentX, ParentY);
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
             }
         }
 

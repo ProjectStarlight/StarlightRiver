@@ -57,6 +57,8 @@ namespace StarlightRiver.Tiles.Temple
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 4, TileChangeType.None);
+
                 Main.PlaySound(SoundID.Shatter, projectile.Center);
             }
         }

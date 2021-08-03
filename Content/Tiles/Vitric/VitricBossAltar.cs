@@ -76,6 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return false;
         }
     }
+
     class VitricBossAltarItem : QuickTileItem
     {
         public VitricBossAltarItem() : base("Vitric Boss Altar Item", "places it", TileType<VitricBossAltar>(), 1, AssetDirectory.Debug, true) { }
@@ -111,6 +112,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 for (int x = parentPos.X; x < parentPos.X + 5; x++)
                     for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
                         Framing.GetTileSafely(x, y).frameX += 90;
+
+                NetMessage.SendTileRange(player.whoAmI, parentPos.X, parentPos.Y, 5, 7, TileChangeType.None);
 
                 CutsceneTimer = 0;
             }
