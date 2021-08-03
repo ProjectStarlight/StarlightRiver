@@ -4,11 +4,9 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class FoodBuffHandler : ModPlayer
+	internal class FoodBuffHandler : ModPlayer
     {
         public List<Item> Consumed { get; set; } = new List<Item>(); //all of the ingredients in the food the player ate
         public float Multiplier { get; set; } = 1; //the multipler that should be applied to those ingredients

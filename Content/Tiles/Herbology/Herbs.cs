@@ -1,15 +1,14 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-    internal abstract class HangingPlant : ModTile
+	internal abstract class HangingPlant : ModTile
     {
         private readonly string ItemDrop;
 

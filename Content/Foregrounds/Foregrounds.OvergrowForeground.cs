@@ -3,11 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Foregrounds
 {
-    class OvergrowForeground : ParticleForeground
+	class OvergrowForeground : ParticleForeground
     {
         public override void OnLoad()
         {

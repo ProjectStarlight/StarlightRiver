@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles;
-
 namespace StarlightRiver.NPCs.TownUpgrade
 {
-    class GuideUpgrade : TownUpgrade
+	class GuideUpgrade : TownUpgrade
     {
         public GuideUpgrade() : base("Guide", "Chungus Study", "Help the guide study big chungus!", "Rift Crafting", "Scholar") { }
 

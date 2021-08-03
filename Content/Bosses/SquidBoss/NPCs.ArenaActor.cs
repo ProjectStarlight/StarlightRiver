@@ -1,20 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Tiles.Permafrost;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items.Permafrost.Tools;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Permafrost;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class ArenaActor : ModNPC
+	class ArenaActor : ModNPC
     {
         readonly int whitelistID = WallType<AuroraBrickWall>();
         public float WaterLevel { get => npc.Center.Y + 35 * 16 - npc.ai[0]; }

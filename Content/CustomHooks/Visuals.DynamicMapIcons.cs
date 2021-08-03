@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoMod.Cil;
-using Terraria;
-
 using StarlightRiver.Core;
+using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class DynamicMapIcons : HookGroup
+	class DynamicMapIcons : HookGroup
     {
         //Just drawing, so it shooould be alright? not the best finding though. not the best at all.
         public override SafetyLevel Safety => SafetyLevel.Fragile;

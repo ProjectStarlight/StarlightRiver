@@ -8,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.ArmorEnchantment
 {
-    class EnchantedArmorGlobalItem : GlobalItem
+	class EnchantedArmorGlobalItem : GlobalItem
     {
         public ArmorEnchantment Enchantment { get; set; }
 

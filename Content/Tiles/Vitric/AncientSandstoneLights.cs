@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Tiles.Overgrow;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Tiles.Overgrow;
-
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    public class AncientSandstoneTorchItem : QuickTileItem
+	public class AncientSandstoneTorchItem : QuickTileItem
     {
         public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, AssetDirectory.Debug, true) { }
     }

@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Cooking
 {
-    class SeaSalt : ModTile
+	class SeaSalt : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

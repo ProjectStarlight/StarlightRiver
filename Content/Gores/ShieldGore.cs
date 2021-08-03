@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    class ShieldGore : ModGore
+	class ShieldGore : ModGore
     {
         public override Color? GetAlpha(Gore gore, Color lightColor) => Color.White * (0.2f * (gore.timeLeft / 180f));
 

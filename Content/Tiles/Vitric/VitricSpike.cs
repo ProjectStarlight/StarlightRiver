@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricSpike : ModTile
+	internal class VitricSpike : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

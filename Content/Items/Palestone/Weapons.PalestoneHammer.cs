@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Palestone
 {
-    public class PalestoneHammer : ModItem
+	public class PalestoneHammer : ModItem
     {
         public override string Texture => AssetDirectory.PalestoneItem + "PalestoneHammer";
 

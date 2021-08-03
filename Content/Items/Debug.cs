@@ -1,21 +1,12 @@
-﻿using StarlightRiver.Codex;
-using StarlightRiver.Content.Tiles.CrashTech;
-using StarlightRiver.Content.Tiles.Forest;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Bosses.GlassBoss;
 
 namespace StarlightRiver.Content.Items
 {
-    class DebugStick : ModItem
+	class DebugStick : ModItem
     {
         public override string Texture => AssetDirectory.Assets+ "Items/DebugStick";
 

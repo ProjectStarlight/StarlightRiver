@@ -1,23 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core.Loaders;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    [AutoloadBossHead]
+	[AutoloadBossHead]
     public partial class SquidBoss : ModNPC, IUnderwater
     {
         public List<NPC> tentacles = new List<NPC>(); //the tentacle NPCs which this boss controls

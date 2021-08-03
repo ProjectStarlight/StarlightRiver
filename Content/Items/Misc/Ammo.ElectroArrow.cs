@@ -1,19 +1,18 @@
-﻿using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using Terraria;
-using System;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class ElectroArrow : ModItem
+	public class ElectroArrow : ModItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

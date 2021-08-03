@@ -4,7 +4,7 @@ using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    public class PrimitiveDrawing : HookGroup
+	public class PrimitiveDrawing : HookGroup
     {
         // Should not interfere with anything.
         public override SafetyLevel Safety => SafetyLevel.Safe;

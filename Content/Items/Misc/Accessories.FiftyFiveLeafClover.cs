@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.DataStructures;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class FiftyFiveLeafClover : SmartAccessory
+	public class FiftyFiveLeafClover : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

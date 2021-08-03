@@ -3,10 +3,8 @@ using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Balanced;
 using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.TownUpgrade;
 using System;
@@ -22,8 +20,8 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-    //Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
-    public partial class StarlightWorld : ModWorld
+	//Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
+	public partial class StarlightWorld : ModWorld
     {
         private static WorldFlags flags;
 
@@ -38,7 +36,6 @@ namespace StarlightRiver.Core
         //Recipe """database""" TODO: More robust system for this? do we really need one?
         public static List<string> knownRecipies = new List<string>();
 
-        //Players have a timer, can't the world get one synced one too?
         public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
 
         //Voidsmith

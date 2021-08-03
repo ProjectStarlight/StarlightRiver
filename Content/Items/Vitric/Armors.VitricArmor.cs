@@ -14,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class VitricHead : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;

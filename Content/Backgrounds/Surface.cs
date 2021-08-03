@@ -1,11 +1,10 @@
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Backgrounds
 {
-    public class NullBgStyle : ModSurfaceBgStyle
+	public class NullBgStyle : ModSurfaceBgStyle
     {
         public override bool ChooseBgStyle()
         {

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -7,13 +9,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.GaiasFist;
-
 namespace StarlightRiver.Pickups
 {
-    internal class GaiaFistPickup : AbilityPickup
+	internal class GaiaFistPickup : AbilityPickup
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/GaiaFist";
         public override Color GlowColor => new Color(180, 220, 140);

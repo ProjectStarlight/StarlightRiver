@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-    class TempleRune : SmartAccessory
+	class TempleRune : SmartAccessory
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 

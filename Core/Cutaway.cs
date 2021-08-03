@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
-using System.IO;
+using Terraria;
 
 namespace StarlightRiver.Core
 {
-    public class Cutaway
+	public class Cutaway
     {
         private readonly Texture2D tex;
         private readonly Vector2 pos;

@@ -8,11 +8,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-    internal class Crusher : ModNPC
+	internal class Crusher : ModNPC
     {
         public Tile Parent;
 

@@ -1,27 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using StarlightRiver.Codex;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.GUI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Graphics;
-using Terraria.ID;
 using Terraria.ObjectData;
-using Terraria.UI;
-using Terraria;
-using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 
 
 namespace StarlightRiver.Helpers
 {
-    public static partial class Helper
+	public static partial class Helper
     {
         public static double Distribution(int pos, int maxVal, float posOffset = 0.5f, float maxChance = 100f)
         {

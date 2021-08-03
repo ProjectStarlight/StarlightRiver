@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.NPCs;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    public partial class SquidBoss : ModNPC
+	public partial class SquidBoss : ModNPC
     {
         private void RandomizeTarget()
         {

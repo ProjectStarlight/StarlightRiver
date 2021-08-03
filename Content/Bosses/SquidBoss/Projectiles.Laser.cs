@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.NPCs.BaseTypes;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class Laser : InteractiveProjectile, IUnderwater
+	class Laser : InteractiveProjectile, IUnderwater
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override bool OnTileCollide(Vector2 oldVelocity) => false;

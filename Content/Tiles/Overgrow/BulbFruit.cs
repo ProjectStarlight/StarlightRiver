@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class BulbFruit : DummyTile
+	internal class BulbFruit : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

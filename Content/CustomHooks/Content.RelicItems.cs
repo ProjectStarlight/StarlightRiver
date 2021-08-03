@@ -2,16 +2,11 @@
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class RelicItems : HookGroup
+	class RelicItems : HookGroup
     {
         public override SafetyLevel Safety => SafetyLevel.Fragile; //gonna be really weird if anything does anything else here I think
 

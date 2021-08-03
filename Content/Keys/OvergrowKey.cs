@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Keys
 {
-    internal class OvergrowKey : Key
+	internal class OvergrowKey : Key
     {
         public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey")
         {

@@ -1,10 +1,9 @@
-﻿using Terraria.Graphics;
-using Terraria;
-using StarlightRiver.Core;
+﻿using Terraria;
+using Terraria.Graphics;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class MatrixUpdateCancel : HookGroup
+	class MatrixUpdateCancel : HookGroup
     {
         //Really risky matrix reset cancellation which may or may not kill zoom
         public override SafetyLevel Safety => SafetyLevel.Fragile;

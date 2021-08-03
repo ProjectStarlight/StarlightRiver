@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Configs;
 using StarlightRiver.Core;
-using StarlightRiver.Physics;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
-using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
-using StarlightRiver.Configs;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class VitricBackground : HookGroup
+	class VitricBackground : HookGroup
     {
         internal static ParticleSystem ForegroundParticles;
         internal static ParticleSystem BackgroundParticles;

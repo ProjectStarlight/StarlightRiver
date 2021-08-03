@@ -8,13 +8,9 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class PlayerLayerManipulation : HookGroup
+	class PlayerLayerManipulation : HookGroup
     {
         //Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning. This might look weird if other mods do strange playerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.
         public override SafetyLevel Safety => SafetyLevel.Fragile;

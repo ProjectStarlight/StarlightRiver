@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Tiles.Temple
 {
-    class DashBarrier : DummyTile
+	class DashBarrier : DummyTile
     {
         public override int DummyType => ProjectileType<DashBarrierDummy>();
 

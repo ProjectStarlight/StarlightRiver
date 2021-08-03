@@ -5,11 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    static class Markdown
+	static class Markdown
     {
         public static float GetHeight(string message, float scale, int wrapWidth)
         {

@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
-
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-    class BigTree : ModTile
+	class BigTree : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

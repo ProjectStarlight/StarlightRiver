@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Temple
 {
-    class JarTall : DummyTile
+	class JarTall : DummyTile
     {
         public override int DummyType => ProjectileType<JarDummy>();
 

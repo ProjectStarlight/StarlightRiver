@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core;
 using System;
@@ -8,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class Ironheart : SmartAccessory
+	public class Ironheart : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public override bool Autoload(ref string name)
@@ -77,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 namespace StarlightRiver.Core
 {
-    public partial class StarlightPlayer : ModPlayer
+	public partial class StarlightPlayer : ModPlayer
     {
         public const int IronheartMaxLevel = 15;
         public const int IronheartMaxDamage = 75; 

@@ -1,15 +1,7 @@
-﻿using StarlightRiver.Codex;
-using StarlightRiver.Content.Tiles.CrashTech;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Permafrost

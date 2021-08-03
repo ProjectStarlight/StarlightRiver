@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria;
-using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Helpers;
+using System;
+using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader.IO;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -7,11 +8,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricRockItem : QuickTileItem 
+	internal class VitricRockItem : QuickTileItem 
     { 
         public VitricRockItem() : base("Vitric Rock", "", TileType<VitricRock>(), 0, AssetDirectory.VitricTile) { }
         //public override void OnConsumeItem(Player player) => Main.NewText(TileType<VitricRock>());

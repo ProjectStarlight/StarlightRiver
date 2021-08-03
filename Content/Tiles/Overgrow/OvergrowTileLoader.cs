@@ -1,14 +1,13 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    class OvergrowTileLoader : TileLoader
+	class OvergrowTileLoader : TileLoader
     {
         public override string AssetRoot => AssetDirectory.OvergrowTile;
 

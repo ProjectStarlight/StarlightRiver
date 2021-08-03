@@ -1,25 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using StarlightRiver.Helpers;
-
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Items.Herbology.Materials;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-    class Warbanner : ModNPC, IDrawAdditive
+	class Warbanner : ModNPC, IDrawAdditive
     {
         public const float MAX_BUFF_RADIUS = 500;
 

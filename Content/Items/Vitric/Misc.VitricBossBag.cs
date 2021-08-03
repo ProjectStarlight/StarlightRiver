@@ -1,13 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class VitricBossBag : ModItem
+	class VitricBossBag : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

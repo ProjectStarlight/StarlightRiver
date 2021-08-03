@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Abilities.GaiasFist
 {
-    public class Smash : Ability
+	public class Smash : Ability
     {
         public override float ActivationCostDefault => 2;
 

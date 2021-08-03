@@ -1,13 +1,11 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Tiles.AshHell;
+using Terraria;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.AshHell;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld
+	public partial class StarlightWorld
     {
         public static void AshHellGen(GenerationProgress progress)
         {

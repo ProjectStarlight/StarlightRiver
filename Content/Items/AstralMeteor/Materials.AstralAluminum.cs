@@ -1,14 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.AstralMeteor;
-
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    public class AluminumOre : QuickTileItem
+	public class AluminumOre : QuickTileItem
     {
         public AluminumOre() : base("Astral Aluminum", "", "AluminumOre", ItemRarityID.Blue, AssetDirectory.AluminumItem) { }
 

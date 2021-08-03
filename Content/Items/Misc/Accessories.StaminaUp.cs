@@ -1,12 +1,12 @@
-using Terraria;
-using Terraria.ID;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
+using Terraria;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class StaminaUp : SmartAccessory
+	public class StaminaUp : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public StaminaUp() : base("Makeshift Stamina Vessel", "Increased maximum stamina") { }

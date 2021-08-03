@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Noise;
-
 namespace StarlightRiver.Content.Items.Misc
 {
-    internal class StaminaPickup : ModItem
+	internal class StaminaPickup : ModItem
     {
         public override string Texture => AssetDirectory.GUI + "Stamina";
 

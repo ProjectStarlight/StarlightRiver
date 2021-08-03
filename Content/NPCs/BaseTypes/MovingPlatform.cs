@@ -3,11 +3,9 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
-    internal abstract class MovingPlatform : ModNPC
+	internal abstract class MovingPlatform : ModNPC
     {
         public virtual void SafeSetDefaults() { }
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,12 +11,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class TallgrassOvergrow : ModTile
+	internal class TallgrassOvergrow : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

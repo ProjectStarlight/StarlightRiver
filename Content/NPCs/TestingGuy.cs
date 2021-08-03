@@ -1,19 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.NPCs
 {
-    internal class TestingGuy : ModNPC
+	internal class TestingGuy : ModNPC
     {
         public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 

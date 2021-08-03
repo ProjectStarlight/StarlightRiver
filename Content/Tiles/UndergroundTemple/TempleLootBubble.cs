@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Content.Tiles;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles;
-using StarlightRiver.Content.Items.UndergroundTemple;
-
 namespace StarlightRiver.Tiles.Temple
 {
-    class TempleLootBubble : LootBubble
+	class TempleLootBubble : LootBubble
     {
         public override bool Autoload(ref string name, ref string texture)
         {

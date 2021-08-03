@@ -2,11 +2,9 @@
 using System.Linq;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.RiftCrafting
 {
-    public class RiftRecipe
+	public class RiftRecipe
     {
         public List<RiftIngredient> Ingredients;
         public List<int> SpawnPool;

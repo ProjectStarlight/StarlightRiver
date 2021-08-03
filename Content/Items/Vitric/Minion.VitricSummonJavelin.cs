@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class VitricSummonJavelin : VitricSummonHammer
+	public class VitricSummonJavelin : VitricSummonHammer
     {
         internal Vector2 offset;
 

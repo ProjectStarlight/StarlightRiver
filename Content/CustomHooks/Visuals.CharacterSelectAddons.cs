@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex;
+using StarlightRiver.Content.Abilities;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -8,12 +9,9 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class CharacterSelectAddons : HookGroup
+	class CharacterSelectAddons : HookGroup
     {
         //Relies on other mods not doing anything visual here to work properly, but there is very little actual danger here, its just some extra draw calls in the UI element. 
         public override SafetyLevel Safety => SafetyLevel.Safe;

@@ -1,20 +1,17 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Content.Tiles.Palestone;
+using StarlightRiver.Helpers;
+using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Tiles.Forest;
-using StarlightRiver.Content.Tiles.Herbology;
-using System;
-using StarlightRiver.Content.Tiles.Palestone;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModWorld
     {
         private void ForestHerbGen(GenerationProgress progress)
         {

@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.StarJuice
 {
-    internal class BountyKnife : StarjuiceStoringItem
+	internal class BountyKnife : StarjuiceStoringItem
     {
         public BountyKnife() : base(2500) { }
 

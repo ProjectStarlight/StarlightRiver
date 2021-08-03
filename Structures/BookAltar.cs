@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.World.Generation;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Structures
 {
-    public partial class GenHelper
+	public partial class GenHelper
     {
         public static void BookAltarGen(GenerationProgress progress)
         {

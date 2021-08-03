@@ -1,13 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
+using Terraria;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class DisinfectantWipes : SmartAccessory
+	public class DisinfectantWipes : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

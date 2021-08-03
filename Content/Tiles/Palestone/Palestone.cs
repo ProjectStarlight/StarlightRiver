@@ -1,12 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Palestone
 {
-    internal class PalestoneItem : QuickTileItem
+	internal class PalestoneItem : QuickTileItem
     {
         public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, AssetDirectory.PalestoneTile) { }
     }

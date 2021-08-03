@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class VitricLootBox : LootChest
+	class VitricLootBox : LootChest
     {
         public override bool Autoload(ref string name, ref string texture)
         {

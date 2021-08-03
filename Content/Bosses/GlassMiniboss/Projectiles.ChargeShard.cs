@@ -4,11 +4,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    class ChargeShard : ModProjectile
+	class ChargeShard : ModProjectile
     {
         public Vector2 target;
         private Vector2 origin;

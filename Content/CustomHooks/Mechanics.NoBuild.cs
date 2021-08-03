@@ -1,19 +1,16 @@
-﻿using Terraria;
-using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Permafrost;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Tiles.Permafrost;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.ID;
-using System;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    public class ProtectionGlobalItem : GlobalItem
+	public class ProtectionGlobalItem : GlobalItem
 	{
 		public override bool Autoload(ref string name)
 		{

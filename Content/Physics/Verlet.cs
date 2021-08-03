@@ -1,16 +1,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System.Linq;
+using Terraria;
 
 namespace StarlightRiver.Physics
 {
-    public class VerletChainInstance
+	public class VerletChainInstance
     {
         //static
         public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);

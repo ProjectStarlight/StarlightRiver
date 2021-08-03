@@ -1,17 +1,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using Terraria.Audio;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-    public class StarwoodSlingshot : StarwoodItem
+	public class StarwoodSlingshot : StarwoodItem
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
         public StarwoodSlingshot() : base(ModContent.GetTexture(AssetDirectory.StarwoodItem + "StarwoodSlingshot_Alt")) { }

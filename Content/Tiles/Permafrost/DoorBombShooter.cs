@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-    class DoorBombShooter : ModTile
+	class DoorBombShooter : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

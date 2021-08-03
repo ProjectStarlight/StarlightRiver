@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Content.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -8,12 +8,9 @@ using Terraria.ID;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Permafrost;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld
+	public partial class StarlightWorld
     {
         private const int RoomHeight = 32;
         private const int HallWidth = 16;

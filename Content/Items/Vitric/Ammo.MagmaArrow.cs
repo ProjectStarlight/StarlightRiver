@@ -1,16 +1,14 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using Terraria;
-using System;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class MagmaArrow : ModItem
+	public class MagmaArrow : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

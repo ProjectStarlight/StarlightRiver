@@ -1,15 +1,8 @@
-﻿using Terraria;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Terraria.GameInput;
-using Terraria.Localization;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System;
+using Terraria;
+using Terraria.GameInput;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks

@@ -1,13 +1,11 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Tiles.Vitric;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Vitric;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightNPC : GlobalNPC
+	public partial class StarlightNPC : GlobalNPC
     {
         public int Age;
 

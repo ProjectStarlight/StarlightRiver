@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,11 +10,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Tiles.Mushroom
 {
-    class Vibeshroom : ModTile
+	class Vibeshroom : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

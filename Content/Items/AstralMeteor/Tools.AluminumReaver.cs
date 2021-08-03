@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
-
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    internal class AluminumReaver : ModItem
+	internal class AluminumReaver : ModItem
     {
         public override string Texture => AssetDirectory.AluminumItem + "AluminumReaver";
 

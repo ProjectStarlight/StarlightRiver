@@ -2,12 +2,9 @@
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Content.Abilities
 {
-    public abstract partial class InfusionItem : ModItem
+	public abstract partial class InfusionItem : ModItem
     {
         public abstract InfusionTier Tier { get; }
         public virtual Type AbilityType { get; }

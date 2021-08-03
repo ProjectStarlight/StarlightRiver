@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.GUI;
+﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -14,7 +9,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Utility
 {
-    class ChefBag : ModItem
+	class ChefBag : ModItem
     {
         public static List<int> ingredientTypes = new List<int>();
 

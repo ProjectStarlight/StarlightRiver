@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -9,14 +12,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
-
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-    internal class WispSwitch : ModTile
+	internal class WispSwitch : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

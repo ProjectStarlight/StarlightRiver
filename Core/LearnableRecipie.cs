@@ -1,10 +1,8 @@
 ﻿using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    class LearnableRecipe : ModRecipe
+	class LearnableRecipe : ModRecipe
     {
         private readonly string recipeName;
 

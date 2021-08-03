@@ -1,12 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Helpers;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Codex.Entries
 {
-    internal class PermafrostEntry : CodexEntry
+	internal class PermafrostEntry : CodexEntry
     {
         public PermafrostEntry()
         {

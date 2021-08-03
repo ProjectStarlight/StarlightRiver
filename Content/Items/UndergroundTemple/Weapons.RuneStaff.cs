@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-    class RuneStaff : ModItem
+	class RuneStaff : ModItem
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 

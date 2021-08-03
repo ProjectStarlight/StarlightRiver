@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-    class PermafrostTeleporter : ModTile
+	class PermafrostTeleporter : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

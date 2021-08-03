@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class Slimed : SmartBuff
+	public class Slimed : SmartBuff
     {
         public Slimed() : base("Slimed", "eww", true) { }
         public override void Update(Player player, ref int buffIndex)

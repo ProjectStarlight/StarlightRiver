@@ -1,11 +1,10 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items
 {
-    public class FramingItem : ModItem
+	public class FramingItem : ModItem
     {
         public override void SetStaticDefaults()
         {

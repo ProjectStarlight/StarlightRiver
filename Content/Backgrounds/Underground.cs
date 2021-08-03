@@ -1,12 +1,11 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Backgrounds
 {
-    public class BlankBG : ModUgBgStyle
+	public class BlankBG : ModUgBgStyle
     {
         public override bool ChooseBgStyle() => StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
 

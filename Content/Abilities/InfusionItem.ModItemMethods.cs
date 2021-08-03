@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Abilities
 {
-    public abstract partial class InfusionItem : ModItem
+	public abstract partial class InfusionItem : ModItem
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
 

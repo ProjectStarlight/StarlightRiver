@@ -1,28 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
-using StarlightRiver.Tiles;
+using StarlightRiver.Content.Tiles.AshHell;
+using StarlightRiver.Content.Tiles.AstralMeteor;
+using StarlightRiver.Content.Tiles.JungleBloody;
+using StarlightRiver.Content.Tiles.JungleCorrupt;
+using StarlightRiver.Content.Tiles.JungleHoly;
+using StarlightRiver.Content.Tiles.Overgrow;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content.Tiles.JungleHoly;
-using StarlightRiver.Content.Tiles.JungleBloody;
-using StarlightRiver.Content.Tiles.JungleCorrupt;
-using StarlightRiver.Content.Tiles.Overgrow;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Tiles.AshHell;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Tiles.AstralMeteor;
-
 namespace StarlightRiver.Core
 {
-    public class BiomeHandler : ModPlayer
+	public class BiomeHandler : ModPlayer
     {
         public bool ZoneGlass = false;
         public bool ZoneGlassTemple = false;
@@ -207,7 +204,7 @@ namespace StarlightRiver.Core
 
 namespace StarlightRiver
 {
-    public partial class StarlightRiver : Mod
+	public partial class StarlightRiver : Mod
     {
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {

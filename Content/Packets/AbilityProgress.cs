@@ -4,14 +4,12 @@ using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Content.Abilities.Purify;
-using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
 using Terraria;
 
 namespace StarlightRiver.Packets
 {
-    [Serializable]
+	[Serializable]
     public class AbilityProgress : Module
     {
         private readonly int fromWho;

@@ -3,11 +3,9 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    internal partial class GlassMiniboss : ModNPC
+	internal partial class GlassMiniboss : ModNPC
     {
         Vector2 moveStart;
         Vector2 moveTarget;

@@ -7,7 +7,7 @@ using Terraria;
 
 namespace StarlightRiver.Core
 {
-    public class Primitives : IDisposable
+	public class Primitives : IDisposable
     {
         public bool IsDisposed { get; private set; }
 

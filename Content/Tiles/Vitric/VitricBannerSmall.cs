@@ -1,23 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ObjectData;
 
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class VitricBannerSmall : DummyTile
+	class VitricBannerSmall : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

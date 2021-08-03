@@ -1,12 +1,10 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core;
+using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class GlassIdol : ModItem
+	class GlassIdol : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

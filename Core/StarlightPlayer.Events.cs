@@ -2,11 +2,9 @@
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightPlayer : ModPlayer
+	public partial class StarlightPlayer : ModPlayer
     {
         //for on-hit effects that require more specific effects, projectiles
         public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);

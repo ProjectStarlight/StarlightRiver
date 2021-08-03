@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class DoorBomb : InteractiveProjectile
+	class DoorBomb : InteractiveProjectile
     {
         public override string Texture => AssetDirectory.SquidBoss + "SpewBlob";
 

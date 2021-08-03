@@ -1,13 +1,12 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Waters
 {
-    public class WaterVitric : ModWaterStyle
+	public class WaterVitric : ModWaterStyle
     {
         public override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {

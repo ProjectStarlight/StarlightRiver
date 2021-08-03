@@ -1,21 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using Terraria.DataStructures;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VitricArmorProjectile : ModProjectile
+	internal class VitricArmorProjectile : ModProjectile
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

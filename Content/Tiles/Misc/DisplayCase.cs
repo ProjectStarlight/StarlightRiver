@@ -3,10 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -16,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-    class DisplayCase : ModTile
+	class DisplayCase : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

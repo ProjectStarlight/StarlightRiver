@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
-using StarlightRiver.Physics;
 using StarlightRiver.Helpers;
+using StarlightRiver.Physics;
 using System;
+using Terraria;
 using Terraria.Graphics.Effects;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class VitricBossEye
+	internal class VitricBossEye
     {
         private Vector2 Position;
         public VitricBoss Parent;

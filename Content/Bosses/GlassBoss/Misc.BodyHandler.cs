@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    class BodyHandler
+	class BodyHandler
     {
         private VitricBoss parent;
         private VerletChainInstance chain;

@@ -1,11 +1,10 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core;
+using Terraria.ID;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    class HauntedSword : ModItem
+	class HauntedSword : ModItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public override bool Autoload(ref string name) => false; //TODO: implement

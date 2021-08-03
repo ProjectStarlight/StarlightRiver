@@ -1,13 +1,11 @@
 ﻿
+using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Overgrow
 {
-    public class OvergrowStaff : ModItem
+	public class OvergrowStaff : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + "OvergrowStaff";
 

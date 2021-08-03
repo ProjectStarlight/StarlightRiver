@@ -1,13 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Core;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricFountain : ModFountain
+	internal class VitricFountain : ModFountain
     {
         public VitricFountain() : base("VitricFountainItem", AssetDirectory.VitricTile) { }
 

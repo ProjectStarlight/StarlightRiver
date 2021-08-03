@@ -1,14 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.AstralMeteor;
-
 namespace StarlightRiver.Content.Items.Moonstone
 {
-    public class MoonstoneOre : QuickTileItem
+	public class MoonstoneOre : QuickTileItem
     {
         public MoonstoneOre() : base("Moonstone", "", "MoonstoneOre", ItemRarityID.Blue, AssetDirectory.MoonstoneItem) { }
 

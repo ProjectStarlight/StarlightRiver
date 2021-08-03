@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities.GaiasFist;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities.GaiasFist;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class JungleEnergy : ModDust
+	public class JungleEnergy : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

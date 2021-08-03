@@ -1,11 +1,10 @@
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public abstract class QuickSplash : ModDust
+	public abstract class QuickSplash : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,14 +1,14 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.WorldGeneration;
+using StarlightRiver.Core;
 using StarlightRiver.NPCs;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.WorldGeneration;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class BarbedKnife : SmartAccessory, IChestItem
+	public class BarbedKnife : SmartAccessory, IChestItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

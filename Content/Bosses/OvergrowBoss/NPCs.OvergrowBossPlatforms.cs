@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using System;
 using Terraria;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.NPCs.BaseTypes;
-
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
-    internal class OvergrowBossVerticalPlatform : MovingPlatform
+	internal class OvergrowBossVerticalPlatform : MovingPlatform
     {
         public override string Texture => "StarlightRiver/Assets/Bosses/OvergrowBoss/OvergrowBossPlatform";
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -7,11 +8,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-    internal class Soil : ModTile
+	internal class Soil : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

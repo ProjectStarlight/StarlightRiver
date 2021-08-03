@@ -1,11 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-
 using StarlightRiver.Core;
+using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class AdditiveDrawing : HookGroup
+	class AdditiveDrawing : HookGroup
     {
         //Just draw calls and a SB reset, nothing dangerous.
         public override SafetyLevel Safety => SafetyLevel.Safe;

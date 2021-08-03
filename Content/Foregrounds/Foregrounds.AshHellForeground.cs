@@ -4,12 +4,9 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 
-
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Foregrounds
 {
-    class AshHellForeground : ParticleForeground
+	class AshHellForeground : ParticleForeground
     {
         public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell;
 

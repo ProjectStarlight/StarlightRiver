@@ -1,20 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Packets;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameInput;
-using Terraria.ModLoader;
-
-using StarlightRiver.Core;
-using StarlightRiver.Packets;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Abilities
 {
-    public abstract class Ability
+	public abstract class Ability
     {
         protected Ability()
         {

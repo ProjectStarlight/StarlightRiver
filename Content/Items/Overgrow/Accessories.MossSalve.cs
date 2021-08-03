@@ -1,14 +1,12 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-
 namespace StarlightRiver.Content.Items.Overgrow
 {
-    internal class MossSalve : SmartAccessory
+	internal class MossSalve : SmartAccessory
     {
         public override string Texture => AssetDirectory.OvergrowItem + "MossSalve";
 

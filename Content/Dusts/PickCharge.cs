@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items.UndergroundTemple;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.UndergroundTemple;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class PickCharge : ModDust
+	public class PickCharge : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

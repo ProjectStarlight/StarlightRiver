@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    class AxeTile : DummyTile
+	class AxeTile : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.NPCs.Permafrost
 {
-    internal class StrangeLight : ModNPC
+	internal class StrangeLight : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
 

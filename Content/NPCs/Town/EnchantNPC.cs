@@ -3,18 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Town
 {
-    class EnchantNPC : ModNPC
+	class EnchantNPC : ModNPC
     {
         int textState = 0;
         public bool enchanting;

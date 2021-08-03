@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class SpikeImmuneBuff : SmartBuff
+	public class SpikeImmuneBuff : SmartBuff
     {
         public SpikeImmuneBuff() : base("Aurora's blessing", "Immunity to spikes\nImproved movement speed", false) { }
 

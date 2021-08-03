@@ -1,19 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-
-using System;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Vitric;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class KettleCreature : ModNPC
+	internal class KettleCreature : ModNPC
     {
         KettleLimb leftLeg;
         KettleLimb rightLeg;

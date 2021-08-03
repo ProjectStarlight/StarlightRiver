@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using MonoMod.RuntimeDetour;
+using System;
 using Terraria;
-using StarlightRiver.Helpers;
-using StarlightRiver.Codex.Entries;
-using Terraria.DataStructures;
-using Terraria.ModLoader.IO;
-using System.Reflection;
-using MonoMod.RuntimeDetour.HookGen;
-using MonoMod.RuntimeDetour;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {

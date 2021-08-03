@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
-    public class MoonstoneOre : ModTile
+	public class MoonstoneOre : ModTile
     {
         public override bool Autoload(ref string name, ref string texture) {
             texture = AssetDirectory.MoonstoneTile + name;

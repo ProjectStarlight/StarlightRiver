@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
-    class AuroraPick : ModItem, IGlowingItem
+	class AuroraPick : ModItem, IGlowingItem
     {
         float charge = 0;
         bool charged = false;

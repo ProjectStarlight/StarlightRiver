@@ -1,10 +1,8 @@
 ﻿using System;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver
 {
-    [Flags]
+	[Flags]
     public enum WorldFlags
     {
         DesertOpen = 1 << 0,

@@ -1,21 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Dusts;
-using Terraria.Graphics.Effects;
-using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class VitricBossBow : ModItem
+	class VitricBossBow : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

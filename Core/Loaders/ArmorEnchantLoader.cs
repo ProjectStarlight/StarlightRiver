@@ -1,14 +1,11 @@
 ﻿using StarlightRiver.Content.ArmorEnchantment;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-    class ArmorEnchantLoader : ILoadable
+	class ArmorEnchantLoader : ILoadable
     {
         public static List<ArmorEnchantment> Enchantments = new List<ArmorEnchantment>();
 

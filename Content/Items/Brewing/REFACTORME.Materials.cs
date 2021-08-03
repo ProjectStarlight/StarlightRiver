@@ -1,13 +1,12 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Core;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Crafting;
-
 namespace StarlightRiver.Items.Herbology.Materials
 {
-    public class BlendForest : QuickMaterial
+	public class BlendForest : QuickMaterial
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/BlendForest";
 

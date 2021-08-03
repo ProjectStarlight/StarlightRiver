@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using System;
-
 namespace StarlightRiver.Content.Items.Overgrow
 {
-    public class OvergrowBow : ModItem
+	public class OvergrowBow : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + "OvergrowBow";
 

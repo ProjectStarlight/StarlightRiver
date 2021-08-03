@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
-
 namespace StarlightRiver.Items.Armor
 {
-    public static class ArmorHelper
+	public static class ArmorHelper
     {
         public static bool IsSetEquipped(this ModItem item, Player player) => item.IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
 

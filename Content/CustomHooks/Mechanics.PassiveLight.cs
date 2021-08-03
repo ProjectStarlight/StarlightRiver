@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Reflection;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class PassiveLight : HookGroup
+	class PassiveLight : HookGroup
     {
         //Rare method to hook but not the best finding logic. Also old code.
         public override SafetyLevel Safety => SafetyLevel.Fragile;

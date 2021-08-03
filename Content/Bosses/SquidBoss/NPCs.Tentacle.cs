@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.NPCs.BaseTypes;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    public class Tentacle : ModNPC, IUnderwater
+	public class Tentacle : ModNPC, IUnderwater
     {
         public override string Texture => AssetDirectory.Invisible;
         public SquidBoss Parent { get; set; }

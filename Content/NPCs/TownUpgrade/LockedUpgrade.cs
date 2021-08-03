@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.NPCs.TownUpgrade
 {
-    class LockedUpgrade : TownUpgrade
+	class LockedUpgrade : TownUpgrade
     {
         public LockedUpgrade() : base("", "", "", "Locked", "") { }
 

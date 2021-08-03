@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-
-using Terraria;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using Terraria.ModLoader;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Buffs
 {
-    class Overcharge : SmartBuff
+	class Overcharge : SmartBuff
     {
         public Overcharge() : base("Overcahrged", "Greatly reduced armor, shocking nearby enemies!", true) { }
 

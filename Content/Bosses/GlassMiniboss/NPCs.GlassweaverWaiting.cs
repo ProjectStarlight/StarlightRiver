@@ -1,13 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    class GlassweaverWaiting : ModNPC
+	class GlassweaverWaiting : ModNPC
     {
         public override string Texture => AssetDirectory.GlassMiniboss + Name;
 

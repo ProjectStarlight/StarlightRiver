@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-    public abstract class ClubProj : ModProjectile
+	public abstract class ClubProj : ModProjectile
     {
         public readonly int chargeTime;
         private readonly int minDamage;

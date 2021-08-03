@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class GhastlyCloakBuff : SmartBuff
+	public class GhastlyCloakBuff : SmartBuff
     {
         public GhastlyCloakBuff() : base("Cloaked", "Increases most stats", false) { }
 

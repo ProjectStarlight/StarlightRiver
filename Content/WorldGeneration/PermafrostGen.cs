@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Tiles.Permafrost.Decoration;
+using StarlightRiver.Content.Tiles.Permafrost.VFX;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +12,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Tiles.Permafrost;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Permafrost.Decoration;
-using StarlightRiver.Content.Tiles.Permafrost.VFX;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModWorld
     {
         public static int permafrostCenter;
 

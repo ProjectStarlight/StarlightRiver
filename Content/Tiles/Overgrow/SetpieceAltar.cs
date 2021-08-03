@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class SetpieceAltar : ModTile
+	internal class SetpieceAltar : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

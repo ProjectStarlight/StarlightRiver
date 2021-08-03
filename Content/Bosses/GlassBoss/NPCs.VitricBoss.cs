@@ -1,24 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.NPCs;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Foregrounds;
 using static StarlightRiver.Helpers.Helper;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
+	internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
     {
         public Vector2 startPos;
         public Vector2 endPos;

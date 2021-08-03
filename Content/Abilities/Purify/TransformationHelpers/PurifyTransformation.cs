@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 
 namespace StarlightRiver.Content.Abilities.Purify.TransformationHelpers
 {
-    struct PurifyTransformation
+	struct PurifyTransformation
     {
         /// <summary>
         /// The list of tile types which will transform into a given purified tile. When reverted, they will transform back into the first entry into this list.

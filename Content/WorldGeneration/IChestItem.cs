@@ -1,6 +1,6 @@
 ﻿namespace StarlightRiver.Content.WorldGeneration
 {
-    public interface IChestItem
+	public interface IChestItem
     {
         int Stack { get; }
 

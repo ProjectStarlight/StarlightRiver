@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
-
-using StarlightRiver.Core;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class VitricSummonSword : VitricSummonHammer
+	public class VitricSummonSword : VitricSummonHammer
     {
         private bool doDamage = false; //wat-So the sword only hits at specific frames-IDG
         private float globalTimer = 0;

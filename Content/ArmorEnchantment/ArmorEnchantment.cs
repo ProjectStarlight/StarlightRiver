@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Microsoft.Xna.Framework;
-using Terraria.ModLoader.IO;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using System;
+using Terraria;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.ArmorEnchantment
 {
-    abstract class ArmorEnchantment
+	abstract class ArmorEnchantment
     {
         public Guid Guid;
 

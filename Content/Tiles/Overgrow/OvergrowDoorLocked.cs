@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class OvergrowDoorLocked : ModTile
+	internal class OvergrowDoorLocked : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

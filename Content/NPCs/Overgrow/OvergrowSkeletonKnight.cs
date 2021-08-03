@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-    internal class OvergrowSkeletonKnight : ModNPC
+	internal class OvergrowSkeletonKnight : ModNPC
     {
         public override string Texture => AssetDirectory.OvergrowNpc + "OvergrowSkeletonKnight";
 

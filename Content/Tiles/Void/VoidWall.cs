@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Void
 {
-    public class VoidWall : ModWall
+	public class VoidWall : ModWall
     {
         public override bool Autoload(ref string name, ref string texture)
         {

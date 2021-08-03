@@ -1,13 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class SquidEgg : ModProjectile
+	class SquidEgg : ModProjectile
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override void SetDefaults()

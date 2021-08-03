@@ -4,12 +4,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-    public class Blink : InfusionItem<Dash>
+	public class Blink : InfusionItem<Dash>
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/Blink";

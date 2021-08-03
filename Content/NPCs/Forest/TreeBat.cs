@@ -1,20 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Helpers;
-
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Items.Herbology.Materials;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Forest;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {

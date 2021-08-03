@@ -1,18 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using Terraria;
+using StarlightRiver.Core.Loaders;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items;
-using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Content.Tiles.Void
 {
-    class VoidTileLoader : TileLoader
+	class VoidTileLoader : TileLoader
     {
         public override string AssetRoot => AssetDirectory.VoidTile;
 

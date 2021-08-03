@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Content.WorldGeneration
 {
-    [Flags]
+	[Flags]
     public enum ChestRegionFlags
     {
         All = 1, // Applies to any of these listed chests.

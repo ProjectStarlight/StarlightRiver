@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 
 namespace StarlightRiver.Core
 {
-    public static class ZoomHandler
+	public static class ZoomHandler
     {
         private static int zoomTimer;
         public static float zoomOverride = 1;

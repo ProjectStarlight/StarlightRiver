@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Prefixes
 {
-    public abstract class CustomTooltipPrefix : ModPrefix
+	public abstract class CustomTooltipPrefix : ModPrefix
     {
         public readonly string _tooltip;
 

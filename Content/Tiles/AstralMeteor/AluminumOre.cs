@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Tiles.AstralMeteor
 {
-    public class AluminumOre : ModTile
+	public class AluminumOre : ModTile
     {
         public override bool Autoload(ref string name, ref string texture) {
             texture = AssetDirectory.AluminumTile + name;

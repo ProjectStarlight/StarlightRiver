@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class Shadowflame : ModDust
+	public class Shadowflame : ModDust
     {
         float startingScale;
 

@@ -3,11 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Decoration
 {
-    public class LightBanner : SplineBanner
+	public class LightBanner : SplineBanner
     {
         public LightBanner() : base("StarlightRiver/Assets/Tiles/Decoration/LightBanner", "StarlightRiver/Assets/Tiles/Decoration/LightBannerGlow") { }
 

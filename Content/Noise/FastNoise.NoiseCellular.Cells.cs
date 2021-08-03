@@ -1,11 +1,9 @@
 ﻿//Based on https://github.com/Auburns/FastNoise_CSharp/blob/master/FastNoise.cs under MIT License
 //Copyright(c) 2017 Jordan Peck
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Noise
 {
-    public partial class FastNoise
+	public partial class FastNoise
     {
         private static readonly Decimal2[] Cell2D = {
             new Decimal2(-0.2700222198f,-0.9628540911f),new Decimal2(0.3863092627f,-0.9223693152f),new Decimal2(0.04444859006f,-0.999011673f),new Decimal2(-0.5992523158f,-0.8005602176f),new Decimal2(-0.7819280288f,0.6233687174f),new Decimal2(0.9464672271f,0.3227999196f),new Decimal2(-0.6514146797f,-0.7587218957f),new Decimal2(0.9378472289f,0.347048376f),

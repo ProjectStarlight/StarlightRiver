@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -9,13 +10,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Content.Abilities.Faeflame
 {
-    public class Wisp : Ability
+	public class Wisp : Ability
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
         public override float ActivationCostDefault => 0.5f;

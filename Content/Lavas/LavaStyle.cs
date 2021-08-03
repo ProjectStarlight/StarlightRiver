@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Lavas
 {
-    public abstract class LavaStyle : ModWaterStyle
+	public abstract class LavaStyle : ModWaterStyle
     {
         public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {

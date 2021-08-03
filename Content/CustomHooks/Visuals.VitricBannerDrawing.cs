@@ -2,14 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Physics;
 using Terraria;
-
-using StarlightRiver.Core;
-using System;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class VitricBannerDrawing : HookGroup
+	class VitricBannerDrawing : HookGroup
     {
         //Creates a RenderTarget and then renders the banners in the vitric desert. Should be fairly safe, as its just drawing.
         public override SafetyLevel Safety => SafetyLevel.Safe;

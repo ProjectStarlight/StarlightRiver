@@ -1,18 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
+using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class HatchOvergrow : DummyTile
+	internal class HatchOvergrow : DummyTile
     {
         public override int DummyType => ProjectileType<HatchDummy>();
 

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class Star : ModDust
+	public class Star : ModDust
     {
         float GetProgress(Dust dust) => dust.fadeIn / 45f - (float)Math.Pow(dust.fadeIn, 2) / 8100f;
 

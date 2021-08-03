@@ -1,12 +1,12 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Dusts
 {
-    public class NeedlerDust : ModDust
+	public class NeedlerDust : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

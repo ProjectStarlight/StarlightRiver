@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-    public abstract class CursedAccessory : SmartAccessory
+	public abstract class CursedAccessory : SmartAccessory
     {
         public static readonly Color CurseColor = new Color(25, 17, 49);
 

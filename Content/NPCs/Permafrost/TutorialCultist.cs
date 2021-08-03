@@ -1,19 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Content.NPCs.Permafrost
 {
-    public class TutorialCultist : ModNPC
+	public class TutorialCultist : ModNPC
     {
         int textState = 0;
 

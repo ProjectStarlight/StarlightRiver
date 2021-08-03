@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class BossSpike : ModProjectile
+	internal class BossSpike : ModProjectile
     {
         public override string Texture => AssetDirectory.Invisible;
 

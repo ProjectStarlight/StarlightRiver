@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria.ID;
+using Terraria;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class SanitizerSpray : SmartAccessory
+	public class SanitizerSpray : SmartAccessory
     {
         // 30 Tiles.
         private const float transferRadius = 480;

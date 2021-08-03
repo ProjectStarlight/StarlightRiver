@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles
 {
-    abstract class LootBubble : DummyTile
+	abstract class LootBubble : DummyTile
     {
         public virtual List<Loot> GoldLootPool => null;
 

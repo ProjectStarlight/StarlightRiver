@@ -1,20 +1,18 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Projectiles;
+using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles;
 using Terraria.ID;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Dusts;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class BossSpear : ModItem
+	class BossSpear : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

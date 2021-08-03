@@ -7,11 +7,9 @@ using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.GUI
 {
-    public class KeyInventory : SmartUIState
+	public class KeyInventory : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 

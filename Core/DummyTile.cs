@@ -3,11 +3,9 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    internal abstract class DummyTile : ModTile
+	internal abstract class DummyTile : ModTile
     {
         public virtual int DummyType { get; }
 

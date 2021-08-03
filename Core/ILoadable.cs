@@ -1,8 +1,6 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
-    interface ILoadable
+	interface ILoadable
     {
         void Load();
         void Unload();

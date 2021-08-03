@@ -1,14 +1,14 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricBreakableVases : ModTile
+	internal class VitricBreakableVases : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

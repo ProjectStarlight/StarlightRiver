@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-    class BoulderMaker : ModTile
+	class BoulderMaker : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

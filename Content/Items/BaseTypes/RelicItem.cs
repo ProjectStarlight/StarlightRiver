@@ -8,7 +8,7 @@ using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-    class RelicItem : GlobalItem
+	class RelicItem : GlobalItem
     {
         public bool isRelic = false;
 

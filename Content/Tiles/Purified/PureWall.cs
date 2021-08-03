@@ -1,11 +1,10 @@
-﻿using Terraria.ModLoader;
+﻿using StarlightRiver.Core;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Purified
 {
-    class WallStonePure : ModWall
+	class WallStonePure : ModWall
     {
         public override bool Autoload(ref string name, ref string texture)
         {

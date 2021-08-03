@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VitricSword : ModItem
+	internal class VitricSword : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

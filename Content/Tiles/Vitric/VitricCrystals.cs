@@ -1,19 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
-using Terraria.ObjectData;
-using Terraria.DataStructures;
+using Terraria;
+using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    public abstract class WalkableCrystalItem : QuickTileItem
+	public abstract class WalkableCrystalItem : QuickTileItem
     {
         private bool held = false;
         public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "Use item slot to select type", placetype, ItemRarityID.Blue, texturepath) { }

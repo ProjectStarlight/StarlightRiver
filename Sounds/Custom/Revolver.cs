@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Terraria;
+﻿using Microsoft.Xna.Framework.Audio;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Sounds.Custom

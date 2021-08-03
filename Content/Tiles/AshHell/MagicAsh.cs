@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.AshHell
 {
-    class MagicAsh : ModTile
+	class MagicAsh : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

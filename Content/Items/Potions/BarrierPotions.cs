@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Core;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Potions
 {

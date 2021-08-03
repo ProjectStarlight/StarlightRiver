@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Slime
 {
-    internal class SlimeStaffProjectile : ModProjectile
+	internal class SlimeStaffProjectile : ModProjectile
     {
         public override string Texture => AssetDirectory.SlimeItem + Name;
 

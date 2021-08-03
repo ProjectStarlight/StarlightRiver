@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Abilities
 {
-    public class ShardSet
+	public class ShardSet
     {
         private readonly HashSet<int> collected = new HashSet<int>();
 

@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoMod.Cil;
+using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.NPCs.BaseTypes;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class DrawUnderCathedralWater : HookGroup
+	class DrawUnderCathedralWater : HookGroup
     {
         //Rare method to hook but not the best finding logic, but its really just some draws so nothing should go terribly wrong.
         public override SafetyLevel Safety => SafetyLevel.Fragile;

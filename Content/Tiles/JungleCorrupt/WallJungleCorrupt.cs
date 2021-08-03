@@ -1,17 +1,12 @@
 using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
-    public class WallJungleCorrupt : ModWall
+	public class WallJungleCorrupt : ModWall
     {
         public override bool Autoload(ref string name, ref string texture)
         {

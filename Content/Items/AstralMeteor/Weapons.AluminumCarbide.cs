@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    class AluminumCarbide : ModItem, IGlowingItem
+	class AluminumCarbide : ModItem, IGlowingItem
     {
         float spinup = 0;
 

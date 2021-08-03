@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-    internal class AuroraDiscTile : DummyTile
+	internal class AuroraDiscTile : DummyTile
     {
         public override int DummyType => ProjectileType<AuroraDiscTileDummy>();
 

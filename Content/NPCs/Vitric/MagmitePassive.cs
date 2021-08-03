@@ -5,13 +5,10 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class MagmitePassive : ModNPC
+	internal class MagmitePassive : ModNPC
     {
         public ref float ActionState => ref npc.ai[0];
         public ref float ActionTimer => ref npc.ai[1];

@@ -1,20 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class VineOvergrow : ModVine
+	internal class VineOvergrow : ModVine
     {
         public override bool Autoload(ref string name, ref string texture)
         {

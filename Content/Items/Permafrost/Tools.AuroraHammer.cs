@@ -1,8 +1,6 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Items.Permafrost.Tools
+﻿namespace StarlightRiver.Content.Items.Permafrost.Tools
 {
-    class AuroraHammer
+	class AuroraHammer
     {
     }
 }

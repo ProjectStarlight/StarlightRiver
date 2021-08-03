@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class CeirosExpert : SmartAccessory
+	class CeirosExpert : SmartAccessory
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

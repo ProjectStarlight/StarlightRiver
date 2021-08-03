@@ -6,12 +6,9 @@ using Terraria.GameInput;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-    public class Dash : CooldownAbility
+	public class Dash : CooldownAbility
     {
         public static float SignedLesserBound(float limit, float other)
         {

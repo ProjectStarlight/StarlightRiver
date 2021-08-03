@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class InkBlob : ModProjectile
+	class InkBlob : ModProjectile
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override void SetStaticDefaults()

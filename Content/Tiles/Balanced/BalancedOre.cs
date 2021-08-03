@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
+using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Balanced;
 
 namespace StarlightRiver.Content.Tiles.Balanced
 {
-    internal class OreEbony : ModTile
+	internal class OreEbony : ModTile
     {
         public override bool Autoload(ref string name, ref string texture) {
             texture = AssetDirectory.BalancedTile + name;

@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class VitricSummonKnife : VitricSummonHammer
+	public class VitricSummonKnife : VitricSummonHammer
     {
         private bool closetoplayer = false;
         internal Vector2 offset;

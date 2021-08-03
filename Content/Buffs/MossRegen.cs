@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class MossRegen : SmartBuff
+	public class MossRegen : SmartBuff
     {
         public MossRegen() : base("Mending Moss", "Regenerating life quickly!", false) { }
 

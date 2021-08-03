@@ -1,21 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
+using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
-using Terraria.Graphics.Effects;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.Purify
 {
-    public class Pure : Ability
+	public class Pure : Ability
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/PureCrown";
         public override bool Available => base.Available && !Main.projectile.Any(proj => proj.owner == Player.whoAmI && proj.active && (proj.type == ProjectileType<Purifier>() || proj.type == ProjectileType<PurifierReturn>()));

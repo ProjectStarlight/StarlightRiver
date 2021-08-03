@@ -1,11 +1,9 @@
 ﻿using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class BossWindow : DummyTile
+	internal class BossWindow : DummyTile
     {
         public override int DummyType => ProjectileType<BossWindowDummy>();
 

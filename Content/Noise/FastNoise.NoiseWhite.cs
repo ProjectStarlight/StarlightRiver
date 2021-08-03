@@ -5,11 +5,9 @@ using System;
 using System.Runtime.CompilerServices;
 using DECIMAL = System.Single;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Noise
 {
-    public partial class FastNoise
+	public partial class FastNoise
     {
         public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y)
         {

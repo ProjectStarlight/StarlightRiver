@@ -1,18 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Vitric;
-using System.Linq;
-
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    class FinalLaser : ModProjectile, IDrawAdditive
+	class FinalLaser : ModProjectile, IDrawAdditive
     {
         public VitricBoss parent;
 

@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-    class LightBeam : ModProjectile
+	class LightBeam : ModProjectile
     {
         public override string Texture => AssetDirectory.Invisible;
 

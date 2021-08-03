@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using StarlightRiver.Content.Tiles;
 using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -10,13 +12,9 @@ using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles;
-using System;
-
 namespace StarlightRiver.Content.GUI
 {
-    public class LootUI : SmartUIState
+	public class LootUI : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 

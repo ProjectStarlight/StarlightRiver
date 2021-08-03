@@ -1,13 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class LightingBuffer : HookGroup
+	class LightingBuffer : HookGroup
     {
         //Creates a RenderTarget for the lighting buffer. Could potentially be performance havy but shouldn't be dangerous.
         public override SafetyLevel Safety => SafetyLevel.Safe;

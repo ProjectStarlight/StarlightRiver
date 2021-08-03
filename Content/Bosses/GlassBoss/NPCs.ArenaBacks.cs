@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -10,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
+	public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;

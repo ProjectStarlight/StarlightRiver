@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
-using StarlightRiver.Content.NPCs.BaseTypes;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class MovingPlatforms : HookGroup
+	class MovingPlatforms : HookGroup
     {
         //Orig is called when appropriate, but this is still messing with vanilla behavior. Also IL.
         public override SafetyLevel Safety => SafetyLevel.Questionable;

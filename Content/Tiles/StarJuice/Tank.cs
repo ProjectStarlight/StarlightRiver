@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using StarlightRiver.Content.Items.StarJuice;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,13 +12,9 @@ using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.StarJuice;
-
 namespace StarlightRiver.Content.Tiles.StarJuice
 {
-    internal sealed class Tank : ModTile
+	internal sealed class Tank : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

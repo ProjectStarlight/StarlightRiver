@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +12,9 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightPlayer : ModPlayer
+	public partial class StarlightPlayer : ModPlayer
     {
         public int Timer { get; private set; }
 

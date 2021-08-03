@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    class LavaSpew : ModDust
+	class LavaSpew : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

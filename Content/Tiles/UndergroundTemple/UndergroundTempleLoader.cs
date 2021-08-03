@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Core.Loaders;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-    class UndergroundTempleLoader : TileLoader
+	class UndergroundTempleLoader : TileLoader
     {
         public override string AssetRoot => AssetDirectory.UndergroundTempleTile;
 

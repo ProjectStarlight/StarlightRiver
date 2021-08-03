@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Foregrounds
 {
-    public abstract class Foreground
+	public abstract class Foreground
     {
         protected float opacity = 0;
 

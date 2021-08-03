@@ -1,17 +1,17 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using StarlightRiver.Content.Items.BaseTypes;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.Graphics.Effects;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class HolyAmulet : SmartAccessory
+	public class HolyAmulet : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

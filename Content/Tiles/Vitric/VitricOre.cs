@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
-using System;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
-using StarlightRiver.Helpers;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricOre : DummyTile
+	internal class VitricOre : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

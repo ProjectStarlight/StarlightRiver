@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.NPCs.BaseTypes;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    class IcePlatform : MovingPlatform
+	class IcePlatform : MovingPlatform
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
 

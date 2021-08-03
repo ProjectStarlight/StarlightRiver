@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Physics
 {
-    public class RopeSegment
+	public class RopeSegment
     {
         public Vector2 posNow;
         public Vector2 posOld;

@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    class StarSniper : ModItem
+	class StarSniper : ModItem
     {
         public override string Texture => AssetDirectory.AluminumItem + "StarSniper";
 

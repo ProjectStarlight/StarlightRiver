@@ -1,15 +1,14 @@
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
-
 namespace StarlightRiver.NPCs.Town
 {
-    [AutoloadHead]
+	[AutoloadHead]
     public class Voidsmith : ModNPC
     {
         public override string Texture => AssetDirectory.TownNPC + "Voidsmith";

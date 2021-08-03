@@ -1,12 +1,12 @@
-﻿using StarlightRiver.Core;
-using Terraria;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.BaseTypes;
-using Microsoft.Xna.Framework;
 using StarlightRiver.Content.WorldGeneration;
+using StarlightRiver.Core;
+using Terraria;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class SojournersScarf : SmartAccessory, IChestItem
+	public class SojournersScarf : SmartAccessory, IChestItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

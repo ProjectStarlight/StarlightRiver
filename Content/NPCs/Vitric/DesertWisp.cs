@@ -1,20 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
 using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
-using System;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Helpers;
-using Terraria.ID;
-
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class DesertWisp : ModNPC
+	internal class DesertWisp : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
 

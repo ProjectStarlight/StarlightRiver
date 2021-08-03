@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-
-
-using StarlightRiver.Core;
 using StarlightRiver.Content.Bosses.SquidBoss;
+using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class CathedralTarget : HookGroup
+	class CathedralTarget : HookGroup
     {
         //Creates a RenderTarget for the cathedral water. Nothing unsafe.
         public override SafetyLevel Safety => SafetyLevel.Safe;

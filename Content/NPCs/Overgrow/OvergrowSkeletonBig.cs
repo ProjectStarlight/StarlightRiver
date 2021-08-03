@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-    internal class OvergrowSkeletonBig : ModNPC
+	internal class OvergrowSkeletonBig : ModNPC
     {
         public override string Texture => AssetDirectory.Debug;
 

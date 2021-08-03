@@ -1,14 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Herbology;
 
 namespace StarlightRiver.Items.Herbology.Materials
 {
-    public class Ivy : QuickMaterial
+	public class Ivy : QuickMaterial
     {
         public Ivy() : base("Forest Ivy", "A common, yet versatile herb", 999, 100, 1, AssetDirectory.BrewingItem) { }
     }

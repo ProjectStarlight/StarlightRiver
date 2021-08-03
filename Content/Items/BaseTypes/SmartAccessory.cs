@@ -1,11 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-    public abstract class SmartAccessory : ModItem
+	public abstract class SmartAccessory : ModItem
     {
         private readonly string ThisName;
         private readonly string ThisTooltip;

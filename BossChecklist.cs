@@ -1,13 +1,12 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Permafrost.Tools;
-using StarlightRiver.Content.Items.Permafrost;
 
 namespace StarlightRiver
 {
-    public partial class StarlightRiver : Mod
+	public partial class StarlightRiver : Mod
     {
         private void CallBossChecklist()
         {

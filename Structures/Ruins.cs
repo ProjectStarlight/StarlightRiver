@@ -6,11 +6,9 @@ using Terraria.ID;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Structures
 {
-    public partial class GenHelper
+	public partial class GenHelper
     {
         public static void RuinsGen(GenerationProgress progress)
         {

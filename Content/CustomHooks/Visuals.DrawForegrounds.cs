@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
-
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core.Loaders;
+using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class DrawForegrounds : HookGroup
+	class DrawForegrounds : HookGroup
     {
         //just drawing, nothing to see here.
         public override SafetyLevel Safety => SafetyLevel.Safe;

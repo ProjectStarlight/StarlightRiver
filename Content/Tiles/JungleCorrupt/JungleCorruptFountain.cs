@@ -1,13 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Core;
 using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class JungleCorruptFountain : ModFountain
+	internal class JungleCorruptFountain : ModFountain
     {
         public JungleCorruptFountain() : base("JungleCorruptFountainItem", AssetDirectory.JungleCorruptTile) { }
         public override void FountainActive(int i, int j, bool closer) =>

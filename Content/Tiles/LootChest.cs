@@ -1,16 +1,14 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ModLoader;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.GUI;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles
 {
-    public abstract class LootChest : ModTile
+	public abstract class LootChest : ModTile
     {
         internal virtual List<Loot> GoldLootPool { get; }
         internal virtual List<Loot> SmallLootPool { get; }
