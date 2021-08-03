@@ -42,6 +42,7 @@ namespace StarlightRiver.Core
         {
             if (!string.IsNullOrEmpty(TexturePath))
                 texture = TexturePath + name;
+
             return base.Autoload(ref name, ref texture);
         }
 

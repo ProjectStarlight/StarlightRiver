@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Waters
             b = 0.95f;
         }
 
-        public override Color BiomeHairColor() => Color.DeepSkyBlue;
+        public override Color BiomeHairColor() => new Color(115, 182, 158);
     }
 
     public class WaterfallVitric : ModWaterfallStyle

@@ -5,6 +5,7 @@ using Terraria;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
+using System.IO;
 
 namespace StarlightRiver.Core
 {
@@ -39,5 +40,5 @@ namespace StarlightRiver.Core
 
             fadeTime = MathHelper.Clamp(fadeTime, 0.01f, 1);
         }
-    }
+	}
 }

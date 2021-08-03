@@ -222,6 +222,17 @@ namespace StarlightRiver.Core
             return false;
         }
 
+        public static void CreateCutaways()
+		{
+            var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
+            templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
+            CutawayHandler.NewCutaway(templeCutaway);
+
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay.inside = CheckForSquidArena;
+            CutawayHandler.NewCutaway(cathedralOverlay);
+        }
+
         public override void Load(TagCompound tag)
         {
             VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
@@ -229,20 +240,12 @@ namespace StarlightRiver.Core
             VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
             VitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
-            var templeCutaway = new Cutaway( GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16 );
-            templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
-            CutawayHandler.NewCutaway(templeCutaway);
-
             SquidNPCProgress = tag.GetInt("SquidNPCProgress");
             SquidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
             permafrostCenter = tag.GetInt("PermafrostCenter");
-
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
-            cathedralOverlay.inside = CheckForSquidArena;
-            CutawayHandler.NewCutaway(cathedralOverlay);
 
             flags = (WorldFlags)tag.GetInt(nameof(flags));
 
@@ -260,8 +263,8 @@ namespace StarlightRiver.Core
 
             Chungus = tag.GetFloat("Chungus");
 
-            if(Chungus < 1)
-                Chungus += 0.01f;
+            Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
+            Chungus = MathHelper.Clamp(Chungus, 0, 1);
 
             knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 
@@ -280,7 +283,8 @@ namespace StarlightRiver.Core
             }
 
             //setup overlays
-
+            if (Main.netMode == NetmodeID.SinglePlayer)
+                CreateCutaways();
         }
 
         public static void LearnRecipie(string key)
