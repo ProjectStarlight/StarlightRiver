@@ -87,6 +87,9 @@ namespace StarlightRiver.Core
             VitricBiome = ReadRectangle(reader);
             SquidBossArena = ReadRectangle(reader);
 
+            if(CutawayHandler.cutaways.Count == 0)
+                CreateCutaways();
+
             ReadNPCUpgrades(reader);
         }
 

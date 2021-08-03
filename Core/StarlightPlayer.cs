@@ -211,9 +211,6 @@ namespace StarlightRiver.Core
 
         public override void OnEnterWorld(Player player)
         {
-            if(Main.netMode == NetmodeID.MultiplayerClient)
-                StarlightWorld.CreateCutaways();
-
             Collection.ShouldReset = true;
             inTutorial = false;
         }
