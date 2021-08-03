@@ -89,6 +89,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         protected virtual void UpdateEffects()
         {
             int type = safe ? DustType<GoldNoMovement>() : DustType<Dusts.Void>();
+
             for (int k = 0; k <= 2; k++)
                 Dust.NewDust(Player.Center - new Vector2(4, 4), 8, 8, type);
         }
