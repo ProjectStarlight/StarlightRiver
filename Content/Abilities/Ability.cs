@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 
 using StarlightRiver.Core;
 using StarlightRiver.Packets;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities
 {
@@ -49,6 +50,8 @@ namespace StarlightRiver.Content.Abilities
 
             StartAbility packet = new StartAbility(user.player.whoAmI, this);
             packet.Send(-1, -1, false);
+
+            NetMessage.SendData(MessageID.PlayerControls);
         }
 
         public void Deactivate()

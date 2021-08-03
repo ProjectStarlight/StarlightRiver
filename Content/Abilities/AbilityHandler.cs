@@ -350,8 +350,12 @@ namespace StarlightRiver.Content.Abilities
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
                 ActiveAbility.UpdateActive();
+
                 if (Main.netMode != NetmodeID.Server)
+                {
                     ActiveAbility.UpdateActiveEffects();
+                    NetMessage.SendData(MessageID.SyncPlayer);
+                }
             }
         }
 
