@@ -20,9 +20,9 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            if (Main.netMode == Terraria.ID.NetmodeID.Server)
+            if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
             {
-                //Send(-1, fromWho, false);
+                Send(-1, fromWho, false);
                 return;
             }
 
