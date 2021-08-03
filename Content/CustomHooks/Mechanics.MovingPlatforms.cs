@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.CustomHooks
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = npc.position.Y - self.height + 4;
 
-                        if(self == Main.clientPlayer)
+                        if(self == Main.LocalPlayer)
                             NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);
 
                         orig(self);
