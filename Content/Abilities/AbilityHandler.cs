@@ -10,6 +10,7 @@ using Terraria.ModLoader.IO;
 
 using StarlightRiver.Core;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Packets;
 
 namespace StarlightRiver.Content.Abilities
 {
@@ -382,7 +383,13 @@ namespace StarlightRiver.Content.Abilities
             }
         }
 
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+		public override void OnEnterWorld(Player player)
+		{
+            AbilityProgress packet = new AbilityProgress(player.whoAmI, player.GetHandler());
+            packet.Send();
+        }
+
+		public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             ActiveAbility?.ModifyDrawLayers(layers);
         }
