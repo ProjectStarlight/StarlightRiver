@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
             }
-            catch (NullReferenceException e)
+            catch (Exception e)
             {
                 // be quiet
             }
