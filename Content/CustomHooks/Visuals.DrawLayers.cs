@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 // be quiet
             }
+
             if (Main.gameMenu) return;
 
             for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)

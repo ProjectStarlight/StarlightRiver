@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
+using StarlightRiver.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -210,6 +212,12 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-        public override float UseTimeMultiplier(Item item) => itemSpeed;
+		public override void PlayerConnect(Player player)
+		{
+            AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
+            packet.Send();
+		}
+
+		public override float UseTimeMultiplier(Item item) => itemSpeed;
     }
 }

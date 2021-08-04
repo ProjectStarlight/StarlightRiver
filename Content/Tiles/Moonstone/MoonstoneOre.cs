@@ -22,12 +22,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
         {
             //Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
 
-            bool a()//remove
-            {
-                Main.NewText("a");
-                return true;
-            }
-
             if (!Main.tile[i, j - 1].active())
             {
                 Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Main.GameUpdateCount * 0.02f) + 4) / 4);

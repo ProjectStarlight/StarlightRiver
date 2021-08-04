@@ -80,22 +80,23 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Texture2D lavaFadeTex = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
             int halfWidth = (MaxWidth / 2);//to account for odd numbers
-            for (int k = -halfWidth; k < halfWidth + 1; k++)
-                for (int h = MaxHeight - 1; h < 1; h++)
+
+            for (int x = -halfWidth; x < halfWidth + 1; x++)
+                for (int y = MaxHeight - 1; y < 1; y++)
                 {
-                    if (Main.tile[i + k, j + h].type == Type)
+                    if (Main.tile[i + x, j + y].type == Type)
                     {
-                        int val = (int)(Math.Sin(Main.GameUpdateCount * 0.05f + (h + k)) * 20f + 235f);
+                        int val = (int)(Math.Sin(Main.GameUpdateCount * 0.05f + (y + x)) * 20f + 235f);
                         Color col = new Color(val, val, val, 0);
                         //Main.NewText(val / 255f);
-                        Tile sideTile = Main.tile[i + k - 1, j + h];
-                        Tile sideUpTile = Main.tile[i + k - 1, j + h - 1];
+                        Tile sideTile = Main.tile[i + x - 1, j + y];
+                        Tile sideUpTile = Main.tile[i + x - 1, j + y - 1];
                         if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
-                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + k, j + h) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
-                        sideTile = Main.tile[i + k + 1, j + h];
-                        sideUpTile = Main.tile[i + k + 1, j + h - 1];
+                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + x, j + y) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
+                        sideTile = Main.tile[i + x + 1, j + y];
+                        sideUpTile = Main.tile[i + x + 1, j + y - 1];
                         if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
-                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + k - 2, j + h) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
+                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + x - 2, j + y) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
                     }
                 }
         }

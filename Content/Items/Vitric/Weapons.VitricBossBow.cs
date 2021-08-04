@@ -60,13 +60,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	internal class VitricBowProjectile : ModProjectile, IDrawAdditive
 	{
+        private int charge = 0;
+
         public float chargePercent => charge / 120f;
-
-        public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
-
         Player owner => Main.player[projectile.owner];
 
-        private int charge = 0;
+        public ref float State => ref projectile.ai[0];
+        public ref float Angle => ref projectile.ai[1];
+
+        public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
 
         public override void SetDefaults()
 		{
@@ -77,11 +79,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-            projectile.rotation = (owner.Center - Main.MouseWorld).ToRotation() + MathHelper.Pi;
+            if(owner == Main.LocalPlayer)
+                Angle = (owner.Center - Main.MouseWorld).ToRotation() + MathHelper.Pi;
+
+            projectile.netUpdate = true;
+
+            projectile.rotation = Angle; 
             projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 24;
             owner.heldProj = projectile.whoAmI;
 
-            if (owner.channel && projectile.ai[0] == 0)
+            if (owner.channel && State == 0)
             {                          
                 if (charge < 120)
                     charge++;
@@ -100,7 +107,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             else if (charge > 0)
             {
-                projectile.ai[0] = 1;
+                State = 1;
                 projectile.timeLeft = charge;
                 charge -= 4;
             }

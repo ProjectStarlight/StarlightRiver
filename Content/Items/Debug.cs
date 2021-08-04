@@ -38,12 +38,6 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-
-            Packets.AbilityProgress packet = new Packets.AbilityProgress(player.whoAmI, player.GetModPlayer<Abilities.AbilityHandler>());
-            packet.Send();
-
-            return true;
-
             Player dummy = new Player();
             dummy.active = true;
 

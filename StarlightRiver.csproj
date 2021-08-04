@@ -31,6 +31,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Tiles\MusicBox\" />
     <Folder Include="Content\Tiles\Paintings\" />
   </ItemGroup>
 </Project>

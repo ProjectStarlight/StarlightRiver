@@ -77,10 +77,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (player.altFunctionUse != 2) ;
-
-
-            if(buffed && player.altFunctionUse != 2)
+            if (buffed && player.altFunctionUse != 2)
             {
                 int i = Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
                 Main.projectile[i].ai[1] = buffPower;
