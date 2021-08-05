@@ -39,14 +39,19 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             if (cooldown > 0)
                 cooldown--;
+
+            player.statDefense += 4;
 		}
 
 		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            if (Equipped(player) && cooldown <= 0)
+            var instance = (GetEquippedInstance(player) as CeirosExpert);
+
+            if (Equipped(player) && instance.cooldown <= 0)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 100, 0, player.whoAmI);
-                cooldown = 60;
+                Helper.PlayPitched("Magic/FireSpell", 1, 0.75f, player.Center);
+                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, player.whoAmI);
+                instance.cooldown = 60;
             }
 
             return true;
@@ -59,7 +64,7 @@ namespace StarlightRiver.Content.Items.Vitric
         private Trail trail;
 
         public float TimeFade => 1 - projectile.timeLeft / 20f;
-        public float Radius => (20 - projectile.timeLeft) * 5;
+        public float Radius => Helper.BezierEase((20 - projectile.timeLeft) / 20f) * 100;
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -87,12 +92,13 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            return Helper.CheckCircularCollision(projectile.Center, (int)Radius, targetHitbox);
+            return Helper.CheckCircularCollision(projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-            target.velocity += Vector2.Normalize(target.Center - projectile.Center) * 2 * target.knockBackResist;
+            target.velocity += Vector2.Normalize(target.Center - projectile.Center) * (20 + damage * 0.05f) * target.knockBackResist;
+            target.AddBuff(BuffID.OnFire, 180);
 		}
 
 		private void ManageCaches(ref List<Vector2> cache)
