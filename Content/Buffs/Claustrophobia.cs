@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.DataStructures;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class Claustrophobia : SmartBuff
+	public class Claustrophobia : SmartBuff
     {
         public Claustrophobia() : base("Claustrophobia", "Stuck in wisp form!", true) { }
 

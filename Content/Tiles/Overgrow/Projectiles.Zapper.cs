@@ -1,20 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    public class Zapper : ModProjectile
+	public class Zapper : ModProjectile
     {
         public override string Texture => AssetDirectory.Invisible;
         public Tile parent;

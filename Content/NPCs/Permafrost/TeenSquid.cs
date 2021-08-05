@@ -4,11 +4,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.Permafrost
 {
-    internal class TeenSquid : ModNPC
+	internal class TeenSquid : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/NPCs/Permafrost/TeenSquid";
 

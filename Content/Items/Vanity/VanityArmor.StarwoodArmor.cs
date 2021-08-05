@@ -2,15 +2,13 @@
 using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Core;
 using StarlightRiver.Items.Armor;
-using System.Linq;
 using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vanity
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class AncientStarwoodHat : StarwoodItem, IArmorLayerDrawable
     {
         public override string Texture => AssetDirectory.VanityItem + Name;

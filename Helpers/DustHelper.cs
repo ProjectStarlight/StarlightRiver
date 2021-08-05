@@ -2,11 +2,10 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ID;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Helpers
 {
-    public static class DustHelper
+	public static class DustHelper
     {
         public static void DrawStar(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1)
         {

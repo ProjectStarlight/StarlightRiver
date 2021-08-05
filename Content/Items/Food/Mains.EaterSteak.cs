@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class EaterSteak : Ingredient
+	internal class EaterSteak : Ingredient
     {
         public EaterSteak() : base("+3% damage reduction", 900, IngredientType.Main) { }
 

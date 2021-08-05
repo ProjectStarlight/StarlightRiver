@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class VitricHook : ModItem
+	class VitricHook : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

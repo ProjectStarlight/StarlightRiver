@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.StarJuice
 {
-    internal class StarLamp : StarjuiceStoringItem
+	internal class StarLamp : StarjuiceStoringItem
     {
         public StarLamp() : base(500) { }
 

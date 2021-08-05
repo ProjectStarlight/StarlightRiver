@@ -1,21 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class CrystalSlime : ModNPC
+	internal class CrystalSlime : ModNPC
     {
         public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
+
+        public ref float Shield => ref npc.ai[1];
 
         public override void SetStaticDefaults()
         {
@@ -43,33 +43,32 @@ namespace StarlightRiver.Content.NPCs.Vitric
             return Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.75f;
         }
 
-        private bool shielded { get => npc.ai[1] == 0; set => npc.ai[1] = value ? 0 : 1; }
-
         public override void AI()
         {
             npc.TargetClosest(true);
             Player player = Main.player[npc.target];
             AbilityHandler mp = player.GetHandler();
 
-            if (AbilityHelper.CheckDash(player, npc.Hitbox))
-                if (shielded)
-                {
-                    shielded = false;
-                    npc.velocity += player.velocity * 0.5f;
+            if (AbilityHelper.CheckDash(player, npc.Hitbox) && Shield == 1)
+            {
+                Shield = 0;
+                npc.velocity += player.velocity * 0.5f;
 
-                    mp.ActiveAbility?.Deactivate();
-                    player.velocity = Vector2.Normalize(player.velocity) * -10f;
+                mp.ActiveAbility?.Deactivate();
+                player.velocity = Vector2.Normalize(player.velocity) * -10f;
 
-                    player.immune = true;
-                    player.immuneTime = 10;
+                player.immune = true;
+                player.immuneTime = 10;
 
-                    Main.PlaySound(SoundID.Shatter, npc.Center);
-                    for (int k = 0; k <= 20; k++)
-                        Dust.NewDust(npc.position, 48, 32, ModContent.DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
-                    npc.netUpdate = true;
-                }
+                Main.PlaySound(SoundID.Shatter, npc.Center);
 
-            if (shielded)
+                for (int k = 0; k <= 20; k++)
+                    Dust.NewDust(npc.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+
+                npc.netUpdate = true;
+            }
+
+            if (Shield == 1)
             {
                 npc.immortal = true;
                 npc.HitSound = SoundID.NPCHit42;
@@ -83,8 +82,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
         {
-            if (shielded)
+            if (Shield == 1)
                 damage = 0;
+
             return base.StrikeNPC(ref damage, defense, ref knockback, hitDirection, ref crit);
         }
 
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (shielded)
+            if (Shield == 1)
             {
                 Color color = Helper.IndicatorColor;
                 spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));

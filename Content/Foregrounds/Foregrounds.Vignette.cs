@@ -1,17 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Foregrounds
 {
-    class Vignette : Foreground
+	class Vignette : Foreground
     {
         public static Vector2 offset;
         public static float extraOpacity = 1;

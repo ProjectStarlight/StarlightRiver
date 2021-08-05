@@ -3,7 +3,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class LegBrace : SmartAccessory
+	public class LegBrace : SmartAccessory
     {
         //TODO: this
         public override string Texture => AssetDirectory.MiscItem + Name;

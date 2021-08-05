@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Linq;
 using Terraria;
@@ -9,15 +11,11 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core.Loaders;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
-    [AutoloadBossHead]
+	[AutoloadBossHead]
     public partial class OvergrowBoss : ModNPC
     {
         public OvergrowBossFlail flail; //the flail which the boss owns, allows direct manipulation in the boss' partial attack class, much nicer than trying to sync between two NPCs

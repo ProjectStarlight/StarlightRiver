@@ -8,11 +8,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    class FlyingSentinel : ModNPC
+	class FlyingSentinel : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/FlyingSentinel";
 

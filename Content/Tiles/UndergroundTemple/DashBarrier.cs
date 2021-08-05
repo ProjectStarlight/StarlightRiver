@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Tiles.Temple
 {
-    class DashBarrier : DummyTile
+	class DashBarrier : DummyTile
     {
         public override int DummyType => ProjectileType<DashBarrierDummy>();
 
@@ -33,6 +33,8 @@ namespace StarlightRiver.Tiles.Temple
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+
                 Main.PlaySound(SoundID.Tink, projectile.Center);
             }
         }

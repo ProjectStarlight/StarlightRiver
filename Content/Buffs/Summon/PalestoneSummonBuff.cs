@@ -1,11 +1,9 @@
 ﻿using Terraria;
-using StarlightRiver.Core;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Buffs.Summon
 {
-    class PalestoneSummonBuff : SmartBuff
+	class PalestoneSummonBuff : SmartBuff
     {
         public PalestoneSummonBuff() : base("Little lad", "His goal: to kill.", false, true) { }
 

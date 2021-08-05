@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.ForestIvy
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class ForestIvyHead : ModItem
     {
         public override string Texture => AssetDirectory.IvyItem + "ForestIvyHead";

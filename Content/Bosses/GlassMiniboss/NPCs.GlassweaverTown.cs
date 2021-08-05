@@ -1,14 +1,13 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    [AutoloadHead]
+	[AutoloadHead]
     class GlassweaverTown : ModNPC
     {
         public override bool CanTownNPCSpawn(int numTownNPCs, int money) => true;

@@ -1,18 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
-using System;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
-using StarlightRiver.Helpers;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricOre : DummyTile
+	internal class VitricOre : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -56,6 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
                 for (int k = 0; k <= 10; k++)
                 {
@@ -85,6 +84,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
 
                 for (int k = 0; k <= 10; k++)
                 {

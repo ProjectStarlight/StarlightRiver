@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-    public abstract class TileLoader : ILoadable, IPostLoadable
+	public abstract class TileLoader : ILoadable, IPostLoadable
     {
         public Mod mod => StarlightRiver.Instance;
 

@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Linq;
+using StarlightRiver.Configs;
 using Terraria;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Core;
-using System.Runtime.InteropServices;
 using Terraria.ModLoader;
-using StarlightRiver.Configs;
 
 namespace StarlightRiver.Helpers
 {
-    public class LightingBuffer
+	public class LightingBuffer
     {
         const int PADDING = 20;
         static readonly float factor = Main.screenHeight / (float)Main.screenWidth;

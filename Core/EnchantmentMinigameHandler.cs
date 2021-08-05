@@ -1,17 +1,10 @@
-﻿using System;
+﻿using StarlightRiver.Content.ArmorEnchantment;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.ArmorEnchantment;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Core
 {
-    class EnchantmentMinigameHandler : ModPlayer
+	class EnchantmentMinigameHandler : ModPlayer
     {
         int minigameLife;
         int minigameTimer;

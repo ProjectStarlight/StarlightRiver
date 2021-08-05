@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class ArenaBottom : ModNPC, IDrawAdditive
+	internal class ArenaBottom : ModNPC, IDrawAdditive
     {
         public VitricBoss Parent;
         public override string Texture => AssetDirectory.GlassBoss + "CrystalWaveHot";

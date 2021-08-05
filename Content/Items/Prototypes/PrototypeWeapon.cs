@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Items.Prototypes
 {
-    internal enum BreakType : int
+	internal enum BreakType : int
     {
         MaxUses = 0, //the weapon can only be used as many times as durability it has
         Time = 1, //the weapon can only be used for as many ticks as durability it has

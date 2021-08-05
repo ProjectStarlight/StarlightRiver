@@ -1,11 +1,9 @@
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Gores
 {
-    public class UltrasharkCasing : ModGore
+	public class UltrasharkCasing : ModGore
     {
         public override void OnSpawn(Gore gore)
         {

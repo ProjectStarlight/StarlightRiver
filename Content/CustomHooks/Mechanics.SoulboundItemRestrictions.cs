@@ -1,14 +1,12 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Items.BaseTypes;
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class SoulboundItemRestrictions : HookGroup
+	class SoulboundItemRestrictions : HookGroup
     {
         //Some vanilla behavior buttfuckery in here, should be wary.
         public override SafetyLevel Safety => SafetyLevel.Questionable;

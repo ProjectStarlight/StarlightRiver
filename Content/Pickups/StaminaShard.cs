@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
-using StarlightRiver.Core.Loaders;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Pickups
 {
-    class StaminaShardPickup : AbilityPickup
+	class StaminaShardPickup : AbilityPickup
     {
         Tile Parent => Framing.GetTileSafely((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
 

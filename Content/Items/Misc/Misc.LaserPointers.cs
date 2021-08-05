@@ -1,16 +1,12 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria.Enums;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public abstract class BasePointer : ModItem
+	public abstract class BasePointer : ModItem
 	{
 		private readonly string ColorName;
 		private readonly int ProjectileType;

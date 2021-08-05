@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,9 @@ using Terraria;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Codex
 {
-    public class CodexEntry : TagSerializable
+	public class CodexEntry : TagSerializable
     {
         public bool Locked = true;
         public bool New = false;

@@ -1,14 +1,14 @@
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
-using System;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class VitricYoyo : ModItem
+	public class VitricYoyo : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

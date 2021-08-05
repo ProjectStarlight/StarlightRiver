@@ -1,16 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.AbilityContent.Infusions;
 using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Abilities.AbilityContent.Infusions;
-
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-    class Astral : InfusionItem<Dash>
+	class Astral : InfusionItem<Dash>
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
         public override string Texture => "StarlightRiver/Assets/Abilities/Astral";

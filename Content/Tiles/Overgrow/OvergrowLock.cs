@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using Terraria;
 using Terraria.DataStructures;
@@ -6,11 +7,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class OvergrowLock : ModTile
+	internal class OvergrowLock : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

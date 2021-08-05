@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Projectiles
 {
-    public abstract class SpearProjectile : ModProjectile
+	public abstract class SpearProjectile : ModProjectile
     {
         public int Duration;
         public float Min;

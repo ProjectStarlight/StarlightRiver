@@ -1,18 +1,17 @@
-﻿using System;
-using Terraria.ID;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using static Terraria.ModLoader.ModContent;
-using Terraria;
 using ReLogic.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Abilities.AbilityContent.Infusions
 {
-    public abstract class InfusionImprint : InfusionItem
+	public abstract class InfusionImprint : InfusionItem
     {
         public override Type AbilityType => null;
         public List<InfusionObjective> objectives = new List<InfusionObjective>();

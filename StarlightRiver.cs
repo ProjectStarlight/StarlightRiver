@@ -1,12 +1,9 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
-using StarlightRiver.RiftCrafting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,14 +11,12 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Graphics;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace StarlightRiver
 {
-    public partial class StarlightRiver : Mod
+	public partial class StarlightRiver : Mod
     {
         public AbilityHotkeys AbilityKeys { get; private set; }
 

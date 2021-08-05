@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -14,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
-    class AuroraDisc : ModItem
+	class AuroraDisc : ModItem
     {
         public override string Texture => AssetDirectory.PermafrostItem + "AuroraDisc";
 

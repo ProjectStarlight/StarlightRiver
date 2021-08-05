@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class GrassOvergrow : ModTile
+	internal class GrassOvergrow : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

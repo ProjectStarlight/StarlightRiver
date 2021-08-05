@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Tiles.Herbology;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using StarlightRiver.Items.Herbology.Materials;
 using System;
 using Terraria;
@@ -10,13 +13,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Tiles.Herbology;
-
 namespace StarlightRiver.Tiles.Herbology
 {
-    internal class ForestIvy : HangingPlant
+	internal class ForestIvy : HangingPlant
     {
         public ForestIvy() : base("Ivy")
         {

@@ -3,16 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class ZoomOutEnabler : HookGroup
+	class ZoomOutEnabler : HookGroup
     {
         //lag at worst
         public override SafetyLevel Safety => SafetyLevel.Safe;

@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
+using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    /*internal class VitricSandGrad : ModTile
+	/*internal class VitricSandGrad : ModTile
     {
         public override void SetDefaults()
         {
@@ -29,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public VitricSandGradItem() : base("Glassy Sand Test", "", StarlightRiver.Instance.TileType("VitricSand"), 0) { }
     }*/
 
-    internal class VitricSandWall : ModWall
+	internal class VitricSandWall : ModWall
     {
         public override bool Autoload(ref string name, ref string texture) 
         {

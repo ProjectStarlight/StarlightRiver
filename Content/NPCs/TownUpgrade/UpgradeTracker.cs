@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.NPCs.TownUpgrade
 {
-    class UpgradeTracker : GlobalNPC
+	class UpgradeTracker : GlobalNPC
     {
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {

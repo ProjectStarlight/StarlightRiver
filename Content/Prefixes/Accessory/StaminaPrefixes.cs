@@ -1,12 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Abilities;
+using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Prefixes.Accessory
 {
-    internal abstract class StaminaPrefix : CustomTooltipPrefix
+	internal abstract class StaminaPrefix : CustomTooltipPrefix
     {
         private readonly int power;
         private readonly string name;

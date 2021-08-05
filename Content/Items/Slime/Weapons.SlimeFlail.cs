@@ -1,13 +1,12 @@
+using StarlightRiver.Content.Items.Starwood;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Starwood;
-
 namespace StarlightRiver.Content.Items.Slime
 {
-    public class SlimeFlail : ModItem
+	public class SlimeFlail : ModItem
     {
         public override string Texture => AssetDirectory.SlimeItem + Name;
 

@@ -1,21 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using Terraria.Graphics.Effects;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Dusts;
-using static Terraria.ModLoader.ModContent;
-using System.Collections.Generic;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    class GlassUppercut : ModProjectile, IDrawPrimitive
+	class GlassUppercut : ModProjectile, IDrawPrimitive
     {
         private List<Vector2> cache;
         private Trail trail;

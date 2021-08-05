@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
-    internal class OvergrowBossAnchor : ModNPC
+	internal class OvergrowBossAnchor : ModNPC
     {
         public override string Texture => AssetDirectory.Invisible;
 

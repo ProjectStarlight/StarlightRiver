@@ -7,11 +7,9 @@ using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.GUI
 {
-    public class ChatboxOverUI : SmartUIState
+	public class ChatboxOverUI : SmartUIState
     {
         public TownUpgrade activeUpgrade;
 

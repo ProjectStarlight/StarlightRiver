@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +10,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Packets;
-
 namespace StarlightRiver.Content.Abilities
 {
-    public partial class AbilityHandler : ModPlayer
+	public partial class AbilityHandler : ModPlayer
     {
         // The player's active ability.
         public Ability ActiveAbility
@@ -350,12 +348,10 @@ namespace StarlightRiver.Content.Abilities
             if (ActiveAbility != null && called.Contains(ActiveAbility))
             {
                 ActiveAbility.UpdateActive();
+                ActiveAbility.UpdateActiveEffects();
 
-                if (Main.netMode != NetmodeID.Server && player == Main.LocalPlayer)
-                {
-                    ActiveAbility.UpdateActiveEffects();
-                    NetMessage.SendData(MessageID.PlayerControls);
-                }
+                if (Main.netMode != NetmodeID.Server && player == Main.LocalPlayer)                 
+                    NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);              
             }
         }
 

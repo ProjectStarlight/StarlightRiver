@@ -11,11 +11,9 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class WorldSelectAddons : HookGroup
+	class WorldSelectAddons : HookGroup
     {
         //Questionable becasue of the antiquated reflection caching bullshit, which may or may not make the GC want to shit itself.
         public override SafetyLevel Safety => SafetyLevel.Questionable;

@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -12,7 +8,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Utility
 {
-    class ArmorBag : ModItem
+	class ArmorBag : ModItem
     {
         public Item[] storedArmor = new Item[3];
 

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Content.Lavas
 {
-    class VitricLavaStyle : LavaStyle
+	class VitricLavaStyle : LavaStyle
     {
         public override int ChooseWaterfallStyle() => 0;
 

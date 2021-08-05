@@ -1,18 +1,16 @@
 
+using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
-
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-    public class HostileIcicle : ModTile
+	public class HostileIcicle : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

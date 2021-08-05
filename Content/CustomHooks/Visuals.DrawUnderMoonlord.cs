@@ -4,7 +4,7 @@ using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class DrawUnderMoonlord : HookGroup
+	class DrawUnderMoonlord : HookGroup
     {
         //Rare method to hook but not the best finding logic, but its really just some draws so nothing should go terribly wrong.
         public override SafetyLevel Safety => SafetyLevel.Fragile;

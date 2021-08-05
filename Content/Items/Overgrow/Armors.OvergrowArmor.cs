@@ -7,12 +7,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 
 namespace StarlightRiver.Content.Items.Overgrow
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class OvergrowHead : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + "OvergrowHead";

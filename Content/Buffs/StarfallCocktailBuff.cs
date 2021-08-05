@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class StarfallCocktailBuff : SmartBuff
+	public class StarfallCocktailBuff : SmartBuff
     {
         public StarfallCocktailBuff() : base("Starcaller", "Attract fallen stars!", false) { }
 

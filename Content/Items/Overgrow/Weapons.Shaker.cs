@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -7,12 +9,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.Items.Overgrow
 {
-     internal class Shaker : ModItem
+	internal class Shaker : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + "Shaker";
 
@@ -80,6 +79,10 @@ namespace StarlightRiver.Content.Items.Overgrow
      internal class ShakerBall : ModProjectile
      {
         public override string Texture => AssetDirectory.OvergrowItem + Name;
+
+        public ref float Timer => ref projectile.ai[0];
+        public ref float State => ref projectile.ai[1];
+
         public override void SetDefaults()
         {
             projectile.friendly = false;
@@ -102,87 +105,103 @@ namespace StarlightRiver.Content.Items.Overgrow
             Player player = Main.player[projectile.owner];
 
             if (projectile.timeLeft < 2) projectile.timeLeft = 2;
-            projectile.scale = projectile.ai[0] < 10 ? (projectile.ai[0] / 10f) : 1;
-            projectile.damage = (int)(projectile.ai[0] * 1.2f * player.meleeDamage);
+            projectile.scale = Timer < 10 ? (Timer / 10f) : 1;
+            projectile.damage = (int)(Timer * 1.2f * player.meleeDamage);
 
-            if (projectile.ai[0] == 100)
+            if (Timer == 100)
             {
-                Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
+                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
             }
 
-            if (projectile.ai[1] == 0)
+            if (State == 0) //charging/holding
             {
                 projectile.position = player.Top + (projectile.position - projectile.Bottom);
             }
 
-            if (projectile.ai[1] == 0 && projectile.ai[0] < 100)
+            if (State == 0 && Timer < 100) //charge up
             {
-                projectile.ai[0]++;
-                if (projectile.ai[0] == 100)
+                Timer++;
+
+                if (Timer == 100) //full charge FX
                 {
                     for (int k = 0; k <= 100; k++)
                     {
-                        Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
+                        Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                     }
                     Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
                 }
+
                 projectile.velocity = Vector2.Zero;
+
                 float rot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Content.Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
+                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, Timer / 100f);
             }
 
-            if (!player.channel && projectile.ai[0] > 10 && projectile.ai[1] == 0)
+            if (!player.channel && Timer > 10 && State == 0) //throw if enough charge
             {
-                projectile.velocity = Vector2.Normalize(Main.MouseWorld - player.Center) * projectile.ai[0] * 0.1f;
+                if(player == Main.LocalPlayer)
+                    projectile.velocity = Vector2.Normalize(Main.MouseWorld - player.Center) * Timer * 0.1f;
+
                 projectile.tileCollide = true;
                 projectile.friendly = true;
-                projectile.ai[1] = 1;
+                State = 1;
+
+                projectile.netUpdate = true;
             }
 
-            if (projectile.ai[1] == 1)
+            if (State == 1) //thrown/falling
             {
                 projectile.velocity.Y += 0.4f;
 
-                if (projectile.velocity.Y == 0.4f)
+                if (projectile.velocity.Y == 0.4f) //when it hits the ground
                 {
                     projectile.velocity *= 0;
                     projectile.timeLeft = 120;
-                    projectile.ai[1] = 2;
+                    State = 2;
 
-                    player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
+                    player.GetModPlayer<StarlightPlayer>().Shake += (int)(Timer * 0.2f);
                     for (int k = 0; k <= 100; k++)
                     {
-                        Dust.NewDustPerfect(projectile.Center + new Vector2(0, 32), DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
+                        Dust.NewDustPerfect(projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Timer / 10f);
                     }
                     Main.PlaySound(SoundID.Item70, projectile.Center);
                     Main.PlaySound(SoundID.NPCHit42, projectile.Center);
                 }
             }
 
-            if (projectile.ai[1] == 2)
+            if (State == 2) //retracting
             {
                 projectile.velocity += -Vector2.Normalize(projectile.Center - player.Center) * 0.1f;
-                if (projectile.velocity.Length() >= 5) projectile.ai[1] = 3;
 
-                if (Vector2.Distance(projectile.Center, player.Center) <= 30) projectile.timeLeft = 0;
-                if (projectile.timeLeft == 3) projectile.ai[1] = 4;
+                if (projectile.velocity.Length() >= 5) 
+                    State = 3;
+
+                if (Vector2.Distance(projectile.Center, player.Center) <= 30) 
+                    projectile.timeLeft = 0;
+
+                if (projectile.timeLeft == 3) 
+                    State = 4;
             }
 
-            if (projectile.ai[1] == 3)
+            if (State == 3) //retracting faster
             {
                 projectile.velocity = -Vector2.Normalize(projectile.Center - player.Center) * 5;
                 projectile.velocity.Y += 3;
 
-                if (Vector2.Distance(projectile.Center, player.Center) <= 30) projectile.timeLeft = 0;
-                if (projectile.timeLeft == 3) projectile.ai[1] = 4;
+                if (Vector2.Distance(projectile.Center, player.Center) <= 30) 
+                    projectile.timeLeft = 0;
+
+                if (projectile.timeLeft == 3)
+                    State = 4;
             }
 
-            if (projectile.ai[1] == 4)
+            if (State == 4) //retracting even faster and phasing
             {
                 projectile.velocity = -Vector2.Normalize(projectile.Center - player.Center) * 18;
                 projectile.tileCollide = false;
 
-                if (Vector2.Distance(projectile.Center, player.Center) <= 30) projectile.timeLeft = 0;
+                if (Vector2.Distance(projectile.Center, player.Center) <= 30)
+                    projectile.timeLeft = 0;
             }
         }
 
@@ -190,33 +209,41 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            if (projectile.ai[1] != 0)
+            Player player = Main.player[projectile.owner];
+
+            if (State != 0)
             {
-                Player player = Main.player[projectile.owner];
+                var chainTex = GetTexture("StarlightRiver/Assets/Items/Overgrow/ShakerChain");
+
                 for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(player.Center, projectile.Center) / 16))
                 {
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Items/Overgrow/ShakerChain"), (Vector2.Lerp(projectile.Center, player.Center + new Vector2(0, Main.player[projectile.owner].gfxOffY), k) - Main.screenPosition),
-                        new Rectangle(0, 0, 8, 16), lightColor, (projectile.Center - player.Center).ToRotation() + 1.58f, new Vector2(4, 8), 1, 0, 0);
+                    var pos = (Vector2.Lerp(projectile.Center, player.Center + new Vector2(0, Main.player[projectile.owner].gfxOffY), k) - Main.screenPosition);
+                    spriteBatch.Draw(chainTex, pos, null, lightColor, (projectile.Center - player.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
                 }
             }
 
-            spriteBatch.Draw(Main.projectileTexture[projectile.type], ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), Main.projectileTexture[projectile.type].Frame(), Color.White, projectile.rotation, projectile.Size / 2, projectile.scale, 0, 0);
+            var ballPos = (projectile.Center - Main.screenPosition);
+
+            if (State == 0)
+                ballPos += new Vector2(0, player.gfxOffY);
+
+            spriteBatch.Draw(Main.projectileTexture[projectile.type], ballPos, Main.projectileTexture[projectile.type].Frame(), Color.White, projectile.rotation, projectile.Size / 2, projectile.scale, 0, 0);
 
             return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            if (projectile.ai[1] == 0)
+            if (State == 0)
             {
-                float colormult = projectile.ai[0] / 100f * 0.7f;
-                float scale = 1.2f - projectile.ai[0] / 100f * 0.5f;
+                float colormult = Timer / 100f * 0.7f;
+                float scale = 1.2f - Timer / 100f * 0.5f;
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 Vector2 pos = ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur();
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * colormult, 0, tex.Size() / 2, scale, 0, 0);
             }
 
-            if (projectile.ai[0] == 100)
+            if (Timer == 100)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
                 Vector2 pos = ((projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur();

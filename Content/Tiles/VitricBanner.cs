@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using Terraria;
@@ -11,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles
 {
-    class VitricBanner : DummyTile
+	class VitricBanner : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

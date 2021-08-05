@@ -1,14 +1,9 @@
 ﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class DebugGreen : Ingredient
+	internal class DebugGreen : Ingredient
     {
         public DebugGreen() : base("+5% melee damage", 600, IngredientType.Main) { }
         public override string Texture => AssetDirectory.FoodItem + "Rabbit";

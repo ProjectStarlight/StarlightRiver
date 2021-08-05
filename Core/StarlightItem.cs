@@ -5,12 +5,9 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Core
 {
-    internal partial class StarlightItem : GlobalItem
+	internal partial class StarlightItem : GlobalItem
     {
         public Rectangle meleeHitbox;
         public string prefixLine = "";

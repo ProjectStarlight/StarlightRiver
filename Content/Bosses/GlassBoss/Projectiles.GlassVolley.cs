@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Vitric;
-
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class GlassVolley : ModProjectile, IDrawAdditive
+	internal class GlassVolley : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.Invisible;
 

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,12 +10,10 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VKnife
+	internal class VKnife
     {
         public Vector2 pos;
         public int index;

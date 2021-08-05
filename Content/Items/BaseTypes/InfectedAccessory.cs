@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-    internal abstract class InfectedAccessory : SmartAccessory
+	internal abstract class InfectedAccessory : SmartAccessory
     {
         public InfectedAccessory() : base("Unnamed Infected Accessory", "you forgot to set a display name/tooltip dingus!") { }
         public override bool CanEquipAccessory(Player player, int slot)

@@ -1,14 +1,12 @@
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
-using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

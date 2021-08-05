@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.Overgrow;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.NPCs.Overgrow;
-
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class CrusherTile : ModTile
+	internal class CrusherTile : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class RidersPotionBuff : SmartBuff
+	public class RidersPotionBuff : SmartBuff
     {
         public RidersPotionBuff() : base("Rider's Blessing", "Increased critical strike chance while mounted", false) { }
         public override void Update(Player player, ref int buffIndex)

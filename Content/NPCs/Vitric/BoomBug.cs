@@ -1,18 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.Vitric;
-using Microsoft.Xna.Framework.Graphics;
-
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class BoomBug : ModNPC, IDrawAdditive
+	internal class BoomBug : ModNPC, IDrawAdditive
     {
         public ref float Timer => ref npc.ai[0];
         public ref float State => ref npc.ai[1];

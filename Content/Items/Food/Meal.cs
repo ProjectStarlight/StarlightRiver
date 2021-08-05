@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -8,11 +9,9 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Meal : ModItem
+	internal class Meal : ModItem
     {
         public List<Item> Ingredients { get; set; } = new List<Item>();
         public int Fullness { get; set; }

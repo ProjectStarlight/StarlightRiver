@@ -1,14 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class ZapperTile : ModTile
+	internal class ZapperTile : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

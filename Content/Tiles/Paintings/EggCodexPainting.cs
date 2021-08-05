@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Paintings
 {
-    class EggCodexPainting : ModTile
+	class EggCodexPainting : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.OvergrowBoss;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
@@ -8,13 +11,10 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Bosses.OvergrowBoss;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 {
-    internal class OvergrowBossGuardian : ModNPC
+	internal class OvergrowBossGuardian : ModNPC
     {
         public override string Texture => AssetDirectory.OvergrowBoss + Name;
 

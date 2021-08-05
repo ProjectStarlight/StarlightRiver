@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal sealed partial class VitricBoss : ModNPC
+	internal sealed partial class VitricBoss : ModNPC
     {
         public void ResetAttack()
         {

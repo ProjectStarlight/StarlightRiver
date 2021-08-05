@@ -1,12 +1,11 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class GasDust : ModDust
+	public class GasDust : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

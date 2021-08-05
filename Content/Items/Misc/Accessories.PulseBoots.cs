@@ -1,15 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    [AutoloadEquip(EquipType.Shoes)]
+	[AutoloadEquip(EquipType.Shoes)]
     public class PulseBoots : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;

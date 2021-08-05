@@ -1,18 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.GlassMiniboss;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class ForgeActor : DummyTile
+	class ForgeActor : DummyTile
     {
         public override int DummyType => ProjectileType<ForgeActorDummy>();
 

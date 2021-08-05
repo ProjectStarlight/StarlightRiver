@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class VitricDecor : ModTile
+	class VitricDecor : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

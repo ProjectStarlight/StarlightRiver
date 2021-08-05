@@ -1,13 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Terraria;
-using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using StarlightRiver.Helpers;
+using System.Collections.Generic;
+using Terraria;
 
 namespace StarlightRiver.Core
 {
-    public partial class PrimTrail
+	public partial class PrimTrail
     {
         public interface ITrailShader
         {

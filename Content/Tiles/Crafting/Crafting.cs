@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Items.Herbology.Materials;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Items.Herbology.Materials;
 
 namespace StarlightRiver.Content.Tiles.Crafting
 {
-    //TODO: Split this up later.
+	//TODO: Split this up later.
 
-    internal class Oven : ModTile
+	internal class Oven : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

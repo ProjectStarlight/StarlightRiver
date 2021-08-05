@@ -1,22 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core.Loaders;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Purify;
 
 namespace StarlightRiver.NPCs.Pickups
 {
-    internal class Purity : ModNPC
+	internal class Purity : ModNPC
     {
         public override string Texture => AssetDirectory.Invisible;
 

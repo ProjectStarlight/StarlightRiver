@@ -1,13 +1,13 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class CoughDrops : SmartAccessory
+	public class CoughDrops : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

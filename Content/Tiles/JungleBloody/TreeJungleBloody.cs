@@ -2,11 +2,9 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.JungleBloody
 {
-    internal class TreeJungleBloody : ModTree
+	internal class TreeJungleBloody : ModTree
     {
         public override int CreateDust() => DustID.t_LivingWood;
 

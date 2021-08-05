@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-    class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
+	class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
 

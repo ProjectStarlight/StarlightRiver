@@ -1,14 +1,13 @@
-﻿using System.Linq;
+﻿using StarlightRiver.Core;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricBossBarrier : ModTile
+	internal class VitricBossBarrier : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

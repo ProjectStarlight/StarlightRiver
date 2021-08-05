@@ -1,14 +1,14 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using Terraria;
 
 namespace StarlightRiver.Core
 {
-    public class GifPlayer
+	public class GifPlayer
     {
         public List<Texture2D> textureData = new List<Texture2D>();
         public int frame;

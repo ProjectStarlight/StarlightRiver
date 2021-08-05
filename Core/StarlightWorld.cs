@@ -3,10 +3,8 @@ using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Tiles;
 using StarlightRiver.Content.Tiles.Balanced;
 using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.TownUpgrade;
 using System;
@@ -22,8 +20,8 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-    //Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
-    public partial class StarlightWorld : ModWorld
+	//Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
+	public partial class StarlightWorld : ModWorld
     {
         private static WorldFlags flags;
 
@@ -38,7 +36,6 @@ namespace StarlightRiver.Core
         //Recipe """database""" TODO: More robust system for this? do we really need one?
         public static List<string> knownRecipies = new List<string>();
 
-        //Players have a timer, can't the world get one synced one too?
         public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
 
         //Voidsmith
@@ -86,6 +83,9 @@ namespace StarlightRiver.Core
 
             VitricBiome = ReadRectangle(reader);
             SquidBossArena = ReadRectangle(reader);
+
+            if(CutawayHandler.cutaways.Count == 0)
+                CreateCutaways();
 
             ReadNPCUpgrades(reader);
         }
@@ -222,6 +222,17 @@ namespace StarlightRiver.Core
             return false;
         }
 
+        public static void CreateCutaways()
+		{
+            var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
+            templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
+            CutawayHandler.NewCutaway(templeCutaway);
+
+            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay.inside = CheckForSquidArena;
+            CutawayHandler.NewCutaway(cathedralOverlay);
+        }
+
         public override void Load(TagCompound tag)
         {
             VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
@@ -229,20 +240,12 @@ namespace StarlightRiver.Core
             VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
             VitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
-            var templeCutaway = new Cutaway( GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16 );
-            templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
-            CutawayHandler.NewCutaway(templeCutaway);
-
             SquidNPCProgress = tag.GetInt("SquidNPCProgress");
             SquidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
             permafrostCenter = tag.GetInt("PermafrostCenter");
-
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
-            cathedralOverlay.inside = CheckForSquidArena;
-            CutawayHandler.NewCutaway(cathedralOverlay);
 
             flags = (WorldFlags)tag.GetInt(nameof(flags));
 
@@ -260,8 +263,8 @@ namespace StarlightRiver.Core
 
             Chungus = tag.GetFloat("Chungus");
 
-            if(Chungus < 1)
-                Chungus += 0.01f;
+            Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
+            Chungus = MathHelper.Clamp(Chungus, 0, 1);
 
             knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 
@@ -280,7 +283,8 @@ namespace StarlightRiver.Core
             }
 
             //setup overlays
-
+            if (Main.netMode == NetmodeID.SinglePlayer)
+                CreateCutaways();
         }
 
         public static void LearnRecipie(string key)

@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    internal class OvergrowDust : ModDust
+	internal class OvergrowDust : ModDust
     {
         //private readonly int time = 0;
 

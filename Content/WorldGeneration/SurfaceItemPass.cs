@@ -1,20 +1,14 @@
-﻿using Terraria;
-using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.Beach;
+using StarlightRiver.Helpers;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Tiles.Forest;
-using StarlightRiver.Content.Tiles.Herbology;
-using System;
-using StarlightRiver.Content.Items.Beach;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModWorld
     {
         private void SurfaceItemPass(GenerationProgress progress)
         {

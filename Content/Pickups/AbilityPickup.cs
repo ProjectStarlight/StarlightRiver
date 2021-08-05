@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Pickups
 {
-    internal abstract class AbilityPickup : ModNPC, IDrawAdditive
+	internal abstract class AbilityPickup : ModNPC, IDrawAdditive
     {
         /// <summary>
         /// Indicates if the pickup should be visible in-world. Should be controlled using clientside vars.

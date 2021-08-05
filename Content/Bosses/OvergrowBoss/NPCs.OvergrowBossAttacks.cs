@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using StarlightRiver.NPCs.Boss.OvergrowBoss;
+using StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +13,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.NPCs.Boss.OvergrowBoss;
-using StarlightRiver.Helpers;
-using StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile;
-
 namespace StarlightRiver.Content.Bosses.OvergrowBoss
 {
-    public partial class OvergrowBoss : ModNPC
+	public partial class OvergrowBoss : ModNPC
     {
         private void RandomizeTarget()
         {

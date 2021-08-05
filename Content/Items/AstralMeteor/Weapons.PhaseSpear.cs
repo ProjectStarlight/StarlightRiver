@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Projectiles;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -7,13 +10,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Projectiles;
-
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    internal abstract class Phasespear : ModItem
+	internal abstract class Phasespear : ModItem
     {
         private readonly Color glowColor;
         private readonly int projectileType;

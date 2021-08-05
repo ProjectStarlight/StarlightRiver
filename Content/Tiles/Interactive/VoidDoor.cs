@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-    internal class VoidDoorOn : ModTile
+	internal class VoidDoorOn : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

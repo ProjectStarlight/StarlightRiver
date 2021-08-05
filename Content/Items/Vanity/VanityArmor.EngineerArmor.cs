@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Noise;
 using System;
@@ -10,11 +11,10 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
-using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Content.Items.Vanity
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class EngineerHead : ModItem
     {
         public override string Texture => AssetDirectory.VanityItem + Name;

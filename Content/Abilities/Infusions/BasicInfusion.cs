@@ -1,12 +1,10 @@
-﻿using System;
+﻿using StarlightRiver.Content.Abilities;
+using System;
 using Terraria.ID;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Abilities.AbilityContent.Infusions
 {
-    class BasicInfusion : InfusionItem
+	class BasicInfusion : InfusionItem
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
 

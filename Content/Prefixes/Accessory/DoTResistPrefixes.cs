@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StarlightRiver.Core;
+using StarlightRiver.Prefixes;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Prefixes;
-
 namespace StarlightRiver.Content.Prefixes.Accessory
 {
-    internal abstract class DoTResistPrefix : CustomTooltipPrefix
+	internal abstract class DoTResistPrefix : CustomTooltipPrefix
     {
         private readonly float power;
         private readonly string name;

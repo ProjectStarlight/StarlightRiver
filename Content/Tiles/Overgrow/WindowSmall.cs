@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    class WindowSmall : DummyTile
+	class WindowSmall : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,10 +1,8 @@
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs
 {
-    public class DarkSlow : SmartBuff
+	public class DarkSlow : SmartBuff
     {
         public DarkSlow() : base("Grasping Darkness", "Slowed by shadowy tendrils!", true) { }
 

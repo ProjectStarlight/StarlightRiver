@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Mushroom
 {
-    class JellyShroom : DummyTile
+	class JellyShroom : DummyTile
     {
         public override int DummyType => ProjectileType<JellyShroomDummy>();
 

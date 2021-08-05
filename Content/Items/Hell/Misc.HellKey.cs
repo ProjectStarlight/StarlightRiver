@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Hell
 {
-    class HellKey : QuickMaterial
+	class HellKey : QuickMaterial
     {
         public override string Texture => "StarlightRiver/Assets/Items/Hell/HellKey";
 

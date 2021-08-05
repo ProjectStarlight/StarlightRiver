@@ -1,17 +1,17 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using StarlightRiver.Helpers;
-using Terraria.Graphics.Effects;
-using System;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
-    public class AstrofloraBow : ModItem
+	public class AstrofloraBow : ModItem
     {
         public override string Texture => AssetDirectory.Astroflora + "AstrofloraBow";
 

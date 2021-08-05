@@ -1,19 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using StarlightRiver.Core;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
-using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Palestone
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class PalestoneHead : ModItem
     {
         public override string Texture => AssetDirectory.PalestoneItem + "PalestoneHead";

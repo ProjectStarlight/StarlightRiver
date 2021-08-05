@@ -1,11 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Buffs
 {
-    public abstract class SmartBuff : ModBuff
+	public abstract class SmartBuff : ModBuff
     {
         private readonly string ThisName;
         private readonly string ThisTooltip;

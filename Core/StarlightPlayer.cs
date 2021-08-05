@@ -1,6 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
-
+using StarlightRiver.Packets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +14,9 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Abilities;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightPlayer : ModPlayer
+	public partial class StarlightPlayer : ModPlayer
     {
         public int Timer { get; private set; }
 
@@ -215,6 +212,12 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-        public override float UseTimeMultiplier(Item item) => itemSpeed;
+		public override void PlayerConnect(Player player)
+		{
+            AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
+            packet.Send();
+		}
+
+		public override float UseTimeMultiplier(Item item) => itemSpeed;
     }
 }

@@ -3,14 +3,13 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using System;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Temple
 {
-    class JarTall : DummyTile
+	class JarTall : DummyTile
     {
         public override int DummyType => ProjectileType<JarDummy>();
 
@@ -57,6 +56,8 @@ namespace StarlightRiver.Tiles.Temple
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
+                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 4, TileChangeType.None);
+
                 Main.PlaySound(SoundID.Shatter, projectile.Center);
             }
         }

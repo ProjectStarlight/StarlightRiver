@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Rabbit : Ingredient
+	internal class Rabbit : Ingredient
     {
         public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
 

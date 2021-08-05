@@ -1,19 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using StarlightRiver.Content.Bosses.GlassBoss;
 using Terraria;
-using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using Terraria.DataStructures;
-using StarlightRiver.Content.Bosses.GlassBoss;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-    internal class Snake : ModNPC
+	internal class Snake : ModNPC
     {
         public ref float ActionState => ref npc.ai[0];
         public ref float ActionTimer => ref npc.ai[1];

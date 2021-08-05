@@ -1,11 +1,8 @@
 ﻿using Terraria.ModLoader.Config;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Configs
 {
-    public enum TitleScreenStyle
+	public enum TitleScreenStyle
     {
         Starlight = 0,
         Vitric = 1,

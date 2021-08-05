@@ -1,9 +1,9 @@
-using Terraria;
 using StarlightRiver.Helpers;
+using Terraria;
 
 namespace StarlightRiver.Content.Buffs
 {
-    public class CoughDropsBuff : SmartBuff
+	public class CoughDropsBuff : SmartBuff
     {
         public CoughDropsBuff() : base("Cough Drops", "Your speed and damage are boosted", false) { }
 

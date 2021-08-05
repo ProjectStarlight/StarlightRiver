@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Hell
 {
-    class HellChest : LootChest
+	class HellChest : LootChest
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    class TwistSword : ModItem, IGlowingItem
+	class TwistSword : ModItem, IGlowingItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetStaticDefaults() => DisplayName.SetDefault("Twisted Greatsword");

@@ -1,22 +1,17 @@
-using Terraria.ID;
-using Terraria.ModLoader;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
 using Microsoft.Xna.Framework;
-using System;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
+using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
-using StarlightRiver.Content.Tiles.JungleCorrupt;
 using Terraria.Enums;
-using StarlightRiver.Content.Tiles.Vitric;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Core
 {
-    public abstract class ModFountain : ModTile
+	public abstract class ModFountain : ModTile
     {
         protected readonly string ItemName;
         protected int ItemType;
@@ -42,6 +37,7 @@ namespace StarlightRiver.Core
         {
             if (!string.IsNullOrEmpty(TexturePath))
                 texture = TexturePath + name;
+
             return base.Autoload(ref name, ref texture);
         }
 

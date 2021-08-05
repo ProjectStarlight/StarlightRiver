@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -6,12 +8,10 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
 
 namespace StarlightRiver.Pickups
 {
-    internal class FaeflamePickup : AbilityPickup
+	internal class FaeflamePickup : AbilityPickup
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
         public override Color GlowColor => new Color(255, 255, 130);

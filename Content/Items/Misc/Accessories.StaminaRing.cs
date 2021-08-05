@@ -1,15 +1,15 @@
-﻿using Terraria;
-using Terraria.ID;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.Overgrow;
+using StarlightRiver.Core;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items.Overgrow;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class StaminaRing : SmartAccessory
+	public class StaminaRing : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

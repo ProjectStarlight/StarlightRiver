@@ -4,7 +4,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class VitricFurniture : FurnitureLoader
+	class VitricFurniture : FurnitureLoader
     {
         public VitricFurniture() : base(
             name: "Vitric",

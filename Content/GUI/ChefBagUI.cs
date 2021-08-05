@@ -1,21 +1,12 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.UI;
-using StarlightRiver.Content.Items.Utility;
-using Terraria.ModLoader.UI.Elements;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using StarlightRiver.Content.Items.Utility;
+using StarlightRiver.Core;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.ModLoader.UI.Elements;
+using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Food;
-using StarlightRiver.Helpers;
-using System.Reflection;
 
 namespace StarlightRiver.Content.GUI
 {

@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class ShoeSpikesModification : GlobalItem
+	public class ShoeSpikesModification : GlobalItem
     {
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {

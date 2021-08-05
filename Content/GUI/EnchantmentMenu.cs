@@ -1,29 +1,20 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.Town;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.UI;
 using Terraria;
-using static Terraria.ModLoader.ModContent;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Media;
-using Terraria.GameContent.UI.Elements;
-using StarlightRiver.Content.Abilities;
-using Terraria.ModLoader;
-using ReLogic.Graphics;
-using StarlightRiver.Abilities.AbilityContent.Infusions;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using Terraria.ID;
-using StarlightRiver.Content.NPCs.Town;
 using Terraria.GameContent.UI;
-using StarlightRiver.Core.Loaders;
+using Terraria.ID;
+using Terraria.UI;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-    class EnchantmentMenu : SmartUIState
+	class EnchantmentMenu : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 

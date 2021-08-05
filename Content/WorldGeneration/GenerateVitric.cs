@@ -1,24 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Helpers;
 using StarlightRiver.Noise;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using Terraria.ID;
-using StarlightRiver.Content.CustomHooks;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModWorld
     {
         public static FastNoise genNoise = new FastNoise(_genRandSeed);
         private const int VitricSlopeOffset = 48;

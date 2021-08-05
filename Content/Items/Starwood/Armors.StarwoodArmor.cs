@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-    [AutoloadEquip(EquipType.Head)]
+	[AutoloadEquip(EquipType.Head)]
     public class StarwoodHat : StarwoodItem, IArmorLayerDrawable
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 namespace StarlightRiver.Core
 {
-    public partial class StarlightPlayer : ModPlayer
+	public partial class StarlightPlayer : ModPlayer
     {
         public bool empowered = false;
         public int empowermentTimer = 0;

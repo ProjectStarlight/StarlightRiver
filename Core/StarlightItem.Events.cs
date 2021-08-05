@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-    internal partial class StarlightItem : GlobalItem
+	internal partial class StarlightItem : GlobalItem
     {
         public delegate void GetHealLifeDelegate(Item item, Player player, bool quickHeal, ref int healValue);
         public static event GetHealLifeDelegate GetHealLifeEvent;

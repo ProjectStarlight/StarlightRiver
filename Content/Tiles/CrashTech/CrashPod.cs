@@ -6,16 +6,13 @@ using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.CrashTech
 {
-    class CrashPod : LootChest
+	class CrashPod : LootChest
     {
         public override bool Autoload(ref string name, ref string texture)
         {

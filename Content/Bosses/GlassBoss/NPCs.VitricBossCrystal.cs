@@ -1,19 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.GlassBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Foregrounds;
-using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class VitricBossCrystal : ModNPC, IDrawAdditive
+	internal class VitricBossCrystal : ModNPC, IDrawAdditive
     {
         public Vector2 StartPos;
         public Vector2 TargetPos;

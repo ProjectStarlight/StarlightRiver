@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
-using System;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-    class TutorialDoor1 : DummyTile
+	class TutorialDoor1 : DummyTile
     {
         public override int DummyType => ProjectileType<TutorialDoor1Dummy>();
 

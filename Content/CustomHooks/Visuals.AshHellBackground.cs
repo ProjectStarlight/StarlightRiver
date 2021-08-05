@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class AshHellBackground : HookGroup
+	class AshHellBackground : HookGroup
     {
         //Creates a RenderTarget and then renders the banners in the vitric desert. Should be fairly safe, as its just drawing.
         public override SafetyLevel Safety => SafetyLevel.Safe;

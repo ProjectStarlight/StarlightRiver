@@ -1,12 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Audio;
-using StarlightRiver.Sounds.Custom;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {

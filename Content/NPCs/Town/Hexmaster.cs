@@ -1,15 +1,14 @@
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-
 namespace StarlightRiver.Content.NPCs.Town
 {
-    [AutoloadHead]
+	[AutoloadHead]
     public class Hexmaster : ModNPC
     {
         public override string Texture => AssetDirectory.TownNPC + "Hexmaster";

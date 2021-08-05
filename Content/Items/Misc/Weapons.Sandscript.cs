@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-
-using System;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    internal class Sandscript : ModItem
+	internal class Sandscript : ModItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetStaticDefaults()

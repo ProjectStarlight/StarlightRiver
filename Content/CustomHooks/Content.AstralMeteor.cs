@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class AstralMeteor : HookGroup
+	class AstralMeteor : HookGroup
     {
         //Swaps the vanilla meteor events out, could create conflicts if other mods attempt the same but shouldnt be anything fatal
         public override SafetyLevel Safety => SafetyLevel.Questionable;

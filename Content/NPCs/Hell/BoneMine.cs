@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 
 namespace StarlightRiver.Content.NPCs.Hell
 {
-    internal class BoneMine : ModNPC
+	internal class BoneMine : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/NPCs/Hell/BoneMine";
 

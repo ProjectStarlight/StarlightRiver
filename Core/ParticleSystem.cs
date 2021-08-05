@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Configs;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Core
 {
-    public class ParticleSystem
+	public class ParticleSystem
     {
         public delegate void Update(Particle particle);
 

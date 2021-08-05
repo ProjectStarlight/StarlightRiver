@@ -1,19 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 using Terraria.ID;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-    internal class BossPit : DummyTile
+	internal class BossPit : DummyTile
     {
         public override int DummyType => ProjectileType<BossPitDummy>();
 

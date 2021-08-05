@@ -4,11 +4,9 @@ using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class JungleClentaminator : HookGroup
+	class JungleClentaminator : HookGroup
     {
         //I wrote this at like 4AM, dont ask me what litterally any of this does, I just know that it works. for  now.
         public override SafetyLevel Safety => SafetyLevel.OhGodOhFuck;

@@ -1,14 +1,14 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
+using System.Linq;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.ForestIvy
 {
-    public class ForestIvyBlowdart : ModItem
+	public class ForestIvyBlowdart : ModItem
     {
         public override string Texture => AssetDirectory.IvyItem + Name;
 

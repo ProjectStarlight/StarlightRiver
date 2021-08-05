@@ -1,11 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Buffs
 {
-    public class IvySnare : ModBuff
+	public class IvySnare : ModBuff
     {
         public override bool Autoload(ref string name, ref string texture)
         {

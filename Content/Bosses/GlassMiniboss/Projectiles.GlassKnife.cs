@@ -1,17 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Vitric;
-
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    class GlassKnife : ModProjectile
+	class GlassKnife : ModProjectile
     {
         public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassKnife";
 

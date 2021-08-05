@@ -1,17 +1,12 @@
-﻿using StarlightRiver.Core;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Dusts
 {
-    class LavaBubble : ModDust
+	class LavaBubble : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

@@ -2,11 +2,9 @@
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class FaceSteak : Ingredient
+	internal class FaceSteak : Ingredient
     {
         public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
 

@@ -1,11 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.NPCs.TownUpgrade
 {
-    class MerchantUpgrade : TownUpgrade
+	class MerchantUpgrade : TownUpgrade
     {
         public MerchantUpgrade() : base("Merchant", "OnlyFans Account", "Help the merchant set up an OnlyFans!", "Nudes", "Stripper") { }
 

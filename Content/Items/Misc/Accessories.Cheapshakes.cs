@@ -1,14 +1,14 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.WorldGeneration;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.WorldGeneration;
-using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class Cheapskates : SmartAccessory, IChestItem
+	public class Cheapskates : SmartAccessory, IChestItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

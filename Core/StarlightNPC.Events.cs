@@ -1,11 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightNPC : GlobalNPC
+	public partial class StarlightNPC : GlobalNPC
     {
         public delegate void PostAIDelegate(NPC npc);
         public static event PostAIDelegate PostAIEvent;

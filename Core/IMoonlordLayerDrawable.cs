@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    interface IMoonlordLayerDrawable
+	interface IMoonlordLayerDrawable
     {
         void DrawMoonlordLayer(SpriteBatch spriteBatch);
     }

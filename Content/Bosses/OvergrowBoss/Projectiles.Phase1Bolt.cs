@@ -1,14 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
 {
-    internal class Phase1Bolt : ModProjectile
+	internal class Phase1Bolt : ModProjectile
     {
         public override string Texture => AssetDirectory.Invisible;
 

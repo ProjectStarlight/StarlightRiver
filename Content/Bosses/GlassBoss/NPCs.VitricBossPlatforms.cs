@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal class VitricBossPlatformUp : MovingPlatform
+	internal class VitricBossPlatformUp : MovingPlatform
     {
         public const int MaxHeight = 880;
         public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatform";

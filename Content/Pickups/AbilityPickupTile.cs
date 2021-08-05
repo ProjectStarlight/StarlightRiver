@@ -3,11 +3,9 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Pickups
 {
-    public abstract class AbilityPickupTile : ModTile
+	public abstract class AbilityPickupTile : ModTile
     {
         public virtual int PickupType => 0;
 

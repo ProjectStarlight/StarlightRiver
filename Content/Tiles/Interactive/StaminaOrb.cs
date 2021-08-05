@@ -1,17 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
+using Terraria;
 using Terraria.ID;
-using StarlightRiver.Content.Abilities;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-    internal class StaminaOrb : DummyTile
+	internal class StaminaOrb : DummyTile
     {
         public override int DummyType => ProjectileType<StaminaOrbDummy>();
 

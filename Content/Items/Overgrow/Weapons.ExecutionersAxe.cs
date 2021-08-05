@@ -1,16 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Items.Overgrow
 {
-    public class ExecutionersAxe : ModItem
+	public class ExecutionersAxe : ModItem
     {
         public override string Texture => AssetDirectory.OvergrowItem + Name;
 

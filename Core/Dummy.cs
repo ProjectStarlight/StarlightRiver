@@ -1,12 +1,11 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-    internal abstract class Dummy : ModProjectile
+	internal abstract class Dummy : ModProjectile
     {
         private readonly int ValidType;
         private readonly int Width;

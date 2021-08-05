@@ -1,13 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.StarJuice;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles.StarJuice;
-
 namespace StarlightRiver.Content.Items.StarJuice
 {
-    internal class StarjuiceStoringItem : ModItem
+	internal class StarjuiceStoringItem : ModItem
     {
         public int maxCharge = 100;
         public int charge = 0;

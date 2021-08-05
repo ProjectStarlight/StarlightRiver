@@ -8,11 +8,9 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using static Terraria.ModLoader.Core.TmodFile;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core.Loaders
 {
-    class ShaderLoader : ILoadable
+	class ShaderLoader : ILoadable
     {
         public float Priority { get => 0.9f; }
 

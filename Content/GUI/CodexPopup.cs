@@ -7,11 +7,9 @@ using Terraria;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.GUI
 {
-    public class CodexPopup : SmartUIState
+	public class CodexPopup : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         public override bool Visible => Timer > 0;

@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using System;
 using Terraria;
 using Terraria.ID;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-
 namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 {
-    public class Pulse : InfusionItem<Dash>
+	public class Pulse : InfusionItem<Dash>
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/Pulse";

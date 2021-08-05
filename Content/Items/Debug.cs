@@ -1,21 +1,12 @@
-﻿using StarlightRiver.Codex;
-using StarlightRiver.Content.Tiles.CrashTech;
-using StarlightRiver.Content.Tiles.Forest;
+﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Bosses.GlassBoss;
 
 namespace StarlightRiver.Content.Items
 {
-    class DebugStick : ModItem
+	class DebugStick : ModItem
     {
         public override string Texture => AssetDirectory.Assets+ "Items/DebugStick";
 
@@ -47,9 +38,9 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-
-            Packets.AbilityProgress packet = new Packets.AbilityProgress(player.whoAmI, player.GetModPlayer<Abilities.AbilityHandler>());
-            packet.Send();
+            for (int x = 0; x < Main.maxTilesX; x++)
+                for (int y = 0; y < Main.maxTilesY; y++)
+                    Main.tile[x, y].ClearEverything();
 
             return true;
 
@@ -70,13 +61,14 @@ namespace StarlightRiver.Content.Items
 
             return true;
 
+            /*
             foreach (NPC npc in Main.npc)
                 npc.active = false;
 
             NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
             player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
 
-            return true;
+            return true;*/
         }
     }
 }

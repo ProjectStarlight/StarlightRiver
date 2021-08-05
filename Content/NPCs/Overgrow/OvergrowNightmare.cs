@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Content.NPCs.Overgrow
 {
-    internal class OvergrowNightmare : ModNPC
+	internal class OvergrowNightmare : ModNPC
     {
         public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/OvergrowNightmare";
 

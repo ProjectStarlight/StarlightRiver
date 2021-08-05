@@ -1,8 +1,6 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Abilities
+﻿namespace StarlightRiver.Content.Abilities
 {
-    public abstract class CooldownAbility : Ability
+	public abstract class CooldownAbility : Ability
     {
         public int Cooldown { get; private set; } = -1;
         public int CooldownBonus { get; set; }

@@ -1,16 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-    public abstract class InteractiveProjectile : ModProjectile
+	public abstract class InteractiveProjectile : ModProjectile
     {
         public List<Point16> ValidPoints { get; set; } = new List<Point16>(); //the points this projectile allows tile placement at
 

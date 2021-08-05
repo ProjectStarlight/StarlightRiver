@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
-    public abstract class StarwoodItem : ModItem
+	public abstract class StarwoodItem : ModItem
     {
         protected Texture2D EmpoweredTexture;
         protected bool isEmpowered;

@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class DisinfectantKit : SmartAccessory
+	public class DisinfectantKit : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 

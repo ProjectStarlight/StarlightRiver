@@ -1,20 +1,15 @@
-﻿using MonoMod.Cil;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Mono.Cecil.Cil;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using System.Reflection;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Lavas
 {
-    class LavaLoader : ILoadable
+	class LavaLoader : ILoadable
     {
         public static List<LavaStyle> lavas = new List<LavaStyle>();
 

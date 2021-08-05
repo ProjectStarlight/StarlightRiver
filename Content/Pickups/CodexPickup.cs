@@ -1,18 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Codex;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.GUI;
 
 namespace StarlightRiver.Pickups
 {
-    internal class CodexPickup : AbilityPickup
+	internal class CodexPickup : AbilityPickup
     {
         public override string Texture => "StarlightRiver/Assets/GUI/Book1Closed";
 

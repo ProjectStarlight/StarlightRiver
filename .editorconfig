@@ -32,3 +32,9 @@ dotnet_diagnostic.IDE1006.severity = none
 
 # CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = none
+
+# ChangeMagicNumberToID: Change magic numbers into appropriate ID values
+dotnet_diagnostic.ChangeMagicNumberToID.severity = suggestion
+
+# CS0414: The field 'EnchantmentMinigameHandler.minigameTimer' is assigned but its value is never used
+dotnet_diagnostic.CS0414.severity = suggestion

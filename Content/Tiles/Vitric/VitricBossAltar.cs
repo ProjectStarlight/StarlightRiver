@@ -1,20 +1,20 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.GlassBoss;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Bosses.GlassBoss;
-using StarlightRiver.Helpers;
-using System.Collections.Generic;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    internal class VitricBossAltar : DummyTile
+	internal class VitricBossAltar : DummyTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -76,6 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return false;
         }
     }
+
     class VitricBossAltarItem : QuickTileItem
     {
         public VitricBossAltarItem() : base("Vitric Boss Altar Item", "places it", TileType<VitricBossAltar>(), 1, AssetDirectory.Debug, true) { }
@@ -111,6 +112,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 for (int x = parentPos.X; x < parentPos.X + 5; x++)
                     for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
                         Framing.GetTileSafely(x, y).frameX += 90;
+
+                NetMessage.SendTileRange(player.whoAmI, parentPos.X, parentPos.Y, 5, 7, TileChangeType.None);
 
                 CutsceneTimer = 0;
             }

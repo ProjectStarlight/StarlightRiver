@@ -1,19 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.NPCs.Hell;
 using StarlightRiver.Content.Tiles.Overgrow;
+using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using System;
 using System.Linq;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.NPCs.Hell;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class DrawLayers : HookGroup
+	class DrawLayers : HookGroup
     {
         //A few different hooks for drawing on certain layers. Orig is always run and its just draw calls.
         public override SafetyLevel Safety => SafetyLevel.Safe;
@@ -56,10 +54,11 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
             }
-            catch (NullReferenceException e)
+            catch (Exception e)
             {
                 // be quiet
             }
+
             if (Main.gameMenu) return;
 
             for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)

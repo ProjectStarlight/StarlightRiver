@@ -2,11 +2,9 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Items.Herbology.Potions
 {
-    public class Bottle : ModItem
+	public class Bottle : ModItem
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/Bottle";
 

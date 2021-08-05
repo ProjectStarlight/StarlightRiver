@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using StarlightRiver.Helpers;
-using StarlightRiver.Codex.Entries;
-using Terraria.DataStructures;
-using Terraria.ModLoader.IO;
+using Terraria.ModLoader;
 namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem

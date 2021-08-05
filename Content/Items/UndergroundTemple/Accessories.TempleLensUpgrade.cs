@@ -1,15 +1,13 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Buffs;
-using System;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-    class TempleLensUpgrade : SmartAccessory
+	class TempleLensUpgrade : SmartAccessory
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 

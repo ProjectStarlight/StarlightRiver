@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
-    public static partial class Helper
+	public static partial class Helper
     {
         public static bool IsValidDebuff(Player player, int buffindex)
         {

@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Buffs;
-
 namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 {
-    class SwimPlayer : ModPlayer
+	class SwimPlayer : ModPlayer
     {
         int boostCD = 0;
         float targetRotation = 0;

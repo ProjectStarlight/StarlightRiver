@@ -2,11 +2,9 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
-    internal class TreeJungleCorrupt : ModTree
+	internal class TreeJungleCorrupt : ModTree
     {
         public override int CreateDust()
         {

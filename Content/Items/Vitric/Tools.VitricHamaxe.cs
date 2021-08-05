@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.DataStructures;
-
 namespace StarlightRiver.Content.Items.Vitric
 {
-    internal class VitricHamaxe : ModItem, IGlowingItem
+	internal class VitricHamaxe : ModItem, IGlowingItem
     {
         public int heat = 0;
         public int heatTime = 0;

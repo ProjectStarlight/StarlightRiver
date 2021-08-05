@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Dusts;
 using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Dusts;
-
 namespace StarlightRiver.NPCs
 {
-    public class BleedStack
+	public class BleedStack
     {
         public int timeLeft;
 

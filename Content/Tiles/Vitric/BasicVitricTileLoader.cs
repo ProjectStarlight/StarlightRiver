@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using Terraria.ID;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class BasicVitricTileLoader : TileLoader
+	class BasicVitricTileLoader : TileLoader
     {
         public override string AssetRoot => AssetDirectory.VitricTile;
 

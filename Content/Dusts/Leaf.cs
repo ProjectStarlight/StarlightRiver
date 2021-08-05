@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class Leaf : Corrupt
+	public class Leaf : Corrupt
     {
         public override bool Autoload(ref string name, ref string texture)
         {

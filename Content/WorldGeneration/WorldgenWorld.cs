@@ -5,11 +5,9 @@ using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModWorld
     {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {

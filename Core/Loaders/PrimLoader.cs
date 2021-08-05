@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
-using Terraria.UI;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
 
 
 namespace StarlightRiver.Core.Loaders
 {
-    class PrimLoader : ILoadable
+	class PrimLoader : ILoadable
     {
         public float Priority { get => 1.09f; }
 

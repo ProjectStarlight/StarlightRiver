@@ -1,16 +1,14 @@
-﻿using System;
+﻿using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.GaiasFist;
+using StarlightRiver.Content.Abilities.Purify;
+using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities.Purify;
-using StarlightRiver.Content.Abilities.GaiasFist;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.Faeflame;
-
 namespace StarlightRiver.Content.Abilities
 {
-    public class AbilityHotkeys
+	public class AbilityHotkeys
     {
         public AbilityHotkeys(Mod mod)
         {

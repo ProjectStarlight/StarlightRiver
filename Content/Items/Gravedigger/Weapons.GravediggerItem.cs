@@ -1,12 +1,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
-using StarlightRiver.Helpers;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Content.Buffs;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {

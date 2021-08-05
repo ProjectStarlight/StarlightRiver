@@ -1,18 +1,16 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs.Summon;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Buffs.Summon;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Palestone
 {
-    public class PalestoneNail : ModItem
+	public class PalestoneNail : ModItem
     {
         public override string Texture => AssetDirectory.PalestoneItem + Name;
 

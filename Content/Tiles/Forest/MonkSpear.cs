@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Physics;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.ObjectData;
-using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Physics;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {

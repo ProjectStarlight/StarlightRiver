@@ -1,10 +1,8 @@
 ﻿using Terraria;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Buffs.Summon
 {
-    class TentacleSummonBuff : SmartBuff
+	class TentacleSummonBuff : SmartBuff
     {
         public TentacleSummonBuff() : base("Tentacles", "Now you'll be able to get that damn spiderman for sure!", false, true) { }
 

@@ -1,14 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Helpers;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.World.Generation;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
 namespace StarlightRiver.Core
 {
-    public partial class StarlightWorld
+	public partial class StarlightWorld
     {
         public static void UndergroundTempleGen(GenerationProgress progress)
         {

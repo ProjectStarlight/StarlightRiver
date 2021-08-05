@@ -1,16 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 
-using StarlightRiver.Core;
-using Terraria.Enums;
-using Terraria.ID;
-
 namespace StarlightRiver.Core
 {
-    internal static class QuickBlock
+	internal static class QuickBlock
     {
         public static void QuickSet(this ModTile tile, int minPick, int dustType, int soundType, Color mapColor, int drop, bool dirtMerge = false, bool stone = false, string mapName = "")
         {

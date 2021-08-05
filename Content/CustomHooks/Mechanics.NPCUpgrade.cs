@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Reflection;
@@ -8,12 +10,9 @@ using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.GUI;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    class NPCUpgrade : HookGroup
+	class NPCUpgrade : HookGroup
     {
         //ON justs sets some values on a UI when a vanilla event is triggered, IL swaps out some names. Questionable for IL, but might classift for fragile due to the sheer amount of IL patches in here.
         public override SafetyLevel Safety => SafetyLevel.Questionable;

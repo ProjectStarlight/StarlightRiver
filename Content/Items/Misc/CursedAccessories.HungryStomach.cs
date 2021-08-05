@@ -1,13 +1,13 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    internal class HungryStomach : CursedAccessory
+	internal class HungryStomach : CursedAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
         public HungryStomach() : base(GetTexture(AssetDirectory.MiscItem + "HungryStomachGlow")) { }

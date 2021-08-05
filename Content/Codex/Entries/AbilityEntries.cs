@@ -1,10 +1,9 @@
-﻿using static Terraria.ModLoader.ModContent;
-
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Codex.Entries
 {
-    internal class LoreEntry : CodexEntry
+	internal class LoreEntry : CodexEntry
     {
         public LoreEntry()
         {

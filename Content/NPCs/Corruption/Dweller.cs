@@ -1,21 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Foregrounds;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using StarlightRiver.Helpers;
-
 using static Terraria.ModLoader.ModContent;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Items.Herbology.Materials;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Foregrounds;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {

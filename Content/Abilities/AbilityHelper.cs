@@ -1,15 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
-using Terraria;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Abilities.GaiasFist;
-using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.GaiasFist;
+using Terraria;
 
 namespace StarlightRiver.Content.Abilities
 {
-    //This class serves to simplify implementing ability interactions
-    internal static class AbilityHelper
+	//This class serves to simplify implementing ability interactions
+	internal static class AbilityHelper
     {
         public static bool CheckDash(Player player, Rectangle hitbox)
         {

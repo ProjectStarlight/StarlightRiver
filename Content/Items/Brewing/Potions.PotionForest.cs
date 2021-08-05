@@ -1,16 +1,14 @@
-﻿using StarlightRiver.Items.Herbology.Materials;
+﻿using StarlightRiver.Content.Tiles.Crafting;
+using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Items.Herbology.Materials;
+using StarlightRiver.Items.Herbology.Potions;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Items.Herbology.Potions;
-using StarlightRiver.Content.Tiles.Crafting;
-using StarlightRiver.Content.Tiles.Forest;
-
 namespace StarlightRiver.Content.Items.Brewing
 {
-    internal class PotionForest : QuickPotion
+	internal class PotionForest : QuickPotion
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/PotionForest";
 

@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    public class AstrofloraBow : HookGroup
+	public class AstrofloraBow : HookGroup
     {
         // Not really any hacky stuff, its just detours with drawing. The only way this is crashing is if something else messes with the state of SB.
         public override SafetyLevel Safety => SafetyLevel.Safe;

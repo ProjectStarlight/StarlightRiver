@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Projectiles;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Projectiles;
-
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-    class TempleSpear : ModItem
+	class TempleSpear : ModItem
     {
         public override string Texture => AssetDirectory.CaveTempleItem + Name;
 

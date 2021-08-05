@@ -1,17 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
-    public class MoonstoneOre : ModTile
+	public class MoonstoneOre : ModTile
     {
         public override bool Autoload(ref string name, ref string texture) {
             texture = AssetDirectory.MoonstoneTile + name;
@@ -23,12 +21,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
             //Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
-
-            bool a()//remove
-            {
-                Main.NewText("a");
-                return true;
-            }
 
             if (!Main.tile[i, j - 1].active())
             {

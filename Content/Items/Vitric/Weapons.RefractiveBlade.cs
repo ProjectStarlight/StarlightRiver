@@ -1,20 +1,20 @@
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria;
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
-using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    public class RefractiveBlade : ModItem
+	public class RefractiveBlade : ModItem
     {
         public int combo;
 

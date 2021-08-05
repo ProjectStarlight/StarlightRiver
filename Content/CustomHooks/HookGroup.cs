@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    public class HookGroup : ILoadable
+	public class HookGroup : ILoadable
     {
         public virtual SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
 

@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Tiles.Misc;
-using Terraria.DataStructures;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
-using Terraria.ID;
 using StarlightRiver.Content.WorldGeneration;
+using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver
 {
-    public partial class StarlightRiver 
+	public partial class StarlightRiver 
     {
         private const float displayCaseChance = 0.125f;
 

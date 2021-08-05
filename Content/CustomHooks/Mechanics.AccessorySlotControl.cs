@@ -1,16 +1,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Items.Prototypes;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.BaseTypes;
-
 namespace StarlightRiver.Content.CustomHooks
 {
-    public class AccessorySlotControl : HookGroup
+	public class AccessorySlotControl : HookGroup
     {
         //Should be a fairly stable hook in theory, but some vanilla behavior is repeated/replaced here. Could be refactored in the future, this is old code.
         public override SafetyLevel Safety => SafetyLevel.Questionable;

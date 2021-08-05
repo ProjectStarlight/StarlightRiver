@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles;
+using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-using StarlightRiver.Content.Tiles;
-
 namespace StarlightRiver.Tiles.Temple
 {
-    class TempleChestSimple : LootChest
+	class TempleChestSimple : LootChest
     {
         public override bool Autoload(ref string name, ref string texture)
         {

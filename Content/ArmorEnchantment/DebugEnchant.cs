@@ -2,15 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 
 namespace StarlightRiver.Content.ArmorEnchantment
 {
-    class DebugEnchant : ArmorEnchantment
+	class DebugEnchant : ArmorEnchantment
     {
         public DebugEnchant() : base() { }
 

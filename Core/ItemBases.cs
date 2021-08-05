@@ -1,16 +1,13 @@
-﻿using Terraria.ID;
-using Terraria.ModLoader;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Microsoft.Xna.Framework;
-using System;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-    public abstract class HeldItemProjectile : ModProjectile
+	public abstract class HeldItemProjectile : ModProjectile
     {
         private readonly float Distance;
         public HeldItemProjectile(float distance = 1) =>

@@ -5,11 +5,9 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core.Loaders
 {
-    class UILoader : ILoadable
+	class UILoader : ILoadable
     {
         public static List<UserInterface> UserInterfaces = new List<UserInterface>();
         public static List<SmartUIState> UIStates = new List<SmartUIState>();

@@ -1,11 +1,9 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Items.Herbology
 {
-    public class Soil : ModItem
+	public class Soil : ModItem
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/Soil";
 

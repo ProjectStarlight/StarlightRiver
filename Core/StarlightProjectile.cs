@@ -1,11 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Core
 {
-    partial class StarlightProjectile : GlobalProjectile
+	partial class StarlightProjectile : GlobalProjectile
     {
         public delegate void ModifyHitNPCDelegate(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
         public static event ModifyHitNPCDelegate ModifyHitNPCEvent;

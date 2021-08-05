@@ -1,11 +1,9 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.NPCs
 {
-    public class DropHandler : GlobalNPC
+	public class DropHandler : GlobalNPC
     {
         public override void NPCLoot(NPC npc)
         {

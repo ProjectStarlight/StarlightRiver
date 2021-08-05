@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Hell
 {
-    class MagmaSword : ModItem, IGlowingItem
+	class MagmaSword : ModItem, IGlowingItem
     {
         public override string Texture => "StarlightRiver/Assets/Items/Hell/MagmaSword";
 

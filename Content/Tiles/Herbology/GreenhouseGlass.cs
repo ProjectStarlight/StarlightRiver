@@ -1,13 +1,12 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-    public class GreenhouseGlass : ModTile
+	public class GreenhouseGlass : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

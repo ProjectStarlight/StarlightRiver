@@ -1,12 +1,10 @@
-﻿using System.Linq;
+﻿using StarlightRiver.Content.Items.Food;
+using System.Linq;
 using Terraria;
-
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Food;
 
 namespace StarlightRiver.Content.Buffs
 {
-    public class FoodBuff : SmartBuff
+	public class FoodBuff : SmartBuff
     {
         public FoodBuff() : base("Nourished", "Nourised by rich food, granting:\n", false) { }
 

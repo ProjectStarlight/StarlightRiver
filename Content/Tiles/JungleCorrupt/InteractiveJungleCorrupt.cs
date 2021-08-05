@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -6,11 +7,9 @@ using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
-    internal class SporeJungleCorrupt : ModTile
+	internal class SporeJungleCorrupt : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {

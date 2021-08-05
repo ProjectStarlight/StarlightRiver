@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-
 namespace StarlightRiver.Content.Dusts
 {
-    public class LavaSpark : ModDust
+	public class LavaSpark : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

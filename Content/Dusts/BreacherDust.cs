@@ -1,11 +1,10 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ModLoader;
-
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Dusts
 {
-    public class BreacherDust : ModDust
+	public class BreacherDust : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {

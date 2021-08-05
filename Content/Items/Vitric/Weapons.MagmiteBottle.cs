@@ -1,18 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-    class MagmiteBottle : ModItem
+	class MagmiteBottle : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 

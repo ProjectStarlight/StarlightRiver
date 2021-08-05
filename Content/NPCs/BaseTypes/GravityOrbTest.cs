@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
-    class GravityOrbTest : ModNPC, IDrawAdditive
+	class GravityOrbTest : ModNPC, IDrawAdditive
     {
         public int radius = 100;
         public int attract = 100;

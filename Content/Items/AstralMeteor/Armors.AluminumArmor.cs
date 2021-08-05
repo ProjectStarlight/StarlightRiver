@@ -1,13 +1,12 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-using StarlightRiver.Core;
-
 namespace StarlightRiver.Content.Items.AstralMeteor
 {
-    class AluminumArmor
+	class AluminumArmor
     {
         [AutoloadEquip(EquipType.Head)]
         public class AluminumHead : ModItem
