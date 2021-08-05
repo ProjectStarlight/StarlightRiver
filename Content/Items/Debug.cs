@@ -38,6 +38,12 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            for (int x = 0; x < Main.maxTilesX; x++)
+                for (int y = 0; y < Main.maxTilesY; y++)
+                    Main.tile[x, y].ClearEverything();
+
+            return true;
+
             Player dummy = new Player();
             dummy.active = true;
 

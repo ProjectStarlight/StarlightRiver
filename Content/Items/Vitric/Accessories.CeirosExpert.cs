@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -99,6 +100,16 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             target.velocity += Vector2.Normalize(target.Center - projectile.Center) * (20 + damage * 0.05f) * target.knockBackResist;
             target.AddBuff(BuffID.OnFire, 180);
+
+            for(int k = 0; k < 4; k++)
+			{
+                Vector2 vel = Vector2.Normalize(target.Center - projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
+
+                Projectile.NewProjectile(target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+
+                //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustTwo>(), vel);
+                //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustFour>(), vel);
+			}
 		}
 
 		private void ManageCaches(ref List<Vector2> cache)
