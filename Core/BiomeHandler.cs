@@ -32,6 +32,7 @@ namespace StarlightRiver.Core
         public bool zoneAluminum = false;
         public bool zonePermafrost = false;
         public bool zoneAshhell = false;
+        public bool zoneHotspring = false;
 
         public bool FountainJungleCorrupt = false;
         public bool FountainJungleBloody = false;
@@ -166,7 +167,12 @@ namespace StarlightRiver.Core
             if (zonePermafrost && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
                 Helper.UnlockEntry<PermafrostEntry>(player);
         }
-    }
+
+		public override void ResetEffects()
+		{
+            zoneHotspring = false;
+		}
+	}
 
     public partial class StarlightWorld : ModWorld
     {

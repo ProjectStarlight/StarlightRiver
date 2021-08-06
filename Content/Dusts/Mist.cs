@@ -10,36 +10,38 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = AssetDirectory.Dust + name;
+            texture = AssetDirectory.Dust + "NeedlerDust";
             return true;
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return dust.color;
+            return lightColor * (0.01f + dust.alpha / 250f) * (float)Math.Sin(dust.fadeIn / 120f * 3.14f);
         }
 
         public override void OnSpawn(Dust dust)
         {
-            dust.scale *= Main.rand.NextFloat(0.5f, 1.2f);
+            dust.scale *= Main.rand.NextFloat(2.5f, 2.9f);
             dust.fadeIn = 0;
             dust.noLight = false;
             dust.rotation = Main.rand.NextFloat(6.28f);
-            dust.frame = new Rectangle(0, 0, 32, 22);
+            dust.frame = new Rectangle(0, 0, 36, 36);
+            dust.alpha = Main.rand.Next(15);
         }
 
         public override bool Update(Dust dust)
         {
-            dust.position.X += dust.velocity.X + Main.LocalPlayer.velocity.X * -0.6f * (dust.scale * 0.01f);
-            dust.position.Y += Main.LocalPlayer.velocity.Y * -0.15f * (dust.scale * 0.01f);
-            dust.velocity.X = 0.9f;
-            dust.position.Y += (float)Math.Sin(StarlightWorld.rottime + dust.fadeIn / 30f) * 0.4f;
+            dust.position += dust.velocity;
+            float rotVel = (dust.velocity.Y / 40f) * (dust.alpha > 7 ? -1 : 1);
+
+            Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 18 * dust.scale;
             dust.scale *= 0.999f;
-            dust.rotation += 0.01f;
+            Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + rotVel) * 18 * dust.scale;
+
+            dust.rotation += rotVel;
+            dust.position += currentCenter - nextCenter;
 
             dust.fadeIn++;
-            float alpha = dust.fadeIn / 45f - (float)Math.Pow(dust.fadeIn, 2) / 3600f;
-            dust.color = new Color(200, 235, 255) * 0.4f * alpha;
 
             if (dust.fadeIn > 120)
                 dust.active = false;

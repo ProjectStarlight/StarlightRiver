@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -18,8 +19,11 @@ namespace StarlightRiver.Content.Dusts
             dust.noGravity = true;
             dust.noLight = false;
             dust.fadeIn = 60;
-            dust.frame = new Rectangle(0, 0, 13, 13);
+            dust.frame = new Rectangle(0, 0, 100, 100);
             dust.scale = 0;
+
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader.UseColor(Color.Transparent);
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -30,12 +34,20 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 0.5f);
-            dust.rotation += 0.06f;
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2.5f);
 
-            dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : (float)dust.customData);
+            Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 50 * dust.scale;
+
+            dust.scale = (dust.fadeIn / 15f - (float)Math.Pow(dust.fadeIn, 2) / 900f) * (dust.customData is null ? 0.5f : (float)dust.customData) * 0.2f;
+            Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 50 * dust.scale;
+
+            dust.rotation += 0.06f;
+            dust.position += currentCenter - nextCenter;
+
             dust.fadeIn--;
             dust.position += dust.velocity * 0.25f;
+
+            dust.shader.UseColor(dust.color);
 
             if (dust.fadeIn <= 0) dust.active = false;
             return false;

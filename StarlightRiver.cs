@@ -40,6 +40,12 @@ namespace StarlightRiver
             {
                 Player player = Main.LocalPlayer;
 
+                if (player.GetModPlayer<BiomeHandler>().zoneHotspring)
+                {
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
+                    priority = MusicPriority.BiomeHigh;
+                }
+
                 if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
