@@ -38,6 +38,17 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            Main.NewText(Lighting.GetColor((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
+            Lighting.Initialize(true);
+            Main.targetSet = false;
+
+            if(ZoomHandler.ExtraZoomTarget == 0.5f)
+                ZoomHandler.SetZoomAnimation(1);
+            else
+                ZoomHandler.SetZoomAnimation(0.5f);
+
+            return true;
+
             for (int x = 0; x < Main.maxTilesX; x++)
                 for (int y = 0; y < Main.maxTilesY; y++)
                     Main.tile[x, y].ClearEverything();

@@ -92,21 +92,24 @@ namespace StarlightRiver.Content.Tiles.Underground
 					var tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					var tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
-					if (tile1.liquidType() == 0 && tile1.liquid > 0 && tile2.liquid == 0)
+					if (tile1.collisionType == 0 && tile1.liquidType() == 0 && tile1.liquid > 0)
 					{
-						Lighting.AddLight(new Vector2(checkX1 * 16, checkY1 * 16), new Vector3(150, 220, 230) * 0.002f);
-
-						if (Main.rand.Next(40) == 0 && tile2.collisionType == 0)
+						if (tile2.liquid == 0)
 						{
-							var pos = projectile.Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
-							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
-						}
-					}
+							Lighting.AddLight(new Vector2(checkX1 * 16, checkY1 * 16), new Vector3(150, 220, 230) * 0.002f);
 
-					if (Main.rand.Next(600) == 0)
-					{
-						var pos = projectile.Center + new Vector2(x, y) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
-						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SpringBubble>(), Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(40, 55), new Color(230, 255, 255), Main.rand.NextFloat(0.3f, 0.4f));
+							if (Main.rand.Next(40) == 0 && tile2.collisionType == 0)
+							{
+								var pos = projectile.Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
+								Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+							}
+						}
+
+						if (Main.rand.Next(600) == 0)
+						{
+							var pos = projectile.Center + new Vector2(x, y) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
+							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SpringBubble>(), Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(40, 55), new Color(230, 255, 255), Main.rand.NextFloat(0.3f, 0.4f));
+						}
 					}
 				}
 

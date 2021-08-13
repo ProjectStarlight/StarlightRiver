@@ -22,7 +22,7 @@ namespace StarlightRiver.Core
 		public static void ReduceDoT(Action<Player> orig, Player player)
 		{
 			orig(player);
-			player.lifeRegen =  (int)(player.lifeRegen * (1.0f - player.GetModPlayer<DoTResistancePlayer>().DoTResist) );
+			player.lifeRegen = (int)(player.lifeRegen * (1.0f - player.GetModPlayer<DoTResistancePlayer>().DoTResist) );
 		}
 
 		public override void ResetEffects()
