@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class ZoomOutEnabler : HookGroup
 	{
+		public static float lightingStoredSize = 1;
+
 		//this is super hacky
 		public override SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
 
@@ -137,8 +139,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ReInit(On.Terraria.Lighting.orig_PreRenderPhase orig)
 		{
-			if(ZoomHandler.ExtraZoomTarget < 1)
+			if (ZoomHandler.ExtraZoomTarget < 1 && ZoomHandler.ExtraZoomTarget != lightingStoredSize)
+			{
 				Lighting.Initialize(true);
+				lightingStoredSize = ZoomHandler.ExtraZoomTarget;
+			}
 
 			orig();
 		}

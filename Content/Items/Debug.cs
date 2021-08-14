@@ -43,9 +43,28 @@ namespace StarlightRiver.Content.Items
             Main.targetSet = false;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)
+            {
+                ZoomHandler.SetZoomAnimation(0.65f);
+                Main.NewText("Zoom: 65%");
+            }
+
+            else if (ZoomHandler.ExtraZoomTarget == 0.65f)
+            {
+                ZoomHandler.SetZoomAnimation(0.5f);
+                Main.NewText("Zoom: 50%");
+            }
+
+            else if (ZoomHandler.ExtraZoomTarget == 0.5f)
+            {
                 ZoomHandler.SetZoomAnimation(1);
+                Main.NewText("Zoom: Default");
+            }
+
             else
+            {
                 ZoomHandler.SetZoomAnimation(0.8f);
+                Main.NewText("Zoom: 80%");
+            }
 
             return true;
 
