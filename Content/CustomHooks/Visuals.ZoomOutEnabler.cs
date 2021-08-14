@@ -47,6 +47,8 @@ namespace StarlightRiver.Content.CustomHooks
 			IL.Terraria.Lighting.doColors += HackSwipes;
 
 			IL.Terraria.Main.DrawBlack += ResizeLighting;
+			IL.Terraria.Main.DrawWalls += ResizeLighting;
+			IL.Terraria.Main.drawWaters += ResizeLighting;
 
 			On.Terraria.Lighting.PreRenderPhase += ReInit;
 			On.Terraria.Lighting.LightTiles += MoveLighting;
@@ -110,8 +112,8 @@ namespace StarlightRiver.Content.CustomHooks
 			{
 				//HackSwipe(c, "innerLoop1Start", k % 2 == 0, false); //if its X or Y should alternate every other patch
 				HackSwipe(c, "innerLoop1End", k % 2 == 0, true);
-				//HackSwipe(c, "innerLoop2Start", k % 2 == 0, true);
-				HackSwipe(c, "innerLoop2End", k % 2 == 0, true);
+				HackSwipe(c, "innerLoop2Start", k % 2 == 0, true);
+				//HackSwipe(c, "innerLoop2End", k % 2 == 0, true);
 				//HackSwipe(c, "outerLoopStart", k % 2 == 1, false);
 				HackSwipe(c, "outerLoopEnd", k % 2 == 1, true);
 			}
