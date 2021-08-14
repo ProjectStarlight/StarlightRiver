@@ -10,6 +10,7 @@ using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System;
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -212,8 +213,20 @@ namespace StarlightRiver
 {
 	public partial class StarlightRiver : Mod
     {
+        private int AddExpansion()
+        {
+            return ((int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.X + Main.screenWidth) / 16f)) + 2);
+        }
+
+        private int AddExpansionY()
+        {
+            return ((int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.Y + Main.screenHeight) / 16f)) + 2);
+        }
+
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
+            Main.screenPosition += new Vector2(AddExpansion(), AddExpansionY()) * 8;
+
             if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
             {
                 tileColor = tileColor.MultiplyRGB(new Color(130, 100, 145));

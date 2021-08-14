@@ -42,10 +42,7 @@ namespace StarlightRiver.Content.Items
             Lighting.Initialize(true);
             Main.targetSet = false;
 
-            if(ZoomHandler.ExtraZoomTarget == 0.5f)
-                ZoomHandler.SetZoomAnimation(1);
-            else
-                ZoomHandler.SetZoomAnimation(0.5f);
+            ZoomHandler.SetZoomAnimation(0.5f);
 
             return true;
 
