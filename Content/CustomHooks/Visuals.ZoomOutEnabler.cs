@@ -48,26 +48,14 @@ namespace StarlightRiver.Content.CustomHooks
 
 			IL.Terraria.Main.DrawBlack += ResizeLighting;
 
-			IL.Terraria.Lighting.GetColor_int_int += TestRed;
-
 			On.Terraria.Lighting.PreRenderPhase += ReInit;
 			On.Terraria.Lighting.LightTiles += MoveLighting;
 		}
 
 		private void MoveLighting(On.Terraria.Lighting.orig_LightTiles orig, int firstX, int lastX, int firstY, int lastY)
 		{
-			orig(firstX - AddExpansion() / 2, lastX + AddExpansion() / 2, firstY - AddExpansionY() / 2, lastY+ AddExpansionY() / 2);
+			orig(firstX - (int)Math.Floor(AddExpansion() / 2f), (int)Math.Floor(lastX + AddExpansion() / 2f), (int)Math.Floor(firstY - AddExpansionY() / 2f), (int)Math.Floor(lastY + AddExpansionY() / 2f));
 		}
-
-		private void TestRed(ILContext il)
-		{
-			ILCursor c = new ILCursor(il);
-			c.TryGotoNext(MoveType.After, n => n.MatchCall<Color>("get_Black"));
-			c.Emit(OpCodes.Pop);
-			c.EmitDelegate<Func<Color>>(red);
-		}
-
-		Color red() => Color.Red;
 
 		private void ResizeLightingBig(ILContext il)
 		{
@@ -106,12 +94,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private int AddExpansion()
 		{
-			return ((int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.X + Main.screenWidth) / 16f)) + 2);
+			return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
 		}
 
 		private int AddExpansionY()
 		{
-			return ((int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.Y + Main.screenHeight) / 16f)) + 2);
+			return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
 		}
 
 		private void HackSwipes(ILContext il)
@@ -147,18 +135,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ReInit(On.Terraria.Lighting.orig_PreRenderPhase orig)
 		{
-			Lighting.Initialize(true);
-			//Buttfuckery.Lighting.Initialize();
+			if(ZoomHandler.ExtraZoomTarget < 1)
+				Lighting.Initialize(true);
 
-			try
-			{
-				//Buttfuckery.Lighting.PreRenderPhase();
-				orig();
-			}
-			catch
-			{
-				int a = 0;
-			}
+			orig();
 		}
 
 		private void ResizeLighting(ILContext il)
@@ -205,45 +185,6 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawZoomOut(ILContext il)
 		{
-			/*
-            var c = new ILCursor(il);
-            
-            if (!c.TryGotoNext(MoveType.After,
-                i => i.MatchSub(),
-                i => i.MatchLdcR4(16),
-                i => i.MatchDiv(),
-                i => i.MatchLdcR4(1),
-                i => i.MatchSub()))
-                return;
-
-            c.EmitDelegate<Func<float, float>>((returnvalue) =>
-            {
-                return (int)((Main.screenPosition.X - 1600) / 16f - 1f);
-            });
-
-            /*
-                IL_00B5: add
-                IL_00B6: ldc.r4    16
-                IL_00BB: div
-                IL_00BC: conv.i4
-                IL_00BD: ldc.i4.2
-                IL_00BE: add
-                ---> here
-            *//*
-            if (!c.TryGotoNext(MoveType.After,
-                i => i.MatchAdd(),
-                i => i.MatchLdcR4(16),
-                i => i.MatchDiv(),
-                i => i.MatchConvI4(),
-                i => i.MatchLdcI4(2),
-                i => i.MatchAdd()))
-                return;
-
-            c.EmitDelegate<Func<int, int>>((returnvalue) =>
-            {
-                return (int)((Main.screenPosition.X + Main.screenWidth + 1600) / 16f + 2);
-            });
-            */
 			var c = new ILCursor(il);
 
 			if (!c.TryGotoNext(MoveType.After,
@@ -277,28 +218,28 @@ namespace StarlightRiver.Content.CustomHooks
 			switch (index)
 			{
 				case 0:
-					return (int)((Main.screenPosition.X - zero.X) / 16f - 1f);
+					return (int)Math.Floor((Main.screenPosition.X - zero.X) / 16f - 1f);
 
 				case 1:
-					return (int)((Main.screenPosition.X + Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget) + zero.X) / 16f) + 2;
+					return (int)Math.Floor((Main.screenPosition.X + Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget) + zero.X) / 16f) + 2;
 
 				case 2:
-					return (int)((Main.screenPosition.Y - zero.Y) / 16f - 1f);
+					return (int)Math.Floor((Main.screenPosition.Y - zero.Y) / 16f - 1f);
 
 				case 3:
-					return (int)((Main.screenPosition.Y + Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget) + zero.Y) / 16f) + 5;
+					return (int)Math.Floor((Main.screenPosition.Y + Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget) + zero.Y) / 16f) + 5;
 
 				case 4:
-					return (int)(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget));
+					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget));
 
 				case 5:
-					return (int)(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget));
+					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget));
 
 				case 6:
-					return (int)(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
+					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
 
 				case 7:
-					return (int)(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
+					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
 
 				default:
 					return 0;

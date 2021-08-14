@@ -118,18 +118,18 @@ namespace StarlightRiver.Core
 
         private int AddExpansion()
         {
-            return ((int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.X + Main.screenWidth) / 16f)) + 2);
+            return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
         }
 
         private int AddExpansionY()
         {
-            return ((int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f)) + 2) - ((int)Math.Floor(((Main.screenPosition.Y + Main.screenHeight) / 16f)) + 2);
+            return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
         }
 
         public override void ModifyScreenPosition()
         {
-
-            Main.screenPosition -= new Vector2(AddExpansion(), AddExpansionY()) * 8;
+            var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
+            Main.screenPosition -= adj;
 
             if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
             {
