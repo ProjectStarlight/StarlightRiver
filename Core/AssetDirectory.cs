@@ -102,6 +102,8 @@ namespace StarlightRiver.Core
 
         public const string ArmorEnchant =          Assets + "ArmorEnchantment/";
 
+        public const string EvilBiomesItem =        Assets + "Items/EvilBiomes/";
+
         //structures
         public const string StructureFolder =       "Structures/";
 
