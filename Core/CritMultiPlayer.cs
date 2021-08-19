@@ -54,5 +54,33 @@ namespace StarlightRiver.Core
 			MagicCritMult = 0;
 			AllCritMult = 0;
 		}
+
+		public static float GetMultiplier(Projectile projectile)
+		{
+			var player = Main.player[projectile.owner];
+			var mp = player.GetModPlayer<CritMultiPlayer>();
+
+			float multiplier = mp.AllCritMult;
+
+			if (projectile.melee) multiplier += mp.MeleeCritMult;
+			if (projectile.ranged) multiplier += mp.RangedCritMult;
+			if (projectile.magic) multiplier += mp.MagicCritMult;
+
+			return multiplier;
+		}
+
+		public static float GetMultiplier(Item item)
+		{
+			var player = Main.player[item.owner];
+			var mp = player.GetModPlayer<CritMultiPlayer>();
+
+			float multiplier = mp.AllCritMult;
+
+			if (item.melee) multiplier += mp.MeleeCritMult;
+			if (item.ranged) multiplier += mp.RangedCritMult;
+			if (item.magic) multiplier += mp.MagicCritMult;
+
+			return multiplier;
+		}
 	}
 }

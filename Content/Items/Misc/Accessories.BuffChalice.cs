@@ -9,8 +9,6 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	class BuffChalice : SmartAccessory
 	{
-		public int rage = 0;
-
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs grants innoculation") { }
