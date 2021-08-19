@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self);
             CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);
+            CursedAccessory.ShardsSystem.DrawParticles(Main.spriteBatch);
         }
     }
 }
