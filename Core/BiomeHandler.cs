@@ -250,6 +250,12 @@ namespace StarlightRiver
                 tileColor = tileColor.MultiplyRGB(new Color(100, 150, 220));
                 backgroundColor = backgroundColor.MultiplyRGB(new Color(70, 100, 120));
             }
+
+            if(StarlightWorld.spaceEventFade > 0)
+			{
+                tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), StarlightWorld.spaceEventFade);
+                backgroundColor = Color.Lerp(Color.White, new Color(17, 15, 30), StarlightWorld.spaceEventFade);
+            }
         }
     }
 }
