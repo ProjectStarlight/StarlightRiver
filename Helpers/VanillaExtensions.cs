@@ -52,5 +52,11 @@ namespace StarlightRiver.Helpers
 
 			return toReturn;
 		}
+
+		public static void Frame(this NPC npc, int x, int y)
+        {
+			npc.frame.X = x;
+			npc.frame.Y = y;
+        }
 	}
 }
