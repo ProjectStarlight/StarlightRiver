@@ -38,6 +38,11 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+
+            StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
+
+            return true;
+
             Main.NewText(Lighting.GetColor((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
             Lighting.Initialize(true);
             Main.targetSet = false;

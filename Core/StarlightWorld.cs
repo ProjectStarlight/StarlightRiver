@@ -53,6 +53,10 @@ namespace StarlightRiver.Core
 
         public static List<Key> KeyInventory = new List<Key>();
 
+        //temporary space event stuff
+        public static bool spaceEventActive;
+        public static float spaceEventFade;
+
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
 
         public static void Flag(WorldFlags flag)
@@ -149,6 +153,15 @@ namespace StarlightRiver.Core
 
             //Keys
             foreach (Key key in Keys) key.Update();
+
+            if (spaceEventActive)
+            {
+                if (spaceEventFade <= 1)
+                    spaceEventFade += 0.01f;
+            }
+            else if (spaceEventFade > 0)
+                spaceEventFade -= 0.01f;
+
         }
 
         public override void Initialize()
