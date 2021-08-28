@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.Starwood
         private bool empowered;
 
         private const int MaxTimeLeft = 60;
+
         public override void SetDefaults()
         {
             projectile.timeLeft = MaxTimeLeft;
@@ -34,8 +35,8 @@ namespace StarlightRiver.Content.Items.Starwood
             projectile.ignoreWater = true;
             projectile.aiStyle = -1;
             projectile.rotation = Main.rand.NextFloat(4f);
+            projectile.magic = true;
         }
-
 
         public override void AI()
         {
