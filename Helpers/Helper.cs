@@ -49,6 +49,16 @@ namespace StarlightRiver.Helpers
 
         public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.rottime)) / 2f);
 
+        public static Color IndicatorColorProximity(int minRadius, int maxRadius, Vector2 center)
+		{
+            float distance = Vector2.Distance(center, Main.LocalPlayer.Center);
+
+            if (distance > maxRadius)
+                return Color.White * 0f;
+
+            return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / maxRadius));
+		}
+
         /// <summary>
         /// determines if an npc is "fleshy" based on it's hit sound
         /// </summary>

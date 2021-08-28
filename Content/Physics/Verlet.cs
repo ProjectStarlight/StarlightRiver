@@ -296,7 +296,7 @@ namespace StarlightRiver.Physics
         {
             if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
 
-            Main.spriteBatch.Begin();
+            //Main.spriteBatch.Begin();
 
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
@@ -309,7 +309,7 @@ namespace StarlightRiver.Physics
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
             }
 
-            Main.spriteBatch.End();
+            //Main.spriteBatch.End();
         }
 
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)

@@ -298,6 +298,8 @@ namespace StarlightRiver.Core
             //setup overlays
             if (Main.netMode == NetmodeID.SinglePlayer)
                 CreateCutaways();
+
+            Physics.VerletChainInstance.toDraw.Clear();
         }
 
         public static void LearnRecipie(string key)

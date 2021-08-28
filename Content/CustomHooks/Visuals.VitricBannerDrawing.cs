@@ -50,6 +50,8 @@ namespace StarlightRiver.Content.CustomHooks
             graphics.SetRenderTarget(VerletChainInstance.target);
             graphics.Clear(Color.Transparent);
 
+            graphics.BlendState = BlendState.Opaque;
+
             foreach (var i in VerletChainInstance.toDraw)
                 i.DrawStrip(i.scale);
 

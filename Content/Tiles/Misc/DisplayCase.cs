@@ -33,6 +33,12 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             if (tile.frameX == 0 && tile.frameY == 0)
             {
+                var outlineTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow");
+                var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 3);
+                var outlineColor = Helpers.Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
+
+                spriteBatch.Draw(outlineTex, outlinePos, null, outlineColor);
+
                 int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i, j);
 
                 if (index == -1)
@@ -92,15 +98,18 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                NetMessage.SendTileSquare(Main.myPlayer, i, j, 3);
-                NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i, j, Type, 0f, 0, 0, 0);
+                NetMessage.SendTileSquare(Main.myPlayer, i - 1, j - 1, 3);
+                NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, i - 1, j - 1, Type, 0f, 0, 0, 0);
                 return -1;
             }
-            return Place(i, j);
+            return Place(i -1, j - 1);
         }
 
         public override void Update()
         {
+            if (!ValidTile(Position.X, Position.Y))
+                Kill(Position.X, Position.Y);
+
             if (containedItem != null)
             {
                 Lighting.AddLight(Position.ToVector2() * 16, new Vector3(1, 1, 0.7f) * 0.8f * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)));

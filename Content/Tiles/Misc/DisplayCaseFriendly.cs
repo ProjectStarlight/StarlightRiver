@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
@@ -10,7 +11,6 @@ namespace StarlightRiver.Content.Tiles.Misc
         public override bool NewRightClick(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-
 
             int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
 
@@ -32,7 +32,25 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             return true;
         }
-    }
+
+		public override void KillMultiTile(int i, int j, int frameX, int frameY)
+		{
+            Tile tile = Main.tile[i, j];
+
+            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
+
+            if (index == -1)
+                return;
+
+            DisplayCaseEntity entity = (DisplayCaseEntity)TileEntity.ByID[index];
+
+            Item.NewItem(i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
+
+            if(entity.containedItem != null && !entity.containedItem.IsAir)
+                Helpers.Helper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
+
+        }
+	}
 
     class DisplayCaseFriendlyItem : QuickTileItem
     {

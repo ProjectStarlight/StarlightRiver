@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow");
-            Color color = Helper.IndicatorColor;
+            Color color = Helper.IndicatorColorProximity(150, 300, projectile.Center);
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
         }
     }
