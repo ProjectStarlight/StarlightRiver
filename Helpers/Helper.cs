@@ -56,7 +56,7 @@ namespace StarlightRiver.Helpers
             if (distance > maxRadius)
                 return Color.White * 0f;
 
-            return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / maxRadius));
+            return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / (maxRadius - minRadius)));
 		}
 
         /// <summary>
