@@ -89,6 +89,13 @@ namespace StarlightRiver.Content.NPCs.Actors
 			}
 			else
 			{
+				if (targetItem.isBeingGrabbed)
+				{
+					targetItem.GetGlobalItem<TransformableItem>().transformTime = 0;
+					targetItem = null;
+					return;
+				}
+
 				targetItem.GetGlobalItem<TransformableItem>().transformTime++;
 
 				Lighting.AddLight(targetItem.Center, new Vector3(10, 13, 25) * 0.04f * targetItem.GetGlobalItem<TransformableItem>().transformTime / 300f);

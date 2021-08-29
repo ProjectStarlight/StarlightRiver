@@ -92,8 +92,8 @@ namespace StarlightRiver.Core
 				{
 					Main.spriteBatch.Draw(tex2, new Vector2(i, j) * 1.5f, 
 						new Rectangle(
-							(int)((Main.screenPosition.X * 0.1f) % tex2.Width),
-							(int)((Main.screenPosition.Y * 0.1f) % tex2.Height),
+							(int)((Main.screenPosition.X * 0.6f) % tex2.Width),
+							(int)((Main.screenPosition.Y * 0.6f) % tex2.Height),
 							tex2.Width,
 							tex2.Height
 							), 
@@ -101,8 +101,8 @@ namespace StarlightRiver.Core
 
 					Main.spriteBatch.Draw(tex2, new Vector2(i, j), 
 						new Rectangle(
-							(int)((Main.screenPosition.X * 0.6f) % tex2.Width),
-							(int)((Main.screenPosition.Y * 0.6f) % tex2.Height),
+							(int)((Main.screenPosition.X * 0.8f) % tex2.Width),
+							(int)((Main.screenPosition.Y * 0.8f) % tex2.Height),
 							tex2.Width,
 							tex2.Height
 							), 

@@ -28,9 +28,9 @@ float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 	float4 color = tex2D(uImage0, coords + off);
 	float map = tex2D(samplerTex, coords + off).r;
 	float map2 = map * map * map;
-	float bright = min((color.r + color.g + color.b) * 5.0, 0.8);
+	float bright = min((color.r + color.g + color.b) * 2.5, 0.005);
 
-	return float4(color.xyz * map * 3.0 + map2 * bright * color.a, color.a * map);
+	return float4(color.xyz * map * 3.0, color.a * map);
 }
 
 technique Technique1
