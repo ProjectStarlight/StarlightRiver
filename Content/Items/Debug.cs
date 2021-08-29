@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-
+            Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
             StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
 
             return true;
