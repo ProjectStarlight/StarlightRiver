@@ -21,8 +21,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override int DummyType => ProjectileType<VitricOreDummy>();
         public override void SetDefaults()
         {
-            TileObjectData.newTile.DrawYOffset = 2;
-            (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
+            TileObjectData.newTile.DrawYOffset = -2;
+            (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, new Color(200, 255, 230), 20, false, false, "Vitric Ore");
             minPick = int.MaxValue;
         }
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
             Color color = Helper.IndicatorColorProximity(150, 300, projectile.Center);
 
-            spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
+            spriteBatch.Draw(tex, projectile.position - new Vector2(1, 3) - Main.screenPosition, color);
         }
     }
 
