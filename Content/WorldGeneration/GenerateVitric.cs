@@ -415,7 +415,7 @@ namespace StarlightRiver.Core
                 int y = FindType(x, (VitricBiome.Y + 38) + (genRand.Next((int)(VitricBiome.Height / 3.2f))), -1, ValidGround) + genRand.Next(2);
                 if ((x < VitricBiome.X + VitricBiome.Width / 2 - 71 || x > VitricBiome.X + VitricBiome.Width / 2 + 70) && Helper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
                     ValidGround.Any(v => v == Main.tile[x + 1, y].type) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].type))
-                    StructureHelper.StructureHelper.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
+                    StructureHelper.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
                 else { i--; failCount++; continue; }
             }
 
@@ -440,7 +440,7 @@ namespace StarlightRiver.Core
         private static void GenForge()
         {
             int x = forgeSide == 0 ? VitricBiome.X - 40 : VitricBiome.Right - 40;
-            StructureHelper.StructureHelper.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 10), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 10), StarlightRiver.Instance);
             NPC.NewNPC((VitricBiome.X) * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
         }
 
@@ -448,7 +448,7 @@ namespace StarlightRiver.Core
         {
             const int X_OFFSET = 59;
             const int Y_OFFSET = 71;
-            StructureHelper.StructureHelper.GenerateStructure(
+            StructureHelper.Generator.GenerateStructure(
                 "Structures/VitricTemple",
                 new Point16(VitricBiome.Center.X - X_OFFSET, VitricBiome.Center.Y - Y_OFFSET),
                 StarlightRiver.Instance
@@ -708,7 +708,7 @@ namespace StarlightRiver.Core
                         );
                     if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].type) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].type) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
                     {
-                        StructureHelper.StructureHelper.GenerateStructure(
+                        StructureHelper.Generator.GenerateStructure(
                             AssetDirectory.VitricCrystalStructs + "VitricMediumCrystal_" + genRand.Next(2),
                             new Point16(cX, cY - 6),
                             StarlightRiver.Instance
@@ -758,7 +758,7 @@ namespace StarlightRiver.Core
             while (!Main.tile[x, cY + 1].active()) cY++;
             if (ScanRectangle(x, y - 17, 10, 17) < 3)
             {
-                StructureHelper.StructureHelper.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
+                StructureHelper.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
                 return true;
             }
             return false;

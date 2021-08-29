@@ -13,7 +13,7 @@ namespace StarlightRiver.Structures
             progress.Message = "Hiding Codex...";
 
             Vector2 spawn = FindSand();
-            StructureHelper.StructureHelper.GenerateStructure("Structures/CodexTemple", spawn.ToPoint16(), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateStructure("Structures/CodexTemple", spawn.ToPoint16(), StarlightRiver.Instance);
         }
 
         private static Vector2 FindSand()

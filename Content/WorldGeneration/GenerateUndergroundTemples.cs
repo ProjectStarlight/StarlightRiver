@@ -18,7 +18,7 @@ namespace StarlightRiver.Core
                     (Framing.GetTileSafely(x, y).type == TileID.Stone || Framing.GetTileSafely(x, y).type == TileID.Dirt) &&
                     Helper.CheckAnyAirRectangle(new Point16(x, y), new Point16(10, 10)))
                 {
-                    StructureHelper.StructureHelper.GenerateMultistructureRandom("Structures/UndergroundTemples", new Point16(x, y), StarlightRiver.Instance);
+                    StructureHelper.Generator.GenerateMultistructureRandom("Structures/UndergroundTemples", new Point16(x, y), StarlightRiver.Instance);
                 }
             }
         }

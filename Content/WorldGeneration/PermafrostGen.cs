@@ -92,7 +92,7 @@ namespace StarlightRiver.Core
             circles.ForEach(n => DecorateCircle(n));
 
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
-            StructureHelper.StructureHelper.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
+            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
 
             MakeCenterGates(bigCircle, caves);
 

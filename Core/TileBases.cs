@@ -209,9 +209,9 @@ namespace StarlightRiver.Core
             {
                 Point16 offset = new Point16((MaxWidth / 2) - 1, MaxHeight - 1);
                 if (VariantCount > 1)//if statement because the teniary was acting weird
-                    StructureHelper.StructureHelper.GenerateStructure(FullStructPath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
+                    StructureHelper.Generator.GenerateStructure(FullStructPath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
                 else
-                    StructureHelper.StructureHelper.GenerateStructure(FullStructPath, new Point16(x, y) - offset, StarlightRiver.Instance);
+                    StructureHelper.Generator.GenerateStructure(FullStructPath, new Point16(x, y) - offset, StarlightRiver.Instance);
             }
             return 0;
         }

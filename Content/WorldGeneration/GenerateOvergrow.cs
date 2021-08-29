@@ -87,9 +87,9 @@ namespace StarlightRiver.Core
             }
 
             // TODO update these structures? they throw.
-            StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowBossRoom", bossRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
-            StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowWispRoom", wispRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
-            StructureHelper.StructureHelper.GenerateStructure("Structures/OvergrowGateRoom", Rooms[0].TopLeft().ToPoint16(), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateStructure("Structures/OvergrowBossRoom", bossRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateStructure("Structures/OvergrowWispRoom", wispRoom.TopLeft().ToPoint16(), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateStructure("Structures/OvergrowGateRoom", Rooms[0].TopLeft().ToPoint16(), StarlightRiver.Instance);
 
             //TODO: gen
             //      hallway prefabs
@@ -352,7 +352,7 @@ namespace StarlightRiver.Core
                 }
             }
             string path = fancy ? "Structures/OvergrowFancyRooms" : "Structures/OvergrowRooms";
-            StructureHelper.StructureHelper.GenerateMultistructureRandom(path, room.TopLeft().ToPoint16() + new Point16(3, 3), StarlightRiver.Instance);
+            StructureHelper.Generator.GenerateMultistructureRandom(path, room.TopLeft().ToPoint16() + new Point16(3, 3), StarlightRiver.Instance);
         }
     }
 }

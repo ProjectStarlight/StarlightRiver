@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.Beach;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.World.Generation;
@@ -16,6 +17,33 @@ namespace StarlightRiver.Core
             //Seaglass ring
             PlaceSeaglassRing(0, 500);
             PlaceSeaglassRing(Main.maxTilesX - 500, Main.maxTilesX);
+
+            PlaceForestStructure(500, Main.maxTilesX - 500);
+        }
+
+        private bool PlaceForestStructure(int xStart, int xEnd)
+		{
+            for (int x = xStart; x < xEnd; x++)
+                for (int y = 100; y < Main.maxTilesY; y++)
+                {
+                    var tile = Framing.GetTileSafely(x, y);
+
+                    if ((tile.collisionType == 1 && tile.type != TileID.Grass) || tile.liquid > 0)
+                        break;
+                    else if (tile.active() && tile.type == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    {
+                        Point16 dims = new Point16();
+                        int selection = Main.rand.Next(7);
+                        StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", mod, selection, ref dims);
+
+                        if (!Framing.GetTileSafely(x + dims.X, y - 2).active())
+                            StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + 3), mod, selection);
+
+                        x += dims.X * 3;
+                        continue;
+                    }
+                }
+            return true;
         }
 
         private bool PlaceSeaglassRing(int xStart, int xEnd)
