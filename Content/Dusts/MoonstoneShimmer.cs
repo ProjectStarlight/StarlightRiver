@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Dusts
             dust.noGravity = true;
             dust.noLight = false;
             dust.fadeIn = LifeTime;
-            dust.frame = new Rectangle(0, 0, 13, 25);
+            dust.frame = new Rectangle(0, 0, 17, 29);
         }
 
         const int LifeTime = 120;
