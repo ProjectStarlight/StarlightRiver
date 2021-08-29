@@ -18,11 +18,14 @@ namespace StarlightRiver.Core
             PlaceSeaglassRing(0, 500);
             PlaceSeaglassRing(Main.maxTilesX - 500, Main.maxTilesX);
 
-            PlaceForestStructure(500, Main.maxTilesX - 500);
+            PlaceForestStructure(500, Main.maxTilesX / 2 - 100);
+            PlaceForestStructure(Main.maxTilesX / 2 + 100, Main.maxTilesX - 500);
         }
 
         private bool PlaceForestStructure(int xStart, int xEnd)
 		{
+            int lastForestVariant = -1;
+
             for (int x = xStart; x < xEnd; x++)
                 for (int y = 100; y < Main.maxTilesY; y++)
                 {
@@ -33,13 +36,26 @@ namespace StarlightRiver.Core
                     else if (tile.active() && tile.type == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         Point16 dims = new Point16();
-                        int selection = Main.rand.Next(7);
+
+                        int selection = WorldGen.genRand.Next(7);
+
+                        while (selection == lastForestVariant)
+                            selection = WorldGen.genRand.Next(7);
+
                         StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", mod, selection, ref dims);
 
-                        if (!Framing.GetTileSafely(x + dims.X, y - 2).active())
-                            StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + 3), mod, selection);
+                        int off = 3;
 
-                        x += dims.X * 3;
+                        if (selection == 5) off = 12;
+                        if (selection == 6) off = 4;
+
+                        if (!Framing.GetTileSafely(x + dims.X, y - 2).active() && Framing.GetTileSafely(x + dims.X, y + 1).active())
+                        {
+                            StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), mod, selection);
+                            lastForestVariant = selection;
+                        }
+
+                        x += dims.X * (3 + WorldGen.genRand.Next(3));
                         continue;
                     }
                 }
