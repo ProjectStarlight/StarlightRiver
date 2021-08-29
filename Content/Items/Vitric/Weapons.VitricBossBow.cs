@@ -143,18 +143,18 @@ namespace StarlightRiver.Content.Items.Vitric
             DrawRing(spriteBatch, projectile.Center + offset * (-30 + prog3 * 120), 2, 2, Main.GameUpdateCount / 20f, prog3, color1);
 
             var prog4 = RangeLerp(chargePercent, 0.2f, 0.5f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 15f), null, color3 * prog4, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog1, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 10f), null, color1 * prog4, Main.GameUpdateCount / 15f, texStar.Size() / 2, prog2, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 25f), null, color3 * prog4, Main.GameUpdateCount / 8f, texStar.Size() / 2, prog1, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 35f), null, color2 * prog4, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 20f), null, color1 * prog4, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 15f), null, color3 * prog4, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog1 * 0.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 10f), null, color1 * prog4, Main.GameUpdateCount / 15f, texStar.Size() / 2, prog2 * 0.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 25f), null, color3 * prog4, Main.GameUpdateCount / 8f, texStar.Size() / 2, prog1 * 0.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 35f), null, color2 * prog4, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 0.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 20f), null, color1 * prog4, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 0.2f, 0, 0);
 
             var prog5 = RangeLerp(chargePercent, 0.5f, 0.8f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 12f), null, color2 * prog5, Main.GameUpdateCount / 18f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 18f), null, color3 * prog5, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 42f), null, color1 * prog5, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog2 * 1.2f, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 32f), null, color3 * prog5, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 1.2f, 0, 0);
-            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 25f), null, color3 * prog5, Main.GameUpdateCount / 19f, texStar.Size() / 2, prog3 * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 12f), null, color2 * prog5, Main.GameUpdateCount / 18f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 18f), null, color3 * prog5, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 42f), null, color1 * prog5, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog2 * 0.2f * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 32f), null, color3 * prog5, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 0.2f * 1.2f, 0, 0);
+            spriteBatch.Draw(texStar, PosRing(projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 25f), null, color3 * prog5, Main.GameUpdateCount / 19f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
 
             spriteBatch.Draw(texGlow, projectile.Center + offset * (-40 + prog2 * 90) - Main.screenPosition, null, color3 * (chargePercent * 0.5f), 0, texGlow.Size() / 2, 3.5f, 0, 0);
         }

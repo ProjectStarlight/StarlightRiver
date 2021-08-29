@@ -80,7 +80,7 @@ namespace StarlightRiver.Core
 			Main.spriteBatch.End();
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			Main.graphics.GraphicsDevice.SetRenderTarget(auroraBackTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);

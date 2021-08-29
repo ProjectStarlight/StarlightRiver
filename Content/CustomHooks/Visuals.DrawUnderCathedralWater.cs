@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.CustomHooks
                 var effect = Filters.Scene["Waves"].GetShader().Shader;
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect);
 
                 effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
                 effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));

@@ -20,8 +20,6 @@ sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LI
 
 float2 offset;
 
-// This is a shader. You are on your own with shaders. Compile shaders in an XNB project.
-
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
 	float2 off = float2(0, sin(uTime + (coords.x + offset.x) * speed) * power);
