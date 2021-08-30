@@ -95,8 +95,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     float rot = (SavedPoint - npc.Center).ToRotation() - 1.57f;
 
                     spriteBatch.Draw(top, npc.Center - Main.screenPosition, top.Frame(), Lighting.GetColor((int)npc.Center.X / 16, (int)npc.Center.Y / 16) * 2f, rot, top.Size() / 2, 1, 0, 0);
-                    spriteBatch.Draw(glow, npc.Center - Main.screenPosition, glow.Frame(), color * 0.6f, rot, top.Size() / 2, 1, 0, 0);
-                    spriteBatch.Draw(glow2, npc.Center - Main.screenPosition, glow.Frame(), color, rot, top.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(glow, npc.Center - Main.screenPosition, glow.Frame(), color * 0.8f, rot, top.Size() / 2, 1, 0, 0);
+
+                    spriteBatch.End();
+                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                    spriteBatch.Draw(glow2, npc.Center - Main.screenPosition, glow.Frame(), color * 0.6f, rot, top.Size() / 2, 1, 0, 0);
+
+                    spriteBatch.End();
+                    spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                     Lighting.AddLight(npc.Center, color.ToVector3() * 0.2f);
 

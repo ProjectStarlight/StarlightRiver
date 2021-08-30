@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Forest.MonkSpear>();
+            item.createTile = ModContent.TileType<Tiles.Underground.CombatShrine>();
         }
 
         public override bool UseItem(Player player)

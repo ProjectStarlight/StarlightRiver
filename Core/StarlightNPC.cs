@@ -8,8 +8,8 @@ namespace StarlightRiver.Core
 	public partial class StarlightNPC : GlobalNPC
     {
         public int Age;
-
         public int DoT;
+        public bool dontDropItems;
 
         //TODO: Make a better system for this, stacking DoTs
         public int AuroraDiscDoT;
@@ -24,7 +24,12 @@ namespace StarlightRiver.Core
             DoT = 0;
         }
 
-        public override bool PreAI(NPC npc)
+		public override bool PreNPCLoot(NPC npc)
+		{
+            return !dontDropItems;
+		}
+
+		public override bool PreAI(NPC npc)
         {
             Age++;
 

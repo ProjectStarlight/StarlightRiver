@@ -35,14 +35,21 @@ namespace StarlightRiver.Content.Dusts
                 dust.customData = true;
             }
 
+            Vector2 currentCenter = dust.position + Vector2.One.RotatedBy(dust.rotation) * 32 * dust.scale;
+
+            dust.scale *= 0.95f;
+            Vector2 nextCenter = dust.position + Vector2.One.RotatedBy(dust.rotation + 0.06f) * 32 * dust.scale;
+
+            dust.rotation += 0.06f;
+            dust.position += currentCenter - nextCenter;
+
             dust.shader.UseColor(dust.color);
 
             dust.position += dust.velocity;
 
             dust.velocity *= 0.99f;
             dust.color *= 0.95f;
-            dust.scale *= 0.95f;
-
+            
             Lighting.AddLight(dust.position, dust.color.ToVector3());
 
             if (dust.scale < 0.05f)

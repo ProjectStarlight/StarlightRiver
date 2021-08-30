@@ -59,7 +59,7 @@ namespace StarlightRiver.Helpers
         /// <summary>
         /// returns true if every tile in a rectangle is air
         /// </summary>
-        /// <param name="position"></param>
+        /// <param name="position"></param>might be that f
         /// <param name="size"></param>
         /// <returns></returns>
         public static bool CheckAirRectangle(Point16 position, Point16 size)

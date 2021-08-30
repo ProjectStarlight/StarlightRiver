@@ -102,14 +102,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             Texture2D ring = GetTexture(AssetDirectory.SquidBoss + "BodyRing");
             Texture2D ringGlow = GetTexture(AssetDirectory.SquidBoss + "BodyRingGlow");
+            Texture2D ringSpecular = GetTexture(AssetDirectory.SquidBoss + "BodyRingSpecular");
 
             Texture2D body = GetTexture(AssetDirectory.SquidBoss + "BodyUnder");
+            Texture2D bodyGlow = GetTexture(AssetDirectory.SquidBoss + "BodyGlow");
 
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
                 Vector2 pos = npc.Center + new Vector2(0, 70 + k * 35).RotatedBy(npc.rotation) - Main.screenPosition;
+
                 int squish = k * 10 + (int)(Math.Sin(GlobalTimer / 10f - k / 4f * 6.28f) * 20);
-                Rectangle rect = new Rectangle((int)pos.X, (int)pos.Y, ring.Width + (3 - k) * 20 - squish, ring.Height + (int)(squish * 0.4f) + (3 - k) * 5);
+				Rectangle rect = new Rectangle((int)pos.X, (int)pos.Y, ring.Width + (3 - k) * 20 - squish, ring.Height + (int)(squish * 0.4f) + (3 - k) * 5);
+
+                int squish2 = k * 10 + (int)(Math.Sin(GlobalTimer / 10f - k / 4f * 6.28f + 1.5f) * 24);
+                Rectangle rect2 = new Rectangle((int)pos.X, (int)pos.Y, ring.Width + (3 - k) * 20 - squish2, ring.Height + (int)(squish2 * 0.4f) + (3 - k) * 5);
 
                 float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k);
                 float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k);
@@ -118,19 +124,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation)
                     color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
 
-                spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.7f, npc.rotation, ring.Size() / 2, 0, 0);
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.04f, npc.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.8f, npc.rotation, ring.Size() / 2, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, npc.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White, npc.rotation, ring.Size() / 2, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
             var lightColor = Lighting.GetColor((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
-            spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), lightColor, npc.rotation, body.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), lightColor * 1.2f, npc.rotation, body.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(bodyGlow, npc.Center - Main.screenPosition, bodyGlow.Frame(), Color.White, npc.rotation, bodyGlow.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
             if (Phase >= (int)AIStates.SecondPhase)
             {
                 Texture2D sore = GetTexture(Texture);
-                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), lightColor, npc.rotation, sore.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), lightColor * 1.2f, npc.rotation, sore.Size() / 2, 1, 0, 0);
             }
         }
 
@@ -138,27 +153,50 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             Texture2D headBlob = GetTexture(AssetDirectory.SquidBoss + "BodyOver");
             Texture2D headBlobGlow = GetTexture(AssetDirectory.SquidBoss + "BodyOverGlow");
+            Texture2D headBlobSpecular = GetTexture(AssetDirectory.SquidBoss + "BodyOverSpecular");
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {
                 Vector2 off = Vector2.Zero;
+                Rectangle frame = new Rectangle();
 
                 switch (k)
                 {
-                    case 0: off = new Vector2(-41, 45); break;
-                    case 1: off = new Vector2(-33, -11); break;
-                    case 2: off = new Vector2(-1, -65); break;
-                    case 3: off = new Vector2(32, -11); break;
-                    case 4: off = new Vector2(40, 45); break;
+                    case 0:
+                        off = new Vector2(42, 12);
+                        frame = new Rectangle(248, 0, 76, 64);
+                        break;
+
+                    case 1: 
+                        off = new Vector2(-43, 12);
+                        frame = new Rectangle(64, 0, 76, 64);
+                        break;
+
+                    case 2:
+                        off = new Vector2(-41, -20);
+                        frame = new Rectangle(0, 0, 64, 64);
+                        break;
+
+                    case 3: 
+                        off = new Vector2(40, -20);
+                        frame = new Rectangle(324, 0, 64, 64);
+                        break;
+
+                    case 4:
+                        off = new Vector2(-1, -58);
+                        frame = new Rectangle(140, 0, 108, 64);
+                        break;
                 }
 
                 off = off.RotatedBy(npc.rotation);
 
                 float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f);
+                float sin2 = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f + 1.5f);
                 float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k * 0.5f);
                 float scale = 1 + sin * 0.04f;
+                float scale2 = 1 + sin2 * 0.06f;
 
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
 
                 if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red jelly in last phases
                     color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
@@ -183,11 +221,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
 
-                spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.8f, npc.rotation,
-                    new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
+                spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, frame, color * 0.8f, npc.rotation,
+                    new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, new Rectangle(k * headBlob.Width / 5, 0, headBlob.Width / 5, headBlob.Height), color * 0.4f, npc.rotation,
-                    new Vector2(headBlob.Width / 10, headBlob.Height), scale, 0, 0);
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, frame, color * 0.6f, npc.rotation,
+                    new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
+
+                spriteBatch.Draw(headBlobSpecular, npc.Center + off - Main.screenPosition, frame, Color.White, npc.rotation,
+                    new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                 Lighting.AddLight(npc.Center + off, color.ToVector3() * 0.5f);
             }
