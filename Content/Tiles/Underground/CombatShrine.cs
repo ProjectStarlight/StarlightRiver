@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	class CombatShrineDummy : Dummy, IDrawAdditive
 	{
-		private List<NPC> slaves = new List<NPC>();
+		public List<NPC> slaves = new List<NPC>();
 
 		public int maxWaves = 7;
 
@@ -126,12 +126,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SpawnNPC(Vector2 pos, int type, int dustAmount)
 		{
-			int i = NPC.NewNPC((int)pos.X, (int)pos.Y, type);
-			var npc = Main.npc[i];
-			npc.alpha = 255;
-			npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
-
-			slaves.Add(npc);
+			Projectile.NewProjectile(pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Main.myPlayer,type, dustAmount);
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -194,6 +189,36 @@ namespace StarlightRiver.Content.Tiles.Underground
 			var sin = (0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f);
 			var sin2 = (0.5f + (float)Math.Sin(time) * 0.5f);
 			return new Color(255, (int)(50 * sin), 0) * sin2;
+        }
+    }
+
+    class SpawnEgg : ModProjectile
+    {
+		public ref float SpawnType => ref projectile.ai[0];
+		public ref float DustCount => ref projectile.ai[1];
+
+		public CombatShrineDummy parent = null;
+
+		public override string Texture => AssetDirectory.Debug;
+
+        public override void SetDefaults()
+        {
+			projectile.width = 32;
+			projectile.height = 32;
+			projectile.timeLeft = 60;
+			projectile.tileCollide = false;
+			projectile.friendly = true;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+			int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, (int)SpawnType);
+			var npc = Main.npc[i];
+			npc.alpha = 255;
+			npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
+
+			parent?.slaves.Add(npc);
 		}
-	}
+    }
+
 }
