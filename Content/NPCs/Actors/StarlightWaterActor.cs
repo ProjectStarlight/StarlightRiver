@@ -11,6 +11,7 @@ using Terraria.ID;
 using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Core;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Vanity;
 
 namespace StarlightRiver.Content.NPCs.Actors
 {
@@ -45,6 +46,9 @@ namespace StarlightRiver.Content.NPCs.Actors
 			npc.noGravity = true;
 		}
 
+		const int dustRange = 250;
+		const int itemRange = 200;
+
 		public override void AI()
 		{
 			if (npc.wet)
@@ -58,20 +62,27 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if (dist < 500)
 				glowStrength = 1 - dist / 500f;
 
-			var pos = npc.Center + Vector2.UnitX * Main.rand.NextFloat(-150, 150) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
-			var tile = Framing.GetTileSafely(pos);
-			var tileDown = Framing.GetTileSafely(pos + Vector2.UnitY * 16);
+            Vector2 pos = npc.Center + Vector2.UnitX * Main.rand.NextFloat(-dustRange, dustRange) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
+            Tile	tile = Framing.GetTileSafely(pos);
+            Tile	tileDown = Framing.GetTileSafely(pos + Vector2.UnitY * 16);
 
-			if (((tile.liquid > 0 && tile.liquidType() == 0) || (tileDown.liquid > 0 && tileDown.liquidType() == 0)) && Main.rand.Next(10) > 3)
+			if (((tile.liquid > 0 && tile.liquidType() == 0) || (tileDown.liquid > 0 && tileDown.liquidType() == 0)) && Main.rand.Next(10) > 3)//surface lights
 			{
-				var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(0, Main.rand.Next(150), 255));
+				var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(Main.rand.Next(30) == 0 ? 200 : 0, Main.rand.Next(150), 255));
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.6f, 0.8f));
+
+                if (Main.rand.NextBool())
+                {
+					bool red = Main.rand.Next(45) == 0;
+					bool green = Main.rand.Next(25) == 0 && !red;
+					Dust.NewDustPerfect(pos + new Vector2(0, Main.rand.Next(-4, 1)), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, new Color(red ? 255 : Main.rand.Next(10), green ? 255 : Main.rand.Next(100), Main.rand.Next(240, 255)));
+				}
 			}
 
-			var pos2 = npc.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-150, 150);
-			var tile2 = Framing.GetTileSafely(pos2);
+            Vector2 pos2 = npc.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-dustRange, dustRange);
+            Tile	tile2 = Framing.GetTileSafely(pos2);
 
-			if (tile2.liquid > 0 && tile2.liquidType() == 0 && Main.rand.Next(2) == 0)
+			if (tile2.liquid > 0 && tile2.liquidType() == 0 && Main.rand.Next(2) == 0)//under water lights
 			{
 				var d = Dust.NewDustPerfect(pos2, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));
@@ -83,7 +94,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{
 					var item = Main.item[k];
 
-					if (Helpers.Helper.CheckCircularCollision(npc.Center, 100, item.Hitbox) && item.GetGlobalItem<TransformableItem>().transformType != 0 && item.wet)
+					if (Helpers.Helper.CheckCircularCollision(npc.Center, itemRange, item.Hitbox) && item.GetGlobalItem<TransformableItem>().transformType != 0 && item.wet)
 						targetItem = item;
 				}
 			}
@@ -134,6 +145,13 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			if (item.type == ItemID.WoodenBoomerang) transformType = ModContent.ItemType<StarwoodBoomerang>();
 			if (item.type == ItemID.WandofSparking) transformType = ModContent.ItemType<StarwoodStaff>();
+
+            if (item.vanity)
+            {
+				if (item.headSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodHat>()) transformType = ModContent.ItemType<AncientStarwoodHat>();
+				else if (item.bodySlot != -1 && item.type != ModContent.ItemType<AncientStarwoodChest>()) transformType = ModContent.ItemType<AncientStarwoodChest>();
+				else if (item.legSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodBoots>()) transformType = ModContent.ItemType<AncientStarwoodBoots>();
+			}
 		}
 
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -141,13 +159,13 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if(transformType != 0)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
 				var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
 				spriteBatch.Draw(tex, position + frame.Size() / 2, null, new Color(130, 200, 255) * (StarlightWaterActor.glowStrength + (float)Math.Sin(StarlightWorld.rottime) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 			}
 
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
