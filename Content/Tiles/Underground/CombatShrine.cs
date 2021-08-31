@@ -303,6 +303,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 				var npc = Main.npc[i];
 				npc.alpha = 255;
 				npc.GivenName = "Shadow";
+				npc.lavaImmune = true;
+				npc.trapImmune = true;
+				npc.HitSound = SoundID.NPCHit7;
+				npc.DeathSound = SoundID.NPCDeath18;
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { npc.lifeMax = (int)(npc.lifeMax * hpOverride); npc.life = (int)(npc.life * hpOverride); }
