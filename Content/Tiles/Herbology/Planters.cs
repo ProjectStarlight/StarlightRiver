@@ -120,19 +120,4 @@ namespace StarlightRiver.Content.Tiles.Herbology
             return true;
         }
     }
-
-    internal class GreenhouseWall : ModWall
-    {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
-
-        public override void SetDefaults()
-        {
-            Main.wallHouse[Type] = true;
-            drop = mod.ItemType("Greenhouse");
-        }
-    }
 }
