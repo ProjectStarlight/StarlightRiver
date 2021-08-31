@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -104,6 +105,42 @@ namespace StarlightRiver.Content.Items
             player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
 
             return true;*/
+        }
+    }
+
+    class Eraser : ModItem
+	{
+        public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Eraser");
+            Tooltip.SetDefault("Death");
+        }
+
+        public override void SetDefaults()
+        {
+            item.damage = 10;
+            item.melee = true;
+            item.width = 38;
+            item.height = 38;
+            item.useTime = 2;
+            item.useAnimation = 2;
+            item.useStyle = ItemUseStyleID.SwingThrow;
+            item.knockBack = 5f;
+            item.value = 1000;
+            item.rare = ItemRarityID.LightRed;
+            item.autoReuse = true;
+            item.UseSound = SoundID.Item18;
+            item.useTurn = true;
+            item.accessory = true;
+        }
+
+        public override bool UseItem(Player player)
+        {
+            foreach (NPC npc in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
+                npc.StrikeNPC(99999, 0, 0, false, false, false);
+            return true;
         }
     }
 }
