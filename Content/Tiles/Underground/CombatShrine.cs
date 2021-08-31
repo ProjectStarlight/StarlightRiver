@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public List<NPC> slaves = new List<NPC>();
 
-		public int maxWaves = 7;
+		public int maxWaves = 6;
 		private int waveTime = 0;
 
 		public ref float Timer => ref projectile.ai[0];
@@ -142,32 +142,73 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State == 1)
 			{
-				SpawnNPC(projectile.Center + Vector2.UnitX * 100, NPCID.BlueSlime, 20);
-				SpawnNPC(projectile.Center + Vector2.UnitX * -100, NPCID.BlueSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(130, 50), NPCID.RedSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(-130, 50), NPCID.RedSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(267, -40), NPCID.RedSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(-267, -40), NPCID.RedSlime, 20);
 			}
 
 			if (State == 2)
 			{
-				SpawnNPC(projectile.Center + Vector2.UnitX * 100, NPCID.Skeleton, 20);
-				SpawnNPC(projectile.Center + Vector2.UnitX * -100, NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(110, 50), NPCID.RedSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(-110, 50), NPCID.RedSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(240, 40), NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(-240, 40), NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(0, -150), NPCID.CaveBat, 20);
 			}
 
-			if (State >= 3 && State < maxWaves + 1)
+			if (State == 3)
 			{
-				SpawnNPC(projectile.Center + Vector2.UnitX * 50, NPCID.Skeleton, 20);
-				SpawnNPC(projectile.Center + Vector2.UnitX * -50, NPCID.Skeleton, 20);
-				SpawnNPC(projectile.Center + Vector2.UnitX * 80, NPCID.BlueSlime, 20);
-				SpawnNPC(projectile.Center + Vector2.UnitX * -80, NPCID.BlueSlime, 20);
+				SpawnNPC(projectile.Center + new Vector2(130, 40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(projectile.Center + new Vector2(-130, 40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(projectile.Center + new Vector2(140, -140), NPCID.CaveBat, 20);
+				SpawnNPC(projectile.Center + new Vector2(-140, -140), NPCID.CaveBat, 20);
+			}
 
-				SpawnNPC(projectile.Center + Vector2.UnitX * 100, NPCID.BlackSlime, 30);
-				SpawnNPC(projectile.Center + Vector2.UnitX * -100, NPCID.BlackSlime, 30);
+			if (State == 4)
+			{
+				SpawnNPC(projectile.Center + new Vector2(130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
+
+				SpawnNPC(projectile.Center + new Vector2(267, -40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(projectile.Center + new Vector2(-267, -40), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+
+				SpawnNPC(projectile.Center + new Vector2(70, -140), NPCID.CaveBat, 20);
+				SpawnNPC(projectile.Center + new Vector2(-70, -140), NPCID.CaveBat, 20);
+			}
+
+			if (State == 5)
+			{
+				SpawnNPC(projectile.Center + new Vector2(130, 50), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+				SpawnNPC(projectile.Center + new Vector2(-130, 50), NPCID.SkeletonArcher, 20, hpOverride: 0.2f, damageOverride: 0.2f, defenseOverride: 0f);
+
+				SpawnNPC(projectile.Center + new Vector2(120, -160), NPCID.CaveBat, 20);
+				SpawnNPC(projectile.Center + new Vector2(-120, -160), NPCID.CaveBat, 20);
+
+				SpawnNPC(projectile.Center + new Vector2(220, -110), NPCID.CaveBat, 20);
+				SpawnNPC(projectile.Center + new Vector2(-220, -110), NPCID.CaveBat, 20);
+			}
+
+			if (State == 6)
+			{
+				SpawnNPC(projectile.Center + new Vector2(130, 50), NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(-130, 50), NPCID.Skeleton, 20);
+
+				SpawnNPC(projectile.Center + new Vector2(267, -50), NPCID.Skeleton, 20);
+				SpawnNPC(projectile.Center + new Vector2(-267, -50), NPCID.Skeleton, 20);
+
+				SpawnNPC(projectile.Center + new Vector2(0, -170), NPCID.Demon, 40, hpOverride: 2f, scale: 1.5f);
 			}
 		}
 
-		private void SpawnNPC(Vector2 pos, int type, int dustAmount)
+		private void SpawnNPC(Vector2 pos, int type, int dustAmount, float hpOverride = -1, float damageOverride = -1, float defenseOverride = -1, float scale = 1)
 		{
 			int i = Projectile.NewProjectile(pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Main.myPlayer,type, dustAmount);
 			(Main.projectile[i].modProjectile as SpawnEgg).parent = this;
+			(Main.projectile[i].modProjectile as SpawnEgg).hpOverride = hpOverride;
+			(Main.projectile[i].modProjectile as SpawnEgg).damageOverride = damageOverride;
+			(Main.projectile[i].modProjectile as SpawnEgg).defenseOverride = defenseOverride;
+			Main.projectile[i].scale = scale;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -178,7 +219,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (!target.active)
 					continue;
-
+				
 				if(Main.rand.Next(2) == 0)
 					Dust.NewDustPerfect(target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)), ModContent.DustType<Dusts.Shadow>(), new Vector2(0, -Main.rand.NextFloat()), 0, Color.Black, Main.rand.NextFloat());
 
@@ -234,6 +275,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
     class SpawnEgg : ModProjectile, IDrawAdditive
     {
+		public float hpOverride = -1;
+		public float damageOverride = -1;
+		public float defenseOverride = -1;
+
 		public ref float SpawnType => ref projectile.ai[0];
 		public ref float DustCount => ref projectile.ai[1];
 
@@ -258,6 +303,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 				var npc = Main.npc[i];
 				npc.alpha = 255;
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
+
+				if (hpOverride != -1) { npc.lifeMax *= hpOverride; npc.life *= hpOverride; }
+				if (damageOverride != -1) npc.damage *= damageOverride;
+				if (defenseOverride != -1) npc.defense *= defenseOverride;
 
 				Helpers.Helper.PlayPitched("Magic/Shadow2", 1.1f, 1, projectile.Center);
 
@@ -285,8 +334,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (projectile.timeLeft <= 90)
 				starScale = 0.3f + (projectile.timeLeft / 90f) * 0.7f;
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.Red * bright, Helpers.Helper.BezierEase(projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f, 0, 0);
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * bright, Helpers.Helper.BezierEase(projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.Red * bright, Helpers.Helper.BezierEase(projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.3f * projectile.scale, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * bright, Helpers.Helper.BezierEase(projectile.timeLeft / 160f) * 6.28f, tex.Size() / 2, starScale * 0.2f * projectile.scale, 0, 0);
 
 			float ringBright = 1;
 			if (projectile.timeLeft > 100)
@@ -297,17 +346,17 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (projectile.timeLeft <= 50)
 				ringScale = Helpers.Helper.BezierEase((projectile.timeLeft - 20) / 30f);
 
-			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, Color.Red * ringBright * 0.8f, projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.2f, 0, 0);
-			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, Color.White * ringBright * 0.5f, projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.195f, 0, 0);
+			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, Color.Red * ringBright * 0.8f, projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.2f * projectile.scale, 0, 0);
+			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, Color.White * ringBright * 0.5f, projectile.timeLeft / 60f * 6.28f, texRing.Size() / 2, ringScale * 0.195f * projectile.scale, 0, 0);
 
 			if (projectile.timeLeft < 30)
 			{
 				var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-				spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, new Color(255, 50, 50) * (projectile.timeLeft / 30f), 0, tex2.Size() / 2, (1 - projectile.timeLeft / 30f) * 7, 0, 0);
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 150, 150) * (projectile.timeLeft / 30f), 0, tex.Size() / 2, (1 - projectile.timeLeft / 30f) * 1, 0, 0);
+				spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, new Color(255, 50, 50) * (projectile.timeLeft / 30f), 0, tex2.Size() / 2, (1 - projectile.timeLeft / 30f) * 7 * projectile.scale, 0, 0);
+				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 150, 150) * (projectile.timeLeft / 30f), 0, tex.Size() / 2, (1 - projectile.timeLeft / 30f) * 1 * projectile.scale, 0, 0);
 
 				if (projectile.timeLeft > 15)
-					spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * ((projectile.timeLeft - 15) / 15f), 1.57f / 4, tex.Size() / 2, (1 - (projectile.timeLeft - 15) / 15f) * 2, 0, 0);
+					spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * ((projectile.timeLeft - 15) / 15f), 1.57f / 4, tex.Size() / 2, (1 - (projectile.timeLeft - 15) / 15f) * 2 * projectile.scale, 0, 0);
 			}
 		}
 	}
