@@ -302,6 +302,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, (int)SpawnType);
 				var npc = Main.npc[i];
 				npc.alpha = 255;
+				npc.GivenName = "Shadow";
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { npc.lifeMax = (int)(npc.lifeMax * hpOverride); npc.life = (int)(npc.life * hpOverride); }
