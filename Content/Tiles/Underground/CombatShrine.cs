@@ -304,9 +304,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 				npc.alpha = 255;
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
-				if (hpOverride != -1) { npc.lifeMax *= hpOverride; npc.life *= hpOverride; }
-				if (damageOverride != -1) npc.damage *= damageOverride;
-				if (defenseOverride != -1) npc.defense *= defenseOverride;
+				if (hpOverride != -1) { npc.lifeMax = (int)(npc.lifeMax * hpOverride); npc.life = (int)(npc.life * hpOverride); }
+				if (damageOverride != -1) npc.damage = (int)(npc.damage * damageOverride);
+				if (defenseOverride != -1) npc.defense = (int)(npc.defense * defenseOverride);
 
 				Helpers.Helper.PlayPitched("Magic/Shadow2", 1.1f, 1, projectile.Center);
 
