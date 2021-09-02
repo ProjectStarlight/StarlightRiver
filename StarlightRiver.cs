@@ -48,7 +48,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BossLow;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().zoneHotspring)
+                if (player.GetModPlayer<BiomeHandler>().ZoneHotspring)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
                     priority = MusicPriority.BiomeHigh;
@@ -96,7 +96,7 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().zonePermafrost)
+                if (player.GetModPlayer<BiomeHandler>().ZonePermafrost)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/PermafrostPassive");
                     priority = MusicPriority.BiomeMedium;
