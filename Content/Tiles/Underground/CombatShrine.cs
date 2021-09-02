@@ -82,6 +82,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State != 0)
 			{
+				(mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
 
 				if (State == -1 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, projectile.Center) < 500))) //"fail" conditions, no living players in radius or already failing
@@ -297,7 +298,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void AI()
 		{
-			if(projectile.timeLeft == 30)
+			if(projectile.timeLeft == 70)
+				Helpers.Helper.PlayPitched("ShadowSpawn", 1, 1, projectile.Center);
+
+			if (projectile.timeLeft == 30)
 			{
 				int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, (int)SpawnType);
 				var npc = Main.npc[i];
@@ -306,14 +310,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 				npc.lavaImmune = true;
 				npc.trapImmune = true;
 				npc.HitSound = SoundID.NPCHit7;
-				npc.DeathSound = SoundID.NPCDeath18;
+				npc.DeathSound = mod.GetLegacySoundSlot(SoundType.NPCKilled, "Sounds/ShadowDeath");
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { npc.lifeMax = (int)(npc.lifeMax * hpOverride); npc.life = (int)(npc.life * hpOverride); }
 				if (damageOverride != -1) npc.damage = (int)(npc.damage * damageOverride);
 				if (defenseOverride != -1) npc.defense = (int)(npc.defense * defenseOverride);
 
-				Helpers.Helper.PlayPitched("Magic/Shadow2", 1.1f, 1, projectile.Center);
+				//Helpers.Helper.PlayPitched("Magic/Shadow2", 1.1f, 1, projectile.Center);
 
 				for (int k = 0; k < DustCount; k++)
 				{

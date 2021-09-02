@@ -34,11 +34,19 @@ namespace StarlightRiver
 
         public StarlightRiver() => Instance = this;
 
+        public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for shit like this
+
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
         {
             if (Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active)
             {
                 Player player = Main.LocalPlayer;
+
+                if(useIntenseMusic)
+				{
+                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
+                    priority = MusicPriority.BossLow;
+                }
 
                 if (player.GetModPlayer<BiomeHandler>().zoneHotspring)
                 {
@@ -106,6 +114,9 @@ namespace StarlightRiver
                     priority = MusicPriority.BiomeHigh;
                 }
             }
+
+            useIntenseMusic = false;
+
             return;
         }
 
