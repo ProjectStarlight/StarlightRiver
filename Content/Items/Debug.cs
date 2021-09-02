@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
@@ -39,8 +40,14 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
-            StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
+            //Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
+            //StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
+
+            int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Dart>(), 1, 1, player.whoAmI);
+            var mp = (Main.projectile[i].modProjectile as Dart);
+            mp.endPoint = Main.MouseWorld;
+            mp.midPoint = player.Center + new Vector2(200, -200);
+            mp.duration = 120;
 
             return true;
 
