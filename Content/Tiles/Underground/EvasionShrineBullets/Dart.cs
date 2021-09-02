@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 40, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 30, factor =>
             {
                 float alpha = 1;
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/ShadowTrail"));
 
             trail?.Render(effect);
         }
