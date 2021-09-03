@@ -1,10 +1,15 @@
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
-	static partial class Helpers
+    public static partial class Helpers
     {
-       public static bool HasParameter(this Effect effect, string parameterName)
+        public static bool HasParameter(this Effect effect, string parameterName)
         {
             foreach (EffectParameter parameter in effect.Parameters)
             {
@@ -16,5 +21,15 @@ namespace StarlightRiver.Helpers
 
             return false;
         }
+
+        public static void ActivateScreenShader(string ShaderName, Vector2 vec = default)
+        {
+            if (Main.netMode != NetmodeID.Server && !Filters.Scene[ShaderName].IsActive())
+            {
+                Filters.Scene.Activate(ShaderName, vec);
+            }
+        }
+
+        public static ScreenShaderData GetScreenShader(string ShaderName) => Filters.Scene[ShaderName].GetShader();
     }
 }

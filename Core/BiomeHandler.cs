@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.AshHell;
 using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Content.Tiles.JungleBloody;
@@ -253,6 +254,9 @@ namespace StarlightRiver
 
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
+            TargetHost.Maps?.OrderedShaderPass();
+            TargetHost.Maps?.OrderedRenderPassBatched(Main.spriteBatch, Main.graphics.GraphicsDevice);
+
             Main.screenPosition += new Vector2(AddExpansion(), AddExpansionY()) * 8;
 
             if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
