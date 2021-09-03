@@ -24,6 +24,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
         public Vector2 midPoint;
         public int duration;
 
+        public float dist1;
+        public float dist2;
+
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
 		public override void SetStaticDefaults()
@@ -39,6 +42,18 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			projectile.height = 16;
 			projectile.hostile = true;
             projectile.timeLeft = 120;
+            projectile.tileCollide = false;
+            projectile.penetrate = -1;
+        }
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+            float timer = (duration + 30) - projectile.timeLeft;
+
+            if(timer > 30)
+                return base.Colliding(projHitbox, targetHitbox);
+
+            return false;
 		}
 
 		public override void AI()
@@ -46,26 +61,37 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
             projectile.rotation = projectile.velocity.ToRotation();
 
             if (startPoint == Vector2.Zero)
-                startPoint = projectile.Center;
-
-            if (endPoint != Vector2.Zero)
             {
-                float timer = (duration - projectile.timeLeft) / (float)duration;
-                float dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-                float dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
-                float factor = dist1 / (dist1 + dist2);
+                startPoint = projectile.Center;
+                projectile.timeLeft = duration + 30;
 
-                if(timer < factor)
-                    projectile.Center = Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, timer * (1 / factor));
-                if (timer >= factor)
-                    projectile.Center = Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (timer - factor) * (1 / (1 - factor)));
+                dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+                dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+            }
+
+            float timer = (duration + 30) - projectile.timeLeft;
+
+            if (endPoint != Vector2.Zero && timer > 30)
+            {
+                projectile.Center = PointOnSpline((timer - 30) / duration);
             }
 
             projectile.rotation = (projectile.position - projectile.oldPos[0]).ToRotation();
 
             ManageCaches();
             ManageTrail();
-            //Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), ModContent.DustType<Dusts.Shadow>(), Vector2.UnitY * -1, 0, Color.Black);
+        }
+
+        private Vector2 PointOnSpline(float progress)
+		{
+            float factor = dist1 / (dist1 + dist2);
+
+            if (progress < factor)
+                return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
+            if (progress >= factor)
+                return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
+
+            return Vector2.Zero;
         }
 
         private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
@@ -84,9 +110,21 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
             return total;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			var glowTex = ModContent.GetTexture(Texture + "Glow");
+            var glowTex = ModContent.GetTexture(Texture + "Glow");
+
+            int timer = (duration + 30) - projectile.timeLeft;
+
+            if (timer < 30)
+			{
+                var tellTex = ModContent.GetTexture(AssetDirectory.GUI + "Line");
+                float alpha = (float)Math.Sin(timer / 30f * 3.14f);
+
+                for(int k = 0; k < 20; k++)
+                    spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(140, 100, 255) * alpha * 0.6f, projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
+            }
+
 			spriteBatch.Draw(glowTex, projectile.Center - Main.screenPosition, null, new Color(100, 0, 255), projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
 		}
 

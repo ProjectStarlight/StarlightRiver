@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Underground.CombatShrine>();
+            item.createTile = ModContent.TileType<Tiles.Underground.EvasionShrine>();
         }
 
         public override bool UseItem(Player player)
@@ -43,11 +43,18 @@ namespace StarlightRiver.Content.Items
             //Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
             //StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
 
-            int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Dart>(), 1, 1, player.whoAmI);
+            /*int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Dart>(), 1, 1, player.whoAmI);
             var mp = (Main.projectile[i].modProjectile as Dart);
             mp.endPoint = Main.MouseWorld;
             mp.midPoint = player.Center + new Vector2(200, -200);
-            mp.duration = 120;
+            mp.duration = 120;*/
+
+            int i2 = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Spear>(), 1, 1, player.whoAmI);
+            var mp2 = (Main.projectile[i2].modProjectile as Spear);
+            mp2.endPoint = Main.MouseWorld;
+            mp2.timeToRise = 15;
+            mp2.timeToRetract = 30;
+            mp2.teleTime = 60;
 
             return true;
 

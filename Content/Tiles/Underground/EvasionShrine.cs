@@ -10,7 +10,7 @@ using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
-
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -52,9 +52,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	class EvasionShrineDummy : Dummy, IDrawAdditive
+	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
 	{
-		public int maxTime = 3600;
+		public int maxAttacks = 15;
+		public List<int> attackOrder;
 
 		public ref float Timer => ref projectile.ai[0];
 		public ref float State => ref projectile.ai[1];
@@ -65,10 +66,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
+			var color = new Vector3(0.15f, 0.12f, 0.2f) * 2.8f;
+
+			Lighting.AddLight(projectile.Center + new Vector2(240, 0), color);
+			Lighting.AddLight(projectile.Center + new Vector2(-240, 0), color);
+
+			Lighting.AddLight(projectile.Center + new Vector2(240, -50), color);
+			Lighting.AddLight(projectile.Center + new Vector2(-240, -50), color);
+
+			Lighting.AddLight(projectile.Center + new Vector2(240, -100), color);
+			Lighting.AddLight(projectile.Center + new Vector2(-240, -100), color);
+
+			Lighting.AddLight(projectile.Center + new Vector2(0, -230), color);
+
 			if (State == 0 && Parent.frameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 6; y++)
+					for (int y = 0; y < 15; y++)
 					{
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
@@ -80,14 +94,87 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (State != 0)
 			{
 				(mod as StarlightRiver).useIntenseMusic = true;
-				Dust.NewDustPerfect(projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(50, 30, 205) * Windup, 0.2f);
-				SpawnObstacles((int)Timer);
+				Dust.NewDustPerfect(projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
+
+				if (State > 0)
+				{
+					Timer++;
+
+					if(attackOrder is null)
+					{
+						attackOrder = new List<int>();
+						for (int k = 0; k < 8; k++)
+							attackOrder.Add(k);
+
+						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
+					}
+
+					if (State > maxAttacks)
+					{
+						Main.NewText("You came!");
+						State = -1;
+						return;
+					}
+
+					SpawnObstacles((int)Timer - 128);
+				}
+			}
+
+			if (State == -1 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, projectile.Center) < 500))) //"fail" conditions, no living players in radius or already failing
+			{
+				State = -1;
+
+				if (Timer > 128)
+					Timer = 128;
+
+				Timer--;
+
+				if (Timer <= 0)
+					State = 0;
+
+				return;
 			}
 		}
 
 		public void SpawnObstacles(int timer)
 		{
+			switch(attackOrder[(int)State - 1])
+			{
+				case 0: VerticalSawJaws(timer); break;
+				case 1: HorizontalSawJaws(timer); break;
+				case 2: DartBurst(timer); break;
+				case 3: SpearsAndSwooshes(timer); break;
+				case 4: TopSpearsBottomDarts(timer); break;
+				case 5: MiddleSqueeze(timer); break;
+				case 6: ShooFromMiddle(timer); break;
+				case 7: SideSqueeze(timer); break;
+			}
+		}
 
+		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
+		{
+			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 30, 0, Main.myPlayer);
+			Main.projectile[i].timeLeft = time;
+		}
+
+		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
+		{
+			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 20, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].modProjectile as Dart);
+			mp.endPoint = end;
+			mp.midPoint = mid;
+			mp.duration = duration;
+		}
+
+		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
+		{
+			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 35, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].modProjectile as Spear);
+			mp.endPoint = end;
+			mp.timeToRise = riseTime;
+			mp.timeToRetract = retractTime;
+			mp.teleTime = teleTime;
+			mp.holdTime = holdTime;
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
