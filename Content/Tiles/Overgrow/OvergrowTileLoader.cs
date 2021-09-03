@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     minPick: 210,
                     dustType: DustType<Dusts.Leaf>(),
                     soundType: SoundID.Grass,
-                    mapColor: new Color(79, 76, 71),
+                    mapColor: new Color(215, 180, 67),
                     dirtMerge: true,
                     stone: true
                     )
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     minPick: 210,
                     dustType: DustID.Stone,
                     soundType: SoundID.Tink,
-                    mapColor: new Color(221, 211, 67)
+                    mapColor: new Color(79, 76, 71)
                     )
                 );
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     minPick: 210,
                     dustType: DustID.Stone,
                     soundType: SoundID.Tink,
-                    mapColor: new Color(205, 200, 55)
+                    mapColor: new Color(71, 68, 64)
                     )
                 );
         }
