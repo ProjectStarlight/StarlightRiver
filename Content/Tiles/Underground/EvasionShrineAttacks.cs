@@ -16,6 +16,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 {
 	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
 	{
+		int free = 0; // tracks the free square for the spear squares attack
+
 		private void EndAttack()
 		{
 			Timer = 127;
@@ -65,6 +67,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if(timer == 0)
 			for (float k = 0; k <= 6.28f; k += 1.57f)
 				SpawnDart(projectile.Center, projectile.Center + Vector2.One.RotatedBy(k) * 200, projectile.Center + Vector2.UnitX.RotatedBy(k) * 400, 120);
+
+			if (timer == 140)
+				EndAttack();
+		}
+
+		private void DartBurst2(int timer)
+		{
+			if (timer == 0)
+				for (float k = 0; k <= 6.28f; k += 1.57f)
+					SpawnDart(projectile.Center, projectile.Center + Vector2.One.RotatedBy(k + 0.6f) * 200, projectile.Center + Vector2.UnitX.RotatedBy(k + 0.6f) * 400, 120);
 
 			if (timer == 140)
 				EndAttack();
@@ -127,7 +139,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					if (timer == k)
 					{
 						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
-						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, -200 - yOff), projectile.Center + new Vector2(-400 + k * 8, 0 - yOff), 30, 15, 15);
+						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, -200 - yOff), projectile.Center + new Vector2(-400 + k * 8, 0 - yOff), 30, 15, 25);
 					}
 				}
 			}
@@ -161,7 +173,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if(timer >= 60 && timer % 40 == 0 && timer < 530) 
+			if(timer >= 100 && timer % 40 == 0 && timer < 530) 
 				SpawnBlade(projectile.Center + new Vector2(40 * (Main.rand.NextBool() ? 1 : -1), -400), Vector2.UnitY * 11, 90);
 
 			if (timer >= 640)
@@ -207,8 +219,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				if (timer == (k + 200) / 10)
 				{
-					bool swap = k % 200 == 0;
-					SpawnSpear(projectile.Center + new Vector2(k, swap ? -440 : 200), projectile.Center + new Vector2(k, swap ? 200 : -440), 120, 45, 15, 320);
+					bool swap = k % 100 == 0;
+					SpawnSpear(projectile.Center + new Vector2(k, swap ? -440 : 200), projectile.Center + new Vector2(k, swap ? 200 : -440), 120, 45, 30, 320);
 				}
 			}
 
@@ -222,6 +234,88 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 
 			if (timer == 560)
+				EndAttack();
+		}
+
+		private void CruelDarts(int timer)
+		{
+			if (timer == 0)
+			{
+				SpawnDart(projectile.Center + new Vector2(-400, -350), projectile.Center + new Vector2(0, -375), projectile.Center + new Vector2(400, 350), 120);
+				SpawnDart(projectile.Center + new Vector2(400, 350), projectile.Center + new Vector2(0, 375), projectile.Center + new Vector2(-400, -350), 120);
+			}
+
+			if (timer == 15)
+			{
+				SpawnDart(projectile.Center + new Vector2(-400, -200), projectile.Center + new Vector2(0, -225), projectile.Center + new Vector2(400, 200), 120);
+				SpawnDart(projectile.Center + new Vector2(400, 200), projectile.Center + new Vector2(0, 225), projectile.Center + new Vector2(-400, -200), 120);
+			}
+
+			if (timer == 30)
+			{
+				SpawnDart(projectile.Center + new Vector2(-400, -50), projectile.Center + new Vector2(0, -75), projectile.Center + new Vector2(400, 50), 120);
+				SpawnDart(projectile.Center + new Vector2(400, 50), projectile.Center + new Vector2(0, 75), projectile.Center + new Vector2(-400, -50), 120);
+			}
+
+			if (timer == 90)
+			{
+				SpawnDart(projectile.Center + new Vector2(400, -300), projectile.Center + new Vector2(0, -325), projectile.Center + new Vector2(-400, 300), 120);
+				SpawnDart(projectile.Center + new Vector2(-400, 300), projectile.Center + new Vector2(0, 325), projectile.Center + new Vector2(400, -300), 120);
+			}
+
+			if (timer == 105)
+			{
+				SpawnDart(projectile.Center + new Vector2(400, -150), projectile.Center + new Vector2(0, -175), projectile.Center + new Vector2(-400, 150), 120);
+				SpawnDart(projectile.Center + new Vector2(-400, 150), projectile.Center + new Vector2(0, 175), projectile.Center + new Vector2(400, -150), 120);
+			}
+
+			if (timer == 120)
+			{
+				SpawnDart(projectile.Center + new Vector2(400, 0), projectile.Center + new Vector2(0, -25), projectile.Center + new Vector2(-400, 0), 120);
+				SpawnDart(projectile.Center + new Vector2(-400, 0), projectile.Center + new Vector2(0, 25), projectile.Center + new Vector2(400, 0), 120);
+			}
+
+			if (timer == 240)
+				EndAttack();
+		}
+
+		private void SquareSpears(int timer)
+		{
+			if(timer == 0)
+				free = Main.rand.Next(4);
+
+			if (timer % 240 == 0 && timer < 720)
+			{
+				free++;
+
+				if (free % 4 != 0)
+					for (int k = 0; k < 50; k += 5)
+					{
+						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
+						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, -200 - yOff), projectile.Center + new Vector2(-400 + k * 8, -60), 160 - k, 30, 30, 30);
+					}
+
+				if (free % 4 != 1)
+					for (int k = 0; k < 50; k += 5)
+					{
+						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
+						SpawnSpear(projectile.Center + new Vector2(400 - k * 8, -200 - yOff), projectile.Center + new Vector2(400 - k * 8, -60), 160 - k, 30, 30, 30);
+					}
+
+				if (free % 4 != 2)
+					for (int k = 0; k < 50; k += 5)
+					{
+						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, 300), projectile.Center + new Vector2(-400 + k * 8, 40), 160 - k, 30, 30, 30);
+					}
+
+				if (free % 4 != 3)
+					for (int k = 0; k < 50; k += 5)
+					{
+						SpawnSpear(projectile.Center + new Vector2(400 - k * 8, 300), projectile.Center + new Vector2(400 - k * 8, 40), 160 - k, 30, 30, 30);
+					}
+			}
+
+			if (timer >= 720)
 				EndAttack();
 		}
 	}

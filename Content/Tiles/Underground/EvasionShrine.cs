@@ -45,6 +45,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					}
 
 				(Dummy.modProjectile as EvasionShrineDummy).State = 1;
+				(Dummy.modProjectile as EvasionShrineDummy).lives = 4;
 				return true;
 			}
 
@@ -55,6 +56,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
 	{
 		public int maxAttacks = 15;
+		public int lives;
 		public List<int> attackOrder;
 
 		public ref float Timer => ref projectile.ai[0];
@@ -66,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			var color = new Vector3(0.15f, 0.12f, 0.2f) * 2.8f;
+			var color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
 
 			Lighting.AddLight(projectile.Center + new Vector2(240, 0), color);
 			Lighting.AddLight(projectile.Center + new Vector2(-240, 0), color);
@@ -82,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (State == 0 && Parent.frameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 15; y++)
+					for (int y = 0; y < 6; y++)
 					{
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
@@ -103,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					if(attackOrder is null)
 					{
 						attackOrder = new List<int>();
-						for (int k = 0; k < 8; k++)
+						for (int k = 0; k < 15; k++)
 							attackOrder.Add(k);
 
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
@@ -111,8 +113,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 					if (State > maxAttacks)
 					{
-						Main.NewText("You came!");
-						State = -1;
+						if(Timer > 600)
+						{
+							State = -1;
+						}
 						return;
 					}
 
@@ -120,7 +124,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if (State == -1 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, projectile.Center) < 500))) //"fail" conditions, no living players in radius or already failing
+			if (State == -1 || lives <= 0 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, projectile.Center) < 500))) //"fail" conditions, no living players in radius or already failing
 			{
 				State = -1;
 
@@ -130,7 +134,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Timer--;
 
 				if (Timer <= 0)
+				{
 					State = 0;
+					attackOrder = null;
+				}
 
 				return;
 			}
@@ -148,13 +155,19 @@ namespace StarlightRiver.Content.Tiles.Underground
 				case 5: MiddleSqueeze(timer); break;
 				case 6: ShooFromMiddle(timer); break;
 				case 7: SideSqueeze(timer); break;
+				case 8: CruelDarts(timer); break;
+				case 9: SquareSpears(timer); break;
+				case 10: DartBurst2(timer); break;
+				default: EndAttack(); break;
 			}
 		}
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
 			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 30, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].modProjectile as SawbladeSmall);
 			Main.projectile[i].timeLeft = time;
+			mp.parent = this;
 		}
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
@@ -164,6 +177,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			mp.endPoint = end;
 			mp.midPoint = mid;
 			mp.duration = duration;
+			mp.parent = this;
 		}
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
@@ -175,6 +189,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			mp.timeToRetract = retractTime;
 			mp.teleTime = teleTime;
 			mp.holdTime = holdTime;
+			mp.parent = this;
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -186,6 +201,54 @@ namespace StarlightRiver.Content.Tiles.Underground
 				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
 				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
 				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+
+				if (State > 0)
+				{
+					var fireTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Underground/BrazierFlame");
+					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
+
+					Vector2 leftPos = projectile.Center - Main.screenPosition + new Vector2(-248, -220);
+					Vector2 leftMidPos = projectile.Center - Main.screenPosition + new Vector2(-120, -140);
+					Vector2 rightMidPos = projectile.Center - Main.screenPosition + new Vector2(120, -140);
+					Vector2 rightPos = projectile.Center - Main.screenPosition + new Vector2(248, -220);
+
+					if (State > maxAttacks)
+					{
+						if (Timer > 300)
+						{
+							float progress = Math.Min(1, (Timer - 300) / 240f);
+
+							leftPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-248, -220), Vector2.Zero, progress);
+							leftMidPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-120, -140), Vector2.Zero, progress);
+							rightMidPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(120, -140), Vector2.Zero, progress);
+							rightPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(248, -220), Vector2.Zero, progress);
+						}
+					}
+
+					if (lives > 0) //kinda gross lol, should probably figure a better way of doing this
+					{
+						spriteBatch.Draw(fireTex, leftPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
+						spriteBatch.Draw(fireTex, leftPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+					}
+
+					if (lives > 1)
+					{
+						spriteBatch.Draw(fireTex, leftMidPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
+						spriteBatch.Draw(fireTex, leftMidPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+					}
+
+					if (lives > 2)
+					{
+						spriteBatch.Draw(fireTex, rightMidPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
+						spriteBatch.Draw(fireTex, rightMidPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+					}
+
+					if (lives > 3)
+					{
+						spriteBatch.Draw(fireTex, rightPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
+						spriteBatch.Draw(fireTex, rightPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
+					}
+				}
 			}
 		}
 

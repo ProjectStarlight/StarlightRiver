@@ -23,6 +23,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
         public Vector2 endPoint;
         public Vector2 midPoint;
         public int duration;
+        public EvasionShrineDummy parent;
 
         public float dist1;
         public float dist2;
@@ -80,6 +81,11 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
             ManageCaches();
             ManageTrail();
+        }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            parent.lives--;
         }
 
         private Vector2 PointOnSpline(float progress)

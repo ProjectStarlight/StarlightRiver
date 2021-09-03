@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 	class SawbladeSmall : ModProjectile
 	{
 		public Vector2 storedVelocity = Vector2.Zero;
+		public EvasionShrineDummy parent;
 
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
@@ -59,6 +60,11 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			else projectile.alpha = 0;
 
 			projectile.rotation -= 0.1f;
+		}
+
+		public override void OnHitPlayer(Player target, int damage, bool crit)
+		{
+			parent.lives--;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public int timeToRetract;
 		public int teleTime;
 		public int holdTime;
+		public EvasionShrineDummy parent;
 
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
@@ -77,6 +78,11 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 				return true;
 
 			return false;
+		}
+
+		public override void OnHitPlayer(Player target, int damage, bool crit)
+		{
+			parent.lives--;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

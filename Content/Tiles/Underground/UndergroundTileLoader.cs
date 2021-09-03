@@ -22,7 +22,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					mapColor: new Color(86, 88, 91),
 					stone: true
 					)
-				);		
+				);
+
+			LoadFurniture(
+				"ShrineBrazier",
+				"Mysterious Brazier",
+				new FurnitureLoadData(
+					width: 2,
+					height: 2,
+					dustType: DustID.Stone,
+					soundType: SoundID.Tink,
+					tallBottom: false,
+					mapColor: new Color(100, 100, 100)
+					)
+				);
 		}
     }
 }
