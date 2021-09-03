@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self, flat);
             if (Main.gameMenu) return; //safety net
 
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneAshhell)
             {
                 //just a vanilla zoing for now to test 
                 if (Main.screenPosition.Y + Main.screenHeight < (Main.maxTilesY - 220) * 16f) return;

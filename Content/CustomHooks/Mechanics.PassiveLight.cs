@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //I really need to stop bloating this method so much
-            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneAshhell && !tileBlock && wallBlock && !lit)
+            if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneAshhell && !tileBlock && wallBlock && !lit)
             {
                 r = 0.0f;
                 g = 0.4f;

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
             return base.Autoload(ref name, ref texture); }
 
         public override void SetDefaults() =>
-            this.QuickSet(0, DustType<Dusts.Electric>(), SoundID.Tink, new Color(156, 172, 177), ItemType<Items.Moonstone.MoonstoneOre>(), true, true, "Aluminum Ore");
+            this.QuickSet(0, DustType<Dusts.Electric>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOre>(), true, true, "Moonstone Ore");
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {

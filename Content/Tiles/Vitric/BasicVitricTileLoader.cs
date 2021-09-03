@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					minPick: 0,
 					dustType: DustType<Content.Dusts.AirGravity>(),
 					soundType: SoundID.Dig,
-					mapColor: new Color(172, 131, 105)
+					mapColor: new Color(172, 150, 105)
 				)
 			  );
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					minPick: 0,
 					dustType: DustType<Content.Dusts.AirGravity>(),
 					soundType: SoundID.Dig,
-					mapColor: new Color(182, 141, 115)
+					mapColor: new Color(162, 131, 115)
 				)
 			  );
 

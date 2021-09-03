@@ -18,7 +18,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             return true;
         }
 
-        public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37)); }
+        public override void SetDefaults() =>
+            QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37));
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             if (i > Main.screenPosition.X / 16 && i < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j > Main.screenPosition.Y / 16 && j < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
@@ -42,7 +43,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             return true;
         }
 
-        public override void SetDefaults() { QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55)); } 
+        public override void SetDefaults() =>
+            QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55));
     }
 
     public class WallOvergrowInvisible : ModWall
@@ -63,12 +65,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     public class WallOvergrowBrickItem : QuickWallItem
     {
         public override string Texture => AssetDirectory.OvergrowTile + Name;
-        public WallOvergrowBrickItem() : base("Overgrow Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { } 
+        public WallOvergrowBrickItem() : base("Runic Brick Wall", "", WallType<WallOvergrowBrick>(), 0) { } 
     }
 
     public class WallOvergrowGrassItem : QuickWallItem
     {
         public override string Texture => AssetDirectory.OvergrowTile + Name;
-        public WallOvergrowGrassItem() : base("Overgrow Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { } 
+        public WallOvergrowGrassItem() : base("Overgrowth Grass Wall", "", WallType<WallOvergrowGrass>(), 0) { } 
     }
 }

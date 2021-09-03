@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (Vector2.Distance(Main.LocalPlayer.Center, projectile.Center) < 30 * 16)
 			{
-				Main.LocalPlayer.GetModPlayer<BiomeHandler>().zoneHotspring = true;
+				Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneHotspring = true;
 
 				float fade = Vector2.Distance(Main.LocalPlayer.Center, projectile.Center) / (30f * 16);
 				Main.musicFade[Main.curMusic] = 1 - fade;

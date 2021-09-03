@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Tiles.AshHell;
@@ -31,9 +32,9 @@ namespace StarlightRiver.Core
         public bool ZoneJungleHoly = false;
         public bool ZoneOvergrow = false;
         public bool zoneAluminum = false;
-        public bool zonePermafrost = false;
-        public bool zoneAshhell = false;
-        public bool zoneHotspring = false;
+        public bool ZonePermafrost = false;
+        public bool ZoneAshhell = false;
+        public bool ZoneHotspring = false;
 
         public bool FountainJungleCorrupt = false;
         public bool FountainJungleBloody = false;
@@ -56,8 +57,8 @@ namespace StarlightRiver.Core
                 Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<WallOvergrowBrick>() ||
                 Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<WallOvergrowInvisible>();
             zoneAluminum = StarlightWorld.aluminumTiles > 50;
-            zonePermafrost = StarlightWorld.permafrostTiles > 50;
-            zoneAshhell = StarlightWorld.ashHellTiles > 50;
+            ZonePermafrost = StarlightWorld.permafrostTiles > 50;
+            ZoneAshhell = StarlightWorld.ashHellTiles > 50;
         }
 
         public override bool CustomBiomesMatch(Player other)
@@ -71,8 +72,8 @@ namespace StarlightRiver.Core
             allMatch &= ZoneJungleHoly == modOther.ZoneJungleHoly;
             allMatch &= ZoneOvergrow == modOther.ZoneOvergrow;
             allMatch &= zoneAluminum == modOther.zoneAluminum;
-            allMatch &= zonePermafrost == modOther.zonePermafrost;
-            allMatch &= zoneAshhell == modOther.zoneAshhell;
+            allMatch &= ZonePermafrost == modOther.ZonePermafrost;
+            allMatch &= ZoneAshhell == modOther.ZoneAshhell;
             return allMatch;
         }
 
@@ -86,8 +87,8 @@ namespace StarlightRiver.Core
             modOther.ZoneJungleHoly = ZoneJungleHoly;
             modOther.ZoneOvergrow = ZoneOvergrow;
             modOther.zoneAluminum = zoneAluminum;
-            modOther.zonePermafrost = zonePermafrost;
-            modOther.zoneAshhell = zoneAshhell;
+            modOther.ZonePermafrost = ZonePermafrost;
+            modOther.ZoneAshhell = ZoneAshhell;
         }
 
         public override void SendCustomBiomes(BinaryWriter writer)
@@ -100,7 +101,7 @@ namespace StarlightRiver.Core
             flags[4] = ZoneJungleHoly;
             flags[5] = ZoneOvergrow;
             flags[6] = zoneAluminum;
-            flags[7] = zonePermafrost;
+            flags[7] = ZonePermafrost;
             writer.Write(flags); //TODO add another BitsByte for moar biomes
         }
 
@@ -114,7 +115,7 @@ namespace StarlightRiver.Core
             ZoneJungleHoly = flags[4];
             ZoneOvergrow = flags[5];
             zoneAluminum = flags[6];
-            zonePermafrost = flags[7];
+            ZonePermafrost = flags[7];
         }
 
         public override void PreUpdate()
@@ -165,15 +166,42 @@ namespace StarlightRiver.Core
             if (ZoneOvergrow && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
                 Helper.UnlockEntry<OvergrowEntry>(player);
 
-            if (zonePermafrost && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
+            if (ZonePermafrost && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
                 Helper.UnlockEntry<PermafrostEntry>(player);
         }
 
 		public override void ResetEffects()
 		{
-            zoneHotspring = false;
+            ZoneHotspring = false;
 		}
-	}
+
+        public override Texture2D GetMapBackgroundImage()
+        {
+            if (ZoneOvergrow)
+                return GetTexture(AssetDirectory.MapBackgrounds + "OvergrowMap");
+            else if (ZoneGlass || ZoneGlassTemple || GlassBG)
+                return GetTexture(AssetDirectory.MapBackgrounds + "GlassMap");
+            else if (ZonePermafrost)
+                return GetTexture(AssetDirectory.MapBackgrounds + "PermafrostMap");
+
+            else if (ZoneVoidPre)
+                return GetTexture(AssetDirectory.MapBackgrounds + "VoidPreMap");
+            else if (ZoneAshhell)
+                return GetTexture(AssetDirectory.MapBackgrounds + "AshhellMap");
+
+            else if (ZoneJungleCorrupt)
+                return GetTexture(AssetDirectory.MapBackgrounds + "JungleCorruptMap");
+            else if (ZoneJungleBloody)
+                return GetTexture(AssetDirectory.MapBackgrounds + "JungleBloodyMap");
+            else if (ZoneJungleHoly)
+                return GetTexture(AssetDirectory.MapBackgrounds + "JungleHolyMap");
+
+            //else if (ZoneHotspring)
+            //    return GetTexture(AssetDirectory.MapBackgrounds + "HotspringMap");
+
+            return null;
+        }
+    }
 
     public partial class StarlightWorld : ModWorld
     {

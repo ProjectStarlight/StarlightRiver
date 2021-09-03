@@ -4,6 +4,9 @@ namespace StarlightRiver.Core
     {
         public const string Assets =                "StarlightRiver/Assets/";
 
+        public const string Backgrounds =           Assets + "Backgrounds/";
+        public const string MapBackgrounds =        Backgrounds + "MapBackgrounds/";
+
         public const string Invisible =             Assets + "Invisible";
         public const string Debug =                 Assets + "MarioCumming";
         public const string Symbol =                Assets + "Symbol";
