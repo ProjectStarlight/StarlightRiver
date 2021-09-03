@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
         //Prpoerties to allow edit and continue :P
-        private Vector2 ReflectionOffset => new Vector2(20,-20);
+        private Vector2 ReflectionOffset => new Vector2(20, -20);
         private int TileSearchSize = 8;
 
         public override void Load()
@@ -40,7 +40,6 @@ namespace StarlightRiver.Content.CustomHooks
             TargetHost.GetMap("TileReflectionMap").DrawToBatchedTarget((spriteBatch) =>
             {
                 for (int i = -TileSearchSize; i < TileSearchSize; i++)
-                {
                     for (int j = -TileSearchSize; j < TileSearchSize; j++)
                     {
                         Point p = (Main.LocalPlayer.position / 16).ToPoint();
@@ -63,8 +62,8 @@ namespace StarlightRiver.Content.CustomHooks
                                 if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.wallFrameX(), tile.wallFrameY(), 36, 36), Color.White);
                             }
                         }
+
                     }
-                }
             });
         }
 

@@ -16,8 +16,8 @@ namespace StarlightRiver.Content.CustomHooks
 
         public static Map Maps;
 
-        public static MapPass GetMap(string String) => Maps.Get(String);
-        public static MapPass GetMap<T>() where T : MapPass => Maps.Get<T>();
+        public static MapPass GetMap(string String) => Maps?.Get(String);
+        public static MapPass GetMap<T>() where T : MapPass => Maps?.Get<T>();
 
         public override void Load()
         {
