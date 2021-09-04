@@ -32,12 +32,12 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void Main_OnPreDraw(GameTime obj)
         {
-            TargetHost.GetMap("TileReflectableMap").DrawToBatchedTarget((spriteBatch) =>
+            TargetHost.GetMap("TileReflectableMap")?.DrawToBatchedTarget((spriteBatch) =>
             {
                 spriteBatch.Draw(PlayerTarget.Target, ReflectionOffset, Color.White);
             });
 
-            TargetHost.GetMap("TileReflectionMap").DrawToBatchedTarget((spriteBatch) =>
+            TargetHost.GetMap("TileReflectionMap")?.DrawToBatchedTarget((spriteBatch) =>
             {
                 for (int i = -TileSearchSize; i < TileSearchSize; i++)
                     for (int j = -TileSearchSize; j < TileSearchSize; j++)
