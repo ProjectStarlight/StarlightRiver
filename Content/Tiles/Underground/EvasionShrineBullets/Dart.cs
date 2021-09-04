@@ -86,6 +86,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
             parent.lives--;
+
+            if (Main.rand.Next(10000) == 0)
+                Main.NewText("Skill issue.");
         }
 
         private Vector2 PointOnSpline(float progress)
