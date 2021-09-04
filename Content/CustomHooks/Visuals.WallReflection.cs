@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
         //Prpoerties to allow edit and continue :P
-        private Vector2 ReflectionOffset => new Vector2(20, -20);
+        private Vector2 ReflectionOffset => new Vector2(20,0);
         private int TileSearchSize = 8;
 
         public override void Load()
@@ -32,39 +32,44 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void Main_OnPreDraw(GameTime obj)
         {
-            TargetHost.GetMap("TileReflectableMap").DrawToBatchedTarget((spriteBatch) =>
+            if (!Main.gameMenu)
             {
-                spriteBatch.Draw(PlayerTarget.Target, ReflectionOffset, Color.White);
-            });
+                TargetHost.GetMap("TileReflectableMap").DrawToBatchedTarget((spriteBatch) =>
+                {
+                    spriteBatch.Draw(PlayerTarget.Target, ReflectionOffset, Color.White);
+                });
 
-            TargetHost.GetMap("TileReflectionMap").DrawToBatchedTarget((spriteBatch) =>
-            {
-                for (int i = -TileSearchSize; i < TileSearchSize; i++)
-                    for (int j = -TileSearchSize; j < TileSearchSize; j++)
+                TargetHost.GetMap("TileReflectionMap").DrawToBatchedTarget((spriteBatch) =>
+                {
+                    for (int i = -TileSearchSize; i < TileSearchSize; i++)
                     {
-                        Point p = (Main.LocalPlayer.position / 16).ToPoint();
-                        Point pij = new Point(p.X + i, p.Y + j);
-
-                        if (WorldGen.InWorld(pij.X, pij.Y))
+                        for (int j = -TileSearchSize; j < TileSearchSize; j++)
                         {
-                            Tile tile = Framing.GetTileSafely(pij);
-                            ushort type = tile.wall;
+                            Point p = (Main.LocalPlayer.position / 16).ToPoint();
+                            Point pij = new Point(p.X + i, p.Y + j);
 
-                            if (type == WallID.Glass
-                             || type == WallID.BlueStainedGlass
-                             || type == WallID.GreenStainedGlass
-                             || type == WallID.PurpleStainedGlass
-                             || type == WallID.YellowStainedGlass
-                             || type == WallID.RedStainedGlass)
+                            if (WorldGen.InWorld(pij.X, pij.Y))
                             {
-                                Vector2 pos = pij.ToVector2() * 16;
-                                Texture2D tex = Main.wallTexture[type];
-                                if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.wallFrameX(), tile.wallFrameY(), 36, 36), Color.White);
+                                Tile tile = Framing.GetTileSafely(pij);
+                                ushort type = tile.wall;
+
+                                if (type == WallID.Glass
+                                 || type == WallID.BlueStainedGlass
+                                 || type == WallID.GreenStainedGlass
+                                 || type == WallID.PurpleStainedGlass
+                                 || type == WallID.YellowStainedGlass
+                                 || type == WallID.RedStainedGlass)
+                                {
+                                    Vector2 pos = pij.ToVector2() * 16;
+                                    Texture2D tex = Main.wallTexture[type];
+                                    if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.wallFrameX(), tile.wallFrameY(), 36, 36), Color.White);
+                                }
                             }
                         }
 
                     }
-            });
+                });
+            }
         }
 
         private void Projectile_Update(On.Terraria.Projectile.orig_Update orig, Projectile self, int i)

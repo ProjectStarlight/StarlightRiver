@@ -33,6 +33,12 @@ sampler playerMapSampler = sampler_state
     Texture = (PlayerMap);
 };
 
+texture PlayerTarget;
+sampler playerTargetSampler = sampler_state
+{
+    Texture = (PlayerTarget);
+};
+
 texture Noise;
 sampler noiseSampler = sampler_state
 {
@@ -50,8 +56,9 @@ float4 P1(float2 coords : TEXCOORD0) : COLOR0
     float4 colour = tex2D(uImage0, coords);
     float4 MapColor = tex2D(mapSampler, coords);
     float4 PlayerColor = tex2D(playerMapSampler, coords);
+    float4 origPlayerColor = tex2D(playerTargetSampler, coords);
 
-    return colour + PlayerColor * MapColor.a;
+    return colour + PlayerColor * MapColor.a * (1 - saturate(origPlayerColor.a));
 }
 
 technique Technique1

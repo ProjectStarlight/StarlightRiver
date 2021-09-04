@@ -19,6 +19,7 @@ namespace StarlightRiver.Maps
         internal override void OnApplyShader()
         {
             MapEffect?.Shader.Parameters["PlayerMap"]?.SetValue(TargetHost.GetMap("TileReflectableMap").MapTarget);
+            MapEffect?.Shader.Parameters["PlayerTarget"]?.SetValue(PlayerTarget.Target);
         }
 
     }
