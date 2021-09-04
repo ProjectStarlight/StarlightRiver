@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.Dusts
 
             dust.position += dust.velocity;
 
+            if (!dust.noGravity)
+                dust.velocity.Y += 0.1f;
+
             dust.velocity *= 0.99f;
             dust.color *= 0.95f;
             

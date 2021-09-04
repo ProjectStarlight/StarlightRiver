@@ -86,8 +86,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             eyes = new List<VitricBossEye>()
             { 
-            new VitricBossEye(new Vector2(16, 86), 0),
-            new VitricBossEye(new Vector2(66, 86), 1)
+            new VitricBossEye(new Vector2(16, 70), 0),
+            new VitricBossEye(new Vector2(66, 70), 1)
             };
 
             swooshes = new List<VitricBossSwoosh>()

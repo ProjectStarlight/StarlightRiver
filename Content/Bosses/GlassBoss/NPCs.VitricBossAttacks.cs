@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private void RandomSpikes()
         {
             List<Vector2> points = new List<Vector2>();
-            crystalLocations.ForEach(n => points.Add(n + new Vector2(0, -20)));
+            crystalLocations.ForEach(n => points.Add(n + new Vector2(0, -100)));
             Helper.RandomizeList<Vector2>(points);
 
             for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)

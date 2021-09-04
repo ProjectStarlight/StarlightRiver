@@ -41,27 +41,35 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             }
 
-            if (projectile.ai[0] >= 70) //when this projectile goes off
-            {
+            if(projectile.ai[0] == 70)
+			{
                 for (int k = 0; k < 4; k++)
                 {
                     var rot = projectile.rotation + Main.rand.NextFloat(-0.2f, 0.2f);
                     Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * -80, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                 }
 
-                foreach (Player player in Main.player.Where(n => Helper.CheckConicalCollision(projectile.Center, 700, projectile.rotation, 0.2f, n.Hitbox)))
+                Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
+            }
+
+            if(projectile.ai[0] > 70)
+			{
+                foreach (Player player in Main.player.Where(n => Helper.CheckConicalCollision(projectile.Center, (700 / 24) * (int)(projectile.ai[0] - 70), projectile.rotation, 0.2f, n.Hitbox)))
                 {
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bit the dust..."), Main.expertMode ? 50 : 35, 0); //hurt em
                     player.AddBuff(BuffID.OnFire, 60); //burn the player
                 }
-                Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
+            }
+
+            if (projectile.ai[0] >= 94) //when this projectile goes off
+            {
                 projectile.Kill(); //self-destruct
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            if (projectile.ai[0] <= 66) //draws the proejctile's tell ~1 second before it goes off
+            if (projectile.ai[0] < 66) //draws the proejctile's tell ~1 second before it goes off
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ConeTell");
                 float alpha = (projectile.ai[0] * 2 / 33 - (float)Math.Pow(projectile.ai[0], 2) / 1086) * 0.5f;
@@ -69,6 +77,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            if (projectile.ai[0] >= 66) //draws the proejctile
+            {
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LavaBurst");
+                Rectangle frame = new Rectangle(0, tex.Height / 7 * (int)((projectile.ai[0] - 66) / 4), tex.Width, tex.Height / 7);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 1, 0, 0);
+            }
+
+            return false;
+        }
     }
 }

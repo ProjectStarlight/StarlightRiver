@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -24,7 +25,7 @@ namespace StarlightRiver.Content.CustomHooks
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 80;
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
-            if (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors))
+            if (Main.rand.Next(3) > (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors) ? 0 : 1))
             {
                 Point16 target = new Point16();
 
@@ -36,39 +37,31 @@ namespace StarlightRiver.Content.CustomHooks
                     {
                         if (Framing.GetTileSafely(x, y).active())
                         {
-                            target = new Point16(x, y);
+                            target = new Point16(x, y - 20);
                             break;
                         }
                     }
                 }
 
-                for (int x = -35; x < 35; x++)
-                    for (int y = -35; y < 35; y++)
+                for (int x = -10; x < 10; x++)
+                    for (int y = -30; y < 30; y++)
                     {
-                        if (WorldGen.InWorld(target.X + x, target.Y + y) && Framing.GetTileSafely(target.X + x, target.Y + y).collisionType == 1)
-                        {
-                            float dist = new Vector2(x, y).Length();
-                            if (dist < 8) WorldGen.KillTile(target.X + x, target.Y + y);
+                        if(Math.Abs(x) < (10 - Math.Abs(y) / 3) + StarlightWorld.genNoise.GetPerlin(x * 4, y * 4) * 8)
+                        WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Tiles.Moonstone.MoonstoneOre>(), true, true);
+                    }
 
-                            if (dist > 8 && dist < 15)
-                            {
-                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Content.Tiles.AstralMeteor.AluminumOre>(), true, true);
-                                WorldGen.SlopeTile(target.X + x, target.Y + y, 0);
-                            }
-
-                            if (dist > 15 && dist < 30 && Main.rand.Next((int)dist - 15) == 0)
-                            {
-                                WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Content.Tiles.AstralMeteor.AluminumOre> (), true, true);
-                                WorldGen.SlopeTile(target.X + x, target.Y + y, 0);
-                            }
-                        }
+                for (int x = -15; x < 15; x++)
+                    for (int y = 0; y < 40; y++)
+                    {
+                        if (Math.Abs(x) < (10 - Math.Abs(y) / 3) + StarlightWorld.genNoise.GetPerlin(x * 4, y * 4) * 8)
+                            WorldGen.PlaceTile(target.X + x, target.Y + y, ModContent.TileType<Tiles.Moonstone.MoonstoneOre>(), true, true);
                     }
 
                 if (Main.netMode == NetmodeID.SinglePlayer)
-                    Main.NewText("An asteroid has landed!", new Color(107, 233, 231));
+                    Main.NewText("A shard of the moon has landed!", new Color(107, 233, 231));
 
                 else if (Main.netMode == NetmodeID.Server)
-                    NetMessage.BroadcastChatMessage(NetworkText.FromLiteral("An asteroid has landed!"), new Color(107, 233, 231));
+                    NetMessage.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
 
                 return true;
             }

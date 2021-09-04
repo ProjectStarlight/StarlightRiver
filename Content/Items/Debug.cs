@@ -40,6 +40,9 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            WorldGen.meteor((int)Main.MouseWorld.X / 16 + 200, (int)Main.MouseWorld.Y / 16);
+            return true;
+
             player.statLifeMax = 500;
             player.statManaMax = 200;
 

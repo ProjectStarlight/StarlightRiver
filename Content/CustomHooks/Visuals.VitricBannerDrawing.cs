@@ -45,6 +45,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawVerletBannerTarget(GameTime obj)
         {
+            if (Main.gameMenu)
+                return;
+
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
             graphics.SetRenderTarget(VerletChainInstance.target);
