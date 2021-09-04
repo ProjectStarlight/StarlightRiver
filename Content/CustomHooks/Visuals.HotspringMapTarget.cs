@@ -35,6 +35,8 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void HotspringTarget(GameTime obj)
         {
+            if (Main.gameMenu) return;
+
             var graphics = Main.graphics.GraphicsDevice;
 
             if (hotspringMapTarget is null || hotspringMapTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))

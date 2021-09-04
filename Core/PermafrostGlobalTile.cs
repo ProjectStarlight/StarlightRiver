@@ -52,7 +52,7 @@ namespace StarlightRiver.Core
 
 		private void DrawAuroraTarget(GameTime obj)
 		{
-			if (Main.dedServ)
+			if (Main.dedServ || Main.gameMenu)
 				return;
 
 			Main.spriteBatch.Begin();
