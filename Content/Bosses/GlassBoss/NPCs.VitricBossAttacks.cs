@@ -395,13 +395,42 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer == 60) ResetAttack();
         }
 
-        private void LaserBeam()
-        {
+        private void Darts()
+		{
             if (AttackTimer == 1)
-            {
-                int i = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassBossLaser>(), 1, 0);
-                (Main.projectile[i].modProjectile as GlassBossLaser).parent = this;
-            }
+                startPos = npc.Center;
+
+            if (AttackTimer < 120)
+                npc.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 120f);
+
+            if(AttackTimer > 120)
+			{
+                if(AttackTimer % 90 < 20)
+				{
+                    var rot = Main.rand.NextFloat(6.28f);
+                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 60, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -1, 0, new Color(255, 150, 50), 0.5f);
+				}
+
+                if(AttackTimer % 90 == 30)
+				{
+                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation();
+
+                    for (int k = -2; k <= 2; k++)
+                        SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.35f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.1f) * 700, 60);
+				}
+			}
+
+            if (AttackTimer >= 480)
+                ResetAttack();
+		}
+
+        public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
+        {
+            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 7, 0, Main.myPlayer);
+            var mp = (Main.projectile[i].modProjectile as LavaDart);
+            mp.endPoint = end;
+            mp.midPoint = mid;
+            mp.duration = duration;
         }
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -13,6 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
+        public List<NPC> platforms = new List<NPC>();
 
         protected ref float Timer => ref npc.ai[0];
         protected ref float State => ref npc.ai[1];
@@ -105,8 +107,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
             }
 
-            if (ScrollTimer > Scrolltime) 
+            if (ScrollTimer > Scrolltime)
+            {
                 ScrollTimer = 0;
+                ResyncPlatforms();
+            }
 
             if (State == 4)
             {
@@ -192,6 +197,18 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             PlacePlatform(260, 790, NPCType<VitricBossPlatformUpSmall>(), rising);
         }
 
+        public virtual void ResyncPlatforms()
+		{
+            SyncPlatform(platforms[0], 136, true);
+            SyncPlatform(platforms[1], 420, true);
+            SyncPlatform(platforms[2], 668, true);
+            SyncPlatform(platforms[3], 30, true);
+            SyncPlatform(platforms[4], 230, true);
+            SyncPlatform(platforms[5], 310, true);
+            SyncPlatform(platforms[6], 570, true);
+            SyncPlatform(platforms[7], 790, true);
+        }
+
         public void PlacePlatform(int x, int y, int type, bool rising)
         {
             if (rising && Timer == Risetime - (int)(y / 880f * Risetime))
@@ -199,14 +216,23 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 var i = NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - 2, type, 0, 0, Risetime - Timer); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
                 if (Main.npc[i].type == type)
                     (Main.npc[i].modNPC as VitricBossPlatformUp).parent = this;
+
+                platforms.Add(Main.npc[i]);
             }
             else if (!rising)
             {
                 var i = NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
                 if (Main.npc[i].type == type)
                     (Main.npc[i].modNPC as VitricBossPlatformUp).parent = this;
+
+                platforms.Add(Main.npc[i]);
             }
         }
+
+        public void SyncPlatform(NPC platform, int y, bool rising)
+		{
+            platform.position.Y = (int)npc.position.Y - y - platform.height;
+		}
     }
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
@@ -270,6 +296,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
             PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
             PlacePlatform(294, 760, NPCType<VitricBossPlatformDownSmall>(), rising);
+        }
+
+        public override void ResyncPlatforms()
+        {
+            SyncPlatform(platforms[0], 90, false);
+            SyncPlatform(platforms[1], 330, false);
+            SyncPlatform(platforms[2], 580, false);
+            SyncPlatform(platforms[3], 198, false);
+            SyncPlatform(platforms[4], 440, false);
+            SyncPlatform(platforms[5], 660, false);
+            SyncPlatform(platforms[6], 760, false);
         }
     }
 }

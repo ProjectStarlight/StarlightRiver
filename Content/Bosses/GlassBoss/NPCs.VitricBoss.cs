@@ -582,11 +582,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         AttackPhase++;
                         if (AttackPhase > 3) AttackPhase = 0;
+
+                        altAttack = Main.rand.NextBool();
+                        npc.netUpdate = true;
                     }
 
                     switch (AttackPhase) //switch for crystal behavior
                     {
-                        case 0: Volley(); break;
+                        case 0: if (altAttack) Darts(); else Volley(); break;
                         case 1: Mines(); break;
                         case 2: Whirl(); break;
                         case 3: Rest(); break;
