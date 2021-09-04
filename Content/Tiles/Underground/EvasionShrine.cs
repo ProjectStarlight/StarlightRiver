@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
-			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 30, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].modProjectile as SawbladeSmall);
 			Main.projectile[i].timeLeft = time;
 			mp.parent = this;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 20, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].modProjectile as Dart);
 			mp.endPoint = end;
 			mp.midPoint = mid;
@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 35, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].modProjectile as Spear);
 			mp.endPoint = end;
 			mp.timeToRise = riseTime;
