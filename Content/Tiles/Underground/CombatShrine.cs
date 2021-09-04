@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				npc.lavaImmune = true;
 				npc.trapImmune = true;
 				npc.HitSound = SoundID.NPCHit7;
-				npc.DeathSound = mod.GetLegacySoundSlot(SoundType.NPCKilled, "Sounds/ShadowDeath");
+				npc.DeathSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ShadowDeath");
 				npc.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { npc.lifeMax = (int)(npc.lifeMax * hpOverride); npc.life = (int)(npc.life * hpOverride); }

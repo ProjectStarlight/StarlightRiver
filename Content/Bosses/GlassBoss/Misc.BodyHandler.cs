@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void UpdateBody()
         {
-            chain.UpdateChain(parent.npc.Center);
+            chain.UpdateChain(parent.npc.Center + parent.PainOffset);
             chain.IterateRope(updateBodySegment);
         }
 

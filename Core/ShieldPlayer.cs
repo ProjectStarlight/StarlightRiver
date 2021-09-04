@@ -18,10 +18,10 @@ namespace StarlightRiver.Core
 		public int OvershieldDrainRate = 60;
 
 		public int TimeSinceLastHit = 0;
-		public int RechargeDelay = 180;
-		public int RechargeRate = 30;
+		public int RechargeDelay = 250;
+		public int RechargeRate = 10;
 
-		public float ShieldResistance = 0.75f;
+		public float ShieldResistance = 0.6f;
 
 		public void ModifyDamage(ref int damage, ref bool crit)
 		{

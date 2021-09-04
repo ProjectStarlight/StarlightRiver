@@ -46,8 +46,8 @@ namespace StarlightRiver.Core
 
                         int off = 3;
 
-                        if (selection == 5) off = 12;
-                        if (selection == 6) off = 4;
+                        if (selection == 6) off = 12;
+                        if (selection == 5) off = 4;
 
                         if (!Framing.GetTileSafely(x + dims.X, y - 2).active() && Framing.GetTileSafely(x + dims.X, y + 1).active())
                         {

@@ -27,15 +27,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (Parent == null) 
                 return;
+
             Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossEye");
             float rot = (Parent.npc.position + Position - Main.player[Parent.npc.target].Center).ToRotation();
+
             if (Parent.npc.target >= 200) 
                 rot = 0;
+
             Color color = new Color(255, 210, 90);
+
             if ((Parent.npc.ai[0] > 360 || Timer >= 1) && Timer < 15) 
                 Timer++;
+
             if (Parent.npc.ai[1] != (int)VitricBoss.AIStates.SpawnAnimation && Parent.npc.ai[0] % 120 == Index * 6) 
                 Timer = 1;
+
             if (Parent.npc.ai[1] == (int)VitricBoss.AIStates.Anger)
             {
                 rot = StarlightWorld.rottime * 4 + Index * 2;
@@ -43,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Timer = 15;
             }
 
-            sb.Draw(tex, Parent.npc.position + Position + new Vector2(-1, 0).RotatedBy(rot) * 3 - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, Timer / 15f, 0, 0);
+            sb.Draw(tex, Parent.npc.position + Position + new Vector2(-1, 0).RotatedBy(rot) * 3 - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, Timer / 15f + Parent.pain / 200f, 0, 0);
         }
     }
 
@@ -72,6 +78,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
+        public void ShiftPosition(Vector2 shift) => position += shift;
+
         public void Draw(SpriteBatch spriteBatch)
         {
             fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
@@ -79,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             fireEffect.Parameters["sampleTexture"].SetValue(GetTexture(AssetDirectory.Assets + "FireTrail"));
 
             chain.DrawStrip(PrepareStrip, fireEffect);
-            chain.UpdateChain(parent.npc.Center + position);
+            chain.UpdateChain(parent.npc.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.npc.rotation));
             chain.IterateRope(WindForce);
         }
 

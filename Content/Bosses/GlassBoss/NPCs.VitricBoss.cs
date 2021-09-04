@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public int lastTwistState;
         public int twistTarget;
 
+        public bool rotationLocked;
+        public float lockedRotation;
+
         private int favoriteCrystal = 0;
         private bool altAttack = false;
         public Color glowColor = Color.Transparent;
@@ -41,6 +44,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private List<VitricBossEye> eyes;
         private List<VitricBossSwoosh> swooshes;
         private BodyHandler body;
+
+        //Pain handler, possibly move this to a parent class at some point? Kind of a strange thing to parent for
+        public float pain;
+        public float painDirection;
+
+        public Vector2 PainOffset => Vector2.UnitX.RotatedBy(painDirection) * (pain / 200f * 128); 
 
         internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
@@ -82,6 +91,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.DeathSound = SoundID.NPCDeath1;
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
+
+            npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/WhipAndNaenae");
+
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
 
             eyes = new List<VitricBossEye>()
@@ -163,32 +175,26 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.frame.Width = 194;
             npc.frame.Height = 160;
             var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
-            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
 
             //glow for last stand phase
             if(Phase == (int)AIStates.LastStand)
-                spriteBatch.Draw(GetTexture(Texture + "Shape"), npc.Center - Main.screenPosition, new Rectangle(npc.frame.X, 0, npc.frame.Width, npc.frame.Height), glowColor, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Shape"), npc.Center - Main.screenPosition + PainOffset, new Rectangle(npc.frame.X, 0, npc.frame.Width, npc.frame.Height), glowColor, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (eyes.Any(n => n.Parent == null)) eyes.ForEach(n => n.Parent = this);
-            if (npc.frame.X == 0) eyes.ForEach(n => n.Draw(spriteBatch));
+            if (eyes.Any(n => n.Parent == null))
+                eyes.ForEach(n => n.Parent = this);
+
+            eyes.ForEach(n => n.Draw(spriteBatch));
 
             if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, tex.Frame(), Color.White * (0.45f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f), 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + PainOffset, tex.Frame(), Color.White * (0.45f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f), 0, tex.Size() / 2, 1, 0, 0);
             }
-
-            if (Phase == (int)AIStates.FirstToSecond)
-            {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/TransitionPhaseGlow");
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(6, 3), tex.Frame(), Helper.IndicatorColor, 0, tex.Size() / 2, 1, 0, 0);
-            }
-
-            //spriteBatch.DrawHitbox(npc, Color.Purple * 0.5f);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
@@ -242,12 +248,38 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-        #endregion tml hooks
+		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+		{
+            if (pain > 0)
+                painDirection += Helper.CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+            else
+                painDirection = (npc.Center - player.Center).ToRotation();
 
-        #region helper methods
+            pain += damage;
 
-        //Used for the various differing passive animations of the different forms
-        private void SetFrameX(int frame)
+            if (crit) 
+                pain += 40;
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+		{
+            if (pain > 0)
+                painDirection += Helper.CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+            else
+                painDirection = (npc.Center - projectile.Center).ToRotation();
+
+            pain += damage;
+
+            if (crit)
+                pain += 40;
+        }
+
+		#endregion tml hooks
+
+		#region helper methods
+
+		//Used for the various differing passive animations of the different forms
+		private void SetFrameX(int frame)
         {
             npc.frame.X = npc.width * frame;
         }
@@ -267,19 +299,30 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (resetTime) GlobalTimer = 0;
         }
 
+        private int GetTwistDirection(float angle)
+		{
+            int direction = 0;
+
+            if (angle > 1.57f && angle < 1.57f * 3)
+                direction = -1;
+            else
+                direction = 1;
+
+            if (Math.Abs(angle) > MathHelper.PiOver4 && Math.Abs(angle) < MathHelper.PiOver4 * 3)
+                direction = 0;
+
+            return direction;
+        }
+
         private void Twist(int duration)
         {
             int direction = Main.player[npc.target].Center.X > npc.Center.X ? 1 : -1;
+
             float angle = (Main.player[npc.target].Center - npc.Center).ToRotation();
             if (Math.Abs(angle) > MathHelper.PiOver4 && Math.Abs(angle) < MathHelper.PiOver4 * 3)
                 direction = 0;
 
-            if (direction != lastTwistState)
-            {
-                twistTimer = 0;
-                twistTarget = direction;
-                maxTwistTimer = duration;
-            }
+            Twist(duration, direction);
         }
 
         private void Twist(int duration, int direction)
@@ -287,7 +330,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (direction != lastTwistState)
             {
                 twistTimer = 0;
-                 twistTarget = direction;
+                twistTarget = direction;
                 maxTwistTimer = duration;
             }
         }
@@ -338,6 +381,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             {
                 lastTwistState = twistTarget;
             }
+
+            //pain
+            if (pain > 0)
+                pain -= pain / 25f;
+
+            pain = (int)MathHelper.Clamp(pain, 0, 100);
 
             //Main AI
             body.UpdateBody(); //update the physics on the body
@@ -434,6 +483,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         case 3: RandomSpikes(); break;
                         case 4: PlatformDash(); break;
                     }
+
+                    DoRotation();
+
                     break;
 
                 case (int)AIStates.Anger: //the short anger phase attack when the boss loses a crystal
@@ -539,6 +591,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         case 2: Whirl(); break;
                         case 3: Rest(); break;
                     }
+
+                    DoRotation();
+
                     break;
 
                 case (int)AIStates.LastStand:
@@ -655,6 +710,34 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     break;
             }
+        }
+
+		public override void ResetEffects()
+		{
+            rotationLocked = false;
+        }
+
+		private void DoRotation()
+		{
+            if (GlobalTimer % 20 == 0)
+            {
+                if (rotationLocked)
+                    Twist(20, GetTwistDirection(lockedRotation));
+                else
+                    Twist(20);
+            }
+
+            if (twistTarget != 0)
+            {
+                float targetRot = rotationLocked ? lockedRotation : (Main.player[npc.target].Center - npc.Center).ToRotation();
+
+                if (twistTarget == 1)
+                    npc.rotation += Helper.CompareAngle(targetRot, npc.rotation) * 0.05f;
+                if (twistTarget == -1)
+                    npc.rotation += Helper.CompareAngle(targetRot + 3.14f, npc.rotation) * 0.05f;
+            }
+            else
+                npc.rotation = 0;
         }
 
         #endregion AI
