@@ -292,26 +292,26 @@ namespace StarlightRiver.Content.Tiles.Underground
 					for (int k = 0; k < 50; k += 5)
 					{
 						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
-						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, -200 - yOff), projectile.Center + new Vector2(-400 + k * 8, -60), 160 - k, 30, 30, 30);
+						SpawnSpear(projectile.Center + new Vector2(-380 + k * 8, -200 - yOff), projectile.Center + new Vector2(-380 + k * 8, -60), 160 - k, 30, 30, 30);
 					}
 
 				if (free % 4 != 1)
 					for (int k = 0; k < 50; k += 5)
 					{
 						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
-						SpawnSpear(projectile.Center + new Vector2(400 - k * 8, -200 - yOff), projectile.Center + new Vector2(400 - k * 8, -60), 160 - k, 30, 30, 30);
+						SpawnSpear(projectile.Center + new Vector2(380 - k * 8, -200 - yOff), projectile.Center + new Vector2(380 - k * 8, -60), 160 - k, 30, 30, 30);
 					}
 
 				if (free % 4 != 2)
 					for (int k = 0; k < 50; k += 5)
 					{
-						SpawnSpear(projectile.Center + new Vector2(-400 + k * 8, 300), projectile.Center + new Vector2(-400 + k * 8, 40), 160 - k, 30, 30, 30);
+						SpawnSpear(projectile.Center + new Vector2(-380 + k * 8, 300), projectile.Center + new Vector2(-380 + k * 8, 40), 160 - k, 30, 30, 30);
 					}
 
 				if (free % 4 != 3)
 					for (int k = 0; k < 50; k += 5)
 					{
-						SpawnSpear(projectile.Center + new Vector2(400 - k * 8, 300), projectile.Center + new Vector2(400 - k * 8, 40), 160 - k, 30, 30, 30);
+						SpawnSpear(projectile.Center + new Vector2(380 - k * 8, 300), projectile.Center + new Vector2(380 - k * 8, 40), 160 - k, 30, 30, 30);
 					}
 			}
 
