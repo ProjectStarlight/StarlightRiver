@@ -40,8 +40,14 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            player.statLifeMax = 500;
+            player.statManaMax = 200;
+
+            foreach (Codex.CodexEntry entry in player.GetModPlayer<Codex.CodexHandler>().Entries)
+                entry.Locked = false;
+
             //Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
-            //StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
+            StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
 
             /*int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Dart>(), 1, 1, player.whoAmI);
             var mp = (Main.projectile[i].modProjectile as Dart);

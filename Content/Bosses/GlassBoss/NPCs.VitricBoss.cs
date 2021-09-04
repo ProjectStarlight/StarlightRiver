@@ -228,14 +228,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             else
             {
-                int weapon = Main.rand.Next(1);
+                int weapon = Main.rand.Next(4);
                 switch (weapon)
                 {
-                    case 0: Item.NewItem(npc.Center, ItemType<Items.Vitric.BossSpear>()); break;
-                    case 1: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricHamaxe>()); break;
-                    case 3: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricSword>()); break;
-                    case 4: Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricBow>()); break;
+                    case 0: Item.NewItem(npc.Center, ItemType<BossSpear>()); break;
+                    case 1: Item.NewItem(npc.Center, ItemType<VitricBossBow>()); break;
+                    case 3: Item.NewItem(npc.Center, ItemType<Needler>()); break;
+                    case 4: Item.NewItem(npc.Center, ItemType<RefractiveBlade>()); break;
                 }
+
                 Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(30, 50));
                 Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
             }

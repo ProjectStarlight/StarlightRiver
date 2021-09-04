@@ -79,6 +79,7 @@ namespace StarlightRiver.Content.GUI
         float fade;
         int time;
         public static Texture2D overrideTexture = null;
+        public static List<string> specialVesselTextures = new List<string>();
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
@@ -107,7 +108,15 @@ namespace StarlightRiver.Content.GUI
                     continue;
                 }
 
-                spriteBatch.Draw(emptyTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                var slotTex = emptyTex;
+
+                //if (k < specialVesselTextures.Count)
+                    //slotTex = GetTexture(specialVesselTextures[k]);
+
+                if (k >= mp.StaminaMax - specialVesselTextures.Count)
+                    slotTex = GetTexture(specialVesselTextures[(int)mp.StaminaMax - k - 1]);
+
+                spriteBatch.Draw(slotTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
                 // If on a filled stamina vessel
                 if (k < mp.Stamina - 1)
@@ -137,6 +146,7 @@ namespace StarlightRiver.Content.GUI
             DrawOverhead(spriteBatch);
 
             overrideTexture = null;
+            specialVesselTextures.Clear();
         }
 
         private void DrawOverhead(SpriteBatch spriteBatch)

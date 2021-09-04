@@ -3,6 +3,7 @@ using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Content.Abilities.Purify;
+using StarlightRiver.Core;
 using StarlightRiver.Packets;
 using System.Collections.Generic;
 using Terraria;
@@ -26,7 +27,8 @@ namespace StarlightRiver.Content.Abilities
 
         public abstract string Texture { get; }
         public virtual float ActivationCostDefault { get; }
-        public virtual string TextureLocked => Texture + "Locked";
+        public virtual string PreviewTexture => Texture + "Preview";
+        public virtual string PreviewTextureOff => Texture + "PreviewOff";
         public virtual bool Available => User.ActiveAbility == null && User.Stamina >= ActivationCost(User);
         public virtual Color Color => Color.White;
 

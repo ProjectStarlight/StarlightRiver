@@ -25,21 +25,21 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OpenBossBag(Player player)
         {
-            int weapon = Main.rand.Next(5);
+            int weapon = Main.rand.Next(4);
 
             for (int k = 0; k < 2; k++) //PORT: k < Main.MasterMode ? 3 : 2
             {
-                switch (weapon % 5)
+                switch (weapon % 4)
                 {
-                    case 0: Item.NewItem(player.Center, ItemType<Vitric.VitricPick>()); break;
-                    case 1: Item.NewItem(player.Center, ItemType<Vitric.VitricHamaxe>()); break;
-                    case 3: Item.NewItem(player.Center, ItemType<Vitric.VitricSword>()); break;
-                    case 4: Item.NewItem(player.Center, ItemType<Vitric.VitricBow>()); break;
+                    case 0: Item.NewItem(player.Center, ItemType<BossSpear>()); break;
+                    case 1: Item.NewItem(player.Center, ItemType<VitricBossBow>()); break;
+                    case 2: Item.NewItem(player.Center, ItemType<Needler>()); break;
+                    case 3: Item.NewItem(player.Center, ItemType<RefractiveBlade>()); break;
                 }
                 weapon++;
             }
 
-            Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(25, 35));
+            Item.NewItem(player.Center, ItemType<VitricOre>(), Main.rand.Next(45, 85));
             Item.NewItem(player.Center, ItemType<MagmaCore>(), Main.rand.Next(2, 3));
             Item.NewItem(player.Center, ItemType<Misc.StaminaUp>());
             Item.NewItem(player.Center, ItemType<CeirosExpert>());
