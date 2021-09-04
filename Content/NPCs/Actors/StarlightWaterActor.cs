@@ -73,9 +73,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 
                 if (Main.rand.NextBool())
                 {
-					bool red = Main.rand.Next(45) == 0;
-					bool green = Main.rand.Next(25) == 0 && !red;
-					Dust.NewDustPerfect(pos + new Vector2(0, Main.rand.Next(-4, 1)), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, new Color(red ? 255 : Main.rand.Next(10), green ? 255 : Main.rand.Next(100), Main.rand.Next(240, 255)));
+					bool red = Main.rand.Next(35) == 0;
+					bool green = Main.rand.Next(15) == 0 && !red;
+					Color color = new Color(red ? 255 : Main.rand.Next(10), green ? 255 : Main.rand.Next(100), Main.rand.Next(240, 255));
+
+					Dust.NewDustPerfect(pos + new Vector2(0, Main.rand.Next(-4, 1)), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, color);
 				}
 			}
 
