@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
         //Prpoerties to allow edit and continue :P
-        private Vector2 ReflectionOffset => new Vector2(20, -20);
+        private Vector2 ReflectionOffset => new Vector2(20, 0);
         private int TileSearchSize = 8;
 
         public override void Load()

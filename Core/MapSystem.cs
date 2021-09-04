@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Configs;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria;
@@ -120,6 +121,7 @@ namespace StarlightRiver.Core
             {
                 //always here jic
                 MapEffect?.Shader?.Parameters["Noise"]?.SetValue(GetTexture(AssetDirectory.Assets + "Noise/ShaderNoise"));
+                MapEffect?.Shader?.Parameters["TileTarget"]?.SetValue(PlayerTarget.ScaledTileTarget);
                 MapEffect?.Shader?.Parameters["Map"]?.SetValue(MapTarget);
 
                 //change to something better

@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			int timer = timeToRise + timeToRetract + teleTime + holdTime - projectile.timeLeft;
-			bool line = Helpers.Helper.CheckLinearCollision(startPoint, projectile.Center, targetHitbox, out Vector2 intersect);
+			bool line = Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), startPoint, projectile.Center);
 
 			if (line && timer > teleTime)
 				return true;
