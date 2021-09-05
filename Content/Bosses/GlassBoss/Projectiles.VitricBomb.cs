@@ -46,11 +46,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
+            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
             Texture2D tex2 = GetTexture(AssetDirectory.GlassBoss + "BombTell");
 
-            float bright = (300 - projectile.timeLeft) / 300f * 0.9f;
-            if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.1f;
-            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), (projectile.timeLeft < 60 ? Color.Red : Color.White) * bright, 0, tex2.Size() / 2, 2, 0, 0);
+            float bright = (300 - projectile.timeLeft) / 300f * 0.7f;
+            if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.12f;
+            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, tex2.Frame(), (projectile.timeLeft < 60 ? new Color(255, 100, 50) : new Color(210, 200, 240)) * bright, 0, tex2.Size() / 2, 2, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), (projectile.timeLeft < 60 ? new Color(255, 200, 50) : new Color(220, 255, 255)) * bright, 0, tex.Size() / 2, 5, 0, 0);
         }
 
         public override bool CanHitPlayer(Player target)
@@ -99,7 +101,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             for (int k = 0; k < 4; k++)
-                Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Mine" + k) );
+            {
+                Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Mine" + k));
+                Projectile.NewProjectile(projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
+            }
 
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
                 player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), 60, 0);

@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public void ResetAttack()
         {
             AttackTimer = 0;
+            SetFrameY(0);
         }
         private void RandomizeTarget()
         {
@@ -78,6 +79,22 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 lockedRotation = rot + 3.14f;
             }
 
+            if(AttackTimer % 110 == 25)
+                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+
+            if (AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
+			{
+                SetFrameY(2);
+
+                int x = (int)(Math.Sin((AttackTimer % 110 - 10) / 80f * 3.14f) * 8);
+                SetFrameX(x);
+			}
+            else
+			{
+                SetFrameY(0);
+            }
+
+
             rotationLocked = true;
 
             for (int k = 0; k < 4; k++) //each crystal
@@ -108,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 if (AttackTimer == 360)
-                    Main.PlaySound(SoundID.DD2_BetsyFireballImpact, npc.Center);
+                    Helper.PlayPitched("GlassBoss/RingIdle", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
@@ -148,6 +165,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     ResetAttack(); //all done!
                 }
             }
+
             if (AttackTimer >= 360 && AttackTimer < 840) //the collision handler for this attack. out here so its not done 4 times
             {
                 foreach (Player player in Main.player.Where(n => n.active))
@@ -253,9 +271,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             for (int k = 0; k < crystalLocations.Count; k++)
             {
-                if (AttackTimer >= 120 + k * 120 && AttackTimer < 120 + (k + 1) * 120) //move between each platform
+                if (AttackTimer >= 140 + k * 140 && AttackTimer < 140 + (k + 1) * 140) //move between each platform
                 {
-                    int timer = (int)AttackTimer - (120 + k * 120); //0 to 240, grabs the relative timer for ease of writing code
+                    int timer = (int)AttackTimer - (140 + k * 140); //0 to 240, grabs the relative timer for ease of writing code
 
                     if (timer == 0) 
                     {
@@ -269,7 +287,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (k % 2 == 0) //pick one of these 2 projectile-based attacks, alternating every other platform
                     {
-                        if (timer >= 80 && timer % 10 == 0) //burst of 4 spikes
+                        if(timer < 30)
+						{
+                            SetFrameY(2);
+
+                            int x = (int)(timer / 30f * 2);
+                            SetFrameX(x);
+                        }
+
+                        if(timer > 70 && timer < 130)
+						{
+                            int x = 2 + (int)(((timer - 70) % 10) / 10f * 2);
+                            SetFrameX(x);
+                        }
+
+                        if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
                         {
                             Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
@@ -279,6 +311,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
                             Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                         }
+
+                        if(timer > 110)
+                            SetFrameY(0);
                     }
                     else
                     {
@@ -292,20 +327,35 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             lockedRotation = rot + 3.14f;
                         }
 
+                        if(timer == 80)
+                            Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+
+                        if (timer > 60 && timer < 140)
+                        {
+                            SetFrameY(2);
+
+                            int x = (int)(Math.Sin((timer - 60) / 80f * 3.14f) * 8);
+                            SetFrameX(x);
+                        }
+                        else
+                        {
+                            SetFrameY(0);
+                        }
+
                         if (timer > 60 && timer <= 60 + 94)
                             rotationLocked = true;
                     }
                 }
             }
 
-            if (AttackTimer == 120 + 120 * 6) startPos = npc.Center; //set where we are to the start
+            if (AttackTimer == 140 + 140 * 6) startPos = npc.Center; //set where we are to the start
 
-            if (AttackTimer > 120 + 120 * 6) //going home
+            if (AttackTimer > 140 + 140 * 6) //going home
             {
-                int timer = (int)AttackTimer - (120 + 6 * 120);
-                npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 120f);
+                int timer = (int)AttackTimer - (140 + 6 * 140);
+                npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 140f);
 
-                if (timer == 121) ResetAttack(); //reset attack
+                if (timer == 141) ResetAttack(); //reset attack
             }
 
         }
@@ -322,10 +372,28 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (AttackTimer < 120) npc.Center = Vector2.SmoothStep(startPos, homePos, AttackTimer / 120f);
 
+            if (AttackTimer > 120 && AttackTimer % 120 > 30 && AttackTimer % 120 <= 90)
+            {
+                SetFrameY(2);
+
+                int x = (int)(Math.Sin((AttackTimer % 120 - 30) / 60f * 3.14f) * 8);
+                SetFrameX(x);
+
+                rotationLocked = true;
+            }
+            else
+            {
+                SetFrameY(0);
+            }
+
             if (AttackTimer % 120 == 0)
             {
+                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
                 int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0);
-                Main.projectile[index].rotation = (npc.Center - Main.player[npc.target].Center).ToRotation();
+                Main.projectile[index].rotation = rot;
+
+                lockedRotation = rot + 3.14f;
+                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
 
             if (AttackTimer >= 120 * 4 - 1) ResetAttack(); //end after the third volley is fired
@@ -333,12 +401,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private void Rest()
         {
-            int restTime = Main.expertMode ? 240 : 300;
-            if (AttackTimer % 20 == 0)
-            {
-                Projectile.NewProjectile(homePos + new Vector2(-700 + (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 5, 0);
-                Projectile.NewProjectile(homePos + new Vector2(700 - (AttackTimer / restTime * 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 5, 0);
-            }
+            int restTime = Main.expertMode ? 120 : 180;
+
+            if (AttackTimer == 60)
+                startPos = npc.Center;
+
+            if (AttackTimer > 60 && AttackTimer <= 120)
+                npc.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - 60) / 60f);
 
             if (AttackTimer == restTime) ResetAttack();
         }
@@ -349,8 +418,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (AttackTimer < 300)
             {
-                float rad = AttackTimer * 2.5f;
-                float rot = AttackTimer / 300f * 6.28f;
+                float rad = AttackTimer * 1.3f;
+                float rot = Helpers.Helper.BezierEase(AttackTimer / 300f) * 6.28f;
                 npc.Center = homePos + new Vector2(0, -rad).RotatedBy(favoriteCrystal == 0 ? rot : -rot);
 
                 if (Main.expertMode && AttackTimer % 45 == 0)
@@ -361,11 +430,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
             }
 
-            if (AttackTimer == 300) startPos = npc.Center;
+            if (AttackTimer > 240)
+            {
+                rotationLocked = true;
+                lockedRotation = 1.57f;
+            }
+            
 
-            if (AttackTimer > 300) npc.Center = Vector2.Lerp(startPos, homePos + new Vector2(0, 400), (AttackTimer - 300) / 30f);
+            if (AttackTimer > 330 && AttackTimer < 360)
+                npc.position.Y -= 4;
 
-            if (AttackTimer == 330)
+            if (AttackTimer == 360) startPos = npc.Center;
+
+            if (AttackTimer > 360) npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, 1300), (AttackTimer - 360) / 40f);
+
+            if (AttackTimer == 380)
             {
                 foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, npc.Center) < 1500))
                 {
@@ -373,55 +452,137 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
                 Main.PlaySound(SoundID.NPCDeath43, npc.Center);
 
-                for (int k = 0; k < 12; k++)
+                if (altAttack)
                 {
-                    Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, 8), ProjectileType<GlassSpike>(), 15, 0);
+                    for (int k = 0; k < 12; k++)
+                    {
+                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, Main.rand.NextFloat(7, 8)), ProjectileType<GlassSpike>(), 15, 0);
+                    }
                 }
+                else
+				{
+                    for (int k = 0; k < 6; k++)
+                    {
+                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(5, 18)), ProjectileType<BossSpike>(), 10, 1);
+                    }
+                }
+
                 ResetAttack();
             }
         }
 
         private void Mines()
         {
-            if (AttackTimer == 1)
-                Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 15, 0);
+            rotationLocked = true;
+            lockedRotation = 1.57f;
 
-            if (AttackTimer == 10 && npc.life <= (npc.lifeMax - npc.lifeMax * (4 / 7)) / 3 * 2)
-                Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 15, 0);
+            if(AttackTimer == 1)
+                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
 
-            if (AttackTimer == 20 && npc.life <= (npc.lifeMax - npc.lifeMax * (4 / 7)) / 3)
-                Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 15, 0);
+            if (AttackTimer < 30)
+			{
+                SetFrameY(3);
 
-            if (AttackTimer == 60) ResetAttack();
+                int x = (int)(AttackTimer / 30f * 10);
+                SetFrameX(x);
+            }
+
+            if (altAttack)
+            {
+                if (AttackTimer == 30)
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 15, 0);
+
+                if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 15, 0);
+
+                if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 15, 0);
+            }
+            else
+			{
+                if (AttackTimer == 30)
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 15, 0);
+
+                if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 15, 0);
+
+                if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 15, 0);
+            }
+
+            if(AttackTimer == 60)
+                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+
+            if (AttackTimer > 60 && AttackTimer <= 90)
+			{
+                SetFrameY(3);
+
+                int x = 10 - (int)((AttackTimer - 60) / 30f * 10);
+                SetFrameX(x);
+            }
+
+            if (AttackTimer == 120) 
+                ResetAttack();
         }
 
         private void Darts()
 		{
+            rotationLocked = true;
+            lockedRotation = 1.57f;
+
             if (AttackTimer == 1)
+            {
                 startPos = npc.Center;
+                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
+            }
 
-            if (AttackTimer < 120)
-                npc.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 120f);
+            if (AttackTimer < 60)
+                npc.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 60f);
 
-            if(AttackTimer > 120)
+            if (AttackTimer == 120)
+                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+
+            if (AttackTimer > 120 && AttackTimer < 180)
+            {
+                SetFrameY(3);
+
+                int x = (int)((AttackTimer - 120) / 60f * 10);
+                SetFrameX(x);
+            }
+
+            if (AttackTimer > 120)
 			{
-                if(AttackTimer % 90 < 20)
+                if (AttackTimer % 90 < 20)
 				{
                     var rot = Main.rand.NextFloat(6.28f);
                     Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 60, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -1, 0, new Color(255, 150, 50), 0.5f);
 				}
 
-                if(AttackTimer % 90 == 30)
+                if (AttackTimer % 90 == 30)
 				{
                     float rot = (Main.player[npc.target].Center - npc.Center).ToRotation();
 
                     for (int k = -2; k <= 2; k++)
-                        SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.35f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.1f) * 700, 60);
-				}
-			}
+                        SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
+                }
 
-            if (AttackTimer >= 480)
+                if (AttackTimer % 90 == 45)
+                    Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
+            }
+
+            if (AttackTimer > 495)
+			{
+                SetFrameY(3);
+
+                int x = 10 - (int)((AttackTimer - 495) / 60f * 10);
+                SetFrameX(x);
+            }
+
+            if (AttackTimer >= 555)
+            {
+                SetFrameY(0);
                 ResetAttack();
+            }
 		}
 
         public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)

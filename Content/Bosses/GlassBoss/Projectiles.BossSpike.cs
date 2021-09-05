@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (Timer == 1) projectile.ai[1] = projectile.position.Y;
 
+            projectile.velocity *= 0.98f;
+
             if (Timer > 10 && Timer < 80 && Main.rand.Next(4) == 0)
             {
                 var d = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 100), 0.5f);

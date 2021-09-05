@@ -178,8 +178,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source1 = new Rectangle(0, 0, tex.Width, height1);
             Rectangle source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
-            //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
-            //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+            Texture2D tex2 = GetTexture(Texture + "Glow");
+            sb.Draw(tex2, target1, source1, Color.White, 0, Vector2.Zero, 0, 0);
+            sb.Draw(tex2, target2, source2, Color.White, 0, Vector2.Zero, 0, 0);
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
@@ -276,8 +277,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source2 = new Rectangle(0, 0, tex.Width, height2);
             Rectangle source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
-            //sb.Draw(tex, target1, source1, color, 0, Vector2.Zero, 0, 0);
-            //sb.Draw(tex, target2, source2, color, 0, Vector2.Zero, 0, 0);
+            Texture2D tex2 = GetTexture(Texture + "Glow");
+            sb.Draw(tex2, target1, source1, Color.White, 0, Vector2.Zero, 0, 0);
+            sb.Draw(tex2, target2, source2, Color.White, 0, Vector2.Zero, 0, 0);
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);

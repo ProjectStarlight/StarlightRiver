@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-	internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
+    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
     {
         public Vector2 startPos;
         public Vector2 endPos;
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public float pain;
         public float painDirection;
 
-        public Vector2 PainOffset => Vector2.UnitX.RotatedBy(painDirection) * (pain / 200f * 128); 
+        public Vector2 PainOffset => Vector2.UnitX.RotatedBy(painDirection) * (pain / 200f * 128);
 
         internal ref float GlobalTimer => ref npc.ai[0];
         internal ref float Phase => ref npc.ai[1];
@@ -64,13 +64,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Ceiros");
 
-		public override bool Autoload(ref string name)
-		{
+        public override bool Autoload(ref string name)
+        {
             BodyHandler.LoadGores();
-			return base.Autoload(ref name);
-		}
+            return base.Autoload(ref name);
+        }
 
-		public override void SetDefaults()
+        public override void SetDefaults()
         {
             npc.aiStyle = -1;
             npc.lifeMax = 5000;
@@ -92,12 +92,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
 
-            npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/WhipAndNaenae");
+            npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBoss/ceramicimpact");
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
 
             eyes = new List<VitricBossEye>()
-            { 
+            {
             new VitricBossEye(new Vector2(16, 70), 0),
             new VitricBossEye(new Vector2(66, 70), 1)
             };
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
                 return true;
 
-            else 
+            else
                 return false;
         }
 
@@ -172,13 +172,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             swooshes.ForEach(n => n.Draw(spriteBatch));
             body.DrawBody(spriteBatch);
 
-            npc.frame.Width = 194;
-            npc.frame.Height = 160;
+            npc.frame.Width = 204;
+            npc.frame.Height = 190;
             var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+            spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition + PainOffset, npc.frame, Color.White, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
 
             //glow for last stand phase
-            if(Phase == (int)AIStates.LastStand)
+            if (Phase == (int)AIStates.LastStand)
                 spriteBatch.Draw(GetTexture(Texture + "Shape"), npc.Center - Main.screenPosition + PainOffset, new Rectangle(npc.frame.X, 0, npc.frame.Width, npc.frame.Height), glowColor, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             return false;
         }
@@ -229,7 +230,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             body.SpawnGores();
 
-            if (Main.expertMode) 
+            if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
 
             else
@@ -248,8 +249,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
-		{
+        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+        {
             if (pain > 0)
                 painDirection += Helper.CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -257,12 +258,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             pain += damage;
 
-            if (crit) 
+            if (crit)
                 pain += 40;
-		}
+        }
 
-		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
-		{
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
             if (pain > 0)
                 painDirection += Helper.CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -274,22 +275,20 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 pain += 40;
         }
 
-		#endregion tml hooks
+        #endregion tml hooks
 
-		#region helper methods
+        #region helper methods
 
-		//Used for the various differing passive animations of the different forms
-		private void SetFrameX(int frame)
+        //Used for the various differing passive animations of the different forms
+        private void SetFrameX(int frame)
         {
-            npc.frame.X = npc.width * frame;
+            npc.frame.X = npc.frame.Width * frame;
         }
 
-        //Easily animate a phase with custom framerate and frame quantity
-        //private void Animate(int ticksPerFrame, int maxFrames) //unused
-        //{
-        //    if (npc.frameCounter++ >= ticksPerFrame) { npc.frame.Y += npc.height; npc.frameCounter = 0; }
-        //    if (npc.frame.Y / npc.height > maxFrames - 1) npc.frame.Y = 0;
-        //}
+        private void SetFrameY(int frame)
+        {
+            npc.frame.Y = npc.frame.Height * frame;
+        }
 
         //resets animation and changes phase
         private void ChangePhase(AIStates phase, bool resetTime = false)
@@ -722,22 +721,26 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
 		private void DoRotation()
 		{
-            if (GlobalTimer % 20 == 0)
+            if (GlobalTimer % 15 == 0)
             {
                 if (rotationLocked)
-                    Twist(20, GetTwistDirection(lockedRotation));
+                    Twist(15, GetTwistDirection(lockedRotation));
                 else
-                    Twist(20);
+                    Twist(15);
             }
 
             if (twistTarget != 0)
             {
                 float targetRot = rotationLocked ? lockedRotation : (Main.player[npc.target].Center - npc.Center).ToRotation();
+                float speed = 0.07f;
+
+                if (rotationLocked)
+                    speed *= 2;
 
                 if (twistTarget == 1)
-                    npc.rotation += Helper.CompareAngle(targetRot, npc.rotation) * 0.05f;
+                    npc.rotation += Helper.CompareAngle(targetRot, npc.rotation) * speed;
                 if (twistTarget == -1)
-                    npc.rotation += Helper.CompareAngle(targetRot + 3.14f, npc.rotation) * 0.05f;
+                    npc.rotation += Helper.CompareAngle(targetRot + 3.14f, npc.rotation) * speed;
             }
             else
                 npc.rotation = 0;

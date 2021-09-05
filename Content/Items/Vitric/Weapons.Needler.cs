@@ -18,9 +18,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			DisplayName.SetDefault("Needler");
 			Tooltip.SetDefault("Stick spikes to enemies to build up heat \nOverheated enemies explode, dealing massive damage");
-
 		}
-
 
 		//TODO: Adjust rarity sellprice and balance
 		public override void SetDefaults()
@@ -39,6 +37,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			item.shootSpeed = 14f;
 			item.autoReuse = true;
 		}
+
 		//TODO: Add glowmask to weapon
 		//TODO: Add holdoffset
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -51,27 +50,37 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
 
 			direction = new Vector2(speedX, speedY).RotatedBy(itemRotation);
+
 			for (int i = 0; i < 15; i++)
 			{
 				Dust dust = Dust.NewDustPerfect(position + (direction * 4.4f), 6, (direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f) * Main.rand.NextFloat());
 				dust.noGravity = true;
 			}
+
 			player.itemRotation = direction.ToRotation(); //TODO: Wrap properly when facing left
+
 			if (player.direction != 1)
-			{
 				player.itemRotation -= 3.14f;
-			}
+
 			return false;
 		}
 	}
+
 	public class NeedlerProj : ModProjectile
 	{
+		int enemyID;
+		bool stuck = false;
+		Vector2 offset = Vector2.Zero;
+
+		float needleLerp = 0f;
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needle");
 		}
+
 		public override void SetDefaults()
 		{
 			projectile.penetrate = 1;
@@ -83,14 +92,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
 		}
-		int enemyID;
-		bool stuck = false;
-		Vector2 offset = Vector2.Zero;
-
-		float needleLerp = 0f;
 
 		//TODO: Move methods to top + method breaks
-
 		//TODO: Turn needles into getnset
 		public override bool PreAI()
 		{
@@ -107,6 +110,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					//Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), projectile.damage * 3, projectile.knockBack, projectile.owner);
 					projectile.active = false;
 				}
+
 				if (needles > needleLerp)
 				{
 					if (needleLerp < 10)
@@ -120,28 +124,35 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				else
 					needleLerp = needles;
+
 				Color lightColor = Color.Lerp(Color.Orange, Color.Red, needleLerp / 20f);
 				Lighting.AddLight(projectile.Center, lightColor.R * needleLerp / 2000f, lightColor.G * needleLerp / 2000f, lightColor.B * needleLerp / 2000f);
+
 				if (!target.active)
 				{
 					if (projectile.timeLeft > 5)
 						projectile.timeLeft = 5;
 					projectile.velocity = Vector2.Zero;
 				}
+
 				else
 				{
 					projectile.position = target.position + offset;
 				}
+
 				if (projectile.timeLeft == 2)
 					target.GetGlobalNPC<NeedlerNPC>().needles--;
+
 				return false;
 			}
+
 			else
 			{
 				projectile.rotation = projectile.velocity.ToRotation();
             }
 			return true;
 		}
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (!stuck && target.life > 0)
@@ -159,6 +170,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				projectile.timeLeft = 400;
 			}
 		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			NPC target = Main.npc[enemyID];
@@ -171,6 +183,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Main.projectileTexture[projectile.type];
 			spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), color * (needleLerp / 10f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
+			
 			if (stuck)
 			{
 				tex = ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerBloom");
@@ -178,18 +191,20 @@ namespace StarlightRiver.Content.Items.Vitric
 				color.A = 0;
 				spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)), null, color * 0.66f, projectile.rotation, new Vector2(tex.Width, tex.Height) / 2, ((projectile.scale * (needleLerp / 10f)) + 0.25f) * new Vector2(1f, 1.25f), SpriteEffects.None, 0f);
 			}
+
 			return false;
 		}
 	}
 
 	public class NeedlerExplosion : ModProjectile
 	{
-
 		public override string Texture => AssetDirectory.VitricItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needle");
 		}
+
 		public override void SetDefaults()
 		{
 			projectile.penetrate = -1;
@@ -200,11 +215,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			projectile.timeLeft = 20;
 			projectile.extraUpdates = 1;
 		}
+
         public override void AI()
         {
 			for (int i = 0; i < 2; i++)
 				Gore.NewGoreDirect(projectile.Center + Main.rand.NextVector2Circular(25, 25), Main.rand.NextFloat(3.14f,6.28f).ToRotationVector2() * 7, ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.4f, 0.8f));
 		}
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 			/*Main.spriteBatch.End();
@@ -224,11 +241,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);*/
 			return false;
         }
+
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			crit = true;
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
@@ -239,13 +258,16 @@ namespace StarlightRiver.Content.Items.Vitric
 				
 		}
 	}
+
 	public class NeedlerEmber : ModProjectile
     {
 		public override string Texture => AssetDirectory.VitricItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Needle");
 		}
+
 		public override void SetDefaults()
 		{
 			projectile.penetrate = 1;
@@ -259,6 +281,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			projectile.extraUpdates = 1;
 			projectile.alpha = 255;
 		}
+
         public override void AI()
         {
 			projectile.scale *= 0.98f;
@@ -270,6 +293,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
     }
+
 	public class NeedlerNPC : GlobalNPC
 	{
 		public override bool InstancePerEntity => true;
@@ -329,6 +353,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			base.AI(npc);
         }
+
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
         {
 			/*if (needleTimer > 1)

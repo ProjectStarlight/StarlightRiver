@@ -90,20 +90,36 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             SpriteEffects flip = (
                 (parent.twistTarget == -1 && parent.twistTimer > threshold) ||
-                (parent.lastTwistState == -1 && parent.twistTimer < threshold)
-                ) && shouldBeTwistFrame ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                (parent.lastTwistState == -1)
+                ) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            if (Math.Abs(parent.lastTwistState) == Math.Abs(parent.twistTarget) && parent.lastTwistState != parent.twistTarget)
+			{
+                int dir = (int)flip;
+                dir *= (parent.twistTimer > parent.maxTwistTimer / 2 ? 1 : -1);
+
+                flip = dir == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			}
 
             if (shouldBeTwistFrame)
                 source.X += 114;
 
-            if(index == 0) //change this so the head is drawn from here later maybe? and move all visuals into this class?
+            if (index == 0) //change this so the head is drawn from here later maybe? and move all visuals into this class?
             {
                 parent.npc.spriteDirection = (int)flip;
 
-                if (shouldBeTwistFrame) //this is dumb, mostly just to test
-                    parent.npc.frame.X = parent.npc.frame.Width;
-                else
-                    parent.npc.frame.X = 0;
+                if (parent.npc.frame.Y == 0)
+                {
+                    if (Math.Abs(parent.lastTwistState) == Math.Abs(parent.twistTarget) && parent.lastTwistState != parent.twistTarget)
+                    {
+                        parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)(Math.Sin(parent.twistTimer / (float)parent.maxTwistTimer * 3.14f) * 2));
+                    }
+
+                    else if (shouldBeTwistFrame) //this is dumb, mostly just to test
+                        parent.npc.frame.X = parent.npc.frame.Width * (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2);
+                    else
+                        parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2));
+                }
             }
 
             var brightness = (0.5f + (float)Math.Sin(StarlightWorld.rottime + index));
