@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items
             item.damage = 10;
             item.melee = true;
             item.width = 38;
-            item.height = 38;
+            item.height = 40;
             item.useTime = 18;
             item.useAnimation = 18;
             item.useStyle = ItemUseStyleID.SwingThrow;

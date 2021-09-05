@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 if (AttackTimer == 360)
-                    Helper.PlayPitched("GlassBoss/RingIdle", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+                    Helper.PlayPitched("GlassBoss/RingIdle", 0.4f, -0.2f, npc.Center);
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
