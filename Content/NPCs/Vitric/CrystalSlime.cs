@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.GetHandler().Unlocked<Dash>() && spawnInfo.player.ZoneRockLayerHeight && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 1f : 0f;
+            return 0;
         }
 
         public override void NPCLoot()

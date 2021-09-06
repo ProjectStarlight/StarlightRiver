@@ -19,14 +19,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetStaticDefaults()
         {
-            Main.npcFrameCount[npc.type] = 6;
+            Main.npcFrameCount[npc.type] = 3;
             DisplayName.SetDefault("[PH]BoomBug");
         }
 
         public override void SetDefaults()
         {
-            npc.width = 32;
-            npc.height = 32;
+            npc.width = 34;
+            npc.height = 40;
             npc.knockBackResist = 1.5f;
             npc.lifeMax = 20;
             npc.noGravity = true;
@@ -52,14 +52,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     {
                         npc.direction = Main.rand.NextBool() ? 1 : -1;
                         npc.spriteDirection = npc.direction;
-                        SavedRotation = Main.rand.NextFloat(-0.5f, 0.5f);
+                        SavedRotation = Main.rand.NextFloat(-0.7f, 0.3f);
                         npc.netUpdate = true;
                     }
 
-                    npc.velocity = (Vector2.UnitX * npc.spriteDirection).RotatedBy(SavedRotation) * (Timer % 30) * 0.1f;
+                    npc.velocity = (Vector2.UnitX * npc.spriteDirection).RotatedBy(SavedRotation) * (Timer % 30) * 0.15f;
 
                     npc.TargetClosest();
-                    if (Vector2.DistanceSquared(npc.Center, Main.player[npc.target].Center) <= Math.Pow(200, 2))
+                    if (Vector2.DistanceSquared(npc.Center, Main.player[npc.target].Center) <= Math.Pow(400, 2))
 					{
                         Timer = 0;
                         State = 1;
@@ -76,22 +76,29 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     {
                         SavedRotation = (Main.player[npc.target].Center - npc.Center).ToRotation();
                         npc.netUpdate = true;
+
+                        npc.direction = (Main.player[npc.target].Center - npc.Center).X > 0 ? 1 : -1;
+                        npc.spriteDirection = npc.direction;
+
                     }
 
                     if (Timer == 60)
                         npc.velocity = Vector2.UnitX.RotatedBy(SavedRotation) * 5;
 
-                    if (Timer > 60)
+                    if (Timer > 66)
                     {
-                        if(npc.velocity.Length() < 10)
+                        if (npc.velocity.Length() < 10)
                             npc.velocity *= 1.05f;
 
-                        for(int x = -1; x <= 2; x++)
-                            for (int y = -1; y <= 2; y++)
-							{
-                                Tile tile = Framing.GetTileSafely((int)(npc.position.X / 16) + x, (int)(npc.position.Y / 16) + y);
+                        if (npc.velocity == Vector2.Zero)
+                            Explode();
 
-                                if(tile.collisionType == 1)
+                        for(int x = -2; x <= 2; x++)
+                            for (int y = -2; y <= 2; y++)
+							{
+                                Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
+
+                                if(tile.collisionType != 0)
                                     Explode();
 							}
                     }
@@ -102,7 +109,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void FindFrame(int frameHeight)
 		{
-            npc.frame = new Rectangle(0, frameHeight * (int)(Timer / 10 % 6), npc.width, frameHeight);
+            npc.frame = new Rectangle(0, frameHeight * (int)(Timer / 3 % 3), npc.width, frameHeight);
 		}
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
@@ -135,6 +142,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public void DrawAdditive(SpriteBatch sb)
 		{
+            var glowTex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+            float sin = (float)Math.Sin(Timer / 5f);
+            float sin2 = (float)Math.Sin(Timer / 7f);
+
+            sb.Draw(glowTex, npc.Center + new Vector2(-12 * npc.spriteDirection, 16) - Main.screenPosition, null, new Color(255, 200, 100), 0, glowTex.Size() / 2, 0.5f + 0.1f * sin, 0, 0);
+            sb.Draw(glowTex, npc.Center + new Vector2(-12 * npc.spriteDirection, 16) - Main.screenPosition, null, new Color(255, 100, 20), 0, glowTex.Size() / 2, 0.7f + 0.1f * sin2, 0, 0);
+
             if (State == 1 && Timer > 20 && Timer <= 60)
             {
                 var tex = GetTexture(AssetDirectory.MiscTextures + "DirectionalBeam");
