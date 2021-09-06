@@ -34,7 +34,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.knockBackResist = 0;
         }
 
-        public override void AI()
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return ActionState == 3 && base.CanHitPlayer(target, ref cooldownSlot);
+		}
+
+		public override void AI()
         {
             ActionTimer++;
 
@@ -52,7 +57,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 case 1: // Emerging
                     npc.frame.X = 2 * npc.width;
-                    npc.frame.Y = npc.height * (int)(ActionTimer / 45f * 18);
+                    npc.frame.Y = npc.height * (int)(ActionTimer / 60f * 17);
 
                     if (ActionTimer > 60)
                         ChangeState(2);
@@ -73,19 +78,22 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                     else
                     {
-                        npc.frame.X = 1 * npc.width;
-                        npc.frame.Y = npc.height * (int)(ActionTimer / 30f * 12);
+                        if (ActionTimer <= 30)
+                        {
+                            npc.frame.X = 1 * npc.width;
+                            npc.frame.Y = npc.height * (int)(ActionTimer / 30f * 12);
+                        }
 
                         if (ActionTimer == 30)
                             npc.Center = FindNewPosition();
 
-                        if (ActionTimer > 30)
+                        if (ActionTimer > 60 && ActionTimer <= 105)
                         {
                             npc.frame.X = 2 * npc.width;
-                            npc.frame.Y = npc.height * (int)((ActionTimer - 30) / 45f * 17);
+                            npc.frame.Y = npc.height * (int)((ActionTimer - 60) / 45f * 17);
                         }
 
-                        if (ActionTimer >= 75)
+                        if (ActionTimer >= 135)
                             ActionTimer = 0;
                     }
 
@@ -113,8 +121,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
         {
             ActionState = target;
             ActionTimer = time;
-
-            Main.NewText("State changed to " + target);
         }
 
         private bool CastToTarget()
@@ -173,6 +179,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + Vector2.UnitY * 2, npc.frame, drawColor, npc.rotation, new Vector2(33, 32), 1, npc.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition + Vector2.UnitY * 2, npc.frame, Color.White, npc.rotation, new Vector2(33, 32), 1, npc.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
     }
