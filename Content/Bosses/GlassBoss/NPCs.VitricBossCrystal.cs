@@ -150,7 +150,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (npc.friendly && state != 0)
                     {
                         if (altTimer > 0 && altTimer <= 90)
-                            npc.Center = Vector2.SmoothStep(StartPos, TargetPos, altTimer / 90);
+                            npc.Center = Vector2.Lerp(StartPos, TargetPos, Helper.SwoopEase(altTimer / 90f));
+
                         if (altTimer == 90)
                         {
                             npc.friendly = false;

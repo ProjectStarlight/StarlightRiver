@@ -346,6 +346,11 @@ namespace StarlightRiver.Helpers
             return time * time / (2f * (time * time - time) + 1f);
         }
 
+        public static float SwoopEase(float time)
+		{
+            return 3.75f * (float)Math.Pow(time, 3) - 8.5f * (float)Math.Pow(time, 2) + 5.75f * time;
+		}
+
         public static T[] FastUnion<T>(this T[] front, T[] back)
         {
             T[] combined = new T[front.Length + back.Length];
@@ -415,6 +420,49 @@ namespace StarlightRiver.Helpers
 
             return Main.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
         }
+
+        public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30)
+		{
+            Point16 output = Point16.Zero;
+
+            for(int x = 0; x < radius; x++)
+                for(int y = 0; y < radius; y++)
+				{
+                    Point16 check1 = start + new Point16(x, y);
+                    if (WorldGen.InWorld(check1.X, check1.Y))
+                    {
+                        Tile checkTile = Framing.GetTileSafely(check1);
+                        if (condition(checkTile))
+                            return check1;
+                    }
+
+                    Point16 check2 = start + new Point16(-x, y);
+                    if (WorldGen.InWorld(check2.X, check2.Y))
+                    {
+                        Tile checkTile = Framing.GetTileSafely(check2);
+                        if (condition(checkTile))
+                            return check2;
+                    }
+
+                    Point16 check3 = start + new Point16(x, -y);
+                    if (WorldGen.InWorld(check3.X, check3.Y))
+                    {
+                        Tile checkTile = Framing.GetTileSafely(check3);
+                        if (condition(checkTile))
+                            return check3;
+                    }
+
+                    Point16 check4 = start + new Point16(-x, -y);
+                    if (WorldGen.InWorld(check4.X, check4.Y))
+                    {
+                        Tile checkTile = Framing.GetTileSafely(check4);
+                        if (condition(checkTile))
+                            return check4;
+                    }
+                }
+
+            return output;
+		}
     }
 }
 

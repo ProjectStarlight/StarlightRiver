@@ -51,6 +51,8 @@ namespace StarlightRiver.Core
         public float itemSpeed;
         public float rotation;
 
+        public static List<PlayerTicker> spawners = new List<PlayerTicker>();
+
         public override void PreUpdate()
         {
             if (PickupTarget != null)
@@ -80,6 +82,9 @@ namespace StarlightRiver.Core
                 if (damage > 0)
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was impaled by glass shards."), damage, 0);
             }
+
+            foreach (PlayerTicker ticker in spawners.Where(n => n.Active(player) && Timer % n.TickFrequency == 0))
+                ticker.Tick(player);
         }
 
         public delegate void ResetEffectsDelegate(StarlightPlayer player);

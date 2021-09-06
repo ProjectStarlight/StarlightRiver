@@ -674,7 +674,7 @@ namespace StarlightRiver.Core
 
                 for (int j = y - top + offset; j < y + depth + offset; j++)
                 {
-                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.TileType("VitricSoftSand");
+                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.TileType("VitricSand");
                     PlaceTile(i, j, t, false, true);
                 }
 

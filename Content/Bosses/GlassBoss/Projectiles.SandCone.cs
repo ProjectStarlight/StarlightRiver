@@ -67,7 +67,22 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-        public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void OnHitPlayer(Player target, int damage, bool crit)
+		{
+            target.AddBuff(BuffID.OnFire, 600);
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+            if (projectile.ai[0] > 70)
+            {
+                return Helper.CheckConicalCollision(projectile.Center, 700 * (int)Math.Min(((projectile.ai[0] - 70) / 12), 1), projectile.rotation, 0.2f, targetHitbox);
+            }
+
+            return false;
+        }
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
         {
             if (projectile.ai[0] < 66) //draws the proejctile's tell ~1 second before it goes off
             {

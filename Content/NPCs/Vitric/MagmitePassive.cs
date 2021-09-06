@@ -12,6 +12,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
     {
         public ref float ActionState => ref npc.ai[0];
         public ref float ActionTimer => ref npc.ai[1];
+        public ref float GlobalTimer => ref npc.ai[2];
 
         public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
 
@@ -34,6 +35,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.defense = 0;
             npc.lifeMax = 25;
             npc.aiStyle = -1;
+            npc.lavaImmune = true;
+
+            ActionState = -1;
         }
 
         public override Color? GetAlpha(Color drawColor)
@@ -51,9 +55,22 @@ namespace StarlightRiver.Content.NPCs.Vitric
             var tileUnder = Framing.GetTileSafely(x, y + 1);
 
             ActionTimer++;
+            GlobalTimer++;
 
             if (Main.rand.Next(10) == 0)
                 Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+
+            if(ActionState == -1)
+			{
+                if (tile.liquid > 0)
+                    npc.velocity.Y = -4;
+                else
+                {
+                    npc.velocity.X += Main.rand.NextBool() ? 5 : -5;
+                    npc.velocity.Y = -10;
+                    ActionState = 0;
+                }
+			}
 
             if (ActionState == 0)
             {
@@ -63,6 +80,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     npc.velocity *= 0;
                     ActionTimer = 0;
                     return;
+                }
+
+                else if(npc.velocity.X == 0 && tile.collisionType != 0 && tileUp.collisionType == 0)
+				{
+                    npc.velocity.Y -= 2;
                 }
 
                 npc.velocity.X += 0.05f * (Main.player[Main.myPlayer].Center.X > npc.Center.X ? 1 : -1);
@@ -130,7 +152,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             spriteBatch.Draw(GetTexture(Texture), pos, npc.frame, Color.White, 0, new Vector2(21, 20), 1, npc.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
-    }
+	}
 
     internal class MagmiteGore : ModGore
     {

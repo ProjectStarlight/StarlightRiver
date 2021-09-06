@@ -15,12 +15,14 @@ namespace StarlightRiver.Content.Items.Vitric
 {
 	class VitricBossBow : ModItem
     {
+        public int manaCharge = 0;
+
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Coalescence");
-            Tooltip.SetDefault("Charge for a volley of brilliant magic");
+            Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana when they collide");
         }
 
         public override void SetDefaults()
@@ -40,6 +42,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.shoot = ProjectileType<VitricBowProjectile>();
             item.shootSpeed = 0f;
             item.autoReuse = true;
+            item.mana = 40;
 
             item.useTurn = true;
         }
@@ -51,18 +54,37 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<VitricBowProjectile>()))
+            if (!Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
+            {
                 Projectile.NewProjectile(position, new Vector2(speedX, speedY) / 4f, item.shoot, damage, knockBack, player.whoAmI);
+                manaCharge = 0;
+            }
 
             return false;
         }
-    }
+
+		public override void HoldItem(Player player)
+		{
+			if(manaCharge >= 5)
+			{
+                manaCharge = 0;
+                player.statMana += item.mana;
+                CombatText.NewText(player.Hitbox, CombatText.HealMana, item.mana);
+			}
+		}
+
+		public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
+		{
+            if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
+                mult = 0;
+        }
+	}
 
 	internal class VitricBowProjectile : ModProjectile, IDrawAdditive
 	{
         private int charge = 0;
 
-        public float chargePercent => charge / 120f;
+        public float chargePercent => charge / 90f;
         Player owner => Main.player[projectile.owner];
 
         public ref float State => ref projectile.ai[0];
@@ -89,18 +111,21 @@ namespace StarlightRiver.Content.Items.Vitric
             owner.heldProj = projectile.whoAmI;
 
             if (owner.channel && State == 0)
-            {                          
-                if (charge < 120)
-                    charge++;
+            {
+                float damageMult = 0.25f + chargePercent * 0.75f;
 
-                for (int k = 1; k <= 4; k++)
+                if (charge < 75)
+                    charge ++;
+
+                if(charge == 1)
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, 1);
+
+                for (int k = 2; k < 4; k++)
 				{
-                    if (charge == 30 * k + 1)
-					{
-                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), projectile.damage, 1, projectile.owner, 0, k);
-
-                        if(k > 1)
-                            Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), projectile.damage, 1, projectile.owner, 0, k);
+                    if (charge == 19 * k + 1)
+                    {
+                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
+                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
                     }
 				}
             }
@@ -206,9 +231,18 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public ref float Timer => ref projectile.ai[0];
 
-        private float storedAngle = 6;
-        private float storedAngle2 = 0;
-        private float storedAngle3 = 0;
+        public int fadeIn = 15;
+
+        private Vector2 startPoint;
+        private Vector2 startCenter;
+        private Vector2 targetPoint;
+        private float storedRotation;
+        private float targetRotation => (targetPoint - startCenter).ToRotation();
+        private float targetDist => Vector2.Distance(targetPoint, startPoint);
+        float dist1;
+        float dist2;
+
+        Vector2 midPoint => startPoint + Vector2.UnitX.RotatedBy(storedRotation - Helpers.Helper.CompareAngle(storedRotation, targetRotation) * 0.5f) * targetDist / 2f;
 
 		public override void SetDefaults()
 		{
@@ -229,71 +263,159 @@ namespace StarlightRiver.Content.Items.Vitric
             return projectile.timeLeft < 120;
 		}
 
-		public override void AI()
+        private Vector2 PointOnSpline(float progress)
+        {
+            float factor = dist1 / (dist1 + dist2);
+
+            if (progress < factor)
+                return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, targetPoint - startPoint, progress * (1 / factor));
+            if (progress >= factor)
+                return Vector2.Hermite(midPoint, targetPoint - startPoint, targetPoint, targetPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
+
+            return Vector2.Zero;
+        }
+
+        private float ApproximateSplineLength(int steps, Vector2 start, Vector2 startTan, Vector2 end, Vector2 endTan)
+        {
+            float total = 0;
+            Vector2 prevPoint = start;
+
+            for (int k = 0; k < steps; k++)
+            {
+                Vector2 testPoint = Vector2.Hermite(start, startTan, end, endTan, k / (float)steps);
+                total += Vector2.Distance(prevPoint, testPoint);
+
+                prevPoint = testPoint;
+            }
+
+            return total;
+        }
+
+        public override void AI()
 		{
             Timer++;
 
             if (owner.channel && projectile.timeLeft >= 120)
-			{
+            {
                 projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
 
                 projectile.timeLeft = 121;
                 projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + projectile.velocity.X * 6) * 10);
-
-                storedAngle2 = (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
             }
-			else if (Timer >= 30)
-			{
-                if (storedAngle == 6)
-                    storedAngle = projectile.velocity.ToRotation();
 
-                projectile.velocity = Vector2.UnitX.RotatedBy(projectile.rotation) * 25;
-
-                projectile.rotation = projectile.velocity.ToRotation();
-
-                if (projectile.timeLeft > 90)
-                    projectile.rotation -= storedAngle * 0.075f;
-
-                if (projectile.timeLeft == 90)
-                    storedAngle3 = projectile.rotation;
-
-                if (projectile.timeLeft < 100 && projectile.timeLeft >= 85)
-                    projectile.rotation += storedAngle * 0.085f;
-
-
-                if (Main.rand.Next(4) == 0)
+            else if (Timer >= fadeIn)
+            {
+                if (startPoint == Vector2.Zero)
                 {
-                    var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
-                    var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
-                    d.customData = Main.rand.NextFloat(0.4f, 1.5f);
-                    d.fadeIn = 30;
+                    if (owner == Main.LocalPlayer)
+                        targetPoint = Main.MouseWorld;
+
+                    startPoint = projectile.Center;
+                    startCenter = owner.Center;
+                    storedRotation = projectile.rotation;
+                    dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, targetPoint - startPoint);
+                    dist2 = ApproximateSplineLength(30, midPoint, targetPoint - startPoint, targetPoint, targetPoint - midPoint);
                 }
 
-                if (Main.rand.Next(2) == 0)
+                int lifeTime = 122 - projectile.timeLeft;
+                int timeToMerge = (int)(Math.Min(0.4f, targetDist / 1200f) * 90);
+
+                if (lifeTime < timeToMerge)
                 {
-                    var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
-                    var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
-                    d.customData = Main.rand.NextFloat(0.4f, 0.8f);
-                    d.fadeIn = 30;
+                    float progress = lifeTime / (float)timeToMerge;
+                    projectile.Center = PointOnSpline(progress);
+                    projectile.rotation = (projectile.Center - PointOnSpline(progress + 0.05f)).ToRotation();
+
+                    projectile.velocity = Vector2.Zero;
+
+                    if (Main.rand.Next(4) == 0)
+                    {
+                        var color = new Color(20 + (int)(projectile.ai[1] / 4f * 100), 150, 255);
+                        var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
+                        d.customData = Main.rand.NextFloat(0.4f, 1.5f);
+                        d.fadeIn = 30;
+                    }
+
+                    if (Main.rand.Next(2) == 0)
+                    {
+                        var color = new Color(20 + (int)(projectile.ai[1] / 4f * 100), 150, 255);
+                        var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
+                        d.customData = Main.rand.NextFloat(0.4f, 0.8f);
+                        d.fadeIn = 30;
+                    }
                 }
+                else
+                {
+                    projectile.velocity = Vector2.UnitX.RotatedBy(targetRotation) * 15 * (1 - (lifeTime - timeToMerge) / (122f - timeToMerge));
+                    projectile.rotation = targetRotation;
+
+                    var color = new Color(20 + (int)(projectile.ai[1] / 4f * 100), 150, 255);
+
+                    if (projectile.timeLeft < 30)
+                        color = color * (projectile.timeLeft / 30f);
+
+                    if (Main.rand.Next(10) == 0)
+                    {
+                        var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
+                        d.customData = Main.rand.NextFloat(0.4f, 1.5f);
+                        d.fadeIn = 30;
+                    }
+
+                    if (Main.rand.Next(5) == 0)
+                    {
+                        var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
+                        d.customData = Main.rand.NextFloat(0.4f, 0.8f);
+                        d.fadeIn = 30;
+                    }
+                }
+
+                if(projectile.ai[1] != 1 && lifeTime == timeToMerge)
+				{
+                    for(int k = 0; k < 10; k++)
+                        Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * 5, 0, new Color(100, 200, 255), 0.25f);
+				}
             }
-			else
-			{
+            else
+            {
                 Timer -= 2;
 
                 if (Timer <= 0)
                     projectile.timeLeft = 0;
-			}
+            }
 		}
 
-        public void DrawAdditive(SpriteBatch spriteBatch)
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+            int lifeTime = 122 - projectile.timeLeft;
+            int timeToMerge = (int)(Math.Min(0.4f, targetDist / 1200f) * 90);
+
+            if (Math.Abs(lifeTime - timeToMerge) <= 5 && owner.HeldItem.modItem is VitricBossBow)
+            {
+                var mi = (owner.HeldItem.modItem as VitricBossBow);
+                mi.manaCharge++;
+
+                if (mi.manaCharge >= 5)
+                {
+                    Helper.PlayPitched("Magic/HolyCastShort", 1, 0, projectile.Center);
+
+                    var d = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(50, 150, 255), 1);
+                    d.customData = 3f;
+                    d.rotation = Main.rand.NextFloat(6.28f);
+                }
+            }
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
             var tex = GetTexture(AssetDirectory.MiscTextures + "DirectionalBeam");
             var tex2 = GetTexture(AssetDirectory.VitricItem + "BossBowArrow");
             var color = new Color(100 + (int)(projectile.ai[1] / 4f * 100), 200, 255);
 
-            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / 30f, 1)), projectile.rotation + 1.57f, tex2.Size() / 2, 0.5f, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / 30f, 1) * 0.5f), projectile.rotation, new Vector2(tex.Width / 4f, tex.Height / 2f), 2, 0, 0);
+            if (projectile.timeLeft < 30)
+                color *= (projectile.timeLeft / 30f);
+
+            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / (float)fadeIn, 1)), projectile.rotation + 1.57f, tex2.Size() / 2, 0.5f, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * (Math.Min(Timer / (float)fadeIn, 1) * 0.5f), projectile.rotation, new Vector2(tex.Width / 4f, tex.Height / 2f), 2, 0, 0);
 		}
 	}
 }

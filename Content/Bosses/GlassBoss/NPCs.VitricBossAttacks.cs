@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if(AttackTimer % 110 == 25)
                 Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
 
-            if (AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
+            if (AttackTimer > 110 && AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
 			{
                 SetFrameY(2);
 
@@ -94,8 +94,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 SetFrameY(0);
             }
 
-
-            rotationLocked = true;
+            if(AttackTimer >= 110)
+                rotationLocked = true;
 
             for (int k = 0; k < 4; k++) //each crystal
             {

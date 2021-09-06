@@ -428,19 +428,32 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         npc.friendly = true; //so he wont kill you during the animation
                         RandomizeTarget(); //pick a random target so the eyes will follow them
+                        startPos = npc.Center;
                     }
 
-                    if (GlobalTimer <= 200) npc.Center += new Vector2(0, -4f); //rise up
+                    if(GlobalTimer == 120)
+					{
+                        Helper.PlayPitched("GlassBoss/StoneBreak", 1, 0, npc.Center);
+					}
+
+                    if(GlobalTimer == 164)
+                        for (int k = 0; k < 30; k++)
+                        {
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), 0, default, 10);
+                        }
+
+                    if (GlobalTimer > 120 && GlobalTimer <= 200)
+                        npc.Center = Vector2.SmoothStep(startPos, startPos + new Vector2(0, -800), (GlobalTimer - 120) / 80f);
 
                     if (GlobalTimer > 280) //summon crystal babies
                         for (int k = 0; k <= 4; k++)
                             if (GlobalTimer == 280 + k * 30)
                             {
-                                Vector2 target = new Vector2(npc.Center.X + (-100 + k * 50), StarlightWorld.VitricBiome.Top * 16 + 1100);
+                                Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
                                 int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone forme
                                 (Main.npc[index].modNPC as VitricBossCrystal).Parent = this;
                                 (Main.npc[index].modNPC as VitricBossCrystal).StartPos = target;
-                                (Main.npc[index].modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -120).RotatedBy(6.28f / 4 * k);
+                                (Main.npc[index].modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
                                 crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                             }
 
@@ -600,6 +613,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.LastStand:
 
+                    rotationLocked = true;
+                    lockedRotation = 1.57f;
+
                     if (GlobalTimer == 1)
                     {
                         foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.ai[1] = 4;
@@ -608,28 +624,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     }
 
                     if (GlobalTimer < 60)
-                        npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), GlobalTimer / 60f);
+                        npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), GlobalTimer / 60f);                
 
-                    if (GlobalTimer == 90)
-                        Twist(30);
-
-                    if (GlobalTimer > 120 && GlobalTimer <= 140)
-                        glowColor = Color.Lerp(Color.Transparent, Color.White, (GlobalTimer - 120) / 20f);
-
-                    if (GlobalTimer == 140)
-                        npc.frame.Y += 160;
-
-                    if (GlobalTimer > 140 && GlobalTimer <= 200)
-                        glowColor = Color.Lerp(Color.White, Color.Red * 0.5f, (GlobalTimer - 140) / 60f);
-
-                    if (GlobalTimer > 200 && GlobalTimer <= 240)
-                        glowColor = Color.Lerp(Color.Red * 0.5f, Color.Transparent, (GlobalTimer - 200) / 40f);
-
-                    if (GlobalTimer == 300)
-                    {
-                        int i = NPC.NewNPC((int)npc.Center.X - 200, (int)npc.Center.Y - 180, NPCType<GlassMinibossHelpful>());
-                        (Main.npc[i].modNPC as GlassMinibossHelpful).parent = this;
+                    if(GlobalTimer == 90)
+					{
+                        shield = InworldItem.CreateItem<PlayerShield>(npc.Center + new Vector2(0, 600));
+                        (shield.modNPC as PlayerShieldNPC).parent = this;
                     }
+
+                    if(GlobalTimer > 560 && GlobalTimer < 590)
+					{
+                        SetFrameY(3);
+                        SetFrameX((int)((GlobalTimer - 560) / 30f * 10));
+					}
 
                     if(GlobalTimer == 590) //TODO: Fix timing and change this sequence to fit the assets we get (lol)
 					{

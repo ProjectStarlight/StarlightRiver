@@ -33,12 +33,6 @@ namespace StarlightRiver.Core
         {
             Age++;
 
-            if (!npc.noTileCollide && !npc.justHit && Main.netMode != NetmodeID.MultiplayerClient)
-            {
-                VitricSpike.CollideWithSpikes(npc, out int damage);
-                if (damage > 0)
-                    npc.StrikeNPC(damage, 0, 0, fromNet: true);
-            }
             return base.PreAI(npc);
         }
 

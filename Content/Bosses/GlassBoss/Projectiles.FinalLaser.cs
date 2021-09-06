@@ -50,7 +50,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if(Timer > 120)
 			{
-                if(LaserTimer == 140)
+                if (LaserTimer == 1)
+                    Helpers.Helper.PlayPitched("GlassBoss/lasercharge", 1, 0, projectile.Center);
+
+                if (LaserTimer == 140)
                     direction = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
 
                 if(LaserTimer > 30 && LaserTimer <= 75)
@@ -84,9 +87,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         Vector2 shieldEdge1 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * 31 * parent.shield.scale;
                         Vector2 shieldEdge2 = parent.shield.Center + Vector2.UnitX.RotatedBy(parent.shield.rotation + 1.57f) * -31 * parent.shield.scale;
-                        Vector2 intersection = Vector2.Zero;
 
-                        if (Helpers.Helper.LinesIntersect(projectile.Center, endpoint, shieldEdge1, shieldEdge2, out intersection))
+                        if (Helpers.Helper.LinesIntersect(projectile.Center, endpoint, shieldEdge1, shieldEdge2, out Vector2 intersection))
                         {
                             endpoint = intersection;
                             (parent.shield.modNPC as PlayerShieldNPC).startPoint = intersection;
@@ -117,10 +119,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 				}
 
                 else
-                    (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
+                     (parent.shield.modNPC as PlayerShieldNPC).startPoint = Vector2.Zero;
             }
 
-            if(Timer > 1350 || parent.Phase == (int)VitricBoss.AIStates.Dying || parent.Phase == (int)VitricBoss.AIStates.Leaving)
+            if(Timer > 1320 || parent.Phase == (int)VitricBoss.AIStates.Dying || parent.Phase == (int)VitricBoss.AIStates.Leaving)
 			{
                 projectile.scale -= 0.05f;
 

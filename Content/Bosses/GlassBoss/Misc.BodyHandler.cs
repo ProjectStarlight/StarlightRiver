@@ -124,10 +124,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             var brightness = (0.5f + (float)Math.Sin(StarlightWorld.rottime + index));
 
-            if (index == 1) brightness += 0.25f;
-
-            if (parent.Phase == (int)VitricBoss.AIStates.LastStand && parent.GlobalTimer >= 140) //fuck you immediate rendering fuck you fuck you fuck you
-                source.Y += 232;
+            if (index == 1) 
+                brightness += 0.25f;
 
             sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
             sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, flip, 0);
