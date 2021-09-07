@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -118,6 +119,34 @@ namespace StarlightRiver.Content.Tiles.Herbology
             if (player.HeldItem.type == mod.ItemType("IvySeeds") && Main.tile[i, j].frameX == 0) //plants ivy
                 Main.tile[i, j].frameX = 18;
             return true;
+        }
+    }
+
+    public class GardenPot : ModTile
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.HerbologyTile + name;
+            return base.Autoload(ref name, ref texture);
+        }
+
+        public override void SetDefaults() => this.QuickSetFurniture(6, 2, DustID.t_LivingWood, SoundID.Dig, false, new Color(151, 107, 75), true, false, "Garden Pot");
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<GardenPotItem>());
+    }
+
+    public class GardenPotItem : QuickTileItem
+    {
+        public GardenPotItem() : base("Garden Pot", "Beeg planter", TileType<GardenPot>(), 0, AssetDirectory.HerbologyTile) { }
+
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ItemID.Wood, 20);
+            recipe.AddIngredient(RecipeGroupID.IronBar, 5);
+            recipe.AddTile(TileID.WorkBenches);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
         }
     }
 }
