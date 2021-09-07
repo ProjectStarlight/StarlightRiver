@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 			effect.Parameters["offset"].SetValue((Main.screenPosition - Main.sceneWaterPos) / Helpers.Helper.ScreenSize);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, effect);
+			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 		}
 
 		public override void SpritebatchChangeBack()
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 			effect.Parameters["offset"].SetValue((Main.screenPosition - Main.sceneBackgroundPos) / Helpers.Helper.ScreenSize);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, effect);
+			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 		}
 	}
 }

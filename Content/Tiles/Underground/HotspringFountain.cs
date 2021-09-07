@@ -10,6 +10,7 @@ using Terraria;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -25,9 +26,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void SetDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 5, 5, 0, SoundID.Tink, false, new Color(100, 100, 100));
+			TileObjectData.newTile.DrawYOffset = -2;
+			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100));
 			animationFrameHeight = 18 * 5;
 		}
+
+		public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)
 		{
@@ -41,10 +45,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new Vector2(i, j) * 16, ModContent.ItemType<HotspringFountainItem>());
-		}
+		public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ModContent.ItemType<HotspringFountainItem>());
 	}
 
 	class HotspringFountainItem : QuickTileItem
