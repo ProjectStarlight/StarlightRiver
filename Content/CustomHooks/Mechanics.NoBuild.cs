@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (player != Main.LocalPlayer)
                 return base.CanUseItem(item, player);
 
-            if (item.createTile != -1)
+            if (item.createTile != -1 || item.type == ItemID.WaterBucket || item.type == ItemID.LavaBucket || item.type == ItemID.HoneyBucket)
             {
                 Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
