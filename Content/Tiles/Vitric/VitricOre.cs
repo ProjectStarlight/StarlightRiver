@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override int DummyType => ProjectileType<VitricOreDummy>();
         public override void SetDefaults()
         {
-            TileObjectData.newTile.DrawYOffset = -2;
+            TileObjectData.newTile.DrawYOffset = 2;
             (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, new Color(200, 255, 230), 16, false, false, "Vitric Ore");
             minPick = int.MaxValue;
         }

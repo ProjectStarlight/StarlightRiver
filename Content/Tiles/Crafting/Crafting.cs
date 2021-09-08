@@ -48,7 +48,10 @@ namespace StarlightRiver.Content.Tiles.Crafting
             return base.Autoload(ref name, ref texture);
         }
 
-        public override void SetDefaults() => this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, false, new Color(151, 107, 75), false, false, "Cooking Station");
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
+
+        public override void SetDefaults() => 
+            this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station");
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<CookStationItem>());
 

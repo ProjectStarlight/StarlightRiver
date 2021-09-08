@@ -159,6 +159,8 @@ namespace StarlightRiver.Content.CustomHooks
 
                 sparkles.DrawParticles(spriteBatch);
             }
+
+            player.ResetEffects();
         }
     }
 }

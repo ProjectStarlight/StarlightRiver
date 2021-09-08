@@ -31,7 +31,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void AI()
         {
-            if (npc.ai[1] == 1 && npc.ai[0] > 0) npc.ai[0] -= 4; npc.friendly = false;
+            if (npc.ai[1] == 1 && npc.ai[0] > 0)
+                npc.ai[0] -= 4; npc.friendly = false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
