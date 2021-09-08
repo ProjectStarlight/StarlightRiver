@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Underground.EvasionShrine>();
+            item.createTile = ModContent.TileType<Tiles.Underground.WitShrine>();
         }
 
         public override bool UseItem(Player player)
