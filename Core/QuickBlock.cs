@@ -87,8 +87,8 @@ namespace StarlightRiver.Core
 
             if (bottomAnchor != default)
                 TileObjectData.newTile.AnchorBottom = bottomAnchor;
-            else
-                TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
+            /*else
+                TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);*/
 
             if (topAnchor != default)
                 TileObjectData.newTile.AnchorTop = topAnchor;

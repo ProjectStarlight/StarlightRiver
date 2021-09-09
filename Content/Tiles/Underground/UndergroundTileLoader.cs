@@ -36,6 +36,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					mapColor: new Color(100, 100, 100)
 					)
 				);
+
+			LoadFurniture(
+				"WitTile",
+				"Tile of Wit",
+				new FurnitureLoadData(
+					width: 2,
+					height: 2,
+					dustType: DustID.Stone,
+					soundType: SoundID.Tink,
+					tallBottom: false,
+					mapColor: new Color(50, 50, 50)
+					)
+				);
 		}
     }
 }
