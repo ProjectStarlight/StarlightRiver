@@ -351,6 +351,11 @@ namespace StarlightRiver.Helpers
             return 3.75f * (float)Math.Pow(time, 3) - 8.5f * (float)Math.Pow(time, 2) + 5.75f * time;
 		}
 
+        public static float Lerp(float a, float b, float f)
+        {
+            return (a * (1.0f - f)) + (b * f);
+        }
+
         public static T[] FastUnion<T>(this T[] front, T[] back)
         {
             T[] combined = new T[front.Length + back.Length];

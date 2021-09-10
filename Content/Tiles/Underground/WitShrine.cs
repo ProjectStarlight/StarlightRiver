@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using Terraria.DataStructures;
+using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -29,6 +30,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
 
+		public override void SafeNearbyEffects(int i, int j, bool closer)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+
+			if (((WitShrineDummy)Dummy.modProjectile).State == 0 && tile.frameX > 36)
+				tile.frameX -= 3 * 18;
+		}
+
 		public override bool NewRightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
@@ -45,6 +54,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					}
 
 				(Dummy.modProjectile as WitShrineDummy).State = 1;
+				(Dummy.modProjectile as WitShrineDummy).Timer = 0;
 				return true;
 			}
 
@@ -52,18 +62,26 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
-	internal partial class WitShrineDummy : Dummy, IDrawAdditive
+	public partial class WitShrineDummy : Dummy, IDrawAdditive
 	{
-		private runeState[,] gameBoard = new runeState[6, 6];
-		private Point16 player = Point16.Zero;
+		public runeState[,] gameBoard = new runeState[6, 6];
+		public runeState[,] oldGameBoard = new runeState[6, 6];
+		public WitShrineGame activeGame = null;
+
+		public Vector2 player = Vector2.Zero;
+		public Vector2 oldPlayer = Vector2.Zero;
+		public int playerTimer = 0;
 
 		public ref float Timer => ref projectile.ai[0];
 		public ref float State => ref projectile.ai[1];
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
+		private Vector2 playerCenter => projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) + Vector2.SmoothStep(player * 48, oldPlayer * 48, playerTimer / 30f);
+
 		public enum runeState
 		{
+			None,
 			Freindly,
 			Hostile,
 			HostileHidden,
@@ -74,11 +92,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			var color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
-
 			if (State == 0 && Parent.frameX > 3 * 18)
 			{
 				ResetBoard();
+				player = Vector2.Zero;
+				oldPlayer = Vector2.Zero;
 
 				for (int x = 0; x < 3; x++)
 					for (int y = 0; y < 6; y++)
@@ -96,34 +114,100 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Timer++;
 			}
 
-			if(State == 1) //game 1
+			if(State > 0)
 			{
 				if (Timer == 1) //setup game board
 				{
-					for (int x = 0; x < gameBoard.GetLength(0); x++)
-						for (int y = 0; y < gameBoard.GetLength(1); y++)
+					switch (State)
+					{
+						case 1: activeGame = new MazeGame(this); break;
+						case 2: activeGame = new WinGame(this); break;
+						case 3: activeGame = new MazeGame(this); break;
+
+						case 99: activeGame = new LoseGame(this); break;
+
+					}
+					activeGame?.SetupBoard();
+				}
+
+				activeGame?.UpdateBoard();
+
+				//temporary thing to test input? might be hard to make this feel good
+				if(Main.mouseLeft && playerTimer == 0)
+				{
+					float xOff = Main.MouseWorld.X - playerCenter.X;
+					float yOff = Main.MouseWorld.Y -playerCenter.Y;
+
+					if (xOff > 0 && Math.Abs(xOff) > Math.Abs(yOff) && player.X < 5)
+						player.X++;
+					else if (yOff < 0 && Math.Abs(xOff) < Math.Abs(yOff) && player.Y > 0)
+						player.Y--;
+					else if (yOff > 0 && Math.Abs(xOff) < Math.Abs(yOff) && player.Y < 5)
+						player.Y++;
+					else if (xOff < 0 && Math.Abs(xOff) > Math.Abs(yOff) && player.X > 0)
+						player.X--;
+
+					playerTimer = 30;
+
+					activeGame?.UpdatePlayer(player, oldPlayer);
+				}
+
+				if (playerTimer > 0) //block is sch'moovin
+				{
+					playerTimer--;
+
+					for (int k = 0; k < 4; k++)
+					{
+						if (Main.rand.Next(2) == 0)
 						{
-							if(Main.rand.Next(2) == 0)
-								gameBoard[x, y] = runeState.Hostile;
+							Vector2 pos = playerCenter + new Vector2(15, 15).RotatedBy(k / 4f * 6.28f);
+							Vector2 velocity = -Vector2.Normalize(player - oldPlayer) * 0.2f;
+
+							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.BlueStamina>(), velocity);
 						}
+					}
+				}
+
+				if (playerTimer == 1)
+				{
+					oldPlayer = player;
+					oldGameBoard = (runeState[,])gameBoard.Clone();
 				}
 			}
 		}
 
-		private void ResetBoard()
+		public void ResetBoard()
 		{
 			for (int x = 0; x < gameBoard.GetLength(0); x++)
 				for (int y = 0; y < gameBoard.GetLength(1); y++)
 				{
-					gameBoard[x, y] = runeState.Freindly;
+					gameBoard[x, y] = runeState.None;
 				}
+		}
+
+		public void WinGame()
+		{
+			State++;
+			Timer = 0;
+		}
+
+		public void LoseGame()
+		{
+			State = 99;
+			Timer = 0;
+		}
+
+		public void GotoGame(int index)
+		{
+			State = index;
+			Timer = 0;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			var tex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Underground/WitPlayerTile");
 			var basePos = projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
-			var targetPos = basePos + player.ToVector2() * 48;
+			var targetPos = basePos + Vector2.SmoothStep(player * 48, oldPlayer * 48, playerTimer / 30f) + Vector2.One;
 			var source = new Rectangle(0, 0, 34, 34);
 
 			spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
@@ -143,46 +227,86 @@ namespace StarlightRiver.Content.Tiles.Underground
 				var runeFrame = new Rectangle(0, 0, 22, 22);
 				var basePos = projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
 				var parallaxPoint = projectile.Center + new Vector2(0, -16 * 22 + 152);// - new Vector2(Main.screenWidth, Main.screenHeight) / 2;
-				var color = Color.White;
+				var color = Color.Transparent;
+				var color2 = Color.Transparent;
 				var rand = new Random(1234758924);
 
 				for (int x = 0; x < gameBoard.GetLength(0); x++)
 					for (int y = 0; y < gameBoard.GetLength(1); y++)
 					{
-						if (player == new Point16(x, y))
-							continue;
+						int random = rand.Next(4);
 
 						var sin = 0.5f + (float)Math.Sin(StarlightWorld.rottime + x + y) * 0.5f;
 
 						switch (gameBoard[x, y])
 						{
+							case runeState.None:
+								color = Color.Transparent;
+								break;
 							case runeState.Freindly:
 								runeFrame.X = 22;
-								runeFrame.Y = 22 * rand.Next(4);
-								color = Color.Cyan;
+								runeFrame.Y = 22 * random;
+								color = new Color(20, 50, 255);
 								break;
 							case runeState.Hostile:
 								runeFrame.X = 0;
-								runeFrame.Y = 22 * rand.Next(4);
-								color = Color.Red;
+								runeFrame.Y = 22 * random;
+								color = new Color(255, 30, 10);
 								break;
 							case runeState.HostileHidden:
-								continue;
+								color = Color.Transparent;
+								break;
 							case runeState.Goal:
 								runeFrame.X = 44;
 								runeFrame.Y = 0;
-								color = Color.Yellow;
+								color = new Color(255, 200, 50);
 								break;
 							default:
-								continue;
+								color = Color.Transparent;
+								break;
 						}
+
+						switch (oldGameBoard[x, y])
+						{
+							case runeState.None:
+								color2 = Color.Transparent;
+								break;
+							case runeState.Freindly:
+								color2 = new Color(20, 50, 255);
+								break;
+							case runeState.Hostile:
+								color2 = new Color(255, 30, 10);
+								break;
+							case runeState.HostileHidden:
+								color2 = Color.Transparent;
+								break;
+							case runeState.Goal:
+								color2 = new Color(255, 200, 50);
+								break;
+							default:
+								color2 = Color.Transparent;
+								break;
+						}
+
+						if (player == new Vector2(x, y))
+							color = Color.Transparent;
+
+						if (oldPlayer == new Vector2(x, y))
+							color2 = Color.Transparent;
+
+
+						float combinedAlpha = Helpers.Helper.Lerp(color.A / 255f, color2.A / 255f, playerTimer/30f);
+						var colorCombined = Color.Lerp(color2, color, 1 - playerTimer / 30f);
 
 						for (int k = 0; k < 5; k++)
 						{
-							spriteBatch.Draw(runeTex, basePos + new Vector2(x * 48, y * 48) + (basePos + Main.screenPosition + new Vector2(x * 48, y * 48) - parallaxPoint) * (k / 4f * 0.12f) * sin, runeFrame, Color.White * (1f / k * 1.5f) * (0.7f + 0.3f * (1 - sin)), 0, Vector2.One * 11, 1 + (k / 4f * 0.5f), 0, 0);
+							var finalColor = colorCombined * (2 - k / 5f * 2) * (0.7f + 0.3f * (1 - sin)) * combinedAlpha;
+
+							var finalPos = basePos + new Vector2(x, y) * 48 + (basePos + Main.screenPosition + new Vector2(x, y) * 48 - parallaxPoint) * (k / 4f * 0.12f) * sin;
+							spriteBatch.Draw(runeTex, finalPos, runeFrame, finalColor, 0, Vector2.One * 11, 1 + (k / 4f * 0.5f), 0, 0);
 						}
 
-						Lighting.AddLight(basePos + Main.screenPosition + new Vector2(x * 48, y * 48), color.ToVector3() * 0.5f);
+						Lighting.AddLight(basePos + Main.screenPosition + new Vector2(x * 48, y * 48), colorCombined.ToVector3() * 0.5f);
 					}
 			}
 		}

@@ -29,6 +29,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
 
+		public override void SafeNearbyEffects(int i, int j, bool closer)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+
+			if (((EvasionShrineDummy)Dummy.modProjectile).State == 0 && tile.frameX > 36)
+				tile.frameX -= 3 * 18;
+		}
+
 		public override bool NewRightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
@@ -91,6 +99,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).frameX -= 3 * 18;
 					}
+
+				Timer = 0;
 			}
 
 			if (State != 0)
@@ -190,6 +200,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 			mp.teleTime = teleTime;
 			mp.holdTime = holdTime;
 			mp.parent = this;
+		}
+
+		private void SpawnReward()
+		{
+			switch (lives)
+			{
+				case 4:
+					break;
+				case 3:
+					break;
+				case 2:
+					break;
+				case 1:
+					break;
+				default:
+					break;
+			}
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)

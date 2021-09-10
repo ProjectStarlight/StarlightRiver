@@ -29,6 +29,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
 
+		public override void SafeNearbyEffects(int i, int j, bool closer)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+
+			if (((CombatShrineDummy)Dummy.modProjectile).State == 0 && tile.frameX > 36)
+				tile.frameX -= 3 * 18;
+		}
+
 		public override bool NewRightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());

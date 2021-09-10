@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	internal abstract class Dummy : ModProjectile
+	public abstract class Dummy : ModProjectile
     {
         private readonly int ValidType;
         private readonly int Width;
