@@ -33,6 +33,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
+			if (Dummy is null)
+				return;
+
 			if (((CombatShrineDummy)Dummy.modProjectile).State == 0 && tile.frameX > 36)
 				tile.frameX -= 3 * 18;
 		}

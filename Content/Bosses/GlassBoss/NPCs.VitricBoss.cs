@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public int maxTwistTimer;
         public int lastTwistState;
         public int twistTarget;
+        public int shieldShaderTimer;
 
         public bool rotationLocked;
         public float lockedRotation;
@@ -191,10 +192,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             eyes.ForEach(n => n.Draw(spriteBatch));
 
-            if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
+            if (Phase == (int)AIStates.FirstPhase /*&& npc.dontTakeDamage*/) //draws the npc's shield when immune and in the first phase
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + PainOffset, tex.Frame(), Color.White * (0.45f + (float)Math.Sin(StarlightWorld.rottime * 2) * 0.1f), 0, tex.Size() / 2, 1, 0, 0);
+
+                var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+                effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
+                effect.Parameters["uTime"].SetValue(2 - (shieldShaderTimer / 120f) * 2);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + PainOffset, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
         }
 
@@ -355,6 +367,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
+                shieldShaderTimer = 120;
+                return;
+
                 if (Phase != (int)AIStates.LastStand)
                     for (int k = 0; k < 12; k++) 
                         AI();
@@ -471,9 +486,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.FirstPhase:
 
+                    if (shieldShaderTimer > 0)
+                        shieldShaderTimer--;
+
                     int healthGateAmount = npc.lifeMax / 7;
                     if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount && !npc.dontTakeDamage)
                     {
+                        shieldShaderTimer = 120;
                         npc.dontTakeDamage = true; //boss is immune at phase gate
                         npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
                         Main.PlaySound(SoundID.ForceRoar, npc.Center);
