@@ -120,6 +120,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     else
                         parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2));
                 }
+
+                if(parent.npc.frame.Y == parent.npc.frame.Height * 2 || parent.npc.frame.Y == parent.npc.frame.Height * 3)
+				{
+                    parent.npc.frame.Y = parent.npc.frame.Height * (shouldBeTwistFrame ? 2 : 3);
+				}
             }
 
             var brightness = (0.5f + (float)Math.Sin(StarlightWorld.rottime + index));

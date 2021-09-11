@@ -192,18 +192,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             eyes.ForEach(n => n.Draw(spriteBatch));
 
-            if (Phase == (int)AIStates.FirstPhase /*&& npc.dontTakeDamage*/) //draws the npc's shield when immune and in the first phase
+            if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
+                var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
 
                 var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
                 effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
                 effect.Parameters["uTime"].SetValue(2 - (shieldShaderTimer / 120f) * 2);
+                effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
+                effect.Parameters["texSize"].SetValue(tex.Size());
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + PainOffset, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + PainOffset, npc.frame, Color.White, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -403,7 +406,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             pain = (int)MathHelper.Clamp(pain, 0, 100);
 
             //Main AI
-            body.UpdateBody(); //update the physics on the body
             Lighting.AddLight(npc.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
             if (Phase != (int)AIStates.Leaving && arena != new Rectangle() && !Main.player.Any(n => n.active && n.statLife > 0 && n.Hitbox.Intersects(arena))) //if no valid players are detected
@@ -738,6 +740,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     break;
             }
+
+            body.UpdateBody(); //update the physics on the body, last, so it can override framing
         }
 
 		public override void ResetEffects()
