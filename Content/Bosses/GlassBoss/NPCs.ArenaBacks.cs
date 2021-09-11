@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (State >= 3) //ignore timer after rising is done
                 targetHeight = tex.Height;
 
-            const int yOffset = 3; // Fit perfectly in the gap
+            const int yOffset = 4; // Fit perfectly in the gap
 
             Rectangle target = new Rectangle(
                 (int)(npc.position.X - Main.screenPosition.X),
@@ -178,12 +178,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source1 = new Rectangle(0, 0, tex.Width, height1);
             Rectangle source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
-            sb.Draw(tex2, target1, source1, Color.White, 0, Vector2.Zero, 0, 0);
-            sb.Draw(tex2, target2, source2, Color.White, 0, Vector2.Zero, 0, 0);
-
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+
+            Texture2D tex2 = GetTexture(Texture + "Glow");
+            sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
+            sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
 
         public virtual void SpawnPlatforms(bool rising = true)
@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (State >= 3) //ignore timer after rising is done
                 targetHeight = tex.Height;
 
-            const int yOffset = 3; // Fit perfectly in the gap
+            const int yOffset = 4; // Fit perfectly in the gap
 
             Rectangle target = new Rectangle(
                 (int)(npc.position.X - Main.screenPosition.X),
@@ -277,12 +277,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Rectangle source2 = new Rectangle(0, 0, tex.Width, height2);
             Rectangle source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
-            sb.Draw(tex2, target1, source1, Color.White, 0, Vector2.Zero, 0, 0);
-            sb.Draw(tex2, target2, source2, Color.White, 0, Vector2.Zero, 0, 0);
-
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+
+            Texture2D tex2 = GetTexture(Texture + "Glow");
+            sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
+            sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
             //Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricRightEasterEgg");
             //Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex2, source1, default, sb, Configs.LightImportance.Some);

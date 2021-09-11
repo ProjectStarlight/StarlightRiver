@@ -533,14 +533,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer == 1)
             {
                 startPos = npc.Center;
-                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
             }
 
             if (AttackTimer < 60)
                 npc.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 60f);
 
             if (AttackTimer == 120)
-                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
 
             if (AttackTimer > 120 && AttackTimer < 180)
             {
@@ -570,6 +569,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
             }
 
+            if(AttackTimer == 495)
+                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+
             if (AttackTimer > 495)
 			{
                 SetFrameY(3);
@@ -592,6 +594,52 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             mp.endPoint = end;
             mp.midPoint = mid;
             mp.duration = duration;
+        }
+
+        private void Laser()
+		{
+            rotationLocked = true;
+            lockedRotation = 1.57f;
+
+            if (AttackTimer == 1)
+                startPos = npc.Center;
+
+            if (AttackTimer < 60)
+                npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), AttackTimer / 60f);
+
+            if (AttackTimer > 90)
+            {
+                float LaserTimer = AttackTimer - 90;
+
+                if (LaserTimer < 60)
+                {
+                    SetFrameY(4);
+                    SetFrameX((int)(LaserTimer / 60f * 10));
+                }
+
+                if (LaserTimer == 60)
+                {
+                    int i2 = Projectile.NewProjectile(npc.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
+                    var laserCore = Main.projectile[i2];
+
+                    if (laserCore.modProjectile is FinalLaser)
+                        (laserCore.modProjectile as FinalLaser).parent = this;
+                }
+
+                if (LaserTimer > 590 && LaserTimer <= 650)
+                {
+                    SetFrameY(4);
+                    SetFrameX(9 - (int)((LaserTimer - 590) / 60f * 10));
+                }
+
+                npc.velocity = (npc.Center - arena.Center.ToVector2()) * -0.02f;
+
+                if (AttackTimer >= 720)
+				{
+                    npc.velocity *= 0;
+                    ResetAttack();
+				}
+            }
         }
         #endregion
 

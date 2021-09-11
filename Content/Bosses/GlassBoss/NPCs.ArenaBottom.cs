@@ -67,9 +67,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             switch (npc.ai[1])
             {
                 case 0:
-                    if (Parent.Phase == (int)VitricBoss.AIStates.LastStand)
-                        return;
-
                     if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
                         npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
 
@@ -102,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0)
                         npc.ai[0]++;
-                    else if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase || Parent.Phase == (int)VitricBoss.AIStates.LastStand)
+                    else if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase)
                     {
                         if (npc.ai[0] > 150)
                             npc.ai[0] = 150;

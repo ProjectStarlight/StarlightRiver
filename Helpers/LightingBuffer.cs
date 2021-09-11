@@ -123,6 +123,7 @@ namespace StarlightRiver.Helpers
         {
             if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
                 return;
+
             if (color == default)
                 color = Color.White;
 

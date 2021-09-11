@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon, IDrawAdditive
+    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon
     {
         public Vector2 startPos;
         public Vector2 endPos;
@@ -25,9 +25,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public List<NPC> crystals = new List<NPC>();
         public List<Vector2> crystalLocations = new List<Vector2>();
         public Rectangle arena;
-
-        public NPC shield;
-        public List<NPC> orbitals = new List<NPC>();
 
         public int twistTimer;
         public int maxTwistTimer;
@@ -137,15 +134,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (Phase == (int)AIStates.SecondPhase || Phase == (int)AIStates.FirstPhase)
             {
-                ChangePhase(AIStates.LastStand, true);
-                npc.dontTakeDamage = true;
-                npc.friendly = true;
-                npc.life = 300;
-                return false;
-            }
-
-            if (Phase == (int)AIStates.LastStand)
-            {
                 foreach (Player player in Main.player.Where(n => n.Hitbox.Intersects(arena)))
                 {
                     player.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = homePos;
@@ -171,6 +159,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             swooshes.ForEach(n => n.Draw(spriteBatch));
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
             body.DrawBody(spriteBatch);
 
             npc.frame.Width = 204;
@@ -179,9 +176,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition + PainOffset, npc.frame, Color.White, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
 
-            //glow for last stand phase
-            if (Phase == (int)AIStates.LastStand)
-                spriteBatch.Draw(GetTexture(Texture + "Shape"), npc.Center - Main.screenPosition + PainOffset, new Rectangle(npc.frame.X, 0, npc.frame.Width, npc.frame.Height), glowColor, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             return false;
         }
 
@@ -211,11 +205,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
-        }
-
-        public void DrawAdditive(SpriteBatch spriteBatch)
-        {
-            swooshes.ForEach(n => n.DrawAdditive(spriteBatch));
         }
 
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
@@ -360,9 +349,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Anger = 3,
             FirstToSecond = 4,
             SecondPhase = 5,
-            LastStand = 6,
-            Leaving = 7,
-            Dying = 8
+            Leaving = 6,
+            Dying = 7
         }
 
         public override void PostAI()
@@ -370,17 +358,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
-                shieldShaderTimer = 120;
-                return;
-
-                if (Phase != (int)AIStates.LastStand)
-                    for (int k = 0; k < 12; k++) 
-                        AI();
-                else
-                {
-                    //GlobalTimer = 1;
-                    //npc.frame.Y = 0;
-                }
+                for (int k = 0; k < 12; k++)
+                    AI();
             }
         }
 
@@ -614,7 +593,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (AttackTimer == 1) //switching out attacks
                     {
                         AttackPhase++;
-                        if (AttackPhase > 3) AttackPhase = 0;
+                        if (AttackPhase > 3)
+                        {
+                            if (!(AttackPhase == 4 && npc.life <= npc.lifeMax / 5)) //at low HP he can laser!
+                                AttackPhase = 0;
+                        }
 
                         altAttack = Main.rand.NextBool();
                         npc.netUpdate = true;
@@ -626,77 +609,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         case 1: Mines(); break;
                         case 2: Whirl(); break;
                         case 3: Rest(); break;
+                        case 4: Laser(); break;
                     }
 
                     DoRotation();
-
-                    break;
-
-                case (int)AIStates.LastStand:
-
-                    rotationLocked = true;
-                    lockedRotation = 1.57f;
-
-                    if (GlobalTimer == 1)
-                    {
-                        foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.ai[1] = 4;
-                        Vignette.extraOpacity = 0;
-                        startPos = npc.Center;
-                    }
-
-                    if (GlobalTimer < 60)
-                        npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), GlobalTimer / 60f);                
-
-                    if(GlobalTimer == 90)
-					{
-                        shield = InworldItem.CreateItem<PlayerShield>(npc.Center + new Vector2(0, 600));
-                        (shield.modNPC as PlayerShieldNPC).parent = this;
-                    }
-
-                    if(GlobalTimer > 560 && GlobalTimer < 590)
-					{
-                        SetFrameY(3);
-                        SetFrameX((int)((GlobalTimer - 560) / 30f * 10));
-					}
-
-                    if(GlobalTimer == 590) //TODO: Fix timing and change this sequence to fit the assets we get (lol)
-					{
-                        for(int k = 0; k < 3; k++)
-						{
-                            int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<FinalOrbital>(), ai2: k / 3f * (float)Math.PI * 2);
-                            var newOrbital = Main.npc[i];
-
-                            if(newOrbital.modNPC is FinalOrbital)
-                                (newOrbital.modNPC as FinalOrbital).parent = npc;
-
-                            orbitals.Add(newOrbital);
-						}
-
-                        int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
-                        var laserCore = Main.projectile[i2];
-
-                        if (laserCore.modProjectile is FinalLaser)
-                            (laserCore.modProjectile as FinalLaser).parent = this;
-                    }
-
-                    if(GlobalTimer > 590 && (GlobalTimer - 590) % (1350 + 120) == 0)
-					{
-                        int i2 = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
-                        var laserCore = Main.projectile[i2];
-
-                        if (laserCore.modProjectile is FinalLaser)
-                            (laserCore.modProjectile as FinalLaser).parent = this;
-                    }
-
-                    if(orbitals.All(n => n.ai[1] == 1 && n.ai[0] > 60))
-					{
-                        foreach(NPC orbital in orbitals)
-						{
-                            var orb = orbital.modNPC as FinalOrbital;
-                            orb.Timer = 0;
-                            orb.Phase = 2;
-						}
-					}
 
                     break;
 

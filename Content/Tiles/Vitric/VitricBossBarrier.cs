@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void SetDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
+            Main.tileBlockLight[Type] = false;
             minPick = 999;
         }
 
