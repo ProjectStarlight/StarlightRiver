@@ -165,12 +165,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 float off = Math.Min((npc.ai[0] - 120) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];
-                for (int k = 0; k < npc.width; k += 16)
+                for (int k = 0; k < npc.width; k += 18)
                 {
-                    Vector2 pos = npc.position + new Vector2(k, 32 - off + rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
-                    Vector2 pos2 = npc.position + new Vector2(k, -930 + 32 + off - rand.Next(12)) - Main.screenPosition; //actually draw the crystals lol
-                    spriteBatch.Draw(tex, pos, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
-                    spriteBatch.Draw(tex, pos2, null, Color.White, 0.4f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
+                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
+                    spriteBatch.Draw(tex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    spriteBatch.Draw(tex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
                 }
             }
         }

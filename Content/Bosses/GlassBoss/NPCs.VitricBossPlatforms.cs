@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.lifeMax = 10;
         }
 
-        public override void SafeAI()
+		public override void SafeAI()
         {
             /*AI fields:
              * 0: state

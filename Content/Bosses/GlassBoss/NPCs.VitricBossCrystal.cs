@@ -404,6 +404,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private Color ArcColor(Vector2 coord)
 		{
+            if (coord.X > 0.95f)
+                return Color.Transparent;
+
             float alpha;
             if (Parent.AttackTimer < 420)
                 alpha = (Parent.AttackTimer - 360) / 60f;//fadein speed (higher is slower)
