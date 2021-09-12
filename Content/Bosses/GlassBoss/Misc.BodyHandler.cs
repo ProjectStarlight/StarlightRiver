@@ -14,6 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         private VitricBoss parent;
         private VerletChainInstance chain;
+        private bool stopDrawingBody;
 
         public BodyHandler(VitricBoss parent)
         {
@@ -49,6 +50,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private void DrawSegment(SpriteBatch sb, int index, Vector2 pos)
         {
+            if (stopDrawingBody && index > 0)
+                return;
+
             var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBody");
             var glowTex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyGlow");
 
@@ -134,7 +138,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
             sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, flip, 0);
 
-            Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
+            var tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
+
+            if(!tile.active() && tile.wall == 0)
+                Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
         }
 
         public void UpdateBody()
@@ -157,30 +164,34 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             chain.ropeSegments[index].posNow.X += (float)Math.Sin(Main.GameUpdateCount / 40f + (index * 0.8f)) * 0.5f;
         }
 
+        public void SpawnGores2()
+		{
+            var pos = chain.ropeSegments[0].posNow;
+
+            GoreMe(pos, new Vector2(-60, -30), AssetDirectory.GlassBoss + "Gore/HeadLeft");
+            GoreMe(pos, new Vector2(60, -30), AssetDirectory.GlassBoss + "Gore/HeadRight");
+
+            GoreMe(pos, new Vector2(-60, 0), AssetDirectory.GlassBoss + "Gore/HornLeft");
+            GoreMe(pos, new Vector2(60, 0), AssetDirectory.GlassBoss + "Gore/HornRight");
+
+            GoreMe(pos, new Vector2(0, -15), AssetDirectory.GlassBoss + "Gore/HeadTop");
+            GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/HeadNose");
+            GoreMe(pos, new Vector2(0, 80), AssetDirectory.GlassBoss + "Gore/HeadJaw");
+
+            GoreMe(pos, new Vector2(-45, 40), AssetDirectory.GlassBoss + "Gore/CheekLeft");
+            GoreMe(pos, new Vector2(45, 40), AssetDirectory.GlassBoss + "Gore/CheekRight");
+        }
+
         public void SpawnGores()
 		{
+            stopDrawingBody = true;
+
             for (int k = 0; k < chain.ropeSegments.Count; k++)
 			{
                 var pos = chain.ropeSegments[k].posNow;
 
                 switch (k)
                 {
-                    case 0:
-                        GoreMe(pos, new Vector2(0, -15), AssetDirectory.GlassBoss + "Gore/HeadTop");
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/HeadNose");
-                        GoreMe(pos, new Vector2(0, 80), AssetDirectory.GlassBoss + "Gore/HeadJaw");
-
-                        GoreMe(pos, new Vector2(-60, -30), AssetDirectory.GlassBoss + "Gore/HeadLeft");
-                        GoreMe(pos, new Vector2(60, -30), AssetDirectory.GlassBoss + "Gore/HeadRight");
-
-                        GoreMe(pos, new Vector2(-45, 40), AssetDirectory.GlassBoss + "Gore/CheekLeft");
-                        GoreMe(pos, new Vector2(45, 40), AssetDirectory.GlassBoss + "Gore/CheekRight");
-
-                        GoreMe(pos, new Vector2(-60, 0), AssetDirectory.GlassBoss + "Gore/HornLeft");
-                        GoreMe(pos, new Vector2(60, 0), AssetDirectory.GlassBoss + "Gore/HornRight");
-
-                        break;
-
                     case 1:
                         GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/BodyTop");
                         GoreMe(pos, new Vector2(0, 50), AssetDirectory.GlassBoss + "Gore/BodyBottom");

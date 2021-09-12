@@ -142,6 +142,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     player.immune = true;
                 }
 
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) 
+                    npc.ai[1] = 4;
+
                 ChangePhase(AIStates.Dying, true);
                 npc.dontTakeDamage = true;
                 npc.life = 1;
@@ -149,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 return false;
             }
 
-            if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
+            if (Phase == (int)AIStates.Dying)
                 return true;
 
             else
@@ -232,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void NPCLoot()
         {
-            body.SpawnGores();
+            body.SpawnGores2();
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
@@ -400,8 +403,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //on spawn effects
                 case (int)AIStates.SpawnEffects:
 
-                    UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 500); //Screen pan + intro text
-
                     for (int k = 0; k < Main.maxNPCs; k++) //finds all the large platforms to add them to the list of possible locations for the nuke attack
                     {
                         NPC npc = Main.npc[k];
@@ -424,32 +425,44 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         startPos = npc.Center;
                     }
 
-                    if(GlobalTimer == 2)
-					{
-                        ZoomHandler.SetZoomAnimation(1.4f, 60);
-                    }
-
-                    if(GlobalTimer == 70)
-					{
+                    if (GlobalTimer == 2)
+                    {
                         StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                        mp.ScreenMoveTarget = npc.Center + new Vector2(0, -450);
-                        mp.ScreenMoveTime = 500;
+                        mp.ScreenMoveTarget = npc.Center + new Vector2(0, -600);
+                        mp.ScreenMoveTime = 450;
                     }
 
-                    if(GlobalTimer == 224)
-					{
+                    if (GlobalTimer == 70)
+                    {
+                        ZoomHandler.SetZoomAnimation(1.2f, 60);
+                    }
+
+                    if (GlobalTimer == 224)
+                    {
+                        UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
+
+                        StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp.Shake += 30;
+
                         Helper.PlayPitched("GlassBoss/StoneBreak", 1, 0, npc.Center);
                         ZoomHandler.SetZoomAnimation(1, 20);
-                    }
 
-                    if(GlobalTimer == 224)
-                        for (int k = 0; k < 30; k++)
+                        for (int k = 0; k < 10; k++)
                         {
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), 0, default, 10);
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), 0, default, 2);
                         }
 
+                        for (int k = 0; k < 40; k++)
+                            Gore.NewGorePerfect(npc.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Cluster" + Main.rand.Next(1, 20)));
+
+                        Gore.NewGorePerfect(npc.Center + new Vector2(-112, 50), Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "TempleHole"));
+                    }
+
                     if (GlobalTimer > 180 && GlobalTimer <= 260)
-                        npc.Center = Vector2.SmoothStep(startPos, startPos + new Vector2(0, -800), (GlobalTimer - 180) / 80f);
+                    {
+                        float progress = (GlobalTimer - 180) / 80f;
+                        npc.Center = Vector2.Lerp(startPos, startPos + new Vector2(0, -800), progress);
+                    }
 
                     if (GlobalTimer > 340) //summon crystal babies
                         for (int k = 0; k <= 4; k++)
@@ -465,6 +478,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (GlobalTimer > 680) //start the fight
                     {
+                        GUI.BootlegHealthbar.SetTracked(npc, "Shit!", GetTexture(AssetDirectory.GlassBoss + "GUI/HealthBar"));
+
                         npc.dontTakeDamage = false; //make him vulnerable
                         npc.friendly = false; //and hurt when touched
                         homePos = npc.Center; //set the NPCs home so it can return here after attacks
@@ -473,6 +488,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         ChangePhase(AIStates.FirstPhase, true);
                         ResetAttack();
                     }
+
+                    DoRotation();
+
                     break;
 
                 case (int)AIStates.FirstPhase:
@@ -542,23 +560,23 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         mp2.ScreenMoveTime = 660;
                     }
 
-                    if(GlobalTimer > 120 && GlobalTimer < 240)
+                    if (GlobalTimer > 120 && GlobalTimer < 240)
                     {
                         npc.Center = Vector2.SmoothStep(homePos, homePos + new Vector2(0, 650), (GlobalTimer - 120) / 120f);
                     }
 
-                    if(GlobalTimer > 240 && GlobalTimer < 700 && GlobalTimer % 120 == 0)
+                    if (GlobalTimer > 240 && GlobalTimer < 700 && GlobalTimer % 120 == 0)
                     {
                         StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                         mp2.Shake += (int)(GlobalTimer / 20);
                     }
 
-                    if(GlobalTimer >= 700 && GlobalTimer < 730)
+                    if (GlobalTimer >= 700 && GlobalTimer < 730)
                     {
                         npc.Center = Vector2.SmoothStep(homePos + new Vector2(0, 650), homePos, (GlobalTimer - 700) / 30f);
                     }
 
-                    if(GlobalTimer == 760)
+                    if (GlobalTimer == 760)
                     {
                         Main.PlaySound(SoundID.Roar, npc.Center);
 
@@ -643,23 +661,49 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     Vignette.offset = Vector2.Zero;
                     Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
-                    if (GlobalTimer == 60)
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));
+                    if (GlobalTimer == 1)
+                        npc.noTileCollide = false;
 
-                    if (GlobalTimer > 60 && GlobalTimer < 120) 
-                        Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 60) / 60f;
-
-                    if (GlobalTimer > 120)
+                    if (GlobalTimer <= 2)
                     {
-                        Main.musicFade[Main.curMusic] = 0;
-                        for (int k = 0; k < 10; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Sand>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 40, default, 2);
-                        for (int k = 0; k < 2; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100));
+                        npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * 25;
+                        GlobalTimer--;
+
+                        for (int x = -8; x <= 8; x++)
+                            for (int y = -8; y <= 8; y++)
+                            {
+                                Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
+
+                                if (tile.collisionType != 0)
+                                {
+                                    GlobalTimer = 2;
+                                    npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * -10;
+                                    Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, npc.Center);
+                                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                                    body.SpawnGores();
+                                    npc.Kill();
+                                    return;
+                                }
+                            }
                     }
 
-                    if (GlobalTimer == 660)
+                    if (GlobalTimer == 3)
+                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));
+
+                    if (GlobalTimer > 3 && GlobalTimer < 63)
+                        Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 3) / 60f;
+
+                    if(GlobalTimer > 3)
+					{
+                        npc.velocity *= 0.95f;
+                        npc.velocity.Y += 0.2f;
+					}
+
+                    if (GlobalTimer == 600)
                     {
-                        for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200));
-                        //for (int k = 0; k < 300; k++) Dust.NewDustPerfect(npc.Center, DustType<Dusts.Sand>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), 80, default, 3);
+                        for (int k = 0; k < 50; k++) 
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
+
                         Vignette.visible = false;
                         npc.Kill();
                     }

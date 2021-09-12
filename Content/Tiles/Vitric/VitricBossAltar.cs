@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             return false;
         }
-    }
+	}
 
     class VitricBossAltarItem : QuickTileItem
     {
@@ -84,6 +84,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricBossAltarDummy : Dummy
     {
+        private NPC arenaLeft;
+        private NPC arenaRight;
+        private NPC boss;
+        private VitricBoss bossModNPC => boss.modNPC as VitricBoss;
+
         public ref float BarrierProgress => ref projectile.ai[0];
         public ref float CutsceneTimer => ref projectile.ai[1];
 
@@ -161,7 +166,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             CutsceneTimer++;
 
             //This controls spawning the rest of the arena
-            if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropLeft>()) || !Main.npc.Any(n => n.active && n.type == NPCType<VitricBackdropRight>())) //TODO: Change to some sort of callback from the arena sides dying. figure out what to do if it dies mid-fight?
+            if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active)
             {
                 foreach(NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
                 (
@@ -182,26 +187,33 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
 
                 if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
+                {
+                    arenaRight = Main.npc[index];
                     (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
+                }
 
                 index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
 
                 if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
+                {
+                    arenaLeft = Main.npc[index];
                     (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
+                }
             }
 
             //controls the drawing of the barriers
-            if (BarrierProgress < 120 && Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>()))
+            if (BarrierProgress < 120 && boss != null && boss.active)
             {
                 BarrierProgress++;
                 if (BarrierProgress % 3 == 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
                 if (BarrierProgress == 119) //hitting the top
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 25;
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
                     for (int k = 0; k < 5; k++) Main.PlaySound(SoundID.Tink);
                 }
             }
-            else if (!Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>())) BarrierProgress = 0; //TODO fix this later
+            else if (BarrierProgress > 0 && boss != null && !boss.active)
+                BarrierProgress--;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor) //actually drawing the barriers and item indicator
@@ -210,7 +222,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
             if (parent.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
-                Helper.DrawSymbol(spriteBatch, projectile.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5 - 20), new Color(150, 220, 250));
+            {
+                Texture2D texSkull = GetTexture("StarlightRiver/Assets/Symbol");
+                spriteBatch.Draw(texSkull, projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, projectile.Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
+            }
 
             else if (parent.frameX < 90)
             {
@@ -233,7 +248,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             //left
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 592 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), texTop, new Rectangle(texTop.Width / 2 - off2, 0, off2, texTop.Height), default, spriteBatch, Configs.LightImportance.Most);
-            
+
             //right
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 608 - off2 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), texTop, new Rectangle(texTop.Width / 2, 0, off2, texTop.Height), default, spriteBatch, Configs.LightImportance.Most);
 
@@ -244,6 +259,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             //new Rectangle(0, 0, tex.Width, off), color);
         }
 
-        public void SpawnBoss() => NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 500, NPCType<VitricBoss>());
+        public void SpawnBoss()
+        {
+            int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 500, NPCType<VitricBoss>());
+
+            if (Main.npc[i].type == ModContent.NPCType<VitricBoss>())
+                boss = Main.npc[i];
+        }
     }
 }

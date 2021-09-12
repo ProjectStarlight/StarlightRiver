@@ -41,8 +41,8 @@ namespace StarlightRiver.Content.Items
         public override bool UseItem(Player player)
         {
 
-            ZoomHandler.SetZoomAnimation(1.4f);
-            //WorldGen.meteor((int)Main.MouseWorld.X / 16 + 200, (int)Main.MouseWorld.Y / 16);
+            int i = NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, NPCID.VortexHornetQueen);
+            GUI.BootlegHealthbar.SetTracked(Main.npc[i], "Shit!", ModContent.GetTexture(AssetDirectory.GlassBoss + "GUI/HealthBar"));
             return true;
 
             player.statLifeMax = 500;

@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.noTileCollide = false;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
-            //npc.behindTiles = true;
             npc.hide = true;
         }
 
@@ -99,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0)
                         npc.ai[0]++;
-                    else if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase)
+                    else if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase || Parent.Phase == (int)VitricBoss.AIStates.Dying)
                     {
                         if (npc.ai[0] > 150)
                             npc.ai[0] = 150;

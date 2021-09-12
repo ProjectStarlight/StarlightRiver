@@ -13,10 +13,8 @@ namespace StarlightRiver.Content.Buffs
 
         public bool Inflicted(Player player) => player.active && player.HasBuff(Type);
         public bool Inflicted(NPC npc)
-        {
-            if (npc.buffTime.Length >= Type)
-                return npc.active && npc.HasBuff(Type);
-            return false;
+        {          
+            return npc.active && npc.HasBuff(Type);
         }
 
         public override bool Autoload(ref string name, ref string texture)

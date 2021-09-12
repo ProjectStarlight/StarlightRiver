@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if(player.altFunctionUse == 2)
 			{
                 if(!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.2f), knockBack, player.whoAmI, 0, 120);
+                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.1f), knockBack, player.whoAmI, 0, 120);
 
                 return false;
 			}
@@ -251,6 +252,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
         public Vector2 endPoint;
         public float LaserRotation;
+        public bool firing;
 
         public ref float Charge => ref projectile.ai[0];
         public ref float MaxTime => ref projectile.ai[1];
@@ -276,27 +278,35 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
             projectile.Center = Owner.Center;
-            LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
+            float targetRot = (Main.MouseWorld - Owner.Center).ToRotation();
+            float diff = Helper.CompareAngle(LaserRotation, targetRot);
+            float maxRot = firing ? 0.02f : 0.08f;
+            LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
-            if (Main.mouseRight)
+            if (Charge == 0)
+                LaserRotation = targetRot;
+
+            if (Main.mouseRight && !firing)
 			{
-                if (Charge < 65)
+                if (Charge < 35)
                     Charge++;
 
                 projectile.timeLeft = (int)MaxTime + 1;
                 return;
 			}
-            else if (Charge < 60)
+            else if (Charge < 30)
 			{
                 projectile.timeLeft = 0;
                 return;
 			}
 
-			for(int k = 0; k < 1000; k++)
+            firing = true;
+
+			for(int k = 0; k < 80; k++)
 			{
                 Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
-                if (Helper.PointInTile(posCheck) || k == 999)
+                if (Helper.PointInTile(posCheck) || k == 79)
                 {
                     endPoint = posCheck;
                     break;
@@ -318,11 +328,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
             target.velocity += Vector2.UnitX.RotatedBy(LaserRotation) * 0.25f * target.knockBackResist;
+            target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, Color.White, LaserRotation + 1.57f / 2, new Vector2(0, GetTexture(Texture).Height), 1, 0, 0);
+            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, lightColor, LaserRotation + 1.57f / 2, new Vector2(0, GetTexture(Texture).Height), 1, 0, 0);
             return false;
 		}
 
@@ -333,14 +344,14 @@ namespace StarlightRiver.Content.Items.Vitric
                 var texShine = GetTexture(AssetDirectory.Assets + "Keys/GlowVerySoft");
                 var texFlare = GetTexture(AssetDirectory.GUI + "ItemGlow");
 
-                Vector2 progressPos = Owner.Center + Vector2.SmoothStep(Vector2.Zero, Vector2.UnitX.RotatedBy(LaserRotation) * 120, Charge / 65f) - Main.screenPosition;
-                Color progressColor = Color.White * Helper.BezierEase(Charge / 65f);
+                Vector2 progressPos = Owner.Center + Vector2.SmoothStep(Vector2.Zero, Vector2.UnitX.RotatedBy(LaserRotation) * 120, Charge / 35f) - Main.screenPosition;
+                Color progressColor = Color.White * Helper.BezierEase(Charge / 35f);
 
-                spriteBatch.Draw(texShine, progressPos, null, progressColor, 0, texShine.Size() / 2, (float)Math.Sin(Charge / 65f * 3.14f) * 0.5f, 0, 0);
+                spriteBatch.Draw(texShine, progressPos, null, progressColor, 0, texShine.Size() / 2, (float)Math.Sin(Charge / 35f * 3.14f) * 0.5f, 0, 0);
 
-                if(Charge > 40)
+                if(Charge > 20)
 				{
-                    float progress = (Charge - 40) / 25f;
+                    float progress = (Charge - 20) / 15f;
                     Color flareColor = Color.White * (float)Math.Sin(progress * 3.14f);
 
                     spriteBatch.Draw(texFlare, Owner.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 100 - Main.screenPosition, null, flareColor, Helper.BezierEase(progress) * 1, texFlare.Size() / 2, (float)Math.Sin(progress * 3.14f) * 0.5f, 0, 0);
@@ -428,6 +439,55 @@ namespace StarlightRiver.Content.Items.Vitric
                 color.G -= (byte)variation;
 
                 Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - (variation * 0.02f));
+            }
+        }
+	}
+
+	class RefractiveBladeBuff : SmartBuff
+	{
+        public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+            StarlightNPC.ModifyHitByProjectileEvent += ExtraDamage;
+            StarlightNPC.ModifyHitByItemEvent += ExtraMeleeDamage;
+
+            StarlightPlayer.ModifyHitByNPCEvent += PlayerExtraMeleeDamage;
+
+            return base.Autoload(ref name, ref texture);
+		}
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+            Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
+		}
+
+		private void PlayerExtraMeleeDamage(Player player, NPC npc, ref int damage, ref bool crit)
+		{
+            if (Inflicted(player))
+            {
+                damage = (int)(damage * 1.5f);
+            }
+        }
+
+		private void ExtraMeleeDamage(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+            if (Inflicted(npc))
+            {
+                if (item.melee)
+                    damage = (int)(damage * 1.5f);
+            }
+		}
+
+		private void ExtraDamage(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+            if (Inflicted(npc))
+            {
+                if (projectile.melee)
+                    damage = (int)(damage * 1.5f);
+
+                if (projectile.type == ProjectileType<RefractiveBladeProj>())
+                    damage = (int)(damage * 2.0f);
             }
         }
 	}
