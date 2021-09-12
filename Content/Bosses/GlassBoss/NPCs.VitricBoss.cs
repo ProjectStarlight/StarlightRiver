@@ -400,9 +400,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 //on spawn effects
                 case (int)AIStates.SpawnEffects:
 
-                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.ScreenMoveTarget = npc.Center + new Vector2(0, -850);
-                    mp.ScreenMoveTime = 600;
                     UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 500); //Screen pan + intro text
 
                     for (int k = 0; k < Main.maxNPCs; k++) //finds all the large platforms to add them to the list of possible locations for the nuke attack
@@ -427,23 +424,36 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         startPos = npc.Center;
                     }
 
-                    if(GlobalTimer == 120)
+                    if(GlobalTimer == 2)
+					{
+                        ZoomHandler.SetZoomAnimation(1.4f, 60);
+                    }
+
+                    if(GlobalTimer == 70)
+					{
+                        StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp.ScreenMoveTarget = npc.Center + new Vector2(0, -450);
+                        mp.ScreenMoveTime = 500;
+                    }
+
+                    if(GlobalTimer == 224)
 					{
                         Helper.PlayPitched("GlassBoss/StoneBreak", 1, 0, npc.Center);
-					}
+                        ZoomHandler.SetZoomAnimation(1, 20);
+                    }
 
-                    if(GlobalTimer == 164)
+                    if(GlobalTimer == 224)
                         for (int k = 0; k < 30; k++)
                         {
                             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), 0, default, 10);
                         }
 
-                    if (GlobalTimer > 120 && GlobalTimer <= 200)
-                        npc.Center = Vector2.SmoothStep(startPos, startPos + new Vector2(0, -800), (GlobalTimer - 120) / 80f);
+                    if (GlobalTimer > 180 && GlobalTimer <= 260)
+                        npc.Center = Vector2.SmoothStep(startPos, startPos + new Vector2(0, -800), (GlobalTimer - 180) / 80f);
 
-                    if (GlobalTimer > 280) //summon crystal babies
+                    if (GlobalTimer > 340) //summon crystal babies
                         for (int k = 0; k <= 4; k++)
-                            if (GlobalTimer == 280 + k * 30)
+                            if (GlobalTimer == 340 + k * 30)
                             {
                                 Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
                                 int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone forme
@@ -453,7 +463,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                                 crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                             }
 
-                    if (GlobalTimer > 620) //start the fight
+                    if (GlobalTimer > 680) //start the fight
                     {
                         npc.dontTakeDamage = false; //make him vulnerable
                         npc.friendly = false; //and hurt when touched

@@ -40,6 +40,8 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+
+            ZoomHandler.SetZoomAnimation(1.4f);
             //WorldGen.meteor((int)Main.MouseWorld.X / 16 + 200, (int)Main.MouseWorld.Y / 16);
             return true;
 

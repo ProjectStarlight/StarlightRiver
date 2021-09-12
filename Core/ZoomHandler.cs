@@ -30,6 +30,8 @@ namespace StarlightRiver.Core
             }
         }
 
+        public static float ClampedExtraZoomTarget => System.Math.Min(1, ExtraZoomTarget);
+
         public static void AddFlatZoom(float value)
 		{
             flatZoomTarget += value;

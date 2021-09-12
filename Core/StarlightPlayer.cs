@@ -138,7 +138,7 @@ namespace StarlightRiver.Core
 
             if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
             {
-                Vector2 off = new Vector2(Main.screenWidth, Main.screenHeight) / -2;
+                Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ExtraZoomTarget;
                 if (ScreenMoveTimer <= 30) //go out
                 {
                     Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);

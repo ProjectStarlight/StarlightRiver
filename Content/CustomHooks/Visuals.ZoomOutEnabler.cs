@@ -98,12 +98,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private int AddExpansion()
 		{
-			return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
+			return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
 		}
 
 		private int AddExpansionY()
 		{
-			return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
+			return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
 		}
 
 		private void HackSwipes(ILContext il)
@@ -139,10 +139,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ReInit(On.Terraria.Lighting.orig_PreRenderPhase orig)
 		{
-			if (ZoomHandler.ExtraZoomTarget < 1 && ZoomHandler.ExtraZoomTarget != lightingStoredSize)
+			if (ZoomHandler.ClampedExtraZoomTarget < 1 && ZoomHandler.ClampedExtraZoomTarget != lightingStoredSize)
 			{
 				Lighting.Initialize(true);
-				lightingStoredSize = ZoomHandler.ExtraZoomTarget;
+				lightingStoredSize = ZoomHandler.ClampedExtraZoomTarget;
 			}
 
 			orig();
@@ -228,25 +228,25 @@ namespace StarlightRiver.Content.CustomHooks
 					return (int)Math.Floor((Main.screenPosition.X - zero.X) / 16f - 1f);
 
 				case 1:
-					return (int)Math.Floor((Main.screenPosition.X + Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget) + zero.X) / 16f) + 2;
+					return (int)Math.Floor((Main.screenPosition.X + Main.screenWidth * (1f / ZoomHandler.ClampedExtraZoomTarget) + zero.X) / 16f) + 2;
 
 				case 2:
 					return (int)Math.Floor((Main.screenPosition.Y - zero.Y) / 16f - 1f);
 
 				case 3:
-					return (int)Math.Floor((Main.screenPosition.Y + Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget) + zero.Y) / 16f) + 5;
+					return (int)Math.Floor((Main.screenPosition.Y + Main.screenHeight * (1f / ZoomHandler.ClampedExtraZoomTarget) + zero.Y) / 16f) + 5;
 
 				case 4:
-					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget));
+					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ClampedExtraZoomTarget));
 
 				case 5:
-					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget));
+					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ClampedExtraZoomTarget));
 
 				case 6:
-					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
+					return (int)Math.Floor(Main.screenWidth * (1f / ZoomHandler.ClampedExtraZoomTarget)) * 2;
 
 				case 7:
-					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ExtraZoomTarget)) * 2;
+					return (int)Math.Floor(Main.screenHeight * (1f / ZoomHandler.ClampedExtraZoomTarget)) * 2;
 
 				default:
 					return 0;
