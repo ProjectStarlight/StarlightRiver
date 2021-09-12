@@ -437,7 +437,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         ZoomHandler.SetZoomAnimation(1.2f, 60);
                     }
 
-                    if (GlobalTimer == 224)
+                    if (GlobalTimer == 194)
                     {
                         UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
 
@@ -460,7 +460,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (GlobalTimer > 180 && GlobalTimer <= 260)
                     {
-                        float progress = (GlobalTimer - 180) / 80f;
+                        float time = (GlobalTimer - 180) / 80f;
+                        float progress = (float)(Math.Log(time * 3.6) + Math.E) / 4f;
                         npc.Center = Vector2.Lerp(startPos, startPos + new Vector2(0, -800), progress);
                     }
 
