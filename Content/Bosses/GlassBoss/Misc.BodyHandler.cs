@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-	class BodyHandler
+    class BodyHandler
     {
         private VitricBoss parent;
         private VerletChainInstance chain;
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         }
 
         public static void LoadGores()
-		{
+        {
             StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadTop", new DebugGore());
             StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadNose", new DebugGore());
             StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadJaw", new DebugGore());
@@ -46,6 +46,18 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public void DrawBody(SpriteBatch sb)
         {
             chain.DrawRope(sb, DrawSegment);
+
+            var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
+            effect.Parameters["uTime"].SetValue(2 - (parent.shieldShaderTimer / 120f) * 2);
+
+            sb.End();
+            sb.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+            chain.DrawRope(sb, DrawSheild);
+
+            sb.End();
+            sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
         }
 
         private void DrawSegment(SpriteBatch sb, int index, Vector2 pos)
@@ -58,12 +70,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             float rot = 0;
 
-            if(index != 0)
+            if (index != 0)
                 rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 
             Rectangle source;
 
-            switch(index)
+            switch (index)
             {
                 case 0: source = new Rectangle(0, 0, 0, 0); break;
                 case 1: source = new Rectangle(0, 0, 114, 114); break;
@@ -83,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Math.Abs(parent.lastTwistState - parent.twistTarget) == 2) //flip from 1 side to the other
             {
                 int diff = parent.maxTwistTimer / 8 / 3;
-                shouldBeTwistFrame = thisTimer < threshold - diff|| thisTimer > threshold + diff;
+                shouldBeTwistFrame = thisTimer < threshold - diff || thisTimer > threshold + diff;
             }
 
             if (Math.Abs(parent.twistTarget) == 1) //flip from front to side
@@ -97,12 +109,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 ) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             if (Math.Abs(parent.lastTwistState) == Math.Abs(parent.twistTarget) && parent.lastTwistState != parent.twistTarget)
-			{
+            {
                 int dir = (int)flip;
                 dir *= (parent.twistTimer > parent.maxTwistTimer / 2 ? 1 : -1);
 
                 flip = dir == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			}
+            }
 
             if (shouldBeTwistFrame)
                 source.X += 114;
@@ -124,24 +136,85 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2));
                 }
 
-                if(parent.npc.frame.Y == parent.npc.frame.Height * 2 || parent.npc.frame.Y == parent.npc.frame.Height * 3)
-				{
+                if (parent.npc.frame.Y == parent.npc.frame.Height * 2 || parent.npc.frame.Y == parent.npc.frame.Height * 3)
+                {
                     parent.npc.frame.Y = parent.npc.frame.Height * (shouldBeTwistFrame ? 2 : 3);
-				}
+                }
             }
 
             var brightness = (0.5f + (float)Math.Sin(StarlightWorld.rottime + index));
 
-            if (index == 1) 
+            if (index == 1)
                 brightness += 0.25f;
 
-            sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X  / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
+            sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
             sb.Draw(glowTex, pos - Main.screenPosition, source, Color.White * brightness, rot, source.Size() / 2, 1, flip, 0);
 
             var tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 
-            if(!tile.active() && tile.wall == 0)
+            if (!tile.active() && tile.wall == 0)
                 Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
+        }
+
+        private void DrawSheild(SpriteBatch sb, int index, Vector2 pos)
+        {
+            if (stopDrawingBody && index > 0)
+                return;
+
+            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodySheild");
+
+            float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
+
+            Rectangle source;
+
+            switch (index)
+            {
+                case 1: source = new Rectangle(0, 0, 114, 114); break;
+                case 2: source = new Rectangle(18, 120, 78, 44); break;
+
+                case 3:
+                case 4:
+                    source = new Rectangle(26, 168, 62, 30); break;
+
+                default: source = new Rectangle(40, 204, 34, 28); break;
+            }
+
+            var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+            effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
+            effect.Parameters["texSize"].SetValue(tex.Size());
+
+            int thisTimer = parent.twistTimer;
+            int threshold = (int)(parent.maxTwistTimer / 8f * (index + 1)) - 1;
+
+            bool shouldBeTwistFrame = false;
+            if (Math.Abs(parent.lastTwistState - parent.twistTarget) == 2) //flip from 1 side to the other
+            {
+                int diff = parent.maxTwistTimer / 8 / 3;
+                shouldBeTwistFrame = thisTimer < threshold - diff || thisTimer > threshold + diff;
+            }
+
+            if (Math.Abs(parent.twistTarget) == 1) //flip from front to side
+                shouldBeTwistFrame = thisTimer > threshold;
+            else if (parent.twistTarget == 0) //flip from side to front
+                shouldBeTwistFrame = thisTimer < threshold;
+
+            SpriteEffects flip = (
+                (parent.twistTarget == -1 && parent.twistTimer > threshold) ||
+                (parent.lastTwistState == -1)
+                ) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            if (Math.Abs(parent.lastTwistState) == Math.Abs(parent.twistTarget) && parent.lastTwistState != parent.twistTarget)
+            {
+                int dir = (int)flip;
+                dir *= (parent.twistTimer > parent.maxTwistTimer / 2 ? 1 : -1);
+
+                flip = dir == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            }
+
+            if (shouldBeTwistFrame)
+                source.X += 114;
+
+            sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
         }
 
         public void UpdateBody()
