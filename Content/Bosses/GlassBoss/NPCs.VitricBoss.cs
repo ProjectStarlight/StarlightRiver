@@ -722,12 +722,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
 		private void DoRotation()
 		{
-            if (GlobalTimer % 15 == 0)
+            if (GlobalTimer % 30 == 0)
             {
                 if (rotationLocked)
-                    Twist(15, GetTwistDirection(lockedRotation));
+                    Twist(30, GetTwistDirection(lockedRotation));
                 else
-                    Twist(15);
+                    Twist(30);
             }
 
             if (twistTarget != 0)
