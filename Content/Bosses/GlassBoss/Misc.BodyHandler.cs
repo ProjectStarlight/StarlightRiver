@@ -47,17 +47,11 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             chain.DrawRope(sb, DrawSegment);
 
-            var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
-            effect.Parameters["uTime"].SetValue(2 - (parent.shieldShaderTimer / 120f) * 2);
+            if (parent.Phase == (int)VitricBoss.AIStates.FirstPhase && parent.npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
+            {
 
-            sb.End();
-            sb.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
-
-            chain.DrawRope(sb, DrawSheild);
-
-            sb.End();
-            sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                chain.DrawRope(sb, DrawShield);
+            }
         }
 
         private void DrawSegment(SpriteBatch sb, int index, Vector2 pos)
@@ -156,12 +150,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
         }
 
-        private void DrawSheild(SpriteBatch sb, int index, Vector2 pos)
+        private void DrawShield(SpriteBatch sb, int index, Vector2 pos)
         {
-            if (stopDrawingBody && index > 0)
+            if (index == 0)
                 return;
 
-            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodySheild");
+            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyShield");
 
             float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 
@@ -178,10 +172,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 default: source = new Rectangle(40, 204, 34, 28); break;
             }
-
-            var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-            effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
-            effect.Parameters["texSize"].SetValue(tex.Size());
 
             int thisTimer = parent.twistTimer;
             int threshold = (int)(parent.maxTwistTimer / 8f * (index + 1)) - 1;
@@ -214,7 +204,19 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (shouldBeTwistFrame)
                 source.X += 114;
 
+            var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
+            effect.Parameters["uTime"].SetValue(2 - (parent.shieldShaderTimer / 120f) * 2);
+            effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
+            effect.Parameters["texSize"].SetValue(tex.Size());
+
+            sb.End();
+            sb.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
             sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
+
+            sb.End();
+            sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
         }
 
         public void UpdateBody()
