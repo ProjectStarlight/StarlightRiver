@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Food
         public override void SafeSetDefaults()
         {
             item.rare = ItemRarityID.White;
+            item.value = 500;
             if(StarlightRiver.Instance.HasLoaded && Main.rand.Next(10000) == 0)
                 item.SetNameOverride("Grandma's ashes");
         }

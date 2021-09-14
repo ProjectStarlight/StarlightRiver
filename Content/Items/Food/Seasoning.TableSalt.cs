@@ -7,7 +7,11 @@ namespace StarlightRiver.Content.Items.Food
     {
         public TableSalt() : base("Food buffs are 5% more effective", 2400, IngredientType.Seasoning) { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.White;
+        public override void SafeSetDefaults()
+        {
+            item.value = 400;
+            item.rare = ItemRarityID.White;
+        }
 
         public override void BuffEffects(Player player, float multiplier)
         {
