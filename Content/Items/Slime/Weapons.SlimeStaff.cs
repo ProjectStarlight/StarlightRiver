@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -8,18 +9,24 @@ namespace StarlightRiver.Content.Items.Slime
 {
 	public class SlimeStaff : ModItem
     {
+        public int projectileCountMax;
+        public int[] projIndexArray;
+        private const int distanceFromPlayer = 40;
+
         public override string Texture => AssetDirectory.SlimeItem + Name;
 
-        public override void SetStaticDefaults()
+		public override bool Autoload(ref string name)
+		{
+            StarlightNPC.NPCLootEvent += DropSlimeStaff;
+			return base.Autoload(ref name);
+		}
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Slime Slinger");
             Tooltip.SetDefault("Yabba Dabba Doo");
             Item.staff[item.type] = true;
         }
-
-        public int projectileCountMax;
-        public int[] projIndexArray;
-        private const int distanceFromPlayer = 40;
 
         public override void SetDefaults()
         {
@@ -43,6 +50,12 @@ namespace StarlightRiver.Content.Items.Slime
             item.autoReuse = true;
 
             projIndexArray = new int[projectileCountMax];
+        }
+
+        private void DropSlimeStaff(NPC npc)
+        {
+            if (Main.slimeRain && npc.aiStyle == 1 && Main.rand.Next(200) == 0)
+                Item.NewItem(npc.Center, ModContent.ItemType<SlimeStaff>());
         }
 
         //public override void UpdateInventory(Player player)//debug

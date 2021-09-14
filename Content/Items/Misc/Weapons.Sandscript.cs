@@ -42,7 +42,16 @@ namespace StarlightRiver.Content.Items.Misc
             Main.projectile[i].rotation = (Main.MouseWorld - player.Center).ToRotation();
             return false;
         }
-    }
+
+		public override void AddRecipes()
+		{
+            var r = new LearnableRecipe("SandScripts");
+            r.AddIngredient(ItemID.Sandstone, 10);
+            r.AddIngredient(ItemID.Topaz);
+            r.SetResult(this);
+            r.AddRecipe();
+		}
+	}
 
     internal class SandSlash : ModProjectile
     {

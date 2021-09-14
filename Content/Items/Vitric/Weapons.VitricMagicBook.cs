@@ -54,6 +54,15 @@ namespace StarlightRiver.Content.Items.Vitric
             }
             return false;
         }
+
+        public override void AddRecipes()
+        {
+            var r = new ModRecipe(mod);
+            r.AddIngredient(ItemType<Misc.Sandscript>());
+            r.AddIngredient(ItemType<VitricOre>(), 10);
+            r.SetResult(this);
+            r.AddRecipe();
+        }
     }
 
     internal class VitricBookSpikeTrap : ModProjectile

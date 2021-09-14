@@ -33,6 +33,15 @@ namespace StarlightRiver.Content.Items.Vitric
             item.shootSpeed = 6f;
             item.ammo = AmmoID.Arrow;
         }
+
+        public override void AddRecipes()
+        {
+            var r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.FlamingArrow, 100);
+            r.AddIngredient(ItemType<MagmaCore>(), 1);
+            r.SetResult(this, 100);
+            r.AddRecipe();
+        }
     }
 
     internal class MagmaArrowProj : ModProjectile

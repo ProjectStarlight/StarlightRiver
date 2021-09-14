@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Items.Utility
             item.width = 32;
             item.height = 32;
             item.rare = ItemRarityID.Blue;
+            item.value = 50000;
         }
 
         public override ModItem Clone()

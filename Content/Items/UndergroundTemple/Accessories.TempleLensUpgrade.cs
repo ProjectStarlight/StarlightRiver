@@ -3,6 +3,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
@@ -45,7 +46,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             if (Equipped(Main.player[projectile.owner]) && crit)
                 target.AddBuff(BuffType<Exposed>(), 120);
         }
-    }
+
+		public override void AddRecipes()
+		{
+            var r = new ModRecipe(mod);
+            r.AddIngredient(ItemType<TempleLens>());
+            r.AddIngredient(ItemType<Moonstone.MoonstoneBar>(), 5);
+            r.SetResult(this);
+            r.AddRecipe();
+        }
+	}
 
     class Exposed : SmartBuff
     {

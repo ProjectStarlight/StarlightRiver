@@ -20,6 +20,6 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public MagmaCore() : base("Magma Core", "", 999, 200, 2) { }
+        public MagmaCore() : base("Magmatic Glass", "", 999, 200, 2) { }
     }
 }

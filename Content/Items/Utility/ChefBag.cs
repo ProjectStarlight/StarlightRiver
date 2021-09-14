@@ -24,14 +24,15 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Chef's Bag");
-            Tooltip.SetDefault("Stores a full stack of every ingredient\nRight click an ingredient to make it with others in the bag");
+            Tooltip.SetDefault("Stores lots of every ingredient\nRight click an ingredient to make it with others in the bag");
         }
 
         public override void SetDefaults()
         {
             item.width = 32;
             item.height = 32;
-            item.rare = ItemRarityID.Blue;
+            item.rare = ItemRarityID.Orange;
+            item.value = 500000;
         }
 
         public override void RightClick(Player player)

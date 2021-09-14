@@ -47,6 +47,15 @@ namespace StarlightRiver.Content.Items.Vitric
         //    if (Main.projectile.Any(n => n.type == ProjectileType<VitricHookProjectile>() && n.owner == player.whoAmI))
         //        player.itemAnimation = 5;
         //}
+
+        public override void AddRecipes()
+        {
+            var r = new ModRecipe(mod);
+            r.AddIngredient(ItemID.GrapplingHook);
+            r.AddIngredient(ItemType<VitricOre>(), 30);
+            r.SetResult(this);
+            r.AddRecipe();
+        }
     }
 
     class VitricHookProjectile : ModProjectile 
