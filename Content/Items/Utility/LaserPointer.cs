@@ -121,11 +121,11 @@ namespace StarlightRiver.Content.Items.Utility
             if(Owner.channel)
                 projectile.timeLeft = 2;
 
-            for (int k = 0; k < 80; k++)
+            for (int k = 0; k < 160; k++)
             {
                 Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
-                if (Helper.PointInTile(posCheck) || k == 79)
+                if (Helper.PointInTile(posCheck) || k == 159)
                 {
                     endPoint = posCheck;
                     break;
