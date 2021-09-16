@@ -546,10 +546,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         {
                             crystal.ai[0] = 3;
                             crystal.ai[2] = 5; //turn the crystals to transform mode
+                            (crystal.modNPC as VitricBossCrystal).StartPos = crystal.Center;
+                            (crystal.modNPC as VitricBossCrystal).timer = 0;
                         }
                     }
 
-                    if (GlobalTimer == 120)
+                    if (GlobalTimer == 430)
                     {
                         SetFrameX(1);
                         foreach (NPC crystal in crystals) //kill all the crystals
@@ -564,6 +566,17 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (GlobalTimer > 120 && GlobalTimer < 240)
                     {
                         npc.Center = Vector2.SmoothStep(homePos, homePos + new Vector2(0, 650), (GlobalTimer - 120) / 120f);
+                    }
+
+                    if (GlobalTimer > 240 && GlobalTimer < 430)
+                    {
+                        float progress = (GlobalTimer - 240) / 90f;
+
+                        foreach (NPC crystal in crystals)
+                        {
+                            var start = (crystal.modNPC as VitricBossCrystal).StartPos;
+                            crystal.Center = Vector2.SmoothStep(start, arena.Center(), progress);
+                        }
                     }
 
                     if (GlobalTimer > 240 && GlobalTimer < 700 && GlobalTimer % 120 == 0)

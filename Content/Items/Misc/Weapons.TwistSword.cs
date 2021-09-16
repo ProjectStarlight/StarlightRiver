@@ -142,8 +142,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
             float rot = projectile.ai[0] % 80 / 80f * 6.28f;
-            float x = (float)Math.Cos(-rot) * 120;
-            float y = (float)Math.Sin(-rot) * 40;
+            float x = (float)Math.Cos(-rot) * 160;
+            float y = (float)Math.Sin(-rot) * 70;
             Vector2 off = new Vector2(x, y);
 
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + off);
