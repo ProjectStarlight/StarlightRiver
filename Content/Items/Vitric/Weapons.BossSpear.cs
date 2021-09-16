@@ -359,8 +359,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (Main.LocalPlayer == Main.player[projectile.owner])
             {
-                var barTex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar0");
-                var barTex2 = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar1");
+                var barTex = ModContent.GetTexture(AssetDirectory.GUI + "SmallBar0");
+                var barTex2 = ModContent.GetTexture(AssetDirectory.GUI + "SmallBar1");
 
                 var pos = Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -36) - barTex.Size() / 2;
                 var target = new Rectangle((int)pos.X + 1, (int)pos.Y - 2, (int)(ShieldLife / 50f * barTex2.Width), barTex2.Height);
