@@ -13,8 +13,8 @@ namespace StarlightRiver.Content.Items.Misc
         public override string Texture => AssetDirectory.MiscItem + Name;
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Sand Scripts");
-            Tooltip.SetDefault("Manifests a blade of sand");
+            DisplayName.SetDefault("Sandscript");
+            Tooltip.SetDefault("Manifests a blade of sand\n`This lost tablet has a small part of the Epic of Yheremy inscribed on it\n...The writing is sorta ameteurish for an ancient relic`");
         }
 
         public override void SetDefaults()

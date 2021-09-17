@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Guillotine() : base("Golden Guillotine", "Critical strikes gain power as your foes lose life\nExecutes normal enemies on low life") { }
+		public Guillotine() : base("Golden Guillotine", "Critical strikes gain power as your foes lose health\nExecutes normal enemies on low health") { }
 
 		public override bool Autoload(ref string name)
 		{

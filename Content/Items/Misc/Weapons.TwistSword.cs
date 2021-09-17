@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Twisted Greatsword");
-            Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to turn into a helicopter!");
+            Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to accelerate upward");
         }
 
         public int charge = 240;
