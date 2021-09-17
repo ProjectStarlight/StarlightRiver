@@ -82,8 +82,16 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            var matrix = new Matrix
+            (
+                Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
+
             fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
-            fireEffect.Parameters["upscale"].SetValue(Main.GameViewMatrix.ZoomMatrix);
+            fireEffect.Parameters["upscale"].SetValue(matrix);
             fireEffect.Parameters["sampleTexture"].SetValue(GetTexture(AssetDirectory.Assets + "FireTrail"));
 
             chain.DrawStrip(PrepareStrip, fireEffect);
@@ -134,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             var tex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
 
-            for (int k = 2; k < chain.segmentCount; k++)
+            for (int k = 0; k < chain.segmentCount; k++)
             {
                 var segment = chain.ropeSegments[k];
                 var progress = 1.35f - (float)k / chain.segmentCount;
@@ -145,11 +153,24 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private void WindForce(int index)//wind
         {
+            float opacity = 0;
+
+            if (parent.Phase >= (int)VitricBoss.AIStates.FirstToSecond)
+            {
+                opacity = 1;
+
+                if (parent.Phase == (int)VitricBoss.AIStates.FirstToSecond)
+                    opacity = MathHelper.Clamp((parent.GlobalTimer - 360) / 60f, 0, 1);
+            }
+
             float sin = (float)Math.Sin(StarlightWorld.rottime + index);
 
             Vector2 pos = Vector2.UnitX.RotatedBy(position.ToRotation()) * 2 + Vector2.UnitY.RotatedBy(position.ToRotation()) * sin * 2.1f;
 
             Color color = new Color(230 - (int)(20 * sin), 120 + (int)(30 * sin), 55);
+
+            if(index < 5)
+            color *= 1 + (opacity * (1 - index / 5f)) * 2;
 
             chain.ropeSegments[index].posNow += pos;
             chain.ropeSegments[index].color = color;

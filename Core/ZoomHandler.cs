@@ -65,7 +65,7 @@ namespace StarlightRiver.Core
 
         public static void UpdateZoom()
         {
-            zoomOverride = Vector2.Lerp(new Vector2(oldZoom, 0), new Vector2(extraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
+            zoomOverride = Vector2.SmoothStep(new Vector2(oldZoom, 0), new Vector2(extraZoomTarget, 0), zoomTimer / (float)maxTimer).X;
 
             if (zoomOverride == Main.GameZoomTarget)
                 oldZoom = Main.GameZoomTarget;
