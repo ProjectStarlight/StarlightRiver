@@ -380,6 +380,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 SetFrameX(x);
 
                 rotationLocked = true;
+
+                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
             else
             {
@@ -393,6 +395,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 Main.projectile[index].rotation = rot;
 
                 lockedRotation = rot + 3.14f;
+
                 Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
 
@@ -476,7 +479,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             rotationLocked = true;
             lockedRotation = 1.57f;
 
-            if(AttackTimer == 1)
+            if(AttackTimer == 30)
                 Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
 
             if (AttackTimer < 30)
@@ -510,7 +513,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 15, 0);
             }
 
-            if(AttackTimer == 60)
+            if(AttackTimer == 40)
                 Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
 
             if (AttackTimer > 60 && AttackTimer <= 90)
@@ -610,6 +613,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer > 90)
             {
                 float LaserTimer = AttackTimer - 90;
+                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
 
                 if (LaserTimer < 60)
                 {
@@ -639,6 +643,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     npc.velocity *= 0;
                     ResetAttack();
 				}
+
             }
         }
         #endregion

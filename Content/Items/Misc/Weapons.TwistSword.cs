@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Misc
                 Rectangle target = new Rectangle(pos.X, pos.Y, (int)(charge / 800f * tex.Width), tex.Height);
                 Rectangle source = new Rectangle(0, 0, (int)(charge / 800f * tex.Width), tex.Height);
                 Rectangle target2 = new Rectangle(pos.X, pos.Y + 2, tex2.Width, tex2.Height);
-                Vector3 color = Vector3.Lerp(Color.Red.ToVector3(), Color.LimeGreen.ToVector3(), charge / 800f);
+                Vector3 color = Vector3.Lerp(Color.Red.ToVector3(), Color.Aqua.ToVector3(), charge / 800f);
 
                 Main.spriteBatch.Draw(tex2, target2, new Color(40, 40, 40));
                 Main.spriteBatch.Draw(tex, target, source, new Color(color.X, color.Y, color.Z));
