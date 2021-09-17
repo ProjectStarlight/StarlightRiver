@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassBoss
 {
-    internal sealed partial class VitricBoss : ModNPC, IDynamicMapIcon
+    internal sealed partial class VitricBoss : ModNPC
     {
         public Vector2 startPos;
         public Vector2 endPos;
@@ -610,14 +610,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         SetFrameX(4 + (int)((GlobalTimer - 350) / 20f * 6));
 					}
 
+                    if(GlobalTimer == 350)
+                        foreach (NPC crystal in crystals) //kill all the crystals
+                            crystal.Kill();
+
                     if (GlobalTimer == 359) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
                     if (GlobalTimer == 360) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
 
                     if (GlobalTimer == 360)
 					{
-                        foreach (NPC crystal in crystals) //kill all the crystals
-                            crystal.Kill();
-
                         StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                         mp2.Shake += 40;
 
@@ -811,14 +812,5 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         private int IconFrame = 0;
         private int IconFrameCounter = 0;
-
-        public void DrawOnMap(SpriteBatch spriteBatch, Vector2 center, float scale, Color color)
-        {
-            if (IconFrameCounter++ >= 5) { IconFrame++; IconFrameCounter = 0; }
-            if (IconFrame > 3) IconFrame = 0;
-
-            Texture2D tex = GetTexture(Texture + "_Head_Boss");
-            spriteBatch.Draw(tex, center, new Rectangle(0, IconFrame * 30, 30, 30), color, npc.rotation, Vector2.One * 15, scale, 0, 0);
-        }
     }
 }
