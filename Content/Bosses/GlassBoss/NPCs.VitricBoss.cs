@@ -618,6 +618,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         foreach (NPC crystal in crystals) //kill all the crystals
                             crystal.Kill();
 
+                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                        mp2.Shake += 40;
+
                         for (int k = 0; k < 40; k++)
                         {
                             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 200, 20), 0.4f);
