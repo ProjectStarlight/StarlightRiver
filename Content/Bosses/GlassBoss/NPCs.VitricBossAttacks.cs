@@ -574,9 +574,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (AttackTimer > 495)
 			{
-                SetFrameY(3);
+                SetFrameY(4);
 
-                int x = 10 - (int)((AttackTimer - 495) / 60f * 10);
+                int x = 9 - (int)((AttackTimer - 495) / 60f * 10);
                 SetFrameX(x);
             }
 

@@ -255,8 +255,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     if (timer >= 120) npc.active = false;
                     break;
 
-                case 5: //transforming the boss 
-                        //TODO: Give this a new animation
+                case 5:
+                case 6:
+
+                    if (timer > 180)
+                        npc.scale = Math.Max(0, 1 - (timer - 180) / 60f);
+
                     break;
             }
         }
@@ -279,7 +283,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             altTimer = 0;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		{
+            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            return false;
+        }
+
+		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
             if (state == 0)
@@ -288,15 +298,15 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (phase == 3 && timer < 30)
             {
                 float factor = timer / 30f;
-                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2, 0, 0);
+                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2 * npc.scale, 0, 0);
             }
 
-            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
 
-            if(phase == 5)
+            if(phase >= 5)
 			{
-                spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * (timer / 430f), npc.rotation, npc.frame.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * (timer / 120f), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
             }
         }
 
@@ -326,7 +336,33 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
 			}
 
-            if(shouldDrawArc)
+            if (phase == 6 && timer > 220)
+            {
+                Texture2D texGlow2 = GetTexture("StarlightRiver/Assets/Keys/Glow");
+                Texture2D ballTex = GetTexture(AssetDirectory.GlassBoss + "FinalLaser");
+
+                var progress = Math.Min(1, ((timer - 220) / 60f));
+                int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
+                var color = new Color(255, 160 + sin, 40 + sin / 2) * progress;
+
+                spriteBatch.Draw(texGlow2, npc.Center - Main.screenPosition, null, color * progress, 0, texGlow2.Size() / 2, progress * 1.0f, default, default);
+                spriteBatch.Draw(texGlow2, npc.Center - Main.screenPosition, null, color * progress * 1.2f, 0, texGlow2.Size() / 2, progress * 1.6f, default, default);
+
+                var effect1 = Filters.Scene["SunPlasma"].GetShader().Shader;
+                effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallMap"));
+                effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallDistort"));
+                effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(ballTex, npc.Center - Main.screenPosition, null, Color.White * progress, 0, ballTex.Size() / 2, progress * 1.7f, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }
+
+            if (shouldDrawArc)
 			{
                 var graphics = Main.graphics.GraphicsDevice;
 

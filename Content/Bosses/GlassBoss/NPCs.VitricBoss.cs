@@ -467,7 +467,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     if (GlobalTimer > 340) //summon crystal babies
                         for (int k = 0; k <= 4; k++)
-                            if (GlobalTimer == 340 + k * 30)
+                            if (GlobalTimer == 340 + k * 5)
                             {
                                 Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
                                 int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone forme
@@ -535,13 +535,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.FirstToSecond:
 
-                    Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.9f;
-                    Vignette.extraOpacity = 0.5f + (float)Math.Sin(GlobalTimer / 25f) * 0.2f;
+                    //Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.9f;
+                    //Vignette.extraOpacity = 0.5f + (float)Math.Sin(GlobalTimer / 25f) * 0.2f;
+
+                    rotationLocked = true;
+                    lockedRotation = 3.14f;
 
                     if (GlobalTimer == 2)
                     {
-                        music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBossAmbient");
-
                         foreach (NPC crystal in crystals)
                         {
                             crystal.ai[0] = 3;
@@ -549,28 +550,47 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                             (crystal.modNPC as VitricBossCrystal).StartPos = crystal.Center;
                             (crystal.modNPC as VitricBossCrystal).timer = 0;
                         }
+
+                        crystals[0].ai[2] = 6;
                     }
 
-                    if (GlobalTimer == 430)
+                    if (GlobalTimer == 140)
                     {
                         SetFrameX(1);
-                        foreach (NPC crystal in crystals) //kill all the crystals
-                            crystal.Kill();
                         npc.friendly = true; //so we wont get contact damage
 
                         StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                        mp2.ScreenMoveTarget = npc.Center;
-                        mp2.ScreenMoveTime = 660;
+                        mp2.ScreenMoveTarget = arena.Center();
+                        mp2.ScreenMoveTime = 540;
                     }
 
-                    if (GlobalTimer > 120 && GlobalTimer < 240)
-                    {
-                        npc.Center = Vector2.SmoothStep(homePos, homePos + new Vector2(0, 650), (GlobalTimer - 120) / 120f);
+                    if(GlobalTimer > 140 && GlobalTimer < 400)
+					{
+                        ZoomHandler.AddFlatZoom(0.2f);
                     }
 
-                    if (GlobalTimer > 240 && GlobalTimer < 430)
+                    if (GlobalTimer > 20 && GlobalTimer < 140)
                     {
-                        float progress = (GlobalTimer - 240) / 90f;
+                        npc.Center = Vector2.SmoothStep(homePos, homePos + new Vector2(100, -60), (GlobalTimer - 20) / 120f);
+                    }
+
+                    if (GlobalTimer > 140 && GlobalTimer <= 170)
+                    {
+                        SetFrameY(1);
+                        SetFrameX((int)((GlobalTimer - 140) / 30f * 4));
+                    }
+
+                    if(GlobalTimer > 140 && GlobalTimer < 200)
+					{
+                        foreach (NPC crystal in crystals)
+                        {
+                            Dust.NewDustPerfect(crystal.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.Glow>(), (crystal.Center - npc.Center) * -0.02f, 0, new Color(255, 200, 20), 0.4f);
+                        }
+                    }
+
+                    if (GlobalTimer > 180 && GlobalTimer < 240)
+                    {
+                        float progress = (GlobalTimer - 180) / 60f;
 
                         foreach (NPC crystal in crystals)
                         {
@@ -579,26 +599,41 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         }
                     }
 
-                    if (GlobalTimer > 240 && GlobalTimer < 700 && GlobalTimer % 120 == 0)
+                    if (GlobalTimer >= 340 && GlobalTimer < 370)
                     {
-                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                        mp2.Shake += (int)(GlobalTimer / 20);
+                        npc.Center = Vector2.SmoothStep(homePos + new Vector2(100, -60), homePos, (GlobalTimer - 340) / 30f);
                     }
 
-                    if (GlobalTimer >= 700 && GlobalTimer < 730)
-                    {
-                        npc.Center = Vector2.SmoothStep(homePos + new Vector2(0, 650), homePos, (GlobalTimer - 700) / 30f);
+                    if(GlobalTimer > 350 && GlobalTimer <= 370)
+					{
+                        SetFrameY(1);
+                        SetFrameX(4 + (int)((GlobalTimer - 350) / 20f * 6));
+					}
+
+                    if (GlobalTimer == 359) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
+                    if (GlobalTimer == 360) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
+
+                    if (GlobalTimer == 360)
+					{
+                        foreach (NPC crystal in crystals) //kill all the crystals
+                            crystal.Kill();
+
+                        for (int k = 0; k < 40; k++)
+                        {
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 200, 20), 0.4f);
+                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, new Color(255, 100, 20), 0.6f);
+                        }
+
+                        swooshes = new List<VitricBossSwoosh>()
+                        {
+                        new VitricBossSwoosh(new Vector2(-16, -40), 10, this),
+                        new VitricBossSwoosh(new Vector2(16, -40), 10, this),
+                        new VitricBossSwoosh(new Vector2(-46, -34), 14, this),
+                        new VitricBossSwoosh(new Vector2(46, -34), 14, this)
+                        };
                     }
 
-                    if (GlobalTimer == 760)
-                    {
-                        Main.PlaySound(SoundID.Roar, npc.Center);
-
-                        StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                        mp2.Shake += 60;
-                    }
-
-                    if (GlobalTimer > 850)
+                    if (GlobalTimer > 480)
                     {
                         SetFrameX(2);
                         ChangePhase(AIStates.SecondPhase, true); //go on to the next phase
@@ -610,6 +645,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                         break;
                     }
+
+                    DoRotation();
 
                     break;
 
@@ -624,13 +661,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         npc.friendly = false;
                         Vignette.visible = true;
                     }
-
-                    if (GlobalTimer == 1) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
-                    if (GlobalTimer == 2) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
-
-                    if (GlobalTimer > 702 && GlobalTimer < 760) //no fadein
-                        for (int k = 0; k < Main.musicFade.Length; k++)
-                            if (k == Main.curMusic) Main.musicFade[k] = 1;
 
                     if (AttackTimer == 1) //switching out attacks
                     {
