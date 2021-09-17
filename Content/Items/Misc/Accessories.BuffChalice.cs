@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs grants innoculation") { }
+		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
 
 		public override bool Autoload(ref string name)
 		{
@@ -23,11 +23,30 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				for(int k = 0; k < 5; k++)
+				for (int k = 0; k < 5; k++)
 				{
 					if (oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k])
-						player.AddBuff(ModContent.BuffType<Potions.InnoculationPotionBuff>(), 120);
+						player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
 				}
+			}
+		}
+		class PlexusChaliceBuff : ModBuff
+		{
+			public override bool Autoload(ref string name, ref string texture)
+			{
+				texture = AssetDirectory.PotionsItem + name;
+				return base.Autoload(ref name, ref texture);
+			}
+
+			public override void SetDefaults()
+			{
+				DisplayName.SetDefault("Plexus Resistance");
+				Description.SetDefault("+30% to DoT Resistance");
+			}
+
+			public override void Update(Player player, ref int buffIndex)
+			{
+				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 			}
 		}
 	}

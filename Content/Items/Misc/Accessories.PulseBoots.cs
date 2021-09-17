@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
     public class PulseBoots : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-        public PulseBoots() : base("Pulse Boots", "Rocket Power!") { }
+        public PulseBoots() : base("Pulse Boots", "Grants a directionally boosted double jump") { }
 
         private bool doubleJumped = false;
         private bool releaseJump = false;

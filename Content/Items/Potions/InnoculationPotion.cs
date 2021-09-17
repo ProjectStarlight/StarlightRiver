@@ -4,13 +4,13 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Potions
 {
-	class InnoculationPotion : ModItem
+	class InoculationPotion : ModItem
 	{
 		public override string Texture => AssetDirectory.PotionsItem + Name;
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Innoculation Potion");
+			DisplayName.SetDefault("Inoculation Potion");
 			Tooltip.SetDefault("+30% DoT resistance");
 		}
 
@@ -21,13 +21,13 @@ namespace StarlightRiver.Content.Items.Potions
 			item.maxStack = 30;
 			item.useStyle = Terraria.ID.ItemUseStyleID.EatingUsing;
 			item.consumable = true;
-			item.buffType = ModContent.BuffType<InnoculationPotionBuff>();
+			item.buffType = ModContent.BuffType<InoculationPotionBuff>();
 			item.buffTime = 180 * 60;
 			item.UseSound = Terraria.ID.SoundID.Item3;
 		}
 	}
 
-	class InnoculationPotionBuff : ModBuff
+	class InoculationPotionBuff : ModBuff
 	{
 		public override bool Autoload(ref string name, ref string texture)
 		{
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetDefaults()
 		{
-			DisplayName.SetDefault("Innoculated");
+			DisplayName.SetDefault("Inoculated");
 			Description.SetDefault("+30% to DoT Resistance");
 		}
 

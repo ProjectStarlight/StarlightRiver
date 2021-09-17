@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
             StarlightPlayer.OnHitNPCEvent += OnHit;
             return base.Autoload(ref name);
         }
-        public Ironheart() : base("Ironheart", "NaN") { }
+        public Ironheart() : base("Ironheart", "Striking enemies generates a decaying shield") { }
 
         private void OnHit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
         {
