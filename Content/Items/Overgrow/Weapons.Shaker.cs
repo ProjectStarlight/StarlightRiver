@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -13,11 +14,37 @@ namespace StarlightRiver.Content.Items.Overgrow
 {
 	internal class Shaker : ModItem
     {
+        public bool lifting;
+
         public override string Texture => AssetDirectory.OvergrowItem + "Shaker";
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("The Shaker");
+            StarlightPlayer.PostUpdateEvent += DoLiftAnimation;
+            StarlightPlayer.ResetEffectsEvent += ResetLiftAnimation;
+        }
+
+		private void DoLiftAnimation(Player player)
+		{
+            var instance = player.HeldItem.modItem;
+
+            if (instance is Shaker)
+            {
+                if ((instance as Shaker).lifting)
+                    player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
+            }
+        }
+
+        private void ResetLiftAnimation(StarlightPlayer player)
+        {
+            var instance = player.player.HeldItem.modItem;
+
+            if (instance is Shaker)
+            {
+                if ((instance as Shaker).lifting)
+                    lifting = false;
+            }
         }
 
         public override void SetDefaults()
@@ -51,7 +78,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             {
                 player.velocity.X *= 0.95f;
                 player.jump = -1;
-                player.GetModPlayer<AnimationHandler>().Lifting = true;
+                lifting = true;
             }
         }
 
@@ -61,21 +88,6 @@ namespace StarlightRiver.Content.Items.Overgrow
         }
     }
 
-     public class AnimationHandler : ModPlayer
-     {
-         public bool Lifting = false;
-
-         public override void PostUpdate()
-         {
-             if (Lifting) 
-                 player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
-         }
- 
-         public override void ResetEffects()
-         {
-             Lifting = false;
-         }
-     }
      internal class ShakerBall : ModProjectile
      {
         public override string Texture => AssetDirectory.OvergrowItem + Name;

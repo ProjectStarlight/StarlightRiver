@@ -1,6 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Terraria.Graphics.Effects;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -8,23 +13,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-	public class Dash : CooldownAbility
+	public class Dash : CooldownAbility, ILoadable
     {
-        public static float SignedLesserBound(float limit, float other)
-        {
-            if (limit < 0) return Math.Min(limit, other);
-            if (limit > 0) return Math.Max(limit, other);
-
-            return other;
-            // return 0; <-- do this to lock the player's perpendicular momentum when dashing
-        }
-
-        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
-        {
-            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
-        }
-
         public int Time;
+        public int EffectTimer;
 
         public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
@@ -32,12 +24,37 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override int CooldownMax => 80;
 
-        public const int defaultTime = 12;
+        public const int defaultTime = 15;
 
         public Vector2 Dir { get; private set; }
         public Vector2 Vel { get; private set; }
         public float Speed { get; set; }
         public float Boost { get; set; }
+
+        private List<Vector2> cache;
+        private Trail trail;
+
+        public float Priority => 1;
+
+		public void Load()
+		{
+            StarlightPlayer.PostUpdateEvent += UpdatePlayerFrame;
+		}
+
+        public void Unload() { }
+
+        public static float SignedLesserBound(float limit, float other)
+        {
+            if (limit < 0) return Math.Min(limit, other);
+            if (limit > 0) return Math.Max(limit, other);
+
+            return other;
+        }
+
+        public static Vector2 SignedLesserBound(Vector2 limit, Vector2 other)
+        {
+            return new Vector2(SignedLesserBound(limit.X, other.X), SignedLesserBound(limit.Y, other.Y));
+        }
 
         public void SetVelocity()
         {
@@ -46,7 +63,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override void Reset()
         {
-            Boost = 0.2f;
+            Boost = 0.25f;
             Speed = 28;
             Time = defaultTime;
             CooldownBonus = 0;
@@ -70,13 +87,19 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
             Main.PlaySound(SoundID.Item45, Player.Center);
             Main.PlaySound(SoundID.Item104, Player.Center);
+            EffectTimer = 45;
         }
 
-        public override void UpdateActive()
+		public override void OnDeactivate()
+		{
+            Player.UpdateRotation(0);
+        }
+
+		public override void UpdateActive()
         {
             base.UpdateActive();
 
-            var progress = Time > 7 ? 1 - (Time - 7) / 5f : 1;
+            var progress = Time > 7 ? 1 - (Time - 7) / 8f : 1;
 
             Player.velocity = SignedLesserBound((Dir * Speed) * progress, Player.velocity * progress); // "conservation of momentum"
 
@@ -85,11 +108,13 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
             if (Time-- <= 0) Deactivate();
+
+            ManageCaches();
         }
 
         public override void UpdateActiveEffects()
         {
-            if (Time >= 9)
+            if (Time >= 8)
                 return;
 
             Vector2 prevPos = Player.Center + Vector2.Normalize(Player.velocity) * 10;
@@ -97,17 +122,50 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
             for (int k = 0; k < 60; k++)
             {
-                float rot = 0.1f * k * direction;
+                float rot = 0.1f * k * direction + 3.14f;
                 Dust dus = Dust.NewDustPerfect(
-                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.5f + Time / 8f),
+                    prevPos + Vector2.Normalize(Player.velocity).RotatedBy(rot) * (k / 2) * (0.8f - Time / 11f),
                     DustType<AirDash>(),
                     Vector2.UnitX
                     );
-                dus.fadeIn = k - Time * 3;
+                dus.fadeIn = (k) + Time * 3;
             }
         }
 
-        public override void CooldownFinish()
+		public override void DrawActiveEffects(SpriteBatch spriteBatch)
+		{
+            if (!Main.gameMenu && EffectTimer < 44 && EffectTimer > 0)
+            {
+                DrawPrimitives();              
+            }
+		}
+
+		public void UpdatePlayerFrame(Player player)
+		{
+            if(player.GetHandler().ActiveAbility is Dash)
+			{
+                var dash = player.GetHandler().ActiveAbility as Dash;
+
+                player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
+                player.UpdateRotation(dash.Time / 15f * 6.28f);
+
+                if(dash.Time == 15)
+                    player.UpdateRotation(0);
+            }
+		}
+
+		public override void UpdateFixed()
+		{
+            if (EffectTimer > 0 && cache != null)
+            {
+                ManageTrail();
+                EffectTimer--;
+            }
+
+            base.UpdateFixed();
+		}
+
+		public override void CooldownFinish()
         {
             for (int k = 0; k <= 60; k++)
             {
@@ -126,52 +184,57 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Player.fallStart2 = (int)(Player.position.Y / 16);
         }
 
-        //public override void OnCastDragon()
-        //{
-        //    if (Player.velocity.Y == 0) //on the ground, set to zero so the game knows to do the pounce
-        //    {
-        //        X = Player.direction * 2;
-        //        Y = 0;
-        //    }
-        //    else // jumping/in the air, do the barrel roll
-        //    {
-        //        X = Vector2.Normalize(Player.Center - Main.MouseWorld).X;
-        //        Y = Vector2.Normalize(Player.Center - Main.MouseWorld).Y;
-        //    }
-        //    cooldownActive = 20;
-        //    cooldown = 90;
-        //}
+        private void ManageCaches()
+        {
+            if (Time == 14)
+                cache?.Clear();
 
-        //public override void UpdateDragon()
-        //{
-        //    cooldownActive--;
-        //    if (Math.Abs(X) > 1) //the normalized X should never be greater than 1, so this should be a valid check for the pounce
-        //    {
-        //        Player.velocity.X = X * 6;
-        //        if (cooldownActive == 19) Player.velocity.Y -= 4;
-        //    }
-        //    else //otherwise, barrelroll
-        //    {
-        //        Player.velocity = new Vector2(X, Y) * 0.2f * (((10 - cooldownActive) * (10 - cooldownActive)) - 100);
-        //    }
-        //    if (cooldownActive <= 0)
-        //    {
-        //        Active = false;
-        //        OnExit();
-        //    }
-        //}
+            if (cache == null || cache.Count < 14)
+            {
+                cache = new List<Vector2>();
 
-        //public override void UpdateEffectsDragon()
-        //{
-        //    Dust.NewDust(Player.position, 50, 50, DustType<Air>());
-        //    if (Math.Abs(X) < 1)
-        //    {
-        //        for (int k = 0; k <= 10; k++)
-        //        {
-        //            float rot = ((cooldownActive - k / 10f) / 10f * 6.28f) + new Vector2(X, Y).ToRotation();
-        //            Dust.NewDustPerfect(Vector2.Lerp(Player.Center, Player.Center + Player.velocity, k / 10f) + Vector2.One.RotatedBy(rot) * 30, DustType<Air>(), Vector2.Zero);
-        //        }
-        //    }
-        //}
+                for (int i = 0; i < 14; i++)
+                {
+                    cache.Add(Player.Center + Player.velocity * 3);
+                }
+            }
+
+            cache.Add(Player.Center + Player.velocity * 3);
+
+            while (cache.Count > 14)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 14, new TriangularTip(40 * 4), factor => Math.Min(factor * 50, 40), factor =>
+            {
+                if (factor.X >= 0.80f)
+                    return Color.White * 0;
+
+                return new Color(140, 150 + (int)(105 * factor.X), 255) * factor.X * (float)Math.Sin(EffectTimer / 45f * 3.14f);
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Player.Center + Player.velocity * 6;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1); 
+
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
+            effect.Parameters["repeats"].SetValue(1f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
+
+            trail?.Render(effect);
+        }
     }
 }

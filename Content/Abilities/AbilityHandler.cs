@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
 using StarlightRiver.Packets;
 using System;
 using System.Collections.Generic;
@@ -12,7 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Abilities
 {
-	public partial class AbilityHandler : ModPlayer
+	public partial class AbilityHandler : ModPlayer, ILoadable
     {
         // The player's active ability.
         public Ability ActiveAbility
@@ -69,6 +71,15 @@ namespace StarlightRiver.Content.Abilities
         private float staminaMaxBonus;
         private Ability activeAbility;
         private Ability nextAbility;
+
+        public float Priority => 1;
+
+        public void Load()
+		{
+            StarlightPlayer.PostDrawEvent += PostDrawAbility;
+		}
+
+        public void Unload() { }
 
         private void Unlock(Type t, Ability ability)
         {
@@ -296,7 +307,7 @@ namespace StarlightRiver.Content.Abilities
                 if (infusions[i] != null)
                     infusions[i].item.owner = player.whoAmI;
         }
-
+      
         private void UpdateStaminaRegen()
         {
             const int cooldownSmoothing = 10;
@@ -390,6 +401,25 @@ namespace StarlightRiver.Content.Abilities
 		public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
             ActiveAbility?.ModifyDrawLayers(layers);
+        }
+
+        public void PostDrawAbility(Player player, SpriteBatch spriteBatch)
+		{
+            var called = new HashSet<Ability>();
+
+            foreach (var infusion in player.GetHandler().infusions)
+            {
+                if (infusion == null) continue;
+                infusion.UpdateFixed();
+
+                if (infusion.Ability != null)
+                    called.Add(infusion.Ability);
+            }
+
+            called.SymmetricExceptWith(player.GetHandler().unlockedAbilities.Values);
+
+            foreach (var ability in called)
+                ability.DrawActiveEffects(spriteBatch);
         }
     }
 }

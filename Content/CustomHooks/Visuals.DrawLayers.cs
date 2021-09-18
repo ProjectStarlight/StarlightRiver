@@ -50,23 +50,9 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow) //TODO: Generalize this for later use, and possibly optimize it also
         {
-            try
-            {
-                orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-            }
-            catch (Exception e)
-            {
-                // be quiet
-            }
+            orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 
-            if (Main.gameMenu) return;
-
-            for (int i = (int)Main.screenPosition.X / 16; i < (int)Main.screenPosition.X / 16 + Main.screenWidth / 16; i++)
-                for (int j = (int)Main.screenPosition.Y / 16; j < (int)Main.screenPosition.Y / 16 + Main.screenWidth / 16; j++)
-                {
-                    if (i > 0 && j > 0 && i < Main.maxTilesX && j < Main.maxTilesY && Main.tile[i, j] != null && Main.tile[i, j].type == TileType<GrassOvergrow>())
-                        GrassOvergrow.CustomDraw(i, j, Main.spriteBatch);
-                }
+            drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)

@@ -103,6 +103,8 @@ namespace StarlightRiver.Core
 
         public override void PostUpdate()
         {
+            PostUpdateEvent.Invoke(player);
+
             if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
             Timer++;
         }

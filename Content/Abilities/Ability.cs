@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Abilities.GaiasFist;
@@ -13,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Abilities
 {
-	public abstract class Ability
+    public abstract class Ability
     {
         protected Ability()
         {
@@ -36,9 +37,11 @@ namespace StarlightRiver.Content.Abilities
         public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
         public virtual void Reset() { }
         public virtual void UpdateActiveEffects() { }
+        public virtual void DrawActiveEffects(SpriteBatch spriteBatch) { }
         public virtual void UpdateFixed() { }
 
         public virtual void OnActivate() { }
+        public virtual void OnDeactivate() { }
         public virtual void UpdateActive() { }
         public virtual void OnExit() { }
 
@@ -56,6 +59,7 @@ namespace StarlightRiver.Content.Abilities
 
         public void Deactivate()
         {
+            OnDeactivate();
             User.ActiveAbility = null;
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -180,7 +181,7 @@ namespace StarlightRiver.Content.Dusts
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = AssetDirectory.Dust + "Air";
+            texture = "StarlightRiver/Assets/Keys/GlowSoft";
             return base.Autoload(ref name, ref texture);
         }
 
@@ -188,20 +189,33 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.noGravity = true;
             dust.noLight = false;
+            dust.frame = new Rectangle(0, 0, 64, 64);
+            dust.position -= Vector2.One * 32;
+
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            return dust.fadeIn <= 0 ? new Color(170, 255, 255) * (dust.alpha / 255f) : Color.Transparent;
+            return dust.fadeIn <= 0 ? new Color(120, 255, 255) * (dust.alpha / 255f) : Color.Transparent;
         }
 
         public override bool Update(Dust dust)
         {
+            dust.scale = (2f - Math.Abs(dust.fadeIn) / 30f) * 0.15f;
+            Vector2 currentCenter = dust.position + Vector2.One * 32 * dust.scale;
             dust.fadeIn -= 3;
-            dust.scale = 2f - Math.Abs(dust.fadeIn) / 30f;
+            dust.scale = (2f - Math.Abs(dust.fadeIn) / 30f) * 0.15f;
+            Vector2 nextCenter = dust.position + Vector2.One * 32 * dust.scale;
+
+            dust.position += currentCenter - nextCenter;
+
             dust.alpha = 150 - (int)(Math.Abs(dust.fadeIn) / 60f * 150);
             dust.position += dust.velocity;
             dust.velocity *= 0.9f;
+
+            dust.color = dust.fadeIn <= 0 ? new Color(100, 220, 255) * (dust.alpha / 255f) : Color.Transparent;
+            dust.shader.UseColor(dust.color);
 
             if (dust.fadeIn <= -60) dust.active = false;
             return false;

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
@@ -56,6 +57,16 @@ namespace StarlightRiver.Core
         public override void NaturalLifeRegen(ref float regen)
         {
             NaturalLifeRegenEvent?.Invoke(player, ref regen);
+        }
+
+        public delegate void PostUpdateDelegate(Player player);
+        public static event PostUpdateDelegate PostUpdateEvent;
+
+        public delegate void PostDrawDelegate(Player player, SpriteBatch spriteBatch);
+        public static event PostDrawDelegate PostDrawEvent;
+        public void PostDraw(Player player, SpriteBatch spriteBatch)
+		{
+            PostDrawEvent?.Invoke(player, Main.spriteBatch);
         }
 
         //this is the grossest one. I am sorry, little ones.
