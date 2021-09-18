@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sandscript");
-            Tooltip.SetDefault("Manifests a blade of sand\n`This lost tablet has a small part of the Epic of Yheremy inscribed on it\n...The writing is sorta ameteurish for an ancient relic`");
+            Tooltip.SetDefault("Manifests a blade of sand\n`This lost tablet contains a fragment of the Epic of Yeremy\n...The writing is sorta ameteurish for an ancient relic`");
         }
 
         public override void SetDefaults()
