@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         npc.ai[0] = 2;
 
                         for (int k = -1; k <= 1; k++)
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.GlassBoss.GlassSpike>(), 10, 0);
+                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
 
                         npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;
 

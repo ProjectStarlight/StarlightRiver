@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.GlassBoss;
+using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                         Framing.GetTileSafely(realX, realY).frameX -= 90;
                     }
 
-                StarlightWorld.FlipFlag(WorldFlags.GlassBossOpen);
+                StarlightWorld.FlipFlag(WorldFlags.VitricBossOpen);
             }
 
             return false;
@@ -129,10 +129,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
-            if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
                 CutsceneTimer = 999;
 
-            if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.GlassBossOpen))
+            if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
                 Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 CutsceneTimer++;
                 if (CutsceneTimer > 180)
                 {
-                    StarlightWorld.Flag(WorldFlags.GlassBossOpen);
+                    StarlightWorld.Flag(WorldFlags.VitricBossOpen);
                     if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                     {
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = projectile.Center + new Vector2(0, -400);
@@ -182,11 +182,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 
                 Vector2 center = projectile.Center + new Vector2(0, 60);
-                int timerset = StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) ? 360 : 0; //the arena should already be up if it was opened before
+                int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) ? 360 : 0; //the arena should already be up if it was opened before
 
                 int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
 
-                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
+                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
                 {
                     arenaRight = Main.npc[index];
                     (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
 
-                if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
+                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
                 {
                     arenaLeft = Main.npc[index];
                     (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
@@ -235,9 +235,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             //Barriers
             Vector2 center = projectile.Center + new Vector2(0, 56);
-            Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrier");
-            Texture2D tex2 = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrier2");
-            Texture2D texTop = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarrierTop");
+            Texture2D tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrier");
+            Texture2D tex2 = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrier2");
+            Texture2D texTop = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrierTop");
             //Color color = new Color(180, 225, 255);
 
             int off = (int)(BarrierProgress / 120f * tex.Height);

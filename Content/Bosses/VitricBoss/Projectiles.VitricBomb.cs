@@ -9,16 +9,16 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class VitricBomb : ModProjectile, IDrawAdditive
     {
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		public override bool Autoload(ref string name)
 		{
             for(int k = 0; k < 4; k++)
-                mod.AddGore(AssetDirectory.GlassBoss + "Gore/Mine" + k);
+                mod.AddGore(AssetDirectory.VitricBoss + "Gore/Mine" + k);
 
             return base.Autoload(ref name);
 		}
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-            Texture2D tex2 = GetTexture(AssetDirectory.GlassBoss + "BombTell");
+            Texture2D tex2 = GetTexture(AssetDirectory.VitricBoss + "BombTell");
 
             float bright = (300 - projectile.timeLeft) / 300f * 0.7f;
             if (projectile.timeLeft < 60) bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.12f;
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             for (int k = 0; k < 4; k++)
             {
-                Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Mine" + k));
+                Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Mine" + k));
                 Projectile.NewProjectile(projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
             }
 

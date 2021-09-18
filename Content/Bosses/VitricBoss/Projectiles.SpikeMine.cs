@@ -7,9 +7,9 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class BossSpike : ModProjectile, IDrawAdditive
+	internal class SpikeMine : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.Invisible;
 
@@ -60,14 +60,14 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Timer < 120)
             {
                 float alpha = Math.Min(Timer / 20f, 1);
-                Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "SpikeSource");
+                Texture2D tex = GetTexture(AssetDirectory.VitricBoss + "SpikeSource");
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * alpha, 0, tex.Size() / 2, 1, 0, 0);
             }
 
             if (Timer > 90)
             {
-                Texture2D spike = GetTexture(AssetDirectory.GlassBoss + "BossSpike");
-                Texture2D glow = GetTexture(AssetDirectory.GlassBoss + "BossSpikeGlow");
+                Texture2D spike = GetTexture(AssetDirectory.VitricBoss + "BossSpike");
+                Texture2D glow = GetTexture(AssetDirectory.VitricBoss + "BossSpikeGlow");
 
                 Random rand = new Random(projectile.GetHashCode());
 

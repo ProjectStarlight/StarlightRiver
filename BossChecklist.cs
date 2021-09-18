@@ -32,7 +32,7 @@ namespace StarlightRiver
                 ModContent.ItemType<Content.Items.Vitric.VitricBossBag>(),
             };
             string vitricBossInfo = "Use a Glass Idol at cerios' altar in the vitric desert, after breaking the crystal covering it.";
-            bcl.Call("AddBoss", 3.9f, ModContent.NPCType<Content.Bosses.GlassBoss.VitricBoss>(), this, "Ceiros", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.GlassBossDowned)), ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossCollection, vitricBossLoot, vitricBossInfo, null, "StarlightRiver/Bosses/GlassBoss/Preview");
+            bcl.Call("AddBoss", 3.9f, ModContent.NPCType<Content.Bosses.VitricBoss.VitricBoss>(), this, "Ceiros", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)), ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossCollection, vitricBossLoot, vitricBossInfo, null, "StarlightRiver/Bosses/VitricBoss/Preview");
         }
     }
 }

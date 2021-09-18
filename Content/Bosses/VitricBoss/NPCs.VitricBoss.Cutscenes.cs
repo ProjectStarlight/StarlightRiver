@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
 	{
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 30;
 
-                Helper.PlayPitched("GlassBoss/StoneBreak", 1, 0, npc.Center);
+                Helper.PlayPitched("VitricBoss/StoneBreak", 1, 0, npc.Center);
                 ZoomHandler.SetZoomAnimation(1, 20);
 
                 for (int k = 0; k < 10; k++)
@@ -54,9 +54,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 for (int k = 0; k < 40; k++)
-                    Gore.NewGorePerfect(npc.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "Gore/Cluster" + Main.rand.Next(1, 20)));
+                    Gore.NewGorePerfect(npc.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Cluster" + Main.rand.Next(1, 20)));
 
-                Gore.NewGorePerfect(npc.Center + new Vector2(-112, 50), Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.GlassBoss + "TempleHole"));
+                Gore.NewGorePerfect(npc.Center + new Vector2(-112, 50), Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "TempleHole"));
             }
 
             if (GlobalTimer > 180 && GlobalTimer <= 260)
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if (GlobalTimer > 680) //start the fight
             {
-                GUI.BootlegHealthbar.SetTracked(npc, "Shit!", GetTexture(AssetDirectory.GlassBoss + "GUI/HealthBar"));
+                GUI.BootlegHealthbar.SetTracked(npc, "Shit!", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
 
                 npc.dontTakeDamage = false; //make him vulnerable
                 npc.friendly = false; //and hurt when touched
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     crystal.Kill();
 
             if (GlobalTimer == 359) music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
-            if (GlobalTimer == 360) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss2");
+            if (GlobalTimer == 360) music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss2");
 
             if (GlobalTimer == 360)
             {
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             if (GlobalTimer == 3)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
             if (GlobalTimer > 3 && GlobalTimer < 63)
                 Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 3) / 60f;

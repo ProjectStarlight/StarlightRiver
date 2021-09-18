@@ -7,13 +7,13 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class FinalLaser : ModProjectile, IDrawAdditive
     {
         public VitricBoss parent;
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public ref float Timer => ref projectile.ai[0];
         public ref float LaserRotation => ref projectile.ai[1];
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Timer > 120)
             {
                 if (LaserTimer == 1)
-                    Helpers.Helper.PlayPitched("GlassBoss/lasercharge", 1, 0, projectile.Center);
+                    Helpers.Helper.PlayPitched("VitricBoss/lasercharge", 1, 0, projectile.Center);
 
                 if (LaserTimer == 140)
                     direction = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
@@ -133,8 +133,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, color * projectile.scale * 1.2f, 0, texGlow.Size() / 2, projectile.scale * 1.6f, default, default);
 
             var effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-            effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallMap"));
-            effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallDistort"));
+            effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap"));
+            effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort"));
             effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
             spriteBatch.End();

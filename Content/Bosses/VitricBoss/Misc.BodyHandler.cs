@@ -8,7 +8,7 @@ using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
     class BodyHandler
     {
@@ -27,20 +27,20 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public static void LoadGores()
         {
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadNose", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadJaw", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HeadRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/CheekLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/CheekRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HornLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/HornRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/BodyTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/BodyBottom", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentLarge", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentMedium", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/SegmentSmall", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadTop", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadNose", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadJaw", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornLeft", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornRight", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyTop", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyBottom", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentLarge", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentMedium", new DebugGore());
+            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentSmall", new DebugGore());
         }
 
         public void DrawBody(SpriteBatch sb)
@@ -59,8 +59,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (stopDrawingBody && index > 0)
                 return;
 
-            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBody");
-            var glowTex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyGlow");
+            var tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBody");
+            var glowTex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBodyGlow");
 
             float rot = 0;
 
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (index == 0)
                 return;
 
-            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBodyShield");
+            var tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBodyShield");
 
             float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 source.X += 114;
 
             var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
+            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap"));
             effect.Parameters["uTime"].SetValue(2 - (parent.shieldShaderTimer / 120f) * 2);
             effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
             effect.Parameters["texSize"].SetValue(tex.Size());
@@ -243,18 +243,18 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 		{
             var pos = chain.ropeSegments[0].posNow;
 
-            GoreMe(pos, new Vector2(-60, -30), AssetDirectory.GlassBoss + "Gore/HeadLeft");
-            GoreMe(pos, new Vector2(60, -30), AssetDirectory.GlassBoss + "Gore/HeadRight");
+            GoreMe(pos, new Vector2(-60, -30), AssetDirectory.VitricBoss + "Gore/HeadLeft");
+            GoreMe(pos, new Vector2(60, -30), AssetDirectory.VitricBoss + "Gore/HeadRight");
 
-            GoreMe(pos, new Vector2(-60, 0), AssetDirectory.GlassBoss + "Gore/HornLeft");
-            GoreMe(pos, new Vector2(60, 0), AssetDirectory.GlassBoss + "Gore/HornRight");
+            GoreMe(pos, new Vector2(-60, 0), AssetDirectory.VitricBoss + "Gore/HornLeft");
+            GoreMe(pos, new Vector2(60, 0), AssetDirectory.VitricBoss + "Gore/HornRight");
 
-            GoreMe(pos, new Vector2(0, -15), AssetDirectory.GlassBoss + "Gore/HeadTop");
-            GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/HeadNose");
-            GoreMe(pos, new Vector2(0, 80), AssetDirectory.GlassBoss + "Gore/HeadJaw");
+            GoreMe(pos, new Vector2(0, -15), AssetDirectory.VitricBoss + "Gore/HeadTop");
+            GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/HeadNose");
+            GoreMe(pos, new Vector2(0, 80), AssetDirectory.VitricBoss + "Gore/HeadJaw");
 
-            GoreMe(pos, new Vector2(-45, 40), AssetDirectory.GlassBoss + "Gore/CheekLeft");
-            GoreMe(pos, new Vector2(45, 40), AssetDirectory.GlassBoss + "Gore/CheekRight");
+            GoreMe(pos, new Vector2(-45, 40), AssetDirectory.VitricBoss + "Gore/CheekLeft");
+            GoreMe(pos, new Vector2(45, 40), AssetDirectory.VitricBoss + "Gore/CheekRight");
         }
 
         public void SpawnGores()
@@ -268,21 +268,21 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 switch (k)
                 {
                     case 1:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/BodyTop");
-                        GoreMe(pos, new Vector2(0, 50), AssetDirectory.GlassBoss + "Gore/BodyBottom");
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/BodyTop");
+                        GoreMe(pos, new Vector2(0, 50), AssetDirectory.VitricBoss + "Gore/BodyBottom");
                         break;
 
                     case 2:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentLarge");
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentLarge");
                         break;
 
                     case 3:
                     case 4:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentMedium");
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentMedium");
                         break;
 
                     default:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.GlassBoss + "Gore/SegmentSmall");
+                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentSmall");
                         break;
                 }
             }
@@ -300,15 +300,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 		public override void OnSpawn(Gore gore)
 		{
             gore.timeLeft = 30;
-		}
-
-		public override bool Update(Gore gore)
-		{
-            return true;
-
-            gore.timeLeft -= 5;
-            gore.active = gore.timeLeft > 0;
-            return false;
 		}
 	}
 }

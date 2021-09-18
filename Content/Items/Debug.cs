@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items
         {
 
             int i = NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, NPCID.VortexHornetQueen);
-            GUI.BootlegHealthbar.SetTracked(Main.npc[i], "Shit!", ModContent.GetTexture(AssetDirectory.GlassBoss + "GUI/HealthBar"));
+            GUI.BootlegHealthbar.SetTracked(Main.npc[i], "Shit!", ModContent.GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
             return true;
 
             player.statLifeMax = 500;

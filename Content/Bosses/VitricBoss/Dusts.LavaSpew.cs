@@ -3,13 +3,13 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class LavaSpew : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = AssetDirectory.GlassBoss + name;
+            texture = AssetDirectory.VitricBoss + name;
             return true;
         }
 

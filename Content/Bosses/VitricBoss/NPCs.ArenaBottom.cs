@@ -9,12 +9,12 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	internal class ArenaBottom : ModNPC, IDrawAdditive
     {
         public VitricBoss Parent;
-        public override string Texture => AssetDirectory.GlassBoss + "CrystalWaveHot";
+        public override string Texture => AssetDirectory.VitricBoss + "CrystalWaveHot";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
 
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            var tex = GetTexture(AssetDirectory.GlassBoss + "LongGlow");
+            var tex = GetTexture(AssetDirectory.VitricBoss + "LongGlow");
 
             if (npc.ai[1] == 2) 
             {
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
     {
         private float startY;
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public override void SetDefaults()
         {

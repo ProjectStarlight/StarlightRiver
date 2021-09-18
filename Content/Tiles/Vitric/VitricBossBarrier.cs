@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<Bosses.GlassBoss.VitricBoss>());
+            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<Bosses.VitricBoss.VitricBoss>());
         }
     }
 }

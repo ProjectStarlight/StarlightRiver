@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-            var auraTex = GetTexture(AssetDirectory.GlassBoss + "BombTell");
+            var auraTex = GetTexture(AssetDirectory.VitricBoss + "BombTell");
             var maxScale = MAX_BUFF_RADIUS / auraTex.Width;
 
             spriteBatch.Draw(auraTex, npc.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.8f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);

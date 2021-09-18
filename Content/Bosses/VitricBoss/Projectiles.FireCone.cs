@@ -10,9 +10,9 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class SandCone : ModProjectile, IDrawAdditive
+	internal class FireCone : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.Invisible;
 
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (projectile.ai[0] < 66) //draws the proejctile's tell ~1 second before it goes off
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ConeTell");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ConeTell");
                 float alpha = (projectile.ai[0] * 2 / 33 - (float)Math.Pow(projectile.ai[0], 2) / 1086) * 0.5f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(255, 170, 100) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (projectile.ai[0] >= 66) //draws the proejctile
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LavaBurst");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LavaBurst");
                 Rectangle frame = new Rectangle(0, tex.Height / 7 * (int)((projectile.ai[0] - 66) / 4), tex.Width, tex.Height / 7);
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 1, 0, 0);
             }

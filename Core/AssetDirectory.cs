@@ -47,7 +47,7 @@ namespace StarlightRiver.Core
         public const string VitricItem =            Assets + "Items/Vitric/";
         public const string VitricNpc =             Assets + "NPCs/Vitric/";
         public const string GlassMiniboss =         Assets + "Bosses/GlassMiniboss/";
-        public const string GlassBoss =             Assets + "Bosses/GlassBoss/";
+        public const string VitricBoss =             Assets + "Bosses/VitricBoss/";
 
         public const string PermafrostTile =        Assets + "Tiles/Permafrost/";
         public const string PermafrostItem =        Assets + "Items/Permafrost/";

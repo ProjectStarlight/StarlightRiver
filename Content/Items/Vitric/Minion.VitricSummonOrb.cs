@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool MinionContactDamage() => false;
 
-        public override string Texture => AssetDirectory.GlassBoss + "CrystalWave";
+        public override string Texture => AssetDirectory.VitricBoss + "CrystalWave";
 
         public override void SetStaticDefaults()
         {

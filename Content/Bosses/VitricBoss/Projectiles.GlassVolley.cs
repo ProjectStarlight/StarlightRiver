@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	internal class GlassVolley : ModProjectile, IDrawAdditive
     {
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         {
             if (projectile.ai[0] <= 46) //draws the proejctile's tell ~0.75 seconds before it goes off
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VolleyTell");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell");
                 float alpha = (projectile.ai[0] * 2 / 23 - (float)Math.Pow(projectile.ai[0], 2) / 529) * 0.75f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     public class GlassVolleyShard : ModProjectile
     {
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public override void SetDefaults()
         {

@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ModLoader;
 using StarlightRiver.Core;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class BrickGode : ILoadable
 	{
@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 		public void Load()
 		{
 			for(int k = 1; k <= 19; k++)
-				StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "Gore/Cluster" + k);
+				StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/Cluster" + k);
 
-			StarlightRiver.Instance.AddGore(AssetDirectory.GlassBoss + "TempleHole");
+			StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "TempleHole");
 		}
 
 		public void Unload() { }

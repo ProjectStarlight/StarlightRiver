@@ -9,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
     {
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         }
 
         #region phase 1
-        private void NukePlatforms()
+        private void MakeCrystalVulnerable()
         {
             if (AttackTimer == 1)
             {
@@ -66,12 +66,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
         }
 
-        private void CrystalCage()
+        private void FireCage()
         {
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
                 RandomizeTarget();
-                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<SandCone>(), 1, 0); //spawn a sand cone attack
+                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 1, 0); //spawn a sand cone attack
 
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
 
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             if(AttackTimer % 110 == 25)
-                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
 
             if (AttackTimer > 110 && AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
 			{
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 }
 
                 if (AttackTimer == 360)
-                    Helper.PlayPitched("GlassBoss/RingIdle", 0.4f, -0.2f, npc.Center);
+                    Helper.PlayPitched("VitricBoss/RingIdle", 0.4f, -0.2f, npc.Center);
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer > 360) ResetAttack();
         }
 
-        private void RandomSpikes()
+        private void SpikeMines()
         {
             List<Vector2> points = new List<Vector2>();
             crystalLocations.ForEach(n => points.Add(n + new Vector2(0, -100)));
@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)
             {
-                Projectile.NewProjectile(points[k] + Vector2.UnitY * 64, Vector2.Zero, ProjectileType<BossSpike>(), 25, 0);
+                Projectile.NewProjectile(points[k] + Vector2.UnitY * 64, Vector2.Zero, ProjectileType<SpikeMine>(), 25, 0);
             }
 
             ResetAttack();
@@ -319,7 +319,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         if (timer == 60) //sand cone
                         {
-                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<SandCone>(), 1, 0);
+                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 1, 0);
 
                             float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
 
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                         }
 
                         if(timer == 80)
-                            Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+                            Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
 
                         if (timer > 60 && timer < 140)
                         {
@@ -381,7 +381,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 rotationLocked = true;
 
-                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
             else
             {
@@ -396,13 +396,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 lockedRotation = rot + 3.14f;
 
-                Helper.PlayPitched("GlassBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
 
             if (AttackTimer >= 120 * 4 - 1) ResetAttack(); //end after the third volley is fired
         }
 
-        private void Rest()
+        private void ResetPosition()
         {
             int restTime = Main.expertMode ? 120 : 180;
 
@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer == restTime) ResetAttack();
         }
 
-        private void Whirl()
+        private void WhirlAndSmash()
         {
             if (AttackTimer == 1) favoriteCrystal = Main.rand.Next(2); //bootleg but I dont feel like syncing another var
 
@@ -466,7 +466,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 				{
                     for (int k = 0; k < 6; k++)
                     {
-                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(5, 18)), ProjectileType<BossSpike>(), 10, 1);
+                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(5, 18)), ProjectileType<SpikeMine>(), 10, 1);
                     }
                 }
 
@@ -480,7 +480,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             lockedRotation = 1.57f;
 
             if(AttackTimer == 30)
-                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopen", 1, 1, npc.Center);
 
             if (AttackTimer < 30)
 			{
@@ -514,7 +514,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             if(AttackTimer == 40)
-                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 1, npc.Center);
 
             if (AttackTimer > 60 && AttackTimer <= 90)
 			{
@@ -542,7 +542,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 npc.Center = Vector2.SmoothStep(startPos, arena.Center(), AttackTimer / 60f);
 
             if (AttackTimer == 120)
-                Helper.PlayPitched("GlassBoss/ceiroslidopen", 1, 1, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopen", 1, 1, npc.Center);
 
             if (AttackTimer > 120 && AttackTimer < 180)
             {
@@ -573,7 +573,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             }
 
             if(AttackTimer == 495)
-                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 1, npc.Center);
 
             if (AttackTimer > 495)
 			{
@@ -613,7 +613,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (AttackTimer > 90)
             {
                 float LaserTimer = AttackTimer - 90;
-                Helper.PlayPitched("GlassBoss/ceiroslidclose", 1, 1, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 1, npc.Center);
 
                 if (LaserTimer < 60)
                 {

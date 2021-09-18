@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.usesLocalNPCImmunity = true;
 
         }
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/VitricBoss/BossSpike";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Vitric Spike Trap");
 
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
     internal class VitricBookProjectile : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/VitricBoss/BossSpike";
 
         public override void SetDefaults()
         {
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
     internal class VitricBookProjectiletileCheck : ModProjectile
     {
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassBoss/BossSpike";
+        public override string Texture => "StarlightRiver/Assets/Bosses/VitricBoss/BossSpike";
 
         public override void SetDefaults()
         {

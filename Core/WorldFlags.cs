@@ -10,8 +10,8 @@ namespace StarlightRiver
         SquidBossOpen = 1 << 1,
         SquidBossDowned = 1 << 2,
 
-        GlassBossOpen = 1 << 3,
-        GlassBossDowned = 1 << 4,
+        VitricBossOpen = 1 << 3,
+        VitricBossDowned = 1 << 4,
 
         OvergrowBossOpen = 1 << 5,
         OvergrowBossFree = 1 << 6,

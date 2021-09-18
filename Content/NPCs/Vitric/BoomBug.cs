@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             for (int k = 0; k < 20; k++)
             {
-                var d = Dust.NewDustPerfect(npc.Center, DustType<Bosses.GlassBoss.LavaSpew>(), null, 0, default, 1.3f);
+                var d = Dust.NewDustPerfect(npc.Center, DustType<Bosses.VitricBoss.LavaSpew>(), null, 0, default, 1.3f);
                 d.rotation = Main.rand.NextFloat(6.28f);
             }
 

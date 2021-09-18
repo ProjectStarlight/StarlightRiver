@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
     public sealed partial class VitricBoss : ModNPC
     {
@@ -39,7 +39,6 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         private bool altAttack = false;
         public Color glowColor = Color.Transparent;
 
-        private List<VitricBossEye> eyes;
         private List<VitricBossSwoosh> swooshes;
         private BodyHandler body;
 
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         #region tml hooks
 
@@ -90,15 +89,9 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
 
-            npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBoss/ceramicimpact");
+            npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact");
 
-            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/GlassBoss1");
-
-            eyes = new List<VitricBossEye>()
-            {
-            new VitricBossEye(new Vector2(16, 70), 0),
-            new VitricBossEye(new Vector2(66, 70), 1)
-            };
+            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss1");
 
             swooshes = new List<VitricBossSwoosh>()
             {
@@ -128,7 +121,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
                 foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena
-                StarlightWorld.Flag(WorldFlags.GlassBossDowned);
+                StarlightWorld.Flag(WorldFlags.VitricBossDowned);
                 return true;
             }
 
@@ -184,18 +177,13 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (eyes.Any(n => n.Parent == null))
-                eyes.ForEach(n => n.Parent = this);
-
-            eyes.ForEach(n => n.Draw(spriteBatch));
-
             if (Phase == (int)AIStates.FirstPhase && npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/Shield");
+                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/Shield");
                 var effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : 0;
 
                 var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-                effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/ShieldMap"));
+                effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap"));
                 effect.Parameters["uTime"].SetValue(2 - (shieldShaderTimer / 120f) * 2);
                 effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
                 effect.Parameters["texSize"].SetValue(tex.Size());
@@ -216,8 +204,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             var spriteBatch = Main.spriteBatch;
 
-            var tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarUnder");
-            var texOver = GetTexture(AssetDirectory.GlassBoss + "VitricBossBarOver");
+            var tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarUnder");
+            var texOver = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarOver");
             var progress = (float)npc.life / npc.lifeMax;
 
             Rectangle target = new Rectangle((int)(position.X - Main.screenPosition.X) + 2, (int)(position.Y - Main.screenPosition.Y), (int)(progress * tex.Width - 4), tex.Height);
@@ -447,10 +435,10 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                     switch (AttackPhase) //Attacks
                     {
-                        case 0: NukePlatforms(); break;
-                        case 1: CrystalCage(); break;
+                        case 0: MakeCrystalVulnerable(); break;
+                        case 1: FireCage(); break;
                         case 2: CrystalSmash(); break;
-                        case 3: RandomSpikes(); break;
+                        case 3: SpikeMines(); break;
                         case 4: PlatformDash(); break;
                     }
 
@@ -498,8 +486,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                     {
                         case 0: if (altAttack) Darts(); else Volley(); break;
                         case 1: Mines(); break;
-                        case 2: Whirl(); break;
-                        case 3: Rest(); break;
+                        case 2: WhirlAndSmash(); break;
+                        case 3: ResetPosition(); break;
                         case 4: Laser(); break;
                     }
 
@@ -521,55 +509,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
                 case (int)AIStates.Dying:
 
-                    Vignette.offset = Vector2.Zero;
-                    Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
-
-                    if (GlobalTimer == 1)
-                        npc.noTileCollide = false;
-
-                    if (GlobalTimer <= 2)
-                    {
-                        npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * 25;
-                        GlobalTimer--;
-
-                        for (int x = -8; x <= 8; x++)
-                            for (int y = -8; y <= 8; y++)
-                            {
-                                Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
-
-                                if (tile.collisionType != 0)
-                                {
-                                    GlobalTimer = 2;
-                                    npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * -10;
-                                    Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, npc.Center);
-                                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
-                                    body.SpawnGores();
-                                    npc.Kill();
-                                    return;
-                                }
-                            }
-                    }
-
-                    if (GlobalTimer == 3)
-                        Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassBossDeath"));
-
-                    if (GlobalTimer > 3 && GlobalTimer < 63)
-                        Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 3) / 60f;
-
-                    if(GlobalTimer > 3)
-					{
-                        npc.velocity *= 0.95f;
-                        npc.velocity.Y += 0.2f;
-					}
-
-                    if (GlobalTimer == 600)
-                    {
-                        for (int k = 0; k < 50; k++) 
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
-
-                        Vignette.visible = false;
-                        npc.Kill();
-                    }
+                    DeathAnimation();
 
                     break;
             }

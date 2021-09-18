@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
     {
@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
         public int shake = 0;
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public override bool CheckActive() => false;
 
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
              * 3: scroll acceleration
              */
 
-            if (StarlightWorld.HasFlag(WorldFlags.GlassBossOpen) && State == 0) State = 1; //when the altar is hit, make the BG rise out of the ground
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0) State = 1; //when the altar is hit, make the BG rise out of the ground
 
             if (State == 1)
             {
@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, sb, Configs.LightImportance.Some);
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
 
-            //Texture2D tex3 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricRightEasterEgg");
+            //Texture2D tex3 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
             //Helpers.LightingBufferRenderer.DrawWithLighting(target, tex3, source, Color.White * ((((float)Math.Sin(Main.GameUpdateCount  / 50f) + 1) / 2f) + 0.1f), sb, Configs.LightImportance.Some);//a
         }
 
@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-            //Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/VitricRightEasterEgg");
+            //Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
             //Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex2, source1, default, sb, Configs.LightImportance.Some);
             //Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex2, source2, default, sb, Configs.LightImportance.Some);
         }

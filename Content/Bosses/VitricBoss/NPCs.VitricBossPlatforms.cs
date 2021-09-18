@@ -5,12 +5,12 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	internal class VitricBossPlatformUp : MovingPlatform
     {
         public const int MaxHeight = 880;
-        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatform";
+        public override string Texture => AssetDirectory.VitricBoss + "VitricBossPlatform";
 
         public VitricBackdropLeft parent;
         public Vector2 storedCenter;
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     internal class VitricBossPlatformUpSmall : VitricBossPlatformUp
     {
-        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatformSmall";
+        public override string Texture => AssetDirectory.VitricBoss + "VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
     internal class VitricBossPlatformDownSmall : VitricBossPlatformDown
     {
-        public override string Texture => AssetDirectory.GlassBoss + "VitricBossPlatformSmall";
+        public override string Texture => AssetDirectory.VitricBoss + "VitricBossPlatformSmall";
 
         public override void SafeSetDefaults()
         {

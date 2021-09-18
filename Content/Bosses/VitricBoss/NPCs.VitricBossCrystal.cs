@@ -7,10 +7,10 @@ using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
-using static StarlightRiver.Content.Bosses.GlassBoss.VitricBoss;
+using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	internal class VitricBossCrystal : ModNPC, IDrawAdditive
     {
@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public ref float phase => ref npc.ai[2];
         public ref float altTimer => ref npc.ai[3];
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public override bool CheckActive() => phase == 4;
 
@@ -301,12 +301,12 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2 * npc.scale, 0, 0);
             }
 
-            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
 
             if(phase >= 5)
 			{
-                spriteBatch.Draw(GetTexture(AssetDirectory.GlassBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * (timer / 120f), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * (timer / 120f), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
             }
         }
 
@@ -331,7 +331,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
 
             if(phase == 3)
 			{
-                var tex = GetTexture(AssetDirectory.GlassBoss + "GlassSpikeGlow");
+                var tex = GetTexture(AssetDirectory.VitricBoss + "GlassSpikeGlow");
                 var speed = npc.velocity.Y / 15f;
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, -45), null, new Color(255, 150, 50) * speed, -MathHelper.PiOver4, tex.Size() / 2, 3, 0, 0);
 			}
@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
             if (phase == 6 && timer > 220)
             {
                 Texture2D texGlow2 = GetTexture("StarlightRiver/Assets/Keys/Glow");
-                Texture2D ballTex = GetTexture(AssetDirectory.GlassBoss + "FinalLaser");
+                Texture2D ballTex = GetTexture(AssetDirectory.VitricBoss + "FinalLaser");
 
                 var progress = Math.Min(1, ((timer - 220) / 60f));
                 int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
@@ -349,8 +349,8 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
                 spriteBatch.Draw(texGlow2, npc.Center - Main.screenPosition, null, color * progress * 1.2f, 0, texGlow2.Size() / 2, progress * 1.6f, default, default);
 
                 var effect1 = Filters.Scene["SunPlasma"].GetShader().Shader;
-                effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallMap"));
-                effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/GlassBoss/LaserBallDistort"));
+                effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap"));
+                effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort"));
                 effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
                 spriteBatch.End();

@@ -8,51 +8,8 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class VitricBossEye
-    {
-        private Vector2 Position;
-        public VitricBoss Parent;
-        private int Timer;
-        private readonly int Index;
-
-        public VitricBossEye(Vector2 pos, int index)
-        {
-            Position = pos;
-            Index = index;
-        }
-
-        public void Draw(SpriteBatch sb)
-        {
-            if (Parent == null) 
-                return;
-
-            Texture2D tex = GetTexture(AssetDirectory.GlassBoss + "VitricBossEye");
-            float rot = (Parent.npc.position + Position - Main.player[Parent.npc.target].Center).ToRotation();
-
-            if (Parent.npc.target >= 200) 
-                rot = 0;
-
-            Color color = new Color(255, 210, 90);
-
-            if ((Parent.npc.ai[0] > 360 || Timer >= 1) && Timer < 15) 
-                Timer++;
-
-            if (Parent.npc.ai[1] != (int)VitricBoss.AIStates.SpawnAnimation && Parent.npc.ai[0] % 120 == Index * 6) 
-                Timer = 1;
-
-            if (Parent.npc.ai[1] == (int)VitricBoss.AIStates.Anger)
-            {
-                rot = StarlightWorld.rottime * 4 + Index * 2;
-                color = new Color(205, 120, 255);
-                Timer = 15;
-            }
-
-            sb.Draw(tex, Parent.npc.position + Position + new Vector2(-1, 0).RotatedBy(rot) * 3 - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, Timer / 15f + Parent.pain / 200f, 0, 0);
-        }
-    }
-
     internal class VitricBossSwoosh
     {
         readonly VitricBoss parent;

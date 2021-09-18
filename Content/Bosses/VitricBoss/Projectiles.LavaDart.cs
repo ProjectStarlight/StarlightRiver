@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Helpers;
 
-namespace StarlightRiver.Content.Bosses.GlassBoss
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
     class LavaDart : ModProjectile, IDrawPrimitive
     {
@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Bosses.GlassBoss
         public float dist1;
         public float dist2;
 
-        public override string Texture => AssetDirectory.GlassBoss + Name;
+        public override string Texture => AssetDirectory.VitricBoss + Name;
 
         public override void SetStaticDefaults()
         {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.GlassBoss;
+using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
