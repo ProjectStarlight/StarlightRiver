@@ -124,6 +124,14 @@ namespace StarlightRiver.Content.NPCs.Actors
 						Dust.NewDustPerfect(targetItem.Center, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
 					}
 
+					for(int k = 0; k < Main.maxPlayers; k++)
+					{
+						var player = Main.player[k];
+
+						if (player.active && Vector2.Distance(player.Center, targetItem.Center) < 500)
+							Helpers.Helper.UnlockEntry<Codex.Entries.StarlightWaterEntry>(player);
+					}
+
 					npc.active = false;
 				}
 			}

@@ -122,7 +122,7 @@ namespace StarlightRiver.Helpers
                 if (mp.CodexState != 0)
                 {
                     UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-                    Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Yeehaw"));
+                    Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/CodexUnlock"));
                 }
             }
         }

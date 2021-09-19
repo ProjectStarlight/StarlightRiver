@@ -25,38 +25,39 @@ namespace StarlightRiver.Content.GUI
             Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
 
             string str = "New Entry: " + Text;
-            float stringWidth = Main.fontDeathText.MeasureString(str).X / 1.65f;
-            float xOff = Main.screenWidth / 2 - stringWidth / 2;
+            float stringWidth = Main.fontMouseText.MeasureString(str).X;
+            float xOff = stringWidth;
 
-            Vector2 pos = Timer > 60 ? new Vector2(xOff, Main.screenHeight - 60) : new Vector2(xOff, Main.screenHeight - 60 + (120 - Timer * 2));
+            Vector2 pos = Timer > 60 ? new Vector2(20, 140) : new Vector2(-xOff * 2 + 20 + (xOff * Timer / 60f) * 2, 140);
             float alpha = Timer > 60 ? 1 : (Timer / 60f);
-            if (Timer > 230) alpha = ((240 - Timer) / 10f);
+            if (Timer > 350) alpha = ((360 - Timer) / 10f);
 
-            Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 30), (int)(stringWidth + 200), 60);
-            var bgTex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 25), (int)(stringWidth + 140), 40);
+            var bgTex = Main.magicPixel;
+            var edgeTex = GetTexture(AssetDirectory.GUI + "CodexPopupEdge");
 
-            spriteBatch.Draw(bgTex, target, new Rectangle(7, 7, bgTex.Width - 14, bgTex.Height - 14), Color.Black * alpha * 0.65f);
+            spriteBatch.Draw(bgTex, target, null, new Color(20, 20, 35) * alpha * 0.5f);
+            spriteBatch.Draw(edgeTex, target.TopRight(), null, new Color(20, 20, 35) * alpha * 0.5f);
 
             float alpha2 = 0;
 
             if (Texture != null)
             {
-                if (Timer > 160 && Timer < 180)
-                    alpha2 = 1 - (Timer - 160) / 20f;
-                if (Timer <= 160 && Timer >= 120)
+                if (Timer > 260 && Timer < 280)
+                    alpha2 = 1 - (Timer - 260) / 20f;
+                if (Timer <= 260 && Timer >= 160)
                     alpha2 = 1;
-                if (Timer > 100 && Timer < 120)
-                    alpha2 = (Timer - 100) / 20f;
+                if (Timer > 140 && Timer < 160)
+                    alpha2 = (Timer - 140) / 20f;
 
-                spriteBatch.Draw(Texture, pos, null, Color.White * alpha * alpha2, 0, Texture.Size() / 2, 1.5f, 0, 0);
+                spriteBatch.Draw(Texture, pos + new Vector2(14, -6), null, Color.White * alpha * alpha2, 0, Texture.Size() / 2, 1, 0, 0);
             }
 
             float inverseAlpha2 = 1 - alpha2;
 
-            spriteBatch.Draw(tex, pos, null, Color.White * alpha * inverseAlpha2, 0, tex.Size() / 2, 1.5f, 0, 0);
-            
+            spriteBatch.Draw(tex, pos + new Vector2(14, -6), null, Color.White * alpha * inverseAlpha2, 0, tex.Size() / 2, 1, 0, 0);
 
-            Utils.DrawBorderStringBig(spriteBatch, str, pos + new Vector2(40, -16), Color.White * alpha, 0.6f);
+            Utils.DrawBorderString(spriteBatch, str, pos + new Vector2(40, -16), Color.White * alpha, 1);
 
             Timer--;
         }
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.GUI
         {
             Text = text;
             Texture = texture;
-            Timer = 240;
+            Timer = 360;
         }
     }
 }

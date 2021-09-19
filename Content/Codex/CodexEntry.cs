@@ -30,7 +30,7 @@ namespace StarlightRiver.Codex
             Abilities = 0,
             Biomes = 1,
             Relics = 2,
-            Removed = 3,
+            Crafting = 3,
             Misc = 4,
             None = 5
         }
@@ -44,7 +44,7 @@ namespace StarlightRiver.Codex
             Utils.DrawBorderString(spriteBatch, Title, pos, Color.White, 1.2f);
 
             List<string> lines = Helper.WrapString(Body, 480, Main.fontDeathText, 0.82f).Split('\n').ToList();
-            int maxLines = (342 - (54 + Image.Height)) / 22; //grabs the max amount of lines that could feasibly be displated
+            int maxLines = (400 - (54 + Image.Height)) / 22; //grabs the max amount of lines that could feasibly be displated
             int linePosEnd = LinePos + maxLines;
             int lastLine = lines.Count < maxLines ? lines.Count : linePosEnd;
 
@@ -63,10 +63,10 @@ namespace StarlightRiver.Codex
 
             if (lines.Count > maxLines)
             {
-                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X + 236, (int)pos.Y + 50 + Image.Height, 8, 300 - (50 + Image.Height)), new Rectangle(0, 0, 1, 1), new Color(30, 30, 70), 0, Vector2.Zero, 0, 0);
+                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X + 236, (int)pos.Y + 50 + Image.Height, 8, 350 - (50 + Image.Height)), new Rectangle(0, 0, 1, 1), new Color(30, 30, 70), 0, Vector2.Zero, 0, 0);
 
                 Texture2D arrow = GetTexture("StarlightRiver/Assets/GUI/Arrow");
-                float posY = LinePos / (float)(lines.Count - maxLines) * (300 - (50 + Image.Height));
+                float posY = LinePos / (float)(lines.Count - maxLines) * (350 - (50 + Image.Height));
                 spriteBatch.Draw(arrow, pos + new Vector2(234, 50 + Image.Height + posY - arrow.Height / 2), arrow.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
             }
         }

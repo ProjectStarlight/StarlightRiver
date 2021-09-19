@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -40,6 +41,14 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            string randomString = "A";
+
+            for (int k = 0; k < Main.rand.Next(200); k++)
+                randomString += (char)Main.rand.Next(255);
+
+            UILoader.GetUIState<GUI.CodexPopup>().TripEntry(randomString, ModContent.GetTexture(AssetDirectory.Debug));
+
+            return true;
 
             int i = NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, NPCID.VortexHornetQueen);
             GUI.BootlegHealthbar.SetTracked(Main.npc[i], "Shit!", ModContent.GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));

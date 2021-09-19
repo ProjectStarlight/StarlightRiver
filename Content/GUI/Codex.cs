@@ -36,20 +36,20 @@ namespace StarlightRiver.Content.GUI
             BookButton.OnClick += OpenCodex;
             BookButton.SetVisibility(1, 1);
 
-            AddElement(Back, Main.screenWidth / 2 - 250, Main.screenHeight / 2 - 225, 500, 450, this);
+            AddElement(Back, Main.screenWidth / 2 - 250, Main.screenHeight / 2 - 225, 500, 500, this);
             Back.OnScrollWheel += ScrollEntry;
 
             AddElement(new CategoryButton(CodexEntry.Categories.Abilities, "Abilities"), 30, 10, 50, 28, Back);
             AddElement(new CategoryButton(CodexEntry.Categories.Biomes, "Biomes"), 90, 10, 50, 28, Back);
-            AddElement(new CategoryButton(CodexEntry.Categories.Removed, "[PH]REMOVED"), 150, 10, 50, 28, Back);
+            AddElement(new CategoryButton(CodexEntry.Categories.Crafting, "Crafting"), 150, 10, 50, 28, Back);
             AddElement(new CategoryButton(CodexEntry.Categories.Relics, "Relics"), 210, 10, 50, 28, Back);
             AddElement(new CategoryButton(CodexEntry.Categories.Misc, "Misc"), 270, 10, 50, 28, Back);
 
-            AddElement(EntryBack, 330, 52, 120, 360, Back);
-            AddElement(ClickableEntries, 0, 0, 120, 340, EntryBack);
+            AddElement(EntryBack, 330, 52, 120, 410, Back);
+            AddElement(ClickableEntries, 0, 0, 120, 390, EntryBack);
             ClickableEntries.ListPadding = 2;
-            AddElement(EntryScroll, 460, 54, 18, 340, Back);
-            EntryScroll.SetView(0, 360);
+            AddElement(EntryScroll, 460, 54, 18, 390, Back);
+            EntryScroll.SetView(0, 410);
             ClickableEntries.SetScrollbar(EntryScroll);
 
             AddElement(DragButton, 410, 4, 38, 38, Back);
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.GUI
         private void ScrollEntry(UIScrollWheelEvent evt, UIElement listeningElement)
         {
             Vector2 pos = listeningElement.GetDimensions().ToRectangle().TopLeft();
-            Rectangle entryWindow = new Rectangle((int)pos.X + 20, (int)pos.Y + 50, 310, 342);
+            Rectangle entryWindow = new Rectangle((int)pos.X + 20, (int)pos.Y + 50, 360, 342);
             if (!entryWindow.Contains(Main.MouseScreen.ToPoint())) return; //makes sure were in the entry window to scroll. I shouldnt have hardcoded the entries to draw to the back element but oh well.
 
             CodexBack element = listeningElement as CodexBack;
