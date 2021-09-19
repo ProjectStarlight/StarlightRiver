@@ -138,7 +138,7 @@ namespace StarlightRiver.Core
 
             if (!Main.dedServ && player == Main.LocalPlayer)
             {
-                if (ZoneGlass)
+                if (ZoneGlass && Main.Configuration.Get<bool>("UseHeatDistortion", false))
                 {
                     //var a = Filters.Scene;
                     if (!Filters.Scene["GradientDistortion"].IsActive())
