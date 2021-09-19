@@ -17,6 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
+    [AutoloadBossHead]
     public sealed partial class VitricBoss : ModNPC
     {
         public Vector2 startPos;

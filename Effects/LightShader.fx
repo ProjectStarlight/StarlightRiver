@@ -20,14 +20,14 @@ struct VertexShaderOutput
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
-	output.coord = input.coord;
+	output.coord = input.coord + offset;
 	output.Position = input.Position;
 	return output;
 }
 
 float4 Fragment(VertexShaderOutput input) : COLOR
 {
-	float2 uv = input.coord * screenSize / fullBufferSize + offset;
+	float2 uv = input.coord * screenSize / fullBufferSize;
 
 	float3 color = tex2D(samplerTex, uv).rgb;
 

@@ -37,6 +37,15 @@ namespace StarlightRiver.Configs
         [Tooltip("Changes or disables the menu theme")]
         public TitleScreenStyle Style;
 
+        [Label("Lighting Buffer Poll Rate")]
+        [Tooltip("Changes how often the lighting buffer polls for data. Higher values increase performance but make lighting update slower on some objects. Lower values result in smoother moving light but may hurt performance.")]
+        [Range(1, 30)]
+        public int LightingPollRate = 5;
+
+        [Label("Scrolling Lighting Buffer Building")]
+        [Tooltip("Causes the lighting buffer to be built over its poll rate instead of all at once. May help normalize lag spikes but cause strange lighting artifacts.")]
+        public bool ScrollingLightingPoll = false;
+
         [Label("Extra Particles")]
         [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
         public bool ParticlesActive = true;

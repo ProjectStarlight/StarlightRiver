@@ -20,11 +20,12 @@ namespace StarlightRiver.Helpers
 
         private readonly Effect upscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
 
-        public int RefreshRate = 5;
         private int refreshTimer;
 
         static int XMax => Main.screenWidth / 16 + PADDING * 2;
         static int YMax => (int)(Main.screenHeight / 16 + (PADDING * 2 * factor));
+
+        private Config config => ModContent.GetInstance<Config>();
 
         public void ResizeBuffers(int width, int height)
         {
@@ -46,7 +47,30 @@ namespace StarlightRiver.Helpers
                 }
 
             TileLightingTexture.SetData(tileLightingBuffer);
-            TileLightingCenter = start + new Vector2(Main.screenWidth, Main.screenHeight) / 2;
+            TileLightingCenter = start;
+            GettingColors = false;
+        }
+
+        private void PopulateTileTexture(Vector2 start, int yToStart, int yToEnd)
+        {
+            GettingColors = true;
+            Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * (yToEnd - yToStart)];
+
+            for (int x = 0; x < TileLightingTexture.Width; x++)
+                for (int y = yToStart; y < yToEnd; y++)
+                {
+                    int index = (y - yToStart) * TileLightingTexture.Width + x;
+                    if (tileLightingBuffer.Length > index) tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+                }
+
+            if (tileLightingBuffer is null || tileLightingBuffer.Length == 0)
+                return;
+
+            TileLightingTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTexture.Width * (yToEnd - yToStart));
+
+            //if(refreshTimer % config.LightingPollRate == 0)
+            TileLightingCenter = start;
+
             GettingColors = false;
         }
 
@@ -86,7 +110,7 @@ namespace StarlightRiver.Helpers
             graphics.SetVertexBuffer(buffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
-            Vector2 offset = (Main.screenPosition + new Vector2(Main.screenWidth, Main.screenHeight) / 2f - TileLightingCenter - Vector2.One * 64) / new Vector2(Main.screenWidth, Main.screenHeight);
+            Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
 
             upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
@@ -104,8 +128,16 @@ namespace StarlightRiver.Helpers
         {
             refreshTimer++;
 
-            if (refreshTimer % RefreshRate == 0) 
-                PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+            if (config.ScrollingLightingPoll)
+            {
+                int progress = refreshTimer % config.LightingPollRate;
+                PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
+            }
+            else
+            {
+                if (refreshTimer % config.LightingPollRate == 0)
+                    PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+            }
 
             PopulateScreenTexture();
         }

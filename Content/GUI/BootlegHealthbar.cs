@@ -72,6 +72,12 @@ namespace StarlightRiver.Content.GUI
 
             spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);
 
+            if (npc.GetBossHeadTextureIndex() > 0)
+            {
+                var tex = Main.npcHeadBossTexture[npc.GetBossHeadTextureIndex()];
+                spriteBatch.Draw(tex, pos + new Vector2(0, 10), Color.White);
+            }
+
             if (npc.dontTakeDamage || npc.immortal)
                 spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "BossbarChains"), pos, Color.White);
         }

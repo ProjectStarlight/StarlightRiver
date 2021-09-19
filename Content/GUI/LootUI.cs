@@ -6,6 +6,7 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
@@ -96,14 +97,8 @@ namespace StarlightRiver.Content.GUI
 
             if (rect.Contains(Main.MouseScreen.ToPoint()))
             {
-                float offY = 40 - BigItem.ToolTip.Lines * 14;
-                Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + new Vector2(60, offY);
-
-                for (int k = 0; k <= BigItem.ToolTip.Lines; k++)
-                    if (k == 0)
-                        Utils.DrawBorderString(spriteBatch, BigItem.Name, pos + new Vector2(0, k * 14), ItemRarity.GetColor(BigItem.rare), 0.75f);
-                    else
-                        Utils.DrawBorderString(spriteBatch, BigItem.ToolTip.GetLine(k - 1), pos + new Vector2(0, k * 14), Color.White, 0.75f);
+                Main.HoverItem = BigItem.Clone();
+                Main.hoverItemName = BigItem.Name + " (" + BigItem.stack + ")";
             }
 
             base.Draw(spriteBatch);
@@ -133,7 +128,7 @@ namespace StarlightRiver.Content.GUI
         private void AppendSlot(Item item, int offX)
         {
             LootSelection slot = new LootSelection(item);
-            slot.Left.Set(offX - 30, 0.5f);
+            slot.Left.Set(offX - 26, 0.5f);
             slot.Top.Set(50, 0.5f);
             slot.Width.Set(50, 0);
             slot.Height.Set(50, 0);
@@ -171,13 +166,8 @@ namespace StarlightRiver.Content.GUI
 
                 if (IsMouseHovering)
                 {
-                    float offY = 40 - Item.ToolTip.Lines * 14;
-                    Vector2 pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + new Vector2(60, offY);
-                    for (int k = 0; k <= Item.ToolTip.Lines; k++)
-                        if (k == 0) 
-                            Utils.DrawBorderString(spriteBatch, Item.Name, pos + new Vector2(-20, k * 14 - 10), ItemRarity.GetColor(Item.rare), 0.75f);
-                        else 
-                            Utils.DrawBorderString(spriteBatch, Item.ToolTip.GetLine(k - 1), pos + new Vector2(-20, k * 14 - 10), Color.White, 0.75f);
+                    Main.HoverItem = Item.Clone();
+                    Main.hoverItemName = Item.Name + " (" + Item.stack + ")";
                 }
             }
         }
