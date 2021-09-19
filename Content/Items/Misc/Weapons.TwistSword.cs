@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 
-            if (drawPlayer.HeldItem.type == ItemType<TwistSword>())
+            if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>())
             {
                 int charge = (drawPlayer.HeldItem.modItem as TwistSword).charge;
                 var tex = GetTexture(AssetDirectory.GUI + "SmallBar1");

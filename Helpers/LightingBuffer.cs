@@ -68,8 +68,8 @@ namespace StarlightRiver.Helpers
 
             TileLightingTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTexture.Width * (yToEnd - yToStart));
 
-            //if(refreshTimer % config.LightingPollRate == 0)
-            TileLightingCenter = start;
+            if(refreshTimer % config.LightingPollRate == 0)
+                TileLightingCenter = start;
 
             GettingColors = false;
         }
@@ -110,7 +110,7 @@ namespace StarlightRiver.Helpers
             graphics.SetVertexBuffer(buffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
-            Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
+            Vector2 offset = (Main.screenPosition + Main.LocalPlayer.velocity - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
 
             upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
