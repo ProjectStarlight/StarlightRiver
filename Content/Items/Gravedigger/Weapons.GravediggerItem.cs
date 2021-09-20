@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void SetDefaults()
 		{
-			item.damage = 24;
+			item.damage = 20;
 			item.melee = true;
 			item.width = 36;
 			item.height = 44;
@@ -31,10 +31,10 @@ namespace StarlightRiver.Content.Items.Astroflora
 			item.reuseDelay = 20;
 			item.channel = true;
 			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.knockBack = 5.5f;
-			item.value = Item.sellPrice(0, 1, 80, 0);
+			item.knockBack = 6.5f;
+			item.value = Item.sellPrice(0, 1, 0, 0);
 			item.crit = 4;
-			item.rare = ItemRarityID.Blue;
+			item.rare = 2;
 			item.shootSpeed = 14f;
 			item.autoReuse = false;
 			item.shoot = ModContent.ProjectileType<GravediggerSwing>();
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					direction = new Vector2(Player.direction, -1);
 					SwingFrame = 2;
 				}
-				else if (Player.controlDown && Player.GetModPlayer<GravediggerPlayer>().Combo >= 2)
+				else if (Player.controlDown)
 				{
 					Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
 					direction = new Vector2(Player.direction, -1);
@@ -248,20 +248,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		private void DoSFX()
         {
-			switch (SwingFrame)
-            {
-                case 0:
-					break;
-				case 1:
-					break;
-				case 2: //UP
-					Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
-					break;
-				case 3: //DOWN
-					Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
-					break;
-            }
-        }
+			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+		}
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -291,6 +279,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			if (target.knockBackResist != 0)
 			{
 				switch (SwingFrame)
