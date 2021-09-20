@@ -99,6 +99,12 @@ namespace StarlightRiver.Content.CustomHooks
                     if (n.active && n.modNPC is MovingPlatform && n.Hitbox.Intersects(proj.Hitbox))
                     {
                         proj.position += n.velocity;
+
+                        if (!proj.tileCollide) //this is kinda hacky but... oh well 
+                            Main.PlaySound(SoundID.Dig, proj.Center);
+
+                        proj.tileCollide = true;
+
                         return false;
                     }
                 }
