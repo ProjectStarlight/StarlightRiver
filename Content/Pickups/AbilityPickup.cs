@@ -121,7 +121,12 @@ namespace StarlightRiver.Pickups
             return false;
         }
 
-        public sealed override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public sealed override bool? CanHitNPC(NPC target)
+		{
+            return false;
+		}
+
+		public sealed override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
             if (Visible)
             {

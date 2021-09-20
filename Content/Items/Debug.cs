@@ -144,6 +144,8 @@ namespace StarlightRiver.Content.Items
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
+            return;
+
 			var target = new Rectangle(50, 160, Main.screenWidth / 10, Main.screenHeight / 10);
             var target2 = new Rectangle(50, 160 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
             var target3 = new Rectangle(50, 160 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);

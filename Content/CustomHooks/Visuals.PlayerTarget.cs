@@ -29,11 +29,12 @@ namespace StarlightRiver.Content.CustomHooks
             ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
             Main.OnPreDraw += Main_OnPreDraw;
-
         }
 
         private void Main_OnPreDraw(GameTime obj)
         {
+            return;
+
             RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
             Main.graphics.GraphicsDevice.SetRenderTarget(Target);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
