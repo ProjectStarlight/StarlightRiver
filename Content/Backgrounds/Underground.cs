@@ -5,13 +5,30 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Backgrounds
 {
+	public class BGLoader : ILoadable
+	{
+        float ILoadable.Priority => 1;
+
+		void ILoadable.Load()
+		{
+            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/Blank");
+
+            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/PermafrostBack");
+
+            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
+            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
+        }
+
+        void ILoadable.Unload() { }
+	}
+
 	public class BlankBG : ModUgBgStyle
     {
         public override bool ChooseBgStyle() => StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/Blank");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/Blank");
         }
     }
 
@@ -21,7 +38,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/PermafrostBack");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/PermafrostBack");
         }
     }
 
@@ -31,7 +48,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
         }
     }
 
@@ -41,7 +58,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 
@@ -51,7 +68,7 @@ namespace StarlightRiver.Backgrounds
 
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k <= 5; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 }
