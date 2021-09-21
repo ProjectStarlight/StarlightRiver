@@ -395,7 +395,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			if (npc.velocity.Y > 0.5f && !npc.HasBuff(ModContent.BuffType<ShovelQuickFall>()))
-				npc.velocity.Y = 0.5f;
+				npc.velocity.Y -= 0.1f;
 		}
 	}
 	class ShovelQuickFall : SmartBuff
