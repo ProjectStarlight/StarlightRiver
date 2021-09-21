@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -279,6 +280,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			Player player = Main.player[projectile.owner];
+			player.GetModPlayer<StarlightPlayer>().Shake += 3;
 			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			if (target.knockBackResist != 0)
 			{
@@ -319,7 +322,35 @@ namespace StarlightRiver.Content.Items.Astroflora
 				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
 			else
 				hitDirection = 0;
+			CreateBlood(target, hitDirection);
+		}
 
+		private void CreateBlood(NPC target, int hitDirection)
+        {
+			Vector2 direction = Vector2.Zero;
+			float variance = 0.5f;
+			switch (SwingFrame)
+            {
+				case 0:
+					direction = new Vector2(Math.Sign(hitDirection - 0.5f), 0);
+					break;
+				case 1:
+					direction = new Vector2(Math.Sign(hitDirection - 0.5f), 0);
+					break;
+				case 2:
+					direction = new Vector2(0, -1);
+					variance = 0.35f;
+					break;
+				case 3:
+					direction = new Vector2(0, 1);
+					break;
+			}
+			for (int i = 0; i < 30; i++)
+			{
+				Vector2 direction2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
+				direction2 *= Main.rand.NextFloat(0.5f, 6f);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<GraveBlood>(), direction2);
+			}
 		}
     }
 
