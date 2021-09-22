@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 						}
 						break;
                     case 3:
-						if (!target.collideY)
+						if (!target.collideY && !target.noGravity)
 						{
 							target.AddBuff(ModContent.BuffType<ShovelQuickFall>(), 60);
 							target.GetGlobalNPC<GravediggerNPC>().SlamPlayer = Player;
@@ -319,13 +319,24 @@ namespace StarlightRiver.Content.Items.Astroflora
 				damage = (int)(damage * 1.5f);
 			}
 			if (SwingFrame < 2)
+			{
 				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
+				if (target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
+					knockback *= 0.3f;
+			}
 			else
 				hitDirection = 0;
-			CreateBlood(target, hitDirection);
+
+			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY)
+            {
+				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
+				target.velocity.X = hitDirection * 20;
+				knockback = 0;
+			}
+			CreateBlood(target, hitDirection, knockback);
 		}
 
-		private void CreateBlood(NPC target, int hitDirection)
+		private void CreateBlood(NPC target, int hitDirection, float knockback)
         {
 			Vector2 direction = Vector2.Zero;
 			float variance = 0.5f;
@@ -348,7 +359,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			for (int i = 0; i < 30; i++)
 			{
 				Vector2 direction2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
-				direction2 *= Main.rand.NextFloat(0.5f, 6f);
+				direction2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
 				Dust.NewDustPerfect(target.Center, ModContent.DustType<GraveBlood>(), direction2);
 			}
 		}
@@ -404,9 +415,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public override void Update(NPC npc, ref int buffIndex)
 		{
+			npc.velocity.X *= 0.85f;
 			npc.velocity.Y = 40;
 			if (npc.collideY)
             {
+				npc.velocity.X = 0;
 				Player player = Main.player[npc.target];
 				npc.DelBuff(buffIndex--);
 				player.GetModPlayer<StarlightPlayer>().Shake += 10;
