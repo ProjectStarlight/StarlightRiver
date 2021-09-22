@@ -385,7 +385,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		float counter = 0;
         public override void AI()
         {
-			if (projectile.timeLeft < 190)
+			if (projectile.timeLeft < 195)
 				projectile.friendly = false;
 			counter += (float)(Math.PI / 2f) / 200;
         }
