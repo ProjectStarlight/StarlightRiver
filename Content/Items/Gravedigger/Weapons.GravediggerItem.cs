@@ -327,10 +327,9 @@ namespace StarlightRiver.Content.Items.Astroflora
 			else
 				hitDirection = 0;
 
-			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY)
+			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY && target.life > damage)
             {
-				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
-				target.velocity.X = hitDirection * 20;
+				target.velocity.X = Main.player[projectile.owner].direction * 20;
 				knockback = 0;
 			}
 			CreateBlood(target, hitDirection, knockback);
