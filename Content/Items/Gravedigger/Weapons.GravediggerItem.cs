@@ -9,7 +9,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Items.Astroflora
+namespace StarlightRiver.Content.Items.Gravedigger
 {
 	public class GravediggerItem : ModItem
 	{
@@ -364,9 +364,9 @@ namespace StarlightRiver.Content.Items.Astroflora
 		}
     }
 
-	internal class GravediggerSlam : ModProjectile
+	internal class GravediggerSlam : ModProjectile, IDrawOverTiles
 	{
-		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerItem";
+		public override string Texture => AssetDirectory.GravediggerItem + "GraveDiggerSlam";
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grave digger");
@@ -377,11 +377,25 @@ namespace StarlightRiver.Content.Items.Astroflora
 			projectile.friendly = true;
 			projectile.melee = true;
 			projectile.tileCollide = false;
-			projectile.Size = new Vector2(128, 138);
+			projectile.Size = new Vector2(128, 128);
 			projectile.penetrate = -1;
-			projectile.timeLeft = 10;
-			projectile.alpha = 255;
+			projectile.timeLeft = 200;
+			projectile.rotation = Main.rand.NextFloat(6.28f);
 		}
+		float counter = 0;
+        public override void AI()
+        {
+			if (projectile.timeLeft < 190)
+				projectile.friendly = false;
+			counter += (float)(Math.PI / 2f) / 200;
+        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public void DrawOverTiles(SpriteBatch spriteBatch)
+        {
+			Color color = Color.White;
+			color *= (float)Math.Cos(counter);
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, color, projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2, projectile.scale, SpriteEffects.None, 0);
+        }
 	}
 	internal class GravediggerPlayer : ModPlayer
 	{
@@ -426,7 +440,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				{
 					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
 				}
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
+				Projectile.NewProjectile(npc.Center + new Vector2(0, npc.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
 				Main.PlaySound(SoundID.Item70, npc.Center);
 				Main.PlaySound(SoundID.NPCHit42, npc.Center);
 			}

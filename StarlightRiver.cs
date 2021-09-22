@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
@@ -35,6 +36,12 @@ namespace StarlightRiver
         public StarlightRiver() => Instance = this;
 
         public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for shit like this
+
+        private Vector2 _lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
+
+        private Vector2 _lastViewSize;
+
+        private Viewport _lastViewPort;
 
         public override void UpdateMusic(ref int music, ref MusicPriority priority)
         {
@@ -142,6 +149,11 @@ namespace StarlightRiver
 
             if (!Main.dedServ)
             {
+
+                _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+                _lastViewSize = Main.ViewSize;
+                _lastViewPort = Main.graphics.GraphicsDevice.Viewport;
+
                 LightingBufferInstance = new LightingBuffer();
 
                 //Hotkeys
@@ -201,6 +213,18 @@ namespace StarlightRiver
         public override void PostAddRecipes()
         {
             HasLoaded = true;
+        }
+
+        public void CheckScreenSize()
+        {
+            if (!Main.dedServ)
+            {
+                if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight) && TileDrawOverLoader.projTarget != null)
+                    TileDrawOverLoader.ResizeTarget();
+                _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+                _lastViewSize = Main.ViewSize;
+                _lastViewPort = Main.graphics.GraphicsDevice.Viewport;
+            }
         }
 
         #region NetEasy
