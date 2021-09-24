@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer == 63)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
-            if (GlobalTimer > 63 && GlobalTimer < 123)
+            if (GlobalTimer > 63 && GlobalTimer < 600)
                 Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 63) / 60f;
 
             if (GlobalTimer > 63)

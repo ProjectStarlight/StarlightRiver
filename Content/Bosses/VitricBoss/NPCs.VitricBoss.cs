@@ -173,6 +173,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
             spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition + PainOffset, npc.frame, Color.White, npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
 
+            if (Phase == (int)AIStates.Dying) //death
+            {
+                var effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
+                effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap"));
+                effect.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap"));
+                effect.Parameters["uTime"].SetValue((GlobalTimer - 120) / 600f * 2);
+
+                effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
+                effect.Parameters["texSize"].SetValue(GetTexture(Texture).Size());
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }
+
             return false;
         }
 
