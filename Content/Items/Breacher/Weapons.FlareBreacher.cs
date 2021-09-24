@@ -5,6 +5,8 @@ using System.Linq;
 using System.Collections.Generic;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Content.Dusts;
 using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
@@ -99,20 +101,37 @@ namespace StarlightRiver.Content.Items.Breacher
             return base.PreAI();
         }
 
-		public override void AI()
-		{
-            var dust = Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * projectile.width / 2, DustID.Fire, Vector2.UnitX.RotatedBy(-projectile.rotation), 0, default, 0.5f);
-            dust.noGravity = true;
-		}
-
 		private void Explode(NPC target)
         {
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(5, 8);
             for (int i = 0; i < numberOfProjectiles; i++)
             {
                 float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
                 Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner);
             }
+
+            /*for (int i = 0; i < 3; i++)
+            {
+                Projectile.NewProjectileDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.7f, 0.7f) - 1.57f) * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, projectile.owner).scale = Main.rand.NextFloat(0.65f, 0.85f);
+            }*/
+            for (int i = 0; i < 4; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
+                dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
+                dust.alpha = 70 + Main.rand.Next(60);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
+                dust.scale = Main.rand.NextFloat(0.75f, 1f);
+                dust.alpha = 70 + Main.rand.Next(60);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+            Gore.NewGore(projectile.position, Vector2.Zero, mod.GetGoreSlot("Assets/Items/Breacher/FlareGore"));
             projectile.active = false;
         }
 
@@ -150,13 +169,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void SetDefaults()
         {
-            projectile.width = 12;
-            projectile.height = 12;
+            projectile.width = 4;
+            projectile.height = 4;
 
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = -1;
-            projectile.timeLeft = 60;
+            projectile.timeLeft = Main.rand.Next(50,70);
             projectile.extraUpdates = 4;
             projectile.alpha = 255;
         }
