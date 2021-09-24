@@ -24,13 +24,13 @@ namespace StarlightRiver.Content.Dusts
         {
             Color gray = new Color(25, 25, 25);
             Color ret;
-            if (dust.alpha < 120)
+            if (dust.alpha < 60)
             {
-                ret = Color.Lerp(Color.White, Color.Orange, dust.alpha / 120f);
+                ret = Color.Lerp(Color.White, Color.Orange, dust.alpha / 60f);
             }
-            else if (dust.alpha < 180)
+            else if (dust.alpha < 120)
             {
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 120) / 60f);
+                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 60) / 60f);
             }
             else
                 ret = gray;
@@ -46,13 +46,13 @@ namespace StarlightRiver.Content.Dusts
             if (dust.alpha > 100)
             {
                 dust.scale += 0.01f;
-                dust.alpha += 2;
+                dust.alpha += 3;
             }
             else
             {
                 Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
                 dust.scale *= 0.985f;
-                dust.alpha += 4;
+                dust.alpha += 6;
             }
             dust.position += dust.velocity;
             if (dust.alpha >= 255)

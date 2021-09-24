@@ -45,13 +45,51 @@ namespace StarlightRiver.Content.Items.Breacher
             item.shootSpeed = 17;
         }
 
+        public override void HoldItem(Player player)
+        {
+            if (Main.mouseRight)
+                return;
+            FlareBreacherPlayer modPlayer = player.GetModPlayer<FlareBreacherPlayer>();
+
+            if (modPlayer.ticks < FlareBreacherPlayer.CHARGETIME * 5)
+                modPlayer.ticks++;
+            else
+                modPlayer.ticks = FlareBreacherPlayer.CHARGETIME * 5;
+        }
+        public override bool AltFunctionUse(Player player) => true;
+
+        public override bool CanUseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+            {
+                if (player.GetModPlayer<FlareBreacherPlayer>().Charges < 1)
+                    return false;
+            }
+            return true;
+        }
+
         public override Vector2? HoldoutOffset() => new Vector2(0, 0);
 
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+            if (player.altFunctionUse == 2)
+            {
+                type = ModContent.ProjectileType<OrbitalStrikeProj>();
+                speedX = speedY = 0;
+                return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            }
+            else
+                type = ModContent.ProjectileType<ExplosiveFlare>();
             position.Y -= 4;
-            type = ModContent.ProjectileType<ExplosiveFlare>();
+            Vector2 direction = new Vector2(speedX, speedY);
+
+            for (int i = 0; i < 15; i++)
+            {
+                Dust dust = Dust.NewDustPerfect(position + (direction * 1.35f), 6, (direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f) * Main.rand.NextFloat());
+                dust.noGravity = true;
+            }
+
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
@@ -68,7 +106,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetDefaults()
         {
             projectile.width = 10;
-            projectile.height = 16;
+            projectile.height = 10;
 
             projectile.ranged = true;
             projectile.friendly = true;
@@ -85,6 +123,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreAI()
         {
+            Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
+            Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
+            Dust dust = Dust.NewDustPerfect(projectile.Center, 127, direction * Main.rand.NextFloat(3,4));
+            dust.scale = 1.15f;
+            dust.noGravity = true;
             if (stuck)
             {
                 NPC target = Main.npc[enemyID];
@@ -120,7 +163,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
                 dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
                 dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
-                dust.alpha = 70 + Main.rand.Next(60);
+                dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
             }
             for (int i = 0; i < 8; i++)
@@ -128,8 +171,14 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
                 dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
                 dust.scale = Main.rand.NextFloat(0.75f, 1f);
-                dust.alpha = 70 + Main.rand.Next(60);
+                dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, 127);
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
+                dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
             }
             Gore.NewGore(projectile.position, Vector2.Zero, mod.GetGoreSlot("Assets/Items/Breacher/FlareGore"));
             projectile.active = false;
@@ -137,6 +186,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            Player player = Main.player[projectile.owner];
+            if (target.life <= 0)
+                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
             if (!stuck && target.life > 0)
             {
                 stuck = true;
@@ -150,12 +202,12 @@ namespace StarlightRiver.Content.Items.Breacher
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             var tex = Main.projectileTexture[projectile.type];
-            var source = new Rectangle(0, 0, projectile.width, projectile.height);
+            var source = new Rectangle(0, 0, projectile.width, 16);
 
             if (stuck)
-                source.Y += projectile.height * (Main.GameUpdateCount % 10 < 5 ? 1 : 0);
+                source.Y += 16 * (Main.GameUpdateCount % 10 < 5 ? 1 : 0);
 
-            Main.spriteBatch.Draw(tex, projectile.position - Main.screenPosition, source, lightColor, projectile.rotation, projectile.Size / 2, projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, source, lightColor, projectile.rotation, (tex.Size() / 2) * new Vector2(1,0.5f), projectile.scale, 0, 0);
 
             return false;
         }
@@ -234,6 +286,171 @@ namespace StarlightRiver.Content.Items.Breacher
             effect.Parameters["progress"].SetValue(MathHelper.Lerp(projectile.timeLeft / 60f, 0, 0.3f));
 
             trail?.Render(effect);
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            Player player = Main.player[projectile.owner];
+            if (target.life <= 0)
+                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
+        }
+    }
+    public class OrbitalStrikeProj : ModProjectile
+    {
+        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
+
+        private int charge = 0;
+
+        private bool charged = false;
+
+        private int Strikes => charge / 30;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Orbital Strike");
+        }
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.ranged = true;
+            projectile.width = 2;
+            projectile.height = 2;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = 1;
+            projectile.tileCollide = false;
+            projectile.timeLeft = 999999;
+            projectile.ignoreWater = true;
+            projectile.hide = true;
+        }
+
+        public override void AI()
+        {
+            Player player = Main.player[projectile.owner];
+            player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
+
+            player.itemTime = 25; 
+            player.itemAnimation = 25;
+            projectile.position = player.Center;
+
+            Vector2 direction = Main.MouseWorld - (player.Center - new Vector2(0, 4));
+            direction.Normalize();
+
+            if (Main.mouseRight)
+            {
+                if (charge < player.GetModPlayer<FlareBreacherPlayer>().ticks)
+                    charge+= 5;
+                else if (!charged)
+                {
+                    charged = true;
+                    //fully charged effects here
+                }
+                if (charge % 150 == 0 && !charged)
+                {
+                    //charge sound effect here
+                }
+                player.itemRotation = direction.ToRotation();
+                if (player.direction != 1)
+                {
+                    player.itemRotation -= 3.14f;
+                }
+            }
+            else
+            {
+                if (charge > 150)
+                {
+                    player.GetModPlayer<FlareBreacherPlayer>().ticks -= charge;
+                    Projectile.NewProjectile(projectile.Center - new Vector2(0, 4), direction * 15, ModContent.ProjectileType<OrbitalStrikePredictor>(), projectile.damage, projectile.knockBack, projectile.owner, Strikes);
+                }
+                projectile.active = false;
+            }
+        }
+    }
+
+    public class OrbitalStrikePredictor : ModProjectile
+    {
+        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
+
+        public int Strikes
+        {
+            get
+            {
+                return (int)projectile.ai[0];
+            }
+            set
+            {
+                projectile.ai[0] = value;
+            }
+        }
+
+        int enemyID;
+        bool stuck = false;
+        int strikeTimer = 100;
+        Vector2 offset = Vector2.Zero;
+        public override void SetDefaults()
+        {
+            projectile.width = 10;
+            projectile.height = 10;
+
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.penetrate = -1;
+            projectile.aiStyle = 1;
+            aiType = 163;
+        }
+        public override bool PreAI()
+        {
+            Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
+            if (stuck)
+            {
+                NPC target = Main.npc[enemyID];
+                projectile.position = target.position + offset;
+                strikeTimer--;
+
+                if (strikeTimer <= 0 && strikeTimer % 6 == 0)
+                    Strike(target);
+                return false;
+            }
+            else
+                projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+
+            return base.PreAI();
+        }
+
+        private void Strike(NPC target)
+        {
+            Player player = Main.player[projectile.owner];
+
+            Strikes--;
+            if (Strikes <= 0)
+                projectile.active = false;
+        }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            Player player = Main.player[projectile.owner];
+            if (target.life <= 0)
+                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
+            if (!stuck && target.life > 0)
+            {
+                stuck = true;
+                projectile.friendly = false;
+                projectile.tileCollide = false;
+                enemyID = target.whoAmI;
+                offset = projectile.position - target.position;
+                offset -= projectile.velocity;
+            }
+        }
+    }
+    public class FlareBreacherPlayer : ModPlayer
+    {
+        public const int CHARGETIME = 150;
+
+        public int ticks;
+        public int Charges => ticks / CHARGETIME;
+
+        public override void ResetEffects()
+        {
+            Main.NewText("Charge is " + ticks.ToString());
         }
     }
 }

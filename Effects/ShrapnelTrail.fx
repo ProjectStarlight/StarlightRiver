@@ -41,7 +41,9 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float2 st = float2(xcoord, ycoord);
 
 	float3 color = tex2D(samplerTex, st).xyz;
-    float3 trueColor = lerp(float3(1, 1, 1), input.Color, pow(abs(input.TexCoords.y - 0.5f) * 2, 0.2f));
+    float3 white = float3(1, 1, 1);
+    float3 originalColor = lerp(input.Color, white, pow(progress, 2));
+    float3 trueColor = lerp(white, originalColor, pow(abs(input.TexCoords.y - 0.5f) * 2, 0.2f));
     return float4((color * 2) * trueColor, color.x);
 }
 
