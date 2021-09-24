@@ -1,6 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -65,9 +70,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
             projectile.ranged = true;
             projectile.friendly = true;
+            projectile.penetrate = -1;
             projectile.aiStyle = 1;
             aiType = 163;
-            projectile.penetrate = -1;
         }
 
         public override void SetStaticDefaults()
@@ -102,8 +107,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void Explode(NPC target)
         {
-            for(float k = -0.5f; k < 0.5f; k += 0.1f)
-
+            int numberOfProjectiles = Main.rand.Next(5, 8);
+            for (int i = 0; i < numberOfProjectiles; i++)
+            {
+                float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
+                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner);
+            }
             projectile.active = false;
         }
 
@@ -132,24 +141,80 @@ namespace StarlightRiver.Content.Items.Breacher
             return false;
         }
     }
-    internal class FlareExplosion : ModProjectile
+    internal class FlareShrapnel : ModProjectile, IDrawPrimitive
     {
-        public override string Texture => AssetDirectory.Invisible;
+        private List<Vector2> cache;
+
+        private Trail trail;
+        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
+
         public override void SetDefaults()
         {
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.alpha = 255;//invisible
+            projectile.width = 12;
+            projectile.height = 12;
+
             projectile.ranged = true;
             projectile.friendly = true;
-            projectile.timeLeft = 14;
-            projectile.tileCollide = false;
             projectile.penetrate = -1;
-            projectile.extraUpdates = 1;
+            projectile.timeLeft = 60;
+            projectile.extraUpdates = 4;
+            projectile.alpha = 255;
         }
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Flare Explosion");
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Explosive Shrapnel");
+            Main.projFrames[projectile.type] = 2;
+        }
+        public override void AI()
+        {
+            projectile.velocity *= 0.96f;
+            ManageCaches();
+            ManageTrail();
+        }
 
-        public override void AI() { }
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                for (int i = 0; i < 20; i++)
+                {
+                    cache.Add(projectile.Center);
+                }
+            }
+                cache.Add(projectile.Center);
+
+            while (cache.Count > 20)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(40 * 4), factor => factor * 6, factor =>
+            {
+                return new Color(255, 140, 0);
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + projectile.velocity;
+        }
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["ShrapnelTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["progress"].SetValue(MathHelper.Lerp(projectile.timeLeft / 60f, 0, 0.3f));
+
+            trail?.Render(effect);
+        }
     }
 }

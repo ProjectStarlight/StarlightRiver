@@ -13,6 +13,9 @@ namespace StarlightRiver.Core.Loaders
         public float Priority { get => 1.1f; }
 
         public static RenderTarget2D projTarget;
+        public static RenderTarget2D tileTarget;
+
+        private Vector2 oldScreenPos;
 
         public void Load()
         {
@@ -27,7 +30,11 @@ namespace StarlightRiver.Core.Loaders
             On.Terraria.Main.Update += Main_Update;
         }
 
-        public static void ResizeTarget() => projTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+        public static void ResizeTarget()
+        {
+            projTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            tileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+        }
         private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {    
             orig(self);
@@ -60,8 +67,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void DrawToTarget()
         {
-            RenderTarget2D tileTarget = Main.instance.tileTarget;
-            if (tileTarget == null)
+            if (Main.instance.tileTarget == null)
                 return;
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
@@ -82,15 +88,24 @@ namespace StarlightRiver.Core.Loaders
             }
 
             spriteBatch.End();
+
+            gD.SetRenderTarget(tileTarget); //doing this to (hopefully) crop the rendertarget?
+            gD.Clear(Color.Transparent);
+            spriteBatch.Begin();
+            Vector2 offset = oldScreenPos - Main.screenPosition;
+            spriteBatch.Draw(Main.instance.tileTarget, new Rectangle(0 - Main.offScreenRange + (int)offset.X, 0 - Main.offScreenRange + (int)offset.Y, Main.screenWidth + (2 * Main.offScreenRange), Main.screenHeight + (2 * Main.offScreenRange)), Color.White);
+            spriteBatch.End();
+
             gD.SetRenderTargets(bindings);
+
+            oldScreenPos = Main.screenPosition;
+
         }
 
         private void DrawTarget()
         {
-            RenderTarget2D tileTarget = Main.instance.tileTarget;
-            if (tileTarget == null)
+            if (tileTarget == null || projTarget == null)
                 return;
-
 
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
