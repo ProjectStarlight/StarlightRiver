@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -19,26 +20,41 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
 		private void SpawnAnimation() //The animation which plays when the boss is spawning
 		{
+            rotationLocked = true;
+            lockedRotation = 1.57f;
+
             if (GlobalTimer == 2)
             {
                 npc.friendly = true; //so he wont kill you during the animation
                 RandomizeTarget(); //pick a random target so the eyes will follow them
                 startPos = npc.Center;
-            }
 
-            if (GlobalTimer == 2)
-            {
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.ScreenMoveTarget = npc.Center + new Vector2(0, -600);
-                mp.ScreenMoveTime = 450;
+                mp.ScreenMoveTime = 650;
+
+                SetFrameX(0);
+                SetFrameY(0);
+                lastTwistState = 0;
             }
 
-            if (GlobalTimer == 70)
-            {
+            if(GlobalTimer == 120)
+			{
+                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                mp.Shake += 10;
+
+                ZoomHandler.SetZoomAnimation(1.1f, 60);
+            }
+
+            if(GlobalTimer == 240)
+			{
+                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                mp.Shake += 20;
+
                 ZoomHandler.SetZoomAnimation(1.2f, 60);
             }
 
-            if (GlobalTimer == 194)
+            if (GlobalTimer == 354)
             {
                 UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
 
@@ -59,16 +75,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Gore.NewGorePerfect(npc.Center + new Vector2(-112, 50), Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "TempleHole"));
             }
 
-            if (GlobalTimer > 180 && GlobalTimer <= 260)
+            if (GlobalTimer > 340 && GlobalTimer <= 420)
             {
-                float time = (GlobalTimer - 180) / 80f;
+                float time = (GlobalTimer - 340) / 80f;
                 float progress = (float)(Math.Log(time * 3.6) + Math.E) / 4f;
                 npc.Center = Vector2.Lerp(startPos, startPos + new Vector2(0, -800), progress);
             }
 
-            if (GlobalTimer > 340) //summon crystal babies
+            if (GlobalTimer > 440) //summon crystal babies
                 for (int k = 0; k <= 4; k++)
-                    if (GlobalTimer == 340 + k * 5)
+                    if (GlobalTimer == 440 + k * 5)
                     {
                         Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
                         int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone forme
@@ -78,9 +94,43 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                     }
 
+            if(GlobalTimer > 500 && GlobalTimer < 520)
+			{
+                SetFrameY(3);
+                SetFrameX((int)((GlobalTimer - 500) / 20f * 8));
+
+                for(int k = 0; k < 3; k++)
+                    Dust.NewDustPerfect(npc.Center, DustType<RoarLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                float progress = ((GlobalTimer - 500) / 20f);
+                Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+            }
+
+            if(GlobalTimer == 520)
+			{
+                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                mp.Shake += 60;
+
+                Main.PlaySound(SoundID.Roar, npc.Center, 0);
+
+                Filters.Scene.Deactivate("Shockwave");
+            }
+
+            if(GlobalTimer == 590)
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, npc.Center);
+
+            if (GlobalTimer > 590 && GlobalTimer < 650)
+			{
+                SetFrameY(3);
+                SetFrameX(7 - (int)((GlobalTimer - 590) / 60f * 8));
+            }
+
             if (GlobalTimer > 680) //start the fight
             {
                 GUI.BootlegHealthbar.SetTracked(npc, "Shit!", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
                 npc.friendly = false; //and hurt when touched
