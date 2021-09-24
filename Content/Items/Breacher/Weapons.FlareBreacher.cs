@@ -450,7 +450,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void ResetEffects()
         {
-            Main.NewText("Charge is " + ticks.ToString());
+            //Main.NewText("Charge is " + ticks.ToString());
         }
     }
 }
