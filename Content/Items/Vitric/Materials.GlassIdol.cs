@@ -20,4 +20,21 @@ namespace StarlightRiver.Content.Items.Vitric
             item.height = 32;
         }
     }
+
+    class GlassIdolPremiumEdition : ModItem
+    {
+        public override string Texture => AssetDirectory.VitricItem + Name;
+
+        public override void SetStaticDefaults()
+        {
+            Tooltip.SetDefault("Used to worship a powerful guardian. Many times.\nMany many times.");
+        }
+
+        public override void SetDefaults()
+        {
+            item.rare = ItemRarityID.Orange;
+            item.width = 32;
+            item.height = 32;
+        }
+    }
 }

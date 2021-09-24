@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player player = Main.LocalPlayer;
 
-            if (tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()))
+            if (tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
                 return true;

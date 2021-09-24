@@ -380,8 +380,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(x);
 
                 rotationLocked = true;
-
-                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 1, Main.rand.NextFloat(0.6f, 1), npc.Center);
             }
             else
             {
@@ -610,10 +608,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (AttackTimer < 60)
                 npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, -100), AttackTimer / 60f);
 
+            if(AttackTimer == 90)
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 1, npc.Center);
+
             if (AttackTimer > 90)
             {
                 float LaserTimer = AttackTimer - 90;
-                Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 1, npc.Center);
 
                 if (LaserTimer < 60)
                 {
