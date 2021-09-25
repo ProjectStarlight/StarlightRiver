@@ -48,6 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
             var r = new LearnableRecipe("SandScripts");
             r.AddIngredient(ItemID.Sandstone, 10);
             r.AddIngredient(ItemID.Topaz);
+            r.AddTile(TileID.Anvils);
             r.SetResult(this);
             r.AddRecipe();
 		}

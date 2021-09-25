@@ -332,7 +332,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 npc.velocity *= 0.98f;
                 npc.velocity.Y += 0.2f;
-                npc.rotation += npc.velocity.X * 0.02f;
+                npc.rotation += npc.velocity.X * 0.015f;
             }
 
             if (GlobalTimer == 600)

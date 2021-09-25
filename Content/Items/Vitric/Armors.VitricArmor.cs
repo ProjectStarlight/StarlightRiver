@@ -82,7 +82,8 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 15);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
@@ -135,7 +136,8 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 25);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
@@ -171,7 +173,8 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 20);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
