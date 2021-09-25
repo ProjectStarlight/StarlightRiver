@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         private bool hit = false;
 
-        private float Alpha => hit ? (projectile.timeLeft / 80f) : 1;
+        private float Alpha => hit ? (projectile.timeLeft / 50f) : 1;
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetDefaults()
@@ -470,7 +470,7 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.penetrate = 1;
             projectile.timeLeft = 300;
             projectile.extraUpdates = 4;
-            projectile.scale = 0.4f;
+            projectile.scale = 0.6f;
         }
 
         public override void SetStaticDefaults()
@@ -508,11 +508,11 @@ namespace StarlightRiver.Content.Items.Breacher
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * 11, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor =>
             {
                 return Color.Cyan;
             });
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * 6, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor =>
             {
                 return Color.White;
             });
@@ -544,17 +544,23 @@ namespace StarlightRiver.Content.Items.Breacher
             Texture2D tex = Main.projectileTexture[projectile.type];
             Color color = Color.Cyan;
             color.A = 0;
+            Color color2 = Color.White;
+            color2.A = 0;
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null,
+                             color * Alpha * 0.33f, projectile.rotation, tex.Size() / 2, projectile.scale * 2, SpriteEffects.None, 0);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null,
                              color * Alpha, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null,
+                             color2 * Alpha, projectile.rotation, tex.Size() / 2, projectile.scale * 0.75f, SpriteEffects.None, 0);
             return false;
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 3;
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 6;
             projectile.friendly = false;
             projectile.penetrate++;
             hit = true;
-            projectile.timeLeft = 80;
+            projectile.timeLeft = 50;
             projectile.extraUpdates = 3;
             projectile.velocity = Vector2.Zero;
         }
