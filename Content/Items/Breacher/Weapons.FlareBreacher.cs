@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Breacher
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
-
+    #region LMB projectiles
     internal class ExplosiveFlare : ModProjectile
     {
         int enemyID;
@@ -295,6 +295,9 @@ namespace StarlightRiver.Content.Items.Breacher
                 player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
         }
     }
+    #endregion
+
+    #region RMB projectiles
     public class OrbitalStrikeProj : ModProjectile
     {
         public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
@@ -303,7 +306,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         private bool charged = false;
 
-        private int Strikes => charge / 30;
+        private int Strikes => charge / 150;
 
         public override void SetStaticDefaults()
         {
@@ -360,7 +363,9 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (charge > 150)
                 {
                     player.GetModPlayer<FlareBreacherPlayer>().ticks -= charge;
-                    Projectile.NewProjectile(projectile.Center - new Vector2(0, 4), direction * 15, ModContent.ProjectileType<OrbitalStrikePredictor>(), projectile.damage, projectile.knockBack, projectile.owner, Strikes);
+                    Projectile proj = Projectile.NewProjectileDirect(projectile.Center - new Vector2(0, 4), direction * 15, ModContent.ProjectileType<OrbitalStrikePredictor>(), projectile.damage, projectile.knockBack, projectile.owner);
+                    if (proj.modProjectile is OrbitalStrikePredictor modProj)
+                        modProj.Strikes = Strikes;
                 }
                 projectile.active = false;
             }
@@ -371,17 +376,7 @@ namespace StarlightRiver.Content.Items.Breacher
     {
         public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
-        public int Strikes
-        {
-            get
-            {
-                return (int)projectile.ai[0];
-            }
-            set
-            {
-                projectile.ai[0] = value;
-            }
-        }
+        public int Strikes;
 
         int enemyID;
         bool stuck = false;
@@ -397,6 +392,12 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.penetrate = -1;
             projectile.aiStyle = 1;
             aiType = 163;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Flare");
+            Main.projFrames[projectile.type] = 2;
         }
         public override bool PreAI()
         {
@@ -421,6 +422,10 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Player player = Main.player[projectile.owner];
 
+            Vector2 direction = new Vector2(0, -1);
+            direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
+            Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), projectile.damage, projectile.knockBack, projectile.owner);
+
             Strikes--;
             if (Strikes <= 0)
                 projectile.active = false;
@@ -441,6 +446,120 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
     }
+
+    internal class OrbitalStrike : ModProjectile, IDrawPrimitive
+    {
+        private List<Vector2> cache;
+
+        private Trail trail;
+        private Trail trail2;
+
+        private bool hit = false;
+
+        private float Alpha => hit ? (projectile.timeLeft / 80f) : 1;
+        public override string Texture => AssetDirectory.BreacherItem + Name;
+
+        public override void SetDefaults()
+        {
+            projectile.width = 80;
+            projectile.height = 20;
+
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.tileCollide = false;
+            projectile.penetrate = 1;
+            projectile.timeLeft = 300;
+            projectile.extraUpdates = 4;
+            projectile.scale = 0.4f;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Orbital Strike");
+            Main.projFrames[projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+        }
+        public override void AI()
+        {
+            if (!hit)
+                ManageCaches();
+            ManageTrail();
+        }
+
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                for (int i = 0; i < 100; i++)
+                {
+                    cache.Add(projectile.Center);
+                }
+            }
+            cache.Add(projectile.oldPos[0] + new Vector2(projectile.width / 2, projectile.height / 2));
+
+            while (cache.Count > 100)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * 11, factor =>
+            {
+                return Color.Cyan;
+            });
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * 6, factor =>
+            {
+                return Color.White;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center;
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = projectile.Center;
+        }
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["alpha"].SetValue(Alpha);
+
+            trail?.Render(effect);
+
+            trail2?.Render(effect);
+        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            Color color = Color.Cyan;
+            color.A = 0;
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null,
+                             color * Alpha, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0);
+            return false;
+        }
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 3;
+            projectile.friendly = false;
+            projectile.penetrate++;
+            hit = true;
+            projectile.timeLeft = 80;
+            projectile.extraUpdates = 3;
+            projectile.velocity = Vector2.Zero;
+        }
+    }
+    #endregion
     public class FlareBreacherPlayer : ModPlayer
     {
         public const int CHARGETIME = 150;
