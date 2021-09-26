@@ -16,6 +16,10 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.noLight = false;
         }
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return Color.White;
+        }
         public override bool Update(Dust dust)
         {
             dust.position += dust.velocity;
