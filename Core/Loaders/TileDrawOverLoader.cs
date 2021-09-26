@@ -100,8 +100,6 @@ namespace StarlightRiver.Core.Loaders
                 translation.Y = 0;
             }
 
-            Main.NewText(Main.minScreenH);
-
             gD.SetRenderTarget(projTarget);
             gD.Clear(Color.Transparent);
             spriteBatch.Begin(
