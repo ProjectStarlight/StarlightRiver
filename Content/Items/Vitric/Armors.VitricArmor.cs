@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void PickShardsWhenLoaded(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
         {
-            if (player.armor[0].type == ItemType<VitricHead>())
+            if (player.armor[0].type == ItemType<VitricHead>() && ammo.ammo == AmmoID.Arrow)
             {
                 var helm = player.armor[0].modItem as VitricHead;
 
