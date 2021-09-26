@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreAI()
         {
-            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.1f);
+            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.25f);
             Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
             Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3,4));
             dust.scale = 1.15f;

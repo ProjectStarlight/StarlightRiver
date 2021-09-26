@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Dusts
             dust.alpha += 10;
             if (dust.alpha >= 255)
                 dust.active = false;
-            Lighting.AddLight((int)(dust.position.X / 16f), (int)(dust.position.Y / 16f), dust.color.R * 0.01f, dust.color.G * 0.01f, dust.color.B * 0.01f);
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
             return false;
         }
     }
