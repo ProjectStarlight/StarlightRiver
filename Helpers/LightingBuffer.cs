@@ -135,8 +135,12 @@ namespace StarlightRiver.Helpers
             }
             else
             {
-                if (refreshTimer % config.LightingPollRate == 0)
-                    PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+                //Trust me this check is somehow needed even tho the config shouldn't allow this to happen :p
+                if (config.LightingPollRate != 0)
+                {
+                    if (refreshTimer % config.LightingPollRate == 0)
+                        PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+                }
             }
 
             PopulateScreenTexture();
