@@ -48,19 +48,23 @@ namespace StarlightRiver.Content.Items.Vitric
             item.defense = 4;
         }
 
-		public override void UpdateInventory(Player player)
-		{
+        public override void UpdateInventory(Player player)
+        {
+            shardTimer = 0;
+            shardCount = 0;
+            loaded = false;
+        }
+
+		public override void UpdateEquip(Player player)
+        {
+            player.rangedDamage += 0.1f;
+
             if (!IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
             {
                 shardTimer = 0;
                 shardCount = 0;
                 loaded = false;
             }
-		}
-
-		public override void UpdateEquip(Player player)
-        {
-            player.rangedDamage += 0.1f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -70,7 +74,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "Accumulate powerful glass shards over time\nDouble tap down to load these shards\nShards fired from bows have high velocity and damage";
+            player.setBonus = "Accumulate powerful glass shards over time\nDouble tap DOWN to load these shards into your bow\nShards fired from bows have high velocity and damage";
 
             if (shardCount < 3 && !loaded)
             {
