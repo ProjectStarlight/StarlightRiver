@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (shardTimer >= 240)
                 {
                     shardCount++;
-                    shardTimer = 0;
+                    shardTimer = shardCount > 0 ? 60 : 0;
                 }
             }
             else
