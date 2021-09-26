@@ -132,7 +132,6 @@ namespace StarlightRiver.Content.Items.Breacher
             Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3,4));
             dust.scale = 1.15f;
             dust.noGravity = true;
-            dust.color = new Color(255, 50, 180);
             if (stuck)
             {
                 NPC target = Main.npc[enemyID];
@@ -156,7 +155,7 @@ namespace StarlightRiver.Content.Items.Breacher
             for (int i = 0; i < numberOfProjectiles; i++)
             {
                 float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
-                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
             }
 
             /*for (int i = 0; i < 3; i++)
@@ -184,7 +183,6 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
                 dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
                 dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
-                dust.color = new Color(255, 50, 180);
             }
             Gore.NewGore(projectile.position, Vector2.Zero, mod.GetGoreSlot("Assets/Items/Breacher/FlareGore"));
             projectile.active = false;
@@ -225,6 +223,8 @@ namespace StarlightRiver.Content.Items.Breacher
         private Trail trail;
         public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
+        private NPC source => Main.npc[(int)projectile.ai[0]];
+
         public override void SetDefaults()
         {
             projectile.width = 4;
@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             projectile.ranged = true;
             projectile.friendly = true;
-            projectile.penetrate = -1;
+            projectile.penetrate = 1;
             projectile.timeLeft = Main.rand.Next(50,70);
             projectile.extraUpdates = 4;
             projectile.alpha = 255;
@@ -299,6 +299,12 @@ namespace StarlightRiver.Content.Items.Breacher
             Player player = Main.player[projectile.owner];
             if (target.life <= 0)
                 player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
+        }
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (target == source)
+                return false;
+            return base.CanHitNPC(target);
         }
     }
     #endregion

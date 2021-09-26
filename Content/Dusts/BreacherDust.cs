@@ -16,10 +16,6 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.noLight = false;
         }
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            return Color.White;
-        }
         public override bool Update(Dust dust)
         {
             dust.position += dust.velocity;
@@ -28,7 +24,8 @@ namespace StarlightRiver.Content.Dusts
             dust.alpha += 10;
             if (dust.alpha >= 255)
                 dust.active = false;
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+            Color color = new Color(255, 50, 180);
+            Lighting.AddLight(dust.position, color.ToVector3() * 0.1f);
             return false;
         }
     }
