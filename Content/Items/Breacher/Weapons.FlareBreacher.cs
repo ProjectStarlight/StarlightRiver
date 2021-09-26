@@ -57,6 +57,11 @@ namespace StarlightRiver.Content.Items.Breacher
             else
                 modPlayer.ticks = FlareBreacherPlayer.CHARGETIME * 5;
         }
+
+        public override Vector2? HoldoutOffset()
+        {
+            return new Vector2(-10, 0);
+        }
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)
@@ -68,8 +73,6 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             return true;
         }
-
-        public override Vector2? HoldoutOffset() => new Vector2(0, 0);
 
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -124,11 +127,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreAI()
         {
-            Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
+            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.25f);
             Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
-            Dust dust = Dust.NewDustPerfect(projectile.Center, 127, direction * Main.rand.NextFloat(3,4));
+            Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3,4));
             dust.scale = 1.15f;
             dust.noGravity = true;
+            dust.color = new Color(255, 50, 180);
             if (stuck)
             {
                 NPC target = Main.npc[enemyID];
@@ -177,9 +181,10 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             for (int i = 0; i < 24; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, 127);
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
                 dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
                 dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
+                dust.color = new Color(255, 50, 180);
             }
             Gore.NewGore(projectile.position, Vector2.Zero, mod.GetGoreSlot("Assets/Items/Breacher/FlareGore"));
             projectile.active = false;
@@ -268,7 +273,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(40 * 4), factor => factor * 6, factor =>
             {
-                return new Color(255, 140, 0);
+                return new Color(255, 50, 180);
             });
 
             trail.Positions = cache.ToArray();
