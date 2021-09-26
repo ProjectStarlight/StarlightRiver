@@ -7,6 +7,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Bosses.VitricBoss;
 using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
@@ -563,9 +564,113 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.timeLeft = 50;
             projectile.extraUpdates = 3;
             projectile.velocity = Vector2.Zero;
+
+            Explode();
+        }
+        private void Explode()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Dust.NewDustPerfect(projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustThree>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDustTwo>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
+            }
+            Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), projectile.damage, projectile.knockBack, projectile.owner);
         }
     }
-    #endregion
+    internal class OrbitalStrikeRing : ModProjectile, IDrawPrimitive
+    {
+        private List<Vector2> cache;
+
+        private Trail trail;
+        private Trail trail2;
+        public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
+
+        private float Progress => 1 - (projectile.timeLeft / 10f);
+
+        private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+        public override void SetDefaults()
+        {
+            projectile.width = 80;
+            projectile.height = 80;
+
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.tileCollide = false;
+            projectile.penetrate = -1;
+            projectile.timeLeft = 10;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Orbital Strike");
+        }
+
+        public override void AI()
+        {
+
+            ManageCaches();
+            ManageTrail();
+        }
+
+        private void ManageCaches()
+        {
+            cache = new List<Vector2>();
+            float radius = Radius;
+            for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
+            {
+                double rad = (i / 32f) * 6.28f;
+                Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
+                offset *= radius;
+                cache.Add(projectile.Center + offset);
+            }
+
+            while (cache.Count > 33)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
+            {
+                return Color.Cyan;
+            });
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            {
+                return Color.White;
+            });
+            float nextplace = 33f / 32f;
+            Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+            offset *= Radius;
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + offset;
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = projectile.Center + offset;
+        }
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["alpha"].SetValue(1);
+
+            trail?.Render(effect);
+            trail2?.Render(effect);
+        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+    }
+        #endregion
     public class FlareBreacherPlayer : ModPlayer
     {
         public const int CHARGETIME = 150;
