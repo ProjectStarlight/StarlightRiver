@@ -166,6 +166,18 @@ namespace StarlightRiver.Content.Items.Vitric
             ManageTrail();
         }
 
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			for(int k = 0; k < 20; k++)
+			{
+                float rot = projectile.rotation - 1.57f;
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
+			}
+
+            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 5;
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
             projectile.velocity *= 0;
