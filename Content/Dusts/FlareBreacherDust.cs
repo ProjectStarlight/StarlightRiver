@@ -23,14 +23,15 @@ namespace StarlightRiver.Content.Dusts
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             Color gray = new Color(25, 25, 25);
+            Color purple = new Color(180, 50, 180);
             Color ret;
             if (dust.alpha < 60)
             {
-                ret = Color.Lerp(Color.White, Color.Orange, dust.alpha / 60f);
+                ret = Color.Lerp(new Color(255, 50, 180), purple, dust.alpha / 60f);
             }
             else if (dust.alpha < 120)
             {
-                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 60) / 60f);
+                ret = Color.Lerp(purple, gray, (dust.alpha - 60) / 60f);
             }
             else
                 ret = gray;

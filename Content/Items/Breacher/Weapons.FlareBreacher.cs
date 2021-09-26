@@ -7,6 +7,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Bosses.VitricBoss;
 using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
@@ -56,6 +57,11 @@ namespace StarlightRiver.Content.Items.Breacher
             else
                 modPlayer.ticks = FlareBreacherPlayer.CHARGETIME * 5;
         }
+
+        public override Vector2? HoldoutOffset()
+        {
+            return new Vector2(-10, 0);
+        }
         public override bool AltFunctionUse(Player player) => true;
 
         public override bool CanUseItem(Player player)
@@ -67,8 +73,6 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             return true;
         }
-
-        public override Vector2? HoldoutOffset() => new Vector2(0, 0);
 
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -123,9 +127,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreAI()
         {
-            Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
+            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.25f);
             Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
-            Dust dust = Dust.NewDustPerfect(projectile.Center, 127, direction * Main.rand.NextFloat(3,4));
+            Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3,4));
             dust.scale = 1.15f;
             dust.noGravity = true;
             if (stuck)
@@ -151,7 +155,7 @@ namespace StarlightRiver.Content.Items.Breacher
             for (int i = 0; i < numberOfProjectiles; i++)
             {
                 float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
-                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
             }
 
             /*for (int i = 0; i < 3; i++)
@@ -176,7 +180,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             for (int i = 0; i < 24; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, 127);
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
                 dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
                 dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
             }
@@ -219,6 +223,8 @@ namespace StarlightRiver.Content.Items.Breacher
         private Trail trail;
         public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
+        private NPC source => Main.npc[(int)projectile.ai[0]];
+
         public override void SetDefaults()
         {
             projectile.width = 4;
@@ -226,7 +232,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             projectile.ranged = true;
             projectile.friendly = true;
-            projectile.penetrate = -1;
+            projectile.penetrate = 1;
             projectile.timeLeft = Main.rand.Next(50,70);
             projectile.extraUpdates = 4;
             projectile.alpha = 255;
@@ -267,7 +273,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(40 * 4), factor => factor * 6, factor =>
             {
-                return new Color(255, 140, 0);
+                return new Color(255, 50, 180);
             });
 
             trail.Positions = cache.ToArray();
@@ -293,6 +299,12 @@ namespace StarlightRiver.Content.Items.Breacher
             Player player = Main.player[projectile.owner];
             if (target.life <= 0)
                 player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
+        }
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (target == source)
+                return false;
+            return base.CanHitNPC(target);
         }
     }
     #endregion
@@ -563,9 +575,113 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.timeLeft = 50;
             projectile.extraUpdates = 3;
             projectile.velocity = Vector2.Zero;
+
+            Explode();
+        }
+        private void Explode()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Dust.NewDustPerfect(projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustThree>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDustTwo>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
+            }
+            Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), projectile.damage, projectile.knockBack, projectile.owner);
         }
     }
-    #endregion
+    internal class OrbitalStrikeRing : ModProjectile, IDrawPrimitive
+    {
+        private List<Vector2> cache;
+
+        private Trail trail;
+        private Trail trail2;
+        public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
+
+        private float Progress => 1 - (projectile.timeLeft / 10f);
+
+        private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+        public override void SetDefaults()
+        {
+            projectile.width = 80;
+            projectile.height = 80;
+
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.tileCollide = false;
+            projectile.penetrate = -1;
+            projectile.timeLeft = 10;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Orbital Strike");
+        }
+
+        public override void AI()
+        {
+
+            ManageCaches();
+            ManageTrail();
+        }
+
+        private void ManageCaches()
+        {
+            cache = new List<Vector2>();
+            float radius = Radius;
+            for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
+            {
+                double rad = (i / 32f) * 6.28f;
+                Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
+                offset *= radius;
+                cache.Add(projectile.Center + offset);
+            }
+
+            while (cache.Count > 33)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
+            {
+                return Color.Cyan;
+            });
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            {
+                return Color.White;
+            });
+            float nextplace = 33f / 32f;
+            Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+            offset *= Radius;
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + offset;
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = projectile.Center + offset;
+        }
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["alpha"].SetValue(1);
+
+            trail?.Render(effect);
+            trail2?.Render(effect);
+        }
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+    }
+        #endregion
     public class FlareBreacherPlayer : ModPlayer
     {
         public const int CHARGETIME = 150;
