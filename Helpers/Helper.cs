@@ -392,7 +392,7 @@ namespace StarlightRiver.Helpers
 
             soundEffect.Volume = volume * Main.soundVolume * distFactor;
             soundEffect.Pitch = pitch;
-            soundEffect.Pan = position.X > Main.screenPosition.X + Main.screenWidth / 2 ? 1 : -1;
+            soundEffect.Pan = (position.X - Main.LocalPlayer.Center.X) / 2000f;
 
             instances.Add(soundEffect);
             soundEffect.Play();

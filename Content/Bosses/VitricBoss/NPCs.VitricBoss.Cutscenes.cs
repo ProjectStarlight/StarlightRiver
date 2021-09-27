@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
             if (GlobalTimer > 63 && GlobalTimer < 600)
-                Main.musicFade[Main.curMusic] = 1 - (GlobalTimer - 63) / 60f;
+                Main.musicFade[Main.curMusic] = Math.Min(1, 1 - (GlobalTimer - 63) / 60f);
 
             if (GlobalTimer > 63)
             {
@@ -335,7 +335,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.rotation += npc.velocity.X * 0.015f;
             }
 
-            if (GlobalTimer == 600)
+            if (GlobalTimer == 660)
             {
                 for (int k = 0; k < 50; k++)
                     Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
