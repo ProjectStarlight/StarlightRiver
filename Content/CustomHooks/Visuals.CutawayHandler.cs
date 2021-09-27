@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawPositive(On.Terraria.Main.orig_DrawDust orig, Main self)
 		{
+			orig(self);
+			return;
+
 			for (int k = 0; k < cutaways.Count; k++)
 				cutaways[k].Draw();
 
