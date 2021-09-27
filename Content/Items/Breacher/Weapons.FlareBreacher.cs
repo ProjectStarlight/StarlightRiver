@@ -127,13 +127,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreAI()
         {
-            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.25f);
+            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3() * 0.5f);
             Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
-            Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3,4));
-            dust.scale = 1.15f;
-            dust.noGravity = true;
             if (stuck)
             {
+                Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3, 4));
+                dust.scale = 1.15f;
+                dust.noGravity = true;
                 NPC target = Main.npc[enemyID];
                 projectile.position = target.position + offset;
                 explosionTimer--;
@@ -143,13 +143,26 @@ namespace StarlightRiver.Content.Items.Breacher
                 return false;
             }
             else
+            {
+                for (float i = 0; i < 1; i+= 0.25f)
+                {
+                    Dust dust = Dust.NewDustPerfect(projectile.Center - (projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
+                    dust.scale = 0.85f;
+                    dust.noGravity = true;
+                }
                 projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+            }
 
             return base.PreAI();
         }
-
-		private void Explode(NPC target)
+        public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            Dust.NewDustPerfect(projectile.Center + oldVelocity, ModContent.DustType<FlareBreacherDust>(), Vector2.Zero, 60, default, 0.7f).rotation = Main.rand.NextFloat(6.28f);
+            return base.OnTileCollide(oldVelocity);
+        }
+        private void Explode(NPC target)
+        {
+            target.StrikeNPC(projectile.damage, 0f, 0);
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(5, 8);
             for (int i = 0; i < numberOfProjectiles; i++)
@@ -392,7 +405,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         int enemyID;
         bool stuck = false;
-        int strikeTimer = 100;
+        int strikeTimer = 150;
         Vector2 offset = Vector2.Zero;
         public override void SetDefaults()
         {
@@ -416,10 +429,13 @@ namespace StarlightRiver.Content.Items.Breacher
             Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
             if (stuck)
             {
+                if (strikeTimer > -4)
+                    Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)strikeTimer / 150f));
                 NPC target = Main.npc[enemyID];
                 projectile.position = target.position + offset;
                 strikeTimer--;
-
+                if (strikeTimer == 125)
+                    Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
                 if (strikeTimer <= 0 && strikeTimer % 6 == 0)
                     Strike(target);
                 return false;
@@ -568,7 +584,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 6;
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 9;
             projectile.friendly = false;
             projectile.penetrate++;
             hit = true;
@@ -580,6 +596,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
         private void Explode()
         {
+            Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
             for (int i = 0; i < 5; i++)
             {
                 Dust.NewDustPerfect(projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustThree>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));

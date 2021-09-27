@@ -251,6 +251,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.tileCollide = false;
             projectile.timeLeft = 122;
             projectile.friendly = true;
+            projectile.hostile = false;
             projectile.penetrate = 20;
             projectile.magic = true;
 
