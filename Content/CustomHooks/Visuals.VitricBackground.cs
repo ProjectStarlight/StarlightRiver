@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.CustomHooks
                         drawtex = tex;
 
                     if (CheckBackground(pos, drawtex.Size(), blacklist))
-                        LightingBufferRenderer.DrawWithLightingWorld(pos, drawtex, default);
+                        LightingBufferRenderer.DrawWithLighting(pos, drawtex, default);
                 }
         }
 

@@ -163,13 +163,22 @@ namespace StarlightRiver.Helpers
         private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
         private static readonly VertexBuffer bufferColor = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 12, BufferUsage.WriteOnly);
 
-        public static void DrawWithLighting(Matrix zoom, Rectangle pos, Texture2D tex, Rectangle source, Color color = default)
+        public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default)
         {
             if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
                 return;
 
             if (color == default)
                 color = Color.White;
+
+            Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
+            new Matrix
+            (
+                Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+                0, Main.GameViewMatrix.Zoom.X, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
 
             if (!ModContent.GetInstance<Config>().HighQualityLighting)
             {
@@ -263,29 +272,11 @@ namespace StarlightRiver.Helpers
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
-        public static void DrawWithLightingWorld(Vector2 pos, Texture2D tex, Color color = default) =>
-            DrawWithLightingWorld(pos, tex, tex.Frame(), color);
 
-        public static void DrawWithLightingWorld(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
-            DrawWithLightingWorld(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
+            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
 
-        public static void DrawWithLightingWorld(Rectangle pos, Texture2D tex, Rectangle source, Color color = default) =>
-            DrawWithLighting(new Matrix
-                                (
-                                    Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-                                    0, Main.GameViewMatrix.Zoom.Y, 0, 0,
-                                    0, 0, 1, 0,
-                                    0, 0, 0, 1
-                                ), pos, tex, source, color);
-
-
-        public static void DrawWithLightingTile(Vector2 pos, Texture2D tex, Color color = default) =>
-            DrawWithLightingTile(pos, tex, tex.Frame(), color);
-
-        public static void DrawWithLightingTile(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
-            DrawWithLightingTile(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
-        //todo fix matrix
-        public static void DrawWithLightingTile(Rectangle pos, Texture2D tex, Rectangle source, Color color = default) =>
-            DrawWithLighting(Matrix.CreateScale(new Vector3(0.7845f, 0.67f, 1)), new Rectangle(pos.X - 194, pos.Y - 192, pos.Width, pos.Height), tex, source, color);
+        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default) =>
+            DrawWithLighting(pos, tex, tex.Frame(), color);
     }
 }

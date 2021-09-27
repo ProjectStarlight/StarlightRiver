@@ -241,7 +241,7 @@ namespace StarlightRiver.Core
                     //LightingBufferRenderer.DrawWithLighting((((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height), tex, frame, Color.Blue);
                     Vector2 pos = (((new Vector2(i, j)) * 16 - Main.screenPosition) + DrawOffset) + new Vector2(frame.Width * 0.5f, frame.Height * 0.5f);
                     //LightingBufferRenderer.DrawWithLightingTile(pos, Main.blackTileTexture, frame, Color.White);
-                    LightingBufferRenderer.DrawWithLightingTile(pos, tex, frame, Color.White);
+                    LightingBufferRenderer.DrawWithLighting(pos, tex, frame, Color.White);
                 }
                 AfterPostDraw(i, j, spriteBatch);
             }

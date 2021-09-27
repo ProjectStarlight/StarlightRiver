@@ -136,8 +136,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
-            if (State == 3 || State == 4) 
-                ScrollDraw();
+            if (State == 3 || State == 4)
+                ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
                 MainDraw(spriteBatch);
         }
@@ -161,11 +161,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
         }
 
-        public virtual void ScrollDraw() //im lazy
+        public virtual void ScrollDraw(SpriteBatch sb) //im lazy
         {
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
@@ -178,8 +178,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Rectangle source1 = new Rectangle(0, 0, tex.Width, height1);
             Rectangle source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
             Texture2D tex2 = GetTexture(Texture + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
@@ -257,8 +257,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
 
             //Texture2D tex3 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
             //Helpers.LightingBufferRenderer.DrawWithLighting(target, tex3, source, Color.White * ((((float)Math.Sin(Main.GameUpdateCount  / 50f) + 1) / 2f) + 0.1f), sb, Configs.LightImportance.Some);//a
@@ -277,8 +277,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Rectangle source2 = new Rectangle(0, 0, tex.Width, height2);
             Rectangle source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
-            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default, sb, Configs.LightImportance.Some);
-            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default, sb, Configs.LightImportance.Some);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
             Texture2D tex2 = GetTexture(Texture + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);

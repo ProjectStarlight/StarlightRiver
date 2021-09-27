@@ -34,8 +34,11 @@ namespace StarlightRiver.Configs
         public TitleScreenStyle Style;
 
         [Label("Lighting Buffer Poll Rate")]
-        [Tooltip("Changes how often the lighting buffer polls for data. Higher values increase performance but make lighting update slower on some objects. Lower values result in smoother moving light but may hurt performance.")]
+        [Tooltip("Changes how often the lighting buffer polls for data. \nHigher values increase performance but make lighting update slower on some objects. \nLower values result in smoother moving light but may hurt performance.")]
         [Range(1, 30)]
+        [DrawTicks]
+        [Slider]
+        [DefaultValue(5f)]
         public int LightingPollRate = 5;
 
         [Label("Scrolling Lighting Buffer Building")]
@@ -45,14 +48,6 @@ namespace StarlightRiver.Configs
         [Label("Extra Particles")]
         [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
         public bool ParticlesActive = true;
-
-        [Label("Lighting buffer update delay")]
-        [Tooltip("The delay between updating the lighting buffer")]
-        [Range(2, 20)]
-        [DrawTicks]
-        [Slider]
-        [DefaultValue(5f)]
-        public int LightingUpdateDelay = 5;
 
         [Label("High quality lit textures")]
         [Tooltip("Enables/Disables fancy lighting on large textures. Disable this if you have performance issues.")]
