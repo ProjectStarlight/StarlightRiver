@@ -259,7 +259,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     case 4: Item.NewItem(npc.Center, ItemType<RefractiveBlade>()); break;
                 }
 
-                Item.NewItem(npc.Center, ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(30, 50));
+                Item.NewItem(npc.Center, ItemType<VitricOre>(), Main.rand.Next(30, 50));
+                Item.NewItem(npc.Center, ItemType<MagmaCore>(), Main.rand.Next(1, 2));
                 Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
             }
         }

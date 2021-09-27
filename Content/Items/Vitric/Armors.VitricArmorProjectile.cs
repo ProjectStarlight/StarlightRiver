@@ -3,24 +3,40 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	internal class VitricArmorProjectile : ModProjectile
+    internal class VitricArmorProjectileIdle : ModProjectile
     {
+        public Vector2 offset = Vector2.Zero;
+        public float rotOffset = 0;
+        public VitricHead parent;
+        public int index;
+        public float maxSize;
+
+        Vector2 posTarget;
+        float rotTarget;
+
+        public ref float State => ref projectile.ai[0];
+        public ref float Timer => ref projectile.ai[1];
+        public Player Owner => Main.player[projectile.owner];
+
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {
-            projectile.width = 12;
-            projectile.height = 18;
+            projectile.width = 16;
+            projectile.height = 16;
+            projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = -1;
-            projectile.timeLeft = 30;
+            projectile.timeLeft = 15;
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
         }
@@ -30,103 +46,198 @@ namespace StarlightRiver.Content.Items.Vitric
             DisplayName.SetDefault("Enchanted Glass");
         }
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void AI()
         {
-            Main.PlaySound(SoundID.Item27);
-        }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+            Timer++;
 
-        public override bool CanDamage() => false;
+            if (State != 2) //persist
+                projectile.timeLeft = 15;
 
-        public override void ReceiveExtraAI(System.IO.BinaryReader reader)
-        {
-            projectile.localAI[0] = (float)reader.ReadDouble();
-        }
+            var flippedOffset = offset;
+            flippedOffset.X = offset.X * -Owner.direction;
 
-        public override void SendExtraAI(System.IO.BinaryWriter writer)
-        {
-            writer.Write((double)projectile.localAI[0]);
-        }
+            posTarget = Owner.Center + flippedOffset + Vector2.UnitY * Owner.gfxOffY;
+            projectile.Center += (posTarget - projectile.Center) * 0.18f;
 
-        public bool Regenerate()
-        {
-            if (projectile.ai[0] == 1)
-            {
-                Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 30, 0.65f, Main.rand.NextFloat(0.15f, 0.25f));
+            if (Helper.CompareAngle(projectile.rotation, rotTarget) > 0.1f)
+                projectile.rotation += Helper.CompareAngle(projectile.rotation, rotTarget) * 0.1f;
+            else
+                projectile.rotation = rotTarget;
+
+            if(Owner.armor[0].type != ModContent.ItemType<VitricHead>())
+			{
+                State = 2;
+                Timer = 0;
+			}
+
+            if(State == 0)
+			{
+                rotTarget = (float)Math.Sin(Timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
+
+                if(Timer <= 30)
+                    projectile.scale = Timer / 30f * maxSize;
+
+                if (parent != null && parent.loaded)
+				{
+                    if (Timer < 30)
+                        projectile.active = false;
+
+                    State = 1;
+                    Timer = 0;
+				}
             }
-            return projectile.ai[0] < 1;
-        }
 
-        public void Shatter()
-        {
-            if (projectile.ai[0] < 1)
-            {
-                for (float num315 = 0.75f; num315 < 5; num315 += 0.4f)
+            if(State == 1) //loaded
+			{
+                rotTarget = Helpers.Helper.LerpFloat(projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, Timer / 30f));
+
+                if (parent != null && !parent.loaded)
                 {
-                    float angle = MathHelper.ToRadians(-Main.rand.Next(-30, 30));
-                    Vector2 vari = new Vector2(Main.rand.NextFloat(-2f, 2), Main.rand.NextFloat(-2f, 2));
-                    Dust.NewDustPerfect(projectile.position + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.width)), ModContent.DustType<Dusts.GlassGravity>(), vari, 100, default, num315 / 3f);
+                    State = 0;
+                    Timer = 30;
                 }
-                Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 27, 0.65f, -Main.rand.NextFloat(0.15f, 0.75f));
-            }
 
-            projectile.ai[0] = 600;
-            projectile.netUpdate = true;
+                if (parent != null && parent.shardCount <= index)
+				{
+                    State = 2;
+                    Timer = 0;
+				}
+			}
+
+            if(State == 2)
+			{
+                projectile.scale = projectile.timeLeft / 15f * maxSize;
+			}
         }
 
-        public DrawData Draw()
-        {
-            float scale = MathHelper.Clamp(1f - projectile.ai[0] / 15f, 0, 1);
-            var color = Lighting.GetColor((int)(projectile.Center.X / 16f), (int)(projectile.Center.Y / 16f));
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
             var tex = ModContent.GetTexture(Texture);
+            var texGlow = ModContent.GetTexture(Texture + "Glow");
+            var texHot = ModContent.GetTexture(Texture + "Hot");
 
-            return new DrawData(tex, projectile.Center - Main.screenPosition, null, color, projectile.rotation, tex.Size() / 2f, Vector2.One * scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
+
+            if(State == 0)
+                spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, VitricSummonOrb.MoltenGlow(Timer / 30f * 110), projectile.rotation, texGlow.Size() / 2, projectile.scale, 0, 0);
+
+            if (State == 1)
+                spriteBatch.Draw(texHot, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, Timer / 30f), projectile.rotation, texHot.Size() / 2, projectile.scale, 0, 0);
+
+            return false;
+		}
+	}
+
+    internal class VitricArmorProjectile : ModProjectile, IDrawPrimitive
+    {
+        private List<Vector2> cache;
+        private Trail trail;
+
+        public ref float state => ref projectile.ai[0];
+
+        public override string Texture => AssetDirectory.VitricItem + Name;
+
+        public override void SetDefaults()
+        {
+            projectile.width = 4;
+            projectile.height = 4;
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.penetrate = -1;
+            projectile.timeLeft = 180;
+            projectile.tileCollide = true;
+            projectile.ignoreWater = true;
+            projectile.extraUpdates = 5;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Enchanted Glass");
         }
 
         public override void AI()
         {
-            projectile.ai[0] = Math.Max(projectile.ai[0] - 1, 0);
-            int pos = (int)projectile.localAI[0];
-            Player player = projectile.Owner();
+            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
 
-            if (player.dead)
+            if (Main.rand.Next(5) == 0)
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
+
+            ManageCaches();
+            ManageTrail();
+        }
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			for(int k = 0; k < 20; k++)
+			{
+                float rot = projectile.rotation - 1.57f;
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
+			}
+
+            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 5;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+            projectile.velocity *= 0;
+            projectile.friendly = false;
+            return false;
+		}
+
+		private void ManageCaches()
+        {
+            if (cache == null)
             {
-                Shatter();
-                projectile.timeLeft = 0;
-            }
+                cache = new List<Vector2>();
 
-            if (Regenerate())
-            {
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, ModContent.DustType<Dusts.Air>(), 0, 0, 0, default, 0.35f);
-                player.AddBuff(ModContent.BuffType<Buffs.ProtectiveShard>(), 2);
-            }
-
-            projectile.ai[1] -= 1;
-
-            if (((float)player.statLife / player.statLifeMax2) > 0.2f * pos || projectile.ai[1] < 1)
-            {
-                projectile.position += Vector2.Normalize(player.Center - projectile.Center) * 5;
-                projectile.rotation += 0.4f;
-                projectile.friendly = false;
-
-                if (Vector2.Distance(player.Center, projectile.Center) <= 16)
+                for (int i = 0; i < 90; i++)
                 {
-                    projectile.timeLeft = 0;
+                    cache.Add(projectile.Center);
                 }
             }
-            else
+
+            cache.Add(projectile.Center);
+
+            while (cache.Count > 90)
             {
-                projectile.timeLeft = 30;
-                projectile.localAI[1] += (0.05f - pos * 0.005f) * (pos % 2 == 0 ? -1 : 1);
-
-                if (Math.Abs(projectile.localAI[1]) >= 6.28)
-                    projectile.localAI[1] = 0;
-
-                float movex = (float)Math.Cos(projectile.localAI[1]) * 2f;
-                float movey = ((float)Math.Sin(projectile.localAI[1]) / 1.5f);
-                projectile.position = player.Center - new Vector2(0, player.height / 3f) + new Vector2(movex, movey) * (((5 - pos) * 6) + 10);
-                projectile.rotation = projectile.localAI[1];
+                cache.RemoveAt(0);
             }
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 90, new TriangularTip(20 * 4), factor => factor * 20, factor =>
+            {
+                if (factor.X > 0.95f)
+                    return Color.White * 0;
+
+                float alpha = 1;
+
+                if (projectile.timeLeft < 20)
+                    alpha = projectile.timeLeft / 20f;
+
+                return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + projectile.velocity;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+            effect.Parameters["repeats"].SetValue(2f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+
+            trail?.Render(effect);
         }
     }
 }

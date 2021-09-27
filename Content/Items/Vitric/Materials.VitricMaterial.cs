@@ -14,12 +14,13 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public SandstoneChunk() : base("Ceramic Chunk", "", 999, 200, 2) { }
+        public SandstoneChunk() : base("Ancient Ceramic", "", 999, 200, 2) { }
     }
+
     public class MagmaCore : QuickMaterial
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public MagmaCore() : base("Magmatic Glass", "", 999, 200, 2) { }
+        public MagmaCore() : base("Magmatic Core", "A sample of the hot stuff.", 999, 20000, 3) { }
     }
 }

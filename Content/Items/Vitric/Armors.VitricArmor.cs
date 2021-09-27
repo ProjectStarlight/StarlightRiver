@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -17,9 +18,22 @@ namespace StarlightRiver.Content.Items.Vitric
 	[AutoloadEquip(EquipType.Head)]
     public class VitricHead : ModItem
     {
+        public int shardTimer = 0;
+        public int shardCount = 0;
+        public bool loaded = false;
+
+        public List<Projectile> idleShards = new List<Projectile>();
+
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public override void SetStaticDefaults()
+		public override bool Autoload(ref string name)
+		{
+            StarlightItem.PickAmmoEvent += PickShardsWhenLoaded;
+            On.Terraria.Player.KeyDoubleTap += LoadShots;
+			return base.Autoload(ref name);
+		}
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Headgear");
             Tooltip.SetDefault("10% increased ranged damage");
@@ -34,15 +48,23 @@ namespace StarlightRiver.Content.Items.Vitric
             item.defense = 4;
         }
 
-        public override bool Autoload(ref string name)
+        public override void UpdateInventory(Player player)
         {
-            StarlightPlayer.PreHurtEvent += SetBonusPrehurt;
-            return true;
+            shardTimer = 0;
+            shardCount = 0;
+            loaded = false;
         }
 
-        public override void UpdateEquip(Player player)
+		public override void UpdateEquip(Player player)
         {
             player.rangedDamage += 0.1f;
+
+            if (!IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            {
+                shardTimer = 0;
+                shardCount = 0;
+                loaded = false;
+            }
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -52,29 +74,65 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "Gain 5% attack strength, lose 3 defense, and release protective shards for every 20% max health lost\nAfter taking a hit a shard breaks for 10 seconds";
+            player.setBonus = "Accumulate powerful glass shards over time\nDouble tap DOWN to load these shards into your bow\nShards fired from bows have high velocity and damage";
 
-            for (float k = 0.2f; k <= 0.8f; k += 0.2f)
-                if ((float)player.statLife / player.statLifeMax2 < k)
+            if (shardCount < 3 && !loaded)
+            {
+                shardTimer++;
+
+                if (shardTimer == 210)
                 {
-                    player.statDefense -= 3;
-                    player.BoostAllDamage(0.05f, 0);
-
-                    int index = (int)(k * 5);
-
-                    Projectile findproj = Main.projectile.FirstOrDefault(projectile => projectile.type == ProjectileType<VitricArmorProjectile>() && projectile.active && projectile.localAI[0] == index && projectile.owner == player.whoAmI);
-
-                    if (findproj == default)
-                    {
-                        int proj = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectile>(), 0, 0);
-                        Main.projectile[proj].localAI[0] = index;
-                        Main.projectile[proj].ai[0] = 30;
-                        Main.projectile[proj].owner = player.whoAmI;
-                        Main.projectile[proj].netUpdate = true;
-                    }
-                    else
-                        findproj.ai[1] = 3;
+                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI);
+                    var proj = Main.projectile[i].modProjectile as VitricArmorProjectileIdle;
+                    proj.offset = new Vector2(0, -50).RotatedBy(0.2f + (shardCount - 1) / -2f * 1.5f);
+                    proj.rotOffset = 0.2f + (shardCount - 1) / -2f * 1.6f;
+                    proj.parent = this;
+                    proj.index = shardCount;
+                    proj.maxSize = shardCount == 1 ? 0.9f : 0.8f;
                 }
+
+                if (shardTimer >= 240)
+                {
+                    shardCount++;
+                    shardTimer = shardCount > 0 ? 60 : 0;
+                }
+            }
+            else
+                shardTimer = 0;
+
+            if (shardCount <= 0)
+                loaded = false; //failsafe
+        }
+
+        private void LoadShots(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
+        {
+            if (keyDir == 0 && player.armor[0].type == ItemType<VitricHead>())
+            {
+                var helm = player.armor[0].modItem as VitricHead;
+                helm.loaded = true;
+            }
+
+            orig(player, keyDir);
+        }
+
+        private void PickShardsWhenLoaded(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
+        {
+            if (player.armor[0].type == ItemType<VitricHead>() && ammo.ammo == AmmoID.Arrow)
+            {
+                var helm = player.armor[0].modItem as VitricHead;
+
+                if (helm.loaded && helm.shardCount > 0)
+                {
+                    Helper.PlayPitched("Magic/FireHit", 1, 0, player.Center);
+                    type = ProjectileType<VitricArmorProjectile>();
+                    speed = 10;
+                    damage = weapon.damage + 100;
+                    helm.shardCount--;
+
+                    if (helm.shardCount <= 0)
+                        helm.loaded = false;
+                }
+            }
         }
 
         public override void AddRecipes()
@@ -82,27 +140,11 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 15);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
-
-        private bool SetBonusPrehurt(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        {
-            if (player.armor[0].type == ItemType<VitricHead>() && player.armor[1].type == ItemType<VitricChest>() && player.armor[2].type == ItemType<VitricLegs>())//Better way to do this?
-                foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
-                {
-                    VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
-                    if (moddedproj.projectile.ai[0] < 1)
-                    {
-                        moddedproj.Shatter();
-                        damage = (int)(damage * 0.750f);
-                        break;
-                    }
-                }
-            return true;
-        }
-
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -135,7 +177,8 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 25);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
@@ -171,45 +214,10 @@ namespace StarlightRiver.Content.Items.Vitric
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 20);
-            recipe.AddTile(TileID.Furnaces);
+            recipe.AddIngredient(ItemType<MagmaCore>());
+            recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
         }
     }
-
-    public class VitricArmorPlayer : ModPlayer
-    {
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
-        {
-            void backTarget(PlayerDrawInfo s) => DrawShards(s, false); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
-            PlayerLayer backLayer = new PlayerLayer("VitricLayer", "Vitric Armor Effect", backTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-            layers.Insert(layers.IndexOf(layers.First()), backLayer); //Insert the layer at the appropriate index. 
-
-            void frontTarget(PlayerDrawInfo s) => DrawShards(s, true); //the Action<T> of our layer. This is the delegate which will actually do the drawing of the layer.
-            PlayerLayer frontLayer = new PlayerLayer("VitricLayer", "Vitric Armor Effect", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
-            layers.Insert(layers.IndexOf(layers.Last()), frontLayer); //Insert the layer at the appropriate index. 
-
-            void DrawShards(PlayerDrawInfo info, bool back)
-            {
-                List<VitricArmorProjectile> allshards = new List<VitricArmorProjectile>();
-
-                foreach (Projectile shard in Main.projectile.Where(proj => proj.active && proj.owner == player.whoAmI && proj.modProjectile != null && proj.modProjectile is VitricArmorProjectile))
-                {
-                    VitricArmorProjectile moddedproj = shard.modProjectile as VitricArmorProjectile;
-                    allshards.Add(moddedproj);
-                }
-
-                allshards = allshards.OrderBy((x) => x.projectile.Center.Y).ToList();
-
-                foreach (VitricArmorProjectile modshard in allshards)
-                {
-                    double angle = Math.Sin(-modshard.projectile.localAI[1]);
-                    if (angle > 0 && !back ||
-                        angle <= 0 && back)
-                        Main.playerDrawData.Add(modshard.Draw());
-                }
-            }
-        }
-    }
-
 }

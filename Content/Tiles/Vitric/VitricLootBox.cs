@@ -20,8 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             get => new List<Loot>
             {
                 new Loot(ItemType<Items.Vitric.VitricBow>(), 1),
-                new Loot(ItemType<Items.Vitric.VitricSword>(), 1),
-                new Loot(ItemType<Items.Vitric.VitricYoyo>(), 1),
+                new Loot(ItemType<Items.Vitric.VitricSword>(), 1)
             };
         }
 

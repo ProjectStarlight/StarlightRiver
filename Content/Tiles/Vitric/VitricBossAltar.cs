@@ -230,7 +230,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             else if (parent.frameX < 90)
             {
                 Texture2D glow = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarGlow");
-                spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(3, -1), glow.Frame(), Helper.IndicatorColorProximity(300, 600, projectile.Center), 0, Vector2.Zero, 1, 0, 0);
+                spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, projectile.Center), 0, Vector2.Zero, 1, 0, 0);
             }
 
             //Barriers

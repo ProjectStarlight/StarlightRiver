@@ -42,46 +42,6 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            string randomString = "A";
-
-            for (int k = 0; k < Main.rand.Next(200); k++)
-                randomString += (char)Main.rand.Next(255);
-
-            UILoader.GetUIState<GUI.CodexPopup>().TripEntry(randomString, ModContent.GetTexture(AssetDirectory.Debug));
-
-            return true;
-
-            int i = NPC.NewNPC((int)player.Center.X, (int)player.Center.Y, NPCID.VortexHornetQueen);
-            GUI.BootlegHealthbar.SetTracked(Main.npc[i], "Shit!", ModContent.GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
-            return true;
-
-            player.statLifeMax = 500;
-            player.statManaMax = 200;
-
-            foreach (Codex.CodexEntry entry in player.GetModPlayer<Codex.CodexHandler>().Entries)
-                entry.Locked = false;
-
-            //Main.player[1].Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason("shit and cum and piss."), 999, 1);
-            StarlightWorld.spaceEventActive = !StarlightWorld.spaceEventActive;
-
-            /*int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Dart>(), 1, 1, player.whoAmI);
-            var mp = (Main.projectile[i].modProjectile as Dart);
-            mp.endPoint = Main.MouseWorld;
-            mp.midPoint = player.Center + new Vector2(200, -200);
-            mp.duration = 120;*/
-
-            int i2 = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<Spear>(), 1, 1, player.whoAmI);
-            var mp2 = (Main.projectile[i2].modProjectile as Spear);
-            mp2.endPoint = Main.MouseWorld;
-            mp2.timeToRise = 15;
-            mp2.timeToRetract = 30;
-            mp2.teleTime = 60;
-
-            return true;
-
-            Main.NewText(Lighting.GetColor((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16));
-            Lighting.Initialize(true);
-            Main.targetSet = false;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)
             {
