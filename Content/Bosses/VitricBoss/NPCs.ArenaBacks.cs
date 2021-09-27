@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
             if (State == 3 || State == 4) 
-                ScrollDraw(spriteBatch);
+                ScrollDraw();
             else  //animation for rising out of the sand
                 MainDraw(spriteBatch);
         }
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default, sb, Configs.LightImportance.Some);
         }
 
-        public virtual void ScrollDraw(SpriteBatch sb) //im lazy
+        public virtual void ScrollDraw() //im lazy
         {
             Texture2D tex = Main.npcTexture[npc.type];
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);

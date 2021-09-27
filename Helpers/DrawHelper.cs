@@ -7,13 +7,15 @@ namespace StarlightRiver.Helpers
 {
 	public static class DrawHelper
 	{
-        private static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice);
+        public static readonly BasicEffect basicEffect = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice);
 
         public static Vector2 PointAccur(this Vector2 input) => input.ToPoint().ToVector2();
 
-        public static float ConvertX(float input) => input / (Main.screenWidth / 2) - 1;
+        public static float ConvertX(float input) => input / (Main.screenWidth * 0.5f) - 1;
 
-        public static float ConvertY(float input) => -1 * (input / (Main.screenHeight / 2) - 1);
+        public static float ConvertY(float input) => -1 * (input / (Main.screenHeight * 0.5f) - 1);
+
+        public static Vector2 ConvertVec2(Vector2 input) => new Vector2(1, -1) * (input / (new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f) - Vector2.One);
 
         public static void DrawHitbox(this SpriteBatch spriteBatch, NPC npc, Color color) => spriteBatch.Draw(Main.blackTileTexture, npc.getRect().WorldToScreenCoords(), color);
         public static Rectangle WorldToScreenCoords(this Rectangle rect) => new Rectangle(rect.X - (int)Main.screenPosition.X, rect.Y - (int)Main.screenPosition.Y, rect.Width, rect.Height);
