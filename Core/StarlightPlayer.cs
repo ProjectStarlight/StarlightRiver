@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
@@ -16,7 +17,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightPlayer : ModPlayer
+    public partial class StarlightPlayer : ModPlayer
     {
         public int Timer { get; private set; }
 
@@ -151,21 +152,21 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    if (ScreenMovePan == Vector2.Zero) 
+                    if (ScreenMovePan == Vector2.Zero)
                         Main.screenPosition = ScreenMoveTarget + off; //stay on target
 
                     else if (ScreenMoveTimer <= ScreenMoveTime - 150)
                         Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
 
-                    else 
+                    else
                         Main.screenPosition = ScreenMovePan + off;
                 }
 
-                if (ScreenMoveTimer == ScreenMoveTime) 
-                { 
+                if (ScreenMoveTimer == ScreenMoveTime)
+                {
                     ScreenMoveTime = 0;
-                    ScreenMoveTimer = 0; 
-                    ScreenMoveTarget = Vector2.Zero; 
+                    ScreenMoveTimer = 0;
+                    ScreenMoveTarget = Vector2.Zero;
                     ScreenMovePan = Vector2.Zero;
                 }
 
@@ -232,12 +233,25 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-		public override void PlayerConnect(Player player)
-		{
+        public override void PlayerConnect(Player player)
+        {
             AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
             packet.Send();
-		}
+        }
 
-		public override float UseTimeMultiplier(Item item) => itemSpeed;
+        public override float UseTimeMultiplier(Item item) => itemSpeed;
+
+        public void DoubleTapEffects(int keyDir)
+        {
+            if (keyDir == (Main.ReversedUpDownArmorSetBonuses ? 1 : 0)) //double tap down
+            {
+                //Breacher drone
+                var spotter = Main.projectile.Where(n => n.owner == player.whoAmI && n.modProjectile is SpotterDrone drone2).OrderBy(n => Vector2.Distance(n.Center, player.Center)).FirstOrDefault();
+                if (spotter != default && spotter.modProjectile is SpotterDrone drone && drone.CanScan)
+                {
+                    drone.ScanTimer = 200;
+                }
+            }
+        }
     }
 }
