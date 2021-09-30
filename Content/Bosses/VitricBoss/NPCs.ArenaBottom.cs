@@ -61,6 +61,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 npc.ai[1] = 2;
                 npc.ai[0] = 0;
+                npc.ai[3]++;//the 4th ai slot is used here as a random seed
             }
 
             switch (npc.ai[1])
@@ -157,7 +158,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (npc.ai[1] == 2 && npc.ai[0] > 120) //in the second phase after the crystals have risen
             {
-                Random rand = new Random(18267312);
+                Random rand = new Random((int)npc.ai[3] + npc.whoAmI);//the seed changes each time this attack activates, whoAmI is added so the top/bottom are different
+
+                int eggIndex = rand.Next(50) == 0 ? rand.Next(0, npc.width / 18) * 18 : -1;// 1/50 chance
 
                 float off = Math.Min((npc.ai[0] - 120) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];
@@ -165,8 +168,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
                     Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
-                    spriteBatch.Draw(tex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
-                    spriteBatch.Draw(tex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    
+                    if (eggIndex == k)//ugly but I this way its only checked once
+                    {
+                        Texture2D eggTex = GetTexture(AssetDirectory.VitricBoss + "MagMegg");
+                        spriteBatch.Draw(eggTex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                        spriteBatch.Draw(eggTex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(tex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                        spriteBatch.Draw(tex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    }
                 }
             }
         }
