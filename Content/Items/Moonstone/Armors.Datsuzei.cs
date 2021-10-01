@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     var glowTex2 = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarGlow2");
                     var glowColor2 = new Color(200, (byte)(200 - 50 * (float)Math.Sin(Main.GameUpdateCount * 0.05f)), 255) * (Math.Min(1, (activationTimerNoCurve - 60) / 60f));
 
-                    Main.spriteBatch.Draw(glowTex2, target.Center.ToVector2() + Vector2.UnitY * -1, null, glowColor2, 0, glowTex2.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(glowTex2, target.Center.ToVector2() + Vector2.UnitY * -1, null, glowColor2 * 0.8f, 0, glowTex2.Size() / 2, 1, 0, 0);
                 }
 
                 sparkles.DrawParticles(Main.spriteBatch);
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 var effect1 = Terraria.Graphics.Effects.Filters.Scene["MagicalFlames"].GetShader().Shader;
                 effect1.Parameters["sampleTexture1"].SetValue(GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1"));
                 effect1.Parameters["sampleTexture2"].SetValue(GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2"));
-                effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+                effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
 
                 if (activationTimerNoCurve > 85)
                 {
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     Main.spriteBatch.Begin(default, default, default, default, default, effect1, Main.UIScaleMatrix);
 
                     var spearTex = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSprite");
-                    Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -50), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
                 }
                 
                 Main.spriteBatch.End();
@@ -130,12 +130,11 @@ namespace StarlightRiver.Content.Items.Moonstone
                         overlayAlpha = 1;
 
                     var spearShapeTex = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSpriteShape");
-                    Main.spriteBatch.Draw(spearShapeTex, target.Center() + new Vector2(0, -50), null, Color.White * (1 - overlayAlpha), 0, spearShapeTex.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(spearShapeTex, target.Center() + new Vector2(0, -40), null, Color.White * (1 - overlayAlpha), 0, spearShapeTex.Size() / 2, 1, 0, 0);
                 }
 
-
-                    //particles!
-                    if (activationTimer < 1)
+                //particles!
+                if (activationTimer < 1)
                 {
                     for (int k = 0; k < 3; k++)
                     {
@@ -154,7 +153,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
                 if (Main.rand.Next(4) == 0)
                 {
-                    sparkles.AddParticle(new Particle(new Vector2(91, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(1f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
+                    sparkles.AddParticle(new Particle(new Vector2(91, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
                 }
 			}
 		}

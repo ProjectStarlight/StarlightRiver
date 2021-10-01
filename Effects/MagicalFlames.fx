@@ -27,21 +27,26 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 
     float x = st.x + uTime * 0.6;
     float samplea = tex2D(samplerTex1, float2(x, st.y + sin(uTime + st.x * 10.0) * 0.05)).x;
+
+    color2.a *= sin(st.x * 3.14);
+    color3.a *= sin(st.x * 3.14);
+    samplea *= sin(st.x * 3.14);
+
     float finala = color.a;
 
     if (color2.a > 0.0 && color.a == 0.0)
     {
         color.b += 0.5 * color2.a;
         color.g += 0.2 * color2.a;
-        color.r += 0.2 * color2.a;
+        color.r += 0.25 * color2.a;
         finala = samplea;
     }
 
     if (color3.a > 0.0 && color.a == 0.0)
     {
-        color.g += 0.55 * color3.a;
-        color.b += 0.8 * color3.a;
-        color.r += 0.6 * color3.a;
+        color.g += 0.25 * color3.a;
+        color.b += 0.4 * color3.a;
+        color.r += 0.2 * color3.a;
         finala = samplea;
     }
 
