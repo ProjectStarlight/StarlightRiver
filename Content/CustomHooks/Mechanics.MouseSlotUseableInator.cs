@@ -26,7 +26,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawSpecial(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
 		{
-			//TODO: Rewrite this later to be less... noob looking.
+			if (inv[slot].modItem is InworldItem && !(inv[slot].modItem as InworldItem).VisibleInUI)
+				return;
+
 			if (inv[slot].modItem is InworldItem && context == 13)
 			{
 				Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/TempBack");

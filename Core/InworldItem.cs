@@ -6,8 +6,9 @@ namespace StarlightRiver.Core
 	public abstract class InworldItem : ModItem
 	{
 		public InworldItemNPC inWorldNPC;
-		public NPC npc => inWorldNPC.npc;
+		public NPC npc => inWorldNPC?.npc;
 
+		public virtual bool VisibleInUI => true;
 		public virtual int NPCType => 0;
 
 		public static NPC CreateItem<T>(Vector2 pos) where T : InworldItem
@@ -29,7 +30,7 @@ namespace StarlightRiver.Core
 				item.TurnToAir();
 
 			if (player.HeldItem.type != item.type)
-				inWorldNPC.Release(true);
+				inWorldNPC?.Release(true);
 		}	
 	}
 

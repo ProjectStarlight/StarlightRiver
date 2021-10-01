@@ -9,27 +9,40 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-    public class Datsuzei : ModItem
+    public class Datsuzei : InworldItem
     {
-        static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
+        public static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
+        public int comboState = 0;
 
         public static ParticleSystem sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
 
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
+        public override bool VisibleInUI => false;
+
 		public override bool Autoload(ref string name)
 		{
+            StarlightPlayer.PostUpdateEvent += PlayerFrame;
             On.Terraria.Main.DrawInterface_30_Hotbar += OverrideHotbar;
             return true;
 		}
 
-        private static void updateSparkles(Particle particle)
+		private void PlayerFrame(Player player)
+		{
+            var proj = Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
+
+            if(proj != null && proj.ai[0] == -1)
+                player.bodyFrame = new Rectangle(0, 56 * 1, 40, 56);
+		}
+
+		private static void updateSparkles(Particle particle)
         {
             particle.Timer--;
 
@@ -63,7 +76,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White * activationTimer);
 
                 var backTex = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbar");
-                var target = new Rectangle(91, 20, (int)(backTex.Width * activationTimer), backTex.Height);
+                var target = new Rectangle(111, 20, (int)(backTex.Width * activationTimer), backTex.Height);
                 var source = new Rectangle(0, 0, (int)(backTex.Width * activationTimer), backTex.Height);
 
                 Main.spriteBatch.Draw(backTex, target, source, Color.White);
@@ -140,7 +153,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     {
                         sparkles.AddParticle(
                             new Particle(
-                                new Vector2(91 + backTex.Width * activationTimer, 20 + Main.rand.Next(backTex.Height)),
+                                new Vector2(111 + backTex.Width * activationTimer, 20 + Main.rand.Next(backTex.Height)),
                                 new Vector2(Main.rand.NextFloat(-0.6f, -0.3f), Main.rand.NextFloat(3f)),
                                 Main.rand.NextFloat(6.28f),
                                 1,
@@ -153,7 +166,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
                 if (Main.rand.Next(4) == 0)
                 {
-                    sparkles.AddParticle(new Particle(new Vector2(91, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
+                    sparkles.AddParticle(new Particle(new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
                 }
 			}
 		}
@@ -166,33 +179,58 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
         {
+            item.melee = true;
             item.damage = 110;
             item.width = 16;
             item.height = 16;
             item.useStyle = ItemUseStyleID.Stabbing;
-            item.useTime = 12;
-            item.useAnimation = 12;
+            item.useTime = 20;
+            item.useAnimation = 20;
+            item.shoot = ProjectileType<DatsuzeiProjectile>();
+            item.shootSpeed = 20;
+            item.noMelee = true;
+            item.noUseGraphic = true;
             item.crit = 10;
         }
 
-		public override void HoldItem(Player player)
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            Helper.PlayPitched("Impacts/Clink", 1, comboState / 4f, player.Center);
+
+            switch (comboState)
+            {
+                case 0:
+                    int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 0, 40);
+                    Main.projectile[i].timeLeft = 40;
+                    break;
+
+                case 1:
+                    i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 1, 30);
+                    Main.projectile[i].timeLeft = 30;
+                    break;
+
+                case 2:
+                    i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 2, 30);
+                    Main.projectile[i].timeLeft = 30;
+                    break;
+
+                case 3:
+                    i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 3, 120);
+                    Main.projectile[i].timeLeft = 120;
+                    break;
+            }
+
+            comboState++;
+            if (comboState > 3)
+                comboState = 0;
+
+            return false;
+        }
+
+        public override void HoldItem(Player player)
 		{
             if (activationTimer < 120)
                 activationTimer++;
-		}
-
-		public override void UpdateInventory(Player player)
-		{
-            if (player.HeldItem != item)
-            {
-                if (activationTimer > 0)
-                    activationTimer -= 2;
-                else
-                {
-                    activationTimer = 0;
-                    sparkles.ClearParticles();
-                }
-            }
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -200,4 +238,247 @@ namespace StarlightRiver.Content.Items.Moonstone
             tooltips[0].overrideColor = new Color(100, 255, 255);
 		}
 	}
+
+	public class DatsuzeiProjectile : ModProjectile, IDrawPrimitive
+    {
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private float storedRotation;
+        private Vector2 storedPos;
+
+        public override string Texture => AssetDirectory.MoonstoneItem + Name;
+
+        public ref float ComboState => ref projectile.ai[0];
+        public ref float Maxtime => ref projectile.ai[1];
+        public float Timer => Maxtime - projectile.timeLeft;
+
+        public Player Owner => Main.player[projectile.owner];
+
+		public override void SetDefaults()
+		{
+            projectile.melee = true;
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.tileCollide = false;
+            projectile.friendly = true;
+            projectile.penetrate = -1;
+            projectile.extraUpdates = 1;
+		}
+
+		public override void AI()
+		{
+            Owner.heldProj = projectile.whoAmI;
+
+            if (ComboState != -1 && Timer % 2 == 0)
+            {
+                for (int k = 0; k < 3; k++)
+                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(150, 150, 255), 0.4f);
+
+                var d = Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 150, 255), 0.8f);
+                d.customData = Main.rand.NextFloat(0.6f, 0.8f);
+            }
+
+            switch (ComboState)
+			{
+                case -1: //spawning
+
+                    projectile.rotation = 1.57f;
+
+                    if(Timer == 1)
+					{
+                        Helper.PlayPitched("Impacts/Clink", 1, 0, projectile.Center);
+                        Helper.PlayPitched("Magic/MysticCast", 1, -0.2f, projectile.Center);
+
+                        for(int k = 0; k < 40; k++)
+						{
+                            float dustRot = Main.rand.NextFloat(6.28f);
+                            Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(dustRot) * 64, DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 255, 255), 0.5f);
+                        }
+					}
+
+                    if (Timer < 20)
+                        projectile.scale = Timer / 20f;
+
+                    if (Timer < 120)
+                        projectile.Center = Owner.Center + new Vector2(0, -240);
+                    else
+                    {
+                        projectile.Center = Owner.Center + Vector2.SmoothStep(new Vector2(0, -240), Vector2.Zero, (Timer - 120) / 40f);
+                        projectile.alpha = (int)((Timer - 120) / 40f * 255);
+                    }
+
+                    if (Timer == 159)
+                    {
+                        for (int k = 0; k < 40; k++)
+                        {
+                            float dustRot = Main.rand.NextFloat(6.28f);
+                            Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(dustRot) * 64, DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(2), 0, new Color(100, 255, 255), 0.5f);
+                        }
+                    }
+
+
+                    break;
+
+                case 0: //wide swing
+
+                    if (Timer == 1)
+                        storedRotation = projectile.velocity.ToRotation();
+
+                    float rot = storedRotation + (-1.5f + Helper.BezierEase(Timer / 40f) * 3f);
+                    projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 40f * 3.14f) * 100);
+                    projectile.rotation = rot;
+
+                    break;
+
+                case 1: //thin swing
+
+                    if (Timer == 1)
+                        storedRotation = projectile.velocity.ToRotation();
+
+                    rot = storedRotation + (1f - Helper.BezierEase(Timer / 30f) * 2f);
+                    projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (-30 + (float)Math.Sin(Timer / 30f * 3.14f) * 100);
+                    projectile.rotation = rot;
+
+                    break;
+
+                case 2: //stab
+
+                    if (Timer == 1)
+                        storedRotation = projectile.velocity.ToRotation();
+
+                    projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(storedRotation) * (-120 + (float)Math.Sin(Timer / 30f * 3.14f) * 240);
+                    projectile.rotation = storedRotation;
+
+                    break;
+
+                case 3: //spin
+
+                    projectile.rotation += projectile.velocity.Length() / 200f * 6.28f;
+                    projectile.velocity *= 0.97f;
+
+                    if (Timer == 60)
+                        storedPos = projectile.Center;
+
+                    if (Timer > 60)
+                        projectile.Center = Vector2.SmoothStep(storedPos, Owner.Center, (Timer - 60) / 60f);
+                    break;
+			}
+
+            if (Timer > 1)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center - Vector2.UnitX.RotatedBy(projectile.rotation) * 140, projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140);
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+            Helper.PlayPitched("Magic/Shadow2", 1, 0.5f, target.Center);
+
+            for (int k = 0; k < 40; k++)
+            {
+                float dustRot = Main.rand.NextFloat(6.28f);
+                Dust.NewDustPerfect(target.Center + Vector2.One.RotatedBy(dustRot) * 32, DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(2), 0, new Color(200, 200, 255), 0.3f);
+            }
+
+            for(int k = 0; k < 10; k++)
+			{
+                float dustRot = (target.Center - Owner.Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
+                Dust.NewDustPerfect(target.Center + Vector2.UnitX.RotatedBy(dustRot) * 128, DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(4), 0, new Color(200, 200, 255), 0.8f);
+                Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(200, 200, 255), 0.8f);
+            }
+
+            if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 50)
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+        }
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            if (ComboState == -1)
+            {
+                var tex = GetTexture(Texture);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * (1 - projectile.alpha / 255f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, 0, 0);
+
+                var texShape = GetTexture(Texture + "Shape");
+                float shapeOpacity = 0;
+
+                if (Timer < 5)
+                    shapeOpacity = Timer / 5f;
+                else if (Timer < 25)
+                    shapeOpacity = 1;
+                else if (Timer < 40)
+                    shapeOpacity = 1 - ((Timer - 25) / 15f);
+
+                spriteBatch.Draw(texShape, projectile.Center - Main.screenPosition, null, Color.White * shapeOpacity, projectile.rotation, new Vector2(texShape.Width / 2, texShape.Height / 2), projectile.scale, 0, 0);
+            }
+
+            else
+			{
+                var tex = GetTexture(Texture + "Long");
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * (1 - projectile.alpha / 255f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, 0, 0);
+            }
+
+
+            return false;
+        }
+
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+
+                for (int i = 0; i < 50; i++)
+                {
+                    cache.Add(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140);
+                }
+            }
+
+                cache.Add(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140);
+
+            while (cache.Count > 50)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => factor * 35, factor =>
+            {
+                if (factor.X >= 0.98f)
+                    return Color.White * 0;
+
+                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + projectile.velocity;
+        }
+
+        public void DrawPrimitives()
+        {
+            if (ComboState == -1)
+                return;
+
+            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+            effect.Parameters["repeats"].SetValue(8f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/ShadowTrail"));
+
+            trail?.Render(effect);
+        }
+    }
 }

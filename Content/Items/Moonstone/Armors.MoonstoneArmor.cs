@@ -19,16 +19,39 @@ namespace StarlightRiver.Content.Items.Moonstone
     [AutoloadEquip(EquipType.Head)]
     public class MoonstoneHead : ModItem
     {
+        public int moonCharge = 1200;
+        public bool spearOn = false;
+
         internal static Item dummySpear = new Item();
 
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override bool Autoload(ref string name)
 		{
+            On.Terraria.Player.KeyDoubleTap += ActivateSpear;
             On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
+            StarlightPlayer.PostDrawEvent += DrawMoonCharge;
+            StarlightNPC.ModifyHitByItemEvent += ChargeFromMelee;
+            StarlightNPC.ModifyHitByProjectileEvent += ChargeFromProjectile;
 
             return true;
 		}
+
+		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			if(Main.player[projectile.owner].armor[0].type == ItemType<MoonstoneHead>())
+			{
+                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += 200;
+			}
+		}
+
+		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+            if (player.armor[0].type == ItemType<MoonstoneHead>())
+            {
+                (player.armor[0].modItem as MoonstoneHead).moonCharge += 200;
+            }
+        }
 
 		public override void SetStaticDefaults()
         {
@@ -49,18 +72,76 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
             player.meleeCrit += 2;
             player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
-
-            dummySpear.SetDefaults(ItemType<Datsuzei>());
         }
 
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = ("Accumulate lunar energy by dealing melee damage\ndouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes lunar energy and dissapears at zero");
+
+            if (moonCharge > 1200)
+                moonCharge = 1200;
+
+            if (spearOn)
+            {
+                player.inventory[58] = dummySpear;
+                Main.mouseItem = dummySpear;
+                player.selectedItem = 58;
+
+                moonCharge--;
+
+                if (moonCharge <= 0)
+                {
+                    spearOn = false;
+                    dummySpear.TurnToAir();
+                }
+            }
+			else if (Main.mouseItem == dummySpear)
+			{
+                Main.mouseItem = new Item();
+            }
+
+            if (player.HeldItem != dummySpear)
+            {
+                if (Datsuzei.activationTimer > 0)
+                    Datsuzei.activationTimer -= 2;
+                else
+                {
+                    Datsuzei.activationTimer = 0;
+                    Datsuzei.sparkles.ClearParticles();
+                }
+            }
+        }
+
+        private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
+        {
+            if (keyDir == 0 && player.armor[0].type == ItemType<MoonstoneHead>())
+            {
+                var helm = player.armor[0].modItem as MoonstoneHead;
+
+                if (helm.spearOn)
+                {
+                    helm.spearOn = false;
+                    dummySpear.TurnToAir();
+                }
+                else if (helm.moonCharge > 180 && Datsuzei.activationTimer == 0 && !Main.projectile.Any(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI))
+                {
+                    dummySpear.SetDefaults(ItemType<Datsuzei>());                
+                    helm.spearOn = true;
+
+                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<DatsuzeiProjectile>(), 1, 0, player.whoAmI, -1, 160);
+                    Main.projectile[i].timeLeft = 160;
+                }
+            }
+
+            orig(player, keyDir);
         }
 
         private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
         {
             var player = Main.LocalPlayer;
+
+            if(dummySpear.IsAir)
+                dummySpear.SetDefaults(ItemType<Datsuzei>());
 
             if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player.armor[0], player.armor[1], player.armor[2]) && player.controlUp)
             {
@@ -76,7 +157,6 @@ namespace StarlightRiver.Content.Items.Moonstone
             return item.type == ItemType<MoonstoneHead>() ||
                 item.type == ItemType<MoonstoneChest>() ||
                 item.type == ItemType<MoonstoneLegs>();
-
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -100,7 +180,13 @@ namespace StarlightRiver.Content.Items.Moonstone
             }
 		}
 
-		public override void AddRecipes()
+        private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
+        {
+            if (player.armor[0].type == ItemType<MoonstoneHead>())
+                Utils.DrawBorderString(spriteBatch, "charge: " + (player.armor[0].modItem as MoonstoneHead).moonCharge, player.Center - Main.screenPosition + new Vector2(0, -100), Color.White);
+        }
+
+        public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemType<MoonstoneBar>(), 5);
