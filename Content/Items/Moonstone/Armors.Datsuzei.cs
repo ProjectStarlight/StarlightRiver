@@ -193,9 +193,14 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.crit = 10;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool CanUseItem(Player player)
+		{
+            return !Main.projectile.Any(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Helper.PlayPitched("Impacts/Clink", 1, comboState / 4f, player.Center);
+            Helper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
 
             switch (comboState)
             {
@@ -379,7 +384,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-            Helper.PlayPitched("Magic/Shadow2", 1, 0.5f, target.Center);
+            Helper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
 
             for (int k = 0; k < 40; k++)
             {
