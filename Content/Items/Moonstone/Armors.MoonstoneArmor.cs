@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -18,11 +19,18 @@ namespace StarlightRiver.Content.Items.Moonstone
     [AutoloadEquip(EquipType.Head)]
     public class MoonstoneHead : ModItem
     {
-        private static Item dummySpear = new Item();
+        internal static Item dummySpear = new Item();
 
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
-        public override void SetStaticDefaults()
+		public override bool Autoload(ref string name)
+		{
+            On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
+
+            return true;
+		}
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonstone Helmet");
             Tooltip.SetDefault("2% increased melee critical strike chance\n+20 barrier");
@@ -45,14 +53,35 @@ namespace StarlightRiver.Content.Items.Moonstone
             dummySpear.SetDefaults(ItemType<Datsuzei>());
         }
 
-		public override bool IsArmorSet(Item head, Item body, Item legs)
-        {
-            return body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
-        }
-
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = ("Accumulate lunar energy by dealing melee damage\ndouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes lunar energy and dissapears at zero");
+        }
+
+        private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
+        {
+            var player = Main.LocalPlayer;
+
+            if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player.armor[0], player.armor[1], player.armor[2]) && player.controlUp)
+            {
+                Main.HoverItem = dummySpear.Clone();
+                Main.hoverItemName = dummySpear.Name;
+            }
+
+            orig(self, rare, diff, X, Y);
+        }
+
+        public bool IsMoonstoneArmor(Item item)
+		{
+            return item.type == ItemType<MoonstoneHead>() ||
+                item.type == ItemType<MoonstoneChest>() ||
+                item.type == ItemType<MoonstoneLegs>();
+
+        }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return head.type == ItemType<MoonstoneHead>() && body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
         }
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -63,21 +92,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 if (!player.controlUp)
                 {
-                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold SHIFT for Datsuzei stats");
+                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
                     spearQuery.overrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
-                }
-
-				else
-				{
-                    TooltipLine spearName = new TooltipLine(mod, "StarlightRiver:ArmorSpearName", "\n Datsuzei");
-                    spearName.overrideColor = new Color(100, 255, 255);
-
-                    tooltips.Add(spearName);
-
-                    for (int k = 0; k < dummySpear.ToolTip.Lines; k++)
-                        tooltips.Add(new TooltipLine(mod, "StarlightRiver:SpearTooltips", " " + dummySpear.ToolTip.GetLine(k)));
                 }
             }
 		}
@@ -110,6 +128,27 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.value = 1;
             item.rare = ItemRarityID.Green;
             item.defense = 3;
+        }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return head.type == ItemType<MoonstoneHead>() && body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            var player = Main.LocalPlayer;
+
+            if (IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            {
+                if (!player.controlUp)
+                {
+                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
+                    spearQuery.overrideColor = new Color(200, 200, 200);
+
+                    tooltips.Add(spearQuery);
+                }
+            }
         }
 
         public override void UpdateEquip(Player player)
@@ -145,6 +184,27 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.value = 1;
             item.rare = ItemRarityID.Green;
             item.defense = 5;
+        }
+
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return head.type == ItemType<MoonstoneHead>() && body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            var player = Main.LocalPlayer;
+
+            if (IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            {
+                if (!player.controlUp)
+                {
+                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
+                    spearQuery.overrideColor = new Color(200, 200, 200);
+
+                    tooltips.Add(spearQuery);
+                }
+            }
         }
 
         public override void UpdateEquip(Player player)

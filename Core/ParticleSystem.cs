@@ -46,6 +46,11 @@ namespace StarlightRiver.Core
                 Particles.Add(particle);
         }
 
+        public void ClearParticles()
+		{
+            Particles.Clear();
+		}
+
         public void SetTexture(Texture2D texture)
 		{
             Texture = texture;
