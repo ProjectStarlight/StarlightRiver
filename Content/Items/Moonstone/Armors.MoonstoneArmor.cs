@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -19,7 +20,7 @@ namespace StarlightRiver.Content.Items.Moonstone
     [AutoloadEquip(EquipType.Head)]
     public class MoonstoneHead : ModItem
     {
-        public int moonCharge = 1200;
+        public int moonCharge = 0;
         public bool spearOn = false;
 
         internal static Item dummySpear = new Item();
@@ -39,17 +40,17 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if(Main.player[projectile.owner].armor[0].type == ItemType<MoonstoneHead>())
+			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && Main.player[projectile.owner].armor[0].type == ItemType<MoonstoneHead>())
 			{
-                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += 200;
+                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.35f);
 			}
 		}
 
 		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
-            if (player.armor[0].type == ItemType<MoonstoneHead>())
+            if (item.melee && player.armor[0].type == ItemType<MoonstoneHead>())
             {
-                (player.armor[0].modItem as MoonstoneHead).moonCharge += 200;
+                (player.armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.35f);
             }
         }
 
@@ -78,8 +79,8 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             player.setBonus = ("Accumulate lunar energy by dealing melee damage\ndouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes lunar energy and dissapears at zero");
 
-            if (moonCharge > 1200)
-                moonCharge = 1200;
+            if (moonCharge > 720)
+                moonCharge = 720;
 
             if (spearOn)
             {
@@ -183,7 +184,37 @@ namespace StarlightRiver.Content.Items.Moonstone
         private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
         {
             if (player.armor[0].type == ItemType<MoonstoneHead>())
-                Utils.DrawBorderString(spriteBatch, "charge: " + (player.armor[0].modItem as MoonstoneHead).moonCharge, player.Center - Main.screenPosition + new Vector2(0, -100), Color.White);
+            {
+                float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
+
+                Utils.DrawBorderString(spriteBatch, "charge: " + charge, player.Center - Main.screenPosition + new Vector2(-50, -200), Color.White);
+                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, 0), 2, 1, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, charge, Color.White * charge);
+            }
+        }
+
+        private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float facing, float prog, Color color)
+        {
+            var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+            var effect = Filters.Scene["BowRing"].GetShader().Shader;
+
+            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uColor"].SetValue(color.ToVector3());
+            effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            effect.Parameters["uOpacity"].SetValue(prog);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+            var target = toRect(pos, (int)(16 * (w + prog)), (int)(60 * (h + prog)));
+            sb.Draw(texRing, target, null, color * prog, facing, texRing.Size() / 2, 0, 0);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        private Rectangle toRect(Vector2 pos, int w, int h)
+        {
+            return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
         }
 
         public override void AddRecipes()
