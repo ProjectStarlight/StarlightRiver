@@ -59,7 +59,8 @@ namespace StarlightRiver.Content.Items.Misc
     {
         Vector2 savedPos = Vector2.Zero;
         int blacklistNPC = -1;
-        int VFXSeed = 0;
+
+        List<Vector2> nodes = new List<Vector2>();
 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -95,8 +96,22 @@ namespace StarlightRiver.Content.Items.Misc
                 Main.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
             }
 
-            if (Main.GameUpdateCount % 3 == 0)
-                VFXSeed = Main.rand.Next(int.MaxValue);
+            if (Main.GameUpdateCount % 3 == 0) //rebuild electricity nodes
+            {
+                nodes.Clear();
+
+                var point1 = savedPos;
+                var point2 = projectile.Center;
+                int nodeCount = (int)Vector2.Distance(point1, point2) / 30;
+
+                for (int k = 1; k < nodeCount; k++)
+                {
+                    nodes.Add (Vector2.Lerp(point1, point2, k / (float)nodeCount) +
+                        (k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * (Main.rand.NextFloat(2) - 1) * 30 / 3));
+                }
+
+                nodes.Add(point2);
+            }
 
             if (projectile.timeLeft == 1)
                 PreKill(projectile.timeLeft);
@@ -107,32 +122,29 @@ namespace StarlightRiver.Content.Items.Misc
             var point1 = savedPos;
             var point2 = projectile.Center;
             var armLength = 30;
-            var rand = new Random(VFXSeed);
 
             if (point1 == Vector2.Zero || point2 == Vector2.Zero)
                 return;
 
             var tex = GetTexture("StarlightRiver/Assets/GlowTrail");
 
-            int nodeCount = (int)Vector2.Distance(point1, point2) / armLength;
-            Vector2[] nodes = new Vector2[nodeCount + 1];
-
-            nodes[nodeCount] = point2; //adds the end as the last point
-
-            for (int k = 1; k < nodes.Length; k++)
+            for (int k = 1; k < nodes.Count; k++)
             {
-                nodes[k] = Vector2.Lerp(point1, point2, k / (float)nodeCount) +
-                    (k == nodes.Length - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * (float)(rand.NextDouble() * 2 - 1) * armLength / 3);
-
                 Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
 
-                var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos), 10);
+                var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, 10);
                 var origin = new Vector2(0, tex.Height / 2);
                 var rot = (nodes[k] - prevPos).ToRotation();
                 var color = new Color(200, 230, 255) * (projectile.extraUpdates == 0 ? projectile.timeLeft / 15f : 1);
 
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
+
+                if(Main.rand.Next(30) == 0)
+                    Dust.NewDustPerfect(prevPos + new Vector2(0, 32), DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200), 0.5f);
             }
+
+            var glowColor = new Color(100, 150, 200) * 0.45f * (projectile.extraUpdates == 0 ? projectile.timeLeft / 15f : 1);
+            sb.Draw(tex, new Rectangle((int)(point1.X - Main.screenPosition.X), (int)(point1.Y - Main.screenPosition.Y), (int)Vector2.Distance(point1, point2), 100), null, glowColor, (point2 - point1).ToRotation(), new Vector2(0, tex.Height / 2), 0, 0);
         }
 
         public override bool? CanHitNPC(NPC target) => target.whoAmI != blacklistNPC;

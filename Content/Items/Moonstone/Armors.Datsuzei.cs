@@ -379,7 +379,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center - Vector2.UnitX.RotatedBy(projectile.rotation) * 140, projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140);
+            return ComboState != -1 &&
+                Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center - Vector2.UnitX.RotatedBy(projectile.rotation) * 140, projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -399,7 +400,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(200, 200, 255), 0.8f);
             }
 
-            if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 50)
+            if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 10)
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
         }
 
