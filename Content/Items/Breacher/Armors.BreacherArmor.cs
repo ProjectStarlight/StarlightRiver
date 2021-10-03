@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(30 * player.rangedDamage), 1.5f, player.whoAmI);
             }
+            player.GetModPlayer<BreacherPlayer>().SetBonusActive = true;
         }
     }
 
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
     }
 
-    public class SpotterDrone : ModProjectile, IDrawPrimitive
+    public class SpotterDrone : ModProjectile
     {
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -102,6 +103,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
         private int attackDelay;
 
+        private List<float> rotations;
+        private List<float> rotations2;
+
+        private float CurrentRotation => (targetPos - projectile.Center).ToRotation();
+        private float CurrentRotation2 => (targetPos2 - projectile.Center).ToRotation();
+
         private int targetHeight
         {
             get
@@ -113,7 +120,8 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
-        private Vector2 targetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + ((float)Math.Cos((ScanTimer - 100) * 6.28f / (float)(ScanTime - 100)) / 2f));
+        private Vector2 targetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
+        private Vector2 targetPos2 => Vector2.Lerp(target.Top, target.Bottom, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Granitech Drone");
@@ -143,6 +151,8 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Player player = Main.player[projectile.owner];
             timer += 0.1f;
+            if (player.GetModPlayer<BreacherPlayer>().SetBonusActive)
+                projectile.timeLeft = 2;
             if (ScanTimer <= 0)
             {
                 IdleMovement(player);
@@ -173,6 +183,8 @@ namespace StarlightRiver.Content.Items.Breacher
                 {
                     target = testtarget;
                     ScanTimer--;
+                    rotations = new List<float>();
+                    rotations2 = new List<float>();
                 }
             }
             else 
@@ -184,6 +196,19 @@ namespace StarlightRiver.Content.Items.Breacher
                 }
                 if (ScanTimer > Charges)
                 {
+                    if (rotations == null)
+                    {
+                        rotations = new List<float>();
+                        rotations2 = new List<float>();
+                    }
+                    rotations.Add(CurrentRotation);
+                    while (rotations.Count > 8)
+                        rotations.RemoveAt(0);
+
+                    rotations2.Add(CurrentRotation2);
+                    while (rotations2.Count > 8)
+                        rotations2.RemoveAt(0);
+
                     if (ScanTimer < 150)
                         player.GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)ScanTimer / 150f));
                     if (ScanTimer == 125)
@@ -210,7 +235,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), projectile.damage, projectile.knockBack, projectile.owner);
             Charges--;
         }
-        public void DrawPrimitives()
+        /*public void DrawPrimitives()
         {
             if (ScanTimer == ScanTime || ScanTimer <= 100)
                 return;
@@ -243,6 +268,53 @@ namespace StarlightRiver.Content.Items.Breacher
             Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Breacher/BreacherLaserPixel");
 
             DrawHelper.DrawTriangle(tex, target, source);
+        }*/
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            if (ScanTimer == ScanTime || ScanTimer <= 100 || rotations == null || rotations.Count < 2 || rotations2.Count < 2)
+                return true;
+
+            float oldRot = rotations[0];
+            float currentRotation = rotations[Math.Max(rotations.Count - 1, 0)];
+            float rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+
+            if (rotDifference > 0)
+            {
+                for (float k = 0; k < rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference);
+            }
+            else
+            {
+                for (float k = 0; k > rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference);
+            }
+            //-----------------------------------------------------------------------//
+            oldRot = rotations2[0];
+            currentRotation = rotations2[Math.Max(rotations2.Count - 1, 0)];
+            rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+
+            if (rotDifference > 0)
+            {
+                for (float k = 0; k < rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference);
+            }
+            else
+            {
+                for (float k = 0; k > rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference);
+            }
+            return true;
+        }
+
+        private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float currentRotation, float rotDifference)
+        {
+            float rot = k + oldRot;
+            Color color = Color.Red;
+            color.A = 0;
+            float lerper = Math.Abs(k / rotDifference);
+            lerper *= lerper * lerper;
+            spriteBatch.Draw(Main.magicPixel, projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color* lerper, rot, Vector2.Zero, new Vector2((targetPos - projectile.Center).Length(), 2), SpriteEffects.None, 0);
         }
     }
     internal class OrbitalStrike : ModProjectile, IDrawPrimitive
@@ -474,6 +546,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public int ticks;
         public int Charges => ticks / CHARGETIME;
+
+        public bool SetBonusActive;
+
+        public override void ResetEffects()
+        {
+            SetBonusActive = false;
+        }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
