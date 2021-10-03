@@ -249,7 +249,13 @@ namespace StarlightRiver.Core
                 var spotter = Main.projectile.Where(n => n.owner == player.whoAmI && n.modProjectile is SpotterDrone drone2).OrderBy(n => Vector2.Distance(n.Center, player.Center)).FirstOrDefault();
                 if (spotter != default && spotter.modProjectile is SpotterDrone drone && drone.CanScan)
                 {
-                    drone.ScanTimer = 200;
+                    BreacherPlayer modPlayer = player.GetModPlayer<BreacherPlayer>();
+                    if (modPlayer.Charges >= 1)
+                    {
+                        drone.ScanTimer = SpotterDrone.ScanTime;
+                        drone.Charges = player.GetModPlayer<BreacherPlayer>().Charges;
+                        player.GetModPlayer<BreacherPlayer>().ticks = 0;
+                    }
                 }
             }
         }

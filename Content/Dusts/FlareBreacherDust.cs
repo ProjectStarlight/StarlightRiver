@@ -40,6 +40,14 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
+            Color gray = new Color(25, 25, 25);
+            Color purple = new Color(180, 50, 180);
+
+            if (dust.alpha < 60)
+                Lighting.AddLight(dust.position, Color.Lerp(new Color(255, 50, 180), purple, dust.alpha / 60f).ToVector3());
+            else if (dust.alpha < 120)
+                Lighting.AddLight(dust.position, Color.Lerp(purple, gray, (dust.alpha - 60) / 60f).ToVector3());
+
             if (dust.velocity.Length() > 3)
                 dust.velocity *= 0.85f;
             else
