@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (projectile.timeLeft == 60)
             {
-                Helpers.Helper.PlayPitched("Magic/LightningHit", 0.4f, 0.5f, projectile.Center);
+                Helpers.Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, 0.5f, projectile.Center);
 
                 savedPos = projectile.Center;
                 startPoint = projectile.Center;       
