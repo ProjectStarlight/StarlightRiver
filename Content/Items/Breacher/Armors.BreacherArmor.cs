@@ -184,7 +184,10 @@ namespace StarlightRiver.Content.Items.Breacher
             toEntity *= 15;
             projectile.velocity = Vector2.Lerp(projectile.velocity, toEntity, 0.06f);
             if (ScanTimer % 40 == 0)
-                enemyOffset = new Vector2(Main.rand.Next(-entity.width * 2, entity.width * 2), Main.rand.Next(-entity.height * 2, 0));
+            {
+                enemyOffset = new Vector2(Main.rand.Next(-entity.width * 2, entity.width * 2), Main.rand.Next(-entity.height, 0));
+                enemyOffset.X += Math.Sign(enemyOffset.X) * 50;
+            }
         }
 
         private void AttackBehavior(Player player)
@@ -202,7 +205,6 @@ namespace StarlightRiver.Content.Items.Breacher
                         ScanTimer--;
                         rotations = new List<float>();
                         rotations2 = new List<float>();
-                        target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
                     }
                     else
                     {
@@ -221,6 +223,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 }
                 if (ScanTimer > Charges)
                 {
+                    target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
                     if (rotations == null)
                     {
                         rotations = new List<float>();
@@ -242,6 +245,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 }
                 else
                 {
+                    target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
                     if (attackDelay == 0)
                         SummonStrike();
                     attackDelay--;
@@ -250,18 +254,19 @@ namespace StarlightRiver.Content.Items.Breacher
                     Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
                 if (ScanTimer > 100)
                 {
-                    target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
+                    target.GetGlobalNPC<BreacherGNPC>().Alpha = 1;
                     AttackMovement(target);
                     Vector2 direction = targetPos - projectile.Center;
                     projectile.rotation = direction.ToRotation() + 3.14f;
                 }
                 else
                 {
-                    target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
+                    target.GetGlobalNPC<BreacherGNPC>().Alpha = (float)ScanTimer / 100f;
                     IdleMovement(player);
                     Vector2 direction = player.Center - projectile.Center;
                     projectile.rotation = direction.ToRotation() + 3.14f;
                 }
+
             }
         }
 
@@ -623,6 +628,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override bool InstancePerEntity => true;
 
         public bool Targetted = false;
+        public float Alpha;
     }
     public class BreacherPlayer : ModPlayer
     {
@@ -657,6 +663,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public static bool antiRecursion = false;
         public float Priority { get => 1.1f; }
+
+        private static float alpha = 1f;
 
         public void Load()
         {
@@ -705,6 +713,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 NPC npc = Main.npc[i];
                 if (npc.active && npc.GetGlobalNPC<BreacherGNPC>().Targetted)
                 {
+                    alpha = npc.GetGlobalNPC<BreacherGNPC>().Alpha;
                     if (npc.modNPC != null)
                     {
                         if (npc.modNPC != null && npc.modNPC is ModNPC modNPC)
@@ -739,6 +748,18 @@ namespace StarlightRiver.Content.Items.Breacher
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
             Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
             effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            effect.Parameters["alpha"].SetValue(alpha);
+
+            float flickerTime = 100 - (alpha * 100);
+            if (flickerTime > 0 && flickerTime < 16)
+            {
+                float flickerTime2 = (float)(flickerTime / 20f);
+                float whiteness = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
+                effect.Parameters["whiteness"].SetValue(whiteness);
+            }
+            else
+                effect.Parameters["whiteness"].SetValue(0);
+
             effect.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(npcTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
