@@ -248,6 +248,10 @@ namespace StarlightRiver.Content.Items.Moonstone
     {
         private List<Vector2> cache;
         private Trail trail;
+        private Trail trail2;
+
+        private List<Vector2> cacheBack;
+        private Trail trailBack;
 
         private float storedRotation;
         private Vector2 storedPos;
@@ -278,10 +282,13 @@ namespace StarlightRiver.Content.Items.Moonstone
             if (ComboState != -1 && Timer % 2 == 0)
             {
                 for (int k = 0; k < 3; k++)
-                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(150, 150, 255), 0.4f);
+                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
 
-                var d = Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 150, 255), 0.8f);
-                d.customData = Main.rand.NextFloat(0.6f, 0.8f);
+                if (Main.rand.Next(2) == 0)
+                {
+                    var d = Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+                    d.customData = Main.rand.NextFloat(0.6f, 1.3f);
+                }
             }
 
             switch (ComboState)
@@ -427,7 +434,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             else
 			{
                 var tex = GetTexture(Texture + "Long");
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * (1 - projectile.alpha / 255f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 200, 255) * (1 - projectile.alpha / 255f), projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale, 0, 0);
             }
 
 
@@ -452,20 +459,59 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 cache.RemoveAt(0);
             }
+
+            if (cacheBack == null)
+            {
+                cacheBack = new List<Vector2>();
+
+                for (int i = 0; i < 50; i++)
+                {
+                    cacheBack.Add(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * -120);
+                }
+            }
+
+            cacheBack.Add(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * -120);
+
+            while (cacheBack.Count > 50)
+            {
+                cacheBack.RemoveAt(0);
+            }
         }
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => factor * 35, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 10 + factor * 25, factor =>
             {
-                if (factor.X >= 0.98f)
+                if (factor.X >= 0.96f)
                     return Color.White * 0;
 
-                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
+                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * (float)Math.Sin(projectile.timeLeft / Maxtime * 3.14f);
             });
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = projectile.Center + projectile.velocity;
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 80 + 0 + factor * 0, factor =>
+            {
+                if (factor.X >= 0.96f)
+                    return Color.White * 0;
+
+                return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * (float)Math.Sin(projectile.timeLeft / Maxtime * 3.14f);
+            });
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = projectile.Center + projectile.velocity;
+
+            trailBack = trailBack ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 20 + 0 + factor * 0, factor =>
+            {
+                if (factor.X >= 0.96f)
+                    return Color.White * 0;
+
+                return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * (float)Math.Sin(projectile.timeLeft / Maxtime * 3.14f);
+            });
+
+            trailBack.Positions = cacheBack.ToArray();
+            trailBack.NextPosition = projectile.Center + projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -473,18 +519,26 @@ namespace StarlightRiver.Content.Items.Moonstone
             if (ComboState == -1)
                 return;
 
-            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+            Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-            effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
             effect.Parameters["repeats"].SetValue(8f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/ShadowTrail"));
+            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
 
             trail?.Render(effect);
+
+            if(ComboState == 3)
+                trailBack?.Render(effect);
+
+            effect.Parameters["sampleTexture2"].SetValue(Main.magicPixel);
+
+            trail2?.Render(effect);
         }
     }
 }

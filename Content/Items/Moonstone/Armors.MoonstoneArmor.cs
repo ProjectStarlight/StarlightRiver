@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Main.mouseItem = dummySpear;
                 player.selectedItem = 58;
 
-                moonCharge--;
+                //moonCharge--;
 
                 if (moonCharge <= 0)
                 {
