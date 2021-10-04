@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
@@ -304,8 +305,13 @@ namespace StarlightRiver
         {
             if (!Main.dedServ)
             {
-                if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight) && TileDrawOverLoader.projTarget != null)
-                    TileDrawOverLoader.ResizeTarget();
+                if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
+                {
+                    if (TileDrawOverLoader.projTarget != null)
+                        TileDrawOverLoader.ResizeTarget();
+                    if (BreacherArmorHelper.npcTarget != null)
+                        BreacherArmorHelper.ResizeTarget();
+                }
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
                 _lastViewSize = Main.ViewSize;
                 _lastViewPort = Main.graphics.GraphicsDevice.Viewport;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Helpers;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
@@ -252,6 +253,7 @@ namespace StarlightRiver.Core
                     BreacherPlayer modPlayer = player.GetModPlayer<BreacherPlayer>();
                     if (modPlayer.Charges >= 1)
                     {
+                        Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
                         drone.ScanTimer = SpotterDrone.ScanTime;
                         drone.Charges = player.GetModPlayer<BreacherPlayer>().Charges;
                         player.GetModPlayer<BreacherPlayer>().ticks = 0;

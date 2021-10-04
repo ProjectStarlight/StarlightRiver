@@ -46,45 +46,15 @@ namespace StarlightRiver.Content.Items.Breacher
             item.shootSpeed = 17;
         }
 
-        public override void HoldItem(Player player)
-        {
-            if (Main.mouseRight)
-                return;
-            FlareBreacherPlayer modPlayer = player.GetModPlayer<FlareBreacherPlayer>();
-
-            if (modPlayer.ticks < FlareBreacherPlayer.CHARGETIME * 5)
-                modPlayer.ticks++;
-            else
-                modPlayer.ticks = FlareBreacherPlayer.CHARGETIME * 5;
-        }
-
         public override Vector2? HoldoutOffset()
         {
             return new Vector2(-10, 0);
-        }
-        public override bool AltFunctionUse(Player player) => true;
-
-        public override bool CanUseItem(Player player)
-        {
-            if (player.altFunctionUse == 2)
-            {
-                if (player.GetModPlayer<FlareBreacherPlayer>().Charges < 1)
-                    return false;
-            }
-            return true;
         }
 
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (player.altFunctionUse == 2)
-            {
-                type = ModContent.ProjectileType<OrbitalStrikeProj>();
-                speedX = speedY = 0;
-                return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
-            }
-            else
-                type = ModContent.ProjectileType<ExplosiveFlare>();
+            type = ModContent.ProjectileType<ExplosiveFlare>();
             position.Y -= 4;
             Vector2 direction = new Vector2(speedX, speedY);
 
@@ -104,6 +74,8 @@ namespace StarlightRiver.Content.Items.Breacher
         bool stuck = false;
         int explosionTimer = 100;
         Vector2 offset = Vector2.Zero;
+        bool red;
+        int blinkCounter = 0;
 
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -137,6 +109,23 @@ namespace StarlightRiver.Content.Items.Breacher
                 NPC target = Main.npc[enemyID];
                 projectile.position = target.position + offset;
                 explosionTimer--;
+
+                blinkCounter++;
+                int timerVal = 3 + (int)Math.Sqrt(explosionTimer);
+                if (blinkCounter > timerVal)
+                {
+                    if (!red)
+                    {
+                        red = true;
+                        Helper.PlayPitched("Effects/Bleep", 0.6f, 1 - (explosionTimer / 100f));
+                        blinkCounter = 0;
+                    }
+                    else
+                    {
+                        red = false;
+                        blinkCounter = 0;
+                    }
+                }
 
                 if (explosionTimer <= 0 || !target.active)
                     Explode(target);
@@ -205,8 +194,6 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             Player player = Main.player[projectile.owner];
-            if (target.life <= 0)
-                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
             if (!stuck && target.life > 0)
             {
                 stuck = true;
@@ -222,9 +209,8 @@ namespace StarlightRiver.Content.Items.Breacher
             var tex = Main.projectileTexture[projectile.type];
             var source = new Rectangle(0, 0, projectile.width, 16);
 
-            int timerVal = 10 + (2 * (int)Math.Sqrt(explosionTimer));
             if (stuck)
-                source.Y += 16 * (Main.GameUpdateCount % timerVal < timerVal / 2 ? 1 : 0);
+                source.Y += 16 * (red ? 1 : 0);
 
             Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, source, lightColor, projectile.rotation, (tex.Size() / 2) * new Vector2(1,0.5f), projectile.scale, 0, 0);
 
@@ -308,13 +294,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
             trail?.Render(effect);
         }
-
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-            Player player = Main.player[projectile.owner];
-            if (target.life <= 0)
-                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
-        }
         public override bool? CanHitNPC(NPC target)
         {
             if (target == source)
@@ -323,170 +302,4 @@ namespace StarlightRiver.Content.Items.Breacher
         }
     }
     #endregion
-
-    #region RMB projectiles
-    public class OrbitalStrikeProj : ModProjectile
-    {
-        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
-
-        private int charge = 0;
-
-        private bool charged = false;
-
-        private int Strikes => charge / 150;
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Orbital Strike");
-        }
-        public override void SetDefaults()
-        {
-            projectile.hostile = false;
-            projectile.ranged = true;
-            projectile.width = 2;
-            projectile.height = 2;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = 1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = 999999;
-            projectile.ignoreWater = true;
-            projectile.hide = true;
-        }
-
-        public override void AI()
-        {
-            Player player = Main.player[projectile.owner];
-            player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
-
-            player.itemTime = 25; 
-            player.itemAnimation = 25;
-            projectile.position = player.Center;
-
-            Vector2 direction = Main.MouseWorld - (player.Center - new Vector2(0, 4));
-            direction.Normalize();
-
-            if (Main.mouseRight)
-            {
-                if (charge < player.GetModPlayer<FlareBreacherPlayer>().ticks)
-                    charge+= 5;
-                else if (!charged)
-                {
-                    charged = true;
-                    //fully charged effects here
-                }
-                if (charge % 150 == 0 && !charged)
-                {
-                    //charge sound effect here
-                }
-                player.itemRotation = direction.ToRotation();
-                if (player.direction != 1)
-                {
-                    player.itemRotation -= 3.14f;
-                }
-            }
-            else
-            {
-                if (charge > 150)
-                {
-                    player.GetModPlayer<FlareBreacherPlayer>().ticks -= charge;
-                    Projectile proj = Projectile.NewProjectileDirect(projectile.Center - new Vector2(0, 4), direction * 15, ModContent.ProjectileType<OrbitalStrikePredictor>(), projectile.damage, projectile.knockBack, projectile.owner);
-                    if (proj.modProjectile is OrbitalStrikePredictor modProj)
-                        modProj.Strikes = Strikes;
-                }
-                projectile.active = false;
-            }
-        }
-    }
-
-    public class OrbitalStrikePredictor : ModProjectile
-    {
-        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
-
-        public int Strikes;
-
-        int enemyID;
-        bool stuck = false;
-        int strikeTimer = 150;
-        Vector2 offset = Vector2.Zero;
-        public override void SetDefaults()
-        {
-            projectile.width = 10;
-            projectile.height = 10;
-
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.aiStyle = 1;
-            aiType = 163;
-        }
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Flare");
-            Main.projFrames[projectile.type] = 2;
-        }
-        public override bool PreAI()
-        {
-            Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.25f);
-            if (stuck)
-            {
-                if (strikeTimer > -4)
-                    Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)strikeTimer / 150f));
-                NPC target = Main.npc[enemyID];
-                projectile.position = target.position + offset;
-                strikeTimer--;
-                if (strikeTimer == 125)
-                    Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
-                if (strikeTimer <= 0 && strikeTimer % 6 == 0)
-                    Strike(target);
-                return false;
-            }
-            else
-                projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
-
-            return base.PreAI();
-        }
-
-        private void Strike(NPC target)
-        {
-            Player player = Main.player[projectile.owner];
-
-            Vector2 direction = new Vector2(0, -1);
-            direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-            Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), projectile.damage, projectile.knockBack, projectile.owner);
-
-            Strikes--;
-            if (Strikes <= 0)
-                projectile.active = false;
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-            Player player = Main.player[projectile.owner];
-            if (target.life <= 0)
-                player.GetModPlayer<FlareBreacherPlayer>().ticks += FlareBreacherPlayer.CHARGETIME;
-            if (!stuck && target.life > 0)
-            {
-                stuck = true;
-                projectile.friendly = false;
-                projectile.tileCollide = false;
-                enemyID = target.whoAmI;
-                offset = projectile.position - target.position;
-                offset -= projectile.velocity;
-            }
-        }
-    }
-        #endregion
-    public class FlareBreacherPlayer : ModPlayer
-    {
-        public const int CHARGETIME = 150;
-
-        public int ticks;
-        public int Charges => ticks / CHARGETIME;
-
-        public override void ResetEffects()
-        {
-            //Main.NewText("Charge is " + ticks.ToString());
-        }
-    }
 }
