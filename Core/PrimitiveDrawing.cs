@@ -152,7 +152,7 @@ namespace StarlightRiver.Core
                 float width = trailWidthFunction?.Invoke(factorAlongTrail) ?? defaultWidth;
 
                 Vector2 current = Positions[k];
-                Vector2 next = k == Positions.Length - 1 ? NextPosition : Positions[k + 1];
+                Vector2 next = (k == Positions.Length - 1 ? Positions[Positions.Length - 1] + (Positions[Positions.Length - 1] - Positions[Positions.Length - 2]) : Positions[k + 1]);   
 
                 Vector2 normalToNext = (next - current).SafeNormalize(Vector2.Zero);
                 Vector2 normalPerp = normalToNext.RotatedBy(MathHelper.PiOver2);
