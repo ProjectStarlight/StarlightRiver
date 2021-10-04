@@ -522,7 +522,6 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             projectile.width = 80;
             projectile.height = 80;
-
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.tileCollide = false;
@@ -739,7 +738,7 @@ namespace StarlightRiver.Content.Items.Breacher
             spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
             Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-            effect.Parameters["uTime"].SetValue(1);
+            effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(npcTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
