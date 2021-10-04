@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		{
             List<NPC> targets = new List<NPC>();
 
-            foreach(NPC npc in Main.npc.Where(n => n.active && Helpers.Helper.CheckConicalCollision(player.Center, 500, (player.Center - Main.MouseWorld).ToRotation(), 1, n.Hitbox)))
+            foreach(NPC npc in Main.npc.Where(n => n.active && !n.immortal && !n.dontTakeDamage && Helpers.Helper.CheckConicalCollision(player.Center, 500, (player.Center - Main.MouseWorld).ToRotation(), 1, n.Hitbox)))
 			{
                 targets.Add(npc);
 			}
@@ -69,6 +69,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 {
                     if (k == 2) mp.offset += 50f;
                 }
+
+                mp.offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
 
                 mp.holdRot = (Main.MouseWorld - player.Center).ToRotation();
                 mp.target = targets[targetIndex];
@@ -212,7 +214,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
                 sb.Draw(tex, target2, null, color * 0.5f, rot, origin, 0, 0);
 
-                if (Main.rand.Next(30) == 0)
+                if (Main.rand.Next(20) == 0)
                     Dust.NewDustPerfect(prevPos + new Vector2(0, 50), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200), 0.8f);
             }
         }

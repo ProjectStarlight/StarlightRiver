@@ -188,13 +188,13 @@ namespace StarlightRiver.Content.Items.Moonstone
                 float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
 
                 Utils.DrawBorderString(spriteBatch, "charge: " + charge, player.Center - Main.screenPosition + new Vector2(-50, -200), Color.White);
-                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, 0), 2, 1, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, charge, Color.White * charge);
+                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, -10), 1, 0.5f, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, (0.5f + charge * 0.5f), Color.White * (0.5f + charge * 0.5f));
             }
         }
 
         private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float facing, float prog, Color color)
         {
-            var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+            var texRing = GetTexture(AssetDirectory.MoonstoneItem + "MoonSigilFront");
             var effect = Filters.Scene["BowRing"].GetShader().Shader;
 
             effect.Parameters["uProgress"].SetValue(rotation);
