@@ -397,14 +397,14 @@ namespace StarlightRiver.Content.Items.Moonstone
             for (int k = 0; k < 40; k++)
             {
                 float dustRot = Main.rand.NextFloat(6.28f);
-                Dust.NewDustPerfect(target.Center + Vector2.One.RotatedBy(dustRot) * 32, DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(2), 0, new Color(200, 200, 255), 0.3f);
+                Dust.NewDustPerfect(target.Center + Vector2.One.RotatedBy(dustRot) * 32, DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(2), 0, new Color(50, 50, 255), 0.3f);
             }
 
             for(int k = 0; k < 10; k++)
 			{
                 float dustRot = (target.Center - Owner.Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
-                Dust.NewDustPerfect(target.Center + Vector2.UnitX.RotatedBy(dustRot) * 128, DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(4), 0, new Color(200, 200, 255), 0.8f);
-                Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(200, 200, 255), 0.8f);
+                Dust.NewDustPerfect(target.Center + Vector2.UnitX.RotatedBy(dustRot) * 128, DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(4), 0, new Color(50, 50, 255), 0.8f);
+                Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(50, 50, 255), 0.8f);
             }
 
             if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 10)
