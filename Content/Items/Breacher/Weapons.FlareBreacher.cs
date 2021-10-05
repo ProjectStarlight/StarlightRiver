@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust dust = Dust.NewDustPerfect(position + (direction * 1.35f), 6, (direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f) * Main.rand.NextFloat());
                 dust.noGravity = true;
             }
+
             Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f,0.1f));
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
@@ -70,20 +71,24 @@ namespace StarlightRiver.Content.Items.Breacher
     #region LMB projectiles
     internal class ExplosiveFlare : ModProjectile
     {
-        int enemyID;
-        bool stuck = false;
-        int explosionTimer = 100;
-        Vector2 offset = Vector2.Zero;
-        bool red;
-        int blinkCounter = 0;
-
         public override string Texture => AssetDirectory.BreacherItem + Name;
+
+        int enemyID;
+
+        bool stuck = false;
+
+        int explosionTimer = 100;
+
+        Vector2 offset = Vector2.Zero;
+
+        bool red;
+
+        int blinkCounter = 0;
 
         public override void SetDefaults()
         {
             projectile.width = 10;
             projectile.height = 10;
-
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -101,6 +106,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Lighting.AddLight(projectile.Center, Color.Purple.ToVector3());
             Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
+
             if (stuck)
             {
                 Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3, 4));
@@ -112,6 +118,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                 blinkCounter++;
                 int timerVal = 3 + (int)Math.Sqrt(explosionTimer);
+
                 if (blinkCounter > timerVal)
                 {
                     if (!red)
@@ -129,6 +136,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                 if (explosionTimer <= 0 || !target.active)
                     Explode(target);
+
                 return false;
             }
             else
@@ -139,56 +147,17 @@ namespace StarlightRiver.Content.Items.Breacher
                     dust.scale = 0.85f;
                     dust.noGravity = true;
                 }
+
                 projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
             }
 
             return base.PreAI();
         }
+
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
             Dust.NewDustPerfect(projectile.Center + oldVelocity, ModContent.DustType<FlareBreacherDust>(), Vector2.Zero, 60, default, 0.7f).rotation = Main.rand.NextFloat(6.28f);
             return base.OnTileCollide(oldVelocity);
-        }
-        private void Explode(NPC target)
-        {
-            Helper.PlayPitched("Guns/FlareBoom", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
-            target.StrikeNPC(projectile.damage, 0f, 0);
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
-            int numberOfProjectiles = Main.rand.Next(5, 8);
-            for (int i = 0; i < numberOfProjectiles; i++)
-            {
-                float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
-                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
-            }
-
-            /*for (int i = 0; i < 3; i++)
-            {
-                Projectile.NewProjectileDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.7f, 0.7f) - 1.57f) * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, projectile.owner).scale = Main.rand.NextFloat(0.65f, 0.85f);
-            }*/
-            for (int i = 0; i < 4; i++)
-            {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
-                dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
-                dust.alpha = 40 + Main.rand.Next(40);
-                dust.rotation = Main.rand.NextFloat(6.28f);
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
-                dust.scale = Main.rand.NextFloat(0.75f, 1f);
-                dust.alpha = 40 + Main.rand.Next(40);
-                dust.rotation = Main.rand.NextFloat(6.28f);
-            }
-            for (int i = 0; i < 24; i++)
-            {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
-                dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
-            }
-            Gore.NewGore(projectile.position, Vector2.Zero, mod.GetGoreSlot("Assets/Items/Breacher/FlareGore"));
-            projectile.active = false;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -212,17 +181,59 @@ namespace StarlightRiver.Content.Items.Breacher
             if (stuck)
                 source.Y += 16 * (red ? 1 : 0);
 
-            Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, source, lightColor, projectile.rotation, (tex.Size() / 2) * new Vector2(1,0.5f), projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, source, lightColor, projectile.rotation, (tex.Size() / 2) * new Vector2(1, 0.5f), projectile.scale, 0, 0);
 
             return false;
+        }
+
+        private void Explode(NPC target)
+        {
+            Helper.PlayPitched("Guns/FlareBoom", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
+            target.StrikeNPC(projectile.damage, 0f, 0);
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
+            int numberOfProjectiles = Main.rand.Next(5, 8);
+
+            for (int i = 0; i < numberOfProjectiles; i++)
+            {
+                float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
+                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
+                dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
+                dust.alpha = 40 + Main.rand.Next(40);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
+                dust.scale = Main.rand.NextFloat(0.75f, 1f);
+                dust.alpha = 40 + Main.rand.Next(40);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+
+            for (int i = 0; i < 24; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
+                dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
+            }
+
+            projectile.active = false;
         }
     }
     internal class FlareShrapnel : ModProjectile, IDrawPrimitive
     {
+        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
+
         private List<Vector2> cache;
 
         private Trail trail;
-        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
         private NPC source => Main.npc[(int)projectile.ai[0]];
 
@@ -230,7 +241,6 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             projectile.width = 4;
             projectile.height = 4;
-
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = 1;
@@ -251,6 +261,13 @@ namespace StarlightRiver.Content.Items.Breacher
             ManageTrail();
         }
 
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (target == source)
+                return false;
+            return base.CanHitNPC(target);
+        }
+
         private void ManageCaches()
         {
             if (cache == null)
@@ -261,7 +278,8 @@ namespace StarlightRiver.Content.Items.Breacher
                     cache.Add(projectile.Center);
                 }
             }
-                cache.Add(projectile.Center);
+
+            cache.Add(projectile.Center);
 
             while (cache.Count > 20)
             {
@@ -280,6 +298,7 @@ namespace StarlightRiver.Content.Items.Breacher
             trail.Positions = cache.ToArray();
             trail.NextPosition = projectile.Center + projectile.velocity;
         }
+
         public void DrawPrimitives()
         {
             Effect effect = Filters.Scene["ShrapnelTrail"].GetShader().Shader;
@@ -293,12 +312,6 @@ namespace StarlightRiver.Content.Items.Breacher
             effect.Parameters["progress"].SetValue(MathHelper.Lerp(projectile.timeLeft / 60f, 0, 0.3f));
 
             trail?.Render(effect);
-        }
-        public override bool? CanHitNPC(NPC target)
-        {
-            if (target == source)
-                return false;
-            return base.CanHitNPC(target);
         }
     }
     #endregion
