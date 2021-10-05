@@ -165,6 +165,17 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
                 AttackBehavior(player);
+
+
+            if (MathHelper.WrapAngle(projectile.rotation) < -1.57f || MathHelper.WrapAngle(projectile.rotation) > 1.57f)
+            {
+                projectile.rotation -= 3.14f;
+                projectile.spriteDirection = -1;
+            }
+            else
+            {
+                projectile.spriteDirection = 1;
+            }
         }
 
         private void IdleMovement(Entity entity)
