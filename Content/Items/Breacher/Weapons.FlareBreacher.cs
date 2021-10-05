@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flare Breacher");
-            Tooltip.SetDefault("LMB to launch explosive flares\nRMB to launch a marker flare, calling down fury upon your enemies after a long chargeup");
+            Tooltip.SetDefault("Fires explosive flares that embed in enemies, blasting shrapnel through and behind them");
         }
 
         public override void SetDefaults()
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.UseSound = SoundID.Item11;
             item.width = 24;
             item.height = 28;
-            item.damage = 28;
+            item.damage = 30;
             item.rare = ItemRarityID.Orange;
             item.value = Item.sellPrice(0, 10, 0, 0);
             item.noMelee = true;

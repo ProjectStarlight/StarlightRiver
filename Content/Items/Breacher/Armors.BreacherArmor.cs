@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "A breacher drone follows you \nDouble tap down to call an airstrike on a nearby enemy";
+            player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
             if (player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1)
             {
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * player.rangedDamage), 1.5f, player.whoAmI);
