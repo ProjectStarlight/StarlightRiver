@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true;
 			item.knockBack = 1.5f;
-			item.value = Item.sellPrice(0, 10, 0, 0);
-			item.rare = ItemRarityID.Red;
+			item.value = Item.sellPrice(0, 1, 0, 0);
+			item.rare = 3;
 			item.autoReuse = false;
 			item.shoot = ModContent.ProjectileType<BuzzsawProj>();
 			item.shootSpeed = 20f;
@@ -58,6 +58,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private int counter;
 
 		private int charge;
+
+		private bool released = false;
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Buzzsaw");
 
 		public override void SetDefaults()
@@ -73,48 +75,58 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.timeLeft = 999999;
 			projectile.ignoreWater = true;
 			projectile.alpha = 255;
-			Main.projFrames[projectile.type] = 5;
+			Main.projFrames[projectile.type] = 6;
 		}
 
 		public override void AI()
 		{
 			Player player = Main.player[projectile.owner];
-			player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
 
+			projectile.timeLeft = 2;
 			player.itemTime = 5; // Set item time to 2 frames while we are used
 			player.itemAnimation = 5; // Set item animation time to 2 frames while we are used
-			direction = Main.MouseWorld - (player.Center);
-			direction.Normalize();
-			projectile.Center = player.Center + (direction * OFFSET);
-			projectile.velocity = Vector2.Zero;
-			player.itemRotation = direction.ToRotation();
-			player.heldProj = projectile.whoAmI;
 
 			if (player.direction != 1)
 				player.itemRotation -= 3.14f;
 
-			if (player.channel)
+			float shake = 0;
+
+			if (player.channel && !released)
 			{
-				projectile.timeLeft = 2;
+				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
+				shake = MathHelper.Lerp(0.04f, 0.15f, (float)charge / (float)MAXCHARGE);
+				direction = Main.MouseWorld - (player.Center);
+				direction.Normalize();
 				counter++;
 				projectile.frame = ((counter / 5) % 2) + 2;
 			}
 			else
-            {
-				LaunchSaw(player);
-				projectile.active = false;
-            }
+			{
+				projectile.friendly = false;
+				projectile.frame = 5;
+
+				if (!released)
+					LaunchSaw(player);
+				else if (player.ownedProjectileCounts[ModContent.ProjectileType<BuzzsawProj2>()] == 0)
+					projectile.active = false;
+			}
+
+			projectile.Center = player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
+			projectile.velocity = Vector2.Zero;
+			player.itemRotation = direction.ToRotation();
+			player.heldProj = projectile.whoAmI;
 		}
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
 			if (charge < MAXCHARGE)
 				charge++;
-			hitDirection = Math.Sign(direction.X);
-            base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
-        }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
+			hitDirection = Math.Sign(direction.X);
+			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
 		{
 			Player player = Main.player[projectile.owner];
 			Texture2D texture = Main.projectileTexture[projectile.type];
@@ -137,8 +149,115 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		}
 
 		private void LaunchSaw(Player player)
-        {
-
-        }
+		{
+			released = true;
+			float speed = MathHelper.Lerp(5f, 10f, (float)charge / (float)MAXCHARGE);
+			float damageMult = MathHelper.Lerp(0.75f, 2f, (float)charge / (float)MAXCHARGE);
+			Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
+		}
 	}
+	public class BuzzsawProj2 : ModProjectile
+	{
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+		private float rotationCounter;
+
+		private int counter;
+
+		private Vector2 oldVel;
+
+		public int pauseTimer = -1;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Buzzsaw");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 30;
+			projectile.height = 30;
+			projectile.aiStyle = 3;
+			projectile.friendly = false;
+			projectile.melee = true;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 700;
+			Main.projFrames[projectile.type] = 2;
+			projectile.extraUpdates = 1;
+		}
+		public override bool PreAI()
+		{
+			if (--pauseTimer > 0)
+			{
+				if (projectile.velocity != Vector2.Zero)
+					oldVel = projectile.velocity;
+
+				projectile.velocity = Vector2.Zero;
+				return false;
+			}
+
+			if (pauseTimer == 0)
+				projectile.velocity = oldVel;
+
+			return true;
+		}
+		public override void AI()
+		{
+			if (counter == 0)
+				Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.whoAmI);
+
+			counter++;
+			projectile.frameCounter += 1;
+			projectile.frame = (projectile.frameCounter / 5) % 2;
+			rotationCounter += 0.6f;
+			projectile.rotation = rotationCounter;
+		}
+	}
+	public class PhantomBuzzsaw : ModProjectile
+	{
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+		private Projectile parent => Main.projectile[(int)projectile.ai[0]];
+
+		private Player player => Main.player[projectile.owner];
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Buzzsaw");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 30;
+			projectile.height = 30;
+			projectile.friendly = true;
+			projectile.melee = true;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 700;
+			Main.projFrames[projectile.type] = 2;
+			projectile.extraUpdates = 1;
+			projectile.hide = true;
+		}
+        public override void AI()
+        {
+			projectile.Center = parent.Center;
+			projectile.velocity = parent.velocity;
+
+			if (!parent.active)
+				projectile.active = false;
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+			player.GetModPlayer<StarlightPlayer>().Shake += 6;
+			target.immune[projectile.owner] = 20;
+
+			if (parent.modProjectile is BuzzsawProj2 modProj)
+				modProj.pauseTimer = 16;
+		}
+    }
 }
