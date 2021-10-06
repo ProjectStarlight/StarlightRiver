@@ -347,7 +347,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					npc.lifeRegen = 0;
 				}
 
-				npc.lifeRegen -= GluttonyHandle.DPS;
+				npc.lifeRegen -= GluttonyHandle.DPS * 10;
 			}
 		}
 	}
