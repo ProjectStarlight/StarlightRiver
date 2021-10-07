@@ -28,10 +28,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Welcome to our demo blah blah blah this is filler test blah blah filler text this is to make sure whatever egshels writes will fit blah blah blah blah blah blah", 250, Main.fontItemStack, 0.8f), pos, Color.White, 0.8f);
 
-            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Melee", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-650, 100), Color.White, 0.8f);
-            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Ranged", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-500, 100), Color.White, 0.8f);
-            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Magic", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-350, 100), Color.White, 0.8f);
-            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Summoner", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-200, 100), Color.White, 0.8f);
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Melee", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-650, 150), Color.White, 1f);
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Ranged", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-500, 150), Color.White, 1f);
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Magic", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-350, 150), Color.White, 1f);
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Consumables", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-210, 150), Color.White, 1f);
 
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("The forbidden winds ability shall make you cum big globs of the goopy white stuff haha filler text filler text filler text filler text filler text filler text", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-550, -360), Color.White, 0.8f);
         }
