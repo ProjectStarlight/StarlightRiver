@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void SetDefaults()
         {
-            minPick = int.MaxValue;
+            //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(1, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -42,7 +42,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Player player = Main.LocalPlayer;
-            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
+            if (!player.GetModPlayer<StarlightPlayer>().inTutorial && player.GetHandler().Unlocked<Abilities.ForbiddenWinds.Dash>()) 
+                return;
+
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
         }
     }
@@ -66,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void SetDefaults()
         {
-            minPick = int.MaxValue;
+            //minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -78,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void Collision(Player player)
         {
-            if (player.GetModPlayer<StarlightPlayer>().inTutorial && player.Hitbox.Intersects(projectile.Hitbox))
+            if ((player.GetModPlayer<StarlightPlayer>().inTutorial || !player.GetHandler().Unlocked<Abilities.ForbiddenWinds.Dash>()) && player.Hitbox.Intersects(projectile.Hitbox))
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     player.GetModPlayer<StarlightPlayer>().inTutorial = false;
@@ -93,8 +95,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Player player = Main.LocalPlayer;
-            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) 
+
+            if (!player.GetModPlayer<StarlightPlayer>().inTutorial && player.GetHandler().Unlocked<Abilities.ForbiddenWinds.Dash>())
                 return;
+
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Helper.IndicatorColor);
         }
