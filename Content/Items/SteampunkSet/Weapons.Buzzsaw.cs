@@ -57,6 +57,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private int counter;
 
+		private float bladeRotation;
+
 		private int charge;
 
 		private bool released = false;
@@ -75,13 +77,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.timeLeft = 999999;
 			projectile.ignoreWater = true;
 			projectile.alpha = 255;
-			Main.projFrames[projectile.type] = 6;
+			Main.projFrames[projectile.type] = 5;
 		}
 
 		public override void AI()
 		{
 			Player player = Main.player[projectile.owner];
 
+			projectile.velocity = Vector2.Zero;
 			projectile.timeLeft = 2;
 			player.itemTime = 5; // Set item time to 2 frames while we are used
 			player.itemAnimation = 5; // Set item animation time to 2 frames while we are used
@@ -93,6 +96,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (player.channel && !released)
 			{
+				bladeRotation += 1.2f;
 				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
 				shake = MathHelper.Lerp(0.04f, 0.15f, (float)charge / (float)MAXCHARGE);
 				direction = Main.MouseWorld - (player.Center);
@@ -122,6 +126,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (charge < MAXCHARGE)
 				charge++;
 
+
 			hitDirection = Math.Sign(direction.X);
 			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
 		}
@@ -130,19 +135,26 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Player player = Main.player[projectile.owner];
 			Texture2D texture = Main.projectileTexture[projectile.type];
-			int height = Main.projectileTexture[projectile.type].Height / Main.projFrames[projectile.type];
-			int y2 = height * projectile.frame;
+			Texture2D texture2 = ModContent.GetTexture(Texture + "_Blade");
+			int height1 = texture.Height;
+			int height2 = texture2.Height / Main.projFrames[projectile.type];
+			int y2 = height2 * projectile.frame;
+			Vector2 origin = new Vector2((float)texture.Width / 2f, (float)height1 / 2f);
 			Vector2 position = (projectile.position - (0.5f * (direction * OFFSET)) + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition).Floor();
+
+			if (!released)
+				spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), lightColor, bladeRotation, new Vector2(15, 15), projectile.scale, SpriteEffects.None, 0.0f);
 
 			if (player.direction == 1)
 			{
 				SpriteEffects effects1 = SpriteEffects.None;
-				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation(), new Vector2((float)texture.Width / 2f, (float)height / 2f), projectile.scale, effects1, 0.0f);
+				spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation(), origin, projectile.scale, effects1, 0.0f);
+
 			}
 			else
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation() - 3.14f, new Vector2((float)texture.Width / 2f, (float)height / 2f), projectile.scale, effects1, 0.0f);
+				spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
 			}
 
 			return false;
