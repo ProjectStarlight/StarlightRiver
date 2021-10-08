@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < cutaways.Count; k++)
 				cutaways[k].Draw();
 
-			DrawCutawayTarget();
-
 			orig(self);
+
+			DrawCutawayTarget();
 		}
 
 		private void DrawNegative(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
