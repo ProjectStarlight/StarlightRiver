@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
             if (!Main.gameMenu && EffectTimer < 44 && EffectTimer > 0)
             {
-                DrawPrimitives();              
+				DrawPrimitives();
             }
 		}
 
