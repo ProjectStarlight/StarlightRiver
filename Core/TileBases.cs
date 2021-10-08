@@ -208,7 +208,7 @@ namespace StarlightRiver.Core
             if (style < VariantCount)
             {
                 Point16 offset = new Point16((MaxWidth / 2) - 1, MaxHeight - 1);
-                if (VariantCount > 1)//if statement because the teniary was acting weird
+                if (VariantCount > 1)//if statement because the ternary was acting weird
                     StructureHelper.Generator.GenerateStructure(FullStructPath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
                 else
                     StructureHelper.Generator.GenerateStructure(FullStructPath, new Point16(x, y) - offset, StarlightRiver.Instance);

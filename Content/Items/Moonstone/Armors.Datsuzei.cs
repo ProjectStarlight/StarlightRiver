@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetDefaults()
         {
             item.melee = true;
-            item.damage = 110;
+            item.damage = 75;
             item.width = 16;
             item.height = 16;
             item.useStyle = ItemUseStyleID.Stabbing;
