@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				charge++;
 
 			for (int i = 0; i < 2; i++)
-				Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f,0.6f) + 1.57f) * Main.rand.Next(15,20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+				Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f,0.3f) + 1.57f) * Main.rand.Next(15,20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
 
 			for (int i = 0; i < 2; i++)
 				Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));

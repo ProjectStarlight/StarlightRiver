@@ -36,7 +36,10 @@ namespace StarlightRiver.Content.Dusts
             dust.rotation = dust.velocity.ToRotation() + 1.57f;
             dust.position += dust.velocity;
 
-            dust.velocity *= 0.8f;
+            dust.velocity.X *= 0.94f;
+            dust.velocity.Y *= 0.8f;
+
+            dust.velocity.Y += 0.35f;
 
             dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - (dust.fadeIn / 20f))), 0,0));
             dust.shader.UseColor(dust.color);
