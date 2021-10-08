@@ -50,7 +50,6 @@ namespace StarlightRiver.Content.Items.Breacher
             item.value = 6000;
         }
 
-
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<BreacherHead>() && legs.type == ModContent.ItemType<BreacherLegs>();
 
         public override void UpdateArmorSet(Player player)
@@ -150,6 +149,7 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
         }
+
         public override void AI()
         {
             Player player = Main.player[projectile.owner];
@@ -167,7 +167,6 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
                 AttackBehavior(player);
-
 
             if (MathHelper.WrapAngle(projectile.rotation) < -1.57f || MathHelper.WrapAngle(projectile.rotation) > 1.57f)
             {
@@ -296,6 +295,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     ScanTimer = ScanTime;
                     return;
                 }
+
                 if (ScanTimer > Charges)
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
@@ -325,8 +325,10 @@ namespace StarlightRiver.Content.Items.Breacher
                         SummonStrike();
                     attackDelay--;
                 }
+
                 if (ScanTimer == 100)
                     Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
+
                 if (ScanTimer > 100)
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Alpha = 1;
@@ -469,6 +471,7 @@ namespace StarlightRiver.Content.Items.Breacher
             trail2.Positions = cache.ToArray();
             trail2.NextPosition = projectile.Center;
         }
+
         public void DrawPrimitives()
         {
             Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
@@ -497,6 +500,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
         }
     }
+
     internal class OrbitalStrikeRing : ModProjectile, IDrawPrimitive
     {
         public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
@@ -593,6 +597,7 @@ namespace StarlightRiver.Content.Items.Breacher
             trail2.Positions = cache.ToArray();
             trail2.NextPosition = projectile.Center + offset;
         }
+
         public void DrawPrimitives()
         {
             Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
@@ -618,6 +623,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public float Alpha;
     }
+
     public class BreacherPlayer : ModPlayer
     {
         public const int CHARGETIME = 150;
@@ -638,6 +644,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 ticks += CHARGETIME / 3;
             base.OnHitNPCWithProj(proj, target, damage, knockback, crit);
         }
+
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             if (target.life <= 0 && ticks < CHARGETIME * 5)
@@ -645,6 +652,7 @@ namespace StarlightRiver.Content.Items.Breacher
             base.OnHitNPC(item, target, damage, knockback, crit);
         }
     }
+
     public class BreacherArmorHelper : ILoadable
     {
         public static RenderTarget2D npcTarget;
@@ -675,6 +683,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Main.OnPreDraw -= Main_OnPreDraw;
             On.Terraria.Main.DrawNPC -= Main_DrawNPC;
         }
+
         private static void Main_DrawNPC(On.Terraria.Main.orig_DrawNPC orig, Main self, int i, bool behindTiles)
         {
             if (!Main.npc[i].GetGlobalNPC<BreacherGNPC>().Targetted || !antiRecursion)
@@ -683,6 +692,7 @@ namespace StarlightRiver.Content.Items.Breacher
             if (antiRecursion)
                 DrawNPCTarget(i);
         }
+
         private void Main_OnPreDraw(GameTime obj)
         {
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
@@ -725,6 +735,7 @@ namespace StarlightRiver.Content.Items.Breacher
             antiRecursion = true;
             gD.SetRenderTargets(bindings);
         }
+
         private static void DrawNPCTarget(int i)
         {
             NPC npc = Main.npc[i];
@@ -735,7 +746,8 @@ namespace StarlightRiver.Content.Items.Breacher
                 return;
 
             spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+
             Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
             effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.Parameters["alpha"].SetValue(alpha);
@@ -755,8 +767,7 @@ namespace StarlightRiver.Content.Items.Breacher
             spriteBatch.Draw(npcTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);
-
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }
