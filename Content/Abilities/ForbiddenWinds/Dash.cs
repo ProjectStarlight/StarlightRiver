@@ -223,6 +223,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public void DrawPrimitives()
         {
+            Main.spriteBatch.End();
+
             Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
@@ -235,6 +237,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
 
             trail?.Render(effect);
+
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }

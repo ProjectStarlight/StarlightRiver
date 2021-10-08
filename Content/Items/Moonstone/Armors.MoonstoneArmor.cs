@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
 
                 //Utils.DrawBorderString(spriteBatch, "charge: " + charge, player.Center - Main.screenPosition + new Vector2(-50, -200), Color.White);
-                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, -10), 1, 0.5f, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, (0.5f + charge * 0.5f), Color.White * (0.5f + charge * 0.5f));
+                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, -20), 0.2f, 0.1f, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, (0.5f + charge * 0.5f), Color.White * (0.5f + charge * 0.5f));
             }
         }
 
@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             sb.Draw(texRing, target, null, color * prog, facing, texRing.Size() / 2, 0, 0);
 
             sb.End();
-            sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
         }
 
         private Rectangle toRect(Vector2 pos, int w, int h)
