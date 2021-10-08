@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Magic", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-350, 150), Color.White, 1f);
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Consumables", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-210, 150), Color.White, 1f);
 
-            Utils.DrawBorderString(spriteBatch, Helper.WrapString("The forbidden winds ability shall make you cum big globs of the goopy white stuff haha filler text filler text filler text filler text filler text filler text", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-550, -360), Color.White, 0.8f);
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("The forbidden winds ability shall make you cum big globs of the goopy white stuff haha filler text filler text filler text filler text filler text filler text", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-570, -370), Color.White, 0.8f);
         }
     }
 
