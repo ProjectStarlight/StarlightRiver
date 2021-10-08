@@ -157,8 +157,8 @@ namespace StarlightRiver.Core
                 }
             }
 
-            if (ZoneGlassTemple)
-                ZoomHandler.AddFlatZoom(0.5f);
+            //if (ZoneGlassTemple)
+                //ZoomHandler.AddFlatZoom(0.0f);
 
             //Codex Unlocks
             if (ZoneGlass && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))

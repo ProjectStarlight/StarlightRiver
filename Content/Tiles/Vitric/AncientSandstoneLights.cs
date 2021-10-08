@@ -38,15 +38,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+            if (!Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
                 return;
-            Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(125, 162, 158) * 0.003f);
+            Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(125, 162, 158) * 0.005f * (1 - StarlightWorld.templeCutaway.fadeTime));
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+            if (!Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
                 return;
+
             Texture2D tex = GetTexture(AssetDirectory.RiftCrafting + "Glow0");
             Texture2D tex2 = GetTexture(AssetDirectory.RiftCrafting + "Glow1");
 
@@ -55,9 +56,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 8 - Main.screenPosition;
             for (int k = 0; k < 3; k++)
-                spriteBatch.Draw(tex, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.05f), 0, tex.Size() / 2, k * 0.3f, 0, 0);
-            spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.10f), (float)Math.Sin(StarlightWorld.rottime) * 0.1f, tex.Size() / 2, 0.6f, 0, 0);
-            spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.rottime) * 0.10f), 2 + -(float)Math.Sin(StarlightWorld.rottime + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.05f) * (1 - StarlightWorld.templeCutaway.fadeTime), 0, tex.Size() / 2, k * 0.3f, 0, 0);
+            spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.10f) * (1 - StarlightWorld.templeCutaway.fadeTime), (float)Math.Sin(StarlightWorld.rottime) * 0.1f, tex.Size() / 2, 0.6f, 0, 0);
+            spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.rottime) * 0.10f) * (1 - StarlightWorld.templeCutaway.fadeTime), 2 + -(float)Math.Sin(StarlightWorld.rottime + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);

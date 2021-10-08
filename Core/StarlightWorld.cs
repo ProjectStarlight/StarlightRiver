@@ -32,6 +32,7 @@ namespace StarlightRiver.Core
         public static float Chungus;
 
         public static Cutaway cathedralOverlay;
+        public static Cutaway templeCutaway;
 
         //Recipe """database""" TODO: More robust system for this? do we really need one?
         public static List<string> knownRecipies = new List<string>();
@@ -239,7 +240,7 @@ namespace StarlightRiver.Core
 
         public static void CreateCutaways()
 		{
-            var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
+            templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
             templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
             CutawayHandler.NewCutaway(templeCutaway);
 
