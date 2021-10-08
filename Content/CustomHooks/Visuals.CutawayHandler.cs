@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			orig(self);
 
-			//DrawCutawayTarget(null);		
+			DrawCutawayTarget();
 		}
 
 		private void DrawNegative(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
