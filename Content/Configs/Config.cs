@@ -29,9 +29,12 @@ namespace StarlightRiver.Configs
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
-        [Label("Menu Theme")]
-        [Tooltip("Changes or disables the menu theme")]
-        public TitleScreenStyle Style;
+        [Label("Screenshake")]
+        [Tooltip("Modifies the intensity of screen shake effects")]
+        [Range(0, 1)]
+        [Slider]
+        [DefaultValue(1f)]
+        public float ScreenshakeMult = 1;
 
         [Label("Lighting Buffer Poll Rate")]
         [Tooltip("Changes how often the lighting buffer polls for data. \nHigher values increase performance but make lighting update slower on some objects. \nLower values result in smoother moving light but may hurt performance.")]

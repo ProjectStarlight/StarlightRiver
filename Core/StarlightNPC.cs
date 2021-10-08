@@ -18,7 +18,7 @@ namespace StarlightRiver.Core
 
         public override bool CloneNewInstances => true;
 
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
+		public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
             npc.lifeRegen -= DoT * 2;
             DoT = 0;

@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (shouldBeTwistFrame)
                 source.X += 114;
 
-            if (index == 0) //change this so the head is drawn from here later maybe? and move all visuals into this class?
+            if (index == 0 && parent.Phase != (int)VitricBoss.AIStates.Dying) //change this so the head is drawn from here later maybe? and move all visuals into this class?
             {
                 parent.npc.spriteDirection = (int)flip;
 

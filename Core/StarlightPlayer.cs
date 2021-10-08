@@ -182,8 +182,9 @@ namespace StarlightRiver.Core
             }
             else if (panDown > 0) panDown--;
 
-            Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) + panDown;
-            Main.screenPosition.X += Main.rand.Next(-Shake, Shake);
+            float mult = ModContent.GetInstance<Configs.Config>().ScreenshakeMult;
+            Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
+            Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
             if (Shake > 0) { Shake--; }
         }
 

@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 var effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
                 effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap"));
                 effect.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap"));
-                effect.Parameters["uTime"].SetValue((GlobalTimer - 120) / 600f * 2);
+                effect.Parameters["uTime"].SetValue((GlobalTimer - 120) / 600f);
 
                 effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
                 effect.Parameters["texSize"].SetValue(GetTexture(Texture).Size());
@@ -187,6 +187,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + PainOffset, npc.frame, new Color(Lighting.GetSubLight(npc.Center)), npc.rotation, npc.frame.Size() / 2, npc.scale, effects, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(-10, -10), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -367,6 +372,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostAI()
         {
+            npc.life = 1;
+
+            if (Phase > (int)AIStates.SpawnAnimation && Phase < (int)AIStates.SecondPhase)
+                Phase = (int)AIStates.SecondPhase;
+
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
