@@ -25,7 +25,6 @@ namespace StarlightRiver.Content.CustomHooks
 			On.Terraria.Main.DrawInterface += DrawNegative;
 			On.Terraria.Main.DrawDust += DrawPositive;
 			On.Terraria.WorldGen.SaveAndQuit += ClearCutaways;
-			Main.OnPreDraw += DrawCutawayTarget;
 
 			cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
 		}
@@ -48,6 +47,8 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			for (int k = 0; k < cutaways.Count; k++)
 				cutaways[k].Draw();
+
+			DrawCutawayTarget();
 
 			orig(self);
 		}
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(self, gameTime);
 		}
 
-		private void DrawCutawayTarget(GameTime obj)
+		private void DrawCutawayTarget()
 		{
 			Main.spriteBatch.Begin();
 
