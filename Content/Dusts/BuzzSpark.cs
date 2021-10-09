@@ -32,6 +32,11 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(2, 16).RotatedBy(dust.rotation) * dust.scale;
+                dust.customData = 1;
+            }
 
             dust.rotation = dust.velocity.ToRotation() + 1.57f;
             dust.position += dust.velocity;

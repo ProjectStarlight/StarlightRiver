@@ -104,6 +104,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				counter++;
 				projectile.frame = ((counter / 5) % 2) + 2;
 
+				if (counter % 30 == 1)
+					Main.PlaySound(2, projectile.Center, 22); //Chainsaw sound
 				ReleaseSteam(player);
 			}
 			else
@@ -129,10 +131,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				charge++;
 
 			for (int i = 0; i < 2; i++)
-				Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f,0.3f) + 1.57f) * Main.rand.Next(15,20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+			{
 
-			for (int i = 0; i < 2; i++)
-				Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+				if (!Helper.IsFleshy(target))
+					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+				else
+				{
+					for (int j = 0; j < 2; j++)
+						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+				}
+
+			}
 
 			hitDirection = Math.Sign(direction.X);
 			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
@@ -212,6 +221,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Main.projFrames[projectile.type] = 2;
 			projectile.extraUpdates = 1;
 		}
+
 		public override bool PreAI()
 		{
 			if (--pauseTimer > 0)
@@ -228,6 +238,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			return true;
 		}
+
 		public override void AI()
 		{
 			if (counter == 0)
@@ -239,6 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			rotationCounter += 0.6f;
 			projectile.rotation = rotationCounter;
 		}
+
 	}
 	public class PhantomBuzzsaw : ModProjectile
 	{
@@ -267,6 +279,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.extraUpdates = 1;
 			projectile.hide = true;
 		}
+
         public override void AI()
         {
 			projectile.Center = parent.Center;
@@ -278,6 +291,24 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+
+			Vector2 direction = target.Center - projectile.Center;
+			direction.Normalize();
+			for (int i = 0; i < 2; i++)
+			{
+
+				if (!Helper.IsFleshy(target))
+					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+				else
+				{
+					Helper.PlayPitched("Impacts/ArrowFleshy", 0.8f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+
+					for (int j = 0; j < 2; j++)
+						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+				}
+
+			}
+
 			player.GetModPlayer<StarlightPlayer>().Shake += 6;
 			target.immune[projectile.owner] = 20;
 
