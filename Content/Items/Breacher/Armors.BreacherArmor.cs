@@ -299,6 +299,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (ScanTimer > Charges)
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
+                    target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
                     if (rotations == null)
                     {
                         rotations = new List<float>();
@@ -621,6 +622,15 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public bool Targetted = false;
 
+        public int TargetDuration = 0;
+
+        public override void ResetEffects(NPC npc)
+        {
+            TargetDuration -= 1;
+            if (TargetDuration < 0)
+                Targetted = false;
+        }
+
         public float Alpha;
     }
 
@@ -746,7 +756,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 return;
 
             spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
 
             Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
             effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
@@ -766,8 +776,8 @@ namespace StarlightRiver.Content.Items.Breacher
             effect.CurrentTechnique.Passes[0].Apply();
             spriteBatch.Draw(npcTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }
