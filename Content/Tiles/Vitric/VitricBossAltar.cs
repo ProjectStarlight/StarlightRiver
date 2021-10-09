@@ -71,6 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     }
 
                 StarlightWorld.FlipFlag(WorldFlags.VitricBossOpen);
+                Main.NewText(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen));
             }
 
             return false;
@@ -151,6 +152,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (CutsceneTimer > 180)
                 {
                     StarlightWorld.Flag(WorldFlags.VitricBossOpen);
+
                     if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                     {
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = projectile.Center + new Vector2(0, -400);
@@ -182,7 +184,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 
                 Vector2 center = projectile.Center + new Vector2(0, 60);
-                int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) ? 360 : 0; //the arena should already be up if it was opened before
+                int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer >= 660 ? 360 : 0; //the arena should already be up if it was opened before
 
                 int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
 
