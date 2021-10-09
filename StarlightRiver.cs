@@ -216,9 +216,9 @@ namespace StarlightRiver
         private void GameFormChanges()
         {
             Form form = (Form)Control.FromHandle(Main.instance.Window.Handle);//TODO: cache this in case we want to change the name at any time
-            Icon ic = Texture2Icon(ModContent.GetTexture(AssetDirectory.Debug));
+            Icon ic = Texture2Icon(ModContent.GetTexture("StarlightRiver/icon"));
             form.Icon = ic;
-            form.Text = "Cum Program";//TODO: make random.
+            form.Text = "Starlight River: Made with 100% organic black magic!";//TODO: make random.
         }
 
 

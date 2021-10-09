@@ -56,10 +56,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 3: scroll acceleration
              */
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0) State = 1; //when the altar is hit, make the BG rise out of the ground
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0) 
+                State = 1; //when the altar is hit, make the BG rise out of the ground
 
             if (State == 1)
             {
+                Timer++;
+
                 SpawnPlatforms();
                 ScrollDelay = 20; //initial acceleration delay
 
@@ -68,7 +71,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 18;
                     Main.PlaySound(SoundID.NPCDeath9);
                 }
-                if (Timer++ > Risetime) State = 2;
+
+                if (Timer > Risetime) 
+                    State = 2;
 
                 if (Timer % 10 == 0) 
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += Timer < 100 ? 3 : 2;
@@ -115,7 +120,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (State == 4)
             {
-                if (ScrollTimer != 0) ScrollTimer++; //stops once we're reset.
+                if (ScrollTimer != 0)
+                    ScrollTimer++; //stops once we're reset.
                 else
                 {
                     foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
@@ -136,6 +142,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
+            if (!npc.active)
+                return;
+
             if (State == 3 || State == 4)
                 ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand

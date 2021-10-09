@@ -273,7 +273,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void SuckEnemies(Player player)
         {
-
 			foreach(NPC npc in targets)
 			{
 				npc.AddBuff(ModContent.BuffType<SoulSuck>(), 2);
@@ -317,7 +316,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog * 0f, projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 			//spriteBatch.Draw(Main.magicPixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			spriteBatch.End();
