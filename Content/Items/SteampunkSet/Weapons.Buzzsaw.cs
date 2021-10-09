@@ -305,6 +305,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 					for (int j = 0; j < 2; j++)
 						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+
+					int bloodID = 0;
+					int spriteDirection = Math.Sign(direction.X);
+
+					switch (Main.rand.Next(3))
+					{
+						case 0: bloodID = ModContent.ProjectileType<BuzzsawBlood1>(); break;
+						case 1: bloodID = ModContent.ProjectileType<BuzzsawBlood2>(); break;
+						case 2: bloodID = ModContent.ProjectileType<BuzzsawBlood3>(); break;
+					}
+
+					Projectile proj = Projectile.NewProjectileDirect(target.Center - new Vector2(spriteDirection * 45, 45), Vector2.Zero, bloodID, 0, 0, projectile.owner);
+					proj.spriteDirection = -spriteDirection;
 				}
 
 			}
@@ -316,4 +329,62 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				modProj.pauseTimer = 16;
 		}
     }
+
+	public class BuzzsawBlood1 : ModProjectile
+    {
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Buzzsaw");
+			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 90;
+			projectile.height = 90;
+			projectile.friendly = false;
+			projectile.melee = true;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 700;
+			SetFrames();
+		}
+
+        public override void AI()
+        {
+			projectile.velocity = Vector2.Zero;
+			projectile.frameCounter++;
+			if (projectile.frameCounter > 4)
+            {
+				projectile.frameCounter = 0;
+				projectile.frame++;
+				if (projectile.frame >= Main.projFrames[projectile.type])
+					projectile.active = false;
+            }
+        }
+        protected virtual void SetFrames()
+        {
+			Main.projFrames[projectile.type] = 6;
+		}
+	}
+	public class BuzzsawBlood2 : BuzzsawBlood1
+	{
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+		protected override void SetFrames()
+		{
+			Main.projFrames[projectile.type] = 5;
+		}
+	}
+	public class BuzzsawBlood3 : BuzzsawBlood1
+	{
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+		protected override void SetFrames()
+		{
+			Main.projFrames[projectile.type] = 7;
+		}
+	}
 }
