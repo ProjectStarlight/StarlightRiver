@@ -61,6 +61,7 @@ namespace StarlightRiver.Content.Dusts
             return false;
         }
     }
+
     public class NeedlerDustTwo : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -68,6 +69,7 @@ namespace StarlightRiver.Content.Dusts
             texture = AssetDirectory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -98,6 +100,7 @@ namespace StarlightRiver.Content.Dusts
                 dust.velocity *= 0.85f;
             else
                 dust.velocity *= 0.92f;
+
             if (dust.alpha > 100)
             {
                 dust.scale *= 0.975f;
@@ -110,12 +113,14 @@ namespace StarlightRiver.Content.Dusts
                 dust.alpha += 4;
             }
             dust.position += dust.velocity;
+
             if (dust.alpha >= 255)
                 dust.active = false;
 
             return false;
         }
     }
+
     public class NeedlerDustThree : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -123,6 +128,7 @@ namespace StarlightRiver.Content.Dusts
             texture = AssetDirectory.Dust + name;
             return true;
         }
+
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -135,15 +141,12 @@ namespace StarlightRiver.Content.Dusts
             Color gray = new Color(25, 25, 25);
             Color ret;
             if (dust.alpha < 40)
-            {
                 ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
-            }
             else if (dust.alpha < 80)
-            {
                 ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 40) / 40f);
-            }
             else
                 ret = gray;
+
             return ret * ((255 - dust.alpha) / 255f);
         }
 
@@ -153,6 +156,7 @@ namespace StarlightRiver.Content.Dusts
                 dust.velocity *= 0.85f;
             else
                 dust.velocity *= 0.92f;
+
             if (dust.alpha > 60)
             {
                 dust.scale += 0.01f;
@@ -164,13 +168,16 @@ namespace StarlightRiver.Content.Dusts
                 dust.scale *= 0.985f;
                 dust.alpha += 4;
             }
+
             dust.position += dust.velocity;
+
             if (dust.alpha >= 255)
                 dust.active = false;
 
             return false;
         }
     }
+
     class NeedlerDustFour : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -219,6 +226,7 @@ namespace StarlightRiver.Content.Dusts
 
             if (dust.fadeIn > 40)
                 dust.active = false;
+
             return false;
         }
     }
@@ -264,12 +272,15 @@ namespace StarlightRiver.Content.Dusts
             dust.velocity *= 1.12f;
             dust.shader.UseColor(dust.color);
             dust.fadeIn++;
+
             if (dust.scale < 0.5f)
                 dust.scale += 0.02f;
+
             Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
 
             if (dust.fadeIn > 70)
                 dust.active = false;
+
             return false;
         }
     }
