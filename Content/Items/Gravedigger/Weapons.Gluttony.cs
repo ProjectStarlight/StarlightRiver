@@ -67,13 +67,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		private Trail trail4;
 		private Trail trail5;
 
-		int damageDone = 0;
+		float damageDone = 0;
 
 		int timer;
 
+		bool released = false;
+
 		const int RANGE = 300;
 		const float CONE = 0.7f;
-		public const int DPS = 4;
+		public const int DPS = 40;
 
 		const int TRAILLENGTH = 15;
 		const float CIRCLES = 0.5f;
@@ -109,7 +111,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			projectile.Center = player.Center;
 			projectile.rotation = direction.ToRotation();
 
-			if (player.channel && player.HeldItem.type == ModContent.ItemType<Gluttony>())
+			if (player.channel && player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
             {
 				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
 
@@ -133,6 +135,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			{
 				timer = 79;
 				projectile.timeLeft = 2;
+				released = true;
 			}
 			else
 			{
@@ -277,9 +280,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			foreach(NPC npc in targets)
 			{
 				npc.AddBuff(ModContent.BuffType<SoulSuck>(), 2);
-				if (Main.GlobalTime % 30 == 0)
-					damageDone += DPS;
+				damageDone += DPS / 30f;
 			}
+
+			if (damageDone > 150 && player.ownedProjectileCounts[ModContent.ProjectileType<GluttonyGhoul>()] < 10)
+            {
+				damageDone = 0;
+				Projectile.NewProjectile(player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), projectile.damage / 2, projectile.knockBack, player.whoAmI);
+            }
 
         }
 
@@ -334,6 +342,106 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 	}
 
+	public class GluttonyGhoul : ModProjectile, IDrawPrimitive
+	{
+		public override string Texture => AssetDirectory.GravediggerItem + Name;
+
+		private List<Vector2> cache;
+
+		private Trail trail;
+
+		const int TRAILLENGTH = 25;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ghoul");
+		}
+
+		public override void SetDefaults()
+		{
+			projectile.width = 20;
+			projectile.height = 20;
+			projectile.friendly = true;
+			projectile.minion = true;
+			projectile.minionSlots = 0;
+			projectile.penetrate = -1;
+			projectile.timeLeft = 150;
+			projectile.tileCollide = false;
+			projectile.ignoreWater = true;
+			projectile.alpha = 255;
+		}
+
+		public override void AI()
+		{
+			Movement();
+			ManageCaches();
+			ManageTrail();
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+			if (target.life <= 0)
+				projectile.timeLeft = 150;
+        }
+
+        private void Movement()
+		{
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+
+			if (target != default)
+			{
+				Vector2 direction = target.Center - projectile.Center;
+				direction.Normalize();
+				direction *= 10;
+				projectile.velocity = Vector2.Lerp(projectile.velocity, direction, 0.03f);
+			}
+		}
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+				for (int i = 0; i < TRAILLENGTH; i++)
+				{
+					cache.Add(projectile.Center);
+				}
+			}
+
+			cache.Add(projectile.Center);
+
+			while (cache.Count > TRAILLENGTH)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+        {
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => 20, factor =>
+			{
+				return Color.Red;
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = projectile.Center + projectile.velocity;
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["GhoulTrail"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Main.projectileTexture[projectile.type]);
+
+			trail?.Render(effect);
+		}
+	}
+
 	public class SoulSuck : SmartBuff
 	{
 		public SoulSuck() : base("Soul Suck", "You getting sucked", false) { }
@@ -347,7 +455,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					npc.lifeRegen = 0;
 				}
 
-				npc.lifeRegen -= GluttonyHandle.DPS * 10;
+				npc.lifeRegen -= GluttonyHandle.DPS;
 			}
 		}
 	}
