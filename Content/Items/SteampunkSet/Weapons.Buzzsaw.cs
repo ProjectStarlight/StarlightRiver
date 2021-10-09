@@ -18,6 +18,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
+		public override Vector2? HoldoutOffset() => new Vector2(-15, 0);
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Buzzsaw");
@@ -44,24 +46,22 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			item.noUseGraphic = true;
 			item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
 		}
-		public override Vector2? HoldoutOffset() => new Vector2(-15, 0);
 	}
+
 	public class BuzzsawProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		public Vector2 direction = Vector2.Zero;
-
 		private const int OFFSET = 30;
 		private const int MAXCHARGE = 20;
 
+		public Vector2 direction = Vector2.Zero;
+
 		private int counter;
-
 		private float bladeRotation;
-
 		private int charge;
-
 		private bool released = false;
+
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Buzzsaw");
 
 		public override void SetDefaults()
@@ -106,6 +106,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 				if (counter % 30 == 1)
 					Main.PlaySound(2, projectile.Center, 22); //Chainsaw sound
+
 				ReleaseSteam(player);
 			}
 			else
@@ -132,15 +133,23 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			for (int i = 0; i < 2; i++)
 			{
-
 				if (!Helper.IsFleshy(target))
-					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+				{
+					for (int k = 0; k < 10; k++)
+					{
+						Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(3, 20), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+					}
+
+					Dust.NewDustPerfect((projectile.Center + (direction * 10)), ModContent.DustType<Dusts.Glow>(), direction.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f) - 1.57f) * Main.rand.Next(3, 10), 0, new Color(150, 80, 30), 0.2f);
+				}
 				else
 				{
-					for (int j = 0; j < 2; j++)
-						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+					for (int j = 0; j < 15; j++)
+					{
+						Dust.NewDustPerfect(projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
+						Dust.NewDustPerfect(projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);
+					}
 				}
-
 			}
 
 			hitDirection = Math.Sign(direction.X);
