@@ -615,7 +615,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 float LaserTimer = AttackTimer - 90;
 
                 if (LaserTimer == 60)
-                    Helper.PlayPitched("VitricBoss/LaserCharge2", 1, 0, npc.Center);
+                    Helper.PlayPitched("VitricBoss/LaserCharge", 1, 0, npc.Center);
 
                 if (LaserTimer < 60)
                 {

@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (LaserTimer == 135)
-                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire2", 1, 0, projectile.Center);
+                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1, 0, projectile.Center);
 
                 //if (LaserTimer == 150)
                 //Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
