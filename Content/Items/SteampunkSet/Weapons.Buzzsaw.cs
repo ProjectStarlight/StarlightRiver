@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void AI()
         {
 			if (projectile.ai[0]++ == 0)
-				projectile.position -= new Vector2(-projectile.spriteDirection * 46, 39).RotatedBy(projectile.rotation);
+				projectile.position -= new Vector2(-projectile.spriteDirection * 20, 28).RotatedBy(projectile.rotation);
 			projectile.velocity = Vector2.Zero;
 			projectile.frameCounter++;
 			if (projectile.frameCounter > 4)
@@ -373,7 +373,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         }
         protected virtual void SetFrames()
         {
-			Main.projFrames[projectile.type] = 7;
+			Main.projFrames[projectile.type] = 3;
 		}
 	}
 }
