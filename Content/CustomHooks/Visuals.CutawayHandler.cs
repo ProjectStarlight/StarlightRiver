@@ -26,6 +26,8 @@ namespace StarlightRiver.Content.CustomHooks
 			On.Terraria.Main.DrawDust += DrawPositive;
 			On.Terraria.WorldGen.SaveAndQuit += ClearCutaways;
 
+			On.Terraria.Main.CheckMonoliths += DrawCutawayTarget;
+
 			cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
 		}
 
@@ -49,8 +51,6 @@ namespace StarlightRiver.Content.CustomHooks
 				cutaways[k].Draw();
 
 			orig(self);
-
-			DrawCutawayTarget();
 		}
 
 		private void DrawNegative(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(self, gameTime);
 		}
 
-		private void DrawCutawayTarget()
+		private void DrawCutawayTarget(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
 			Main.spriteBatch.Begin();
 
@@ -91,6 +91,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 			Main.spriteBatch.End();
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
+
+			orig();
 		}
 
 		public static void NewCutaway(Cutaway cutaway)

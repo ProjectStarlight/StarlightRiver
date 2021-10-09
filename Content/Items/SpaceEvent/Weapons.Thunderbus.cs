@@ -18,11 +18,12 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 		public override void SetDefaults()
 		{
-            item.damage = 100;
+            item.damage = 32;
             item.useTime = 30;
             item.useAnimation = 30;
             item.useStyle = ItemUseStyleID.HoldingOut;
-            item.ranged = true;
+            item.magic = true;
+            item.mana = 30;
             item.shoot = ModContent.ProjectileType<ThunderbussShot>();
             item.shootSpeed = 10;
 		}
@@ -109,6 +110,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             projectile.timeLeft = 60;
             projectile.tileCollide = true;
             projectile.ignoreWater = false;
+            projectile.magic = true;
 
             projectile.extraUpdates = 6;
         }
