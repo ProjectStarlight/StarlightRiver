@@ -60,8 +60,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (Timer > 120)
             {
-                if (LaserTimer == 1)
-                    Helpers.Helper.PlayPitched("VitricBoss/lasercharge", 1, 0, projectile.Center);
+                //if (LaserTimer == 1)
+                //    Helpers.Helper.PlayPitched("VitricBoss/CeirosLaser", 1, 0, projectile.Center);
 
                 if (LaserTimer == 140)
                     direction = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
@@ -75,8 +75,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (LaserTimer - 30) / 45f);
                 }
 
-                if (LaserTimer == 150)
-                    Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
+                if (LaserTimer == 135)
+                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire2", 1, 0, projectile.Center);
+
+                //if (LaserTimer == 150)
+                //Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
                 if (LaserTimer > 150) //laser is actually active
                 {
