@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), damage, knockBack, player.whoAmI);
 				hook = Main.projectile[i].modProjectile as ScrapshotHook;
 			}
-			else if (hook is null || (hook != null && (!hook.projectile.active || hook.hooked != null)))
+			else if (hook is null || (hook != null && hook.projectile.type == ModContent.ProjectileType<ScrapshotHook>() && (!hook.projectile.active || hook.hooked != null)))
 			{
 				Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
 

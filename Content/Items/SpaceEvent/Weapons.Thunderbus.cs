@@ -106,13 +106,15 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             projectile.height = 8;
             projectile.friendly = true;
             projectile.ranged = true;
-            projectile.penetrate = 3;
             projectile.timeLeft = 60;
             projectile.tileCollide = true;
             projectile.ignoreWater = false;
             projectile.magic = true;
-
+            projectile.penetrate = 2;
             projectile.extraUpdates = 6;
+
+            projectile.usesLocalNPCImmunity = true;
+            projectile.localNPCHitCooldown = 1;
         }
 
         public override void SetStaticDefaults()

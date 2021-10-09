@@ -218,7 +218,7 @@ namespace StarlightRiver
             Form form = (Form)Control.FromHandle(Main.instance.Window.Handle);//TODO: cache this in case we want to change the name at any time
             Icon ic = Texture2Icon(ModContent.GetTexture(AssetDirectory.Debug));
             form.Icon = ic;
-            form.Text = "Downloading 'CalamityMod' [|||||||---] 60%";//TODO: make random.
+            form.Text = "Cum Program";//TODO: make random.
         }
 
 
