@@ -16,8 +16,6 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
-using System.Windows.Forms;
-using System.Drawing;
 
 namespace StarlightRiver
 {
@@ -131,36 +129,6 @@ namespace StarlightRiver
             return;
         }
 
-        //public static Image Texture2Image(Texture2D texture)
-        //{
-        //    Image img;
-        //    using (MemoryStream MS = new MemoryStream())
-        //    {
-        //        texture.SaveAsPng(MS, texture.Width, texture.Height);
-        //        Go To the beginning of the stream.
-        //       MS.Seek(0, SeekOrigin.Begin);
-        //        Create the image based on the stream.
-        //        img = Bitmap.FromStream(MS);
-        //    }
-        //    return img;
-        //}
-
-        const int iconSize = 32;//16, 32, 48
-        public static Icon Texture2Icon(Texture2D texture)
-        {
-            Icon icon;
-            using (MemoryStream MS = new MemoryStream())
-            {
-                texture.SaveAsJpeg(MS, iconSize, iconSize);
-                //Go To the  beginning of the stream.
-                MS.Seek(0, SeekOrigin.Begin);
-
-                //Create the image based on the stream.
-                icon = Icon.FromHandle(new Bitmap(MS).GetHicon());
-            }
-            return icon;
-        }
-
         public override void Load()
         {
             CopyFile();
@@ -185,20 +153,6 @@ namespace StarlightRiver
 
             if (!Main.dedServ)
             {
-
-                //TODO: cleanup this and check if these need to be disposed of
-                Control _threadControl = new Control();//TODO: cache this in case we want to change the name at any time
-
-                _threadControl.Enabled = true;
-                _threadControl.Visible = true;
-                IntPtr ptr = _threadControl.Handle;//I believe this is the only one you need to check for it to activate, but I check all 3 to be safe
-
-                if (_threadControl.IsHandleCreated)//if the icon doesn't show its its likely because this check failed
-                    _threadControl.Invoke((Action)GameFormChanges);
-                //else //the event never really worked.
-                //    _threadControl.HandleCreated += Control1_HandleCreated;
-
-
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
                 _lastViewSize = Main.ViewSize;
                 _lastViewPort = Main.graphics.GraphicsDevice.Viewport;
@@ -210,17 +164,6 @@ namespace StarlightRiver
                 AbilityKeys.LoadDefaults();
             }
         }
-
-        //private void Control1_HandleCreated(Object sender, EventArgs e) => GameFormChanges();
-
-        private void GameFormChanges()
-        {
-            Form form = (Form)Control.FromHandle(Main.instance.Window.Handle);//TODO: cache this in case we want to change the name at any time
-            Icon ic = Texture2Icon(ModContent.GetTexture(AssetDirectory.Debug));
-            form.Icon = ic;
-            form.Text = "Cum Program";//TODO: make random.
-        }
-
 
 		public override void PostUpdateEverything()
 		{
