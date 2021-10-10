@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			item.melee = true;
 			item.channel = true;
 			item.noUseGraphic = true;
-			item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
+			//item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
 		}
 	}
 
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Buzzsaw");
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Steamsaw");
 
 		public override void SetDefaults()
 		{
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
 				else
 				{
-					Helper.PlayPitched("Impacts/ArrowFleshy", 0.8f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
+					Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
 					for (int j = 0; j < 2; j++)
 						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));

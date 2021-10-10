@@ -74,10 +74,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), damage, knockBack, player.whoAmI);
 				hook = Main.projectile[i].modProjectile as ScrapshotHook;
+
+				Helper.PlayPitched("Guns/ChainShoot", 1, 0, player.Center);
 			}
 			else if (hook is null || (hook != null && (!hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.hooked != null)))
 			{
-				Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
+				Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
 
 				float spread = 0.5f;
 
@@ -92,8 +94,8 @@ namespace StarlightRiver.Content.Items.Breacher
 					hook.struck = true;
 					hook.projectile.timeLeft = 20;
 
-					player.velocity = Vector2.Normalize(hook.startPos - Main.MouseWorld) * 15;
-					player.GetModPlayer<StarlightPlayer>().Shake += 15;
+					player.velocity = Vector2.Normalize(hook.startPos - Main.MouseWorld) * 12;
+					player.GetModPlayer<StarlightPlayer>().Shake += 12;
 
 					Helper.PlayPitched("ChainHit", 1, 0, player.Center);
 
@@ -171,6 +173,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				player.direction = startPos.X > hooked.Center.X ? -1 : 1;
 
+				if (timer == 1)
+					Helper.PlayPitched("Guns/ChainPull", 1, 0, player.Center);
+
 				if (timer < 10)
 				{
 					player.velocity *= 0.96f;
@@ -199,6 +204,8 @@ namespace StarlightRiver.Content.Items.Breacher
 					player.GetModPlayer<StarlightPlayer>().Shake += 15;
 
 					hooked.StrikeNPC(projectile.damage, projectile.knockBack, player.Center.X < hooked.Center.X ? -1 : 1);
+
+					Helper.PlayPitched("Guns/ChainPull", 0, 0, player.Center);
 				}
 			}
 
