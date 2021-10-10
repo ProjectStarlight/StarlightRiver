@@ -314,21 +314,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 					for (int j = 0; j < 2; j++)
 						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
-
-					int bloodID = 0;
-					int spriteDirection = Math.Sign(direction.X);
-
-					switch (Main.rand.Next(3))
-					{
-						case 0: bloodID = ModContent.ProjectileType<BuzzsawBlood1>(); break;
-						case 1: bloodID = ModContent.ProjectileType<BuzzsawBlood2>(); break;
-						case 2: bloodID = ModContent.ProjectileType<BuzzsawBlood3>(); break;
-					}
-
-					Projectile proj = Projectile.NewProjectileDirect(target.Center - new Vector2(spriteDirection * 45, 45), Vector2.Zero, bloodID, 0, 0, projectile.owner);
-					proj.spriteDirection = -spriteDirection;
 				}
 
+			}
+			if (Helper.IsFleshy(target))
+            {
+				int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
+				int spriteDirection = Math.Sign(direction.X);
+
+				Projectile proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, bloodID, 0, 0, projectile.owner);
+				proj.spriteDirection = -spriteDirection;
 			}
 
 			player.GetModPlayer<StarlightPlayer>().Shake += 6;
@@ -358,11 +353,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.melee = true;
 			projectile.penetrate = -1;
 			projectile.timeLeft = 700;
+			projectile.rotation = Main.rand.NextFloat(0.78f);
 			SetFrames();
 		}
 
         public override void AI()
         {
+			if (projectile.ai[0]++ == 0)
+				projectile.position -= new Vector2(-projectile.spriteDirection * 20, 28).RotatedBy(projectile.rotation);
 			projectile.velocity = Vector2.Zero;
 			projectile.frameCounter++;
 			if (projectile.frameCounter > 4)
@@ -375,25 +373,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         }
         protected virtual void SetFrames()
         {
-			Main.projFrames[projectile.type] = 6;
-		}
-	}
-	public class BuzzsawBlood2 : BuzzsawBlood1
-	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		protected override void SetFrames()
-		{
-			Main.projFrames[projectile.type] = 5;
-		}
-	}
-	public class BuzzsawBlood3 : BuzzsawBlood1
-	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		protected override void SetFrames()
-		{
-			Main.projFrames[projectile.type] = 7;
+			Main.projFrames[projectile.type] = 3;
 		}
 	}
 }
