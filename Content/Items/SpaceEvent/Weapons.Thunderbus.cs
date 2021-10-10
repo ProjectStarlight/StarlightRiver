@@ -77,7 +77,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             List<NPC> targets = new List<NPC>();
 
-            foreach(NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && Helpers.Helper.CheckConicalCollision(player.Center, 500, aim, 1, n.Hitbox)))
+            foreach(NPC npc in Main.npc.Where(n => n.active && 
+            !n.dontTakeDamage && 
+            Helper.CheckConicalCollision(player.Center, 500, aim, 1, n.Hitbox) && 
+            Utils.PlotLine((n.Center / 16).ToPoint16(), (player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
 			{
                 targets.Add(npc);
 			}
