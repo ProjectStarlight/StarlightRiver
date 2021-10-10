@@ -282,11 +282,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class ScrapshotShrapnel : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
-
 		private List<Vector2> cache;
-
 		private Trail trail;
+
+		public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
 		public override void SetDefaults()
 		{

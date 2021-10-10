@@ -1,12 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -309,8 +311,14 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         }
     }
 
-    internal class ThunderbussBall : ModProjectile, IDrawAdditive
+    internal class ThunderbussBall : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private List<Vector2> cache2;
+        private Trail trail2;
+
         public override string Texture => AssetDirectory.Invisible;
 
         public ref float Stacks => ref projectile.ai[0];
@@ -333,7 +341,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             if(Stacks < 1.5f)
                 Stacks += 0.05f;
 
-            if(ShouldFire > 0)
+            Dust.NewDustPerfect(projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
+
+            if (ShouldFire > 0)
 			{
                 for(int k = 0; k < Main.maxNPCs; k++)
 				{
@@ -351,15 +361,91 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
                 ShouldFire = 0;
 			}
+
+            ManageCaches();
+            ManageTrails();
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255), 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255), 0, tex.Size() / 2, 1.5f, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255), 0, tex.Size() / 2, 1f, 0, 0);
 
-            var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/BombTell");
-            spriteBatch.Draw(tex2, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * 0.3f, 0, tex2.Size() / 2, 0.75f * Stacks, 0, 0);
+            var texRing = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/BombTell");
+			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * 0.3f, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
         }
-	}
+
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                cache2 = new List<Vector2>();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    cache.Add(projectile.Center);
+                    cache2.Add(projectile.Center);
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                var baseOffset = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + (i / 10f) * 5) * 35;
+				cache.Add(projectile.Center + new Vector2(baseOffset.X, baseOffset.Y * 0.4f));
+
+                var baseOffset2 = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + 3.14f + (i / 10f) * 5) * 35;
+                cache2.Add(projectile.Center + new Vector2(baseOffset2.X * 0.4f, baseOffset2.Y));
+            }
+
+            while (cache.Count > 10)
+            {
+                cache.RemoveAt(0);
+                cache2.RemoveAt(0);
+            }
+        }
+
+		private void ManageTrails()
+		{
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4, factor =>
+			{
+				if (factor.X > 0.95f)
+					return Color.Transparent;
+
+				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f);
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + (11 / 10f) * 3) * 60;
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4, factor =>
+            {
+                if (factor.X > 0.95f)
+                    return Color.Transparent;
+
+                return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f);
+            });
+
+            trail2.Positions = cache2.ToArray();
+            trail2.NextPosition = projectile.Center + Vector2.UnitY.RotatedBy(Main.GameUpdateCount * 0.1f + (11 / 10f) * 3) * 60;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+            effect.Parameters["repeats"].SetValue(1f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/LightningTrail"));
+
+			trail?.Render(effect);
+            trail2?.Render(effect);
+        }
+    }
 }
