@@ -187,20 +187,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer >= 660 ? 360 : 0; //the arena should already be up if it was opened before
 
                 int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
+                arenaRight = Main.npc[index];
 
                 if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
-                {
-                    arenaRight = Main.npc[index];
                     (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
-                }
 
                 index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
+                arenaLeft = Main.npc[index];
 
                 if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
-                {
-                    arenaLeft = Main.npc[index];
-                    (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
-                }
+                    (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);             
             }
 
             //controls the drawing of the barriers
