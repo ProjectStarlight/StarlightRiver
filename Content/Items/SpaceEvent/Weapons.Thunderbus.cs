@@ -57,6 +57,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 int i = Projectile.NewProjectile(player.Center - new Vector2(64, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
                 ball = Main.projectile[i];
 
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 1, -0.2f, player.Center);
+
                 return false;
 			}
 
@@ -220,7 +222,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (projectile.timeLeft == 60)
             {
-                Helpers.Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f * (power / 20f), 0.5f, projectile.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f * (power / 20f), 0.5f, projectile.Center);
 
                 savedPos = projectile.Center;
                 startPoint = projectile.Center;       
@@ -409,8 +411,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		{
             projectile.velocity.Y += 0.015f;
 
-            if(Stacks < 1.8f)
-                Stacks += 0.03f;
+            if(Stacks < 1.5f)
+                Stacks += 0.04f;
 
             ManageCaches();
             ManageTrails();
@@ -490,11 +492,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 				spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - projectile.timeLeft / 30f) * 1.4f, 0, 0);
 			}
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, 1.5f + scale * 3, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, 1f + scale * 2, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, (1.5f + scale * 3) * (Stacks / 1.5f), 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, (1f + scale * 2) * (Stacks / 1.5f), 0, 0);
 
             if(projectile.timeLeft > 30)
-			    spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * 0.3f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
+			    spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(120, 200, 255) * 0.4f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
         }
 
         private void ManageCaches()
@@ -513,7 +515,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             for (int i = 0; i < 10; i++)
             {
-                float rad = 35;
+                float rad = 35 * (Stacks / 1.5f);
 
                 if (projectile.timeLeft <= 30)
                     rad += Helper.SwoopEase((30 - projectile.timeLeft) / 30f) * 80;
