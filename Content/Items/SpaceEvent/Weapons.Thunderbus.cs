@@ -425,7 +425,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 				}
 
 				Helper.PlayPitched("Magic/LightningCast", 1, 0.9f, projectile.Center);
-			}
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+            }
 
             if (projectile.timeLeft == 20)
             {
