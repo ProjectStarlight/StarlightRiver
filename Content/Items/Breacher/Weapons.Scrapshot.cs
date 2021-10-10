@@ -48,6 +48,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			item.shootSpeed = 17;
 		}
 
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-15, 0);
+		}
+
 		public override bool CanUseItem(Player player)
 		{
 			if (player.altFunctionUse == 2)
@@ -110,9 +115,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				for (int k = 0; k < 6; k++)
 				{
-					var direction = Vector2.UnitX.RotatedBy(rot).RotatedByRandom(spread);
+					Vector2 offset = Vector2.UnitX.RotatedBy(rot);
+					var direction = offset.RotatedByRandom(spread);
 
-					int i = Projectile.NewProjectile(player.Center, direction * item.shootSpeed, type, damage, knockBack, player.whoAmI);
+					int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * item.shootSpeed, type, damage, knockBack, player.whoAmI);
 
 					if(type != ModContent.ProjectileType<ScrapshotShrapnel>())
 					Main.projectile[i].timeLeft = 30;
