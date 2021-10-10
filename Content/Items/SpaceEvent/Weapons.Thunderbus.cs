@@ -20,7 +20,18 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         public override string Texture => "StarlightRiver/Assets/Items/SpaceEvent/Thunderbuss";
 
-        public override bool AltFunctionUse(Player player) => true;
+        public override bool AltFunctionUse(Player player) => !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<ThunderbussBall>());
+
+		public override void SetStaticDefaults()
+		{
+            DisplayName.SetDefault("Thunderbuss");
+
+            Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
+                "Right click to fire a lightning orb\n" +
+                "Shooting at the orb zaps all enemies near it\n" +
+                "The orb explodes when hitting ground\n" +
+                "You may only have one orb at a time");
+		}
 
 		public override void SetDefaults()
 		{
@@ -116,9 +127,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		}
 	}
 
-    internal class ThunderbussShot : ModProjectile, IDrawAdditive
+    internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
     {
-        private Vector2 startPoint;
+        public Vector2 startPoint;
         public Vector2 endPoint;
         public Vector2 midPoint;
 
@@ -126,18 +137,23 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public Projectile projOwner;
         public Projectile projTarget;
 
-        private float dist1;
-        private float dist2;
-
         public float offset = 0;
         public float holdRot = 0;
 
-        Vector2 savedPos = Vector2.Zero;
         public NPC target;
 
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private float dist1;
+        private float dist2;
+
+        Vector2 savedPos = Vector2.Zero;
         List<Vector2> nodes = new List<Vector2>();
 
         public override string Texture => AssetDirectory.Invisible;
+
+        public override bool? CanHitNPC(NPC target) => target == this.target;
 
         public override void SetDefaults()
         {
@@ -191,6 +207,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         public override void AI()
         {
+            ManageCaches();
+            ManageTrails();
+
             if (projectile.extraUpdates != 0)
                 projectile.rotation = projectile.velocity.ToRotation() - MathHelper.PiOver2;
             else
@@ -257,20 +276,69 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 Vector2 prevPos = k == 1 ? point1 : nodes[k - 1];
 
                 var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, power);
-                var target2 = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(nodes[k], prevPos) + 1, power * 5);
                 var origin = new Vector2(0, tex.Height / 2);
                 var rot = (nodes[k] - prevPos).ToRotation();
                 var color = new Color(200, 230, 255) * (projectile.extraUpdates == 0 ? projectile.timeLeft / 15f : 1);
 
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
-                sb.Draw(tex, target2, null, color * 0.5f, rot, origin, 0, 0);
 
                 if (Main.rand.Next(20) == 0)
                     Dust.NewDustPerfect(prevPos + new Vector2(0, 50), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200) * (power / 20f), 0.8f);
             }
         }
 
-        public override bool? CanHitNPC(NPC target) => target == this.target;
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+
+                for (int i = 0; i < 50; i++)
+                {
+                    cache.Add(projectile.Center);
+                }
+            }
+
+            for (int i = 0; i < 50; i++)
+            {
+                cache.Add(PointOnSpline(i / 50f));
+            }
+
+            while (cache.Count > 50)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrails()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => 40 + power, factor =>
+            {
+                if (factor.X > 0.99f)
+                    return Color.Transparent;
+
+                return new Color(160, 220, 255) * 0.05f * (projectile.extraUpdates == 0 ? projectile.timeLeft / 15f : 1);
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+            effect.Parameters["repeats"].SetValue(1f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+
+            trail?.Render(effect);
+        }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
@@ -326,8 +394,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         public override void SetDefaults()
 		{
-            projectile.width = 32;
-            projectile.height = 32;
+            projectile.width = 1;
+            projectile.height = 1;
             projectile.timeLeft = 600;
             projectile.magic = true;
             projectile.penetrate = -1;
@@ -338,8 +406,37 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		{
             projectile.velocity.Y += 0.015f;
 
-            if(Stacks < 1.5f)
-                Stacks += 0.05f;
+            if(Stacks < 1.8f)
+                Stacks += 0.03f;
+
+            ManageCaches();
+            ManageTrails();
+
+			if (projectile.timeLeft == 29)
+			{
+                for (int k = 0; k < 50; k++)
+				{
+					Dust.NewDustPerfect(projectile.Center + new Vector2(0, 100), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
+				}
+
+				Helper.PlayPitched("Magic/LightningCast", 1, 0.9f, projectile.Center);
+			}
+
+            if (projectile.timeLeft == 20)
+            {
+                projectile.damage *= 2;
+                projectile.width = 300;
+                projectile.height = 300;
+
+                projectile.position -= Vector2.One * 150;
+                projectile.friendly = true;
+            }
+
+            if (projectile.timeLeft <= 30)
+			{
+
+                return;
+			}
 
             Dust.NewDustPerfect(projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
 
@@ -350,30 +447,51 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     var npc = Main.npc[k];
                     if(npc.active && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
 					{
-                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), 24, 0, projectile.owner);
+                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner);
                         var proj = Main.projectile[i].modProjectile as ThunderbussShot;
 
                         proj.target = npc;
                         proj.projOwner = projectile;
-                        proj.power = 10;
+                        proj.power = 15;
 					}
 				}
 
                 ShouldFire = 0;
 			}
+		}
 
-            ManageCaches();
-            ManageTrails();
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+            if (projectile.timeLeft > 30)
+            {
+                projectile.tileCollide = false;
+                projectile.timeLeft = 30;
+                projectile.velocity *= 0;
+            }
+            return false;
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255), 0, tex.Size() / 2, 1.5f, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255), 0, tex.Size() / 2, 1f, 0, 0);
+            float scale = 0;
+            float opacity = 1;
 
+            var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
             var texRing = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/BombTell");
-			spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * 0.3f, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
+
+			if (projectile.timeLeft <= 30)
+			{
+				scale = Helper.SwoopEase(1 - projectile.timeLeft / 30f);
+				opacity = Helper.SwoopEase(projectile.timeLeft / 30f);
+
+				spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - projectile.timeLeft / 30f) * 1.4f, 0, 0);
+			}
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, 1.5f + scale * 3, 0, 0);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, 1f + scale * 2, 0, 0);
+
+            if(projectile.timeLeft > 30)
+			    spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * 0.3f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
         }
 
         private void ManageCaches()
@@ -392,10 +510,15 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             for (int i = 0; i < 10; i++)
             {
-                var baseOffset = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + (i / 10f) * 5) * 35;
+                float rad = 35;
+
+                if (projectile.timeLeft <= 30)
+                    rad += Helper.SwoopEase((30 - projectile.timeLeft) / 30f) * 80;
+
+                var baseOffset = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + (i / 10f) * 5) * rad;
 				cache.Add(projectile.Center + new Vector2(baseOffset.X, baseOffset.Y * 0.4f));
 
-                var baseOffset2 = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + 3.14f + (i / 10f) * 5) * 35;
+                var baseOffset2 = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + 3.14f + (i / 10f) * 5) * rad;
                 cache2.Add(projectile.Center + new Vector2(baseOffset2.X * 0.4f, baseOffset2.Y));
             }
 
@@ -408,23 +531,32 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 		private void ManageTrails()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - projectile.timeLeft / 30f) * 30 : 0), factor =>
 			{
 				if (factor.X > 0.95f)
 					return Color.Transparent;
 
-				return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f);
+                float mul = 1;
+                if (projectile.timeLeft < 30)
+                    mul = Helper.SwoopEase(projectile.timeLeft / 30f);
+
+
+                return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
 			});
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + (11 / 10f) * 3) * 60;
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - projectile.timeLeft / 30f) * 30 : 0), factor =>
             {
                 if (factor.X > 0.95f)
                     return Color.Transparent;
 
-                return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f);
+                float mul = 1;
+                if (projectile.timeLeft < 30)
+                    mul = Helper.SwoopEase(projectile.timeLeft / 30f);
+
+                return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Cos(Main.GameUpdateCount * 0.15f + 3.14f) * 0.25f) * mul;
             });
 
             trail2.Positions = cache2.ToArray();
