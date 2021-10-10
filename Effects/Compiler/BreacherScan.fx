@@ -15,6 +15,8 @@ float2 uImageSize1;
 
 float alpha;
 float whiteness;
+float4 red;
+float4 red2;
 
 float4 White(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR0
 {
@@ -22,8 +24,7 @@ float4 White(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR0
 	float pixH = 1.0 / uImageSize0.y;
 	float4 color = tex2D(uImage0, coords);
     float2 squareWidth = float2(pixW, pixH);
-    float4 red = float4(1, 0.1f, 0.1f, 1);
-    float4 outlineRed = float4(1, 0.1f, 0.1f, 0.9f) * alpha;
+    float4 outlineRed = red2 * alpha;
     float4 white = float4(1, 1, 1, 1) * whiteness;
     outlineRed += white;
     if (color.a != 0)
