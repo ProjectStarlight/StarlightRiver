@@ -20,6 +20,8 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
+            return; //This causes a crash when changing lighting modes. Fix it. //TODO: OS fix this
+
             if (Main.dedServ)
                 return;
 
