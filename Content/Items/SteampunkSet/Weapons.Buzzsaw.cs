@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Buzzsaw");
-			Tooltip.SetDefault("Hit enemies to build up pressure \nRelease to launch buzzsaw");
+			DisplayName.SetDefault("Steamsaw");
+			Tooltip.SetDefault("Strike enemies to build up pressure\nRelease to vent the pressure, launching the sawblade\n'The right tool for the wrong job'");
 		}
 
 		public override void SetDefaults()
