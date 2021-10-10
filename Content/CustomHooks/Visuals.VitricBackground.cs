@@ -180,7 +180,9 @@ namespace StarlightRiver.Content.CustomHooks
                     if (Lighting.Brightness(i, j) == 0 || ((Main.tile[i, j].active() && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].wall != 0))
                     {
                         Color color = Color.Black * (1 - Lighting.Brightness(i, j) * 2);
-                        Main.spriteBatch.Draw(Main.blackTileTexture, new Vector2(i * 16, j * 16) - Main.screenPosition, color);
+                        Tile tile = Framing.GetTileSafely(i, j);
+
+                        Main.spriteBatch.Draw(Main.tileTexture[tile.type], new Vector2(i * 16, j * 16) - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color);
                     }
         }
 
