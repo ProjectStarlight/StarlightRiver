@@ -59,20 +59,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
                 return true;
             }
-			else
-			{
-                for (int x = 0; x < 5; x++)
-                    for (int y = 0; y < 7; y++)
-                    {
-                        int realX = x + i - (tile.frameX - 90) / 18;
-                        int realY = y + j - (tile.frameY) / 18;
-
-                        Framing.GetTileSafely(realX, realY).frameX -= 90;
-                    }
-
-                StarlightWorld.FlipFlag(WorldFlags.VitricBossOpen);
-                Main.NewText(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen));
-            }
 
             return false;
         }
