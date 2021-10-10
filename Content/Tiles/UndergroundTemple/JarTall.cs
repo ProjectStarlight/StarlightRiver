@@ -29,6 +29,8 @@ namespace StarlightRiver.Tiles.Temple
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
+            if (Dummy is null) return;
+
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow");

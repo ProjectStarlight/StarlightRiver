@@ -20,8 +20,6 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
-            return; //This causes a crash when changing lighting modes. Fix it. //TODO: OS fix this
-
             if (Main.dedServ)
                 return;
 
@@ -70,7 +68,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void DrawToTarget()
         {
-            if (Main.instance.tileTarget == null)
+            if (Main.instance.tileTarget == null || Main.instance.tileTarget.IsDisposed)
                 return;
 
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
