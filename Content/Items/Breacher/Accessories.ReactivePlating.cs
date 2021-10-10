@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (damageCounter >= 200)
 			{
 				damageCounter = 0;
-				shieldTimer = 150;
+				shieldTimer = 200;
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
 			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 150f, 0.25f));
+			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 200f, 0.25f));
 
 			if (flickerTime > 0 && flickerTime < 16)
 			{
