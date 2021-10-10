@@ -113,6 +113,8 @@ namespace StarlightRiver.Content.Items.Breacher
 					var direction = Vector2.UnitX.RotatedBy(rot).RotatedByRandom(spread);
 
 					int i = Projectile.NewProjectile(player.Center, direction * item.shootSpeed, type, damage, knockBack, player.whoAmI);
+
+					if(type != ModContent.ProjectileType<ScrapshotShrapnel>())
 					Main.projectile[i].timeLeft = 30;
 
 					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
@@ -288,13 +290,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			projectile.width = 4;
-			projectile.height = 4;
+			projectile.width = 16;
+			projectile.height = 16;
 			projectile.ranged = true;
 			projectile.friendly = true;
 			projectile.penetrate = 1;
-			projectile.timeLeft = 20;
-			projectile.extraUpdates = 1;
+			projectile.timeLeft = 40;
+			projectile.extraUpdates = 2;
 			projectile.alpha = 255;
 		}
 
@@ -306,8 +308,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void AI()
 		{
-			if (projectile.timeLeft == 20)
-				projectile.velocity *= Main.rand.NextFloat(12, 16);
+			if (projectile.timeLeft == 40)
+				projectile.velocity *= Main.rand.NextFloat(3, 4);
 
 			projectile.velocity *= 0.87f;
 			ManageCaches();
@@ -337,7 +339,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * 5, factor =>
 			{
-				return new Color(255, 170, 80) * factor.X * (projectile.timeLeft / 20f);
+				return new Color(255, 170, 80) * factor.X * (projectile.timeLeft / 40f);
 			});
 
 			trail.Positions = cache.ToArray();
