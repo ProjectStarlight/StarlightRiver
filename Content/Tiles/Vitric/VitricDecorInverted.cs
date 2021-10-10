@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	class VitricDecor1x1 : ModTile
+    class VitricDecor1x1Inverted : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -19,14 +19,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 2;
 
             this.QuickSetFurniture(1, 1, 32, SoundID.Tink, false, new Color(217, 193, 154));
         }
     }
 
-    class VitricDecor1x2 : ModTile
+    class VitricDecor1x2Inverted : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -36,14 +36,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 1;
 
             this.QuickSetFurniture(1, 2, 32, SoundID.Tink, false, new Color(217, 193, 154));
         }
     }
 
-    class VitricDecor2x1 : ModTile
+    class VitricDecor2x1Inverted : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -53,14 +53,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            TileObjectData.newTile.RandomStyleRange = 7;
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.RandomStyleRange = 2;
 
             this.QuickSetFurniture(2, 1, 32, SoundID.Tink, false, new Color(217, 193, 154));
         }
     }
 
-    class VitricDecor2x2 : ModTile
+    class VitricDecor2x2Inverted : ModTile
     {
         public override bool Autoload(ref string name, ref string texture)
         {
@@ -70,8 +70,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-            TileObjectData.newTile.RandomStyleRange = 4;
+            TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.RandomStyleRange = 1;
 
             this.QuickSetFurniture(2, 2, 32, SoundID.Tink, false, new Color(217, 193, 154));
         }

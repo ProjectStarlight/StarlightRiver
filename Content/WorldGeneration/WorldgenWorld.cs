@@ -23,7 +23,7 @@ namespace StarlightRiver.Core
                 tasks.Insert(DesertIndex + 2, new PassLegacy("Starlight River Permafrost", PermafrostGen));
                 tasks.Insert(DesertIndex + 3, new PassLegacy("Starlight River Ash Hell", AshHellGen));
                 tasks.Insert(DesertIndex + 4, new PassLegacy("Starlight River Vitric Desert", VitricGen));
-                tasks.Insert(DesertIndex + 5, new PassLegacy("Starlight River Overgrowth", OvergrowGen));
+                //tasks.Insert(DesertIndex + 5, new PassLegacy("Starlight River Overgrowth", OvergrowGen));
                 tasks.Insert(DesertIndex + 6, new PassLegacy("Starlight River Codex", GenHelper.BookAltarGen));
 
                 //tasks.Insert(DesertIndex + 7, new PassLegacy("Starlight River Vines", VineGen));

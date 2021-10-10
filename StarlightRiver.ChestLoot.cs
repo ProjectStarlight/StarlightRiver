@@ -57,6 +57,9 @@ namespace StarlightRiver
         {
             for (int i = 0; i < Main.maxChests; i++)
             {
+                if (i >= Main.chest.Length) //failsafe
+                    return;
+
                 Chest chest = Main.chest[i];
 
                 // Within this block this chest is valid to put an item in.
