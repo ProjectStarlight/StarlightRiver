@@ -33,8 +33,6 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void Main_OnPreDraw(GameTime obj)
         {
-            return;
-
             RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
             Main.graphics.GraphicsDevice.SetRenderTarget(Target);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
@@ -81,6 +79,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             Main.spriteBatch.End();
             Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
+
+            if (Main.instance.tileTarget.IsDisposed) return;
 
             RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
 

@@ -761,6 +761,8 @@ namespace StarlightRiver.Content.Items.Breacher
             Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
             effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.Parameters["alpha"].SetValue(alpha);
+            effect.Parameters["red"].SetValue(new Color(1, 0.1f, 0.1f, 1).ToVector4());
+            effect.Parameters["red2"].SetValue(new Color(1, 0.1f, 0.1f, 0.9f).ToVector4());
 
             float flickerTime = 100 - (alpha * 100);
 
