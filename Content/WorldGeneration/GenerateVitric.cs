@@ -185,7 +185,7 @@ namespace StarlightRiver.Core
             //GenMoss();
             GenTemple();
 
-            GenDesertDecoration();
+            //GenDesertDecoration();
             FinalCleanup();
 
             VitricBiome.Y -= 8; //Adjust a bit
@@ -475,30 +475,43 @@ namespace StarlightRiver.Core
                     }
                     else
                     {
-                        int type = genRand.Next(17); //Generates multitile decoration randomly
-                        if (type == 0)
-                        {
-                            if (ValidGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 1), new Point16(1, 1)))
-                                PlaceTile(i, j - 1, genRand.Next(2) == 0 ? TileType<VitricSmallCactus>() : TileType<VitricRock>(), false, false, -1, genRand.Next(4));
-                        }
-                        else if (type == 1)
-                        {
-                            if (ValidGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(2, 2)) && ValidGround.Any(x => x == Main.tile[i + 1, j].type))
-                                PlaceTile(i, j - 2, genRand.Next(2) == 0 ? TileType<VitricRoundCactus>() : TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
-                        }
-                        else if (type == 2)
-                        {
-                            bool vGround = true;
-                            for (int k = 0; k < 3; ++k)
+                        int type = genRand.Next(30); //Generates multitile decoration randomly
 
-                                if (!Main.tile[i + k, j].active() || !ValidGround.Any(x => x == Main.tile[i + k, j].type)) vGround = false;
-                            if (vGround && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(3, 2))) PlaceTile(i, j - 2, TileType<VitricDecorLarge>(), true, false, -1, genRand.Next(6));
+						switch (type)
+						{
+							case 0: GenerateDeco(i, j, 1, 1, TileType<VitricDecor1x1>(), 2); break;
+							case 1: GenerateDeco(i, j, 1, 2, TileType<VitricDecor1x2>(), 1); break;
+							case 2: GenerateDeco(i, j, 2, 1, TileType<VitricDecor2x1>(), 7); break;
+							case 3: GenerateDeco(i, j, 2, 2, TileType<VitricDecor2x2>(), 4); break;
+
+                            case 4: GenerateDecoInverted(i, j, 1, 1, TileType<VitricDecor1x1Inverted>(), 2); break;
+                            case 5: GenerateDecoInverted(i, j, 1, 2, TileType<VitricDecor1x2Inverted>(), 1); break;
+                            case 6: GenerateDecoInverted(i, j, 2, 1, TileType<VitricDecor2x1Inverted>(), 2); break;
+                            case 7: GenerateDecoInverted(i, j, 2, 2, TileType<VitricDecor2x2Inverted>(), 1); break;
                         }
                     }
                 }
             }
         }
 
+		private static void GenerateDeco(int x, int y, int w, int h, int type, int variants)
+		{
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].type) && Helper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].type))
+				Helper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
+
+            KillTile(x, y - h, true);
+		}
+
+        private static void GenerateDecoInverted(int x, int y, int w, int h, int type, int variants)
+        {
+            if (ValidGround.Any(x1 => x1 == Main.tile[x, y].type) && Helper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].type))
+                Helper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
+
+            KillTile(x, y + 1, true);
+        }
+
+
+        /*
         private static void GenDesertDecoration()
         {
             for (int i = UndergroundDesertLocation.X; i < UndergroundDesertLocation.X + UndergroundDesertLocation.Width; i++) //Add vines & decor
@@ -543,7 +556,7 @@ namespace StarlightRiver.Core
                     }
                 }
             }
-        }
+        }*/
 
         /// <summary>
         /// generates a small patch of sand for the vitric decoration

@@ -37,11 +37,13 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Underground.WitShrine>();
+            item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
         public override bool UseItem(Player player)
         {
+
+            return true;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)
             {
