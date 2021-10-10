@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
 
                 if (Main.rand.Next(20) == 0)
-                    Dust.NewDustPerfect(prevPos + new Vector2(0, 50), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200) * (power / 20f), 0.8f);
+                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
             }
         }
 
