@@ -54,7 +54,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public int shieldTimer = 0;
 
+		public int flickerTime = 0;
+
 		public bool Shield => shieldTimer > 0;
+
 
 		public override void ResetEffects()
 		{
@@ -63,7 +66,12 @@ namespace StarlightRiver.Content.Items.Breacher
 				damageCounter--;
 
 			if (shieldTimer > 0)
+			{
 				shieldTimer--;
+				flickerTime++;
+			}
+			else
+				flickerTime = 0;
 
 			if (damageCounter >= 200)
 			{
@@ -107,10 +115,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
 			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 			if (modPlayer.Shield && drawPlayer == Main.LocalPlayer)
-				DrawPlayerTarget(drawPlayer, Position, rotation, rotationOrigin, shadow);
+				DrawPlayerTarget(drawPlayer, Position, rotation, rotationOrigin, shadow, modPlayer.flickerTime, modPlayer.shieldTimer);
 		}
 
-		private static void DrawPlayerTarget(Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
+		private static void DrawPlayerTarget(Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow, int flickerTime, int shieldTimer)
         {
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
@@ -124,8 +132,16 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
 			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["alpha"].SetValue(1);
-			effect.Parameters["whiteness"].SetValue(0);
+			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 150f, 0.25f));
+
+			if (flickerTime > 0 && flickerTime < 16)
+			{
+				float flickerTime2 = (float)(flickerTime / 20f);
+				float whiteness = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
+				effect.Parameters["whiteness"].SetValue(whiteness);
+			}
+			else
+				effect.Parameters["whiteness"].SetValue(0);
 
 			Color color = Color.Cyan;
 			effect.Parameters["red"].SetValue(color.ToVector4());
