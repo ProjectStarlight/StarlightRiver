@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	public abstract class WalkableCrystalItem : QuickTileItem
     {
         private bool held = false;
-        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "Use item slot to select type", placetype, ItemRarityID.Blue, texturepath) { }
+        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "The slot this item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
         //public override bool AltFunctionUse(Player player) => true;
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public VitricGiantCrystalItem() : base("Giant Giant crystal", "VitricGiantCrystal", AssetDirectory.VitricTile) { }
     }
 
-    public abstract class VitricCrystal : WalkableCrystal
+    internal abstract class VitricCrystal : WalkableCrystal
     {
         protected VitricCrystal(int maxWidth, int maxHeight, int variantCount = 1, string drop = null) :
             base(maxWidth, maxHeight, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.Air>(), new Color(115, 182, 158), SoundID.CoinPickup)
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void SafeSetDefaults() =>
             Main.tileMerge[TileType<VitricSpike>()][Type] = true;
 
-        public override void AfterPostDraw(int i, int j, SpriteBatch spriteBatch)
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Texture2D lavaFadeTex = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
             int halfWidth = (MaxWidth / 2);//to account for odd numbers
@@ -102,22 +102,22 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
     }
 
-    public class VitricGiantCrystal : VitricCrystal
+    internal class VitricGiantCrystal : VitricCrystal
     {
         public VitricGiantCrystal() : base(10, 19, 4) { }//a
     }
 
-    public class VitricLargeCrystal : VitricCrystal
+    internal class VitricLargeCrystal : VitricCrystal
     {
         public VitricLargeCrystal() : base(13, 8, 2) {}
     }
 
-    public class VitricMediumCrystal : VitricCrystal
+    internal class VitricMediumCrystal : VitricCrystal
     {
         public VitricMediumCrystal() : base(7, 6, 4) { }
     }
 
-    public class VitricSmallCrystal : VitricCrystal
+    internal class VitricSmallCrystal : VitricCrystal
     {
         public VitricSmallCrystal() : base(3, 3, 2) { }
     }

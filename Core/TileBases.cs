@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Helpers;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -147,7 +149,7 @@ namespace StarlightRiver.Core
         public virtual void FountainActive(int i, int j, bool closer) { }
     }
 
-    public abstract class WalkableCrystal : ModTile
+    internal abstract class WalkableCrystal : DummyTile
     {
         protected readonly string ItemName;
         protected int ItemType;
@@ -160,8 +162,14 @@ namespace StarlightRiver.Core
         public readonly int MaxWidth;
         public readonly int MaxHeight;
         protected readonly string TexturePath;
+        public readonly string DummyName;
 
-        protected WalkableCrystal(int maxWidth, int maxHeight, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1)
+
+        public override int DummyType => mod.ProjectileType(DummyName);
+
+        public override bool SpawnConditions(int i, int j) => Main.tile[i, j].frameX > 0;
+
+        protected WalkableCrystal(int maxWidth, int maxHeight, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1, string dummyType = null)
         {
             ItemName = drop;
             TexturePath = path;
@@ -172,6 +180,7 @@ namespace StarlightRiver.Core
             MaxHeight = maxHeight;
             MaxWidth = maxWidth;
             Sound = sound;
+            DummyName = dummyType ?? "WalkableCrystalDummy";
         }
 
         public override bool Autoload(ref string name, ref string texture)
@@ -216,6 +225,14 @@ namespace StarlightRiver.Core
             return 0;
         }
 
+        public override void PostSpawnDummy(Projectile dummy)
+        {
+            WalkableCrystalDummy crystalDummy = (WalkableCrystalDummy)dummy.modProjectile;//a interface could be used instead, but that seemed overkill atm
+            crystalDummy.variantCount = VariantCount;
+            crystalDummy.drawOffset = DrawOffset;
+            crystalDummy.drawColor = DrawColor;
+        }
+
         public override bool Drop(int i, int j)
         {
             if(Main.tile[i, j].frameX > 0)
@@ -225,33 +242,42 @@ namespace StarlightRiver.Core
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public virtual Vector2 DrawOffset => new Vector2(-7, 18);
-        public virtual Color DrawColor => Color.Gray;
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            Tile t = Main.tile[i, j];
-            //DrawHelper.TileDebugDraw(i, j, spriteBatch);
-            if (t.frameX > 0)
-            {
-                if (PrePostDraw(i, j, spriteBatch))
-                {
-                    Texture2D tex = Main.tileTexture[Type];
-                    Rectangle frame = tex.Frame(VariantCount, 1, t.frameX - 1);
-                    //spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset, frame, DrawColor, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
-                    //LightingBufferRenderer.DrawWithLighting((((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height), tex, frame, Color.Blue);
-                    Vector2 pos = (((new Vector2(i, j)) * 16 - Main.screenPosition) + DrawOffset) + new Vector2(frame.Width * 0.5f, frame.Height * 0.5f);
-                    //LightingBufferRenderer.DrawWithLightingTile(pos, Main.blackTileTexture, frame, Color.White);
-                    LightingBufferRenderer.DrawWithLighting(pos, tex, frame, Color.White);
-                }
-                AfterPostDraw(i, j, spriteBatch);
-            }
-        }
-        public virtual bool PrePostDraw(int i, int j, SpriteBatch spriteBatch) => true;
-        public virtual void AfterPostDraw(int i, int j, SpriteBatch spriteBatch) { }
+        public virtual Vector2 DrawOffset => new Vector2(8, 18);
+        public virtual Color DrawColor => Color.White;
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => fail = true;
         public override bool CanExplode(int i, int j) => false;
         public override bool Slope(int i, int j) => false;
+        public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => false;
+    }
+
+    class WalkableCrystalDummy : Dummy //extend from this and override PostDraw to change stuff
+    {
+        public int variantCount;
+        public Vector2 drawOffset;
+        public Color drawColor;
+
+        public WalkableCrystalDummy() : base(-1, 16, 16) { }
+
+        public override bool ValidTile(Tile tile) => ModContent.GetModTile(tile.type) is WalkableCrystal;
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            //var tex = ModContent.GetTexture(AssetDirectory.ForestTile + "MonkSpearOver");
+            Tile t = Parent;
+            //DrawHelper.TileDebugDraw(i, j, spriteBatch);
+            if (t.frameX > 0)
+            {
+                Texture2D tex = Main.tileTexture[t.type];
+                Rectangle frame = tex.Frame(variantCount, 1, t.frameX - 1);
+                //spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset, frame, DrawColor, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
+                //LightingBufferRenderer.DrawWithLighting((((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height), tex, frame, Color.Blue);
+                Vector2 pos = ((projectile.position - Main.screenPosition) + drawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
+                LightingBufferRenderer.DrawWithLighting(pos, tex, frame, drawColor);
+
+            }
+
+        }
     }
 
     public abstract class ModBanner : ModTile
@@ -325,7 +351,6 @@ namespace StarlightRiver.Core
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => 
             Item.NewItem(i * 16, j * 16, 16 * Width, 16 * Height, ItemType);
     }
-
 
     public abstract class ModVine : ModTile
     {

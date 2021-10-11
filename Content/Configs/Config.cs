@@ -45,19 +45,24 @@ namespace StarlightRiver.Configs
         public int LightingPollRate = 5;
 
         [Label("Scrolling Lighting Buffer Building")]
-        [Tooltip("Causes the lighting buffer to be built over its poll rate instead of all at once. May help normalize lag spikes but cause strange lighting artifacts.")]
+        [Tooltip("Causes the lighting buffer to be built over its poll rate instead of all at once. \nMay help normalize lag spikes but cause strange lighting artifacts.")]
+        [DefaultValue(false)]
         public bool ScrollingLightingPoll = false;
 
         [Label("Extra Particles")]
-        [Tooltip("Enables/Disables special particles. Disable this if you have performance issues.")]
+        [Tooltip("Enables/Disables special particles. \nDisable this if you have performance issues.")]
+        [DefaultValue(true)]
         public bool ParticlesActive = true;
 
         [Label("High quality lit textures")]
-        [Tooltip("Enables/Disables fancy lighting on large textures. Disable this if you have performance issues.")]
+        [Tooltip("Enables/Disables fancy lighting on large textures. \nDisable this if you have performance issues.")]
+        [DefaultValue(true)]
         public bool HighQualityLighting = true;
 
         [Label("Custom Inventory Sounds")]
-        [Tooltip("If custom inventory sounds should play for all items or a select few, or none at all.")]
+        [DrawTicks]
+        [Tooltip("If custom inventory sounds should play for all items, select few, or none.")]
+        [DefaultValue(typeof(CustomSounds), "All")]
         public CustomSounds InvSounds = CustomSounds.All;
     }
 }

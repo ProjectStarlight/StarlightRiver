@@ -10,6 +10,7 @@ namespace StarlightRiver.Core
         public virtual int DummyType { get; }
 
         public Projectile Dummy { get; set; }
+        public virtual void PostSpawnDummy(Projectile dummy) { }
 
         public virtual void SafeNearbyEffects(int i, int j, bool closer) { }
 
@@ -23,13 +24,15 @@ namespace StarlightRiver.Core
         {
             if (!Main.tileFrameImportant[Type] || SpawnConditions(i, j))
             {
-                if (!Main.projectile.Any(n => n.active && n.type == DummyType && n.position == new Vector2(i, j) * 16))
+                int type = DummyType;//cache type here so you dont grab the it from a dict every single iteration
+                if (!Main.projectile.Any(n => n.active && n.type == type && n.position == new Vector2(i, j) * 16))
                 {
                     Projectile p = new Projectile();
-                    p.SetDefaults(DummyType);
+                    p.SetDefaults(type);
 
-                    int n = Projectile.NewProjectile(new Vector2(i, j) * 16 + p.Size / 2, Vector2.Zero, DummyType, 1, 0);
+                    int n = Projectile.NewProjectile(new Vector2(i, j) * 16 + p.Size / 2, Vector2.Zero, type, 1, 0);
                     Dummy = Main.projectile[n];
+                    PostSpawnDummy(Dummy);
                     p = null;
                 }
             }
