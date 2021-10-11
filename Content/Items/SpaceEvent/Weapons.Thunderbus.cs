@@ -173,8 +173,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             projectile.penetrate = 2;
             projectile.extraUpdates = 6;
 
-            projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = 1;
+            projectile.usesIDStaticNPCImmunity = true;
+            projectile.idStaticNPCHitCooldown = 30;
         }
 
         public override void SetStaticDefaults()
