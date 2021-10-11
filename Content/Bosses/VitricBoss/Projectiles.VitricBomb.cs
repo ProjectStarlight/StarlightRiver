@@ -81,6 +81,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
             Main.PlaySound(SoundID.DD2_KoboldExplosion, projectile.Center);
+            Helper.PlayPitched("Magic/FireHit", 0.5f, 0, projectile.Center);
 
             for (int k = 0; k < 80; k++)
             {

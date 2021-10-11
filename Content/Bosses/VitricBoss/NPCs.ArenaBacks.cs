@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -69,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (Timer == Risetime - 1) //hitting the top
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 18;
-                    Main.PlaySound(SoundID.NPCDeath9);
+                    Helper.PlayPitched("ArenaHit", 0.7f, 0, npc.Center);
                 }
 
                 if (Timer > Risetime) 
