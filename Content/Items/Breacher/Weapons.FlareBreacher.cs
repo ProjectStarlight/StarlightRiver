@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.height = 28;
             item.damage = 30;
             item.rare = ItemRarityID.Orange;
-            item.value = Item.sellPrice(0, 10, 0, 0);
+            item.value = Item.sellPrice(0, 1, 0, 0);
             item.noMelee = true;
             item.autoReuse = true;
             item.useTurn = false;

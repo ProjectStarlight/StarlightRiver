@@ -43,7 +43,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             item.mana = 30;
             item.shoot = ModContent.ProjectileType<ThunderbussShot>();
             item.shootSpeed = 10;
-		}
+            item.value = Item.sellPrice(0, 1, 0, 0);
+            item.rare = ItemRarityID.Orange;
+        }
 
         public override Vector2? HoldoutOffset()
         {
