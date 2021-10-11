@@ -10,11 +10,12 @@ namespace StarlightRiver.Core
 {
 	internal static class QuickBlock
     {
-        public static void QuickSet(this ModTile tile, int minPick, int dustType, int soundType, Color mapColor, int drop, bool dirtMerge = false, bool stone = false, string mapName = "")
+        public static void QuickSet(this ModTile tile, int minPick, int dustType, int soundType, Color mapColor, int drop, bool dirtMerge = false, bool stone = false, string mapName = "", int soundStyle = 1)
         {
             tile.minPick = minPick;
             tile.dustType = dustType;
             tile.soundType = soundType;
+            tile.soundStyle = soundStyle;
             tile.drop = drop;
             Main.tileMergeDirt[tile.Type] = dirtMerge;
             Main.tileStone[tile.Type] = stone;

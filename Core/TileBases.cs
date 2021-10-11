@@ -159,6 +159,7 @@ namespace StarlightRiver.Core
         protected readonly Color? MapColor;
         protected readonly int DustType;
         protected readonly int Sound;
+        protected readonly int SoundStyle;
         public readonly int MaxWidth;
         public readonly int MaxHeight;
         protected readonly string TexturePath;
@@ -169,7 +170,7 @@ namespace StarlightRiver.Core
 
         public override bool SpawnConditions(int i, int j) => Main.tile[i, j].frameX > 0;
 
-        protected WalkableCrystal(int maxWidth, int maxHeight, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1, string dummyType = null)
+        protected WalkableCrystal(int maxWidth, int maxHeight, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1, string dummyType = null, int soundStyleVar = 1)
         {
             ItemName = drop;
             TexturePath = path;
@@ -180,6 +181,7 @@ namespace StarlightRiver.Core
             MaxHeight = maxHeight;
             MaxWidth = maxWidth;
             Sound = sound;
+            SoundStyle = soundStyleVar;
             DummyName = dummyType ?? "WalkableCrystalDummy";
         }
 
@@ -195,7 +197,7 @@ namespace StarlightRiver.Core
 
         public override void SetDefaults()
         {
-            (this).QuickSet(int.MaxValue, DustType, Sound, MapColor ?? Color.Transparent, -1);
+            (this).QuickSet(int.MaxValue, DustType, Sound, MapColor ?? Color.Transparent, -1, default, default, default, SoundStyle);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
