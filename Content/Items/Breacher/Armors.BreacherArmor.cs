@@ -446,7 +446,8 @@ namespace StarlightRiver.Content.Items.Breacher
                     cache.Add(projectile.Center);
                 }
             }
-            cache.Add(projectile.oldPos[0] + new Vector2(projectile.width / 2, projectile.height / 2));
+            if (projectile.oldPos[0] != Vector2.Zero)
+                cache.Add(projectile.oldPos[0] + new Vector2(projectile.width / 2, projectile.height / 2));
 
             while (cache.Count > 100)
             {
