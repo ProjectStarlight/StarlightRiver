@@ -9,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class VitricBackground : HookGroup
+    class VitricBackground : HookGroup
     {
         internal static ParticleSystem ForegroundParticles;
         internal static ParticleSystem BackgroundParticles;
@@ -26,12 +26,21 @@ namespace StarlightRiver.Content.CustomHooks
             BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, 1);
 
             On.Terraria.Main.DrawBackgroundBlackFill += DrawVitricBackground;
+            On.Terraria.Main.DrawBlack += ForceDrawBlack;
         }
 
         public override void Unload()
         {
             ForegroundParticles = null;
             BackgroundParticles = null;
+        }
+
+        private void ForceDrawBlack(On.Terraria.Main.orig_DrawBlack orig, Main self, bool force)
+        {
+            if (StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
+                orig(self, true);
+            else
+                orig(self, force);
         }
 
         private static void UpdateForegroundBody(Particle particle)
@@ -65,7 +74,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self);
 
-            if (Main.gameMenu || Main.dedServ) 
+            if (Main.gameMenu || Main.dedServ)
                 return;
 
             Player player = Main.LocalPlayer;
@@ -85,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 for (int k = 5; k >= 0; k--)
                 {
-                    if(k == 3)
+                    if (k == 3)
                         BackgroundParticles.DrawParticles(Main.spriteBatch);
 
                     int off = 140 + (340 - k * 110);
@@ -128,7 +137,6 @@ namespace StarlightRiver.Content.CustomHooks
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
                 DrawTilingBackground(Main.spriteBatch);
-                DrawBlack();
             }
         }
 
@@ -171,19 +179,6 @@ namespace StarlightRiver.Content.CustomHooks
                 else if (!biome.Contains(((pos + Main.screenPosition) / 16).ToPoint()) || !biome.Contains(((pos + size + Main.screenPosition) / 16).ToPoint())) return true;
             }
             return false;
-        }
-
-        private static void DrawBlack()
-        {
-            for (int i = -2 + (int)(Main.screenPosition.X) / 16; i <= 2 + (int)(Main.screenPosition.X + Main.screenWidth) / 16; i++)
-                for (int j = -2 + (int)(Main.screenPosition.Y) / 16; j <= 2 + (int)(Main.screenPosition.Y + Main.screenHeight) / 16; j++)
-                    if (Lighting.Brightness(i, j) == 0 || ((Main.tile[i, j].active() && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].wall != 0))
-                    {
-                        Color color = Color.Black * (1 - Lighting.Brightness(i, j) * 2);
-                        Tile tile = Framing.GetTileSafely(i, j);
-
-                        Main.spriteBatch.Draw(Main.tileTexture[tile.type], new Vector2(i * 16, j * 16) - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color);
-                    }
         }
 
         private static void DrawLayer(Vector2 basepoint, Texture2D texture, float parallax, Vector2 off = default, Color color = default, bool flip = false)
