@@ -106,7 +106,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Mine" + k));
                 Projectile.NewProjectile(projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
             }
-
+            foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, projectile.Center) < 1500))
+            {
+                player.GetModPlayer<StarlightPlayer>().Shake += 15;
+            }
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
                 player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), 60, 0);
         }
