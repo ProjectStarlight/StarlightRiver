@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 }
             }
 
-            Main.NewText("Couldnt find a landing point!");
+            //Main.NewText("Couldnt find a landing point!");
             return npc.Center + new Vector2(16, -36); //when it cant find a landing point, default to the current position
         }
 
