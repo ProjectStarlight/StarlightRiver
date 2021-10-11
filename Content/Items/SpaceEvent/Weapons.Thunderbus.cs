@@ -419,10 +419,15 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 			if (projectile.timeLeft == 29)
 			{
-                for (int k = 0; k < 50; k++)
+				for (int k = 0; k < 50; k++)
 				{
 					Dust.NewDustPerfect(projectile.Center + new Vector2(0, 100), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
-				}
+                }
+
+                for(int k = 0; k < 20; k++)
+				{
+                    Dust.NewDustPerfect(projectile.Center + new Vector2(0, 50), ModContent.DustType<Dusts.LightningBolt>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 0.8f);
+                }
 
 				Helper.PlayPitched("Magic/LightningCast", 1, 0.9f, projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
