@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             return true;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)

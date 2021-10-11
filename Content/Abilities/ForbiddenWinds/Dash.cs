@@ -15,8 +15,13 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
 	public class Dash : CooldownAbility, ILoadable
     {
+        public const int DEFAULTTIME = 15;
+
         public int Time;
         public int EffectTimer;
+
+        private List<Vector2> cache;
+        private Trail trail;
 
         public override float ActivationCostDefault => 1;
         public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
@@ -24,15 +29,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override int CooldownMax => 80;
 
-        public const int defaultTime = 15;
-
         public Vector2 Dir { get; private set; }
         public Vector2 Vel { get; private set; }
         public float Speed { get; set; }
         public float Boost { get; set; }
-
-        private List<Vector2> cache;
-        private Trail trail;
 
         public float Priority => 1;
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         {
             Boost = 0.25f;
             Speed = 28;
-            Time = defaultTime;
+            Time = DEFAULTTIME;
             CooldownBonus = 0;
         }
 

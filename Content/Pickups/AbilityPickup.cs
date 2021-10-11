@@ -74,11 +74,13 @@ namespace StarlightRiver.Pickups
         public sealed override void AI()
         {
             StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local player since ability pickup visuals are clientside
+
             if (Visible)
             {
                 Visuals();
 
-                if (!Fancy) return;
+                if (!Fancy) 
+                    return;
 
                 if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), npc.Center) <= Main.screenWidth / 2 + 100) //shader
                 {

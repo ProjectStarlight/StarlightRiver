@@ -39,9 +39,10 @@ namespace StarlightRiver.Core
 
         public int platformTimer = 0;
 
-        public int PickupTimer = 0;
+        public int PickupTimer = 0; //TODO: Move this into its own thing eventually
         public int MaxPickupTimer = 0;
         public NPC PickupTarget;
+        public Vector2 oldPickupPos;
 
         public bool inTutorial;
 
@@ -59,13 +60,16 @@ namespace StarlightRiver.Core
         {
             if (PickupTarget != null)
             {
+                if (PickupTimer == 0)
+                    oldPickupPos = player.Center;
+
                 PickupTimer++;
 
                 player.immune = true;
                 player.immuneTime = 5;
                 player.immuneNoBlink = true;
 
-                player.Center = PickupTarget.Center;
+                player.Center = Vector2.SmoothStep(oldPickupPos, PickupTarget.Center, PickupTimer / 30f);
                 if (PickupTimer >= MaxPickupTimer) PickupTarget = null;
             }
             else PickupTimer = 0;
