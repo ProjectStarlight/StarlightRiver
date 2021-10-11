@@ -221,7 +221,7 @@ namespace StarlightRiver.Pickups
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(4f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
