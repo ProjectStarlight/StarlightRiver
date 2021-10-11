@@ -39,6 +39,20 @@ namespace StarlightRiver.Core
         {
             progress.Message = "Digging the Vitric Desert";
 
+            for(int x = 0; x < Main.maxTilesX; x++)
+                for(int y = 0; y < Main.maxTilesY; y++)
+				{
+                    var tile = Framing.GetTileSafely(x, y);
+                    tile.ClearEverything();
+
+                    tile.type = (ushort)StarlightRiver.Instance.TileType("WorldBarrier");
+                    tile.active(true);
+				}
+
+            UndergroundDesertLocation = new Rectangle(Main.maxTilesX / 2 - 200, Main.maxTilesY / 2 - 400, 400, 400);
+            Main.spawnTileX = Main.maxTilesX / 2;
+            Main.spawnTileY = Main.maxTilesY / 2;
+
             int vitricHeight = 140;
             ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
             ValidDesertGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"), TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,

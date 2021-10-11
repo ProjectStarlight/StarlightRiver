@@ -13,6 +13,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void Load()
 		{
 			LoadTile(
+				"WorldBarrier",
+				"World Barrier",
+				new TileLoadData(
+					minPick: 9000,
+					dustType: 33,
+					soundType: SoundID.Drown,
+					mapColor: new Color(0, 0, 0)
+					)
+				);
+
+			LoadTile(
 				"AncientSandstone",
 				"Ancient Sandstone",
 				new TileLoadData(
