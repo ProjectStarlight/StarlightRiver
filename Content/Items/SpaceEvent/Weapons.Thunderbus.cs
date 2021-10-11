@@ -45,7 +45,12 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             item.shootSpeed = 10;
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override Vector2? HoldoutOffset()
+        {
+            return new Vector2(-10, 0);
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
             float aim = (player.Center - Main.MouseWorld).ToRotation();
 
@@ -54,7 +59,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if(player.altFunctionUse == 2)
 			{
-                int i = Projectile.NewProjectile(player.Center - new Vector2(64, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
+                int i = Projectile.NewProjectile(player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
                 ball = Main.projectile[i];
 
                 Helper.PlayPitched("Magic/LightningExplodeShallow", 0.7f, -0.2f, player.Center);
@@ -81,6 +86,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             foreach(NPC npc in Main.npc.Where(n => n.active && 
             !n.dontTakeDamage && 
+            !n.townNPC && 
             Helper.CheckConicalCollision(player.Center, 500, aim, 1, n.Hitbox) && 
             Utils.PlotLine((n.Center / 16).ToPoint16(), (player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
 			{
@@ -130,6 +136,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             return false;
 		}
+
 	}
 
     internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
@@ -232,7 +239,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             }
 
             if (projOwner is null)
-                startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 64;
+                startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 48;
             else
                 startPoint = projOwner.Center;
 
