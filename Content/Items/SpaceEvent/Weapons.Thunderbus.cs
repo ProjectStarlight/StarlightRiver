@@ -29,8 +29,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
                 "Right click to fire a lightning orb\n" +
                 "Shooting at the orb zaps all enemies near it\n" +
-                "The orb explodes when hitting ground\n" +
-                "You may only have one orb at a time");
+                "The orb explodes on impact, and only one may be active at once\n" +
+                "'Crush the path of most resistance'");
 		}
 
 		public override void SetDefaults()
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 int i = Projectile.NewProjectile(player.Center - new Vector2(64, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
                 ball = Main.projectile[i];
 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 1, -0.2f, player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.7f, -0.2f, player.Center);
 
                 return false;
 			}
@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (projectile.timeLeft == 60)
             {
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f * (power / 20f), 0.5f, projectile.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.20f * (power / 20f), 0.5f, projectile.Center);
 
                 savedPos = projectile.Center;
                 startPoint = projectile.Center;       
@@ -430,7 +430,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 }
 
 				Helper.PlayPitched("Magic/LightningCast", 1, 0.9f, projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                Helper.PlayPitched("Magic/LightningExplode", 1, 0.9f, projectile.Center);
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
             }
 
             if (projectile.timeLeft == 20)

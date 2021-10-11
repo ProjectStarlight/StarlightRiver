@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (Timer == Risetime - 1) //hitting the top
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 18;
-                    Helper.PlayPitched("ArenaHit", 0.7f, 0, npc.Center);
+                    Helper.PlayPitched("ArenaHit", 0.6f, 0, npc.Center);
                 }
 
                 if (Timer > Risetime) 
