@@ -52,6 +52,7 @@ namespace StarlightRiver.Core
             UndergroundDesertLocation = new Rectangle(Main.maxTilesX / 2 - 200, Main.maxTilesY / 2 - 400, 400, 400);
             Main.spawnTileX = Main.maxTilesX / 2;
             Main.spawnTileY = Main.maxTilesY / 2;
+            Main.worldSurface = 200;
 
             int vitricHeight = 140;
             ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
