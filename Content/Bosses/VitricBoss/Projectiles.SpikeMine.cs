@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (Timer == 90) //when this projectile goes off
             {
 
-                Helper.PlayPitched("Magic/FireHit", 0.5f, 0, projectile.Center);
+                Helper.PlayPitched("Magic/FireHit", 0.20f, 0, projectile.Center);
                 projectile.hostile = true;
 
                 for (int k = 0; k < 50; k++)

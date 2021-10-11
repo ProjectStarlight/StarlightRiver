@@ -212,8 +212,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					player.GetModPlayer<StarlightPlayer>().Shake += 15;
 
 					hooked.StrikeNPC(projectile.damage, projectile.knockBack, player.Center.X < hooked.Center.X ? -1 : 1);
-
-					Helper.PlayPitched("Guns/ChainPull", 0, 0, player.Center);
+					Helper.PlayPitched("Guns/ChainPull", 0.001f, 0, player.Center);
 				}
 			}
 
