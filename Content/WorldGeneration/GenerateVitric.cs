@@ -50,8 +50,8 @@ namespace StarlightRiver.Core
 				}
 
             UndergroundDesertLocation = new Rectangle(Main.maxTilesX / 2 - 200, Main.maxTilesY / 2 - 400, 400, 400);
-            Main.spawnTileX = Main.maxTilesX / 2;
-            Main.spawnTileY = Main.maxTilesY / 2;
+            Main.spawnTileX = Main.maxTilesX / 2 + (225 / 16);
+            Main.spawnTileY = Main.maxTilesY / 2 + (1963 / 16);
             Main.worldSurface = 200;
 
             int vitricHeight = 140;
