@@ -261,7 +261,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool? CanHitNPC(NPC target)
 		{
-            return projectile.timeLeft < 120;
+            if (projectile.timeLeft < 120)
+                return base.CanHitNPC(target);
+            return false;
 		}
 
         private Vector2 PointOnSpline(float progress)
