@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                 "Haunted weapons float around you and attack automatically\n" +
                 "Haunted weapons decrease your max mana based on their cost\n" +
                 "Haunted weapons become disinterested in non-magic users\n" +
-                "Doube tap DOWN again on a haunted item to unhaunt it\n" + 
+                "Double tap DOWN again on a haunted item to unhaunt it\n" + 
                 "Double tap DOWN with an empty hand to clear haunted items";
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
