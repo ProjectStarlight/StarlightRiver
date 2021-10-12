@@ -57,8 +57,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (player.altFunctionUse == 2)
 			{
-				item.useTime = 2;
-				item.useAnimation = 2;
+				item.useTime = 14;
+				item.useAnimation = 14;
 				item.noUseGraphic = true;
 
 				return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<ScrapshotHook>());
@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * item.shootSpeed, type, damage, knockBack, player.whoAmI);
 
 					if(type != ModContent.ProjectileType<ScrapshotShrapnel>())
-					Main.projectile[i].timeLeft = 30;
+						Main.projectile[i].timeLeft = 30;
 
 					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
@@ -299,8 +299,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			projectile.ranged = true;
 			projectile.friendly = true;
 			projectile.penetrate = 1;
-			projectile.timeLeft = 40;
-			projectile.extraUpdates = 2;
+			projectile.timeLeft = 100;
+			projectile.extraUpdates = 4;
 			projectile.alpha = 255;
 		}
 
@@ -312,10 +312,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void AI()
 		{
-			if (projectile.timeLeft == 40)
-				projectile.velocity *= Main.rand.NextFloat(3, 4);
+			if (projectile.timeLeft == 100)
+				projectile.velocity *= Main.rand.NextFloat(1.5f, 2);
 
-			projectile.velocity *= 0.87f;
+			projectile.velocity *= 0.95f;
 			ManageCaches();
 			ManageTrail();
 		}
@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => factor * 5, factor =>
 			{
-				return new Color(255, 170, 80) * factor.X * (projectile.timeLeft / 40f);
+				return new Color(255, 170, 80) * factor.X * (projectile.timeLeft / 100f);
 			});
 
 			trail.Positions = cache.ToArray();
