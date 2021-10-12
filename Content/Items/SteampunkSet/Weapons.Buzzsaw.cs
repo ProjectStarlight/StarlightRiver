@@ -123,6 +123,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.Center = player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
 			projectile.velocity = Vector2.Zero;
 			player.itemRotation = direction.ToRotation();
+
+			if (player.direction != 1)
+				player.itemRotation -= 3.14f;
+
+			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
+
 			player.heldProj = projectile.whoAmI;
 		}
 
