@@ -32,5 +32,21 @@ namespace StarlightRiver.Core
 		{
             PickAmmoEvent?.Invoke(weapon, ammo, player, ref type, ref speed, ref damage, ref knockback);
 		}
+
+        public delegate bool CanUseItemDelegate(Item item, Player player);
+        public static event CanUseItemDelegate CanUseItemEvent;
+		public override bool CanUseItem(Item item, Player player)
+		{
+            if (CanUseItemEvent != null)
+            {
+                bool result = true;
+                foreach (CanUseItemDelegate del in CanUseItemEvent.GetInvocationList())
+                {
+                    result &= del(item, player);
+                }
+                return result;
+            }
+            return true;
+        }
 	}
 }
