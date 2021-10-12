@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.CustomHooks
         private delegate void DrawWindowDelegate();
         private void EmitMoonlordLayerDel()
         {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 if (Main.projectile[k].modProjectile is IMoonlordLayerDrawable)

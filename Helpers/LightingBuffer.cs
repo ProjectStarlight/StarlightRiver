@@ -233,7 +233,7 @@ namespace StarlightRiver.Helpers
             }
             else
             {
-                ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
+                //ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
 
                 ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
                 ApplyEffect.Parameters["texSize"].SetValue(tex.Size());

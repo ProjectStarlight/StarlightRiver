@@ -141,15 +141,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
-        public void DrawMoonlordLayer(SpriteBatch spriteBatch)
-        {
-            if (!npc.active)
-                return;
+		public void DrawMoonlordLayer(SpriteBatch spriteBatch)
+		{
+			if (!npc.active)
+				return;
 
             if (State == 3 || State == 4)
-                ScrollDraw(spriteBatch);
-            else  //animation for rising out of the sand
-                MainDraw(spriteBatch);
+				ScrollDraw(spriteBatch);
+			else  //animation for rising out of the sand
+				MainDraw(spriteBatch);
         }
 
         public virtual void MainDraw(SpriteBatch sb)
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (State >= 3) //ignore timer after rising is done
                 targetHeight = tex.Height;
 
-            const int yOffset = 4; // Fit perfectly in the gap
+            const int yOffset = 3; // Fit perfectly in the gap
 
             Rectangle target = new Rectangle(
                 (int)(npc.position.X - Main.screenPosition.X),
@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (State >= 3) //ignore timer after rising is done
                 targetHeight = tex.Height;
 
-            const int yOffset = 4; // Fit perfectly in the gap
+            const int yOffset = 3; // Fit perfectly in the gap
 
             Rectangle target = new Rectangle(
                 (int)(npc.position.X - Main.screenPosition.X),
