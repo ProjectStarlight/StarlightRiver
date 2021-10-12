@@ -155,7 +155,7 @@ namespace StarlightRiver.Helpers
 
     public static class LightingBufferRenderer
     {
-        private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
+        private static Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
 
         private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
         private static readonly VertexPositionColorTexture[] verticiesColor = new VertexPositionColorTexture[12];
@@ -233,6 +233,8 @@ namespace StarlightRiver.Helpers
             }
             else
             {
+                ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
+
                 ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
                 ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
                 ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));

@@ -4,10 +4,11 @@ float2 texSize;
 float4 drawColor;
 float4x4 zoom;
 
-texture sampleTexture;
-sampler2D samplerTex = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = mirror; AddressV = mirror; };
 texture targetTexture;
-sampler2D targetTex = sampler_state { texture = <targetTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = mirror; AddressV = mirror; };
+sampler2D targetTex = sampler_state { texture = <targetTexture>; };
+texture sampleTexture;
+sampler2D sampleTex = sampler_state { texture = <sampleTexture>; };
+
 
 struct VertexShaderInput
 {
@@ -33,7 +34,7 @@ float4 Fragment(VertexShaderOutput input) : COLOR
 {
 	float2 st = input.coord * texSize / screenSize + offset;
 
-	float3 color = tex2D(samplerTex, st).xyz * tex2D(targetTex, input.coord).xyz;
+	float3 color = tex2D(sampleTex, st).xyz * tex2D(targetTex, input.coord).xyz;
 
 	return float4(color, tex2D(targetTex, input.coord).w) * drawColor;
 }
