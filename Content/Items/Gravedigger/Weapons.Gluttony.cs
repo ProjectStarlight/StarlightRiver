@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			item.useTurn = true;
 			item.autoReuse = true;
 			item.value = Item.buyPrice(0, 6, 0, 0);
-			item.rare = ItemRarityID.Pink;
-			item.damage = 34;
+			item.rare = ItemRarityID.Green;
+			item.damage = 20;
 			item.mana = 9;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.useTime = 10;
@@ -108,13 +108,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			timer++;
 
 			Player player = Main.player[projectile.owner];
-			projectile.damage = (int)(player.inventory[player.selectedItem].damage * player.magicDamage);
+			projectile.damage = (int)(player.HeldItem.damage * player.magicDamage);
 
 			direction = Main.MouseWorld - (player.Center);
 			direction.Normalize();
 
 			projectile.Center = player.Center;
 			projectile.rotation = direction.ToRotation();
+
+			if (player.statMana < player.HeldItem.mana)
+				released = true;
 
 			if (player.channel && player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
             {
