@@ -137,6 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.penetrate = -1;
             projectile.timeLeft = 2;
             projectile.extraUpdates = 3;
+            projectile.melee = true;
         }
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
