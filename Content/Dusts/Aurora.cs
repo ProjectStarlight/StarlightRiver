@@ -55,6 +55,15 @@ namespace StarlightRiver.Content.Dusts
         }
     }
 
+    class AuroraFast : Aurora
+	{
+		public override bool Update(Dust dust)
+		{
+            dust.fadeIn--;
+			return base.Update(dust);
+		}
+	}
+
     class AuroraSuction : Aurora
 	{
         public override Color? GetAlpha(Dust dust, Color lightColor)
