@@ -372,7 +372,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostAI()
         {
-            npc.life = 1;
+            npc.life = 999999;
 
             if (Phase > (int)AIStates.SpawnAnimation && Phase < (int)AIStates.SecondPhase)
                 Phase = (int)AIStates.SecondPhase;

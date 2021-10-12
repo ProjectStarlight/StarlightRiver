@@ -223,12 +223,16 @@ namespace StarlightRiver.Content.Items.Breacher
             if (rotDifference > 0)
             {
                 for (float k = 0; k < rotDifference; k += 0.02f * Math.Sign(rotDifference))
+                {
                     DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+                }
             }
             else
             {
                 for (float k = 0; k > rotDifference; k += 0.02f * Math.Sign(rotDifference))
+                {
                     DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+                }
             }
 
             //-----------------------------------------------------------------------//
@@ -237,15 +241,20 @@ namespace StarlightRiver.Content.Items.Breacher
             rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
             spriteBatch.Draw(Main.magicPixel, projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - projectile.Center).Length(), 2), SpriteEffects.None, 0);
+
             if (rotDifference > 0)
             {
                 for (float k = 0; k < rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                {
                     DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+                }
             }
             else
             {
                 for (float k = 0; k > rotDifference; k += 0.01f * Math.Sign(rotDifference))
+                {
                     DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+                }
             }
 
             return true;
@@ -264,8 +273,10 @@ namespace StarlightRiver.Content.Items.Breacher
         private void IdleMovement(Entity entity)
         {
             Vector2 toEntity = (entity.Center - new Vector2((entity.width + 50) * entity.direction, entity.height + 25)) - projectile.Center;
+
             if (toEntity.Length() > 1000)
                 projectile.Center = (entity.Center - new Vector2((entity.width + 50) * entity.direction, entity.height + 25));
+
             toEntity.Normalize();
             toEntity *= 10;
             projectile.velocity = Vector2.Lerp(projectile.velocity, toEntity, 0.02f);
@@ -302,9 +313,7 @@ namespace StarlightRiver.Content.Items.Breacher
                         rotations2 = new List<float>();
                     }
                     else
-                    {
                         AttackMovement(testtarget);
-                    }
                 }
                 else
                     IdleMovement(player);
@@ -321,30 +330,42 @@ namespace StarlightRiver.Content.Items.Breacher
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
                     target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
+
                     if (rotations == null)
                     {
                         rotations = new List<float>();
                         rotations2 = new List<float>();
                     }
+
                     rotations.Add(CurrentRotation);
+
                     while (rotations.Count > 8)
+                    {
                         rotations.RemoveAt(0);
+                    }
 
                     rotations2.Add(CurrentRotation2);
+
                     while (rotations2.Count > 8)
+                    {
                         rotations2.RemoveAt(0);
+                    }
 
                     if (ScanTimer < 150)
                         player.GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)ScanTimer / 150f));
+
                     if (ScanTimer == 125)
                         Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+
                     ScanTimer--;
                 }
                 else
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
+
                     if (attackDelay == 0)
                         SummonStrike();
+
                     attackDelay--;
                 }
 
@@ -378,6 +399,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Charges--;
         }
     }
+
     internal class OrbitalStrike : ModProjectile, IDrawPrimitive
     {
         public override string Texture => AssetDirectory.BreacherItem + Name;
@@ -718,8 +740,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         private static void Main_DrawNPC(On.Terraria.Main.orig_DrawNPC orig, Main self, int i, bool behindTiles)
         {
-            if (!Main.npc[i].GetGlobalNPC<BreacherGNPC>().Targetted || !antiRecursion)
-                orig(self, i, behindTiles);
+            orig(self, i, behindTiles);
 
             if (antiRecursion)
                 DrawNPCTarget(i);
@@ -730,36 +751,35 @@ namespace StarlightRiver.Content.Items.Breacher
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            if (Main.dedServ || spriteBatch == null || npcTarget == null || gD == null)
+            if (Main.dedServ || spriteBatch is null || npcTarget is null || gD is null)
                 return;
 
             antiRecursion = false;
             RenderTargetBinding[] bindings = gD.GetRenderTargets();
             gD.SetRenderTarget(npcTarget);
             gD.Clear(Color.Transparent);
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
             for (int i = 0; i < Main.npc.Length; i++)
             {
                 NPC npc = Main.npc[i];
+
                 if (npc.active && npc.GetGlobalNPC<BreacherGNPC>().Targetted)
                 {
                     alpha = npc.GetGlobalNPC<BreacherGNPC>().Alpha;
+
                     if (npc.modNPC != null)
                     {
                         if (npc.modNPC != null && npc.modNPC is ModNPC modNPC)
                         {
                             if (modNPC.PreDraw(spriteBatch, npc.GetAlpha(Color.White)))
-                            {
                                 Main.instance.DrawNPC(i, false);
-                            }
+
                             modNPC.PostDraw(spriteBatch, npc.GetAlpha(Color.White));
                         }
                     }
                     else
-                    {
                         Main.instance.DrawNPC(i, false);
-                    }
                 }
             }
 
