@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             if (player.statMana > player.statManaMax2 - manaRestrictFade) //restrict mana
                 player.statMana = player.statManaMax2 - manaRestrictFade;
 
-            if (player == Main.LocalPlayer && sleepTimer == 1) //warning message
+            if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
                 Main.NewText("Your haunted weapons seem bored...", new Color(200, 120, 255));
 
             if (sleepTimer > 0) //decrement sleep timer
