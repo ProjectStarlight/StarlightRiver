@@ -51,6 +51,31 @@ namespace StarlightRiver.Core
                 tooltips.Insert(index + 1, line);
             }
 
+            //Crit display. Same as ammo, maybe move this later?
+            if(item.damage > 0 && item.crit > -4)
+			{
+                TooltipLine line = new TooltipLine(mod, "CritDamage", "");
+
+                var critLine = tooltips.Find(n => n.Name == "Damage");
+
+                if (critLine != null)
+                {
+                    int index = tooltips.IndexOf(critLine);
+
+                    var mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
+
+                    float mult = 2;
+                    if (item.melee) mult += mp.MeleeCritMult;
+                    if (item.ranged) mult += mp.RangedCritMult;
+                    if (item.magic) mult += mp.MagicCritMult;
+                    mult += mp.AllCritMult;
+
+                    line.text = $"{(int)(item.damage * mult)} critical strike damage";
+                    line.overrideColor = new Color(255, 200, 100);
+                    tooltips.Insert(index + 1, line);
+                }
+            }
+
             //Ammo display, maybe move this later? TODO?
 
             if(item.useAmmo != 0)
