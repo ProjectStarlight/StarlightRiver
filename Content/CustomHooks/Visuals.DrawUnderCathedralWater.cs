@@ -39,8 +39,12 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         private delegate void DrawWaterDelegate();
+
         private void DrawWater()
         {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
             foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is ArenaActor))
             {
                 (npc.modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
