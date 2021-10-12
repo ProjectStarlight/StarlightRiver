@@ -662,7 +662,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             TargetDuration --;
 
-            if (TargetDuration < 0)
+            if (Targetted && TargetDuration < 0)
             {
                 Targetted = false;
                 BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
