@@ -28,22 +28,25 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			item.width = 24;
 			item.height = 28;
-			item.useTurn = false;
+			item.useTurn = true;
+			item.autoReuse = true;
 			item.value = Item.buyPrice(0, 6, 0, 0);
 			item.rare = ItemRarityID.Pink;
 			item.damage = 34;
 			item.mana = 9;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.useTime = 10;
-			item.useAnimation = 7;
-			//item.scale = 0.9f;
-			item.reuseDelay = 5;
+			item.useAnimation = 10;
 			item.magic = true;
 			item.channel = true;
 			item.noMelee = true;
-			//item.noUseGraphic = true;
 			item.shoot = ModContent.ProjectileType<GluttonyHandle>();
 			item.shootSpeed = 0f;
+		}
+
+		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		{
+			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<GluttonyHandle>());
 		}
 	}
 
@@ -102,9 +105,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void AI()
         {
+			timer++;
+
 			Player player = Main.player[projectile.owner];
 			projectile.damage = (int)(player.inventory[player.selectedItem].damage * player.magicDamage);
-			timer++;
+
 			direction = Main.MouseWorld - (player.Center);
 			direction.Normalize();
 
@@ -115,7 +120,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             {
 				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
 
-				player.itemTime = player.itemAnimation = 2;
+				//player.itemTime = player.itemAnimation = 2;
 				projectile.timeLeft = 2;
 
 				player.itemRotation = direction.ToRotation();
