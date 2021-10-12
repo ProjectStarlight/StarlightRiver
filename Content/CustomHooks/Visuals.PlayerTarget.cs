@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -16,6 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
         //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
+        private MethodInfo playerDrawMethod;
+
         public static RenderTarget2D Target;
         //Ill move it later :P
         public static RenderTarget2D ScaledTileTarget { get; set; }
@@ -28,16 +31,26 @@ namespace StarlightRiver.Content.CustomHooks
             Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
             ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
+            playerDrawMethod = typeof(Main).GetMethod("DrawPlayer_DrawAllLayers", BindingFlags.NonPublic|BindingFlags.Instance);
+
             Main.OnPreDraw += Main_OnPreDraw;
         }
 
         private void Main_OnPreDraw(GameTime obj)
         {
+            if (Main.gameMenu)
+                return;
+
             RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
             Main.graphics.GraphicsDevice.SetRenderTarget(Target);
-            Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
             Main.spriteBatch.Begin();
 
+            if(Main.LocalPlayer.dye.Length > 0)
+			    playerDrawMethod?.Invoke(Main.instance, new object[] { Main.LocalPlayer, -1, Main.LocalPlayer.dye[0].IsAir ? 0 : Main.LocalPlayer.dye[0].dye });
+
+            /*
             for (int i = 0; i <= Main.playerDrawData.Count; i++)
             {
                 int num = -1;
@@ -75,7 +88,7 @@ namespace StarlightRiver.Content.CustomHooks
                         Main.spriteBatch.Draw(value.texture, value.position, value.sourceRect, value.color, value.rotation, value.origin, value.scale, value.effect, 0f);
                     }
                 }
-            }
+            }*/
 
             Main.spriteBatch.End();
             Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
