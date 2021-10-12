@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				float progress = owner.GetModPlayer<StarlightPlayer>().Timer * 0.02f + helm.minions.IndexOf(projectile) / (float)helm.minions.Count * 6.28f;
 
 				projectile.timeLeft = 2;
-				targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);
+				targetPos = owner.Center + new Vector2(0, -100 + (float)Math.Sin(progress * 3.4f) * 20) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);
 
 				if (sleepTimer <= 0) //fall asleep
 				{
