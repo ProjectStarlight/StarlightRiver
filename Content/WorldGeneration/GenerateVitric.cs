@@ -769,7 +769,7 @@ namespace StarlightRiver.Core
             int cY = y - 16;
             while (Main.tile[x, cY].active()) cY--;
             while (!Main.tile[x, cY + 1].active()) cY++;
-            if (ScanRectangle(x, y - 17, 10, 17) < 3)
+            if (ScanRectangle(x, y - 17, 10, 17) < 3 && ScanRectangle(x, y, 1, 17) == 17)
             {
                 StructureHelper.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
                 return true;
