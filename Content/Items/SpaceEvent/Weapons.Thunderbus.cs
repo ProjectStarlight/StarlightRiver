@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public Vector2 endPoint;
         public Vector2 midPoint;
 
-        public int power;
+        public int power = 20;
         public Projectile projOwner;
         public Projectile projTarget;
 
@@ -158,6 +158,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         private List<Vector2> cache;
         private Trail trail;
+
+        private bool manuallyFoundTarget = false;
 
         private float dist1;
         private float dist2;
@@ -219,10 +221,36 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return total;
         }
 
+        private NPC FindTarget()
+		{
+            List<NPC> targets = new List<NPC>();
+
+            foreach (NPC npc in Main.npc.Where(n => n.active &&
+             !n.dontTakeDamage &&
+             !n.townNPC &&
+             Vector2.Distance(projectile.Center, n.Center) < 500 &&
+             Utils.PlotLine((n.Center / 16).ToPoint16(), (projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+            {
+                targets.Add(npc);
+            }
+
+            if (targets.Count == 0)
+                return null;
+
+            manuallyFoundTarget = true;
+            return targets[Main.rand.Next(targets.Count)];
+        }
+
         public override void AI()
         {
             ManageCaches();
             ManageTrails();
+
+            if (target is null)
+                target = FindTarget();
+
+            if (target is null)
+                projectile.active = false;
 
             if (projectile.extraUpdates != 0)
                 projectile.rotation = projectile.velocity.ToRotation() - MathHelper.PiOver2;
@@ -240,10 +268,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
             }
 
-            if (projOwner is null)
-                startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 48;
-            else
-                startPoint = projOwner.Center;
+            if (!manuallyFoundTarget)
+            {
+                if (projOwner is null)
+                    startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 48;
+                else
+                    startPoint = projOwner.Center;
+            }
 
             if (projTarget is null)
                 endPoint = target.Center;
