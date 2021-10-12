@@ -35,9 +35,9 @@ float4 White(float4 sampleColor : COLOR0, float2 coords : TEXCOORD0) : COLOR0
         float height = coords.y * uImageSize0.y;
 
         if (fmod(height, 3.0) > 2.0)
-            return (lerp(clear, red, 0.5 * alpha) + white) * 0.05;
+            return (lerp(clear, red, 0.5 * alpha) + white) * 0.5;
 
-        return (lerp(clear, red, 0.33 * alpha) + white) * 0.02;
+        return (lerp(clear, red, 0.33 * alpha) + white) * 0.5;
     }
 
     float2 opposite = squareWidth * float2(1.0, -1.0);
