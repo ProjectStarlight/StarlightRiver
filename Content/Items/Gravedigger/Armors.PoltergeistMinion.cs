@@ -48,7 +48,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Timer++;
 
 			if (owner.armor[0].type != ItemType<PoltergeistHead>() || !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
+			{
 				projectile.active = false;
+				return;
+			}
 
 			if (item != null && !item.IsAir)
 			{
