@@ -78,7 +78,7 @@ namespace StarlightRiver
                 if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((player.Center / 16).ToPoint()))
 				{
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
-                    priority = MusicPriority.BossLow;
+                    priority = MusicPriority.BiomeHigh;
                 }
 
                 if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
