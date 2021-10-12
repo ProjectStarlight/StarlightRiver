@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.shoot = ModContent.ProjectileType<StarShuriken>();
             item.shootSpeed = 15f;
             item.noMelee = true;
+			item.noUseGraphic = true;
             item.autoReuse = true;
         }
 
@@ -50,7 +51,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if(amountToThrow == 1)
 			{
-				int i = Projectile.NewProjectile(player.Center, aim * 8f, ModContent.ProjectileType<StarGlaive>(), damage, knockBack, player.whoAmI);
+				int i = Projectile.NewProjectile(player.Center + aim * 20, aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
                 var proj = Main.projectile[i].modProjectile as StarGlaive;
 				proj.color = new Color(240, 100, 255);
 
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Items.Misc
             for(int k = 0; k < amountToThrow; k++)
 			{
                 float maxAngle = amountToThrow == 3 ? 0.21f : 0.16f;
-                int i = Projectile.NewProjectile(player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 8f, type, damage, knockBack, player.whoAmI);
+                int i = Projectile.NewProjectile(player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockBack, player.whoAmI);
                 var proj = Main.projectile[i].modProjectile as StarShuriken;
                 proj.color = amountToThrow == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
                 proj.creator = this;
@@ -96,7 +97,7 @@ namespace StarlightRiver.Content.Items.Misc
 			projectile.width = 30;
 			projectile.height = 30;
 			projectile.timeLeft = 150;
-			projectile.extraUpdates = 3;
+			projectile.extraUpdates = 6;
 			projectile.magic = true;
 			projectile.friendly = true;
 			projectile.penetrate = 1;
@@ -105,16 +106,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			projectile.rotation += 0.06f;
-			projectile.velocity *= 0.997f;
+			projectile.rotation += 0.05f;
+			projectile.velocity *= 0.998f;
 
 			projectile.velocity.Y += 0.01f;
 
-			if (Main.rand.Next(15) == 0)
-			{
-				Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
+			if (Main.rand.Next(10) == 0)
+				Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
 
-				var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(2, 3), 0, color * 0.4f, 0.5f);
+			if (Main.rand.Next(30) == 0)
+			{			
+				var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
 				d.customData = Main.rand.NextFloat(0.8f, 1.1f);
 			}
 
