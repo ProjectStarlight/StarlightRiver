@@ -131,17 +131,6 @@ namespace StarlightRiver.Content.Items.Breacher
         private float CurrentRotation => (targetPos - projectile.Center).ToRotation();
         private float CurrentRotation2 => (targetPos2 - projectile.Center).ToRotation();
 
-        private int targetHeight
-        {
-            get
-            {
-                if (target == null || !target.active)
-                    return 0;
-                else
-                    return (int)(target.height * 2.5f);
-            }
-        }
-
         private Vector2 targetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
         private Vector2 targetPos2 => Vector2.Lerp(target.Top, target.Bottom, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
 
@@ -330,6 +319,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 {
                     target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
                     target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
+                    BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
 
                     if (rotations == null)
                     {
@@ -670,9 +660,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void ResetEffects(NPC npc)
         {
-            TargetDuration -= 1;
+            TargetDuration --;
+
             if (TargetDuration < 0)
+            {
                 Targetted = false;
+                BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
+            }
         }
 
         public float Alpha;
@@ -711,7 +705,8 @@ namespace StarlightRiver.Content.Items.Breacher
     {
         public static RenderTarget2D npcTarget;
 
-        public static bool antiRecursion = false;
+        public static bool anyScanned;
+
         public float Priority { get => 1.1f; }
 
         private static float alpha = 1f;
@@ -724,10 +719,18 @@ namespace StarlightRiver.Content.Items.Breacher
             ResizeTarget();
 
             Main.OnPreDraw += Main_OnPreDraw;
-            On.Terraria.Main.DrawNPC += Main_DrawNPC;
+            On.Terraria.Main.DrawNPCs += DrawBreacherOverlay;
         }
 
-        public static void ResizeTarget()
+		private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		{
+            orig(self, behindTiles);
+
+            if(anyScanned)
+                DrawNPCTarget();
+        }
+
+		public static void ResizeTarget()
         {
             npcTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
         }
@@ -735,15 +738,6 @@ namespace StarlightRiver.Content.Items.Breacher
         public void Unload()
         {
             Main.OnPreDraw -= Main_OnPreDraw;
-            On.Terraria.Main.DrawNPC -= Main_DrawNPC;
-        }
-
-        private static void Main_DrawNPC(On.Terraria.Main.orig_DrawNPC orig, Main self, int i, bool behindTiles)
-        {
-            orig(self, i, behindTiles);
-
-            if (antiRecursion)
-                DrawNPCTarget(i);
         }
 
         private void Main_OnPreDraw(GameTime obj)
@@ -754,7 +748,6 @@ namespace StarlightRiver.Content.Items.Breacher
             if (Main.dedServ || spriteBatch is null || npcTarget is null || gD is null)
                 return;
 
-            antiRecursion = false;
             RenderTargetBinding[] bindings = gD.GetRenderTargets();
             gD.SetRenderTarget(npcTarget);
             gD.Clear(Color.Transparent);
@@ -784,13 +777,11 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             spriteBatch.End();
-            antiRecursion = true;
             gD.SetRenderTargets(bindings);
         }
 
-        private static void DrawNPCTarget(int i)
+        private static void DrawNPCTarget()
         {
-            NPC npc = Main.npc[i];
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
