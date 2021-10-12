@@ -28,9 +28,9 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.damage = 16;
+            item.damage = 11;
             item.magic = true;
-            item.mana = 13;
+            item.mana = 8;
             item.width = 18;
             item.height = 34;
             item.useTime = 24;
