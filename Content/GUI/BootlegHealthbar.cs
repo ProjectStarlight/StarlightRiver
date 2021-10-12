@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.GUI
     public class BootlegHealthbar : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-        public override bool Visible => tracked != null && tracked.active;
+        public override bool Visible => tracked != null && tracked.active && tracked.boss;
 
         public static NPC tracked;
         public static string Text;
