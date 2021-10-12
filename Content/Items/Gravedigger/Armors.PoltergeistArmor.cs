@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitric Headgear");
-            Tooltip.SetDefault("10% increased ranged damage");
+            DisplayName.SetDefault("Haunting Hood");
+            Tooltip.SetDefault("15% increased magic critical strike damage");
         }
 
         public override void SetDefaults()
@@ -44,12 +44,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 4;
+            item.defense = 2;
         }
 
         public override void UpdateEquip(Player player)
         {
-            player.rangedDamage += 0.1f;
+            player.GetModPlayer<CritMultiPlayer>().MagicCritMult += 0.15f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -204,34 +204,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Vitric Chestpiece");
-            Tooltip.SetDefault("5% increased ranged critical strike chance");
-        }
-
-        public override void SetDefaults()
-        {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 6;
-        }
-
-        public override void UpdateEquip(Player player)
-        {
-            player.rangedCrit += 5;
-        }
-    }
-
-    [AutoloadEquip(EquipType.Legs)]
-    public class PoltergeistLegs : ModItem
-    {
-        public override string Texture => AssetDirectory.GravediggerItem + Name;
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Vitric Greaves");
-            Tooltip.SetDefault("Slightly improved stamina regeneration");
+            DisplayName.SetDefault("Haunting Breastplate");
+            Tooltip.SetDefault("5% increased magic damage\n15% increased DoT resistance");
         }
 
         public override void SetDefaults()
@@ -245,7 +219,34 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void UpdateEquip(Player player)
         {
-            player.GetHandler().StaminaRegenRate += 0.1f;
+            player.magicDamage += 0.05f;
+            player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+        }
+    }
+
+    [AutoloadEquip(EquipType.Legs)]
+    public class PoltergeistLegs : ModItem
+    {
+        public override string Texture => AssetDirectory.GravediggerItem + Name;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Haunting Robes");
+            Tooltip.SetDefault("+40 maximum mana");
+        }
+
+        public override void SetDefaults()
+        {
+            item.width = 18;
+            item.height = 18;
+            item.value = 1;
+            item.rare = ItemRarityID.Green;
+            item.defense = 3;
+        }
+
+        public override void UpdateEquip(Player player)
+        {
+            player.statManaMax2 += 40;
         }
     }
 }

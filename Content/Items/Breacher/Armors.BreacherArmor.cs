@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Breacher Visor");
-            Tooltip.SetDefault("Add stats later");
+            Tooltip.SetDefault("15% increased ranged critical strike damage");
         }
 
         public override void SetDefaults()
@@ -29,8 +29,14 @@ namespace StarlightRiver.Content.Items.Breacher
             item.width = 28;
             item.height = 28;
             item.value = 8000;
+            item.defense = 4;
         }
-    }
+
+		public override void UpdateEquip(Player player)
+		{
+            player.GetModPlayer<CritMultiPlayer>().RangedCritMult += 0.15f;
+		}
+	}
 
     [AutoloadEquip(EquipType.Body)]
     public class BreacherChest : ModItem
@@ -40,7 +46,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Breacher Chestplate");
-            Tooltip.SetDefault("Add stats later");
+            Tooltip.SetDefault("10% increased ranged damage");
         }
 
         public override void SetDefaults()
@@ -48,6 +54,12 @@ namespace StarlightRiver.Content.Items.Breacher
             item.width = 34;
             item.height = 20;
             item.value = 6000;
+            item.defense = 6;
+        }
+
+        public override void UpdateEquip(Player player)
+        {
+            player.rangedDamage += 0.1f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<BreacherHead>() && legs.type == ModContent.ItemType<BreacherLegs>();
@@ -73,7 +85,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Breacher Leggings");
-            Tooltip.SetDefault("Add stats later");
+            Tooltip.SetDefault("up to 20% ranged critical strike damage based on speed");
         }
 
         public override void SetDefaults()
@@ -81,6 +93,12 @@ namespace StarlightRiver.Content.Items.Breacher
             item.width = 30;
             item.height = 20;
             item.value = 4000;
+            item.defense = 5;
+        }
+
+        public override void UpdateEquip(Player player)
+        {
+            player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, player.velocity.Length() / 16f * 0.2f);
         }
     }
 
