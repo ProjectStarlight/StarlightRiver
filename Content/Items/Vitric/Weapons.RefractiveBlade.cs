@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 56;
+            item.damage = 43;
             item.width = 60;
             item.height = 60;
             item.useTime = 22;
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if(player.altFunctionUse == 2)
 			{
                 if(!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.1f), knockBack, player.whoAmI, 0, 120);
+                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockBack, player.whoAmI, 0, 120);
 
                 return false;
 			}
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.penetrate = -1;
 
             projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = 5;
+            projectile.localNPCHitCooldown = 8;
         }
 
 		public override void AI()
@@ -486,7 +486,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Inflicted(npc))
             {
                 if (item.melee)
-                    damage = (int)(damage * 1.5f);
+                    damage = (int)(damage * 1.25f);
             }
 		}
 
@@ -495,10 +495,10 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Inflicted(npc))
             {
                 if (projectile.melee)
-                    damage = (int)(damage * 1.5f);
+                    damage = (int)(damage * 1.25f);
 
                 if (projectile.type == ProjectileType<RefractiveBladeProj>())
-                    damage = (int)(damage * 2.0f);
+                    damage = (int)(damage * 1.5f);
             }
         }
 	}
