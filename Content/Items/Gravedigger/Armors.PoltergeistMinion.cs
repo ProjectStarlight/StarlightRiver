@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (sleepTimer <= 0) //fall asleep
 				{
 					targetRotation = 1.57f + (Item.staff[item.type] ? 1.57f / 2 : 0);
-					targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(progress) * 35, (float)Math.Sin(progress) * 10);
+					targetPos = owner.Center + new Vector2(0, -70) + new Vector2((float)Math.Cos(progress) * 35, (float)Math.Sin(progress) * 10);
 				}
 
 				projectile.Center += (targetPos - projectile.Center) * 0.05f;
