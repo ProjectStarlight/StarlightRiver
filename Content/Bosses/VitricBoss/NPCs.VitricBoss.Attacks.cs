@@ -565,7 +565,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
                 }
 
-                if (AttackTimer % 90 == 60)
+                if (AttackTimer > 120 && AttackTimer % 90 == 60)
                     Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
             }
 
