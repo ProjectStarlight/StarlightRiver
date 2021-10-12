@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.Items.Misc
 			projectile.extraUpdates = 3;
 			projectile.magic = true;
 			projectile.friendly = true;
-			projectile.penetrate = -1;
+			projectile.penetrate = 20;
 			projectile.scale = 0.85f;
 		}
 
@@ -265,9 +265,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			Helper.PlayPitched("Yeehaw", 1, 0, projectile.Center);
-			projectile.velocity *= -1;
-			return false;
+			projectile.penetrate--;
+
+			if (projectile.penetrate > 0)
+			{
+				Helper.PlayPitched("Yeehaw", 1, 0, projectile.Center);
+				projectile.velocity *= -1;
+				return false;
+			}
+
+			return true;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
