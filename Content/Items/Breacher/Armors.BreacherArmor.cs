@@ -30,6 +30,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.height = 28;
             item.value = 8000;
             item.defense = 4;
+            item.rare = 3;
         }
 
 		public override void UpdateEquip(Player player)
@@ -55,6 +56,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.height = 20;
             item.value = 6000;
             item.defense = 6;
+            item.rare = 3;
         }
 
         public override void UpdateEquip(Player player)
@@ -94,6 +96,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.height = 20;
             item.value = 4000;
             item.defense = 5;
+            item.rare = 3;
         }
 
         public override void UpdateEquip(Player player)
