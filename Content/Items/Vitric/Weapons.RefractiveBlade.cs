@@ -48,6 +48,15 @@ namespace StarlightRiver.Content.Items.Vitric
             item.noUseGraphic = true;
         }
 
+        public override bool CanUseItem(Player player)
+        {
+            if (player.altFunctionUse == 2)
+                item.useStyle = ItemUseStyleID.HoldingOut;
+            else
+                item.useStyle = ItemUseStyleID.SwingThrow;
+            return true;
+        }
+
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
             if(player.altFunctionUse == 2)
@@ -278,6 +287,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
             projectile.Center = Owner.Center;
+            Owner.itemAnimation = Owner.itemAnimationMax;
+
             float targetRot = (Main.MouseWorld - Owner.Center).ToRotation();
             float diff = Helper.CompareAngle(LaserRotation, targetRot);
             float maxRot = firing ? 0.02f : 0.08f;
