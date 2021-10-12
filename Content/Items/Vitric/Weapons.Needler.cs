@@ -38,6 +38,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			item.autoReuse = true;
 		}
 
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-10, 0);
+		}
+
 		//TODO: Add glowmask to weapon
 		//TODO: Add holdoffset
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -53,7 +58,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			for (int i = 0; i < 15; i++)
 			{
-				Dust dust = Dust.NewDustPerfect(position + (direction * 4.4f), 6, (direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f) * Main.rand.NextFloat());
+				Dust dust = Dust.NewDustPerfect(position + (direction * 3f), 6, (direction.RotatedBy(Main.rand.NextFloat(-1, 1)) / 5f) * Main.rand.NextFloat());
 				dust.noGravity = true;
 			}
 
@@ -62,6 +67,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (player.direction != 1)
 				player.itemRotation -= 3.14f;
 
+			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 			return false;
 		}
 	}
