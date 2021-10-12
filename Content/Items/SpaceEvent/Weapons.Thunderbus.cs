@@ -47,9 +47,24 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             item.rare = ItemRarityID.Orange;
         }
 
-        public override Vector2? HoldoutOffset()
+		public override Vector2? HoldoutOffset()
+		{
+			return new Vector2(-10, 0);
+		}
+
+        public override bool CanUseItem(Player player)
         {
-            return new Vector2(-10, 0);
+            if (player.altFunctionUse == 2)
+            {
+                item.useTime = 60;
+                item.useAnimation = 60;
+            }
+            else
+            {
+                item.useTime = 30;
+                item.useAnimation = 30;         
+            }
+            return true;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -497,7 +512,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 for(int k = 0; k < Main.maxNPCs; k++)
 				{
                     var npc = Main.npc[k];
-                    if(npc.active && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
+                    if(npc.active && npc.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
 					{
                         int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner);
                         var proj = Main.projectile[i].modProjectile as ThunderbussShot;
