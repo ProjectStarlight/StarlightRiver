@@ -660,12 +660,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void ResetEffects(NPC npc)
         {
-            TargetDuration --;
+            TargetDuration--;
 
             if (Targetted && TargetDuration < 0)
             {
                 Targetted = false;
-                BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
+                BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.active && n.GetGlobalNPC<BreacherGNPC>().Targetted);
             }
         }
 
