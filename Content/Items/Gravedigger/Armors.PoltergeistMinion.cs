@@ -52,15 +52,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (item != null && !item.IsAir)
 			{
-				int sleepTimer = (owner.armor[0].modItem as PoltergeistHead).sleepTimer;
+				var helm = (owner.armor[0].modItem as PoltergeistHead);
+
+				int sleepTimer = helm.sleepTimer;
+				float progress = owner.GetModPlayer<StarlightPlayer>().Timer * 0.02f + helm.minions.IndexOf(projectile) / (float)helm.minions.Count * 6.28f;
 
 				projectile.timeLeft = 2;
-				targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(Timer * 0.02f) * 100, (float)Math.Sin(Timer * 0.02f) * 40);
+				targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);
 
 				if (sleepTimer <= 0) //fall asleep
 				{
 					targetRotation = 1.57f + (Item.staff[item.type] ? 1.57f / 2 : 0);
-					targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(Timer * 0.02f) * 35, (float)Math.Sin(Timer * 0.02f) * 10);
+					targetPos = owner.Center + new Vector2(0, -100) + new Vector2((float)Math.Cos(progress) * 35, (float)Math.Sin(progress) * 10);
 				}
 
 				projectile.Center += (targetPos - projectile.Center) * 0.05f;
