@@ -752,13 +752,14 @@ namespace StarlightRiver.Core
                         continue;
 
                     // If there are solid tiles in the way, skip.
-                    if (ScanRectangle(cX, cY - 3, 2, 3) > 2)
+                    if (ScanRectangle(cX, cY - 3, 2, 3) > 0)
                         continue;
 
                     // Success! Halve the spawnAttempts count so we don't spam crystals.
                     PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).type, true, true);
                     Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
-                    spawnAttempts /= 4;
+                    KillTile(cX, cY - 3, true);
+                    spawnAttempts /= 2;
                 }
             }
         }
