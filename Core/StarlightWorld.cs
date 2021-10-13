@@ -30,6 +30,7 @@ namespace StarlightRiver.Core
         public static float rottime;
 
         public static float Chungus;
+        public static bool isDemoWorld;
 
         public static Cutaway cathedralOverlay;
         public static Cutaway templeCutaway;
@@ -199,6 +200,7 @@ namespace StarlightRiver.Core
             // TODO why the hell is this throwing Collection was modified?
             return new TagCompound
             {
+                ["IsDemoWorld"] = isDemoWorld,
                 ["VitricBiomePos"] = VitricBiome.TopLeft(),
                 ["VitricBiomeSize"] = VitricBiome.Size(),
 
@@ -251,6 +253,7 @@ namespace StarlightRiver.Core
 
         public override void Load(TagCompound tag)
         {
+            isDemoWorld = tag.GetBool("IsDemoWorld");
             VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
             VitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;
             VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
