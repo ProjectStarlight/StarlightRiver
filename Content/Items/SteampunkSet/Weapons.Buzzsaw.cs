@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				bladeRotation += 1.2f;
 				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
 				shake = MathHelper.Lerp(0.04f, 0.15f, (float)charge / (float)MAXCHARGE);
-				direction = Main.MouseWorld - (player.Center);
+				direction = Main.MouseWorld - (player.MountedCenter);
 				direction.Normalize();
 				counter++;
 				projectile.frame = ((counter / 5) % 2) + 2;
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					projectile.active = false;
 			}
 
-			projectile.Center = player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
+			projectile.Center = player.MountedCenter + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
 			projectile.velocity = Vector2.Zero;
 			player.itemRotation = direction.ToRotation();
 
