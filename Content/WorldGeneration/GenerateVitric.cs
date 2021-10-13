@@ -138,8 +138,8 @@ namespace StarlightRiver.Core
                 int x = genRand.Next(2) == 0 ? genRand.Next(VitricBiome.X + VitricSlopeOffset + 20, VitricBiome.Center.X - 61) : genRand.Next(VitricBiome.Center.X + 62, VitricBiome.Right - VitricSlopeOffset - 20);
                 int y = (maxCeilingDepth + 20) + (genRand.Next((int)(VitricBiome.Height / 3.2f)));
 
-                if (Helper.ScanForTypeDown(x, y, TileType<VitricSpike>(), 120))
-                    y = FindType(x, y, VitricBiome.Bottom + 20, TileType<VitricSpike>());
+                if (Helper.ScanForTypeDown(x, y, instance.TileType("VitricSand"), 120))
+                    y = FindType(x, y, VitricBiome.Bottom + 20, instance.TileType("VitricSand"));
                 else
                 {
                     i--;
@@ -898,7 +898,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if (Main.tile[i, j].active()) count++;
+                    if ((Main.tile[i, j].active() && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].liquid > 0) count++;
             return count;
         }
     }
