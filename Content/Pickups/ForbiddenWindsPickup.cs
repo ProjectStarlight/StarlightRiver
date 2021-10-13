@@ -243,7 +243,7 @@ namespace StarlightRiver.Pickups
         public override int PickupType => NPCType<ForbiddenWindsPickup>();
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch) //get rid of this after demo
         {   
-                Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-80, -42);
+                Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-80, -30);
                 Utils.DrawBorderString(spriteBatch, "Dash into", pos, Color.White, 0.7f);
                 Utils.DrawBorderString(spriteBatch, "bright blue", pos + new Vector2(60, 0), new Color(188, 255, 246), 0.7f);
                 Utils.DrawBorderString(spriteBatch, "outlines", pos + new Vector2(127, 0), Color.White, 0.7f);
