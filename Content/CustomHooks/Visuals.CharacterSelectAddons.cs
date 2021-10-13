@@ -68,7 +68,11 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (mp == null || mp2 == null) { return; }
 
-            player.UpdateEquips(0);
+            for(int k = 0; k < player.armor.Length; k++)
+			{
+                if (player.armor[k].modItem != null && player.armor[k].modItem.mod.Name == StarlightRiver.Instance.Name)
+                    player.VanillaUpdateEquip(player.armor[k]);
+			}
 
             float playerStamina = mp.StaminaMaxDefault;
             int codexProgress = (int)(mp2.Entries.Count(n => !n.Locked) / (float)mp2.Entries.Count * 100f);
