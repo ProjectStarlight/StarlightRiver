@@ -39,6 +39,8 @@ namespace StarlightRiver.Core
 
         public override void PostWorldGen()
         {
+            isDemoWorld = true;
+
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
