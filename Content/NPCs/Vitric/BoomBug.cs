@@ -136,7 +136,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     return;
 
                 var mp = player.GetModPlayer<StarlightPlayer>();
-                mp.Shake += (int)Math.Max(0, 30 - Vector2.Distance(npc.Center, player.Center) / 8f);
+
+                if(mp.Shake < 60)
+                    mp.Shake += (int)Math.Max(0, 20 - Vector2.Distance(npc.Center, player.Center) / 8f);
 			}
         }
 
