@@ -113,6 +113,24 @@ namespace StarlightRiver.Core
 
             if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
             Timer++;
+
+            //cutscene timers
+            if (ScreenMoveTimer == ScreenMoveTime)
+            {
+                ScreenMoveTime = 0;
+                ScreenMoveTimer = 0;
+                ScreenMoveTarget = Vector2.Zero;
+                ScreenMovePan = Vector2.Zero;
+            }
+
+            if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
+                ScreenMoveTimer++;
+
+            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
+
+            if (validTile && Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
+                panDown++;
+            else if (panDown > 0) panDown--;
         }
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
@@ -147,14 +165,11 @@ namespace StarlightRiver.Core
             if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
             {
                 Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ExtraZoomTarget;
+
                 if (ScreenMoveTimer <= 30) //go out
-                {
                     Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);
-                }
                 else if (ScreenMoveTimer >= ScreenMoveTime - 30) //go in
-                {
                     Main.screenPosition = Vector2.SmoothStep((ScreenMovePan == Vector2.Zero ? ScreenMoveTarget : ScreenMovePan) + off, Main.LocalPlayer.Center + off, (ScreenMoveTimer - (ScreenMoveTime - 30)) / 30f);
-                }
                 else
                 {
                     if (ScreenMovePan == Vector2.Zero)
@@ -166,27 +181,11 @@ namespace StarlightRiver.Core
                     else
                         Main.screenPosition = ScreenMovePan + off;
                 }
-
-                if (ScreenMoveTimer == ScreenMoveTime)
-                {
-                    ScreenMoveTime = 0;
-                    ScreenMoveTimer = 0;
-                    ScreenMoveTarget = Vector2.Zero;
-                    ScreenMovePan = Vector2.Zero;
-                }
-
-                if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
-                    ScreenMoveTimer++;
             }
-
-            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
-            if (validTile && Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
-            {
-                panDown++;
-            }
-            else if (panDown > 0) panDown--;
 
             float mult = ModContent.GetInstance<Configs.Config>().ScreenshakeMult;
+            mult *= Main.screenWidth / 2048f; //normalize for screen resolution
+
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
             Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
             if (Shake > 0) { Shake--; }
