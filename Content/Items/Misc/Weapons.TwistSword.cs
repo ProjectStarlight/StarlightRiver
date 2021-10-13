@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
 
-            if (player.channel) 
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>()) 
                 projectile.timeLeft = 2;
 
             if (projectile.ai[1] > 200 && player.velocity.Y > -4)
