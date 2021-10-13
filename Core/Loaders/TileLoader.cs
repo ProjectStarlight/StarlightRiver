@@ -110,7 +110,12 @@ namespace StarlightRiver.Core.Loaders
                 data.mapName
                 );
         }
-    }
+
+		public override bool CanExplode(int i, int j)
+		{
+            return minPick < 100;
+		}
+	}
 
     public class LoaderFurniture : ModTile
     {
@@ -140,6 +145,11 @@ namespace StarlightRiver.Core.Loaders
                     data.topAnchor,
                     data.anchorTiles
                 );
+        }
+
+        public override bool CanExplode(int i, int j)
+        {
+            return minPick < 100;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
