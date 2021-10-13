@@ -31,7 +31,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             TileID.Sets.FramesOnKillWall[Type] = true;
 
-            drop = ItemType<TorchOvergrowItem>();
+            minPick = 200;
+            drop = ItemType<AncientSandstoneTorchItem>();
             dustType = mod.DustType("Air");
             AddMapEntry(new Color(115, 182, 158));
         }
