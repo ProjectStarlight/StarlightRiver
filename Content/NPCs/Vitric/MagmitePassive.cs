@@ -12,7 +12,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
     {
         public ref float ActionState => ref npc.ai[0];
         public ref float ActionTimer => ref npc.ai[1];
-        public ref float GlobalTimer => ref npc.ai[2];
+		public ref float GlobalTimer => ref npc.ai[2];
+        public ref float TurnTimer => ref npc.ai[3];
 
         public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
 
@@ -50,7 +51,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
             var x = (int)(npc.Center.X / 16) + npc.direction; //check 1 tile infront of la cretura
             var y = (int)(npc.Center.Y / 16);
             var tile = Framing.GetTileSafely(x, y);
-            var tileUp = Framing.GetTileSafely(x, y - 1);
+			var tileUp = Framing.GetTileSafely(x, y - 1);
+            var tileClose = Framing.GetTileSafely(x + npc.direction, y - 1);
             var tileFar = Framing.GetTileSafely(x + npc.direction * 2, y - 1);
             var tileUnder = Framing.GetTileSafely(x, y + 1);
 
@@ -74,7 +76,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if (ActionState == 0)
             {
-                if (npc.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0) //climb up small cliffs
+                if (npc.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
                 {
                     ActionState = 1;
                     npc.velocity *= 0;
@@ -85,6 +87,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 else if(npc.velocity.X == 0 && tile.collisionType != 0 && tileUp.collisionType == 0)
 				{
                     npc.velocity.Y -= 2;
+                }
+
+                if (npc.velocity.X == 0)
+                    TurnTimer++;
+                else
+                    TurnTimer = 0;
+
+                if (TurnTimer > 180)
+                {
+					npc.direction *= -1;
+                    TurnTimer = 0;
                 }
 
                 npc.velocity.X += 0.05f * (Main.player[Main.myPlayer].Center.X > npc.Center.X ? 1 : -1);
