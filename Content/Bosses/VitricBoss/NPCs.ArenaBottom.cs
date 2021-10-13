@@ -82,6 +82,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case 1:
+
+                    if (Parent.Phase > (int)VitricBoss.AIStates.SecondPhase)
+                        return;
+
                     npc.ai[0] += 8; //timer is now used to track where we are in the crystal wave
                     if (npc.ai[0] % 32 == 0) //summons a crystal at every tile covered by the NPC
                     {
