@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 25;
+            item.damage = 35;
             item.melee = true;
             item.width = 36;
             item.height = 38;
@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.Items.Vitric
             if (!Broken)
             {
                 Main.PlaySound(SoundID.Item107);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center) * -24, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -13, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -18, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
+                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center) * -32, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
+                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
+                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, mod.ProjectileType("VitricSwordProjectile"), 15, 0, player.whoAmI);
 
                 for (int k = 0; k <= 20; k++)
                 {
