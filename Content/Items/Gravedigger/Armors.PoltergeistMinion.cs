@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				else
 					projectile.rotation = targetRotation;
 
-				if (sleepTimer > 0 && (int)Timer % (item.useTime * 2) == 0 && TryFindTarget(out NPC target))
+				if (sleepTimer > 0 && !owner.dead && (int)Timer % (item.useTime * 2) == 0 && TryFindTarget(out NPC target))
 				{
 					float rot = (target.Center - projectile.Center).ToRotation();
 
