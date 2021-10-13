@@ -490,24 +490,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 75, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 75, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 75, 0);
             }
             else
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 75, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 75, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 15, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 75, 0);
             }
 
             if(AttackTimer == 40)
@@ -589,7 +589,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
         {
-            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 7, 0, Main.myPlayer);
+            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 30, 0, Main.myPlayer);
             var mp = (Main.projectile[i].modProjectile as LavaDart);
             mp.endPoint = end;
             mp.midPoint = mid;
