@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
                 Utils.DrawBorderString(spriteBatch, "Demo World", self.GetDimensions().Position() + new Vector2(204, 38), Color.White);
             }
 
-            if (chungosity > 0)
+            if (chungosity > 0.4f)
             {
                 Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeter");
                 Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeterFill");
