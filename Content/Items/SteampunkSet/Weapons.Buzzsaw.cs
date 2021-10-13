@@ -194,14 +194,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void LaunchSaw(Player player)
 		{
 			released = true;
-			float speed = MathHelper.Lerp(5f, 10f, (float)charge / (float)MAXCHARGE);
-			float damageMult = MathHelper.Lerp(0.75f, 2f, (float)charge / (float)MAXCHARGE);
+			float speed = MathHelper.Lerp(8f, 14f, charge / (float)MAXCHARGE);
+			float damageMult = MathHelper.Lerp(0.75f, 2f, charge / (float)MAXCHARGE);
 			Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
 		}
 
 		private void ReleaseSteam(Player player)
         {
-			float alphaMult = MathHelper.Lerp(0.75f, 3f, (float)charge / (float)MAXCHARGE);
+			float alphaMult = MathHelper.Lerp(0.75f, 3f, charge / (float)MAXCHARGE);
 			Dust.NewDustPerfect(Vector2.Lerp(projectile.Center, player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 		}
 	}
