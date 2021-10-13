@@ -3,6 +3,7 @@ using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Permafrost;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -37,10 +38,12 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (item.createTile != -1 || item.type == ItemID.WaterBucket || item.type == ItemID.LavaBucket || item.type == ItemID.HoneyBucket)
             {
-                Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
+                Point16 targetPoint = Main.SmartCursorEnabled ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
+
+                Tile tile = Framing.GetTileSafely(targetPoint.X, targetPoint.Y);                
 
                 foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
-                    if (region.Contains(new Point(Player.tileTargetX, Player.tileTargetY)))
+                    if (region.Contains(new Point(targetPoint.X, targetPoint.Y)))
                     {
                         player.AddBuff(BuffID.Cursed, 10, false);
                         FailFX();
@@ -53,7 +56,7 @@ namespace StarlightRiver.Content.CustomHooks
                     {
                         Projectile proj = Main.projectile[k];
 
-                        if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(Player.tileTargetX, Player.tileTargetY))
+                        if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
                         {
                             return true;
                         }
