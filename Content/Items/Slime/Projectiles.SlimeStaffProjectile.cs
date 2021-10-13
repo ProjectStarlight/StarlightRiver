@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Slime
 
         public override void Kill(int timeLeft)
         {
-            Main.NewText(globSize + " index " + projectile.whoAmI);
+            //Main.NewText(globSize + " index " + projectile.whoAmI);
             for (int k = 0; k <= 30; k++)
                 Dust.NewDustPerfect(projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f), 0, Color.BlueViolet, 0.8f);
         }

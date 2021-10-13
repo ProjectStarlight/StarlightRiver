@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void UpdateArmorSet(Player player)
         {
-            Main.NewText(floatTime);
+            //Main.NewText(floatTime);
             player.setBonus = "Hitting enemies with ranged attacks allows you to float\n20% increased ranged critical strike chance while airborne";
 
             if (floatTime > 0)

@@ -75,7 +75,7 @@ namespace StarlightRiver.Pickups
             tile.frameX += 1;
             if (tile.frameX > 2)
                 tile.frameX = 0;
-            Main.NewText("pickup set to stamina shard number " + tile.frameX, Color.Orange);
+            Main.NewText("pickup set to stamina shard number " + tile.frameX, Color.Orange);//debug?
         }
     }
 

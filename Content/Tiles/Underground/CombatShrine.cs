@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						for (int k = 0; k < 30; k++)
 							Dust.NewDustPerfect(projectile.Center + new Vector2(0, -32), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 100, 100), 0.6f);
 
-						Main.NewText("Ejaculatory Dysfunction!  Final time: " + Helpers.Helper.TicksToTime((int)Timer));
+						Main.NewText("Final time: " + Helpers.Helper.TicksToTime((int)Timer));
 						State = 0;
 
 						Timer = 0;

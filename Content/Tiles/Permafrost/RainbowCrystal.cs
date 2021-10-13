@@ -19,15 +19,15 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             return true;
         }
 
-        public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-        {
-            ConstructorInfo info = typeof(RainbowCrystal).GetConstructor(BindingFlags.Static | BindingFlags.NonPublic, null, new Type[0], null);
+        //public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+        //{
+        //    ConstructorInfo info = typeof(RainbowCrystal).GetConstructor(BindingFlags.Static | BindingFlags.NonPublic, null, new Type[0], null);
 
-            foreach (CustomAttributeData data in info.CustomAttributes)
-            {
-                Main.NewText(data.ToString());
-            }
-        }
+        //    foreach (CustomAttributeData data in info.CustomAttributes)
+        //    {
+        //        Main.NewText(data.ToString());
+        //    }
+        //}
 
         public override void SetDefaults()
         {

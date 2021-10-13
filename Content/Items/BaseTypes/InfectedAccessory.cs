@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public InfectedAccessory() : base("Unnamed Infected Accessory", "you forgot to set a display name/tooltip dingus!") { }
         public override bool CanEquipAccessory(Player player, int slot)
         {
-            Main.NewText("Slot: " + slot, 255, 255, 0);
+            //Main.NewText("Slot: " + slot, 255, 255, 0);//debug?
             if (slot == 3) return false;
             if (!player.armor[slot - 1].IsAir) return false;
             if (slot > 7 + player.extraAccessorySlots) return false;
