@@ -235,6 +235,7 @@ namespace StarlightRiver.Core
 
         public override void OnEnterWorld(Player player)
         {
+            BootlegHealthbar.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;
         }
