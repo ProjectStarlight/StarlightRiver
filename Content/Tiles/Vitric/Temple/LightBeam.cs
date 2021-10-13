@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                 }
 
                 if (tile.type == TileType<RecieverPuzzle>())
-                    Main.NewText("Nice cock.", new Color(255, 0, 255));
+                    Main.NewText("Nice.", new Color(255, 0, 255));//debug?
 
                 if (tile.type == TileType<RecieverPlacable>())
                 {

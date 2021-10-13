@@ -18,8 +18,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void SetDefaults()
         {
             minPick = int.MaxValue;
-            (this).QuickSet(200, DustType<Dusts.GlassNoGravity>(), SoundID.Tink, new Color(95, 162, 138), -1);
+            (this).QuickSet(200, DustType<Dusts.GlassGravity>(), 2, new Color(95, 162, 138), -1, false, false, "", 27);
             Main.tileMerge[Type][mod.TileType("VitricSand")] = true;
+            Main.tileMerge[Type][TileType<VitricGiantCrystal>()] = true;
+            Main.tileMerge[Type][TileType<VitricMediumCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricSmallCrystal>()] = true;
         }
@@ -62,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (vector != default)
                 {
                     vector.Normalize();
-                    vector *= 10;
+                    vector *= 6;
                     entity.velocity.X = vector.X == 0 ? entity.velocity.X : vector.X;
                     entity.velocity.Y = vector.Y == 0 ? entity.velocity.Y : vector.Y;
 

@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             //Main.NewText(level + " | " + mp.ironheartTimer);
-            Main.NewText(level);
+            //Main.NewText(level);
             if (level < 0.001f)
             {
                 player.ClearBuff(Type);

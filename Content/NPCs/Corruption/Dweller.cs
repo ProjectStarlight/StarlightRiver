@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 						root = tile;
 						Height = k * 16;
 
-						Main.NewText(tile.type);
+						//Main.NewText(tile.type);//debug
 					}
 				}
 			}

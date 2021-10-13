@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             Tile tile = Framing.GetTileSafely((int)projectile.Center.X / 16 + (projectile.velocity.X > 0 ? 1 : -1), (int)projectile.Center.Y / 16);
-            Main.NewText(tile.type);
+            //Main.NewText(tile.type);//debug
 
             if (projectile.timeLeft < 140 && tile.type == mod.TileType("VitricGlass"))
                 projectile.position.Y -= 128;

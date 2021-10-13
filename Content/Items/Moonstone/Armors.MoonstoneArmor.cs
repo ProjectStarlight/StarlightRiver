@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
         {
-            if (player.armor[0].type == ItemType<MoonstoneHead>())
+            if (player.armor[0].type == ItemType<MoonstoneHead>() && !player.dead)
             {
                 float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
 

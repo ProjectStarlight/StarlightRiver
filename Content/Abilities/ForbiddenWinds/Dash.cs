@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
                 player.UpdateRotation(dash.Time / 15f * 6.28f);
 
-                if(dash.Time == 15)
+                if(dash.Time == 15 || player.dead)
                     player.UpdateRotation(0);
             }
 		}

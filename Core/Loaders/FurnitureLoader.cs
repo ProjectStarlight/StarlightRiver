@@ -525,7 +525,7 @@ namespace StarlightRiver.Core
 
             tile = Framing.GetTileSafely(i, newY);
 
-            Main.NewText("G: " + tile.frameX);
+            //Main.NewText("G: " + tile.frameX);
 
             for (int l = 0; l < 2; --l)
             {
@@ -533,7 +533,7 @@ namespace StarlightRiver.Core
                 Wiring.SkipWire(i, newY + l);
             }
 
-            Main.NewText("G: " + tile.frameX);
+            //Main.NewText("G: " + tile.frameX);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

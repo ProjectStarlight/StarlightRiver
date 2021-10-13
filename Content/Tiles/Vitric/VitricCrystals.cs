@@ -70,11 +70,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
     internal abstract class VitricCrystal : WalkableCrystal
     {
         protected VitricCrystal(int maxWidth, int maxHeight, int variantCount = 1, string drop = null) :
-            base(maxWidth, maxHeight, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.Air>(), new Color(115, 182, 158), SoundID.Item, default, 27)
+            base(maxWidth, maxHeight, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.GlassGravity>(), new Color(115, 202, 158), 2, default, 27)
         { }
 
         public override void SafeSetDefaults() =>
             Main.tileMerge[TileType<VitricSpike>()][Type] = true;
+
+        public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {

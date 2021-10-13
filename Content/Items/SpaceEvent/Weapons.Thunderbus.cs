@@ -67,6 +67,17 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return true;
         }
 
+        public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
+        {
+            List<NPC> targets = FindTargets(player);
+
+            if (targets.Count == 0) //whiff
+            {
+                mult = 0;
+            }
+        }
+
+
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
             float aim = (player.Center - Main.MouseWorld).ToRotation();
@@ -99,16 +110,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 return false;
 			}
 
-            List<NPC> targets = new List<NPC>();
-
-            foreach(NPC npc in Main.npc.Where(n => n.active && 
-            !n.dontTakeDamage && 
-            !n.townNPC && 
-            Helper.CheckConicalCollision(player.Center, 500, aim, 1, n.Hitbox) && 
-            Utils.PlotLine((n.Center / 16).ToPoint16(), (player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
-			{
-                targets.Add(npc);
-			}
+            List<NPC> targets = FindTargets(player);
 
             if(targets.Count == 0) //whiff
 			{
@@ -154,7 +156,22 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return false;
 		}
 
-	}
+        private List<NPC> FindTargets(Player player)
+        {
+            List<NPC> targets = new List<NPC>();
+            float aim = (player.Center - Main.MouseWorld).ToRotation();
+
+            foreach (NPC npc in Main.npc.Where(n => n.active &&
+             !n.dontTakeDamage &&
+             !n.townNPC &&
+             Helper.CheckConicalCollision(player.Center, 500, aim, 1, n.Hitbox) &&
+             Utils.PlotLine((n.Center / 16).ToPoint16(), (player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+            {
+                targets.Add(npc);
+            }
+            return targets;
+        }
+    }
 
     internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
     {
