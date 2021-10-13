@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Permafrost;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
@@ -16,6 +17,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public override bool Autoload(ref string name)
 		{
             On.Terraria.Player.PickTile += DontPickInZone;
+            On.Terraria.WorldGen.PlaceTile += DontManuallyPlaceInZone;
 			return base.Autoload(ref name);
 		}
 
@@ -24,14 +26,29 @@ namespace StarlightRiver.Content.CustomHooks
             foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
                 if (region.Contains(new Point(x, y)))
 				{
-                    FailFX();
+                    FailFX(new Point16(x, y));
                     return;
 				}
 
             orig(self, x, y, pickPower);
         }
 
-		public override bool CanUseItem(Item item, Player player)
+        private bool DontManuallyPlaceInZone(On.Terraria.WorldGen.orig_PlaceTile orig, int i, int j, int type, bool mute, bool forced, int plr, int style)
+        {
+            if(!WorldGen.gen)
+			{
+                foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
+                    if (region.Contains(new Point(i, j)))
+                    {
+                        FailFX(new Point16(i, j));
+                        return false;
+                    }
+            }
+
+            return orig(i, j, type, mute, forced, plr, style);
+        }
+
+        public override bool CanUseItem(Item item, Player player)
 		{
             if (player != Main.LocalPlayer)
                 return base.CanUseItem(item, player);
@@ -46,7 +63,7 @@ namespace StarlightRiver.Content.CustomHooks
                     if (region.Contains(new Point(targetPoint.X, targetPoint.Y)))
                     {
                         player.AddBuff(BuffID.Cursed, 10, false);
-                        FailFX();
+                        FailFX(targetPoint);
                         return false;
                     }
 
@@ -62,7 +79,7 @@ namespace StarlightRiver.Content.CustomHooks
                         }
                     }
                     player.AddBuff(BuffID.Cursed, 10, false);
-                    FailFX();
+                    FailFX(targetPoint);
                     return false;
                 }
             }
@@ -70,12 +87,12 @@ namespace StarlightRiver.Content.CustomHooks
             return base.CanUseItem(item, player);
         }
 
-        private void FailFX()
+        private void FailFX(Point16 pos)
         {
             Main.PlaySound(SoundID.DD2_LightningBugZap);
 
             for (int k = 0; k < 10; k++)
-                Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, DustType<Dusts.Glow>(), 0, 0, 0, Color.Red, 0.2f);
+                Dust.NewDust(pos.ToVector2() * 16, 16, 16, DustType<Dusts.Glow>(), 0, 0, 0, Color.Red, 0.2f);
         }
     }
 
