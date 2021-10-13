@@ -194,7 +194,16 @@ namespace StarlightRiver.Content.Items.Breacher
 					startPos = player.Center;
 
 				projectile.timeLeft = 52;
+
+				if(Vector2.Distance(projectile.Center, hooked.Center) > 48) //break the hook if the enemy is too fast or teleports
+				{
+					hooked = null;
+					projectile.timeLeft = 30;
+					return;
+				}
+
 				projectile.Center = hooked.Center;
+
 				player.velocity = Vector2.Zero;//resets wings / double jumps
 
 				Progress += (10f / Distance) * (0.8f + Progress * 1.5f);
