@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreKill(int timeLeft)
 		{
-			if (projectile.penetrate == 1)
+			if (projectile.penetrate == 1 && creator != null)
 				creator.amountToThrow = 3;
 
 			return false;
