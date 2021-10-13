@@ -27,9 +27,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
         {
             npc.width = 66;
             npc.height = 64;
-            npc.damage = 40;
+            npc.damage = 30;
             npc.defense = 10;
-            npc.lifeMax = 100;
+            npc.lifeMax = 80;
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
         }
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     if (ActionTimer == 20)
                         Projectile.NewProjectile(npc.Center, Vector2.Normalize(target.Center - npc.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
-                    if (ActionTimer == 80)
+                    if (ActionTimer == 140)
                         ChangeState(2, 2);
 
                     break;
