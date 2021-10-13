@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private float targetRotation = 0;
 		private Vector2 targetPos;
+		private float opacity;
 
 		public Player owner => Main.player[projectile.owner];
 
@@ -46,6 +47,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Timer++;
+
+			if (owner.dead && opacity > 0)
+				opacity -= 0.05f;
+			else if (opacity < 1)
+				opacity += 0.05f;
 
 			if (owner.armor[0].type != ItemType<PoltergeistHead>() || !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
 			{
@@ -111,7 +117,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				var tex = Main.itemTexture[item.type];
 				//var frames = Main.itemFrame[item.type];
 
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, 1, 0, 0);
+				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * opacity, projectile.rotation, tex.Size() / 2, 1, 0, 0);
 			}
 
 			return false;
