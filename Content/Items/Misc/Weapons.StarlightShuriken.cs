@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.damage = 11;
+            item.damage = 18;
             item.magic = true;
             item.mana = 8;
             item.width = 18;
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if(amountToThrow == 1)
 			{
-				int i = Projectile.NewProjectile(player.Center + aim * 20, aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
+				int i = Projectile.NewProjectile(player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
                 var proj = Main.projectile[i].modProjectile as StarGlaive;
 				proj.color = new Color(240, 100, 255);
 
@@ -229,6 +229,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Color color = new Color(100, 210, 255);
 
 		public ref float State => ref projectile.ai[0];
+		public ref float BounceSoundCooldown => ref projectile.ai[1];
 
 		public Player Owner => Main.player[projectile.owner];
 
@@ -249,6 +250,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			projectile.rotation += 0.06f;
+
+			if(BounceSoundCooldown > 0)
+				BounceSoundCooldown--;
 
 			if (projectile.velocity.Length() < 8)
 				projectile.velocity = Vector2.Normalize(projectile.velocity) * 8;
@@ -271,7 +275,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (projectile.penetrate > 0)
 			{
-				Helper.PlayPitched("Magic/ShurikenBounce", 0.5f, 0, projectile.Center);
+				if (BounceSoundCooldown <= 0)
+				{
+					Helper.PlayPitched("Magic/ShurikenBounce", 0.5f, 0, projectile.Center);
+					BounceSoundCooldown = 15;
+				}
+
 				projectile.velocity *= -1;
 				return false;
 			}
