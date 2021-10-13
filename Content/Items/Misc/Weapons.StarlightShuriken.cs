@@ -49,6 +49,8 @@ namespace StarlightRiver.Content.Items.Misc
         {
             var aim = Vector2.Normalize(new Vector2(speedX, speedY));
 
+			Helper.PlayPitched("Magic/ShurikenThrow2", 1, (3 - amountToThrow) / 3f * 0.6f, player.Center);
+
             if(amountToThrow == 1)
 			{
 				int i = Projectile.NewProjectile(player.Center + aim * 20, aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
@@ -269,7 +271,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (projectile.penetrate > 0)
 			{
-				Helper.PlayPitched("Yeehaw", 1, 0, projectile.Center);
+				Helper.PlayPitched("Magic/ShurikenBounce2", 0.5f, 0, projectile.Center);
 				projectile.velocity *= -1;
 				return false;
 			}
