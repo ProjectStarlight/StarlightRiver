@@ -14,12 +14,14 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class PermafrostGlobalTile : ModWorld
+	class PermafrostGlobalTile : ModWorld, ILoadable
 	{
 		public static RenderTarget2D auroraTarget;
 		public static RenderTarget2D auroraBackTarget;
 
-		public override bool Autoload(ref string name)
+		public float Priority => 1;
+
+		public void Load()
 		{
 			IL.Terraria.IO.WorldFile.SaveWorldTiles += SaveExtraBits;
 			IL.Terraria.IO.WorldFile.LoadWorldTiles += LoadExtraBits;
@@ -32,8 +34,11 @@ namespace StarlightRiver.Core
 				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
 				auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
 			}
+		}
 
-			return base.Autoload(ref name);		
+		public void Unload()
+		{
+			Main.OnPreDraw -= DrawAuroraTarget;
 		}
 
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
