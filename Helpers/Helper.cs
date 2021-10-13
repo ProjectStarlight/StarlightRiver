@@ -414,7 +414,7 @@ namespace StarlightRiver.Helpers
             return Main.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
         }
 
-        public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30)
+        public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30, int w = 1, int h = 1)
 		{
             Point16 output = Point16.Zero;
 
@@ -422,40 +422,46 @@ namespace StarlightRiver.Helpers
                 for(int y = 0; y < radius; y++)
 				{
                     Point16 check1 = start + new Point16(x, y);
-                    if (WorldGen.InWorld(check1.X, check1.Y))
-                    {
-                        Tile checkTile = Framing.GetTileSafely(check1);
-                        if (condition(checkTile))
-                            return check1;
-                    }
+                    Point16 attempt1 = CheckTiles(check1, condition, w, h);
+                    if (attempt1 != Point16.Zero)
+                        return attempt1;
 
                     Point16 check2 = start + new Point16(-x, y);
-                    if (WorldGen.InWorld(check2.X, check2.Y))
-                    {
-                        Tile checkTile = Framing.GetTileSafely(check2);
-                        if (condition(checkTile))
-                            return check2;
-                    }
+                    Point16 attempt2 = CheckTiles(check2, condition, w, h);
+                    if (attempt2 != Point16.Zero)
+                        return attempt2;
 
                     Point16 check3 = start + new Point16(x, -y);
-                    if (WorldGen.InWorld(check3.X, check3.Y))
-                    {
-                        Tile checkTile = Framing.GetTileSafely(check3);
-                        if (condition(checkTile))
-                            return check3;
-                    }
+                    Point16 attempt3 = CheckTiles(check3, condition, w, h);
+                    if (attempt3 != Point16.Zero)
+                        return attempt3;
 
                     Point16 check4 = start + new Point16(-x, -y);
-                    if (WorldGen.InWorld(check4.X, check4.Y))
-                    {
-                        Tile checkTile = Framing.GetTileSafely(check4);
-                        if (condition(checkTile))
-                            return check4;
-                    }
+                    Point16 attempt4 = CheckTiles(check4, condition, w, h);
+                    if (attempt4 != Point16.Zero)
+                        return attempt4;
                 }
 
             return output;
 		}
+
+        private static Point16 CheckTiles(Point16 check, Func<Tile, bool> condition, int w, int h)
+		{
+            if (WorldGen.InWorld(check.X, check.Y))
+            {
+                for(int x = 0; x < w; x++)
+                    for(int y = 0; y < h; y++)
+					{
+                        Tile checkTile = Framing.GetTileSafely(check.X + x, check.Y + y);
+                        if (!condition(checkTile))
+                            return Point16.Zero;
+                    }
+                
+                    return check;
+            }
+
+            return Point16.Zero;
+        }
     }
 }
 

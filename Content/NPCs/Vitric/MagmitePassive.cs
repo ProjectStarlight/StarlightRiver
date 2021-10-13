@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             var y = (int)(npc.Center.Y / 16);
             var tile = Framing.GetTileSafely(x, y);
 			var tileUp = Framing.GetTileSafely(x, y - 1);
-            var tileClose = Framing.GetTileSafely(x + npc.direction, y - 1);
+            var tileClose = Framing.GetTileSafely(x - npc.direction, y - 1);
             var tileFar = Framing.GetTileSafely(x + npc.direction * 2, y - 1);
             var tileUnder = Framing.GetTileSafely(x, y + 1);
 
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if (ActionState == 0)
             {
-                if (npc.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
+                if (npc.velocity.Y == 0 && npc.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
                 {
                     ActionState = 1;
                     npc.velocity *= 0;
@@ -96,11 +96,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 if (TurnTimer > 180)
                 {
-					npc.direction *= -1;
+					npc.velocity.X = npc.direction * -1;
+                    npc.target = -1;
                     TurnTimer = 0;
                 }
 
-                npc.velocity.X += 0.05f * (Main.player[Main.myPlayer].Center.X > npc.Center.X ? 1 : -1);
+                if(ActionTimer % 60 == 0)
+                    npc.TargetClosest();
+
+                if(npc.target >= 0)
+                    npc.velocity.X += 0.05f * (Main.player[npc.target].Center.X > npc.Center.X ? 1 : -1);
+
                 npc.velocity.X = Math.Min(npc.velocity.X, 1.5f);
                 npc.velocity.X = Math.Max(npc.velocity.X, -1.5f);
 
@@ -108,14 +114,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 npc.spriteDirection = npc.velocity.X > 0 ? 1 : -1;
 
                 if(tileFar.collisionType == 1 && npc.velocity.Y == 0) //jump up big cliffs
-                {
                     npc.velocity.Y -= 8;
-                }
 
                 if(tileUnder.collisionType == 0 && npc.velocity.Y == 0) //hop off edges
-                {
                     npc.velocity.Y -= 4;
-                }
 
                 if (npc.velocity.Y != 0)
                 {
