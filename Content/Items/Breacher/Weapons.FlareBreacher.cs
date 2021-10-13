@@ -189,7 +189,8 @@ namespace StarlightRiver.Content.Items.Breacher
         private void Explode(NPC target)
         {
             Helper.PlayPitched("Guns/FlareBoom", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
-            target.StrikeNPC(projectile.damage, 0f, 0);
+            if (!target.immortal && !target.dontTakeDamage)
+                target.StrikeNPC(projectile.damage, 0f, 0);
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(5, 8);
 
