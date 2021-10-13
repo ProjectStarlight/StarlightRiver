@@ -70,6 +70,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (phase == 0 && npc.velocity.Y <= 0) 
                 return false; //can only do damage when moving downwards
 
+            if (phase == 1)
+                return false;
+
             return !(state == 0 || state == 1); //too tired of dealing with this sheeeet
         }
 
