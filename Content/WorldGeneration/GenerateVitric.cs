@@ -195,7 +195,7 @@ namespace StarlightRiver.Core
             GenSandstonePillars();
             RuinedPillarPositions = new List<Point>();
             GenRuins();
-            GenForge();
+            //GenForge();
             GenDecoration();
             //GenMoss();
             GenTemple();
