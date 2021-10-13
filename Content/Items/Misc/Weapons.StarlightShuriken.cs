@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             var aim = Vector2.Normalize(new Vector2(speedX, speedY));
 
-			Helper.PlayPitched("Magic/ShurikenThrow", 1, (3 - amountToThrow) / 3f * 0.6f, player.Center);
+			Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, player.Center);
 
             if(amountToThrow == 1)
 			{
