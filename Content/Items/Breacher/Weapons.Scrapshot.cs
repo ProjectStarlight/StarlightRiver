@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				if (hook != null && hook.projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.projectile.active && hook.hooked != null)
 				{
 					spread = 0.05f;
-					damage += 10;
+					damage += 4;
 
 					hook.struck = true;
 					hook.projectile.timeLeft = 20;
