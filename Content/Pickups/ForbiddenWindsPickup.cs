@@ -129,6 +129,7 @@ namespace StarlightRiver.Pickups
                 Helper.UnlockEntry<WindsEntry>(Main.LocalPlayer);
                 Helper.UnlockEntry<StaminaEntry>(Main.LocalPlayer);
 
+                Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(0f).UseIntensity(0);
                 Filters.Scene.Deactivate("Shockwave");
             }
 
