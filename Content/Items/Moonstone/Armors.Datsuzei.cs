@@ -34,41 +34,34 @@ namespace StarlightRiver.Content.Items.Moonstone
             return true;
 		}
 
-		private void PlayerFrame(Player player)
+		public override void SetStaticDefaults()
 		{
-            var proj = Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
-
-            if(proj != null && proj.ai[0] == -1)
-                player.bodyFrame = new Rectangle(0, 56 * 1, 40, 56);
+            DisplayName.SetDefault("Datsuzei");
+            Tooltip.SetDefault("Unleash the moon");
 		}
 
-		private static void updateSparkles(Particle particle)
+		public override void SetDefaults()
         {
-            particle.Timer--;
-
-            if (particle.Velocity.X == 0)
-            {
-                particle.Scale = (float)(Math.Sin(particle.Timer / 120f * 3.14f)) * particle.StoredPosition.X;
-                particle.Color = new Color(180, 100 + (byte)(particle.Timer / 120f * 155), 255) * (float)(Math.Sin(particle.Timer / 120f * 3.14f));
-            }
-
-            else
-            {
-                particle.Scale = particle.Timer / 60f * particle.StoredPosition.X;
-                particle.Color = new Color(180, 100 + (byte)(particle.Timer / 60f * 155), 255) * (particle.Timer / 45f);
-                particle.Color *= (float)(0.5f + Math.Sin(particle.Timer / 20f * 6.28f + particle.StoredPosition.Y) * 0.5f);
-            }
-
-            particle.Rotation += 0.05f;
-            particle.Position += particle.Velocity;
+            item.melee = true;
+            item.damage = 75;
+            item.width = 16;
+            item.height = 16;
+            item.useStyle = ItemUseStyleID.Stabbing;
+            item.useTime = 20;
+            item.useAnimation = 20;
+            item.shoot = ProjectileType<DatsuzeiProjectile>();
+            item.shootSpeed = 20;
+            item.noMelee = true;
+            item.noUseGraphic = true;
+            item.crit = 10;
         }
 
         private void OverrideHotbar(On.Terraria.Main.orig_DrawInterface_30_Hotbar orig, Main self)
-		{
+        {
             orig(self);
 
-            if(activationTimer > 0 && !Main.playerInventory)
-			{
+            if (activationTimer > 0 && !Main.playerInventory)
+            {
                 var activationTimerNoCurve = Datsuzei.activationTimer;
                 var activationTimer = Helper.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
 
@@ -121,7 +114,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     var spearTex = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbarSprite");
                     Main.spriteBatch.Draw(spearTex, target.Center() + new Vector2(0, -40), null, Color.White, 0, spearTex.Size() / 2, 1, 0, 0);
                 }
-                
+
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
@@ -168,32 +161,39 @@ namespace StarlightRiver.Content.Items.Moonstone
                 {
                     sparkles.AddParticle(new Particle(new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
                 }
-			}
-		}
-
-		public override void SetStaticDefaults()
-		{
-            DisplayName.SetDefault("Datsuzei");
-            Tooltip.SetDefault("Unleash the fucking moon");
-		}
-
-		public override void SetDefaults()
-        {
-            item.melee = true;
-            item.damage = 75;
-            item.width = 16;
-            item.height = 16;
-            item.useStyle = ItemUseStyleID.Stabbing;
-            item.useTime = 20;
-            item.useAnimation = 20;
-            item.shoot = ProjectileType<DatsuzeiProjectile>();
-            item.shootSpeed = 20;
-            item.noMelee = true;
-            item.noUseGraphic = true;
-            item.crit = 10;
+            }
         }
 
-		public override bool CanUseItem(Player player)
+        private static void updateSparkles(Particle particle)
+        {
+            particle.Timer--;
+
+            if (particle.Velocity.X == 0)
+            {
+                particle.Scale = (float)(Math.Sin(particle.Timer / 120f * 3.14f)) * particle.StoredPosition.X;
+                particle.Color = new Color(180, 100 + (byte)(particle.Timer / 120f * 155), 255) * (float)(Math.Sin(particle.Timer / 120f * 3.14f));
+            }
+
+            else
+            {
+                particle.Scale = particle.Timer / 60f * particle.StoredPosition.X;
+                particle.Color = new Color(180, 100 + (byte)(particle.Timer / 60f * 155), 255) * (particle.Timer / 45f);
+                particle.Color *= (float)(0.5f + Math.Sin(particle.Timer / 20f * 6.28f + particle.StoredPosition.Y) * 0.5f);
+            }
+
+            particle.Rotation += 0.05f;
+            particle.Position += particle.Velocity;
+        }
+
+        private void PlayerFrame(Player player)
+        {
+            var proj = Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
+
+            if (proj != null && proj.ai[0] == -1)
+                player.bodyFrame = new Rectangle(0, 56 * 1, 40, 56);
+        }
+
+        public override bool CanUseItem(Player player)
 		{
             return !Main.projectile.Any(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
 		}
