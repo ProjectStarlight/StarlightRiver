@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void ResetEffects()
 		{
 			active = false;
+
 			if (damageCounter > 0)
 				damageCounter--;
 
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class ReactivePlatingHelper : ILoadable
 	{
 
-		public float Priority { get => 1.05f; }
+		public float Priority => 1.05f; 
 
 		public void Load()
 		{
@@ -105,20 +106,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			On.Terraria.Main.DrawPlayer += Main_DrawPlayer;
 		}
 
-		public void Unload()
-		{
-
-		}
+		public void Unload() { }
 
 		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
 		{
 			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
 			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 			if (modPlayer.Shield && drawPlayer == Main.LocalPlayer)
-				DrawPlayerTarget(drawPlayer, Position, rotation, rotationOrigin, shadow, modPlayer.flickerTime, modPlayer.shieldTimer);
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer);
 		}
 
-		private static void DrawPlayerTarget(Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow, int flickerTime, int shieldTimer)
+		private static void DrawPlayerTarget(int flickerTime, int shieldTimer)
         {
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
