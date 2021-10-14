@@ -68,22 +68,19 @@ namespace StarlightRiver.Content.Items.Breacher
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
-    #region LMB projectiles
+
     internal class ExplosiveFlare : ModProjectile
     {
-        public override string Texture => AssetDirectory.BreacherItem + Name;
+        bool red;
+        bool stuck;
 
+		int explosionTimer = 100;
         int enemyID;
-
-        bool stuck = false;
-
-        int explosionTimer = 100;
+        int blinkCounter;
 
         Vector2 offset = Vector2.Zero;
-
-        bool red;
-
-        int blinkCounter = 0;
+        
+        public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetDefaults()
         {
@@ -162,7 +159,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Player player = Main.player[projectile.owner];
             if (!stuck && target.life > 0)
             {
                 stuck = true;
@@ -173,6 +169,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 offset -= projectile.velocity;
             }
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             var tex = Main.projectileTexture[projectile.type];
@@ -189,15 +186,20 @@ namespace StarlightRiver.Content.Items.Breacher
         private void Explode(NPC target)
         {
             Helper.PlayPitched("Guns/FlareBoom", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
+
             if (!target.immortal && !target.dontTakeDamage)
                 target.StrikeNPC(projectile.damage, 0f, 0);
+
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(5, 8);
 
             for (int i = 0; i < numberOfProjectiles; i++)
             {
-                float offsetRad = MathHelper.Lerp(0, 0.5f, (float)i / (float)numberOfProjectiles);
-                Projectile.NewProjectile(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width, Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11), ModContent.ProjectileType<FlareShrapnel>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
+                float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
+                var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
+                var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
+
+                Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
             }
 
             for (int i = 0; i < 4; i++)
@@ -228,15 +230,15 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.active = false;
         }
     }
+
     internal class FlareShrapnel : ModProjectile, IDrawPrimitive
     {
-        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
-
         private List<Vector2> cache;
-
         private Trail trail;
 
         private NPC source => Main.npc[(int)projectile.ai[0]];
+
+        public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
         public override void SetDefaults()
         {
@@ -255,6 +257,7 @@ namespace StarlightRiver.Content.Items.Breacher
             DisplayName.SetDefault("Explosive Shrapnel");
             Main.projFrames[projectile.type] = 2;
         }
+
         public override void AI()
         {
             projectile.velocity *= 0.96f;
@@ -266,6 +269,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             if (target == source)
                 return false;
+
             return base.CanHitNPC(target);
         }
 
@@ -315,5 +319,4 @@ namespace StarlightRiver.Content.Items.Breacher
             trail?.Render(effect);
         }
     }
-    #endregion
 }
