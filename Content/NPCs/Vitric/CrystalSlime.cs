@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -72,6 +73,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
             {
                 npc.immortal = true;
                 npc.HitSound = SoundID.NPCHit42;
+
+                if (Main.rand.Next(30) == 0)
+                {
+                    if (Main.rand.NextBool())
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+                    else
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+                }
             }
             else
             {

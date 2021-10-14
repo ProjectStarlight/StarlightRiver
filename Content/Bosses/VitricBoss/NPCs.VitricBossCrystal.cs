@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -96,7 +97,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Vignette.visible = true;
 
                 Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
-                
+
+                if (Main.rand.Next(27) == 0)
+                {
+                    if (Main.rand.NextBool())
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+                    else
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+                }
 
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {

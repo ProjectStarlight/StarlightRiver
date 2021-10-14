@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -28,6 +29,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Tile tile = Framing.GetTileSafely(i, j);
             return tile.frameX % 90 == 0 && tile.frameY == 0;
+        }
+
+        public override void SafeNearbyEffects(int i, int j, bool closer)
+        {
+            Tile tile = Framing.GetTileSafely(i, j);
+            if (Main.rand.Next(200) == 0 && tile.frameX < 90 && tile.frameX > 16)
+                {
+                Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+                if (Main.rand.NextBool())
+                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle>(), Vector2.Zero);
+                else
+                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
+            }
+            base.SafeNearbyEffects(i, j, closer);
         }
 
         public override void SetDefaults()
