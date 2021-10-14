@@ -120,10 +120,16 @@ namespace StarlightRiver.Content.CustomHooks
 
                     int off = 140 + (340 - k * 110);
                     if (k == 0) off -= 100;
-                    if (k == 1) off -= 25;
+					if (k == 1) off -= 25;
+                    if (k == 2) off -= 100;
                     if (k == 5) off = 100;
 
                     DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass" + k), k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
+
+                    if(k == 1)
+					{
+                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/GlassTowerLoop"), k + 1, new Vector2(1304, off - 248), default, false);
+                    }
 
                     if (k == 0)
                     {
@@ -212,7 +218,7 @@ namespace StarlightRiver.Content.CustomHooks
                 float y = basepoint.Y + off.Y - (int)Main.screenPosition.Y + GetParallaxOffsetY(basepoint.Y + StarlightWorld.VitricBiome.Height * 8, parallax * 0.04f);
 
                 if (x > -texture.Width && x < Main.screenWidth + 30)
-                    Main.spriteBatch.Draw(texture, new Vector2(x, y), new Rectangle(0, 0, 2956, 1528), color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
+                    Main.spriteBatch.Draw(texture, new Vector2(x, y), null, color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
             }
         }
 
