@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetStaticDefaults()
 		{
-            NPCID.Sets.TrailCacheLength[npc.type] = 240;
+            NPCID.Sets.TrailCacheLength[npc.type] = 120;
             NPCID.Sets.TrailingMode[npc.type] = 1;
         }
 
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             base.SetDefaults();
 
             if (!Main.dedServ)
-                trail = new Trail(Main.graphics.GraphicsDevice, 240, new NoTip(), TrailWidth, TrailColor);
+                trail = new Trail(Main.graphics.GraphicsDevice, 120, new NoTip(), TrailWidth, TrailColor);
         }
 
 		private static Color TrailColor(Vector2 textureCoordinates)
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private static float TrailWidth(float factorAlongTrail)
 		{
-            return (float)Math.Sin(factorAlongTrail * 3.14f) * 16 * factorAlongTrail;
+            return (float)(Math.Sin(factorAlongTrail * 3.14f) * 36) * factorAlongTrail;
 		}
 
 		public override void AI()
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-            if (npc.oldPos[239] == Vector2.Zero || trail is null)
+            if (npc.oldPos[119] == Vector2.Zero || trail is null)
                 return;
 
             trail.Positions = npc.oldPos;
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/EnergyTrail"));
-            effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 40f);
+            effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 100f);
             effect.Parameters["repeats"].SetValue(1);
 
             effect.CurrentTechnique.Passes[0].Apply();
