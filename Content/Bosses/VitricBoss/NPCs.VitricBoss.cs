@@ -85,8 +85,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.lavaImmune = true;
             npc.noGravity = true;
             npc.noTileCollide = true;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
 

@@ -72,7 +72,8 @@ namespace StarlightRiver.Helpers
                     npc.HitSound == SoundID.NPCHit3 ||
                     npc.HitSound == SoundID.NPCHit4 ||
                     npc.HitSound == SoundID.NPCHit41 ||
-                    npc.HitSound == SoundID.NPCHit42
+                    npc.HitSound == SoundID.NPCHit42 ||
+                    npc.HitSound == StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact")
                 );
 		}
 
