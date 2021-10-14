@@ -182,14 +182,14 @@ namespace StarlightRiver.Content.CustomHooks
                 {
                     Vector2 pos = new Vector2(x, y) - new Vector2(Main.screenPosition.X % tex.Width, Main.screenPosition.Y % tex.Height);
                     Texture2D drawtex;
-                    if (CheckBackground(pos + new Vector2(0, -tex.Height), tex.Size(), blacklist, true))
-                        drawtex = texBot;
-                    else if (CheckBackground(pos + new Vector2(0, tex.Height), tex.Size(), blacklist, true))
+                    if (!CheckBackground(pos + new Vector2(0, tex.Height), tex.Size(), blacklist, true))
                         drawtex = texTop;
-                    else if (CheckBackground(pos + new Vector2(tex.Width, 0), tex.Size(), blacklist, true))
-                        drawtex = texLeft;
-                    else if (CheckBackground(pos + new Vector2(-tex.Width, 0), tex.Size(), blacklist, true))
+                    else if (!CheckBackground(pos + new Vector2(0, -tex.Height), tex.Size(), blacklist, true))
+                        drawtex = texBot;
+                    else if (!CheckBackground(pos + new Vector2(-tex.Width, 0), tex.Size(), blacklist, true))
                         drawtex = texRight;
+                    else if (!CheckBackground(pos + new Vector2(tex.Width, 0), tex.Size(), blacklist, true))
+                        drawtex = texLeft;
                     else
                         drawtex = tex;
 
@@ -202,8 +202,10 @@ namespace StarlightRiver.Content.CustomHooks
         {
             if (dontCheckScreen || Helper.OnScreen(new Rectangle((int)pos.X, (int)pos.Y, (int)size.X, (int)size.Y)))
             {
-                if (!Main.BackgroundEnabled) return true;
-                else if (!biome.Contains(((pos + Main.screenPosition) / 16).ToPoint()) || !biome.Contains(((pos + size + Main.screenPosition) / 16).ToPoint())) return true;
+                if (!Main.BackgroundEnabled) 
+                    return true;
+                else if (!biome.Contains(((pos + Main.screenPosition) / 16).ToPoint()) || !biome.Contains(((pos + size + Main.screenPosition) / 16).ToPoint()))
+                    return true;
             }
             return false;
         }
