@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Snek");
+            DisplayName.SetDefault("Spittin' Snek");
         }
 
         public override void SetDefaults()
@@ -32,6 +33,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.lifeMax = 80;
             npc.aiStyle = -1;
             npc.knockBackResist = 0;
+
+            npc.HitSound = SoundID.NPCHit1;
+            npc.DeathSound = SoundID.NPCDeath1;
         }
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
