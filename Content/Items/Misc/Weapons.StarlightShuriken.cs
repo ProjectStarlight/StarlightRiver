@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.Items.Misc
             item.useTime = 24;
             item.useAnimation = 24;
             item.useStyle = ItemUseStyleID.SwingThrow;
-
             item.knockBack = 0f;
             item.shoot = ModContent.ProjectileType<StarShuriken>();
             item.shootSpeed = 15f;
@@ -108,6 +107,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
+			if(creator is null && projectile.timeLeft == 149)
+			{
+				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, projectile.Center);
+			}
+
 			projectile.rotation += 0.05f;
 			projectile.velocity *= 0.998f;
 
