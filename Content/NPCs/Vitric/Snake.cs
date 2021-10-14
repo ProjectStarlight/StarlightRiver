@@ -19,7 +19,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public Player target => Main.player[npc.target];
 
-        public override void SetStaticDefaults()
+		public override bool Autoload(ref string name)
+		{
+			mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore0");
+            mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore1");
+            return base.Autoload(ref name);
+		}
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Spittin' Snek");
         }
@@ -177,7 +184,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void NPCLoot()
         {
-
+			Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore0"));
+            Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore1"));
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
