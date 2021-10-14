@@ -370,10 +370,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostAI()
         {
-            npc.life = 1;
+            //npc.life = 1;
 
-            if (Phase > (int)AIStates.SpawnAnimation && Phase < (int)AIStates.SecondPhase)
-                Phase = (int)AIStates.SecondPhase;
+            //if (Phase > (int)AIStates.SpawnAnimation && Phase < (int)AIStates.SecondPhase)
+                //Phase = (int)AIStates.SecondPhase;
 
             //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
