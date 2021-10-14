@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.height = 8;
             npc.damage = 0;
             npc.defense = 0;
-            npc.lifeMax = 1;
+            npc.lifeMax = 10;
             npc.noGravity = true;
             npc.noTileCollide = true;
             npc.dontTakeDamage = true;
@@ -55,24 +55,26 @@ namespace StarlightRiver.Content.NPCs.Vitric
             }
         }
 
-        public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.ZoneOverworldHeight && !Main.dayTime && spawnInfo.player.ZoneDesert ? 0.2f : 0f;
+        public override float SpawnChance(NPCSpawnInfo spawnInfo) => 0;
     }
 
     internal class DesertWisp2 : DesertWisp
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
-        public Trail trail;// = new Trail(Main.graphics.GraphicsDevice, 80, new NoTip(), TrailWidth, TrailColor);
+        public Trail trail;
 
 		public override void SetStaticDefaults()
 		{
-            NPCID.Sets.TrailCacheLength[npc.type] = 80;
+            NPCID.Sets.TrailCacheLength[npc.type] = 240;
             NPCID.Sets.TrailingMode[npc.type] = 1;
         }
 
 		public override void SetDefaults()
 		{
+            base.SetDefaults();
+
             if (!Main.dedServ)
-                trail = new Trail(Main.graphics.GraphicsDevice, 80, new NoTip(), TrailWidth, TrailColor);
+                trail = new Trail(Main.graphics.GraphicsDevice, 240, new NoTip(), TrailWidth, TrailColor);
         }
 
 		private static Color TrailColor(Vector2 textureCoordinates)
@@ -84,7 +86,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private static float TrailWidth(float factorAlongTrail)
 		{
-            return (float)Math.Sin(factorAlongTrail * 3.14f) * 16;
+            return (float)Math.Sin(factorAlongTrail * 3.14f) * 16 * factorAlongTrail;
 		}
 
 		public override void AI()
@@ -95,7 +97,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-            if (npc.oldPos[79] == Vector2.Zero)
+            if (npc.oldPos[239] == Vector2.Zero || trail is null)
                 return;
 
             trail.Positions = npc.oldPos;
@@ -113,9 +115,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             effect.CurrentTechnique.Passes[0].Apply();
 
-            trail.Render(effect);
+            trail?.Render(effect);
         }
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 1f : 0f;
+		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
     }
 }

@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.aiStyle = -1;
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath4;
+            npc.npcSlots = 1;
 
             npc.direction = Main.rand.Next(2) == 0 ? 1 : -1;
             npc.spriteDirection = npc.direction;
@@ -78,7 +79,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                     npc.velocity.Y += 0.6f;
 
-                    for (int k = 0; k <= 10; k++)
+                    for (int k = 0; k <= 3; k++)
                         Dust.NewDust(npc.position, 32, 32, DustID.Sandstorm);
 
                     if (npc.ai[1] >= 30)
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-            return tile.active() && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 0.75f : 0f;
+            return tile.active() && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 95f : 0f;
         }
 
         public override void NPCLoot()

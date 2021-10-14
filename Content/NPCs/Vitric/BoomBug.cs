@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.aiStyle = -1;
             npc.HitSound = SoundID.NPCHit1;
             npc.DeathSound = SoundID.NPCDeath4;
+            npc.npcSlots = 1;
         }
 
         public override void AI()
@@ -170,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 1 : 0;
+            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
         }
 
         public override void NPCLoot()
