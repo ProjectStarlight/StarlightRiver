@@ -294,8 +294,18 @@ namespace StarlightRiver.Content.Items.Vitric
             float maxRot = firing ? 0.02f : 0.08f;
             LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
+            Lighting.AddLight(projectile.Center, new Vector3(0.8f, 0.6f, 0.1f));
+
             if (Charge == 0)
                 LaserRotation = targetRot;
+
+            if (Charge >= 12 || firing)
+                projectile.rotation = LaserRotation + 1.57f / 2;
+            else
+            {
+                projectile.rotation = LaserRotation + 1.57f / 2 + Helper.BezierEase(Charge / 12f) * 6.28f;
+                projectile.scale = 0.5f + (Charge / 12f) * 0.5f;
+            }
 
             if (Main.mouseRight && !firing)
 			{
@@ -342,34 +352,69 @@ namespace StarlightRiver.Content.Items.Vitric
             target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, lightColor, LaserRotation + 1.57f / 2, new Vector2(0, GetTexture(Texture).Height), 1, 0, 0);
-            return false;
-		}
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(0, GetTexture(Texture).Height), projectile.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(Texture + "Glow"), Owner.Center - Main.screenPosition, null, Color.White, projectile.rotation, new Vector2(0, GetTexture(Texture).Height), projectile.scale, 0, 0);
 
-		public void DrawAdditive(SpriteBatch spriteBatch) 
+            float prog1 = Helper.SwoopEase((Charge - 12) / 23f);
+            float prog2 = Helper.SwoopEase((Charge - 17) / 18f);
+
+            float pow = 0;
+
+            if (Charge <= 35) 
+                pow = (Charge / 35f) * 0.1f;
+
+            if (LaserTimer > 0 && LaserTimer < 20)
+                pow = 0.1f + (LaserTimer / 20f) * 0.4f;
+
+            if (LaserTimer >= 20)
+                pow = 0.5f;
+
+            prog1 += (float)Math.Sin(Main.GameUpdateCount * 0.2f) * pow;
+            prog2 += (float)Math.Sin((Main.GameUpdateCount - 20) * 0.2f) * pow;
+
+            if(LaserTimer > 80)
+			{
+                prog1 *= (120 - LaserTimer) / 40f;
+                prog2 *= (120 - LaserTimer) / 40f;
+            }
+
+            DrawRing(spriteBatch, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.01f, prog1, new Color(255, 240, 120));
+            DrawRing(spriteBatch, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.015f, prog2, new Color(255, 180, 120));
+
+            return false;
+        }
+
+        private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
+        {
+            var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+            var effect = Filters.Scene["BowRing"].GetShader().Shader;
+
+            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uColor"].SetValue(color.ToVector3());
+            effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+            effect.Parameters["uOpacity"].SetValue(prog);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+            var target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
+            sb.Draw(texRing, target, null, color * prog, projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
+
+            sb.End();
+            sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        private Rectangle toRect(Vector2 pos, int w, int h)
+        {
+            return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch) 
 		{
             if(LaserTimer <= 0)
-			{
-                var texShine = GetTexture(AssetDirectory.Assets + "Keys/GlowVerySoft");
-                var texFlare = GetTexture(AssetDirectory.GUI + "ItemGlow");
-
-                Vector2 progressPos = Owner.Center + Vector2.SmoothStep(Vector2.Zero, Vector2.UnitX.RotatedBy(LaserRotation) * 120, Charge / 35f) - Main.screenPosition;
-                Color progressColor = Color.White * Helper.BezierEase(Charge / 35f);
-
-                spriteBatch.Draw(texShine, progressPos, null, progressColor, 0, texShine.Size() / 2, (float)Math.Sin(Charge / 35f * 3.14f) * 0.5f, 0, 0);
-
-                if(Charge > 20)
-				{
-                    float progress = (Charge - 20) / 15f;
-                    Color flareColor = Color.White * (float)Math.Sin(progress * 3.14f);
-
-                    spriteBatch.Draw(texFlare, Owner.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 100 - Main.screenPosition, null, flareColor, Helper.BezierEase(progress) * 1, texFlare.Size() / 2, (float)Math.Sin(progress * 3.14f) * 0.5f, 0, 0);
-                }
-
-                return;
-			}
+                return;		
 
             int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
             var color = new Color(255, 160 + sin, 40 + sin / 2);

@@ -391,7 +391,7 @@ namespace StarlightRiver.Helpers
             if (position != default)
                 distFactor = 1 - MathHelper.Clamp(Vector2.Distance(Main.LocalPlayer.Center, position) / 2000f, 0, 1);
 
-            soundEffect.Volume = MathHelper.Clamp(volume * Main.soundVolume * distFactor, 0.1f, 1);
+            soundEffect.Volume = MathHelper.Clamp(volume * Main.soundVolume * distFactor, 0, 1);
             soundEffect.Pitch = pitch;
 
             instances.Add(soundEffect);

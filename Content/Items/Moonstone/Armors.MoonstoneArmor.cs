@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && Main.player[projectile.owner].armor[0].type == ItemType<MoonstoneHead>())
 			{
-                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.35f);
+                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
             if (item.melee && player.armor[0].type == ItemType<MoonstoneHead>())
             {
-                (player.armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.35f);
+                (player.armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
             }
         }
 

@@ -60,12 +60,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void UpdateArmorSet(Player player)
         {
             player.setBonus = 
-                "Double tap DOWN while holding a magic weapon to haunt it\n" +
-                "Haunted weapons float around you and attack automatically\n" +
-                "Haunted weapons decrease your max mana based on their cost\n" +
-                "Haunted weapons become disinterested in non-magic users\n" +
-                "Double tap DOWN again on a haunted item to unhaunt it\n" + 
-                "Double tap DOWN with an empty hand to clear haunted items";
+                "Double tap DOWN with a magic weapon to haunt or unhaunt it, or with an empty hand to unhaunt all\n" +
+                "Haunted weapons float around you and attack automatically, but decrease your max mana\n" +
+                "Haunted weapons become disinterested in non-magic users and can't be used while haunted";
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
 

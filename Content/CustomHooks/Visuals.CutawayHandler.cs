@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			On.Terraria.Main.SetDisplayMode += RefrashCutawayTarget;
-			On.Terraria.Main.DrawInterface += DrawNegative;
+			On.Terraria.Main.DrawInfernoRings += DrawNegative;
 			On.Terraria.Main.DrawDust += DrawPositive;
 			On.Terraria.WorldGen.SaveAndQuit += ClearCutaways;
 
@@ -53,8 +53,10 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(self);
 		}
 
-		private void DrawNegative(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		private void DrawNegative(On.Terraria.Main.orig_DrawInfernoRings orig, Main self)
 		{
+			orig(self);
+
 			if (inside)
 			{
 				var activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
@@ -64,14 +66,14 @@ namespace StarlightRiver.Content.CustomHooks
 				effect.Parameters["uColor"].SetValue((Color.Black).ToVector3());
 				effect.Parameters["opacity"].SetValue(1 - activeCutaway.fadeTime);
 
+				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, default, effect);
 
 				Main.spriteBatch.Draw(cutawayTarget, Vector2.Zero, Color.White);
 
 				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default);
 			}
-
-			orig(self, gameTime);
 		}
 
 		private void DrawCutawayTarget(On.Terraria.Main.orig_CheckMonoliths orig)
