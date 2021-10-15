@@ -71,9 +71,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetDefaults()
         {
             npc.aiStyle = -1;
-            npc.lifeMax = 5000;
+            npc.lifeMax = 5750;
             npc.damage = 30;
-            npc.defense = 18;
+            npc.defense = 10;
             npc.knockBackResist = 0f;
             npc.width = 140;
             npc.height = 120;
@@ -105,9 +105,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(7500 * bossLifeScale);
+            npc.lifeMax = (int)(8500 * bossLifeScale);
             npc.damage = 40;
-            npc.defense = 21;
+            npc.defense = 12;
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
