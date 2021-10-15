@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
             if (state == 0)
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + Vector2.UnitY * 4, tex.Frame(), Helper.IndicatorColor, npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, tex.Frame(), Helper.IndicatorColor, npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
             if (phase == 3 && timer < 30)
             {
