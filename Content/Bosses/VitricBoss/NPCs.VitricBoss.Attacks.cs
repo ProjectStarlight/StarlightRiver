@@ -375,13 +375,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 startPos = npc.Center;
             }
 
-            if (AttackTimer < 120) npc.Center = Vector2.SmoothStep(startPos, homePos, AttackTimer / 120f);
+            if (AttackTimer < 60) npc.Center = Vector2.SmoothStep(startPos, homePos, AttackTimer / 60f);
 
-            if (AttackTimer > 120 && AttackTimer % 120 > 30 && AttackTimer % 120 <= 90)
+            if (AttackTimer > 60 && AttackTimer % 90 > 30 && AttackTimer % 90 <= 60)
             {
                 SetFrameY(2);
 
-                int x = (int)(Math.Sin((AttackTimer % 120 - 30) / 60f * 3.14f) * 8);
+                int x = (int)(Math.Sin((AttackTimer % 90 - 30) / 30f * 3.14f) * 8);
                 SetFrameX(x);
 
                 rotationLocked = true;
@@ -390,7 +390,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 SetFrameY(0);
             }
-            if (AttackTimer % 120 == 0)
+
+            if (AttackTimer % 90 == 0)
             {
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
                 int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0);
@@ -401,18 +402,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Helper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, Main.rand.NextFloat(0.3f, 1), npc.Center);
 
             }
-            if (AttackTimer >= 120 * 4 - 1) ResetAttack(); //end after the third volley is fired
+
+            if (AttackTimer >= 90 * 4 - 1) 
+                ResetAttack(); //end after the third volley is fired
         }
 
         private void ResetPosition()
         {
-            int restTime = Main.expertMode ? 120 : 180;
+            int restTime = Main.expertMode ? 80 : 110;
 
-            if (AttackTimer == 60)
+            if (AttackTimer == 40)
                 startPos = npc.Center;
 
-            if (AttackTimer > 60 && AttackTimer <= 120)
-                npc.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - 60) / 60f);
+            if (AttackTimer > 40 && AttackTimer <= 80)
+                npc.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - 40) / 40f);
 
             if (AttackTimer == restTime) ResetAttack();
         }
@@ -421,10 +424,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (AttackTimer == 1) favoriteCrystal = Main.rand.Next(2); //bootleg but I dont feel like syncing another var
 
-            if (AttackTimer < 300)
+            if (AttackTimer < 240)
             {
-                float rad = AttackTimer * 1.3f;
-                float rot = Helpers.Helper.BezierEase(AttackTimer / 300f) * 6.28f;
+                float rad = AttackTimer / 240f * 390;
+                float rot = Helpers.Helper.BezierEase(AttackTimer / 240f) * 6.28f;
                 npc.Center = homePos + new Vector2(0, -rad).RotatedBy(favoriteCrystal == 0 ? rot : -rot);
 
                 if (Main.expertMode && AttackTimer % 45 == 0)
@@ -435,21 +438,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
-            if (AttackTimer > 240)
+            if (AttackTimer > 60)
             {
                 rotationLocked = true;
                 lockedRotation = 1.57f;
             }
             
 
-            if (AttackTimer > 330 && AttackTimer < 360)
+            if (AttackTimer > 250 && AttackTimer < 280)
                 npc.position.Y -= 4;
 
-            if (AttackTimer == 360) startPos = npc.Center;
+            if (AttackTimer == 280) startPos = npc.Center;
 
-            if (AttackTimer > 360) npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, 1300), (AttackTimer - 360) / 40f);
+            if (AttackTimer > 280) npc.Center = Vector2.SmoothStep(startPos, homePos + new Vector2(0, 1300), (AttackTimer - 280) / 40f);
 
-            if (AttackTimer == 380)
+            if (AttackTimer == 300)
             {
                 foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, npc.Center) < 1500))
                 {
@@ -459,16 +462,34 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (altAttack)
                 {
-                    for (int k = 0; k < 12; k++)
+                    for (int k = 1; k < 12; k++)
                     {
                         Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, Main.rand.NextFloat(7, 8)), ProjectileType<GlassSpike>(), 15, 0);
+                    }
+
+                    if (Main.expertMode)
+                    {
+                        for (int k = 0; k < 4; k++)
+                        {
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + Main.rand.Next(1, 12) * 120 + 60, -460), new Vector2(0, Main.rand.NextFloat(5, 6)), ProjectileType<GlassSpike>(), 15, 0);
+                        }
                     }
                 }
                 else
 				{
-                    for (int k = 0; k < 6; k++)
+                    if (Main.expertMode)
                     {
-                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(5, 18)), ProjectileType<SpikeMine>(), 10, 1);
+                        for (int k = 1; k < 8; k++)
+                        {
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 175, -460), new Vector2(0, Main.rand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
+                        }
+                    }
+                    else
+                    {
+                        for (int k = 1; k < 6; k++)
+                        {
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
+                        }
                     }
                 }
 
@@ -479,7 +500,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void Mines()
         {
             rotationLocked = true;
-            lockedRotation = 1.57f;
+            lockedRotation = 0f;
 
             if(AttackTimer == 30)
                 Helper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.3f, npc.Center);
@@ -526,7 +547,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(x);
             }
 
-            if (AttackTimer == 120) 
+            if (AttackTimer == 100) 
                 ResetAttack();
         }
 
@@ -564,7 +585,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer % 70 == 30)
 				{
-                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + Main.rand.NextFloat(-0.25f, 0.25f);
+                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + Main.rand.NextFloat(-0.35f, 0.35f);
 
                     for (int k = -2; k <= 2; k++)
                         SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
