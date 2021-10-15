@@ -27,23 +27,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             projectile.timeLeft = 2;
             projectile.ai[0]++; //ticks up the timer
 
-            if (projectile.ai[0] >= 45) //when this projectile goes off
+            if (projectile.ai[0] >= 30) //when this projectile goes off
                 for (int k = 0; k < 8; k++)
-                    if (projectile.ai[0] == 45 + k * 3)
+                    if (projectile.ai[0] == 30 + k * 3)
                     {
                         float rot = (k - 4) / 10f; //rotational offset
                         Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
-            if (projectile.ai[0] == 65) projectile.Kill(); //kill it when it expires
+
+            if (projectile.ai[0] == 50)
+                projectile.Kill(); //kill it when it expires
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            if (projectile.ai[0] <= 46) //draws the proejctile's tell ~0.75 seconds before it goes off
+            if (projectile.ai[0] <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell");
-                float alpha = (projectile.ai[0] * 2 / 23 - (float)Math.Pow(projectile.ai[0], 2) / 529) * 0.75f;
+                float alpha = (float)Math.Sin((projectile.ai[0] / 30f) * 3.14f) * 0.8f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
         }
@@ -65,11 +67,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
-            if (projectile.timeLeft > 550)
-                projectile.velocity *= 0.97f;
+            if (projectile.timeLeft > 570)
+                projectile.velocity *= 0.96f;
 
-            if (projectile.timeLeft < 460)
-                projectile.velocity *= 1.02f;
+            if (projectile.timeLeft < 500)
+                projectile.velocity *= 1.03f;
 
             projectile.rotation = projectile.velocity.ToRotation() + 1.58f;
 

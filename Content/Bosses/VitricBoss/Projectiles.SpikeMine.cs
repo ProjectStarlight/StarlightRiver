@@ -19,8 +19,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetDefaults()
         {
             projectile.hostile = false;
-            projectile.width = 220;
-            projectile.height = 1;
+            projectile.width = 40;
+            projectile.height = 40;
             projectile.timeLeft = 170;
         }
 

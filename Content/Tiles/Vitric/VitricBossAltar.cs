@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player player = Main.LocalPlayer;
 
-            if (tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
                 (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
                 return true;
@@ -143,6 +143,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
                 CutsceneTimer = 999;
+
+            if (parent.frameX == 0)
+                return;
 
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {

@@ -71,14 +71,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetDefaults()
         {
             npc.aiStyle = -1;
-            npc.lifeMax = 5000;
+            npc.lifeMax = 5750;
             npc.damage = 30;
-            npc.defense = 18;
+            npc.defense = 10;
             npc.knockBackResist = 0f;
             npc.width = 140;
             npc.height = 120;
             npc.value = Item.buyPrice(0, 20, 0, 0);
-            npc.npcSlots = 15f;
+            npc.npcSlots = 100f;
             npc.dontTakeDamage = true;
             npc.friendly = false;
             npc.boss = true;
@@ -105,9 +105,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(7500 * bossLifeScale);
+            npc.lifeMax = (int)(8500 * bossLifeScale);
             npc.damage = 40;
-            npc.defense = 21;
+            npc.defense = 12;
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(-10, -10), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(2, -20), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
