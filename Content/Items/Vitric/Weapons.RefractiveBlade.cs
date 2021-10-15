@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Refractive Blade");
-            Tooltip.SetDefault("Swing in any direction \nHold down to launch a laser");
+            Tooltip.SetDefault("Hold RMB down to charge a laser\nEnemies struck by the laser are more vulnerable to melee damage");
         }
 
         public override void SetDefaults()
