@@ -58,7 +58,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool CanHitPlayer(Player target)
         {
-            if (Abilities.AbilityHelper.CheckDash(target, projectile.Hitbox))
+            var dashBox = new Rectangle(projectile.Hitbox.X - 10, projectile.Hitbox.Y - 10, projectile.Hitbox.Width + 20, projectile.Hitbox.Height + 20);
+
+            if (Abilities.AbilityHelper.CheckDash(target, dashBox))
             {
                 projectile.active = false;
 
