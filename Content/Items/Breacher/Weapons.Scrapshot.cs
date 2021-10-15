@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				projectile.timeLeft = 52;
 
-				if(Vector2.Distance(projectile.Center, hooked.Center) > 48) //break the hook if the enemy is too fast or teleports
+				if(Vector2.Distance(projectile.Center, hooked.Center) > 128 || player.dead) //break the hook if the enemy is too fast or teleports, or if the player is dead
 				{
 					hooked = null;
 					projectile.timeLeft = 30;
