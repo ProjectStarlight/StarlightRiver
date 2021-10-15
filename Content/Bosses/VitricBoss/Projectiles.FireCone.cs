@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
+            projectile.hostile = true;
             projectile.width = 1;
             projectile.height = 1;
             projectile.timeLeft = 2;
@@ -52,15 +52,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
             }
 
-            if(projectile.ai[0] > 70)
-			{
-                foreach (Player player in Main.player.Where(n => Helper.CheckConicalCollision(projectile.Center, (700 / 24) * (int)(projectile.ai[0] - 70), projectile.rotation, 0.2f, n.Hitbox)))
-                {
-                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " bit the dust..."), Main.expertMode ? 50 : 35, 0); //hurt em
-                    player.AddBuff(BuffID.OnFire, 60); //burn the player
-                }
-            }
-
             if (projectile.ai[0] >= 94) //when this projectile goes off
             {
                 projectile.Kill(); //self-destruct
@@ -74,9 +65,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            if (projectile.ai[0] > 70)
+            if (projectile.ai[0] > 60 && projectile.ai[0] < 70)
             {
-                return Helper.CheckConicalCollision(projectile.Center, 700 * (int)Math.Min(((projectile.ai[0] - 70) / 12), 1), projectile.rotation, 0.2f, targetHitbox);
+                return Helper.CheckConicalCollision(projectile.Center, 700, projectile.rotation, 0.2f, targetHitbox);
             }
 
             return false;
