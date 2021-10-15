@@ -17,15 +17,31 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal class VitricBossAltar : DummyTile
     {
+        public override int DummyType => ProjectileType<VitricBossAltarDummy>();
+
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = AssetDirectory.VitricTile + name;
             return base.Autoload(ref name, ref texture);
         }
 
-        public override int DummyType => ProjectileType<VitricBossAltarDummy>();
+        public override void SetDefaults()
+        {
+            (this).QuickSetFurniture(5, 7, DustType<Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
+            minPick = int.MaxValue;
+        }
 
-        public override bool SpawnConditions(int i, int j)
+		public override bool CanExplode(int i, int j)
+		{
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            if (tile.type == TileType<VitricBossAltar>())
+                return false;
+
+            return base.CanExplode(i, j);
+        }
+
+		public override bool SpawnConditions(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
             return tile.frameX % 90 == 0 && tile.frameY == 0;
@@ -43,12 +59,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
             }
             base.SafeNearbyEffects(i, j, closer);
-        }
-
-        public override void SetDefaults()
-        {
-            (this).QuickSetFurniture(5, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 113, 113), false, false, "Ceiro's Altar");
-            minPick = int.MaxValue;
         }
 
         public override void MouseOver(int i, int j)
@@ -242,8 +252,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             int off = (int)(BarrierProgress / 120f * tex.Height);
             int off2 = (int)(BarrierProgress / 120f * texTop.Width / 2);
 
-            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 17 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default);
-            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 17 - (int)Main.screenPosition.Y, tex.Width, off), tex2, new Rectangle(0, 0, tex.Width, off), default);
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default);
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex2, new Rectangle(0, 0, tex.Width, off), default);
 
             //left
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 592 - (int)Main.screenPosition.X, (int)center.Y - 1040 - (int)Main.screenPosition.Y, off2, texTop.Height), texTop, new Rectangle(texTop.Width / 2 - off2, 0, off2, texTop.Height), default);
