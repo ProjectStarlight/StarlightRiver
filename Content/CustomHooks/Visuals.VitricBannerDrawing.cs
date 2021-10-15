@@ -21,6 +21,11 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += DrawVerletBannerTarget;
         }
 
+		public override void Unload()
+		{
+            Main.OnPreDraw -= DrawVerletBannerTarget;
+        }
+
 		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             Filters.Scene["Outline"].GetShader().Shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));

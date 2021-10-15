@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Unload()
         {
+            Main.OnPreDraw -= HotspringTarget;
             hotspringMapTarget = null;
         }
 

@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Unload()
         {
+            Main.OnPreDraw -= WaterTarget;
             CatherdalWaterTarget = null;
         }
 
