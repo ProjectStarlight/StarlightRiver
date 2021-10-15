@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.width = 140;
             npc.height = 120;
             npc.value = Item.buyPrice(0, 20, 0, 0);
-            npc.npcSlots = 15f;
+            npc.npcSlots = 100f;
             npc.dontTakeDamage = true;
             npc.friendly = false;
             npc.boss = true;
