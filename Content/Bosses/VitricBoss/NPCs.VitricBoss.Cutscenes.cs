@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 mp.Shake += 30;
 
                 Helper.PlayPitched("VitricBoss/StoneBreak", 1, 0, npc.Center);
-                ZoomHandler.SetZoomAnimation(1, 20);
+                ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
 
                 for (int k = 0; k < 10; k++)
                 {
@@ -174,11 +174,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		private void PhaseTransitionAnimation() //The animation that plays when the boss transitions from phase 1 to 2
 		{
-            rotationLocked = true;
-            lockedRotation = 3.14f;
+            rotationLocked = true;       
 
             if (GlobalTimer == 2)
             {
+                lockedRotation = 3.14f;
+
                 foreach (NPC crystal in crystals)
                 {
                     crystal.ai[0] = 3;
@@ -272,6 +273,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         new VitricBossSwoosh(new Vector2(46, -34), 14, this)
                         };
             }
+
+            if(GlobalTimer == 460)
+                lockedRotation = 2f;
 
             if (GlobalTimer > 480)
             {

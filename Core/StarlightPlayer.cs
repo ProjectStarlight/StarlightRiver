@@ -234,6 +234,17 @@ namespace StarlightRiver.Core
 
         public override void OnEnterWorld(Player player)
         {
+            ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
+            ZoomHandler.AddFlatZoom(0);
+            Shake = 0;
+            panDown = 0;
+
+            ScreenMoveTime = 0;
+            ScreenMoveTarget = new Vector2(0, 0);
+            ScreenMovePan = new Vector2(0, 0);
+
+            rotation = 0;
+
             BootlegHealthbar.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;

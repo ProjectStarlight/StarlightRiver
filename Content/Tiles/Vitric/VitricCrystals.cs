@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -101,6 +103,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
                             spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + x - 2, j + y) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
                     }
                 }
+        }
+
+        public override void SafeNearbyEffects(int i, int j, bool closer)
+        {
+            if (Main.rand.Next(1500) == 0)
+            {
+                Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+                if (Main.rand.NextBool())
+                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle>(), Vector2.Zero);
+                else
+                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
+            }
+            base.SafeNearbyEffects(i, j, closer);
         }
     }
 

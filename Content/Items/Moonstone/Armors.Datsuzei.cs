@@ -66,14 +66,15 @@ namespace StarlightRiver.Content.Items.Moonstone
                 var activationTimer = Helper.BezierEase(Math.Min(1, activationTimerNoCurve / 60f));
 
                 var hideTarget = new Rectangle(20, 20, 446, 52);
-                Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White * activationTimer);
+
+                if(!Main.screenTarget.IsDisposed)
+                    Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White * activationTimer);
 
                 var backTex = GetTexture(AssetDirectory.MoonstoneItem + "DatsuzeiHotbar");
                 var target = new Rectangle(111, 20, (int)(backTex.Width * activationTimer), backTex.Height);
                 var source = new Rectangle(0, 0, (int)(backTex.Width * activationTimer), backTex.Height);
 
                 Main.spriteBatch.Draw(backTex, target, source, Color.White);
-
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);

@@ -30,7 +30,12 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw += Main_OnPreDraw;
         }
 
-        private void Main_OnPreDraw(GameTime obj)
+		public override void Unload()
+		{
+            Main.OnPreDraw -= Main_OnPreDraw;
+        }
+
+		private void Main_OnPreDraw(GameTime obj)
         {
             if (!Main.gameMenu)
             {

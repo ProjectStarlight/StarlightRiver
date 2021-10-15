@@ -162,9 +162,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
             var pos = npc.Center - Main.screenPosition + new Vector2(0, -8);
 
             if (ActionState == 1)
+            {
                 pos += new Vector2(8 * npc.spriteDirection, -4);
 
-            spriteBatch.Draw(GetTexture(Texture), pos, npc.frame, Color.White, 0, new Vector2(21, 20), 1, npc.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+                if (npc.spriteDirection == -1)
+                    pos.X += 4;
+            }
+
+            int originX = 18;
+            if (npc.spriteDirection == -1)
+                originX = 30;
+
+            spriteBatch.Draw(GetTexture(Texture), pos, npc.frame, Color.White, 0, new Vector2(originX, 20), 1, npc.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
 	}

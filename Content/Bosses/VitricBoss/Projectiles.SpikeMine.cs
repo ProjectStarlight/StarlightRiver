@@ -40,7 +40,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (Timer == 90) //when this projectile goes off
             {
-
                 Helper.PlayPitched("Magic/FireHit", 0.20f, 0, projectile.Center);
                 projectile.hostile = true;
 
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool CanHitPlayer(Player target)
 		{
-            int radius = (int)(Math.Sin((Timer - 90) / 90f * 3.14f) * 128);
+            int radius = (int)(Math.Sin((Timer - 90) / 40f * 3.14f) * 128);
             return Helpers.Helper.CheckCircularCollision(projectile.Center, radius, target.Hitbox);
 		}
 

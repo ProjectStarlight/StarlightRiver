@@ -28,6 +28,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Main.tileLavaDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
+            Main.tileLighted[Type] = true;
 
             TileID.Sets.FramesOnKillWall[Type] = true;
 
@@ -37,14 +38,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
             AddMapEntry(new Color(115, 182, 158));
         }
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
-        {
-            if (!Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+            if (!Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
                 return;
-            Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(125, 162, 158) * 0.005f * (1 - StarlightWorld.templeCutaway.fadeTime));
+            r = 125 * 0.003f;
+            g = 162 * 0.003f;
+            b = 158 * 0.003f; 
         }
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             if (!Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
                 return;

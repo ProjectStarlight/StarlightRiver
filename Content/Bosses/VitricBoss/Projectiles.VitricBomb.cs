@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Dusts;
 using System;
 using System.Linq;
 using Terraria;
@@ -75,6 +76,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
+            if (Main.rand.Next(27) == 0)
+            {
+                if (Main.rand.NextBool())
+                    Dust.NewDust(projectile.position, projectile.width, projectile.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+                else
+                    Dust.NewDust(projectile.position, projectile.width, projectile.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+            }
             projectile.velocity *= 0.97f;
             if (projectile.timeLeft % 4 == 0)
             {

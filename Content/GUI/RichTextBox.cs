@@ -25,19 +25,23 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (talking is null) return;
+            if (talking is null) 
+                return;
 
             icon = Main.screenTarget;
 
             Vector2 pos = talking.Center - Main.screenPosition;
             iconFrame = new Rectangle((int)pos.X - 44, (int)pos.Y - 44, 88, 88);
 
-            if (message == "") return;
+            if (message == "")
+                return;
+
             DrawBox(spriteBatch, new Rectangle(50 + Main.screenWidth / 2 - 260, 200, 520, (int)Markdown.GetHeight(message, 1, 500) + 20));
             Markdown.DrawMessage(spriteBatch, new Vector2(50 + Main.screenWidth / 2 - 250, 215), message, 1, 500);
 
             DrawBox(spriteBatch, new Rectangle(-52 + Main.screenWidth / 2 - 260, 200, 100, 100));
-            if (icon != null)
+
+            if (!Main.screenTarget.IsDisposed && icon != null)
                 spriteBatch.Draw(icon, new Rectangle(-46 + Main.screenWidth / 2 - 260, 206, 88, 88), iconFrame, Color.White, 0, Vector2.Zero, 0, 0);
 
             float width = Main.fontMouseText.MeasureString(title).X;

@@ -59,6 +59,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private float bladeRotation;
 		private int charge;
 		private bool released = false;
+		private float flickerTime = 0;
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
@@ -83,6 +84,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void AI()
 		{
 			Player player = Main.player[projectile.owner];
+
+			if (charge >= MAXCHARGE)
+			{
+				if (flickerTime == 0)
+					Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+				flickerTime++;
+			}
 
 			projectile.velocity = Vector2.Zero;
 			projectile.timeLeft = 2;
@@ -164,6 +172,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
 		{
+			Color heatColor = new Color(255, 96, 0);
+			lightColor = Color.Lerp(lightColor, heatColor, (charge / (float)MAXCHARGE) * 0.6f);
+
 			Player player = Main.player[projectile.owner];
 			Texture2D texture = Main.projectileTexture[projectile.type];
 			Texture2D texture2 = ModContent.GetTexture(Texture + "_Blade");
@@ -186,6 +197,34 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
 				spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
+			}
+
+			if (charge >= MAXCHARGE && !released && flickerTime < 16)
+			{
+				texture = ModContent.GetTexture(Texture + "_White");
+				texture2 = ModContent.GetTexture(Texture + "_Blade_White");
+				Color color = Color.White;
+				float flickerTime2 = (float)(flickerTime / 20f);
+				float alpha = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
+
+				if (alpha < 0)
+				{
+					alpha = 0;
+				}
+
+				spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), color * alpha, bladeRotation, new Vector2(15, 15), projectile.scale, SpriteEffects.None, 0.0f);
+
+				if (player.direction == 1)
+				{
+					SpriteEffects effects1 = SpriteEffects.None;
+					spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation(), origin, projectile.scale, effects1, 0.0f);
+
+				}
+				else
+				{
+					SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
+					spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
+				}
 			}
 
 			return false;

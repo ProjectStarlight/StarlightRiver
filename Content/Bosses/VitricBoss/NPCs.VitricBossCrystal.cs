@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -96,7 +97,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Vignette.visible = true;
 
                 Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
-                
+
+                if (Main.rand.Next(27) == 0)
+                {
+                    if (Main.rand.NextBool())
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+                    else
+                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+                }
 
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
@@ -296,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             Texture2D tex = GetTexture(Texture + "Glow"); //glowy outline
             if (state == 0)
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + new Vector2(0, 4), tex.Frame(), Helper.IndicatorColor, npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition + Vector2.UnitY * 4, tex.Frame(), Helper.IndicatorColor, npc.rotation, tex.Frame().Size() / 2, npc.scale, 0, 0);
 
             if (phase == 3 && timer < 30)
             {
@@ -304,12 +312,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition + new Vector2(2, 0), npc.frame, Color.White * (1 - factor), npc.rotation, npc.frame.Size() / 2, factor * 2 * npc.scale, 0, 0);
             }
 
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowOrange"), npc.Center - Main.screenPosition, npc.frame, Color.White * 0.8f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+            spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalGlowBlue"), npc.Center - Main.screenPosition, npc.frame, Color.White * 0.6f, npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
 
             if(phase >= 5)
 			{
-                spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition + Vector2.UnitY * 4, npc.frame, Color.White * (timer / 120f), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(GetTexture(AssetDirectory.VitricBoss + "VitricBossCrystalShape"), npc.Center - Main.screenPosition, npc.frame, Color.White * (timer / 120f), npc.rotation, npc.frame.Size() / 2, npc.scale, 0, 0);
             }
         }
 
@@ -417,7 +425,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 var tex2 = GetTexture(Texture + "Outline");
 
                 spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
-                spriteBatch.Draw(tex2, (npc.Center - Main.screenPosition) + new Vector2(0, 4), null, new Color(255, 160, 100) * alpha * 0.50f, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
+                spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.50f, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
 
                 if (Parent.AttackTimer < 380)
                 {

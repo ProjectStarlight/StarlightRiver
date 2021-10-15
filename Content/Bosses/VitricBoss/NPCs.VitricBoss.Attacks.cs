@@ -21,11 +21,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void RandomizeTarget()
         {
             List<int> players = new List<int>();
+
             foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint()) ))
             {
                 players.Add(player.whoAmI);
             }
-            npc.target = players[Main.rand.Next(players.Count)];
+
+            int random = Main.rand.Next(players.Count);
+
+            if(random < players.Count)
+                npc.target = players[random];
         }
 
         #region phase 1
