@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 mp.Shake += 30;
 
                 Helper.PlayPitched("VitricBoss/StoneBreak", 1, 0, npc.Center);
-                ZoomHandler.SetZoomAnimation(1, 20);
+                ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
 
                 for (int k = 0; k < 10; k++)
                 {

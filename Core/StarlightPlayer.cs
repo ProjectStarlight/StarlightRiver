@@ -234,7 +234,7 @@ namespace StarlightRiver.Core
 
         public override void OnEnterWorld(Player player)
         {
-            ZoomHandler.SetZoomAnimation(1, 1);
+            ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
             ZoomHandler.AddFlatZoom(0);
             Shake = 0;
             panDown = 0;
