@@ -96,6 +96,21 @@ namespace StarlightRiver.Content.CustomHooks
         }
     }
 
+    public class ProtectionGlobalProjectile : GlobalProjectile //gravestones shouldnt do terrible things
+	{
+		public override void PostAI(Projectile projectile)
+		{
+            if(projectile.aiStyle == 17)
+			{
+                foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
+                    if (region.Contains(new Point((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16)))
+                    {
+                        projectile.active = false;
+                    }
+            }
+		}
+	}
+
     public class ProtectionWorld : ModWorld
 	{
         public static List<Rectangle> ProtectedRegions = new List<Rectangle>();
