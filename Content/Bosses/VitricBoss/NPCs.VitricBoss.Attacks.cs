@@ -554,23 +554,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(x);
             }
 
-            if (AttackTimer > 120)
+            if (AttackTimer > 120 && AttackTimer < 470)
 			{
-                if (AttackTimer % 90 < 20)
+                if (AttackTimer % 70 < 20)
 				{
                     var rot = Main.rand.NextFloat(6.28f);
                     Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 60, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -1, 0, new Color(255, 150, 50), 0.5f);
 				}
 
-                if (AttackTimer % 90 == 30)
+                if (AttackTimer % 70 == 30)
 				{
-                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation();
+                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + Main.rand.NextFloat(-0.25f, 0.25f);
 
                     for (int k = -2; k <= 2; k++)
                         SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
                 }
 
-                if (AttackTimer > 120 && AttackTimer % 90 == 60)
+                if (AttackTimer > 120 && AttackTimer % 70 == 60)
                     Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
             }
 
