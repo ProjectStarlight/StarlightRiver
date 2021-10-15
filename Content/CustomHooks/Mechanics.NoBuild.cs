@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private bool DontManuallyPlaceInZone(On.Terraria.WorldGen.orig_PlaceTile orig, int i, int j, int type, bool mute, bool forced, int plr, int style)
         {
-            if(!WorldGen.gen)
+            if(!Main.gameMenu) //shouldnt trigger while generating the world from the menu
 			{
                 foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
                     if (region.Contains(new Point(i, j)))
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void FailFX(Point16 pos)
         {
-            Main.PlaySound(SoundID.DD2_LightningBugZap);
+            Main.PlaySound(SoundID.DD2_LightningBugZap, pos.ToVector2() * 16);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDust(pos.ToVector2() * 16, 16, 16, DustType<Dusts.Glow>(), 0, 0, 0, Color.Red, 0.2f);
