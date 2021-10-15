@@ -36,7 +36,12 @@ namespace StarlightRiver.Content.Items.Vitric
             Tooltip.SetDefault("Shatters into enchanted glass shards \nUnable to be used while shattered");
         }
 
-        public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
+		public override bool? CanHitNPC(Player player, NPC target)
+		{
+            return !Broken;
+		}
+
+		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
         {
             if (!Broken)
             {
