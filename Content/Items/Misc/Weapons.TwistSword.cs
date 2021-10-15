@@ -69,10 +69,13 @@ namespace StarlightRiver.Content.Items.Misc
 
                 if (player.velocity.Y > 2)
                     player.velocity.Y = 2;
+
                 if (player.velocity.X < 5 && player.controlRight) 
                         player.velocity.X += 0.2f;
+
                 if (player.velocity.X > -5 && player.controlLeft) 
                         player.velocity.X -= 0.2f;
+
                 charge--;
             }
 			else
@@ -82,6 +85,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (timer % 20 == 0 && timer > 0)
                 Helper.PlayPitched("Magic/WaterWoosh", 0.3f, Main.rand.NextFloat(0.2f, 0.4f), player.Center);
+
             if (timer % 20 == 10 && timer > 0)
                 Helper.PlayPitched("Magic/WaterWoosh", 0.3f, -0.4f, player.Center);
 
@@ -165,7 +169,7 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
 
             if (player.channel && player.HeldItem.type == ItemType<TwistSword>()) 
-                projectile.timeLeft = 2;
+                projectile.timeLeft = 2;             
 
             if (projectile.ai[1] > 200 && player.velocity.Y > -4)
                 player.velocity.Y -= 0.0004f * projectile.ai[1];
@@ -185,7 +189,7 @@ namespace StarlightRiver.Content.Items.Misc
             if(Main.rand.Next(25) == 0)
                 Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-            if (player.channel) 
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>()) 
                 player.UpdateRotation(rot);
             else 
                 player.UpdateRotation(0);
