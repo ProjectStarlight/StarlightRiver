@@ -188,7 +188,12 @@ namespace StarlightRiver.Core
 
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
             Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
-            if (Shake > 0) { Shake--; }
+
+            if (Shake > 0) 
+                Shake--;
+
+            Main.screenPosition.X = (int)Main.screenPosition.X;
+            Main.screenPosition.Y = (int)Main.screenPosition.Y;
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
