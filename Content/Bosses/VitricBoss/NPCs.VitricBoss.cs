@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(-10, -10), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(2, -20), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
