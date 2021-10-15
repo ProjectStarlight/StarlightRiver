@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.damage = 30;
             npc.defense = 18;
             npc.knockBackResist = 0f;
-            npc.width = 80;
+            npc.width = 140;
             npc.height = 120;
             npc.value = Item.buyPrice(0, 20, 0, 0);
             npc.npcSlots = 15f;
