@@ -163,6 +163,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Player player = Main.player[projectile.owner];
 
 			projectile.rotation = projectile.velocity.ToRotation();
+
 			if (projectile.timeLeft < 40)//slows down the projectile by 8%, for about 10 ticks before it retracts
 				projectile.velocity *= 0.92f;
 
@@ -203,14 +204,17 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 
 				projectile.Center = hooked.Center;
-
-				player.velocity = Vector2.Zero;//resets wings / double jumps
-
+			
 				Progress += (10f / Distance) * (0.8f + Progress * 1.5f);
-				player.Center = Vector2.Lerp(startPos, hooked.Center, Progress);
-				player.Center = player.Center + Vector2.UnitY * player.velocity.Y;
 
-				if (player.Hitbox.Intersects(hooked.Hitbox))
+				if (player.velocity.Y == 0 && hooked.Center.Y > player.Center.Y)
+					player.Center = new Vector2(Vector2.Lerp(startPos, hooked.Center, Progress).X, player.Center.Y);
+				else
+					player.Center = Vector2.Lerp(startPos, hooked.Center, Progress);
+
+				player.velocity *= 0;
+
+				if (player.Hitbox.Intersects(hooked.Hitbox) || Progress > 1)
 				{
 					struck = true;
 					projectile.timeLeft = 20;
