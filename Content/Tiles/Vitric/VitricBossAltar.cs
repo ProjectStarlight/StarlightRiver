@@ -144,6 +144,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
                 CutsceneTimer = 999;
 
+            if (parent.frameX == 0)
+                return;
+
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
