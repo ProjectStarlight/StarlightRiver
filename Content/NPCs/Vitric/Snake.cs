@@ -166,8 +166,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     Vector2.Distance(randPos.ToVector2() * 16, target.Center) > 100 &&
                     Framing.GetTileSafely(randPos).collisionType == 1 &&
                     Framing.GetTileSafely(randPos + new Point16(1, 0)).collisionType == 1 &&
-                    !Framing.GetTileSafely(randPos + new Point16(0, -1)).active() &&
-                    !Framing.GetTileSafely(randPos + new Point16(1, -1)).active()
+                    !Framing.GetTileSafely(randPos + new Point16(0, -1)).active() && Framing.GetTileSafely(randPos + new Point16(0, -1)).liquid == 0 &&
+                    !Framing.GetTileSafely(randPos + new Point16(1, -1)).active() && Framing.GetTileSafely(randPos + new Point16(1, -1)).liquid == 0
                     )
                 {
                     return randPos.ToVector2() * 16 + new Vector2(16, -36);
