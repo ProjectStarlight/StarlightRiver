@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
+            Texture2D tex2 = GetTexture(path + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
+            Texture2D tex2 = GetTexture(path + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
