@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Abilities
             get
             {
                 // If this ability doesn't have a type, don't try getting its Ability
-                if (AbilityType == null)
+                if (Main.gameMenu || AbilityType == null)
                     return null;
                 // If it does, but ability is uninitialized, set ability to its type [if we have it unlocked]
                 if (ability == null)
