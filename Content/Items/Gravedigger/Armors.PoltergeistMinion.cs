@@ -30,6 +30,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override string Texture => AssetDirectory.Invisible;
 
+		public override bool? CanCutTiles() => false;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Haunted Weapon");
