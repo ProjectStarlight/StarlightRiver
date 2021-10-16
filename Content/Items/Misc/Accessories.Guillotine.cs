@@ -22,6 +22,11 @@ namespace StarlightRiver.Content.Items.Misc
 			return base.Autoload(ref name);
 		}
 
+		public override void SafeSetDefaults()
+		{
+			item.rare = ItemRarityID.Orange;
+		}
+
 		private void ModifyCritProj(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (Equipped(Main.player[projectile.owner]))

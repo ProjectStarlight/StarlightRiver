@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void SetDefaults()
         {
             npc.width = 24;
-            npc.height = 14;
+            npc.height = 24;
             npc.damage = 0;
             npc.defense = 0;
             npc.lifeMax = 25;

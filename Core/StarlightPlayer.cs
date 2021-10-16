@@ -114,17 +114,20 @@ namespace StarlightRiver.Core
             if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
             Timer++;
 
-            //cutscene timers
-            if (ScreenMoveTimer == ScreenMoveTime)
+            if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
             {
-                ScreenMoveTime = 0;
-                ScreenMoveTimer = 0;
-                ScreenMoveTarget = Vector2.Zero;
-                ScreenMovePan = Vector2.Zero;
-            }
+                //cutscene timers
+                if (ScreenMoveTimer >= ScreenMoveTime)
+                {
+                    ScreenMoveTime = 0;
+                    ScreenMoveTimer = 0;
+                    ScreenMoveTarget = Vector2.Zero;
+                    ScreenMovePan = Vector2.Zero;
+                }
 
-            if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
-                ScreenMoveTimer++;
+                if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
+                    ScreenMoveTimer++;
+            }
 
             bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
 
@@ -188,7 +191,12 @@ namespace StarlightRiver.Core
 
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
             Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
-            if (Shake > 0) { Shake--; }
+
+            if (Shake > 0) 
+                Shake--;
+
+            Main.screenPosition.X = (int)Main.screenPosition.X;
+            Main.screenPosition.Y = (int)Main.screenPosition.Y;
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)

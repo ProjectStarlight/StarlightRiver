@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
                 RandomizeTarget();
-                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 35, 0); //spawn a sand cone attack
+                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0); //spawn a sand cone attack
 
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
 
@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         if (timer == 60) //sand cone
                         {
-                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 35, 0);
+                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0);
 
                             float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
 
@@ -615,7 +615,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
         {
-            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 30, 0, Main.myPlayer);
+            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 25, 0, Main.myPlayer);
             var mp = (Main.projectile[i].modProjectile as LavaDart);
             mp.endPoint = end;
             mp.midPoint = mid;
