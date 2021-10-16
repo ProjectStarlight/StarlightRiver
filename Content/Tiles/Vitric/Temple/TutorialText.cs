@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override bool Autoload(ref string name, ref string texture)
         {
-            texture = AssetDirectory.Debug;
+            texture = AssetDirectory.Invisible;
             return true;
         }
 
