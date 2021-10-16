@@ -144,6 +144,38 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
                 CutsceneTimer = 999;
 
+            //This controls spawning the rest of the arena
+            if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active)
+            {
+                foreach (NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
+                 (
+                 n.type == NPCType<VitricBackdropLeft>() ||
+                 n.type == NPCType<VitricBackdropRight>() ||
+                 n.type == NPCType<VitricBossPlatformDown>() ||
+                 n.type == NPCType<VitricBossPlatformDownSmall>() ||
+                 n.type == NPCType<VitricBossPlatformUp>() ||
+                 n.type == NPCType<VitricBossPlatformUpSmall>()
+                 )))
+                {
+                    npc.active = false;
+                }
+
+                Vector2 center = projectile.Center + new Vector2(0, 60);
+                int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer >= 660 ? 360 : 0; //the arena should already be up if it was opened before
+
+                int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
+                arenaRight = Main.npc[index];
+
+                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
+                    (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
+
+                index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
+                arenaLeft = Main.npc[index];
+
+                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
+                    (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
+            }
+
             if (parent.frameX == 0)
                 return;
 
@@ -180,38 +212,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 Main.musicFade[Main.curMusic] = 0;
 
             CutsceneTimer++;
-
-            //This controls spawning the rest of the arena
-            if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active)
-            {
-                foreach(NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
-                (
-                n.type == NPCType<VitricBackdropLeft>() ||
-                n.type == NPCType<VitricBackdropRight>() ||
-                n.type == NPCType<VitricBossPlatformDown>() ||
-                n.type == NPCType<VitricBossPlatformDownSmall>() ||
-                n.type == NPCType<VitricBossPlatformUp>() ||
-                n.type == NPCType<VitricBossPlatformUpSmall>()
-                ) ))
-				{
-                    npc.active = false;
-				}
-
-                Vector2 center = projectile.Center + new Vector2(0, 60);
-                int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer >= 660 ? 360 : 0; //the arena should already be up if it was opened before
-
-                int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
-                arenaRight = Main.npc[index];
-
-                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
-                    (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
-
-                index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
-                arenaLeft = Main.npc[index];
-
-                if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
-                    (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);             
-            }
 
             //controls the drawing of the barriers
             if (BarrierProgress < 120 && boss != null && boss.active)
