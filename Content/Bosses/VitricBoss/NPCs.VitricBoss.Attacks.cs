@@ -615,7 +615,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
         {
-            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 30, 0, Main.myPlayer);
+            int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 25, 0, Main.myPlayer);
             var mp = (Main.projectile[i].modProjectile as LavaDart);
             mp.endPoint = end;
             mp.midPoint = mid;
