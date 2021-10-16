@@ -99,6 +99,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         {
             base.UpdateActive();
 
+            ManageCaches();
+
             var progress = Time > 7 ? 1 - (Time - 7) / 8f : 1;
 
             Player.velocity = SignedLesserBound((Dir * Speed) * progress, Player.velocity * progress); // "conservation of momentum"
@@ -107,9 +109,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Player.gravity = 0;
             Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
-            if (Time-- <= 0) Deactivate();
-
-            ManageCaches();
+            if (Time-- <= 0) 
+                Deactivate();        
         }
 
         public override void UpdateActiveEffects()
