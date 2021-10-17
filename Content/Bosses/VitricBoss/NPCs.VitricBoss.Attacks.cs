@@ -533,24 +533,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 38, 0);
             }
             else
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 38, 0);
             }
 
             if(AttackTimer == 40)

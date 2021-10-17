@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             foreach (Player player in Main.player.Where(n => Vector2.Distance(n.Center, projectile.Center) < 400))
             {
-                player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), projectile.damage, 0);
+                player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(player.whoAmI, projectile.whoAmI), Main.expertMode ? projectile.damage * 2 : projectile.damage, 0);
             }
         }
     }
