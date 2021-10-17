@@ -52,6 +52,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
             }
 
+			if (Main.expertMode)
+			{
+				if (projectile.ai[0] == 70)
+					Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
+
+                if (projectile.ai[0] == 74)
+                {
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f + 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f - 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
+                }
+
+                if (projectile.ai[0] == 78)
+                {
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f + 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f - 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
+                }
+            }
+
             if (projectile.ai[0] >= 94) //when this projectile goes off
             {
                 projectile.Kill(); //self-destruct
@@ -60,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
-            target.AddBuff(BuffID.OnFire, 600);
+            target.AddBuff(BuffID.OnFire, 300);
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
