@@ -85,7 +85,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 else
                     Dust.NewDust(projectile.position, projectile.width, projectile.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
             }
+
             projectile.velocity *= 0.97f;
+
             if (projectile.timeLeft % 4 == 0)
             {
                 projectile.frame++;
