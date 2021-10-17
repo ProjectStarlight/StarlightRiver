@@ -255,15 +255,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
 
             if (GlobalTimer == 360)
-            {
-                int a = Main.curMusic;
                 music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss2");
-
-                if (a == Main.curMusic)
-                    Main.NewText("Stroom");
-
-                Main.musicFade[Main.curMusic] = 1;
-            }
 
             if (GlobalTimer == 360)
             {

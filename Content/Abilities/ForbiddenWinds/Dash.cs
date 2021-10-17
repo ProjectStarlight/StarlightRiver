@@ -74,6 +74,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             if (abilityKeys.Get<Dash>().JustPressed && triggers.DirectionsRaw != default)
             {
                 Dir = Vector2.Normalize(triggers.DirectionsRaw);
+
+                if (Player.HasBuff(BuffID.Confused))
+                    Dir = new Vector2(Dir.X * -1, Dir.Y);
+
                 return true;
             }
             return false;
