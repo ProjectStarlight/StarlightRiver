@@ -140,9 +140,9 @@ namespace StarlightRiver.Core
             {
                 if (ZoneGlass && Main.Configuration.Get<bool>("UseHeatDistortion", false))
                 {
-                    //var a = Filters.Scene;
                     if (!Filters.Scene["GradientDistortion"].IsActive())
                     {
+                        Filters.Scene["GradientDistortion"].GetShader().Shader.Parameters["uZoom"].SetValue(Main.GameViewMatrix.Zoom);
                         Filters.Scene.Activate("GradientDistortion").GetShader()
                             .UseOpacity(2.5f)
                             .UseIntensity(7f)

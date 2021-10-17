@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetDefaults()
         {
             npc.aiStyle = -1;
-            npc.lifeMax = 2;
+            npc.lifeMax = 10;
             npc.damage = 40;
             npc.defense = 0;
             npc.knockBackResist = 0f;
@@ -63,7 +63,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.damage = 50;
         }
 
-        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		public override bool PreNPCLoot()
+		{
+            return false;
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
             if (phase == 3)
                 return true;

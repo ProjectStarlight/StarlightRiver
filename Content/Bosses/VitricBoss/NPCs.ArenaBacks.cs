@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public int shake = 0;
 
-        public override string Texture => AssetDirectory.VitricBoss + Name;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool CheckActive() => false;
 
@@ -91,9 +91,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Timer++;
 
                 if(Timer <= Risetime + 120) //when starting moving
-                {
-                    shake = (int)(Helpers.Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
-                }
+                    shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
                 if(Timer == Risetime + 120)
                 {
@@ -135,7 +133,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     ScrollDelay = 20; //reset acceleration delay
                 }
 
-                if (ScrollTimer > Scrolltime) ScrollTimer = 0;
+                if (ScrollTimer > Scrolltime) 
+                    ScrollTimer = 0;
             }
         }
 
@@ -154,8 +153,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public virtual void MainDraw(SpriteBatch sb)
         {
-            Texture2D tex = Main.npcTexture[npc.type];
-            Texture2D tex2 = GetTexture(Texture + "Top");
+            string path = AssetDirectory.VitricBoss + Name;
+            Texture2D tex = GetTexture(path);
+            Texture2D tex2 = GetTexture(path + "Top");
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -177,7 +177,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public virtual void ScrollDraw(SpriteBatch sb) //im lazy
         {
-            Texture2D tex = Main.npcTexture[npc.type];
+            string path = AssetDirectory.VitricBoss + Name;
+            Texture2D tex = GetTexture(path);
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             //Color color = new Color(180, 225, 255);
@@ -191,7 +192,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
+            Texture2D tex2 = GetTexture(path + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
@@ -250,8 +251,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     {
         public override void MainDraw(SpriteBatch sb)
         {
-            Texture2D tex = Main.npcTexture[npc.type];
-            Texture2D tex2 = GetTexture(Texture + "Top");
+            string path = AssetDirectory.VitricBoss + Name;
+            Texture2D tex = GetTexture(path);
+            Texture2D tex2 = GetTexture(path + "Top");
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -276,7 +278,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void ScrollDraw(SpriteBatch sb)
         {
-            Texture2D tex = Main.npcTexture[npc.type];
+            string path = AssetDirectory.VitricBoss + Name;
+            Texture2D tex = GetTexture(path);
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             //Color color = new Color(180, 225, 255);
@@ -290,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(Texture + "Glow");
+            Texture2D tex2 = GetTexture(path + "Glow");
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 

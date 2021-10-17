@@ -306,15 +306,32 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             SetFrameX(x);
                         }
 
-                        if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
+                        if (Main.expertMode) //expert variant of spike burst
                         {
-                            Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+                            if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 6 spikes
+                            {
+                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
-                            var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
-                            var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
+                                var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
+                                var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
+                                var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
 
-                            Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
-                            Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+                                Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
+                                Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+                            }
+                        }
+                        else //regular spike burst
+                        {
+                            if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
+                            {
+                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+
+                                var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
+                                var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
+
+                                Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
+                                Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+                            }
                         }
 
                         if(timer > 110)
@@ -516,24 +533,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 38, 0);
             }
             else
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 38, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 75, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 38, 0);
             }
 
             if(AttackTimer == 40)
@@ -587,8 +604,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
                     float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + Main.rand.NextFloat(-0.35f, 0.35f);
 
-                    for (int k = -2; k <= 2; k++)
-                        SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
+                    if (Main.expertMode)
+                    {
+                        for (int k = -3; k <= 3; k++)
+                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.35f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.125f) * 700, 50);
+                    }
+                    else
+                    {
+                        for (int k = -2; k <= 2; k++)
+                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
+                    }
                 }
 
                 if (AttackTimer > 120 && AttackTimer % 70 == 60)
