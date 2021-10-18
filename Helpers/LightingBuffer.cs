@@ -146,7 +146,11 @@ namespace StarlightRiver.Helpers
                     PopulateTileTextureScrolling((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
 
                     if (refreshTimer % config.LightingPollRate == 0)
-                        TileLightingTexture = TileLightingTempTexture;
+                    {
+                        Color[] colorData = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
+                        TileLightingTempTexture.GetData(colorData);
+                        TileLightingTexture.SetData(colorData);
+                    }
                 }
                 else
                 {
