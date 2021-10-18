@@ -207,8 +207,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             #region battery drawing
 
-            Color batteryColor = Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * MathHelper.Min(batteryFade, 1);
-            Color scanColor = batteryColor;
+            Color scanColor = Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * MathHelper.Min(batteryFade, 1);
             scanColor.A = 0;
 
             Texture2D tex = ModContent.GetTexture(Texture + "_Display");
@@ -220,13 +219,13 @@ namespace StarlightRiver.Content.Items.Breacher
             position = (projectile.Center - Main.screenPosition) - new Vector2(0, 26);
             origin = tex.Size() / 2;
 
-            spriteBatch.Draw(tex, position, null, batteryColor, 0, origin, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, position, null, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
             tex = ModContent.GetTexture(Texture + "_BatteryCharge");
-            Rectangle frame = new Rectangle(4, 0, 4 * (batteryCharge + 1), tex.Height);
+            Rectangle frame = new Rectangle(0, 0, 11 + (4 * batteryCharge), tex.Height);
 
 
-            spriteBatch.Draw(tex, position, frame, batteryColor, 0, origin, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, position, frame, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
             #endregion
 
