@@ -216,7 +216,8 @@ namespace StarlightRiver.Content.Items.Breacher
             tex = ModContent.GetTexture(Texture + "_BatteryCharge");
             Rectangle frame = new Rectangle(4, 0, 4 * (batteryCharge + 1), tex.Height);
 
-            spriteBatch.Draw(tex, position, frame, Color.White * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
+
+            spriteBatch.Draw(tex, position, frame, Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
 
             #endregion
 
