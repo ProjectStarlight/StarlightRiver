@@ -21,6 +21,9 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self, gameTime);
 
+            if (Main.gameMenu)
+                return;
+
             for (int k = 0; k < Main.maxProjectiles; k++) // Projectiles.
                 if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawPrimitive)
                     (Main.projectile[k].modProjectile as IDrawPrimitive).DrawPrimitives();
