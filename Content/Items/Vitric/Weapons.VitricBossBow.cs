@@ -296,10 +296,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AI()
 		{
-            Timer++;
-
             if (owner.channel && projectile.timeLeft >= 120)
             {
+                if (Timer < fadeIn)
+                    Timer++;
+
                 projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
 
                 projectile.timeLeft = 121;
@@ -308,6 +309,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
             else if (Timer >= fadeIn)
             {
+                Timer++;
+
+                if(Timer == 16)
+				{
+					projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+                    projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + projectile.velocity.X * 6) * 10);
+                }
+
                 if (startPoint == Vector2.Zero)
                 {
                     if (owner == Main.LocalPlayer)
