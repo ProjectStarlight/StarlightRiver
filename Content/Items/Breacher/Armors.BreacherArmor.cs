@@ -211,12 +211,12 @@ namespace StarlightRiver.Content.Items.Breacher
             scanColor.A = 0;
 
             Texture2D tex = ModContent.GetTexture(Texture + "_Display");
-            Vector2 position = (projectile.Center - Main.screenPosition) + new Vector2(0, 15);
+            Vector2 position = (projectile.Center - Main.screenPosition);
             Vector2 origin = new Vector2(tex.Width / 2, tex.Height);
-            spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 1), SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 0.85f), SpriteEffects.None, 0);
 
             tex = ModContent.GetTexture(Texture + "_Battery");
-            position = (projectile.Center - Main.screenPosition) - new Vector2(0, 26);
+            position = (projectile.Center - Main.screenPosition) - new Vector2(0, 30);
             origin = tex.Size() / 2;
 
             spriteBatch.Draw(tex, position, null, scanColor, 0, origin, 1, SpriteEffects.None, 0);
@@ -293,7 +293,10 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             if (batteryFade > 0)
+            {
                 batteryFade -= 0.02f;
+                Lighting.AddLight(projectile.Center - new Vector2(0, 24), Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f).ToVector3());
+            }
         }
 
         private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float currentRotation, float rotDifference, Vector2 targetPosition)
