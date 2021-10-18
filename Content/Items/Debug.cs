@@ -37,11 +37,13 @@ namespace StarlightRiver.Content.Items
             item.useTurn = true;
             item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            item.createTile = ModContent.TileType<Tiles.Vitric.VitricBossBarrier>();
         }
 
         public override bool UseItem(Player player)
         {
+            return true;
+
             player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             return true;
 
