@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -192,7 +193,15 @@ namespace StarlightRiver.Content.Items.Vitric
             return false;
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool? CanCutTiles() => true;
+
+        public override void CutTiles()
+        {
+            DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile; //copypasted from example solar eruption with slight changes :trollge:
+            Utils.PlotTileLine(Owner.Center, projectile.Center, (projectile.width + projectile.height) * 0.5f * projectile.scale, DelegateMethods.CutTiles);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
             var tex = GetTexture(Texture);
             var texGlow = GetTexture(Texture + "Glow");

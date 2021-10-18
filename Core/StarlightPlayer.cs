@@ -275,7 +275,9 @@ namespace StarlightRiver.Core
                 if (spotter != default && spotter.modProjectile is SpotterDrone drone && drone.CanScan)
                 {
                     BreacherPlayer modPlayer = player.GetModPlayer<BreacherPlayer>();
-                    if (modPlayer.Charges >= 1)
+                    Projectile projectile = spotter;
+                    var target = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
+                    if (modPlayer.Charges >= 1 && target != default)
                     {
                         Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
                         drone.ScanTimer = SpotterDrone.ScanTime;

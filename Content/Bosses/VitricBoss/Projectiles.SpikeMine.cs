@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
+            projectile.hostile = true;
             projectile.width = 40;
             projectile.height = 40;
             projectile.timeLeft = 170;
@@ -40,8 +40,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (Timer == 90) //when this projectile goes off
             {
-                Helper.PlayPitched("Magic/FireHit", 0.20f, 0, projectile.Center);
-                projectile.hostile = true;
+                Helper.PlayPitched("Magic/FireHit", 0.20f, 0, projectile.Center);            
 
                 for (int k = 0; k < 50; k++)
                 {
@@ -51,11 +50,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
-		public override bool CanHitPlayer(Player target)
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            int radius = (int)(Math.Sin((Timer - 90) / 40f * 3.14f) * 128);
-            return Helpers.Helper.CheckCircularCollision(projectile.Center, radius, target.Hitbox);
-		}
+            int radius = (int)(Math.Sin((Timer - 90) / 60f * 3.14f) * 128);
+            bool inRadius = Helper.CheckCircularCollision(projectile.Center, radius, targetHitbox);
+
+            return Timer > 90 && Timer < 150 && inRadius;
+        }
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {

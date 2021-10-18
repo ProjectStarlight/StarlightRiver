@@ -218,9 +218,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 case 2: //circle attack
                     npc.rotation = (npc.Center - Parent.npc.Center).ToRotation() + 1.57f; //sets the rotation appropriately for the circle attack
 
-                    if (Vector2.Distance(npc.Center, Parent.npc.Center) <= 100) //shrink the crystals for the rotation attack if they're near the boss so they properly hide in him
+                    float dist = Vector2.Distance(npc.Center, Parent.npc.Center);
+
+                    if (dist <= 100) //shrink the crystals for the rotation attack if they're near the boss so they properly hide in him
                         npc.scale = Vector2.Distance(npc.Center, Parent.npc.Center) / 100f;
                     else npc.scale = 1;
+
+                    if(Parent.AttackPhase == 1 && dist > 100 && Main.rand.Next(4) == 0)
+                        Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 10, DustType<Dusts.FireSparkle>(), Vector2.Zero);
 
                     break;
 
@@ -412,30 +417,51 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 trail.Render(effect);
 
-                shouldDrawArc = false;
+                if(Parent.AttackTimer >= 760)
+                    shouldDrawArc = false;
 			}
 
-            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1 && Parent.AttackTimer > 360) //total bodge shitcode, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
+            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge shitcode, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
 			{
-                float alpha = 0;
-
-                if (Parent.AttackTimer < 420)
-                    alpha = (Parent.AttackTimer - 360) / 60f;
-                else if (Parent.AttackTimer > 720)
-                    alpha = 1 - (Parent.AttackTimer - 720) / 40f;
-                else
-                    alpha = 1;
-
-                var tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-                var tex2 = GetTexture(Texture + "Outline");
-
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
-                spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.50f, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
-
-                if (Parent.AttackTimer < 380)
+                if (Parent.AttackTimer > 360)
                 {
-                    float progress = (Parent.AttackTimer - 360) / 20f;
-                    spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 255, 150) * (4 - progress * 4), 0, tex.Size() / 2, 4 * progress, 0, 0);
+                    float alpha = 0;
+
+                    if (Parent.AttackTimer < 420)
+                        alpha = (Parent.AttackTimer - 360) / 60f;
+                    else if (Parent.AttackTimer > 720)
+                        alpha = 1 - (Parent.AttackTimer - 720) / 40f;
+                    else
+                        alpha = 1;
+
+                    var tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+                    var tex2 = GetTexture(Texture + "Outline");
+
+                    spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha, 0, tex.Size() / 2, 2, 0, 0);
+                    spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White * alpha, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
+
+                    if (Parent.AttackTimer < 380)
+                    {
+                        float progress = (Parent.AttackTimer - 360) / 20f;
+                        spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 255, 150) * (4 - progress * 4), 0, tex.Size() / 2, 4 * progress, 0, 0);
+                    }
+                }
+                else
+				{
+                    float alpha = 0;
+
+                    if(Parent.AttackTimer <= 90)
+                        alpha = (Parent.AttackTimer - 60) / 30f;
+                    else if (Parent.AttackTimer > 300)
+                        alpha = 1 - (Parent.AttackTimer - 300) / 60f;
+                    else
+                        alpha = 1;
+
+                    var tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+                    var tex2 = GetTexture(Texture + "Outline");
+
+                    spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, new Color(255, 160, 100) * alpha * 0.5f, 0, tex.Size() / 2, 1, 0, 0);
+                    spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, null, Color.White * alpha * 0.8f, npc.rotation, npc.Size / 2, npc.scale, 0, 0);
                 }
             }
         }
