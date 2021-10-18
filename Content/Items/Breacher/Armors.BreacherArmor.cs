@@ -134,6 +134,10 @@ namespace StarlightRiver.Content.Items.Breacher
         private Vector2 targetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
         private Vector2 targetPos2 => Vector2.Lerp(target.Top, target.Bottom, 0.5f + ((float)Math.Cos(((ScanTimer - 100) * 2) * 6.28f / (float)(ScanTime - 100)) / 2f));
 
+        private int batteryCharge = 0;
+
+        private float batteryFade;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Breacher Drone");
@@ -163,7 +167,8 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void AI()
         {
             Player player = Main.player[projectile.owner];
-
+            BatteryCharge(player);
+            
             if (player.dead)
                 projectile.active = false;
 
@@ -200,6 +205,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
+            #region battery drawing
+
+            Texture2D tex = ModContent.GetTexture(Texture + "_Battery");
+            Vector2 position = (projectile.Center - Main.screenPosition) - new Vector2(0, 20);
+            Vector2 origin = tex.Size();
+
+            spriteBatch.Draw(tex, position, null, Color.White * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
+
+            tex = ModContent.GetTexture(Texture + "_BatteryCharge");
+            Rectangle frame = new Rectangle(4, 0, 4 * (batteryCharge + 1), tex.Height);
+
+            spriteBatch.Draw(tex, position, frame, Color.White * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
+
+            #endregion
+
             if (ScanTimer == ScanTime || ScanTimer <= 100 || rotations == null || rotations.Count < 2 || rotations2.Count < 2)
                 return true;
 
@@ -250,6 +270,21 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             return true;
+        }
+
+        private void BatteryCharge(Player player)
+        {
+            BreacherPlayer modPlayer = player.GetModPlayer<BreacherPlayer>();
+
+            if (modPlayer.Charges != batteryCharge)
+            {
+                if (modPlayer.Charges > batteryCharge)
+                    batteryFade = 1.5f;
+                batteryCharge = modPlayer.Charges;
+            }
+
+            if (batteryFade > 0)
+                batteryFade -= 0.03f;
         }
 
         private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float currentRotation, float rotDifference, Vector2 targetPosition)
