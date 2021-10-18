@@ -207,17 +207,26 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             #region battery drawing
 
-            Texture2D tex = ModContent.GetTexture(Texture + "_Battery");
-            Vector2 position = (projectile.Center - Main.screenPosition) - new Vector2(0, 20);
-            Vector2 origin = tex.Size();
+            Color batteryColor = Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * MathHelper.Min(batteryFade, 1);
+            Color scanColor = batteryColor;
+            scanColor.A = 0;
 
-            spriteBatch.Draw(tex, position, null, Color.White * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
+            Texture2D tex = ModContent.GetTexture(Texture + "_Display");
+            Vector2 position = (projectile.Center - Main.screenPosition) + new Vector2(0, 15);
+            Vector2 origin = new Vector2(tex.Width / 2, tex.Height);
+            spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 1), SpriteEffects.None, 0);
+
+            tex = ModContent.GetTexture(Texture + "_Battery");
+            position = (projectile.Center - Main.screenPosition) - new Vector2(0, 26);
+            origin = tex.Size() / 2;
+
+            spriteBatch.Draw(tex, position, null, batteryColor, 0, origin, 1, SpriteEffects.None, 0);
 
             tex = ModContent.GetTexture(Texture + "_BatteryCharge");
             Rectangle frame = new Rectangle(4, 0, 4 * (batteryCharge + 1), tex.Height);
 
 
-            spriteBatch.Draw(tex, position, frame, Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * batteryFade, 0, origin, 1, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, position, frame, batteryColor, 0, origin, 1, SpriteEffects.None, 0);
 
             #endregion
 
@@ -280,12 +289,12 @@ namespace StarlightRiver.Content.Items.Breacher
             if (modPlayer.Charges != batteryCharge)
             {
                 if (modPlayer.Charges > batteryCharge)
-                    batteryFade = 1.5f;
+                    batteryFade = 2f;
                 batteryCharge = modPlayer.Charges;
             }
 
             if (batteryFade > 0)
-                batteryFade -= 0.03f;
+                batteryFade -= 0.02f;
         }
 
         private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float currentRotation, float rotDifference, Vector2 targetPosition)
