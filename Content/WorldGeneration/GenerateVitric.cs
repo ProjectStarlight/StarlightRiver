@@ -510,54 +510,6 @@ namespace StarlightRiver.Core
             KillTile(x, y + 1, true);
         }
 
-
-        /*
-        private static void GenDesertDecoration()
-        {
-            for (int i = UndergroundDesertLocation.X; i < UndergroundDesertLocation.X + UndergroundDesertLocation.Width; i++) //Add vines & decor
-            {
-                double xDist = Helper.Distribution(i - UndergroundDesertLocation.X, UndergroundDesertLocation.Width, 0.5f, 35);//x chance
-                for (int j = UndergroundDesertLocation.Y; j < UndergroundDesertLocation.Y + UndergroundDesertLocation.Height; j++)
-                {
-                    double yDist = Helper.Distribution(UndergroundDesertLocation.Y - (j - UndergroundDesertLocation.Height), UndergroundDesertLocation.Height * 2, 0f, 20);//y chance
-                    if (genRand.Next(100) < (xDist + yDist) / 2)
-                    {
-                        int type = genRand.Next(3);//Generates multitile decoration randomly
-                        if (type == 0)//small rock
-                        {
-                            if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 1), new Point16(1, 1)))
-                            {
-                                PlaceTile(i, j - 1, TileType<VitricRock>(), false, false, -1, genRand.Next(6));
-                                if (genRand.NextBool())
-                                    Main.tile[i, j].type = (ushort)instance.TileType("VitricSand");
-                            }
-                        }
-                        else if (type == 1)//medium rock
-                        {
-                            if (Main.tile[i, j].active() && Main.tile[i, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i, j].type) && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(2, 2)) &&
-                                Main.tile[i + 1, j].active() && Main.tile[i + 1, j].slope() == 0 && ValidDesertGround.Any(x => x == Main.tile[i + 1, j].type))
-                            {
-                                PlaceTile(i, j - 2, TileType<VitricDecor>(), false, false, -1, genRand.Next(4));
-                                DesertVitricPatch(i + (genRand.NextBool() ? 1 : 0), j - 2, genRand.Next(1, 4));
-                            }
-                        }
-                        else if (type == 2)//large rock
-                        {
-                            bool vGround = true;
-                            for (int k = 0; k < 3; k++)
-                                if (!Main.tile[i + k, j].active() || Main.tile[i + k, j].slope() != 0 || !ValidDesertGround.Any(x => x == Main.tile[i + k, j].type)) vGround = false;
-
-                            if (vGround && Helper.CheckAirRectangle(new Point16(i, j - 2), new Point16(3, 2)))
-                            {
-                                PlaceTile(i, j - 2, TileType<VitricDecorLarge>(), true, false, -1, genRand.Next(6));
-                                DesertVitricPatch(i + 1, j - 2, genRand.Next(2, 5));
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
-
         /// <summary>
         /// generates a small patch of sand for the vitric decoration
         /// </summary>
@@ -769,11 +721,13 @@ namespace StarlightRiver.Core
             int cY = y - 16;
             while (Main.tile[x, cY].active()) cY--;
             while (!Main.tile[x, cY + 1].active()) cY++;
-            if (ScanRectangle(x, y - 17, 10, 17) < 3 && ScanRectangle(x, y, 17, 1) == 17)
+
+            if (ScanRectangleStrict(x, y - 17, 10, 17) <= 0 && ScanRectangle(x, y, 17, 1) == 17)
             {
                 StructureHelper.Generator.GenerateStructure(AssetDirectory.VitricCrystalStructs + "VitricGiantCrystal_" + genRand.Next(2), new Point16(x, cY - 17), StarlightRiver.Instance);
                 return true;
             }
+
             return false;
         }
 
