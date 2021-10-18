@@ -19,6 +19,7 @@ namespace StarlightRiver.Helpers
 
         public RenderTarget2D ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public RenderTarget2D TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        public RenderTarget2D TileLightingTempTexture;
         public Vector2 TileLightingCenter;
 
         private readonly Effect upscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
@@ -35,6 +36,9 @@ namespace StarlightRiver.Helpers
             float factor = height / (float)width;
             ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
             TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+            if(TileLightingTempTexture != null)
+                TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         }
 
         private void PopulateTileTexture(Vector2 start)
@@ -54,22 +58,22 @@ namespace StarlightRiver.Helpers
             GettingColors = false;
         }
 
-        private void PopulateTileTexture(Vector2 start, int yToStart, int yToEnd)
+        private void PopulateTileTextureScrolling(Vector2 start, int yToStart, int yToEnd)
         {
             GettingColors = true;
-            Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * (yToEnd - yToStart)];
+            Color[] tileLightingBuffer = new Color[TileLightingTempTexture.Width * (yToEnd - yToStart)];
 
-            for (int x = 0; x < TileLightingTexture.Width; x++)
+            for (int x = 0; x < TileLightingTempTexture.Width; x++)
                 for (int y = yToStart; y < yToEnd; y++)
                 {
-                    int index = (y - yToStart) * TileLightingTexture.Width + x;
+                    int index = (y - yToStart) * TileLightingTempTexture.Width + x;
                     if (tileLightingBuffer.Length > index) tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
                 }
 
             if (tileLightingBuffer is null || tileLightingBuffer.Length == 0)
                 return;
 
-            TileLightingTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTexture.Width * (yToEnd - yToStart));
+            TileLightingTempTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTempTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTempTexture.Width * (yToEnd - yToStart));
 
             if(refreshTimer % config.LightingPollRate == 0)
                 TileLightingCenter = start;
@@ -133,20 +137,26 @@ namespace StarlightRiver.Helpers
             {
                 refreshTimer++;
 
-            if (config.ScrollingLightingPoll)
-            {
-                int progress = refreshTimer % config.LightingPollRate;
-                PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
-            }
-            else
-            {
-                //Trust me this check is somehow needed even tho the config shouldn't allow this to happen :p
-                if (config.LightingPollRate != 0)
+                if (config.ScrollingLightingPoll)
                 {
+                    if (TileLightingTempTexture is null)
+                        TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+
+                    int progress = refreshTimer % config.LightingPollRate;
+                    PopulateTileTextureScrolling((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
+
                     if (refreshTimer % config.LightingPollRate == 0)
-                        PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+                        TileLightingTexture = TileLightingTempTexture;
                 }
-            }
+                else
+                {
+                    //Trust me this check is somehow needed even tho the config shouldn't allow this to happen :p
+                    if (config.LightingPollRate != 0)
+                    {
+                        if (refreshTimer % config.LightingPollRate == 0)
+                            PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+                    }
+                }
 
                 PopulateScreenTexture();
             }
