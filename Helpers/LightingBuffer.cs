@@ -276,7 +276,7 @@ namespace StarlightRiver.Helpers
 
                 Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
 
-                Main.instance.GraphicsDevice.BlendState = BlendState.Opaque;
+                Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
                 foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
                 {
