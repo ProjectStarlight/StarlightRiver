@@ -155,12 +155,12 @@ namespace StarlightRiver.Core
 
         private int AddExpansion()
         {
-            return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
+            return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / Core.ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
         }
 
         private int AddExpansionY()
         {
-            return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
+            return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / Core.ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
         }
 
         public override void ModifyScreenPosition()
@@ -170,7 +170,7 @@ namespace StarlightRiver.Core
 
             if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
             {
-                Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ExtraZoomTarget;
+                Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ClampedExtraZoomTarget;
 
                 if (ScreenMoveTimer <= 30) //go out
                     Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);
@@ -246,13 +246,13 @@ namespace StarlightRiver.Core
         public override void OnEnterWorld(Player player)
         {
             ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
-            ZoomHandler.AddFlatZoom(0);
+
             Shake = 0;
             panDown = 0;
 
             ScreenMoveTime = 0;
-            ScreenMoveTarget = new Vector2(0, 0);
-            ScreenMovePan = new Vector2(0, 0);
+            ScreenMoveTarget = Vector2.Zero;
+            ScreenMovePan = Vector2.Zero;
 
             rotation = 0;
 
