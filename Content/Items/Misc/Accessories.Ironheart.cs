@@ -10,12 +10,23 @@ namespace StarlightRiver.Content.Items.Misc
 	public class Ironheart : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
+
+        public Ironheart() : base("Ironheart", "Melee damage generates decaying barrier and defense") { }
+
         public override bool Autoload(ref string name)
         {
             StarlightPlayer.OnHitNPCEvent += OnHit;
+            StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
             return base.Autoload(ref name);
         }
-        public Ironheart() : base("Ironheart", "Striking enemies generates a decaying shield") { }
+
+		private void OnHitProjectile(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+            var player = Main.player[projectile.owner];
+
+            if (projectile.melee && Equipped(player))
+                player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+        }
 
         private void OnHit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
         {
@@ -35,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Ironheart");
-            //Description.SetDefault("TODO: desc");
+            Description.SetDefault("you have decaying extra barrier and defense");
             Main.buffNoTimeDisplay[Type] = false;
             Main.debuff[Type] = false;
         }
@@ -91,7 +102,7 @@ namespace StarlightRiver.Core
             if (!player.HasBuff(buffType))
                 ResetIronHeart();
 
-            int level = Math.Min(damage, IronheartMaxDamage) / 15;
+            int level = Math.Min(damage, IronheartMaxDamage) / 12;
 
             if (level > 0 && ironheartLevel < IronheartMaxLevel)//if level was increased
             {
