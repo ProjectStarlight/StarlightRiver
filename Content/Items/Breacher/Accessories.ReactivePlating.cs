@@ -111,7 +111,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
 		{
 			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
+
 			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+
 			if (modPlayer.Shield && drawPlayer == Main.LocalPlayer)
 				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer);
 		}

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.SetDisplayMode += RefrashCutawayTarget;
+			On.Terraria.Main.SetDisplayMode += RefreshCutawayTarget;
 			On.Terraria.Main.DrawInfernoRings += DrawNegative;
 			On.Terraria.Main.DrawDust += DrawPositive;
 			On.Terraria.WorldGen.SaveAndQuit += ClearCutaways;
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.CustomHooks
 			cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
 		}
 
-		private void RefrashCutawayTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+		private void RefreshCutawayTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
 			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
 				cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
