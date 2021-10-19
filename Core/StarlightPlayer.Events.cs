@@ -64,9 +64,16 @@ namespace StarlightRiver.Core
 
         public delegate void PostDrawDelegate(Player player, SpriteBatch spriteBatch);
         public static event PostDrawDelegate PostDrawEvent;
-        public void PostDraw(Player player, SpriteBatch spriteBatch)
+		public void PostDraw(Player player, SpriteBatch spriteBatch)
 		{
-            PostDrawEvent?.Invoke(player, Main.spriteBatch);
+			PostDrawEvent?.Invoke(player, Main.spriteBatch);
+		}
+
+        public delegate void PreDrawDelegate(Player player, SpriteBatch spriteBatch);
+        public static event PreDrawDelegate PreDrawEvent;
+        public void PreDraw(Player player, SpriteBatch spriteBatch)
+        {
+            PreDrawEvent?.Invoke(player, Main.spriteBatch);
         }
 
         //this is the grossest one. I am sorry, little ones.
