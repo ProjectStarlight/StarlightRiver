@@ -105,6 +105,9 @@ namespace StarlightRiver.Core
             itemSpeed = 1;
 
             trueInvisible = false;
+
+            if (Shake > 120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult)
+                Shake = (int)(120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult);
         }
 
         public override void PostUpdate()
