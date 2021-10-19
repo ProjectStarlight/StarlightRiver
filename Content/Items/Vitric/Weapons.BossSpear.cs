@@ -135,12 +135,12 @@ namespace StarlightRiver.Content.Items.Vitric
                 projectile.extraUpdates = 8;
             else  
                 projectile.extraUpdates = 0;
-
+            
             if (projectile.timeLeft == (int)(25 * player.meleeSpeed))
             {
                 Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
 
-                 player.velocity += Vector2.Normalize(player.Center - Main.MouseWorld) * (BuffPower > 0 ? -10 : -4);
+                 player.velocity += Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
             }
         }
 
