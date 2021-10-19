@@ -38,12 +38,14 @@ namespace StarlightRiver.Core
 
 		private void PostDrawBarrierFX(Player player, SpriteBatch spriteBatch)
 		{
-			player.GetModPlayer<ShieldPlayer>().dye?.PostDrawEffects(spriteBatch, player);
+			if(!Main.gameMenu)
+				player.GetModPlayer<ShieldPlayer>().dye?.PostDrawEffects(spriteBatch, player);
 		}
 
 		private void PreDrawBarrierFX(Player player, SpriteBatch spriteBatch)
 		{
-			player.GetModPlayer<ShieldPlayer>().dye?.PreDrawEffects(spriteBatch, player);
+			if (!Main.gameMenu)
+				player.GetModPlayer<ShieldPlayer>().dye?.PreDrawEffects(spriteBatch, player);
 		}
 
 		public void ModifyDamage(ref int damage, ref bool crit)
