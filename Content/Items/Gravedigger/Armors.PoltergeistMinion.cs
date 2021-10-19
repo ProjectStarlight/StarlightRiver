@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			else if (opacity < 1)
 				opacity += 0.05f;
 
-			if (owner.armor[0].type != ItemType<PoltergeistHead>() || !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
+			if (owner.armor[0].type != ItemType<PoltergeistHead>() || !owner.armor[0].modItem.IsArmorSet(owner.armor[0], owner.armor[1], owner.armor[2]) || !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
 			{
 				projectile.active = false;
 				return;
