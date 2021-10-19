@@ -25,7 +25,6 @@ namespace StarlightRiver.Core.Loaders
 
             ResizeTarget();
 
-            //TODO: Move these to wherever the fuck scalie keeps his detours
             On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
             Main.OnPreDraw += Main_OnPreDraw;
             On.Terraria.Main.Update += Main_Update;

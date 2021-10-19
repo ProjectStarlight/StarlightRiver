@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 			else if (item.potion || item.healMana != 0 || (item.buffType != -1 && (item.Name.Contains("potion") || item.Name.Contains("Potion")))) //should probably figure a better check for this somehow? 1.4 content tags maybe?
 				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.5f + pitch * 0.5f);
 
-			else if (item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin) //coins are early since they're ammo and have damage and place tiles. Holy shit.
+			else if (item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin) //coins are early since they're ammo and have damage and place tiles. 
 				return Helper.PlayPitched(SoundID.Coins, 1, 0.3f + pitch);
 
 			else if (item.dye > 0) //dyes

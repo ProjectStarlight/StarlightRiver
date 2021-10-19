@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             On.Terraria.NPC.GetChat += SetUpgradeUI;
 
-            //This set of IL hooks changes the title of the NPCs in chat messages and UI, since attempting to change the actual name of the NPCs makes vanilla shit itself.
+            //This set of IL hooks changes the title of the NPCs in chat messages and UI, since attempting to change the actual name of the NPCs makes vanilla unhappy.
             IL.Terraria.WorldGen.SpawnTownNPC += SwapTitle;
             IL.Terraria.NPC.checkDead += SwapTitleDeath;
             IL.Terraria.Main.DrawInventory += SwapTitleMenu;
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.CustomHooks
             c.Emit(OpCodes.Ldloc, 71);
             c.Emit(OpCodes.Ldelem_Ref);
 
-            c.Emit(OpCodes.Ldloc, 73); //X and Y coords to check mouse collision. Fuck you vanilla.
+            c.Emit(OpCodes.Ldloc, 73); //X and Y coords to check mouse collision
             c.Emit(OpCodes.Ldloc, 74);
 
             c.EmitDelegate<SwapTextMenuDelegate>(EmitSwapTextMenuDelegate);

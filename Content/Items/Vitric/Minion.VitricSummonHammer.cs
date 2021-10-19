@@ -9,7 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file its a hot mess
 {
 	public class VitricSummonHammer : ModProjectile
     {
@@ -149,8 +149,6 @@ namespace StarlightRiver.Content.Items.Vitric
                     Point16 point = new Point16((int)((projectile.Center.X + projectile.width / 3f * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, tileTargetY));
                     Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
-                    //hard coded dust ids in worldgen.cs, still ew
-                    //Tile hit!
                     if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.active() && Main.tileSolid[tile.type])
                     {
                         projectile.localAI[0] = 301;
@@ -265,7 +263,7 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 projectile.velocity.Y = projectile.timeLeft <= 10 ? 1f : -1f;
 
-                if (projectile.timeLeft == 19 && Math.Abs(ShockwavesLeft) > 0) //what the fuck is this. Local vars. please.
+                if (projectile.timeLeft == 19 && Math.Abs(ShockwavesLeft) > 0) 
                     Projectile.NewProjectile(new Vector2((int)projectile.Center.X / 16 * 16 + 16 * Math.Sign(ShockwavesLeft)
                     , (int)projectile.Center.Y / 16 * 16 - 32),
                     Vector2.Zero, projectile.type, projectile.damage, 0, Main.myPlayer, TileType, projectile.ai[1] - Math.Sign(ShockwavesLeft));
@@ -283,13 +281,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (projectile.timeLeft > 800) //smells like boilerplate. IDG-it kinda is
+            if (projectile.timeLeft > 800) 
             {
                 Point16 point = new Point16((int)((projectile.Center.X + projectile.width / 3f * projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)(projectile.Center.Y / 16) + 1));
                 Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
-                //hard coded dust ids in worldgen.cs, still ew
-                //Tile hit!
                 if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.active() && Main.tileSolid[tile.type])
                 {
                     projectile.timeLeft = 20;

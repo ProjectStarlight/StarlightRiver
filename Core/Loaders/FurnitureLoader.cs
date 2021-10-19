@@ -392,7 +392,7 @@ namespace StarlightRiver.Core
     }
 
     //Open Door
-    class GenericDoorOpen : Furniture //Fucking fuck vanilla and your stuipd ass TileObjectData fuck fuck fuck fuck fuck
+    class GenericDoorOpen : Furniture
     {
         public GenericDoorOpen(Color color, int dust, string name) : base(color, dust, name) { }
 

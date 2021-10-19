@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                     npc.TargetClosest();
                     break;
 
-                case 2://oh god oh fuck
+                case 2://Concerned
                     if (npc.velocity.Y == 0)
                         Helper.NpcVertical(npc, true, 2, 6);
 

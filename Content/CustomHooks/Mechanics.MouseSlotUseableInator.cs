@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class MouseSlotUsableInator : HookGroup
 	{
-		//what the fuck am I doing?
 		public override SafetyLevel Safety => SafetyLevel.Fragile;
 
 		public override void Load()

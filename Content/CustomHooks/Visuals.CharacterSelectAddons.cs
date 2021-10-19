@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self, spriteBatch);
             Vector2 origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
 
-            //hooray double reflection, fuck you vanilla
+            //hooray double reflection
             UICharacter character = (UICharacter)_playerPanel.GetValue(self);
 
             Player player = (Player)_player.GetValue(character);

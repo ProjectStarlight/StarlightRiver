@@ -16,7 +16,6 @@ namespace StarlightRiver.Core.Loaders
             StarlightRiver.primitives = new PrimTrailManager();
             StarlightRiver.primitives.LoadContent(Main.graphics.GraphicsDevice);
 
-            //TODO: Move these to wherever the fuck scalie keeps his detours
             On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
             Main.OnPreDraw += Main_OnPreDraw;
         }

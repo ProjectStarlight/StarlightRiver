@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Buffs
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Pancaked");
-            Description.SetDefault("Flat ass lookin' headass");
+            Description.SetDefault("You're flat now.");
             Main.debuff[Type] = true;
         }
 

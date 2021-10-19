@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SetDefaults()
         {
-            Main.tileLighted[Type] = true; //im fucking lazy
+            Main.tileLighted[Type] = true;
             Main.tileFrameImportant[Type] = true;
             Main.tileSolidTop[Type] = true;
             Main.tileSolid[Type] = true;

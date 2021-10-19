@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class WorldSelectAddons : HookGroup
     {
-        //Questionable becasue of the antiquated reflection caching bullshit, which may or may not make the GC want to shit itself.
+        //Questionable becasue of the antiquated reflection caching this, may or may not make the GC want to cry.
         public override SafetyLevel Safety => SafetyLevel.Questionable;
 
         public override void Load() //funny how the length of these lines line up perfectly. heh.
@@ -30,7 +30,6 @@ namespace StarlightRiver.Content.CustomHooks
 
         readonly Dictionary<UIWorldListItem, TagCompound> worldDataCache = new Dictionary<UIWorldListItem, TagCompound>();
 
-        //this is stull big chungus, huh... Well this will be used for its intended use eventually. Eventually. Eventually. Eventually. Eventually. Eventually. Eventually. Eventually. 
         private void VoidIcon(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_DrawSelf orig, UIWorldListItem self, SpriteBatch spriteBatch)
         {
             orig(self, spriteBatch);

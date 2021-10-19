@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of shit because terraria has no base entity class that palyers and NPCs share so we need fully seperate backends for handling player shield! yayyyy!!!!!
+	class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that players and NPCs share
 	{
 		public int MaxShield = 0;
 		public int Shield = 0;

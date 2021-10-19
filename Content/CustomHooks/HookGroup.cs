@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	public class HookGroup : ILoadable
     {
-        public virtual SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
+        public virtual SafetyLevel Safety => SafetyLevel.Severe;
 
         public virtual float Priority { get => 1f; }
 
@@ -24,6 +24,6 @@ namespace StarlightRiver.Content.CustomHooks
         Safe = 0,
         Questionable = 1,
         Fragile = 2,
-        OhGodOhFuck = 3
+        Severe = 3
     }
 }

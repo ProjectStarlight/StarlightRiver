@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class SoulboundItemRestrictions : HookGroup
     {
-        //Some vanilla behavior buttfuckery in here, should be wary.
+        //Changes some vanilla behavior
         public override SafetyLevel Safety => SafetyLevel.Questionable;
 
         public override void Load()
