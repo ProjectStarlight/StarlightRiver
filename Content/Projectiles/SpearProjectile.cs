@@ -31,6 +31,7 @@ namespace StarlightRiver.Content.Projectiles
             projectile.friendly = true;
             projectile.timeLeft = Duration;
             projectile.tileCollide = false;
+            projectile.melee = true;
             SafeSetDefaults();
         }
 
