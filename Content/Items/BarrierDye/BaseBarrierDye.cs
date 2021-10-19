@@ -27,7 +27,13 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 	class BaseBarrierDye : BarrierDye
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void UpdateInventory(Player player)
+		{
+			if (Main.mouseItem == item)
+				item.TurnToAir();
+		}
 
 		public override void LoseBarrierEffects(Player player)
 		{

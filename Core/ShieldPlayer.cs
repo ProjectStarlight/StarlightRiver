@@ -7,6 +7,7 @@ using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
@@ -26,7 +27,9 @@ namespace StarlightRiver.Core
 		public float ShieldResistance = 0.3f;
 
 		public float rechargeAnimation;
-		public BarrierDye dye;
+		public Item barrierDyeItem;
+
+		public BarrierDye dye => (barrierDyeItem is null || barrierDyeItem.IsAir) ? null : (barrierDyeItem.modItem as BarrierDye);
 
 		public override bool Autoload(ref string name)
 		{
@@ -150,6 +153,12 @@ namespace StarlightRiver.Core
 			}
 		}
 
+		public override void PostUpdate() //change inventory screen for dyes
+		{
+			if (Main.mouseItem.modItem is BarrierDye)
+				Main.EquipPageSelected = 2;
+		}
+
 		public override void UpdateDead()
 		{
 			Shield = 0;
@@ -162,6 +171,19 @@ namespace StarlightRiver.Core
 				return false;
 
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
+		}
+
+		public override TagCompound Save()
+		{
+			return new TagCompound()
+			{
+				["DyeItem"] = barrierDyeItem
+			};
+		}
+
+		public override void Load(TagCompound tag)
+		{
+			barrierDyeItem = tag.Get<Item>("DyeItem");
 		}
 
 		public override void ResetEffects()
@@ -178,7 +200,11 @@ namespace StarlightRiver.Core
 			ShieldResistance = Main.expertMode ? 0.4f : 0.3f;
 
 			if (dye is null)
-				dye = new BaseBarrierDye();
+			{
+				Item item = new Item();
+				item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
+				barrierDyeItem = item;
+			}
 		}
 	}
 }

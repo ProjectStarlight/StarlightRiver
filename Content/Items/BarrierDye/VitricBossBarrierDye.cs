@@ -28,17 +28,6 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		public override void SetDefaults()
 		{
 			item.rare = ItemRarityID.Orange;
-			item.useTime = 10;
-			item.useAnimation = 10;
-			item.useStyle = ItemUseStyleID.EatingUsing;
-		}
-
-		public override bool UseItem(Player player)
-		{
-			var barrier = player.GetModPlayer<ShieldPlayer>();
-			barrier.dye = this;
-
-			return true;
 		}
 
 		public override void LoseBarrierEffects(Player player)
