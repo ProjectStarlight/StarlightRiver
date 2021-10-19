@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public WindowSmallItem() : base("Smol Window", "Titties", TileType<WindowSmall>(), 1) { }
+        public WindowSmallItem() : base("Smol Window", "Debug item", TileType<WindowSmall>(), 1) { }
     }
 
     class WindowSmallDummy : Dummy, IDrawAdditive

@@ -8,7 +8,7 @@ namespace StarlightRiver.Core
         public const string MapBackgrounds =        Backgrounds + "MapBackgrounds/";
 
         public const string Invisible =             Assets + "Invisible";
-        public const string Debug =                 Assets + "MarioCumming";
+        public const string Debug =                 Assets + "Default";
         public const string Symbol =                Assets + "Symbol";
 
         public const string Buffs =                 Assets + "Buffs/";

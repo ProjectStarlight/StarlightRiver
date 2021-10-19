@@ -99,6 +99,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public PermafrostTeleporterItem() : base("PermafrostTeleporter", "I came", TileType<PermafrostTeleporter>(), 1) { }
+        public PermafrostTeleporterItem() : base("PermafrostTeleporter", "Debug item", TileType<PermafrostTeleporter>(), 1) { }
     }
 }

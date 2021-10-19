@@ -49,9 +49,9 @@ namespace StarlightRiver.NPCs.Town
         {
             switch (WorldGen.genRand.Next(3))
             {
-                case 0: return "Cumlord";
-                case 1: return "Cumsucker";
-                case 2: return "123Nick";
+                case 0: return "PH Name 0";
+                case 1: return "PH Name 1";
+                case 2: return "PH Name 2";
 
                 default: return "Error";
             }
@@ -59,13 +59,7 @@ namespace StarlightRiver.NPCs.Town
 
         public override string GetChat()
         {
-            switch (Main.rand.Next(2))
-            {
-                case 0: return "Vortex is Gay";
-                case 1: return "Vortex is Gayer";
-
-                default: return "Error";
-            }
+            return "No Text";
         }
 
         public override void SetChatButtons(ref string button, ref string button2)

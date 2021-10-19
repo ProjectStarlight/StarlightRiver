@@ -83,6 +83,6 @@ namespace StarlightRiver.Pickups
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/Stamina1";
 
-        public StaminaShardTileItem() : base("Stamina Shard", "PENIS", TileType<StaminaShardTile>(), 1) { }
+        public StaminaShardTileItem() : base("Stamina Shard", "Debug item", TileType<StaminaShardTile>(), 1) { }
     }
 }

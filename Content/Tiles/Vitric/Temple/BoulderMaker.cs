@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class BoulderMakerItem : QuickTileItem
     {
-        public BoulderMakerItem() : base("Boulder Maker", "Titties", TileType<BoulderMaker>(), 1, AssetDirectory.Debug, true) { }
+        public BoulderMakerItem() : base("Boulder Maker", "Debug item", TileType<BoulderMaker>(), 1, AssetDirectory.Debug, true) { }
     }
 
     class Boulder : ModNPC

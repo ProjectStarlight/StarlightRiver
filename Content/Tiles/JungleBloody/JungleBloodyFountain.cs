@@ -12,6 +12,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class JungleBloodyFountainItem : QuickTileItem
     {
-        public JungleBloodyFountainItem() : base("Crimson Jungle Fountain", "Fruit salad.\nYummy yummy.", "JungleBloodyFountain", texturePath: AssetDirectory.JungleBloodyTile) { }
+        public JungleBloodyFountainItem() : base("Crimson Jungle Fountain", "Debug item", "JungleBloodyFountain", texturePath: AssetDirectory.JungleBloodyTile) { }
     }
 }

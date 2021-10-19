@@ -8,7 +8,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
 {
 	class GuideUpgrade : TownUpgrade
     {
-        public GuideUpgrade() : base("Guide", "Chungus Study", "Help the guide study big chungus!", "Rift Crafting", "Scholar") { }
+        public GuideUpgrade() : base("Guide", "[PH]Guide Quest", "No description", "Rift Crafting", "Scholar") { }
 
         public override List<Loot> Requirements => new List<Loot>()
         {
@@ -19,7 +19,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
 
         public override void ClickButton()
         {
-            Main.NewText("The guide shit himself. Good job.", Color.Brown);
+            Main.NewText("No message", Color.Brown);
         }
     }
 }

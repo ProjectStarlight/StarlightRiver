@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles
 
     class VerletBannerItem : QuickTileItem
 	{
-        public VerletBannerItem() : base("Verlet banner", "DRAGON DICK IN MY MOUTH", TileType<VerletBanner>(), 1, AssetDirectory.Debug, true) { }
+        public VerletBannerItem() : base("Verlet banner", "Debug item", TileType<VerletBanner>(), 1, AssetDirectory.Debug, true) { }
 	}
 
     internal class VerletBannerDummy : Dummy
