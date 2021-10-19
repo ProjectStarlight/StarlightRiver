@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			var barrier = player.GetModPlayer<ShieldPlayer>();
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float opacity = barrier.rechargeAnimation;
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }
