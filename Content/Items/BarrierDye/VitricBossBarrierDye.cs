@@ -9,6 +9,7 @@ using StarlightRiver.Core;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {
@@ -20,15 +21,16 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Rose Tincture");
-			Tooltip.SetDefault("Barrier FX turn a vibrant red");
+			DisplayName.SetDefault("Sentinel's Tincture");
+			Tooltip.SetDefault("Barrier FX mimic ceiros' glass shield");
 		}
 
 		public override void SetDefaults()
 		{
+			item.rare = ItemRarityID.Orange;
 			item.useTime = 10;
 			item.useAnimation = 10;
-			item.useStyle = 1;
+			item.useStyle = ItemUseStyleID.EatingUsing;
 		}
 
 		public override bool UseItem(Player player)
