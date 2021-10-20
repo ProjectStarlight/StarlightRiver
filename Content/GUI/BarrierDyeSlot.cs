@@ -98,6 +98,7 @@ namespace StarlightRiver.Content.GUI
                 Main.mouseItem = Item.Clone();
                 mp.barrierDyeItem.TurnToAir();
                 Main.PlaySound(SoundID.Grab);
+                mp.rechargeAnimation = 0;
             }
 
             if (player.HeldItem.modItem is BarrierDye && Item.IsAir) //if the slot is empty and the cursor has an item, put it in the slot
@@ -106,6 +107,7 @@ namespace StarlightRiver.Content.GUI
                 player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
                 Main.PlaySound(SoundID.Grab);
+                mp.rechargeAnimation = 0;
             }
 
             if (player.HeldItem.modItem is BarrierDye && !Item.IsAir) //swap or stack
@@ -114,6 +116,7 @@ namespace StarlightRiver.Content.GUI
                 mp.barrierDyeItem = player.HeldItem;
                 Main.mouseItem = temp;
                 Main.PlaySound(SoundID.Grab);
+                mp.rechargeAnimation = 0;
             }
 
             Main.isMouseLeftConsumedByUI = true;
