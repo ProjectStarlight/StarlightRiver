@@ -35,8 +35,6 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.GameContent.UI.States.UIWorldSelect.ctor += RefreshWorldData;
         }
 
-        readonly Dictionary<UIWorldListItem, TagCompound> worldDataCache = new Dictionary<UIWorldListItem, TagCompound>();
-
         private void VoidIcon(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_DrawSelf orig, UIWorldListItem self, SpriteBatch spriteBatch)
         {
             orig(self, spriteBatch);
