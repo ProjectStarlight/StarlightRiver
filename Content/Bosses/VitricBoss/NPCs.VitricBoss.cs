@@ -266,6 +266,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Item.NewItem(npc.Center, ItemType<VitricOre>(), Main.rand.Next(30, 50));
                 Item.NewItem(npc.Center, ItemType<MagmaCore>(), Main.rand.Next(1, 2));
                 Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
+
+                if(Main.rand.Next(10) == 0)
+                    Item.NewItem(npc.Center, ItemType<Items.BarrierDye.VitricBossBarrierDye>());
             }
         }
 

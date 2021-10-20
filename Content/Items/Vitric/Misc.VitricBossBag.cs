@@ -44,6 +44,9 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.NewItem(player.Center, ItemType<MagmaCore>(), Main.rand.Next(2, 3));
             Item.NewItem(player.Center, ItemType<Misc.StaminaUp>());
             Item.NewItem(player.Center, ItemType<CeirosExpert>());
+
+            if (Main.rand.Next(8) == 0)
+                Item.NewItem(player.Center, ItemType<BarrierDye.VitricBossBarrierDye>());
         }
     }
 }
