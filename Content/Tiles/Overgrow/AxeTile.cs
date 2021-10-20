@@ -68,6 +68,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public AxeTileItem() : base("Axe Trap", "Titties", TileType<AxeTile>(), 1) { }
+        public AxeTileItem() : base("Axe Trap", "Debug item", TileType<AxeTile>(), 1) { }
     }
 }

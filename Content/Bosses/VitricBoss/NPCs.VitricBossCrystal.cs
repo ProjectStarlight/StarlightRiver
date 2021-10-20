@@ -421,7 +421,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     shouldDrawArc = false;
 			}
 
-            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge shitcode, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
+            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
 			{
                 if (Parent.AttackTimer > 360)
                 {

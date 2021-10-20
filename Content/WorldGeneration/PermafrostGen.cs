@@ -29,7 +29,7 @@ namespace StarlightRiver.Core
 
             List<Circle> circles = new List<Circle>();
 
-            for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla cant fucking keep track of its own shit
+            for (int x = 0; x < Main.maxTilesX; x++) //Find the ice biome since vanilla dosent track it
             {
                 if (iceLeft != 0) break;
 

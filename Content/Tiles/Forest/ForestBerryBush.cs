@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
         }
 
-        public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's shitty ass way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.
+        public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's less-than-ideal way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.
         {
             Tile tile = Framing.GetTileSafely(i, j); //you could probably add more safety checks if you want to be extra giga secure, but we assume RandomUpdate only calls valid tiles here
             TileObjectData data = TileObjectData.GetTileData(tile); //grabs the TileObjectData associated with our tile. So we dont have to use as many magic numbers

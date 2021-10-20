@@ -72,7 +72,7 @@ namespace StarlightRiver.Core
 
             if (attempts >= 100)
             {
-                throw new Exception("Your vanilla dungeon was so fucked up 100 attempts at generating the overgrowth didnt work. Sorry about that :/");
+                throw new Exception("Legacy generation failed on current world seed");
             }
 
             //actually fill the rooms once we find a satisfactory layout

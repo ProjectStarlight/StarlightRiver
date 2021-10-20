@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.CustomHooks
 	class JungleClentaminator : HookGroup
     {
         //I wrote this at like 4AM, dont ask me what litterally any of this does, I just know that it works. for  now.
-        public override SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
+        public override SafetyLevel Safety => SafetyLevel.Severe;
 
         public override void Load()
         {
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.CustomHooks
                 c.Emit(OpCodes.Brtrue, il.Instrs[index]);
                 c.Emit(OpCodes.Ldsfld, typeof(TileID.Sets.Conversion).GetField("Grass"));
             }
-            c.TryGotoNext(i => i.MatchLdfld<Tile>("wall"), i => i.MatchLdcI4(69)); //funny sex number!!!
+            c.TryGotoNext(i => i.MatchLdfld<Tile>("wall"), i => i.MatchLdcI4(69));
             c.TryGotoPrev(i => i.MatchLdsfld<Main>("tile"));
             c.Index++;
             c.Emit(OpCodes.Ldc_I4, TileID.JungleGrass);

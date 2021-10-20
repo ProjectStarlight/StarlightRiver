@@ -8,7 +8,7 @@ namespace StarlightRiver.Core
         public const string MapBackgrounds =        Backgrounds + "MapBackgrounds/";
 
         public const string Invisible =             Assets + "Invisible";
-        public const string Debug =                 Assets + "MarioCumming";
+        public const string Debug =                 Assets + "Default";
         public const string Symbol =                Assets + "Symbol";
 
         public const string Buffs =                 Assets + "Buffs/";
@@ -53,6 +53,7 @@ namespace StarlightRiver.Core
         public const string PermafrostItem =        Assets + "Items/Permafrost/";
         public const string SquidBoss =             Assets + "Bosses/SquidBoss/";
 
+        public const string BarrierDyeItem =        Assets + "Items/BarrierDye/";
         public const string SlimeItem =             Assets + "Items/Slime/";
         public const string StarwoodItem =          Assets + "Items/Starwood/";
         public const string PalestoneItem =         Assets + "Items/Palestone/";

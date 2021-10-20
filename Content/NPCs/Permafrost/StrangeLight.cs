@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.NPCs.Permafrost
                 }
             }
         }
-        #region os's shit
+        #region os's code
         public static float EX(float t,
         float x0, float x1, float x2, float x3)
         {

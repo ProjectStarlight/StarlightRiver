@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             }
         }
 
-        private void UppercutGlide() //its just the other two methods put together because I re-use uppercut. Suck my cock.
+        private void UppercutGlide() //its just the other two methods put together because I re-use uppercut.
         {
             if (AttackTimer == 1)
                 CurrentAnimation = AnimationSelection.SummonSword;
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void Uppercut(int startTime)
         {
-            if (AttackTimer == startTime + 30) //this is so fucking basic it just spawns a stupipd ass hitbox projectile and launches him up how fucking DUMB do you have to be to have to read this comment
+            if (AttackTimer == startTime + 30)
             {
                 npc.TargetClosest();
                 npc.spriteDirection = npc.Center.X > Main.player[npc.target].Center.X ? 1 : -1;
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (AttackTimer == startTime + 1)
             {
-                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 30, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air like a majestic dragon with a 17 INCH LONG COCK
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassSpin>(), 30, 1, Main.myPlayer, npc.whoAmI); //spawn slash and let him fly through the air 
                 npc.noGravity = true;
                 npc.TargetClosest();
             }
@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer < startTime + 150) //rotate in air
                 spinAngle += 0.25f;
 
-            if (AttackTimer == startTime + 150) //let him fall again after this shit is over
+            if (AttackTimer == startTime + 150) //let him fall again after this is over
             {
                 npc.noGravity = false;
                 npc.velocity *= 0;

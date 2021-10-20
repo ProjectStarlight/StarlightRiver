@@ -34,6 +34,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public EntranceDoorItem() : base("EntranceDoor", "Titties", TileType<EntranceDoor>(), 1, AssetDirectory.VitricTile) { }
+        public EntranceDoorItem() : base("EntranceDoor", "Debug item", TileType<EntranceDoor>(), 1, AssetDirectory.VitricTile) { }
     }
 }

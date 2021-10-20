@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
         private MethodInfo playerDrawMethod;
 
         public static RenderTarget2D Target;
-        //Ill move it later :P
+
         public static RenderTarget2D ScaledTileTarget { get; set; }
 
         public override void Load()
@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             playerDrawMethod = typeof(Main).GetMethod("DrawPlayer_DrawAllLayers", BindingFlags.NonPublic|BindingFlags.Instance);
 
+            On.Terraria.Main.SetDisplayMode += RefreshTargets;
             Main.OnPreDraw += Main_OnPreDraw;
         }
 
@@ -41,7 +42,18 @@ namespace StarlightRiver.Content.CustomHooks
             Main.OnPreDraw -= Main_OnPreDraw;
         }
 
-		private void Main_OnPreDraw(GameTime obj)
+        private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+        {
+            if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
+			{
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
+                ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
+            }
+
+            orig(width, height, fullscreen);
+        }
+
+        private void Main_OnPreDraw(GameTime obj)
         {
             if (Main.gameMenu)
                 return;
@@ -98,7 +110,8 @@ namespace StarlightRiver.Content.CustomHooks
             Main.spriteBatch.End();
             Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
 
-            if (Main.instance.tileTarget.IsDisposed) return;
+            if (Main.instance.tileTarget.IsDisposed) 
+                return;
 
             RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
 

@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && Main.player[projectile.owner].armor[0].type == ItemType<MoonstoneHead>())
+			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
 			{
                 (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
 			}
@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
-            if (item.melee && player.armor[0].type == ItemType<MoonstoneHead>())
+            if (item.melee && IsArmorSet(player))
             {
                 (player.armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
             }
@@ -73,6 +73,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
             player.meleeCrit += 2;
             player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+
+            if(!IsArmorSet(player))
+			{
+                moonCharge = 0;
+                spearOn = false;
+			}
         }
 
         public override void UpdateArmorSet(Player player)
@@ -100,22 +106,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 			{
                 Main.mouseItem = new Item();
             }
-
-            if (player.HeldItem != dummySpear)
-            {
-                if (Datsuzei.activationTimer > 0)
-                    Datsuzei.activationTimer -= 2;
-                else
-                {
-                    Datsuzei.activationTimer = 0;
-                    Datsuzei.sparkles.ClearParticles();
-                }
-            }
         }
 
         private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
         {
-            if (keyDir == 0 && player.armor[0].type == ItemType<MoonstoneHead>())
+            if (keyDir == 0 && IsArmorSet(player))
             {
                 var helm = player.armor[0].modItem as MoonstoneHead;
 
@@ -144,7 +139,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             if(dummySpear.IsAir)
                 dummySpear.SetDefaults(ItemType<Datsuzei>());
 
-            if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player.armor[0], player.armor[1], player.armor[2]) && player.controlUp)
+            if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player) && player.controlUp)
             {
                 Main.HoverItem = dummySpear.Clone();
                 Main.hoverItemName = dummySpear.Name;
@@ -160,16 +155,21 @@ namespace StarlightRiver.Content.Items.Moonstone
                 item.type == ItemType<MoonstoneLegs>();
         }
 
-        public override bool IsArmorSet(Item head, Item body, Item legs)
-        {
+		public override bool IsArmorSet(Item head, Item body, Item legs)
+		{
             return head.type == ItemType<MoonstoneHead>() && body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
         }
 
-		public override void ModifyTooltips(List<TooltipLine> tooltips)
+        public bool IsArmorSet(Player player)
+        {
+            return player.armor[0].type == ItemType<MoonstoneHead>() && player.armor[1].type == ItemType<MoonstoneChest>() && player.armor[2].type == ItemType<MoonstoneLegs>();
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
             var player = Main.LocalPlayer;
 
-            if (IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            if (IsArmorSet(player))
             {
                 if (!player.controlUp)
                 {
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
         {
-            if (player.armor[0].type == ItemType<MoonstoneHead>() && !player.dead)
+            if (IsArmorSet(player) && !player.dead)
             {
                 float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
 

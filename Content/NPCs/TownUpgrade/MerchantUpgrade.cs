@@ -5,11 +5,11 @@ namespace StarlightRiver.NPCs.TownUpgrade
 {
 	class MerchantUpgrade : TownUpgrade
     {
-        public MerchantUpgrade() : base("Merchant", "OnlyFans Account", "Help the merchant set up an OnlyFans!", "Nudes", "Stripper") { }
+        public MerchantUpgrade() : base("Merchant", "[PH]Merchant Quest", "No Description", "[PH]Upgraded Merchant Action", "[PH]Upgraded merchant") { }
 
         public override void ClickButton()
         {
-            Main.NewText("The merchant shit himself. Good job.", Color.Brown);
+            Main.NewText("No message", Color.Brown);
         }
     }
 }

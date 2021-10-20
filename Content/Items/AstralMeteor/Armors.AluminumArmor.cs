@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Helmet");
-                Tooltip.SetDefault("IDK lol");
+                Tooltip.SetDefault("No description");
             }
 
             public override void SetDefaults()
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void UpdateArmorSet(Player player)
             {
-                player.setBonus = "Cum. Thats all.";
+                player.setBonus = "No description";
             }
 
             public override void AddRecipes()
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Suit");
-                Tooltip.SetDefault("IDK lol");
+                Tooltip.SetDefault("No description");
             }
 
             public override void SetDefaults()
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Leggings");
-                Tooltip.SetDefault("IDK lol");
+                Tooltip.SetDefault("No description");
             }
 
             public override void SetDefaults()

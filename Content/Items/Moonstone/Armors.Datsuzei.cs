@@ -60,6 +60,17 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             orig(self);
 
+            if (Main.LocalPlayer.HeldItem.type != ItemType<Datsuzei>())
+            {
+                if (activationTimer > 0)
+                    activationTimer -= 2;
+                else
+                {
+                    activationTimer = 0;
+                    sparkles.ClearParticles();
+                }
+            }
+
             if (activationTimer > 0 && !Main.playerInventory)
             {
                 var activationTimerNoCurve = Datsuzei.activationTimer;
@@ -235,6 +246,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void HoldItem(Player player)
 		{
+            if (!(player.armor[0].modItem is MoonstoneHead) || !(player.armor[0].modItem as MoonstoneHead).IsArmorSet(player))
+            {
+                item.TurnToAir();
+                Main.mouseItem = new Item();
+            }
+
             if (activationTimer < 120)
                 activationTimer++;
 		}

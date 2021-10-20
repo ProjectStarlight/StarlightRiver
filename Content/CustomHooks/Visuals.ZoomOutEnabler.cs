@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public static float lightingStoredSize = 1;
 
 		//this is super hacky
-		public override SafetyLevel Safety => SafetyLevel.OhGodOhFuck;
+		public override SafetyLevel Safety => SafetyLevel.Severe;
 
 		public override void Load()
 		{
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private RenderTarget2D returnNewTileTarget()
 		{
-			return new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth * 3, Main.screenHeight * 3, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
+			return new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth * 2, Main.screenHeight * 2, false, Main.graphics.GraphicsDevice.PresentationParameters.BackBufferFormat, DepthFormat.Depth24);
 		}
 
 		private void DrawZoomOut(ILContext il)

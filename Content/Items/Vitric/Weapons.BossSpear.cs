@@ -135,12 +135,12 @@ namespace StarlightRiver.Content.Items.Vitric
                 projectile.extraUpdates = 8;
             else  
                 projectile.extraUpdates = 0;
-
+            
             if (projectile.timeLeft == (int)(25 * player.meleeSpeed))
             {
                 Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
 
-                 player.velocity += Vector2.Normalize(player.Center - Main.MouseWorld) * (BuffPower > 0 ? -10 : -4);
+                 player.velocity += Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
             }
         }
 
@@ -236,6 +236,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.tileCollide = false;
             projectile.penetrate = -1;
             projectile.knockBack = 2;
+            projectile.melee = true;
             ShieldLife = 50;
         }
 
@@ -265,6 +266,9 @@ namespace StarlightRiver.Content.Items.Vitric
                 item.buffed = true;
                 item.buffPower = (int)ShieldLife;
             }
+
+            if (ShieldLife <= 0)
+                projectile.Kill();
         }
 
         public override void AI()
@@ -303,11 +307,11 @@ namespace StarlightRiver.Content.Items.Vitric
                 player.direction = 1;
             else
                 player.direction = -1;
+
             player.itemRotation = projectile.ai[1] + (float)Math.PI; //TODO: Wrap properly when facing left
+
             if (player.direction != 1)
-            {
                 player.itemRotation -= 3.14f;
-            }
 
             player.heldProj = projectile.whoAmI;
 
@@ -342,13 +346,14 @@ namespace StarlightRiver.Content.Items.Vitric
                         CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), "Cant block!");
                         proj.damage -= (int)ShieldLife / 2;
                         projectile.Kill();
+                        return;
                     }
 
                     player.velocity += Vector2.Normalize(player.Center - proj.Center) * 3;
                 }
             }
 
-            if(ShieldLife <= 0)
+            if (ShieldLife <= 0)
                 projectile.Kill();
         }
 

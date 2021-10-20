@@ -33,6 +33,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public TutorialCultistMakerItem() : base("Cultist Cum Factoryee", "I came", TileType<TutorialCultistMaker>(), 1) { }
+        public TutorialCultistMakerItem() : base("Tutorial Cultist Marker", "Debug item", TileType<TutorialCultistMaker>(), 1) { }
     }
 }*/

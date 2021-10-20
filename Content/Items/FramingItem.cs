@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items
 				//}
 				//Main.NewText("npcs: " + npcs);
 				//Main.NewText("player pos: " + player.position);
-				debug shit */
+				debug */
             }
             return base.CanUseItem(player);
         }

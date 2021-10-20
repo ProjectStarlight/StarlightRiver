@@ -85,6 +85,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.timeLeft = 120;
             projectile.tileCollide = false;
             projectile.ignoreWater = false;
+            projectile.melee = true;
         }
 
         public override void SetStaticDefaults()

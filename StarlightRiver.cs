@@ -37,7 +37,7 @@ namespace StarlightRiver
 
         public StarlightRiver() => Instance = this;
 
-        public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for shit like this
+        public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
 
         private Vector2 _lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
 

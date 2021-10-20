@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
     class AuroraDoT : SmartBuff
     {
-        public AuroraDoT() : base("Aurora DoT", "What the fuck you shouldn't have this its NPC only", true) { }
+        public AuroraDoT() : base("Aurora DoT", "No description", true) { }
 
         public override bool Autoload(ref string name, ref string texture)
         {

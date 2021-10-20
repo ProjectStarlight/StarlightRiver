@@ -68,9 +68,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 case 0:
                     if (Main.player.Any(n => n.Hitbox.Intersects(npc.Hitbox)))
-                        npc.ai[0]++; //ticks the enrage timer when players are standing on the ground. Naughty boys.
+                        npc.ai[0]++; //ticks the enrage timer when players are standing on the ground
 
-                    if (npc.ai[0] > 120) //after standing there for too long a wave comes by to fuck em up.
+                    if (npc.ai[0] > 120) //after standing there for too long a wave comes by
                     {
                         npc.ai[1] = 1; //wave mode
                         npc.ai[0] = 0; //reset timer so it can be reused
@@ -170,8 +170,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Texture2D tex = Main.npcTexture[npc.type];
                 for (int k = 0; k < npc.width; k += 18)
                 {
-                    Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
-                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals lol
+                    Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals
+                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; 
                     
                     if (eggIndex == k)//ugly but I this way its only checked once
                     {

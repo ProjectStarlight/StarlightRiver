@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spawnPoint = npc.Center;
 
-                string title = Main.rand.Next(10000) == 0 ? "Sentient Rainbow Sex Toy" : "Aurora Calamari";
+                string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "Aurora Calamari";
                 UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 600);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = npc.Center + new Vector2(0, -600);

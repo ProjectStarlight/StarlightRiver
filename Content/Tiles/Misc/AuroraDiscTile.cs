@@ -79,6 +79,6 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public DebugDisc() : base("Debug Disc Placer", "Dragon Sex", TileType<AuroraDiscTile>(), 1) { }
+        public DebugDisc() : base("Debug Disc Placer", "Debug item", TileType<AuroraDiscTile>(), 1) { }
     }
 }

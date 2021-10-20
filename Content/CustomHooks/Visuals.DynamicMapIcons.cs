@@ -25,10 +25,10 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DynamicBossIcon(ILContext il)
         {
-            //Hillariously repetitive IL edit to draw custom icons dynamically. Funny. Fuck vanilla.
+            //Hillariously repetitive IL edit to draw custom icons dynamically.
             ILCursor c = new ILCursor(il);
             //the overlay map comes first
-            c.TryGotoNext(i => i.MatchCallvirt<NPC>("GetBossHeadTextureIndex")); //only gonna break down one of these, finds a point in vanilla where we can reasonably draw boss icons
+            c.TryGotoNext(i => i.MatchCallvirt<NPC>("GetBossHeadTextureIndex"));
 
             c.EmitDelegate<DynamicIconDelegate>(EmitDynamicIconDelegateOverlay);
 

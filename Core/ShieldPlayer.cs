@@ -1,14 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
-	class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of shit because terraria has no base entity class that palyers and NPCs share so we need fully seperate backends for handling player shield! yayyyy!!!!!
+	class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that players and NPCs share
 	{
 		public int MaxShield = 0;
 		public int Shield = 0;
@@ -23,6 +26,31 @@ namespace StarlightRiver.Core
 
 		public float ShieldResistance = 0.3f;
 
+		public float rechargeAnimation;
+		public Item barrierDyeItem;
+
+		public BarrierDye dye => (barrierDyeItem is null || barrierDyeItem.IsAir) ? null : (barrierDyeItem.modItem as BarrierDye);
+
+		public override bool Autoload(ref string name)
+		{
+			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
+			StarlightPlayer.PreDrawEvent += PreDrawBarrierFX;
+
+			return base.Autoload(ref name);
+		}
+
+		private void PostDrawBarrierFX(Player player, SpriteBatch spriteBatch)
+		{
+			if(!Main.gameMenu)
+				player.GetModPlayer<ShieldPlayer>().dye?.PostDrawEffects(spriteBatch, player);
+		}
+
+		private void PreDrawBarrierFX(Player player, SpriteBatch spriteBatch)
+		{
+			if (!Main.gameMenu)
+				player.GetModPlayer<ShieldPlayer>().dye?.PreDrawEffects(spriteBatch, player);
+		}
+
 		public void ModifyDamage(ref int damage, ref bool crit)
 		{
 			if (Shield > 0)
@@ -31,13 +59,17 @@ namespace StarlightRiver.Core
 
 				if (Shield > damage)
 				{
+					dye?.HitBarrierEffects(player);
+
 					CombatText.NewText(player.Hitbox, Color.Cyan, damage);
 					Shield -= damage;
 					damage = (int)(damage * reduction);
 				}
 				else
 				{
-					Main.PlaySound(Terraria.ID.SoundID.NPCDeath57, player.Center);
+					rechargeAnimation = 0;
+
+					dye?.LoseBarrierEffects(player);
 
 					CombatText.NewText(player.Hitbox, Color.Cyan, Shield);
 					int overblow = damage - Shield;
@@ -65,7 +97,19 @@ namespace StarlightRiver.Core
 		public override void UpdateBadLifeRegen()
 		{
 			if (Shield > 0)
+			{
 				Helper.UnlockEntry<BarrierEntry>(Main.LocalPlayer);
+
+				if (rechargeAnimation < 1)
+				{
+					if (dye != null)
+						rechargeAnimation += dye.RechargeAnimationRate;
+					else
+						rechargeAnimation += 0.05f;
+				}
+			}
+			else 
+				rechargeAnimation = 0;
 
 			if (MaxShield > 0)
 				TimeSinceLastHit++;
@@ -73,18 +117,21 @@ namespace StarlightRiver.Core
 			if (MaxShield == 0)
 				TimeSinceLastHit = 0;
 
-			if (TimeSinceLastHit >= RechargeDelay && Shield < MaxShield)
+			if (TimeSinceLastHit >= RechargeDelay)
 			{
-				int rechargeRateWhole = RechargeRate / 60;
-
-				Shield += Math.Min(rechargeRateWhole, MaxShield - Shield);
-
-				if (RechargeRate % 60 != 0)
+				if (Shield < MaxShield)
 				{
-					int rechargeSubDelay = 60 / (RechargeRate % 60);
+					int rechargeRateWhole = RechargeRate / 60;
 
-					if (TimeSinceLastHit % rechargeSubDelay == 0 && Shield < MaxShield)
-						Shield++;
+					Shield += Math.Min(rechargeRateWhole, MaxShield - Shield);
+
+					if (RechargeRate % 60 != 0)
+					{
+						int rechargeSubDelay = 60 / (RechargeRate % 60);
+
+						if (TimeSinceLastHit % rechargeSubDelay == 0 && Shield < MaxShield)
+							Shield++;
+					}
 				}
 			}
 
@@ -106,6 +153,12 @@ namespace StarlightRiver.Core
 			}
 		}
 
+		public override void PostUpdate() //change inventory screen for dyes
+		{
+			if (Main.mouseItem.modItem is BarrierDye)
+				Main.EquipPageSelected = 2;
+		}
+
 		public override void UpdateDead()
 		{
 			Shield = 0;
@@ -120,6 +173,19 @@ namespace StarlightRiver.Core
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
 		}
 
+		public override TagCompound Save()
+		{
+			return new TagCompound()
+			{
+				["DyeItem"] = barrierDyeItem
+			};
+		}
+
+		public override void Load(TagCompound tag)
+		{
+			barrierDyeItem = tag.Get<Item>("DyeItem");
+		}
+
 		public override void ResetEffects()
 		{
 			MaxShield = 0;
@@ -132,6 +198,13 @@ namespace StarlightRiver.Core
 			RechargeRate = 4;
 
 			ShieldResistance = Main.expertMode ? 0.4f : 0.3f;
+
+			if (dye is null)
+			{
+				Item item = new Item();
+				item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
+				barrierDyeItem = item;
+			}
 		}
 	}
 }
