@@ -56,8 +56,8 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			for (int k = 0; k < 8; k++)
 			{
-				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (8 + sin);
-				var color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.8f;
+				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 1.6f);
+				var color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
 				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, Vector2.Zero + dir, color);
 			}
