@@ -58,9 +58,11 @@ namespace StarlightRiver.Content.GUI
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/GUI/BarrierDyeSlot");
+            Texture2D tex = Main.inventoryBack8Texture; 
+            Texture2D texSlot = ModContent.GetTexture("StarlightRiver/Assets/GUI/BarrierDyeSlot");
 
             spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White * 0.8f, 0, tex.Size() / 2, 0.85f, 0, 0);
+            spriteBatch.Draw(texSlot, GetDimensions().Center(), null, Color.White * 0.4f, 0, texSlot.Size() / 2, 0.85f, 0, 0);
 
             if (!Item.IsAir)
             {
