@@ -63,7 +63,13 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			SamplerState samplerState = Main.DefaultSamplerState;
+
+			if (player.mount.Active)
+				samplerState = Main.MountedSamplerState;
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
 		}
 	}
 }
