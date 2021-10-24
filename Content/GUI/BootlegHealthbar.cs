@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.GUI
         public static NPC tracked;
         public static string Text;
         public static Texture2D Texture = GetTexture(AssetDirectory.GUI + "blank2");
+        public static Color glowColor = Color.Transparent;
         public int Timer;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
@@ -127,6 +128,7 @@ namespace StarlightRiver.Content.GUI
             var texBack = GetTexture(AssetDirectory.GUI + "BossbarBack");
             var texFill = GetTexture(AssetDirectory.GUI + "BossbarFill");
             var texEdge = GetTexture(AssetDirectory.GUI + "BossbarEdge");
+            var texGlow = GetTexture(AssetDirectory.GUI + "BossbarGlow");
 
             if (npc.dontTakeDamage || npc.immortal)
 			{
@@ -140,6 +142,15 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.Draw(texFill, new Rectangle((int)(pos.X + off.X), (int)(pos.Y + off.Y), progress, texFill.Height), Color.White);
             spriteBatch.Draw(texEdge, pos + off + Vector2.UnitX * progress, Color.White);
 
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+
+            spriteBatch.Draw(texGlow, pos + off, BootlegHealthbar.glowColor * 0.5f);
+            spriteBatch.Draw(texGlow, new Rectangle((int)(pos.X + off.X), (int)(pos.Y + off.Y), progress, texFill.Height), new Rectangle(0, 0, progress, texFill.Height), BootlegHealthbar.glowColor);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+         
             spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);
 
             if (npc.GetBossHeadTextureIndex() > 0)

@@ -419,6 +419,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 crystals.ForEach(n => n.ai[1] = 0);
             }
 
+            float sin = (float)Math.Sin(Main.GameUpdateCount * 0.1f); //health bar glow color timer
+
             switch (Phase)
             {
                 //on spawn effects
@@ -445,6 +447,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.FirstPhase:
+                 
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0.2f) * Math.Min(1, GlobalTimer / 60f) * 0.7f;
 
                     if (shieldShaderTimer > 0)
                         shieldShaderTimer--;
@@ -480,10 +484,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.Anger: //the short anger phase attack when the boss loses a crystal
+
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
+
                     AngerAttack();
                     break;
 
                 case (int)AIStates.FirstToSecond:
+
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     PhaseTransitionAnimation();
                     DoRotation();
@@ -491,6 +500,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.SecondPhase:
+
+                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Min(1, GlobalTimer / 60f) * 0.9f;
 
                     Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.8f;
                     Vignette.extraOpacity = 0.3f;
@@ -530,6 +541,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Leaving:
 
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
+
                     npc.position.Y += 7;
                     Vignette.visible = false;
 
@@ -541,6 +554,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.Dying:
+
+                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.9f;
 
                     DeathAnimation();
 
