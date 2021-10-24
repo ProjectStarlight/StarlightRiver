@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void SetStaticDefaults()
         {
             Main.npcFrameCount[npc.type] = 3;
-            DisplayName.SetDefault("[PH]BoomBug");
+            DisplayName.SetDefault("Fire Fly");
         }
 
         public override void SetDefaults()
