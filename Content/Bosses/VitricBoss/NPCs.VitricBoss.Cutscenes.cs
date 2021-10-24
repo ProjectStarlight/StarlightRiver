@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer > 780) //start the fight
             {
-                GUI.BootlegHealthbar.SetTracked(npc, "Error", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                GUI.BootlegHealthbar.SetTracked(npc, ", Shattered Sentinel", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
                 GUI.BootlegHealthbar.visible = true;
                 SetFrameY(0);
 

@@ -150,8 +150,12 @@ namespace StarlightRiver.Content.GUI
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
-         
+
+            Utils.DrawBorderString(spriteBatch, npc.FullName + BootlegHealthbar.Text + ": " + npc.life + "/" + npc.lifeMax, pos + new Vector2(BootlegHealthbar.Texture.Width / 2, -20), Color.White, 1, 0.5f, 0);
+
             spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);
+
+            
 
             if (npc.GetBossHeadTextureIndex() > 0)
             {
