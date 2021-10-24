@@ -127,12 +127,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ || spriteBatch == null || gD == null || target == null)
 				return;
 
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
-
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
 			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 200f, 0.25f));
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flickerTime > 0 && flickerTime < 16)
 			{
