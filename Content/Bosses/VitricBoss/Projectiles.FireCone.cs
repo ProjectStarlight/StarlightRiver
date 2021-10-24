@@ -45,7 +45,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
                 Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
                 Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - projectile.Center) * -0.03f, 0, new Color(255, 220, 100), projectile.ai[0] / 25f);
-
             }
 
             if(projectile.ai[0] == 70)
