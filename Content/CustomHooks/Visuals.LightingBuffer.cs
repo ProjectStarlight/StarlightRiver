@@ -13,11 +13,16 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            On.Terraria.Main.CheckMonoliths += LightingTarget;
+            Main.OnPreDraw += LightingTarget;
             On.Terraria.Main.SetDisplayMode += RefreshLightingTarget;
         }
 
-		private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+        public override void Unload()
+        {
+            Main.OnPreDraw -= LightingTarget;
+        }
+
+        private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (width != Main.screenWidth || height != Main.screenHeight)
                 StarlightRiver.LightingBufferInstance.ResizeBuffers(width, height);
@@ -25,10 +30,8 @@ namespace StarlightRiver.Content.CustomHooks
             orig(width, height, fullscreen);
         }
 
-        private void LightingTarget(On.Terraria.Main.orig_CheckMonoliths orig)
+        private void LightingTarget(GameTime obj)
         {
-            orig();
-
             if (Main.dedServ)
                 return;
 
