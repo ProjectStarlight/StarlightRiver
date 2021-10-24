@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
                 effect.Parameters["sampleTexture"].SetValue(PermafrostGlobalTile.auroraBackTarget);
                 effect.Parameters["speed"].SetValue(50f);
 
-                Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero - Main.LocalPlayer.velocity, Color.White);
+                Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero, Color.White);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);

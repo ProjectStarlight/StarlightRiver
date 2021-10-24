@@ -316,9 +316,7 @@ namespace StarlightRiver.Physics
         {
             if (Main.dedServ) return;
 
-            var pos = (Main.screenLastPosition - Main.screenPosition).ToPoint16();
-
-            spriteBatch.Draw(target, new Rectangle(pos.X, pos.Y, Main.screenWidth, Main.screenHeight), Color.White);
+            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

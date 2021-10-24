@@ -15,20 +15,25 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            Main.OnPreDraw += WaterTarget;
+            On.Terraria.Main.CheckMonoliths += WaterTarget;
         }
 
         public override void Unload()
         {
-            Main.OnPreDraw -= WaterTarget;
             CatherdalWaterTarget = null;
         }
 
         public static RenderTarget2D CatherdalWaterTarget;
 
-        private void WaterTarget(GameTime obj)
+        private void WaterTarget(On.Terraria.Main.orig_CheckMonoliths orig)
         {
+            orig();
+
+            if (Main.dedServ)
+                return;
+
             var graphics = Main.graphics.GraphicsDevice;
+
             if (CatherdalWaterTarget is null || CatherdalWaterTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
                 CatherdalWaterTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
 
