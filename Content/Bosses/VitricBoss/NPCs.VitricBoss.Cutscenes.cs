@@ -160,6 +160,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer > 780) //start the fight
             {
                 GUI.BootlegHealthbar.SetTracked(npc, "Error", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                GUI.BootlegHealthbar.visible = true;
                 SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
@@ -292,18 +293,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
-		private void DeathAnimation() //The animation that plays when the boss dies
-		{
+        private void DeathAnimation() //The animation that plays when the boss dies
+        {
             Vignette.offset = Vector2.Zero;
             Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
             if (GlobalTimer == 1)
                 npc.noTileCollide = false;
 
-            if (GlobalTimer < 60)
-                npc.velocity *= 0;
-
-            if (GlobalTimer > 60 && GlobalTimer <= 62)
+            if (GlobalTimer < 2)
             {
                 npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * 25;
                 GlobalTimer--;
@@ -315,12 +313,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         if (tile.collisionType != 0)
                         {
-                            GlobalTimer = 62;
-                            npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * -10;
+                            GlobalTimer = 2;
+                            npc.velocity = Vector2.Zero;
                             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, npc.Center);
                             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
-                            body.SpawnGores();
-
+                            
                             SetFrameX(2);
                             SetFrameY(0);
 
@@ -329,22 +326,29 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
             }
 
-            if (GlobalTimer == 63)
+            if (GlobalTimer == 3)
+            {
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
+                startPos = npc.Center;
+            }
 
-            if (GlobalTimer > 63 && GlobalTimer < 600)
+            if (GlobalTimer > 3 && GlobalTimer < 600)
                 Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
 
-            if (GlobalTimer > 63)
+            if (GlobalTimer > 3 && GlobalTimer <= 100)
             {
-                npc.velocity *= 0.98f;
-                npc.velocity.Y = -0.1f;              
+                npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
             }
 
             if (GlobalTimer == 660)
             {
                 for (int k = 0; k < 50; k++)
                     Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
+
+                for(int k = 0; k < 40; k++)
+                    Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.7f, 1.5f));
+
+                body.SpawnGores();
 
                 Vignette.visible = false;
                 npc.Kill();

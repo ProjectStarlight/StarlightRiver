@@ -13,12 +13,18 @@ namespace StarlightRiver.Content.GUI
     public class BootlegHealthbar : SmartUIState
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-        public override bool Visible => tracked != null && tracked.active && tracked.boss;
+        public override bool Visible => visible;
+
+        public static bool visible;
 
         public static NPC tracked;
         public static string Text;
         public static Texture2D Texture = GetTexture(AssetDirectory.GUI + "blank2");
         public int Timer;
+
+        private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
+        private static ParticleSystem ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+        private static ParticleSystem ShardsSystem2 = new ParticleSystem("StarlightRiver/Assets/GUI/BossbarBack", UpdateShards);
 
         private Bar bar = new Bar();
 
@@ -31,9 +37,73 @@ namespace StarlightRiver.Content.GUI
             Append(bar);
 		}
 
-		public override void Update(GameTime gameTime)
+        private static void UpdateShardsBody(Particle particle)
+        {
+            particle.Color = Color.White;
+            particle.Rotation += particle.Velocity.X * 0.1f;
+            particle.Position += particle.Velocity;
+            particle.Velocity.Y += 0.2f;
+
+            if (particle.Timer < 60)
+                particle.Color = Color.White * (particle.Timer / 60f);
+
+            particle.Timer--;
+        }
+
+        public override void Update(GameTime gameTime)
 		{
             Recalculate();
+
+            if (tracked.life <= 0 || !tracked.active)
+			{             
+                if (Timer == 0)
+                {
+                    Timer = 120;
+
+                    ShardsSystem.SetTexture(Texture);
+
+                    for (int x = 0; x < Texture.Width; x += 86)
+                        for (int y = 0; y < Texture.Height; y += 23)
+                        {
+                            var pos = bar.GetDimensions().Position() + new Vector2(x + 43, y + 11.5f);
+                            var vel = Vector2.UnitY.RotatedByRandom(0.3f) * -Main.rand.NextFloat(1, 4);
+                            var frame = new Rectangle(x, y, 86, 23);
+
+                            ShardsSystem.AddParticle(new Particle(pos, vel, 0, 1, Color.White, 120, Vector2.Zero, frame));
+                        }
+
+                    var tex = GetTexture("StarlightRiver/Assets/GUI/BossbarBack");
+
+                    for (int x = 0; x < tex.Width; x += 12)
+                        for (int y = 0; y < tex.Height; y += 11)
+                        {
+                            var pos = bar.GetDimensions().Position() + new Vector2(x + 30, y + 14);
+                            var vel = Vector2.UnitY.RotatedByRandom(0.55f) * -Main.rand.NextFloat(1, 4);
+                            var frame = new Rectangle(x, y, 12, 11);
+
+                            ShardsSystem2.AddParticle(new Particle(pos, vel, 0, 1, Color.White, 120, Vector2.Zero, frame));
+                        }
+                }
+
+                if (Timer == 1)
+                    visible = false;
+
+                Timer--;
+            }
+
+            if (tracked is null)
+                visible = false;
+        }
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+            if (Timer <= 0)
+                base.Draw(spriteBatch);
+            else
+            {
+                ShardsSystem2.DrawParticles(spriteBatch);
+                ShardsSystem.DrawParticles(spriteBatch);
+            }
 		}
 
 		public static void SetTracked(NPC npc, string text = "", Texture2D tex = default)

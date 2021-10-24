@@ -48,10 +48,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             chain.DrawRope(sb, DrawSegment);
 
             if (parent.Phase == (int)VitricBoss.AIStates.FirstPhase && parent.npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
-            {
-
                 chain.DrawRope(sb, DrawShield);
-            }
         }
 
         private void DrawSegment(SpriteBatch sb, int index, Vector2 pos)
