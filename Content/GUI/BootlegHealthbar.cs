@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 
         public static NPC tracked;
         public static string Text;
-        public static Texture2D Texture = GetTexture(AssetDirectory.GUI + "blank2");
+        public static Texture2D Texture = GetTexture(AssetDirectory.GUI + "BossBarFrame");
         public static Color glowColor = Color.Transparent;
         public int Timer;
 
@@ -111,6 +111,7 @@ namespace StarlightRiver.Content.GUI
         {
             tracked = npc;
             Text = text;
+            visible = true;
 
             if (tex != default)
                 Texture = tex;
