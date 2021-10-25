@@ -254,7 +254,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
                 var rot = Main.rand.NextFloat(6.28f);
                 Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
-			}
+            }
+            for (int k = 0; k < Main.rand.Next(15, 25); k++)
+            {
+                var rot = Main.rand.NextFloat(6.28f);
+                Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<SandstoneChunk>());
+            }
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
