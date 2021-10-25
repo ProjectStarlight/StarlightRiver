@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void GoreMe(Vector2 pos, Vector2 offset, string tex)
 		{
             var texture = GetTexture(tex);
-            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(2, 4), ModGore.GetGoreSlot(tex));
+            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), ModGore.GetGoreSlot(tex));
         }
     }
 

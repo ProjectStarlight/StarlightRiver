@@ -299,46 +299,71 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
             if (GlobalTimer == 1)
-                npc.noTileCollide = false;
-
-            if (GlobalTimer < 2)
             {
-                npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * 25;
-                GlobalTimer--;
-
-                for (int x = -8; x <= 8; x++)
-                    for (int y = -8; y <= 8; y++)
-                    {
-                        Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
-
-                        if (tile.collisionType != 0)
-                        {
-                            GlobalTimer = 2;
-                            npc.velocity = Vector2.Zero;
-                            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, npc.Center);
-                            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
-                            
-                            SetFrameX(2);
-                            SetFrameY(0);
-
-                            return;
-                        }
-                    }
-            }
-
-            if (GlobalTimer == 3)
-            {
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
                 startPos = npc.Center;
+
+                SetFrameY(3);
+                SetFrameX(0);
             }
+
+            if (GlobalTimer > 3 && GlobalTimer <= 100)
+                npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
+
+            if (GlobalTimer == 20)
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
+
+            if (GlobalTimer > 100 && GlobalTimer < 120)
+            {
+                SetFrameY(3);
+                SetFrameX((int)((GlobalTimer - 100) / 20f * 8));
+
+                for (int k = 0; k < 3; k++)
+                    Dust.NewDustPerfect(npc.Center, DustType<RoarLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                float progress = ((GlobalTimer - 100) / 20f);
+                Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+            }
+
+            if (GlobalTimer == 120)
+            {
+                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                mp.Shake += 60;
+
+                Main.PlaySound(SoundID.Roar, npc.Center, 0);
+
+                Filters.Scene.Deactivate("Shockwave");
+            }
+
+            if(GlobalTimer > 120 && GlobalTimer <= 160)
+			{
+                SetFrameX((int)(8 - (GlobalTimer - 120) / 40f * 8));
+            }
+
+            if(GlobalTimer == 160)
+			{
+                SetFrameX(2);
+                SetFrameY(0);
+            }
+
+            if(GlobalTimer > 120 && Main.rand.Next(Math.Max(5, 60 - (int)GlobalTimer / 10)) == 0)
+			{
+                var rot = Main.rand.NextFloat(6.28f);
+                Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * Main.rand.Next(-60, -30), DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+            }
+
+            if(GlobalTimer > 200)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f);
+
+            if (GlobalTimer > 300)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * 2;
+
+            if (GlobalTimer > 400)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * 4;
 
             if (GlobalTimer > 3 && GlobalTimer < 600)
                 Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
-
-            if (GlobalTimer > 3 && GlobalTimer <= 100)
-            {
-                npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
-            }
 
             if (GlobalTimer == 660)
             {
