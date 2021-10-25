@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 int i = Projectile.NewProjectile(player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
                 ball = Main.projectile[i];
 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.7f, -0.2f, player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);
 
                 return false;
 			}
@@ -291,7 +291,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (projectile.timeLeft == 60)
             {
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.20f * (power / 20f), 0.5f, projectile.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, projectile.Center);
 
                 savedPos = projectile.Center;
                 startPoint = projectile.Center;       
@@ -515,8 +515,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     Dust.NewDustPerfect(projectile.Center + new Vector2(0, 50), ModContent.DustType<Dusts.LightningBolt>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 0.8f);
                 }
 
-				Helper.PlayPitched("Magic/LightningCast", 1, 0.9f, projectile.Center);
-                Helper.PlayPitched("Magic/LightningExplode", 1, 0.9f, projectile.Center);
+				Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, projectile.Center);
+                Helper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
             }
 

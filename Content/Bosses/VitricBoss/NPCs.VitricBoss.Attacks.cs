@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (AttackTimer == 360)
-                    Helper.PlayPitched("VitricBoss/RingIdle", 0.2f, -0.2f, npc.Center);
+                    Helper.PlayPitched("VitricBoss/RingIdle", 0.05f, -0.2f, npc.Center);
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
@@ -666,7 +666,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 float LaserTimer = AttackTimer - 90;
 
                 if (LaserTimer == 60)
-                    Helper.PlayPitched("VitricBoss/LaserCharge", 1, 0, npc.Center);
+                    Helper.PlayPitched("VitricBoss/LaserCharge", 0.7f, 0, npc.Center);
 
                 if (LaserTimer < 60)
                 {

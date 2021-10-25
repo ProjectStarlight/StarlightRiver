@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (BounceSoundCooldown <= 0)
 				{
-					Helper.PlayPitched("Magic/ShurikenBounce", 0.5f, 0, projectile.Center);
+					Helper.PlayPitched("Magic/ShurikenBounce", 0.35f, 0, projectile.Center);
 					BounceSoundCooldown = 15;
 				}
 
