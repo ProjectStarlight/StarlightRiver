@@ -45,7 +45,7 @@ namespace StarlightRiver.Core
 		{
 			if (Tracker(npc).compareBuffs)
 			{
-				buffCompareEffects.Invoke(attacker, npc, Tracker(npc).storedBuffs, npc.buffType, Tracker(npc).storedTimes, npc.buffTime);
+				buffCompareEffects?.Invoke(attacker, npc, Tracker(npc).storedBuffs, npc.buffType, Tracker(npc).storedTimes, npc.buffTime);
 				Tracker(npc).compareBuffs = false;
 			}
 
