@@ -308,6 +308,9 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Charge == 0)
                 LaserRotation = targetRot;
 
+            if (Charge == 1)
+                Helper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, projectile.Center);
+
             if (Charge >= 12 || firing)
                 projectile.rotation = LaserRotation + 1.57f / 2;
             else
@@ -331,7 +334,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
             if (Charge >= 30 && !firing)
-                Helper.PlayPitched("Yeehaw", 1, 1, projectile.Center);
+                Helper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, projectile.Center);
 
             firing = true;
 

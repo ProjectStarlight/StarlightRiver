@@ -18,8 +18,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
 	{
-		private void SpawnAnimation() //The animation which plays when the boss is spawning
-		{
+        private void SpawnAnimation() //The animation which plays when the boss is spawning
+        {
             rotationLocked = true;
             lockedRotation = 1.57f;
 
@@ -38,24 +38,36 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(0);
                 SetFrameY(0);
                 lastTwistState = 0;
+
+                Helper.PlayPitched("VitricBoss/CeirosEarthquake", 0.4f, 0, npc.Center);
+                Helper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, npc.Center);
             }
 
-            if(GlobalTimer == 120)
-			{
+            if (GlobalTimer == 90)
+                //Helper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, npc.Center);
+
+
+            if (GlobalTimer == 120)
+            {
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 10;
 
                 for (int k = 0; k < 10; k++)
                     Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Cluster" + Main.rand.Next(1, 19)));
 
-                for(int k = 0; k < 20; k++)
+                for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
 
                 ZoomHandler.SetZoomAnimation(1.1f, 60);
             }
 
-            if(GlobalTimer == 240)
-			{
+            if (GlobalTimer == 210)
+                //Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, npc.Center);
+                Helper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, npc.Center);
+
+            if (GlobalTimer == 240)
+            {
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 20;
 
@@ -67,6 +79,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 ZoomHandler.SetZoomAnimation(1.2f, 60);
             }
+
+            if (GlobalTimer == 330)
+                //Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, npc.Center);
+                Helper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, npc.Center);
 
             if (GlobalTimer == 360)
             {
@@ -82,6 +98,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 ZoomHandler.SetZoomAnimation(1.3f, 60);
             }
 
+            if (GlobalTimer == 424)
+            {
+                Helper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, npc.Center);
+                Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, npc.Center);
+            }
+
             if (GlobalTimer == 454)
             {
                 UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
@@ -89,7 +111,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 30;
 
-                Helper.PlayPitched("VitricBoss/StoneBreak", 1, 0, npc.Center);
                 ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
 
                 for (int k = 0; k < 10; k++)
@@ -237,6 +258,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
+            if (GlobalTimer == 325)
+                Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, npc.Center);
+
             if (GlobalTimer >= 340 && GlobalTimer < 370)
             {
                 npc.Center = Vector2.SmoothStep(homePos + new Vector2(100, -60), homePos, (GlobalTimer - 340) / 30f);
@@ -253,7 +277,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystal.Kill();
 
             if (GlobalTimer == 359) 
-                music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
+                music = mod.GetSoundSlot(SoundType.Music, "ThisSoundDoesntExist"); //handles the music transition
 
             if (GlobalTimer == 360)
                 music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss2");
@@ -310,7 +334,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer > 3 && GlobalTimer <= 100)
                 npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
 
-            if (GlobalTimer == 20)
+            if (GlobalTimer == 1)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
             if (GlobalTimer > 100 && GlobalTimer < 120)
@@ -363,10 +387,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer > 400)
                 npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * 4;
 
-            if (GlobalTimer > 3 && GlobalTimer < 600)
+            if (GlobalTimer > 3 && GlobalTimer < 595)
                 Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
 
-            if (GlobalTimer == 660)
+            if (GlobalTimer == 600)
             {
                 for (int k = 0; k < 50; k++)
                     Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);

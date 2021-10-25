@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (AttackTimer == 360)
-                    Helper.PlayPitched("VitricBoss/RingIdle", 0.05f, -0.2f, npc.Center);
+                    Helper.PlayPitched("VitricBoss/RingIdle", 0.075f, -0.2f, npc.Center);
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
