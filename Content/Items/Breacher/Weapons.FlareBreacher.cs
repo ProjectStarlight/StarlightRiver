@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.3f, Main.rand.NextFloat(-0.1f,0.1f));
+            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f,0.1f));
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
@@ -121,7 +121,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     if (!red)
                     {
                         red = true;
-                        Helper.PlayPitched("Effects/Bleep", 0.7f, 1 - (explosionTimer / 100f));
+                        Helper.PlayPitched("Effects/Bleep", 1, 1 - (explosionTimer / 100f));
                         blinkCounter = 0;
                     }
                     else

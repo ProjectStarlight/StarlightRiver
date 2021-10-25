@@ -190,8 +190,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 if (CutsceneTimer == 180)
                 {
-                    var slot = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ArenaRise");
-                    Main.PlaySound(slot, projectile.Center);
+                    Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, projectile.Center);
                 }
 
                 CutsceneTimer++;
@@ -221,7 +220,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (BarrierProgress == 119) //hitting the top
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
-                    for (int k = 0; k < 5; k++) Main.PlaySound(SoundID.Tink);
+                    //for (int k = 0; k < 5; k++) 
+                    Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
                 }
             }
             else if (BarrierProgress > 0 && boss != null && !boss.active)
