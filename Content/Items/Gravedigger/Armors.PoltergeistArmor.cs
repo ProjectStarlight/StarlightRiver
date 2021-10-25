@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 2;
+            item.defense = 5;
         }
 
         public override void UpdateEquip(Player player)
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            item.defense = 6;
         }
 
         public override void UpdateEquip(Player player)
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 3;
+            item.defense = 5;
         }
 
         public override void UpdateEquip(Player player)

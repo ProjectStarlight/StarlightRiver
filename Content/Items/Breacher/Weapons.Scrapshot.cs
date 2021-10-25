@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			item.width = 24;
 			item.height = 28;
-			item.damage = 7;
+			item.damage = 6;
 			item.useAnimation = 30;
 			item.useTime = 30;
 			item.useStyle = ItemUseStyleID.HoldingOut;
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), damage, knockBack, player.whoAmI);
 				hook = Main.projectile[i].modProjectile as ScrapshotHook;
 
-				Helper.PlayPitched("Guns/ChainShoot", 1, 0, player.Center);
+				Helper.PlayPitched("Guns/ChainShoot", 0.5f, 0, player.Center);
 			}
 			else if (hook is null || (hook != null && (!hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.hooked != null)))
 			{
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					player.velocity = Vector2.Normalize(hook.startPos - Main.MouseWorld) * 12;
 					player.GetModPlayer<StarlightPlayer>().Shake += 12;
 
-					Helper.PlayPitched("ChainHit", 1, 0, player.Center);
+					Helper.PlayPitched("ChainHit", 0.5f, 0, player.Center);
 
 					for (int k = 0; k < 20; k++)
 					{
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 				}
 
-				Helper.PlayPitched("Guns/Scrapshot", 1, 0, player.Center);
+				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
 			}
 
 			return false;

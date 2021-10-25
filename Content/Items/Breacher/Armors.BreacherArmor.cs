@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.width = 28;
             item.height = 28;
             item.value = 8000;
-            item.defense = 4;
+            item.defense = 5;
             item.rare = 3;
         }
 
