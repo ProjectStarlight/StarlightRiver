@@ -449,7 +449,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
             float height = texBeam.Height / 4f;
-            int width = (int)(projectile.Center - endPoint).Length();
+            int width = (int)(projectile.Center - endPoint).Length() - 76;
 
             if (LaserTimer < 20)
                 height = texBeam.Height / 4f * LaserTimer / 20f;
@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 height = texBeam.Height / 4f * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
 
 
-            var pos = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 64 - Main.screenPosition;
+            var pos = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 76 - Main.screenPosition;
 
             var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
             var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
@@ -488,8 +488,6 @@ namespace StarlightRiver.Content.Items.Vitric
                 spriteBatch.Draw(texDark, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
             }
 
-            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, Color.White, LaserRotation + 1.57f / 2, new Vector2(0, GetTexture(Texture).Height), 1, 0, 0);
-
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
@@ -501,6 +499,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
             spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 3.8f, 0, 0);
             spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
+
+            spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
+            spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.rottime * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
 
             for (int k = 0; k < 4; k++)
             {
