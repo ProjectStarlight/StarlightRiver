@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -14,12 +15,12 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            On.Terraria.Main.DoDraw += DrawPrimitives;
+            On.Terraria.Main.DrawDust += DrawPrimitives;
         }
 
-        private void DrawPrimitives(On.Terraria.Main.orig_DoDraw orig, Main self, GameTime gameTime)
+		private void DrawPrimitives(On.Terraria.Main.orig_DrawDust orig, Main self)
         {
-            orig(self, gameTime);
+            orig(self);
 
             if (Main.gameMenu)
                 return;
