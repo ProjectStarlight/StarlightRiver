@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystal.Kill();
 
             if (GlobalTimer == 359) 
-                music = mod.GetSoundSlot(SoundType.Music, "VortexHasASmallPussy"); //handles the music transition
+                music = mod.GetSoundSlot(SoundType.Music, "ThisSoundDoesntExist"); //handles the music transition
 
             if (GlobalTimer == 360)
                 music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss2");
