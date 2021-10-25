@@ -330,6 +330,9 @@ namespace StarlightRiver.Content.Items.Vitric
                 return;
 			}
 
+            if (Charge >= 30 && !firing)
+                Helper.PlayPitched("Yeehaw", 1, 1, projectile.Center);
+
             firing = true;
 
 			for(int k = 0; k < 80; k++)

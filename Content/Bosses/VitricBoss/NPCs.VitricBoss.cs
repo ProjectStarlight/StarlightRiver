@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(2, -20), null, Color.White * ((GlobalTimer - 160) / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2((npc.spriteDirection == 1 ? 20 : -20), -30), null, new Color(255, 175, 100) * ((GlobalTimer - 160) / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Dying = 7
         }
 
-        public override void PostAI()
+        /*public override void PostAI()
         {
             //npc.life = 1;
 
@@ -392,7 +392,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int k = 0; k < 12; k++)
                     AI();
             }
-        }
+        }*/
 
         public override void AI()
         {
