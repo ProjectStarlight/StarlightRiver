@@ -50,11 +50,13 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow) //TODO: Generalize this for later use, and possibly optimize it also
         {
-            drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+            if(!Main.gameMenu)
+                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
 
             orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 
-            drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+            if (!Main.gameMenu)
+                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
