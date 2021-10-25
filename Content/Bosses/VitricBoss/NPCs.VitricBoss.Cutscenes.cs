@@ -301,6 +301,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer == 1)
             {
                 startPos = npc.Center;
+                npc.rotation = 0;
 
                 SetFrameY(3);
                 SetFrameX(0);

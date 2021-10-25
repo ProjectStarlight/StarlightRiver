@@ -178,6 +178,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap"));
                 effect.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap"));
                 effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
+                effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(npc.Center)).ToVector4());
 
                 effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
                 effect.Parameters["texSize"].SetValue(GetTexture(Texture).Size());
@@ -248,6 +249,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void NPCLoot()
         {
             body.SpawnGores2();
+
+            for(int k = 0; k < Main.rand.Next(30, 40); k++)
+			{
+                var rot = Main.rand.NextFloat(6.28f);
+                Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
+			}
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
