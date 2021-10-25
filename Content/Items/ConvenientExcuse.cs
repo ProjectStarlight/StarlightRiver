@@ -25,6 +25,13 @@ namespace StarlightRiver.Content.Items
 			Tooltip.SetDefault("Tightly packed into a conveniently indecipherable ball");
 		}
 
+		public override void SetDefaults()
+		{
+			item.useStyle = 1;
+			item.useTime = 20;
+			item.useAnimation = 20;
+		}
+
 		public override bool UseItem(Player player)
 		{
 			Main.NewText("It's far too tightly compacted to open without breaking everything inside...", new Color(255, 255, 200));
