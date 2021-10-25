@@ -16,6 +16,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override string Texture => AssetDirectory.VitricNpc + Name;
 
+        public override bool Autoload(ref string name)
+        {
+            for (int k = 0; k <= 4; k++)
+                mod.AddGore(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
+
+            return base.Autoload(ref name);
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sand Bat");
@@ -120,6 +128,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void NPCLoot()
         {
             Item.NewItem(npc.getRect(), mod.ItemType("VitricSandItem"), Main.rand.Next(10, 12));
+
+            for (int k = 0; k <= 4; k++)
+                Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k));
         }
 
         public override void FindFrame(int frameHeight)

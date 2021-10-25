@@ -21,8 +21,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override bool Autoload(ref string name)
 		{
-			mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore0");
-            mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore1");
+            for(int k = 0; k <= 5; k++)
+			    mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);
+
             return base.Autoload(ref name);
 		}
 
@@ -185,8 +186,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void NPCLoot()
         {
-			Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore0"));
-            Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore1"));
+            for (int k = 0; k <= 5; k++)
+                Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k));
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
