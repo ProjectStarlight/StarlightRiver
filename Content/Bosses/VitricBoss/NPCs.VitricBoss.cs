@@ -177,7 +177,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 var effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
                 effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/CrackMap"));
                 effect.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ProgressionMap"));
-                effect.Parameters["uTime"].SetValue((GlobalTimer - 120) / 600f);
+                effect.Parameters["uTime"].SetValue((GlobalTimer - 160) / 600f);
+                effect.Parameters["drawColor"].SetValue(new Color(Lighting.GetSubLight(npc.Center)).ToVector4());
 
                 effect.Parameters["sourceFrame"].SetValue(new Vector4(npc.frame.X, npc.frame.Y, npc.frame.Width, npc.frame.Height));
                 effect.Parameters["texSize"].SetValue(GetTexture(Texture).Size());
@@ -190,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(2, -20), null, Color.White * (GlobalTimer / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
+                spriteBatch.Draw(GetTexture(Texture + "Godray"), npc.Center - Main.screenPosition + PainOffset + new Vector2(2, -20), null, Color.White * ((GlobalTimer - 160) / 600f), npc.rotation, GetTexture(Texture + "Godray").Size() / 2, npc.scale, effects, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -248,6 +249,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void NPCLoot()
         {
             body.SpawnGores2();
+
+            for(int k = 0; k < Main.rand.Next(30, 40); k++)
+			{
+                var rot = Main.rand.NextFloat(6.28f);
+                Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
+			}
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
@@ -419,6 +426,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 crystals.ForEach(n => n.ai[1] = 0);
             }
 
+            float sin = (float)Math.Sin(Main.GameUpdateCount * 0.1f); //health bar glow color timer
+
             switch (Phase)
             {
                 //on spawn effects
@@ -445,6 +454,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.FirstPhase:
+                 
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0.2f) * Math.Min(1, GlobalTimer / 60f) * 0.7f;
 
                     if (shieldShaderTimer > 0)
                         shieldShaderTimer--;
@@ -480,10 +491,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.Anger: //the short anger phase attack when the boss loses a crystal
+
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
+
                     AngerAttack();
                     break;
 
                 case (int)AIStates.FirstToSecond:
+
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     PhaseTransitionAnimation();
                     DoRotation();
@@ -491,6 +507,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.SecondPhase:
+
+                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Min(1, GlobalTimer / 60f) * 0.9f;
 
                     Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.8f;
                     Vignette.extraOpacity = 0.3f;
@@ -530,6 +548,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Leaving:
 
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
+
                     npc.position.Y += 7;
                     Vignette.visible = false;
 
@@ -541,6 +561,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.Dying:
+
+                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.9f;
 
                     DeathAnimation();
 

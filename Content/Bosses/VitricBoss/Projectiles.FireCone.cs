@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -22,9 +23,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             projectile.width = 1;
             projectile.height = 1;
             projectile.timeLeft = 2;
+            projectile.hide = true;
         }
 
-        public override void AI()
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+            drawCacheProjsOverWiresUI.Add(index);
+		}
+
+		public override void AI()
         {
             projectile.timeLeft = 2;
             projectile.ai[0]++; //ticks up the timer
@@ -38,7 +45,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust.NewDustPerfect(pos1, DustType<PowerupDust>(), (pos1 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
                 Dust.NewDustPerfect(pos2, DustType<PowerupDust>(), (pos2 - projectile.Center) * -0.03f, 0, new Color(255, 240, 220), projectile.ai[0] / 25f);
                 Dust.NewDustPerfect(posRand, DustType<PowerupDust>(), (posRand - projectile.Center) * -0.03f, 0, new Color(255, 220, 100), projectile.ai[0] / 25f);
-
             }
 
             if(projectile.ai[0] == 70)

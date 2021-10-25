@@ -25,13 +25,15 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         internal static Item dummySpear = new Item();
 
+        private int moonFlash = 0;
+
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override bool Autoload(ref string name)
 		{
             On.Terraria.Player.KeyDoubleTap += ActivateSpear;
             On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
-            StarlightPlayer.PostDrawEvent += DrawMoonCharge;
+            StarlightPlayer.PreDrawEvent += DrawMoonCharge;
             StarlightNPC.ModifyHitByItemEvent += ChargeFromMelee;
             StarlightNPC.ModifyHitByProjectileEvent += ChargeFromProjectile;
 
@@ -42,7 +44,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
 			{
-                (Main.player[projectile.owner].armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
+                var head = Main.player[projectile.owner].armor[0].modItem as MoonstoneHead;
+
+                int oldCharge = head.moonCharge;
+                head.moonCharge += (int)(damage * 0.45f);
+
+                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
+                    head.moonFlash = 30;
 			}
 		}
 
@@ -50,7 +58,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
             if (item.melee && IsArmorSet(player))
             {
-                (player.armor[0].modItem as MoonstoneHead).moonCharge += (int)(damage * 0.45f);
+                var head = player.armor[0].modItem as MoonstoneHead;
+
+                int oldCharge = head.moonCharge;
+                head.moonCharge += (int)(damage * 0.45f);
+
+                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
+                    head.moonFlash = 30;
             }
         }
 
@@ -88,6 +102,11 @@ namespace StarlightRiver.Content.Items.Moonstone
             if (moonCharge > 720)
                 moonCharge = 720;
 
+            if (moonFlash > 0)
+                moonFlash--;
+
+            Lighting.AddLight(player.Center + new Vector2(0, -16), new Vector3(0.55f, 0.5f, 0.9f) * moonCharge / 720f * 0.5f);
+
             if (spearOn)
             {
                 player.inventory[58] = dummySpear;
@@ -102,8 +121,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                     dummySpear.TurnToAir();
                 }
             }
-			else if (Main.mouseItem == dummySpear)
-			{
+            else if (Main.mouseItem == dummySpear)
+            {
                 Main.mouseItem = new Item();
             }
         }
@@ -185,36 +204,34 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (IsArmorSet(player) && !player.dead)
             {
-                float charge = (player.armor[0].modItem as MoonstoneHead).moonCharge / 720f;
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-                //Utils.DrawBorderString(spriteBatch, "charge: " + charge, player.Center - Main.screenPosition + new Vector2(-50, -200), Color.White);
-                DrawRing(spriteBatch, player.Center + new Vector2(-32 * player.direction, -20), 0.2f, 0.1f, Main.GameUpdateCount * 0.02f, player.direction == 1 ? 0 : 3.14f, (0.5f + charge * 0.5f), Color.White * (0.5f + charge * 0.5f));
+                var head = player.armor[0].modItem as MoonstoneHead;
+                float charge = head.moonCharge / 720f;
+
+                var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+                var color = new Color(130, 110, 225) * (0.5f + charge * 0.5f);
+
+                if (charge <= 180 / 720f)
+                    color = new Color(150, 150, 150) * (0.5f + charge * 0.5f);
+
+                if (charge >= 1 || head.spearOn)
+                    color = new Color(150, 150 + (int)(Math.Sin(Main.GameUpdateCount * 0.2f) * 20), 255) * (0.5f + charge * 0.5f);
+
+                color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
+
+                spriteBatch.Draw(texRing, player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, color, Main.GameUpdateCount * 0.01f, texRing.Size() / 2, 0.08f + charge * 0.05f, 0, 0);
+
+                spriteBatch.End();
+
+                SamplerState samplerState = Main.DefaultSamplerState;
+
+                if (player.mount.Active)
+                    samplerState = Main.MountedSamplerState;
+
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
             }
-        }
-
-        private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float facing, float prog, Color color)
-        {
-            var texRing = GetTexture(AssetDirectory.MoonstoneItem + "MoonSigilFront");
-            var effect = Filters.Scene["BowRing"].GetShader().Shader;
-
-            effect.Parameters["uProgress"].SetValue(rotation);
-            effect.Parameters["uColor"].SetValue(color.ToVector3());
-            effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-            effect.Parameters["uOpacity"].SetValue(prog);
-
-            sb.End();
-            sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
-
-            var target = toRect(pos, (int)(16 * (w + prog)), (int)(60 * (h + prog)));
-            sb.Draw(texRing, target, null, color * prog, facing, texRing.Size() / 2, 0, 0);
-
-            sb.End();
-            sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-        }
-
-        private Rectangle toRect(Vector2 pos, int w, int h)
-        {
-            return new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), w, h);
         }
 
         public override void AddRecipes()

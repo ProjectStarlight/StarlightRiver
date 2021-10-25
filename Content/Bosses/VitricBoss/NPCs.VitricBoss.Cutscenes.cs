@@ -159,7 +159,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer > 780) //start the fight
             {
-                GUI.BootlegHealthbar.SetTracked(npc, "Error", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                GUI.BootlegHealthbar.SetTracked(npc, ", Shattered Sentinel", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                GUI.BootlegHealthbar.visible = true;
                 SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
@@ -292,59 +293,88 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
-		private void DeathAnimation() //The animation that plays when the boss dies
-		{
+        private void DeathAnimation() //The animation that plays when the boss dies
+        {
             Vignette.offset = Vector2.Zero;
             Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
             if (GlobalTimer == 1)
-                npc.noTileCollide = false;
-
-            if (GlobalTimer < 60)
-                npc.velocity *= 0;
-
-            if (GlobalTimer > 60 && GlobalTimer <= 62)
             {
-                npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * 25;
-                GlobalTimer--;
+                startPos = npc.Center;
+                npc.rotation = 0;
 
-                for (int x = -8; x <= 8; x++)
-                    for (int y = -8; y <= 8; y++)
-                    {
-                        Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
-
-                        if (tile.collisionType != 0)
-                        {
-                            GlobalTimer = 62;
-                            npc.velocity = Vector2.UnitX.RotatedBy(painDirection) * -10;
-                            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, npc.Center);
-                            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
-                            body.SpawnGores();
-
-                            SetFrameX(2);
-                            SetFrameY(0);
-
-                            return;
-                        }
-                    }
+                SetFrameY(3);
+                SetFrameX(0);
             }
 
-            if (GlobalTimer == 63)
+            if (GlobalTimer > 3 && GlobalTimer <= 100)
+                npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
+
+            if (GlobalTimer == 20)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
-            if (GlobalTimer > 63 && GlobalTimer < 600)
-                Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
-
-            if (GlobalTimer > 63)
+            if (GlobalTimer > 100 && GlobalTimer < 120)
             {
-                npc.velocity *= 0.98f;
-                npc.velocity.Y = -0.1f;              
+                SetFrameY(3);
+                SetFrameX((int)((GlobalTimer - 100) / 20f * 8));
+
+                for (int k = 0; k < 3; k++)
+                    Dust.NewDustPerfect(npc.Center, DustType<RoarLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
+
+                float progress = ((GlobalTimer - 100) / 20f);
+                Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
             }
+
+            if (GlobalTimer == 120)
+            {
+                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                mp.Shake += 60;
+
+                Main.PlaySound(SoundID.Roar, npc.Center, 0);
+
+                Filters.Scene.Deactivate("Shockwave");
+            }
+
+            if(GlobalTimer > 120 && GlobalTimer <= 160)
+			{
+                SetFrameX((int)(8 - (GlobalTimer - 120) / 40f * 8));
+            }
+
+            if(GlobalTimer == 160)
+			{
+                SetFrameX(2);
+                SetFrameY(0);
+            }
+
+            if(GlobalTimer > 120 && Main.rand.Next(Math.Max(5, 60 - (int)GlobalTimer / 10)) == 0)
+			{
+                var rot = Main.rand.NextFloat(6.28f);
+                Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * Main.rand.Next(-60, -30), DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+            }
+
+            if(GlobalTimer > 200)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f);
+
+            if (GlobalTimer > 300)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * 2;
+
+            if (GlobalTimer > 400)
+                npc.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * 4;
+
+            if (GlobalTimer > 3 && GlobalTimer < 600)
+                Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
 
             if (GlobalTimer == 660)
             {
                 for (int k = 0; k < 50; k++)
                     Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
+
+                for(int k = 0; k < 40; k++)
+                    Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.7f, 1.5f));
+
+                body.SpawnGores();
 
                 Vignette.visible = false;
                 npc.Kill();

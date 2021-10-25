@@ -28,15 +28,20 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-            slot.Left.Set(-100, 1);
-            slot.Top.Set(400, 0);
+            slot.Left.Set(-186, 1);
+            slot.Top.Set(430, 0);
             Append(slot);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+            int mH = Main.mapStyle == 1 ? 256 : 0;
+
+            if (mH + 600 > Main.screenHeight)
+                mH = Main.screenHeight - 600;
+
             slot.Left.Set(-186, 1);
-            slot.Top.Set(430, 0);
+            slot.Top.Set(mH + 174, 0);
 
             Recalculate();
 

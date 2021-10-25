@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class PlayerTarget : HookGroup
+    class PlayerTarget : HookGroup
     {
         //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
         public override SafetyLevel Safety => SafetyLevel.Safe;
@@ -31,21 +31,16 @@ namespace StarlightRiver.Content.CustomHooks
             Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
             ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
-            playerDrawMethod = typeof(Main).GetMethod("DrawPlayer_DrawAllLayers", BindingFlags.NonPublic|BindingFlags.Instance);
+            playerDrawMethod = typeof(Main).GetMethod("DrawPlayer_DrawAllLayers", BindingFlags.NonPublic | BindingFlags.Instance);
 
             On.Terraria.Main.SetDisplayMode += RefreshTargets;
-            Main.OnPreDraw += Main_OnPreDraw;
-        }
-
-		public override void Unload()
-		{
-            Main.OnPreDraw -= Main_OnPreDraw;
+            On.Terraria.Main.CheckMonoliths += DrawPlayerTarget;
         }
 
         private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-			{
+            {
                 Target = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
                 ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
             }
@@ -53,64 +48,26 @@ namespace StarlightRiver.Content.CustomHooks
             orig(width, height, fullscreen);
         }
 
-        private void Main_OnPreDraw(GameTime obj)
+        private void DrawPlayerTarget(On.Terraria.Main.orig_CheckMonoliths orig)
         {
+            orig();
+
             if (Main.gameMenu)
                 return;
 
             RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
             Main.graphics.GraphicsDevice.SetRenderTarget(Target);
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+            Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
             Main.spriteBatch.Begin();
 
-            if(Main.LocalPlayer.dye.Length > 0)
-			    playerDrawMethod?.Invoke(Main.instance, new object[] { Main.LocalPlayer, -1, Main.LocalPlayer.dye[0].IsAir ? 0 : Main.LocalPlayer.dye[0].dye });
-
-            /*
-            for (int i = 0; i <= Main.playerDrawData.Count; i++)
-            {
-                int num = -1;
-                if (num != 0)
-                {
-                    Main.pixelShader.CurrentTechnique.Passes[0].Apply();
-                    num = 0;
-                }
-
-                if (i != Main.playerDrawData.Count)
-                {
-                    DrawData value = Main.playerDrawData[i];
-                    if (value.shader >= 0)
-                    {
-                        GameShaders.Hair.Apply(0, Main.LocalPlayer, value);
-                        GameShaders.Armor.Apply(value.shader, Main.LocalPlayer, value);
-                    }
-                    else if (Main.LocalPlayer.head == 0)
-                    {
-                        GameShaders.Hair.Apply(0, Main.LocalPlayer, value);
-                        GameShaders.Armor.Apply(Main.LocalPlayer.cHead, Main.LocalPlayer, value);
-                    }
-                    else
-                    {
-                        GameShaders.Armor.Apply(0, Main.LocalPlayer, value);
-                        GameShaders.Hair.Apply((short)(-value.shader), Main.LocalPlayer, value);
-                    }
-                    if (!value.sourceRect.HasValue)
-                    {
-                        value.sourceRect = value.texture.Frame();
-                    }
-                    num = value.shader;
-                    if (value.texture != null)
-                    {
-                        Main.spriteBatch.Draw(value.texture, value.position, value.sourceRect, value.color, value.rotation, value.origin, value.scale, value.effect, 0f);
-                    }
-                }
-            }*/
+            if (Main.LocalPlayer.dye.Length > 0)
+                playerDrawMethod?.Invoke(Main.instance, new object[] { Main.LocalPlayer, -1, Main.LocalPlayer.dye[0].IsAir ? 0 : Main.LocalPlayer.dye[0].dye });
 
             Main.spriteBatch.End();
             Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
 
-            if (Main.instance.tileTarget.IsDisposed) 
+            if (Main.instance.tileTarget.IsDisposed)
                 return;
 
             RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();

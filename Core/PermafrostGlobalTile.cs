@@ -27,7 +27,7 @@ namespace StarlightRiver.Core
 			IL.Terraria.IO.WorldFile.LoadWorldTiles += LoadExtraBits;
 			On.Terraria.Tile.isTheSameAs += CompareExtraBits;
 			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
-			Main.OnPreDraw += DrawAuroraTarget;
+			On.Terraria.Main.CheckMonoliths += DrawAuroraTarget;
 
 			if (!Main.dedServ)
 			{
@@ -36,10 +36,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public void Unload()
-		{
-			Main.OnPreDraw -= DrawAuroraTarget;
-		}
+		public void Unload() { }
 
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
@@ -55,8 +52,10 @@ namespace StarlightRiver.Core
 			orig(width, height, fullscreen);
 		}
 
-		private void DrawAuroraTarget(GameTime obj)
+		private void DrawAuroraTarget(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
+			orig();
+
 			if (Main.dedServ || Main.gameMenu)
 				return;
 

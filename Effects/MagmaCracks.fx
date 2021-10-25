@@ -9,13 +9,14 @@ sampler2D samplerTex3 = sampler_state { texture = <sampleTexture3>; magfilter = 
 
 float uTime;
 float4 sourceFrame;
+float4 drawColor;
 float2 texSize;
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 {
     float2 st = (uv - float2(sourceFrame.xy / texSize)) * float2(texSize.x / sourceFrame.z, texSize.y / sourceFrame.w);
 
-    float4 color = tex2D(samplerTex, uv);
+    float4 color = tex2D(samplerTex, uv) * drawColor;
     float dist = tex2D(samplerTex3, st).x;
     float factor = min(1.0, (uTime - dist) * 4.0);
 

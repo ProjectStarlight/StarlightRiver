@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Vitric
             float maxRot = firing ? 0.02f : 0.08f;
             LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
-            Lighting.AddLight(projectile.Center, new Vector3(0.8f, 0.6f, 0.1f));
+            Lighting.AddLight(projectile.Center, new Vector3(0.7f, 0.4f, 0.2f));
 
             if (Charge == 0)
                 LaserRotation = targetRot;

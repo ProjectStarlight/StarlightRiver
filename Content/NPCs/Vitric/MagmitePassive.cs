@@ -192,7 +192,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override bool Update(Gore gore)
         {
-            Lighting.AddLight(gore.position, new Vector3(0.1f, 0.1f, 0) * gore.scale);
+            Lighting.AddLight(gore.position, new Vector3(1.6f, 0.8f, 0) * gore.scale);
+
             gore.scale *= 0.99f;
 
             if (gore.scale < 0.1f)

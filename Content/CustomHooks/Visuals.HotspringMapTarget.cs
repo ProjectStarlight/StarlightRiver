@@ -24,19 +24,20 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            Main.OnPreDraw += HotspringTarget;
+            On.Terraria.Main.CheckMonoliths += HotspringTarget;
         }
 
         public override void Unload()
         {
-            Main.OnPreDraw -= HotspringTarget;
             hotspringMapTarget = null;
         }
 
-
-        private void HotspringTarget(GameTime obj)
+        private void HotspringTarget(On.Terraria.Main.orig_CheckMonoliths orig)
         {
-            if (Main.gameMenu) return;
+            orig();
+
+            if (Main.gameMenu) 
+                return;
 
             var graphics = Main.graphics.GraphicsDevice;
 

@@ -244,6 +244,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             GlobalTimer++;
 
+            //boss health bar glow effects
+
+            float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
+            float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 1.5f);
+            float cos = (float)Math.Cos(Main.GameUpdateCount * 0.05f);
+            BootlegHealthbar.glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * 0.8f;
+
             if (Phase == (int)AIStates.SpawnEffects)
             {
                 Phase = (int)AIStates.SpawnAnimation;
@@ -253,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spawnPoint = npc.Center;
 
-                string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "Aurora Calamari";
+                string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "The Venerated";
                 UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 600);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = npc.Center + new Vector2(0, -600);
@@ -310,7 +317,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         tentacle.Center = Vector2.SmoothStep(mt.MovePoint, mt.SavedPoint, (GlobalTimer - 600) / 100f);
                     }
 
-                if (GlobalTimer > 700) Phase = (int)AIStates.FirstPhase;
+                if (GlobalTimer > 700)
+                {
+                    BootlegHealthbar.SetTracked(npc, ", The Venerated", GetTexture(AssetDirectory.GUI + "BossBarFrame"));
+                    Phase = (int)AIStates.FirstPhase;
+                }
             }
 
             if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.

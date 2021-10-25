@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Physics;
+using System;
 using Terraria;
 using Terraria.Graphics.Effects;
 
@@ -18,12 +19,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
             On.Terraria.Main.SetDisplayMode += RefreshBannerTarget;
-            Main.OnPreDraw += DrawVerletBannerTarget;
-        }
-
-		public override void Unload()
-		{
-            Main.OnPreDraw -= DrawVerletBannerTarget;
+            On.Terraria.Main.CheckMonoliths += DrawVerletBannerTarget;
         }
 
 		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
@@ -48,8 +44,10 @@ namespace StarlightRiver.Content.CustomHooks
             orig(width, height, fullscreen);
         }
 
-        private void DrawVerletBannerTarget(GameTime obj)
+        private void DrawVerletBannerTarget(On.Terraria.Main.orig_CheckMonoliths orig)
         {
+            orig();
+
             if (Main.gameMenu)
                 return;
 

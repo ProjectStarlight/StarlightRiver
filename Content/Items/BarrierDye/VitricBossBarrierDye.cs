@@ -43,18 +43,18 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			var barrier = player.GetModPlayer<ShieldPlayer>();
 
 			Texture2D tex = CustomHooks.PlayerTarget.Target;
-			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
+			var pos = player.Center - Main.screenPosition;
 
 			var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenFormAndColor"].GetShader().Shader;
             effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap"));
             effect.Parameters["uTime"].SetValue(barrier.rechargeAnimation * 2 + (barrier.rechargeAnimation >= 1 ? (Main.GameUpdateCount / 30f) % 2f : 0));
-            effect.Parameters["sourceFrame"].SetValue(new Vector4(Main.screenWidth / 2 - 30, Main.screenHeight / 2 - 60, 60, 120));
+            effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
             effect.Parameters["texSize"].SetValue(tex.Size());
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-            spriteBatch.Draw(tex, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2f), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+            spriteBatch.Draw(tex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
