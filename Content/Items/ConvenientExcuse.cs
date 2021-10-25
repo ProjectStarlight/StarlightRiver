@@ -30,10 +30,12 @@ namespace StarlightRiver.Content.Items
 			item.useStyle = 1;
 			item.useTime = 20;
 			item.useAnimation = 20;
+			item.rare = -1;
 		}
 
 		public override bool UseItem(Player player)
 		{
+			Helpers.Helper.PlayPitched("Yeehaw", 1, 0);
 			Main.NewText("It's far too tightly compacted to open without breaking everything inside...", new Color(255, 255, 200));
 			return true;
 		}
