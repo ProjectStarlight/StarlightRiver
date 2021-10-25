@@ -117,7 +117,7 @@ namespace StarlightRiver.Helpers
             graphics.SetVertexBuffer(buffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
-            Vector2 offset = (Main.screenPosition + Main.LocalPlayer.velocity - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
+            Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
 
             upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);

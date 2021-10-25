@@ -3,7 +3,7 @@ using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class LightingBuffer : HookGroup
+    class LightingBuffer : HookGroup
     {
         //Creates a RenderTarget for the lighting buffer. Could potentially be performance havy but shouldn't be dangerous.
         public override SafetyLevel Safety => SafetyLevel.Safe;
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            if (!Main.gameMenu) 
+            if (!Main.gameMenu)
                 StarlightRiver.LightingBufferInstance.DebugDraw();
 
             Main.instance.GraphicsDevice.SetRenderTarget(null);
