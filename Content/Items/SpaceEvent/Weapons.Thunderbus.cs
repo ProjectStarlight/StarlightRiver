@@ -71,10 +71,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         {
             List<NPC> targets = FindTargets(player);
 
-            if (targets.Count == 0) //whiff
-            {
+            if (player.altFunctionUse != 2 && targets.Count == 0) //whiff
                 mult = 0;
-            }
         }
 
 

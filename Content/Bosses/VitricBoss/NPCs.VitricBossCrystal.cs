@@ -272,6 +272,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case 4: //fleeing
+                    shouldDrawArc = false;
                     npc.velocity.Y += 0.7f;
                     if (timer >= 120) npc.active = false;
                     break;
