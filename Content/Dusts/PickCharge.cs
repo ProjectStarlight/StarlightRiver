@@ -31,7 +31,6 @@ namespace StarlightRiver.Content.Dusts
             {
                 Player player = Main.player[(int)dust.customData];
                 dust.position = player.Center + new Vector2(0, player.gfxOffY) + dust.velocity;
-                if (!Main.mouseRight || !(player.HeldItem.modItem is TemplePick)) dust.active = false; //RIP multiplayer TODO: Make this not gay
             }
             else dust.active = false;
 
