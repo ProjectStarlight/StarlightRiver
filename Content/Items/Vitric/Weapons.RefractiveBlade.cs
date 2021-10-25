@@ -455,7 +455,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 height = texBeam.Height / 4f * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
 
 
-            var pos = projectile.Center - Main.screenPosition;
+            var pos = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 64 - Main.screenPosition;
 
             var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
             var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
