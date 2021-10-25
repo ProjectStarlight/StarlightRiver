@@ -469,7 +469,21 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public ref float Stacks => ref projectile.ai[0];
         public ref float ShouldFire => ref projectile.ai[1];
 
-        public override void SetDefaults()
+		public override bool? CanHitNPC(NPC target)
+		{
+            if (projectile.timeLeft > 30 && Helper.CheckCircularCollision(projectile.Center, 64, target.Hitbox))
+            {
+                projectile.tileCollide = false;
+                projectile.timeLeft = 30;
+                projectile.velocity *= 0;
+
+                return true;
+            }
+
+            return null;
+		}
+
+		public override void SetDefaults()
 		{
             projectile.width = 1;
             projectile.height = 1;
