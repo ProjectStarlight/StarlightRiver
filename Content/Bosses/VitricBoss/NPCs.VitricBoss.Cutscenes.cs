@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp2.ScreenMoveTarget = arena.Center();
-                mp2.ScreenMoveTime = 540;
+                mp2.ScreenMoveTime = 480;
             }
 
             if (GlobalTimer > 140 && GlobalTimer < 400)
