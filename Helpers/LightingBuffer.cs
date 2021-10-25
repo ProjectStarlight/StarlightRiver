@@ -235,6 +235,7 @@ namespace StarlightRiver.Helpers
                 basicEffect.VertexColorEnabled = true;
                 basicEffect.Texture = tex;
                 basicEffect.View = zoom;
+                basicEffect.Alpha = color.A / 255f;//you could also mult every color (after getLighting) by this
 
                 bufferColor.SetData(verticiesColor);
                 Main.instance.GraphicsDevice.SetVertexBuffer(bufferColor);
