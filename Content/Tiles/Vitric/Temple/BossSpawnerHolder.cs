@@ -23,6 +23,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             (this).QuickSetFurniture(3, 2, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(0, 255, 255), false, false, "Mysterious Relic");
         }
 
+        public override void MouseOver(int i, int j)
+        {
+            Player player = Main.LocalPlayer;
+            player.showItemIcon2 = ItemType<Items.Vitric.GlassIdolPremiumEdition>();
+            player.noThrow = 2;
+            player.showItemIcon = true;
+        }
+
         public override bool NewRightClick(int i, int j)
         {
             WorldGen.KillTile(i, j);
