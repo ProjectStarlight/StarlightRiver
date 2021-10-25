@@ -117,8 +117,11 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (charge < 75)
                     charge ++;
 
-                if(charge == 1)
+                if (charge == 1)
+                {
                     Projectile.NewProjectile(projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, 1);
+                    Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
+                }
 
                 for (int k = 2; k < 4; k++)
 				{

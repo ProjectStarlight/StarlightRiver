@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonstone Helmet");
-            Tooltip.SetDefault("2% increased melee critical strike chance\n+20 barrier");
+            Tooltip.SetDefault("2% increased melee critical strike chance\n+20 Barrier");
         }
 
         public override void SetDefaults()
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 1;
+            item.defense = 6;
         }
 
 		public override void UpdateEquip(Player player)
@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonstone Chestpiece");
-            Tooltip.SetDefault("+35 barrier");
+            Tooltip.SetDefault("+35 Barrier");
         }
 
         public override void SetDefaults()
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 3;
+            item.defense = 7;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonstone Greaves");
-            Tooltip.SetDefault("Improved acceleration\n +25 barrier");
+            Tooltip.SetDefault("Improved acceleration\n +25 Barrier");
         }
 
         public override void SetDefaults()
@@ -317,7 +317,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             item.height = 18;
             item.value = 1;
             item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            item.defense = 6;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)

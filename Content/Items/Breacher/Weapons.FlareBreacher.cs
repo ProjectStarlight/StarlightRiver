@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.UseSound = SoundID.Item11;
             item.width = 24;
             item.height = 28;
-            item.damage = 30;
+            item.damage = 25;
             item.rare = ItemRarityID.Orange;
             item.value = Item.sellPrice(0, 1, 0, 0);
             item.noMelee = true;
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.5f, Main.rand.NextFloat(-0.1f,0.1f));
+            Helper.PlayPitched("Guns/FlareFire", 0.3f, Main.rand.NextFloat(-0.1f,0.1f));
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
