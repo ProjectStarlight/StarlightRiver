@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Loaders
 
         public float Priority => 1.3f;
 
-        const string DefaultTitle = "Starlight River Test Build";
+        const string DefaultTitle = "Starlight River: Ceiros";
 
         const int iconSize = 48; //16, 32, 48
 
