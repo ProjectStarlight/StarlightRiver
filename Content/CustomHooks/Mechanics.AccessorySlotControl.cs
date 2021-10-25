@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Items.Prototypes;
+//using StarlightRiver.Items.Prototypes;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -79,14 +79,14 @@ namespace StarlightRiver.Content.CustomHooks
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
                 RedrawItem(sb, inv, back, position, slot, color);
             }
-            else if (inv[slot].modItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
+            /*else if (inv[slot].modItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
             {
                 Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/ProtoBack");
                 Color backcolor = Main.LocalPlayer.HeldItem != inv[slot] ? Color.White * 0.75f : Color.Yellow;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
                 RedrawItem(sb, inv, back, position, slot, color);
-            }
+            }*/
             else
             {
                 orig(sb, inv, context, slot, position, color);

@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -62,12 +61,6 @@ namespace StarlightRiver
                     priority = MusicPriority.BossLow;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneHotspring)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
                 if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
@@ -83,54 +76,6 @@ namespace StarlightRiver
                 if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((player.Center / 16).ToPoint()))
 				{
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
-                    priority = MusicPriority.BossLow;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleCorrupt");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleBloody)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleBloody");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleHoly)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleHoly");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().zoneAluminum)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/AluminumPassive");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZonePermafrost)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/PermafrostPassive");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
                 }
             }

@@ -27,14 +27,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Reciever");
     }
-
-    class RecieverItem : QuickTileItem
-    {
-        public RecieverItem() : base("Light Reciever", "", TileType<RecieverPlacable>(), 0, AssetDirectory.VitricTile) { }
-    }
-
-    class RecieverItem2 : QuickTileItem
-    {
-        public RecieverItem2() : base("Debug Puzzle Reciever", "", TileType<RecieverPuzzle>(), 0, AssetDirectory.VitricTile) { }
-    }
 }

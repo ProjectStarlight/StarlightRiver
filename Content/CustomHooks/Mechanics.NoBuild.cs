@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -66,22 +64,6 @@ namespace StarlightRiver.Content.CustomHooks
                         FailFX(targetPoint);
                         return false;
                     }
-
-                if (tile.wall == WallType<AuroraBrickWall>())
-                {
-                    for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
-                    {
-                        Projectile proj = Main.projectile[k];
-
-                        if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
-                        {
-                            return true;
-                        }
-                    }
-                    player.AddBuff(BuffID.Cursed, 10, false);
-                    FailFX(targetPoint);
-                    return false;
-                }
             }
 
             return base.CanUseItem(item, player);

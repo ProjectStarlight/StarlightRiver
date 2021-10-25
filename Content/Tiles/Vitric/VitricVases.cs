@@ -74,6 +74,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return false;
         }
     }
-
-    internal class VitricBreakableVaseItem : QuickTileItem { public VitricBreakableVaseItem() : base("Vitric Vase Placer", "Debug Item", "VitricBreakableVases", 2, AssetDirectory.VitricTile) { } }
 }

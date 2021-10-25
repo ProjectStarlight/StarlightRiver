@@ -53,9 +53,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                 Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(48), -60 + Main.rand.Next(64)), DustType<Dusts.CrystalSparkle>(), Vector2.Zero, 0, new Color(255, 200, 150));
         }
     }
-
-    class BossSpawnerHolderItem : QuickTileItem
-    {
-        public BossSpawnerHolderItem() : base("Boss Spawner Holder", "", TileType<BossSpawnerHolder>(), 1, AssetDirectory.VitricTile) { }
-    }
 }

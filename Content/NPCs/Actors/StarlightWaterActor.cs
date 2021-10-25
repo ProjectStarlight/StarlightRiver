@@ -11,7 +11,7 @@ using Terraria.ID;
 using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Core;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.Vanity;
+//using StarlightRiver.Content.Items.Vanity;
 
 namespace StarlightRiver.Content.NPCs.Actors
 {
@@ -155,13 +155,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			if (item.type == ItemID.WoodenBoomerang) transformType = ModContent.ItemType<StarwoodBoomerang>();
 			if (item.type == ItemID.WandofSparking) transformType = ModContent.ItemType<StarwoodStaff>();
-
-            if (item.vanity)
-            {
-				if (item.headSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodHat>()) transformType = ModContent.ItemType<AncientStarwoodHat>();
-				else if (item.bodySlot != -1 && item.type != ModContent.ItemType<AncientStarwoodChest>()) transformType = ModContent.ItemType<AncientStarwoodChest>();
-				else if (item.legSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodBoots>()) transformType = ModContent.ItemType<AncientStarwoodBoots>();
-			}
 		}
 
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

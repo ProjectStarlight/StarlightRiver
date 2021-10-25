@@ -38,9 +38,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Forbidden Winds is the first obtainable ability, granting a dash that allows you to maneuver with ease and interact with objects. Like all abilities, it's regularly used throughout progression at all stages of the game past obtainment.", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-570, -370), Color.White, 0.8f);
         }
     }
-
-    class TutorialTextItem : QuickTileItem
-    {
-        public TutorialTextItem() : base("Tutorial Text", "Well this is awkward.", TileType<TutorialText>(), 1, AssetDirectory.VitricTile) { }
-    }
 }

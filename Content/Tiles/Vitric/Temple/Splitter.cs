@@ -20,9 +20,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(0, 255, 255), false, true, "Splitter");
         }
     }
-
-    class SplitterItem : QuickTileItem
-    {
-        public SplitterItem() : base("Light Splitter", "", TileType<Splitter>(), 0, AssetDirectory.VitricTile) { }
-    }
 }

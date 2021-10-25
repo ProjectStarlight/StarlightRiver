@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.Purify;
-using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
-using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Tiles.Balanced;
-using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Keys;
 using StarlightRiver.NPCs.TownUpgrade;
 using System;
@@ -134,7 +129,7 @@ namespace StarlightRiver.Core
 
                 if (Main.tile[x, y].type == TileID.Dirt && Math.Abs(x - Main.maxTilesX / 2) >= Main.maxTilesX / 6)
                 {
-                    WorldGen.TileRunner(x, y, WorldGen.genRand.Next(10, 11), 1, TileType<OreEbony>(), false, 0f, 0f, false, true);
+                    //WorldGen.TileRunner(x, y, WorldGen.genRand.Next(10, 11), 1, TileType<OreEbony>(), false, 0f, 0f, false, true);
                 }
             }
         }
@@ -148,13 +143,6 @@ namespace StarlightRiver.Core
 
         public override void PostUpdate()
         {
-            if (!Main.projectile.Any(proj => proj.type == ProjectileType<Purifier>()) && PureTiles != null)
-                PureTiles.Clear();
-
-            //SquidBoss arena
-            if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-                NPC.NewNPC(SquidBossArena.Center.X * 16 + 8, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
-
             //Keys
             foreach (Key key in Keys) key.Update();
 
@@ -207,7 +195,7 @@ namespace StarlightRiver.Core
                 ["SquidNPCProgress"] = SquidNPCProgress,
                 ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
                 ["SquidBossArenaSize"] = SquidBossArena.Size(),
-                ["PermafrostCenter"] = permafrostCenter,
+                //["PermafrostCenter"] = permafrostCenter,
 
                 [nameof(flags)] = (int)flags,
 
@@ -225,18 +213,6 @@ namespace StarlightRiver.Core
 
         private static bool CheckForSquidArena(Player player)
 		{
-            if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
-            {
-                Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-
-                if (tile != null)
-                {
-                    return
-                        tile.wall == WallType<AuroraBrickWall>() &&
-                        !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
-                }
-            }
-
             return false;
         }
 
@@ -264,7 +240,7 @@ namespace StarlightRiver.Core
             SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
             SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
             SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
-            permafrostCenter = tag.GetInt("PermafrostCenter");
+            //permafrostCenter = tag.GetInt("PermafrostCenter");
 
             flags = (WorldFlags)tag.GetInt(nameof(flags));
 
@@ -286,15 +262,6 @@ namespace StarlightRiver.Core
             Chungus = MathHelper.Clamp(Chungus, 0, 1);
 
             knownRecipies = (List<string>)tag.GetList<string>("Recipies");
-
-            for (int k = 0; k <= PureTiles.Count - 1; k++)
-                for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
-                    for (int j = (int)PureTiles[k].Y - 16; j <= (int)PureTiles[k].Y + 16; j++)
-                    {
-                        PurifyTransformation.RevertTile(i, j);
-                    }
-
-            PureTiles.Clear();
 
             foreach (Key key in KeyInventory)
             {

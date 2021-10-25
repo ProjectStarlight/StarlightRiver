@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Foregrounds
 
         private void UpdateAshParticles(Particle particle)
         {
-            particle.Position = particle.StoredPosition - Main.screenPosition + (Main.screenPosition - new Vector2(StarlightWorld.permafrostCenter * 16, (Main.maxTilesY - 100) * 16)) * (particle.Scale * -0.2f);
+            //particle.Position = particle.StoredPosition - Main.screenPosition + (Main.screenPosition - new Vector2(StarlightWorld.permafrostCenter * 16, (Main.maxTilesY - 100) * 16)) * (particle.Scale * -0.2f);
             particle.StoredPosition += particle.Velocity;
             particle.Velocity.Y += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.01f;
 
@@ -37,10 +37,10 @@ namespace StarlightRiver.Content.Foregrounds
 
         public override void Draw(SpriteBatch spriteBatch, float opacity)
         {
-            ParticleSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
+            /*ParticleSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(1.4f, 2.6f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, Main.rand.NextFloat(1, 2), Color.White,
                 1500, new Vector2((StarlightWorld.permafrostCenter + Main.rand.Next(-400, 400)) * 16, 16 * (Main.maxTilesY - 40))));
 
-            ParticleSystem.DrawParticles(Main.spriteBatch);
+            ParticleSystem.DrawParticles(Main.spriteBatch);*/
         }
     }
 }

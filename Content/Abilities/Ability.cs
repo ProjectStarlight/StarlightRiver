@@ -1,9 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.GaiasFist;
-using StarlightRiver.Content.Abilities.Purify;
 using StarlightRiver.Core;
 using StarlightRiver.Packets;
 using System.Collections.Generic;
@@ -68,7 +65,7 @@ namespace StarlightRiver.Content.Abilities
         {
             return new Ability[]
             {
-                new Dash(), new Wisp(), new Pure(), new Smash()//, new Superdash()
+                new Dash()
             };
         }
     }

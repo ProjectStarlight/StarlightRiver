@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -75,16 +74,6 @@ namespace StarlightRiver.Content.Dusts
                 Abilities.AbilityHandler mp = player.GetModPlayer<Abilities.AbilityHandler>();
 
                 dust.position = player.Center + dust.velocity;
-
-                if (mp.GetAbility<Smash>(out var smash))
-                {
-                    dust.rotation += 6.28f / Smash.ChargeTime;
-
-                    if (smash.Active && smash.Timer <= Smash.ChargeTime) dust.alpha = (int)(smash.Timer / Smash.ChargeTime * 255f);
-
-                    if (smash.Timer > Smash.ChargeTime || !smash.Active) dust.alpha -= 10;
-                    if (dust.alpha <= 0) dust.active = false;
-                }
             }
             else
                 dust.active = false;
