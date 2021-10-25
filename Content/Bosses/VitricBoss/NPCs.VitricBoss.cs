@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Dying = 7
         }
 
-        public override void PostAI()
+        /*public override void PostAI()
         {
             //npc.life = 1;
 
@@ -392,7 +392,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int k = 0; k < 12; k++)
                     AI();
             }
-        }
+        }*/
 
         public override void AI()
         {
