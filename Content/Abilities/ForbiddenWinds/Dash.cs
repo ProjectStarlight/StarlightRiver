@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
             Player.velocity = SignedLesserBound((Dir * Speed) * progress, Player.velocity * progress); // "conservation of momentum"
 
-            Player.frozen = true;
+            //Player.frozen = true;
             Player.gravity = 0;
             Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Speed);
 
