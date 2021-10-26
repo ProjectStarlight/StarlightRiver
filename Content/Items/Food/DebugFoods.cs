@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Food
 	internal class DebugGreen : Ingredient
     {
         public DebugGreen() : base("+5% melee damage", 600, IngredientType.Main) { }
-        public override string Texture => AssetDirectory.FoodItem + "Rabbit";
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.Green;
     }
@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Food
     internal class DebugOrange : Ingredient
     {
         public DebugOrange() : base("+5% melee damage", 600, IngredientType.Main) { }
-		public override string Texture => AssetDirectory.FoodItem + "Rabbit";
+		public override string Texture => AssetDirectory.FoodItem + Name;
 
 		public override void SafeSetDefaults() => item.rare = ItemRarityID.Orange;
     }
@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Food
     internal class DebugRed : Ingredient
     {
         public DebugRed() : base("+5% melee damage", 600, IngredientType.Main) { }
-        public override string Texture => AssetDirectory.FoodItem + "Rabbit";
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.LightRed;
     }
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Food
     internal class DebugPink : Ingredient
     {
         public DebugPink() : base("+5% melee damage", 600, IngredientType.Main) { }
-        public override string Texture => AssetDirectory.FoodItem + "Rabbit";
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.Pink;
     }
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Food
     internal class DebugPurple : Ingredient
     {
         public DebugPurple() : base("+5% melee damage", 600, IngredientType.Main) { }
-        public override string Texture => AssetDirectory.FoodItem + "Rabbit";
+        public override string Texture => AssetDirectory.FoodItem + Name;
 
         public override void SafeSetDefaults() => item.rare = ItemRarityID.LightPurple;
     }

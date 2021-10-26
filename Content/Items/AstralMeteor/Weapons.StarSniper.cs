@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 {
 	class StarSniper : ModItem
     {
+        public override void SetStaticDefaults() => Tooltip.SetDefault("Scrapped Item");
+
         public override string Texture => AssetDirectory.AluminumItem + "StarSniper";
 
         public override void SetDefaults()

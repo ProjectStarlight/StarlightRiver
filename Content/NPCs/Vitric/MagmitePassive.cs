@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -212,5 +213,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             return true;
         }
+    }
+
+    internal class MagmiteBanner : ModBanner
+    {
+        public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
+    }
+
+    internal class MagmiteBannerItem : QuickBannerItem
+    {
+        public MagmiteBannerItem() : base("MagmiteBanner", "Small Magmite", AssetDirectory.VitricNpc) { }
     }
 }

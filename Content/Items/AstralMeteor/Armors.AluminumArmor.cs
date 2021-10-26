@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Helmet");
-                Tooltip.SetDefault("No description");
+                Tooltip.SetDefault("Scrapped Item");
             }
 
             public override void SetDefaults()
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Suit");
-                Tooltip.SetDefault("No description");
+                Tooltip.SetDefault("Scrapped Item");
             }
 
             public override void SetDefaults()
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void SetStaticDefaults()
             {
                 DisplayName.SetDefault("Astral Aluminum Leggings");
-                Tooltip.SetDefault("No description");
+                Tooltip.SetDefault("Scrapped Item");
             }
 
             public override void SetDefaults()
