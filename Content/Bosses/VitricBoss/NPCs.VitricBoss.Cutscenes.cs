@@ -159,12 +159,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
             }
 
-            if(GlobalTimer == 620)
+            if (GlobalTimer == 610)
+                Helper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, npc.Center);
+
+            if (GlobalTimer == 620)
 			{
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 60;
 
-                Main.PlaySound(SoundID.Roar, npc.Center, 0);
 
                 Filters.Scene.Deactivate("Shockwave");
             }
