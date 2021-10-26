@@ -137,7 +137,7 @@ namespace StarlightRiver
 
         public override void Load()
         {
-            CopyFile();
+            //CopyFile();
 
             loadCache = new List<ILoadable>();
 
@@ -218,88 +218,88 @@ namespace StarlightRiver
                 AbilityKeys.Unload();
             }
 
-            SwapFile();
+            //SwapFile();
         }
 
 
         //TODO: (important) remove before puplic release
-        private const string tempName = "StarlightRiver.export.rename_to_tmod";
-        private void CopyFile()
-        {
-            string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-            bool doNotCopy = false;
-            char[] modSig;
-            long writerStartPos = 0;
-            string id = Steamworks.SteamUser.GetSteamID().ToString();
+        //private const string tempName = "StarlightRiver.export.rename_to_tmod";
+        //private void CopyFile()
+        //{
+        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
+        //    bool doNotCopy = false;
+        //    char[] modSig;
+        //    long writerStartPos = 0;
+        //    string id = Steamworks.SteamUser.GetSteamID().ToString();
 
-            using (FileStream stream = new FileStream(path + "StarlightRiver.tmod", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                BinaryReader binaryReader = new BinaryReader(stream);
+        //    using (FileStream stream = new FileStream(path + "StarlightRiver.tmod", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        //    {
+        //        BinaryReader binaryReader = new BinaryReader(stream);
 
-                //advances the position forward to the mod signature
-                stream.Position += 4; //binaryReader.ReadBytes(4);  //discarded //tmod
-                binaryReader.ReadString();  //discarded //version
-                stream.Position += 20; //binaryReader.ReadBytes(20); //discarded //hash
+        //        //advances the position forward to the mod signature
+        //        stream.Position += 4; //binaryReader.ReadBytes(4);  //discarded //tmod
+        //        binaryReader.ReadString();  //discarded //version
+        //        stream.Position += 20; //binaryReader.ReadBytes(20); //discarded //hash
 
-                writerStartPos = stream.Position;
+        //        writerStartPos = stream.Position;
 
-                //the next 256 bytes are free to use*
-                modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the mod is off the browser, but this bit of code should never be on a browser version
+        //        //the next 256 bytes are free to use*
+        //        modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the mod is off the browser, but this bit of code should never be on a browser version
 
-                if (modSig.ToString().Contains(id))
-                    doNotCopy = true;
-                else
-                {
-                    int nextIndex = -1;//to store start of next string
+        //        if (modSig.ToString().Contains(id))
+        //            doNotCopy = true;
+        //        else
+        //        {
+        //            int nextIndex = -1;//to store start of next string
 
-                    for (int i = 0; i < modSig.Length; i++)//find next empty space
-                        if (modSig[i] == '\0')
-                        {
-                            nextIndex = i;
-                            break;
-                        }
+        //            for (int i = 0; i < modSig.Length; i++)//find next empty space
+        //                if (modSig[i] == '\0')
+        //                {
+        //                    nextIndex = i;
+        //                    break;
+        //                }
 
-                    if (nextIndex == -1 || nextIndex > modSig.Length - (id.Length + 1))//if no empty space or not enough room
-                    {
-                        doNotCopy = true;
-                        return;
-                    }
+        //            if (nextIndex == -1 || nextIndex > modSig.Length - (id.Length + 1))//if no empty space or not enough room
+        //            {
+        //                doNotCopy = true;
+        //                return;
+        //            }
 
-                    modSig[nextIndex] = '|';
-                    for (int i = 0; i < id.Length; i++)
-                        modSig[nextIndex + i + 1] = id[i];
-                }
-            }
+        //            modSig[nextIndex] = '|';
+        //            for (int i = 0; i < id.Length; i++)
+        //                modSig[nextIndex + i + 1] = id[i];
+        //        }
+        //    }
 
-            if (doNotCopy)//it does not copy if it cannot find a valid space, or the list is up to date (contains current id)
-            {
-                if (File.Exists(path + tempName))//makes sure a leftover copy does not exist if set to not copy
-                    File.Delete(path + tempName);//a leftover copy would overwrite the current tmod on unload
-            }
-            else
-            {
-                File.Copy(path + "StarlightRiver.tmod", path + tempName, true);
+        //    if (doNotCopy)//it does not copy if it cannot find a valid space, or the list is up to date (contains current id)
+        //    {
+        //        if (File.Exists(path + tempName))//makes sure a leftover copy does not exist if set to not copy
+        //            File.Delete(path + tempName);//a leftover copy would overwrite the current tmod on unload
+        //    }
+        //    else
+        //    {
+        //        File.Copy(path + "StarlightRiver.tmod", path + tempName, true);
 
-                using (FileStream stream = new FileStream(path + tempName, FileMode.Open))
-                {
-                    BinaryWriter binaryWriter = new BinaryWriter(stream);
+        //        using (FileStream stream = new FileStream(path + tempName, FileMode.Open))
+        //        {
+        //            BinaryWriter binaryWriter = new BinaryWriter(stream);
 
-                    stream.Position = writerStartPos;
+        //            stream.Position = writerStartPos;
 
-                    binaryWriter.Write(modSig);
-                }
-            }
-        }
+        //            binaryWriter.Write(modSig);
+        //        }
+        //    }
+        //}
 
-        private void SwapFile()
-        {
-            string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-            if (File.Exists(path + tempName))
-            {
-                File.Copy(path + tempName, path + "StarlightRiver.tmod", true);
-                File.Delete(path + tempName);
-            }
-        }
+        //private void SwapFile()
+        //{
+        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
+        //    if (File.Exists(path + tempName))
+        //    {
+        //        File.Copy(path + tempName, path + "StarlightRiver.tmod", true);
+        //        File.Delete(path + tempName);
+        //    }
+        //}
 
         public override void PostAddRecipes()
         {
