@@ -210,7 +210,7 @@ namespace StarlightRiver.Helpers
                     if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
 
                         var tile = Framing.GetTileSafely(thisPoint);
-                    if(tile.collisionType == 1)
+                    if(tile.collisionType == 1 && !tile.inActive())
                     {
                         var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
                         if (rect.Contains(point.ToPoint())) return true;

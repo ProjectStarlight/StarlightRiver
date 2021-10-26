@@ -156,6 +156,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             string path = AssetDirectory.VitricBoss + Name;
             Texture2D tex = GetTexture(path);
             Texture2D tex2 = GetTexture(path + "Top");
+            Texture2D tex3 = GetTexture(path + "Side");
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -163,15 +164,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             const int yOffset = 3; // Fit perfectly in the gap
 
-            Rectangle target = new Rectangle(
-                (int)(npc.position.X - Main.screenPosition.X),
-                (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
-                tex.Width,
-                targetHeight);
+            int xPos = (int)(npc.position.X - Main.screenPosition.X);
+            int yPos = (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
 
+            Rectangle target = new Rectangle(xPos, yPos, tex.Width, targetHeight);
             Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
 
+            Rectangle target2 = new Rectangle(xPos - tex3.Width, yPos, tex3.Width, targetHeight);
+            Rectangle source2 = new Rectangle(0, 0, tex3.Width, targetHeight);
+
             Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
         }
 
@@ -249,7 +252,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
     {
-        public override void MainDraw(SpriteBatch sb)
+        /*public override void MainDraw(SpriteBatch sb)
         {
             string path = AssetDirectory.VitricBoss + Name;
             Texture2D tex = GetTexture(path);
@@ -271,9 +274,33 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+        }*/
 
-            //Texture2D tex3 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
-            //Helpers.LightingBufferRenderer.DrawWithLighting(target, tex3, source, Color.White * ((((float)Math.Sin(Main.GameUpdateCount  / 50f) + 1) / 2f) + 0.1f), sb, Configs.LightImportance.Some);//a
+        public override void MainDraw(SpriteBatch sb)
+        {
+            string path = AssetDirectory.VitricBoss + Name;
+            Texture2D tex = GetTexture(path);
+            Texture2D tex2 = GetTexture(path + "Top");
+            Texture2D tex3 = GetTexture(path + "Side");
+            int targetHeight = (int)(Timer / Risetime * tex.Height);
+
+            if (State >= 3) //ignore timer after rising is done
+                targetHeight = tex.Height;
+
+            const int yOffset = 3; // Fit perfectly in the gap
+
+            int xPos = (int)(npc.position.X - Main.screenPosition.X);
+            int yPos = (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
+
+            Rectangle target = new Rectangle(xPos, yPos, tex.Width, targetHeight);
+            Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
+
+            Rectangle target2 = new Rectangle(xPos + tex.Width, yPos, tex3.Width, targetHeight);
+            Rectangle source2 = new Rectangle(0, 0, tex3.Width, targetHeight);
+
+            Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
+            Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
         }
 
         public override void ScrollDraw(SpriteBatch sb)
