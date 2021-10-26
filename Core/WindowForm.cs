@@ -61,8 +61,62 @@ namespace StarlightRiver.Core.Loaders
 
         private void WindowFormChanges()//generates a icon from a png and changes the window text
         {
-            GameForm.Icon = Texture2Icon(ModContent.GetTexture("StarlightRiver/Assets/Misc/StarlightTree"));
-            GameForm.Text = DefaultTitle;//TODO: make random.
+            GameForm.Icon = Texture2Icon(ModContent.GetTexture(GetModIcon()));
+            GameForm.Text = GetWindowTitle();
+        }
+
+        private string GetModIcon()
+        {
+            if (DateChanges.AprilFirst)
+                return "StarlightRiver/Assets/Misc/StarlightTroll";
+            else if (DateChanges.Anniversary)
+                return "StarlightRiver/Assets/Misc/StarlightCake";
+            else if (DateChanges.Halloween)
+                return "StarlightRiver/Assets/Misc/StarlightHalloween";
+            else if (DateChanges.Christmas)
+                return "StarlightRiver/Assets/Misc/StarlightChristmas";
+
+            else if (DateChanges.StartupRandom16 == 32767)//1 in 32767
+                return "StarlightRiver/Assets/Misc/StarlightOld";
+            else if (DateChanges.StartupRandom16 < 4)//1 in 8191
+                return "StarlightRiver/Assets/Misc/StarlightGalaxy";
+
+            else if(DateChanges.StartupRandom8 == 0)//1 in 255
+                return "StarlightRiver/Assets/Misc/StarlightStream";
+            else if (DateChanges.StartupRandom8 > 247)//1 in 32
+                return "StarlightRiver/Assets/Misc/StarlightTablet";
+
+            else
+                return "StarlightRiver/Assets/Misc/StarlightTree";
+        }
+
+        private string GetWindowTitle()
+        {//TODO: change this to make some more common
+            if (DateChanges.StartupRandom16 == 922)//1 in 32767
+                return "Of course you listen to weezer";
+            else if (DateChanges.StartupRandom16 == 629)//1 in 32767
+                return "Wait, it's all Grubby?";
+            else if (DateChanges.StartupRandom16 == 621)//1 in 32767
+                return "Case of the vanishing cheese...";
+            else if (DateChanges.StartupRandom16 == 1025)//1 in 32767
+                return "Mucho gracias for dollaris";
+            else if (DateChanges.StartupRandom16 == 905)//1 in 32767
+                return "\"Huge breaking change\"";
+            else if (DateChanges.StartupRandom16 == 906)//1 in 32767
+                return "Revert \"Huge breaking change\"";
+            else if (DateChanges.StartupRandom16 == 907)//1 in 32767
+                return "Revert \"Revert \"Huge breaking change\"\"";
+            else if (DateChanges.StartupRandom16 == 429)//1 in 32767
+                return "Amoung pequeno";
+            else if (DateChanges.StartupRandom16 == 1011)//1 in 32767
+                return "Attention SLR gamers!";
+            else if (DateChanges.StartupRandom16 == 401)//1 in 32767
+                return "vro you literally deleted the actual general chat";
+            else if (DateChanges.StartupRandom16 == 1110)//1 in 32767
+                return "Idea: suffer";
+
+            else
+                return DefaultTitle;
         }
 
         //public static Image Texture2Image(Texture2D texture)

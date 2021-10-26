@@ -202,8 +202,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Helper.PlayPitched("Magic/WaterSlash", 1, 0.2f, projectile.Center);
-            Helper.PlayPitched("Magic/WaterWoosh", 1, 0.6f, projectile.Center);
+            Helper.PlayPitched("Magic/WaterSlash", 0.4f, 0.2f, projectile.Center);
+            Helper.PlayPitched("Magic/WaterWoosh", 0.3f, 0.6f, projectile.Center);
 
             float rot = projectile.ai[0] % 80 / 80f * 6.28f;
             var away = Vector2.UnitX.RotatedBy(rot);

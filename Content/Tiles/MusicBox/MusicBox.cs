@@ -21,10 +21,11 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 
 		public override void Load()
 		{
-			LoadMusicBox("VitricBoss1", "Music Boss (Ceiros P1)", "Sounds/Music/VitricBoss1");
-			LoadMusicBox("VitricBoss2", "Music Boss (Ceiros P2)", "Sounds/Music/VitricBoss2");
-			LoadMusicBox("VitricPassive", "Music Boss (Vitric Desert)", "Sounds/Music/GlassPassive");
-			LoadMusicBox("VitricTemple", "Music Boss (Vitric Temple)", "Sounds/Music/GlassTemple");
+			LoadMusicBox("VitricBoss1", "Music Box (Ceiros P1)", "Sounds/Music/VitricBoss1");
+			LoadMusicBox("VitricBoss2", "Music Box (Ceiros P2)", "Sounds/Music/VitricBoss2");
+			LoadMusicBox("VitricPassive", "Music Box (Vitric Desert)", "Sounds/Music/GlassPassive");
+			LoadMusicBox("VitricTemple", "Music Box (Vitric Temple)", "Sounds/Music/GlassTemple");
+			LoadMusicBox("Miniboss", "Music Box (Miniboss)", "Sounds/Music/Miniboss");
 		}
 
 		private void LoadMusicBox(string name, string displayName, string path)
