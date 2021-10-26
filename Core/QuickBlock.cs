@@ -29,7 +29,7 @@ namespace StarlightRiver.Core
             tile.AddMapEntry(mapColor, name);
         }
 
-        public static void QuickSetBar(this ModTile tile, int drop, int dustType, Color? mapColor = null, int soundType = SoundID.Tink)
+        public static void QuickSetBar(this ModTile tile, int drop, int dustType, Color? mapColor = null, int soundType = 0)
         {
             Main.tileMergeDirt[tile.Type] = false;
             Main.tileFrameImportant[tile.Type] = true;
@@ -151,7 +151,7 @@ namespace StarlightRiver.Core
             tile.disableSmartCursor = true;
         }
 
-        public static void QuickSetPainting(this ModTile tile, int width, int height, int dustType, Color mapColor, string mapName = "", int soundType = SoundID.Dig)
+        public static void QuickSetPainting(this ModTile tile, int width, int height, int dustType, Color mapColor, string mapName = "Painting", int soundType = SoundID.Dig)
         {
             TileObjectData.newTile.AnchorWall = TileObjectData.Style3x3Wall.AnchorWall;
             tile.QuickSetFurniture(width, height, dustType, soundType, false, mapColor, false, false, mapName);
