@@ -255,6 +255,6 @@ namespace StarlightRiver.Pickups
     {
         public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", TileType<ForbiddenWindsPickupTile>(), -1) { }
 
-        public override string Texture => AssetDirectory.Debug;
+        public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
     }
 }
