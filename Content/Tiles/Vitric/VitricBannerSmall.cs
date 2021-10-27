@@ -70,4 +70,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void Kill(int timeLeft) => 
             VerletChain.toDraw.Remove(Chain);
     }
+
+    class VitricBannerSmallItem : QuickTileItem
+    {
+        public VitricBannerSmallItem() : base("Short Flowing Banner", "", TileType<VitricBannerSmall>(), 2, AssetDirectory.VitricTile, false) { }
+    }
 }
