@@ -282,6 +282,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (timer == 0) 
                     {
+                        if(npc.immortal)
+                        {
+                            ResetAttack();
+                            return;
+                        }
+
                         startPos = npc.Center; 
                         endPos = crystalLocations[k] + new Vector2(0, -30); 
                         RandomizeTarget(); 
@@ -607,7 +613,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (Main.expertMode)
                     {
                         for (int k = -3; k <= 3; k++)
-                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.35f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.125f) * 700, 50);
+                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.38f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.13f) * 700, 50);
                     }
                     else
                     {
