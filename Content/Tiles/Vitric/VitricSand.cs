@@ -34,7 +34,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return base.Autoload(ref name, ref texture);
         }
 
-        public override void SetDefaults() => QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80)); 
+        public override void SetDefaults()
+        {
+            WallID.Sets.Conversion.HardenedSand[Type] = true;
+            QuickBlock.QuickSetWall(this, DustID.Copper, SoundID.Dig, ItemType<VitricSandWallItem>(), false, new Color(114, 78, 80));
+        }
     }
 
     internal class VitricSandWallItem : QuickWallItem

@@ -118,6 +118,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			AddMerge("VitricSoftSand", "VitricSandPlain");
 			AddMerge("VitricSoftSand", "VitricSand");
 
+			AddSand("VitricSoftSand");
+			AddSand("VitricSandPlain");
+
+			AddHardenedSand("VitricSand");
+
 			var sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };

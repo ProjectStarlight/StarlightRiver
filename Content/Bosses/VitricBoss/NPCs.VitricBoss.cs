@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Dying = 7
         }
 
-        /*public override void PostAI()
+        public override void PostAI()
         {
             //npc.life = 1;
 
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int k = 0; k < 12; k++)
                     AI();
             }
-        }*/
+        }
 
         public override void AI()
         {
@@ -479,16 +479,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         else //otherwise proceed with attacking pattern
                         {
                             AttackPhase++;
-                            if (AttackPhase > 4) AttackPhase = 1;
+                            altAttack = Main.rand.NextBool();
+                            npc.netUpdate = true;
+
+                            if (AttackPhase > 4)
+                                AttackPhase = 1;
                         }
 
                     switch (AttackPhase) //Attacks
                     {
                         case 0: MakeCrystalVulnerable(); break;
                         case 1: FireCage(); break;
-                        case 2: CrystalSmash(); break;
+                        case 2: if (altAttack) CrystalSmashSpaced(); else CrystalSmash(); break;
                         case 3: SpikeMines(); break;
-                        case 4: PlatformDash(); break;
+                        case 4: if (altAttack) PlatformDashRain(); else PlatformDash(); break;
                     }
 
                     DoRotation();

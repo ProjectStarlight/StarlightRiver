@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
@@ -65,6 +66,23 @@ namespace StarlightRiver.Core.Loaders
             Main.tileMerge[mod.TileType(type1)][mod.TileType(type2)] = true;
             Main.tileMerge[mod.TileType(type2)][mod.TileType(type1)] = true;
         }
+
+        public void AddSand(string type)
+        {
+            TileID.Sets.Conversion.Sand[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.ForAdvancedCollision.ForSandshark[mod.TileType(type)] = true;
+        }
+
+        public void AddSandstone(string type)
+        {
+            TileID.Sets.Conversion.Sandstone[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+        }
+
+        public void AddHardenedSand(string type)
+        {
+            TileID.Sets.Conversion.HardenedSand[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+        }
+
 
         public void AddMerge(string type1, int type2)
         {

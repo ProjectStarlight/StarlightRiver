@@ -26,6 +26,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             TileObjectData.newTile.DrawYOffset = 2;
             minPick = int.MaxValue;
+            TileID.Sets.Ore[Type] = true;
+            chest = "Vitric Crystal";//this makes the game think this is a chest, and prevents the tiles below from being broken (as well as meteors avoiding it)
 
             var bottomAnchor = new Terraria.DataStructures.AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
             (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, new Color(200, 255, 230), 16, false, false, "Vitric Ore", bottomAnchor);        
@@ -64,6 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             (this).QuickSetFurniture(2, 2, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
             minPick = int.MaxValue;
+            TileID.Sets.Ore[Type] = true;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)

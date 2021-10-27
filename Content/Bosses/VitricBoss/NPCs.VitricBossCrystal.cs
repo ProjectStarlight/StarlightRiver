@@ -295,6 +295,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
 
+            if (state == 3)
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer);
+
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
         }
