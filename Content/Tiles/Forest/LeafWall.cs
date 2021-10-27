@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Tiles.Forest
         public override void SetDefaults()
         {
             Main.wallHouse[Type] = false;
+            WallID.Sets.Conversion.Grass[Type] = true;
             dustType = DustID.Grass;
             soundType = SoundID.Grass;
             AddMapEntry(new Color(50, 140, 90));
