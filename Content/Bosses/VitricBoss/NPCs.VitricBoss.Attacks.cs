@@ -134,7 +134,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
-                    crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - npc.Center).RotatedBy(-(AttackTimer - 360) / 480 * 4.72f);
+                    float addedRotation = crystals.Count(n => n.ai[0] == 3) * 2.2f;
+                    crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - npc.Center).RotatedBy(-(AttackTimer - 360) / 480 * (4.72f + addedRotation));
 
                     //the chosen "favorite" or master crystal is the one where our opening should be
                     if (k != favoriteCrystal)
