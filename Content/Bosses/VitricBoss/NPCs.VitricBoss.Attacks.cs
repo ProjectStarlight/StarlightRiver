@@ -256,6 +256,56 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (AttackTimer > 360) ResetAttack();
         }
 
+        private void CrystalSmashSpaced()
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                NPC crystal = crystals[k];
+                VitricBossCrystal crystalModNPC = crystal.modNPC as VitricBossCrystal;
+
+                if (AttackTimer == 60) //set motion points correctly
+                {
+                    crystal.ai[2] = 0; //set the crystal into normal mode
+                    crystalModNPC.StartPos = crystal.Center;
+                    crystalModNPC.TargetPos = homePos + new Vector2(-500 + k * 333, -400); //endpoint is above the player
+                }
+
+                if (AttackTimer >= 60 && AttackTimer <= 120) //move the crystal there
+                {
+                    crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - 60) / 60f);
+                }
+
+                if (AttackTimer == 120) //set the crystal into falling mode after moving
+                {
+                    crystal.ai[2] = 3;
+                    crystal.ai[1] = 0;
+                    crystalModNPC.TargetPos.Y = homePos.Y + 800; //fall through platforms
+                }
+
+                if(AttackTimer > 180)
+                {
+                    Player player = Main.player[npc.target];
+                    int fireRate = 60;
+
+                    if(crystal.ai[0] == 3)
+                    {
+                        fireRate = 35;
+                    }
+
+                    if (Main.expertMode)
+                        fireRate -= 10;
+
+                    if (AttackTimer % fireRate == 0)
+                        Projectile.NewProjectile(crystal.Center, Vector2.Normalize(crystal.Center - player.Center) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
+                }
+            }
+
+
+
+            //ending the attack
+            if (AttackTimer > 360) ResetAttack();
+        }
+
         private void SpikeMines()
         {
             List<Vector2> points = new List<Vector2>();
@@ -282,7 +332,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (timer == 0) 
                     {
-                        if(npc.immortal)
+                        if(npc.dontTakeDamage)
                         {
                             ResetAttack();
                             return;
@@ -384,6 +434,121 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 140f);
 
                 if (timer == 141) ResetAttack(); //reset attack
+            }
+
+        }
+
+        private void PlatformDashRain()
+        {
+            if (AttackTimer == 1) crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
+
+            for (int k = 0; k < 3; k++)
+            {
+                if (AttackTimer >= 140 + k * 140 && AttackTimer < 140 + (k + 1) * 140) //move between each platform
+                {
+                    int timer = (int)AttackTimer - (140 + k * 140); //0 to 240, grabs the relative timer for ease of writing code
+
+                    if (timer == 0)
+                    {
+                        if (npc.immortal)
+                        {
+                            ResetAttack();
+                            return;
+                        }
+
+                        startPos = npc.Center;
+                        endPos = crystalLocations[k] + new Vector2(0, -30);
+                        RandomizeTarget();
+                    } //set positions and randomize the target
+
+                    if (timer < 60)
+                        npc.Center = Vector2.SmoothStep(startPos, endPos, timer / 60f); //move our big sandy boi into the position of a platform
+
+                    if (k % 2 == 0) //pick one of these 2 projectile-based attacks, alternating every other platform
+                    {
+                        if (timer < 30)
+                        {
+                            SetFrameY(2);
+
+                            int x = (int)(timer / 30f * 2);
+                            SetFrameX(x);
+                        }
+
+                        if (timer > 70 && timer < 130)
+                        {
+                            int x = 2 + (int)(((timer - 70) % 10) / 10f * 2);
+                            SetFrameX(x);
+                        }
+
+                        if (Main.expertMode) //expert variant of spike burst
+                        {
+                            if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 6 spikes
+                            {
+                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+
+                                var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
+                                var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
+                                var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
+
+                                Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
+                                Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+                            }
+                        }
+                        else //regular spike burst
+                        {
+                            if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
+                            {
+                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+
+                                var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
+                                var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
+
+                                Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
+                                Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
+                            }
+                        }
+
+                        if (timer > 110)
+                            SetFrameY(0);
+                    }
+                }
+            }
+
+            if (AttackTimer == 140 + 140 * 2) startPos = npc.Center; //set where we are to the start
+
+            if (AttackTimer > 140 + 140 * 2) //going home
+            {
+                int timer = (int)AttackTimer - (140 + 2 * 140);
+                npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 140f);
+
+                if(timer > 140 && timer <= 200)
+                {
+                    SetFrameY(4);
+                    SetFrameX((int)((timer - 140) / 60f * 10));
+                }
+
+                if(timer == 180)
+                {
+                    for(int k = 0; k < 10; k++)
+                    {
+                        Vector2 target = new Vector2(Main.rand.Next(-10, 10) * 100, 500);
+                        SpawnDart(npc.Center, npc.Center + new Vector2(target.X / 2, -500), npc.Center + target, Main.rand.Next(60, 120));
+                    }
+                }
+
+                if(timer > 240 && timer < 300)
+                {
+                    SetFrameY(4);
+                    SetFrameX(9 - (int)((timer - 240) / 60f * 10));
+                }
+
+                if (timer == 301)
+                {
+                    SetFrameY(0);
+                    SetFrameX(0);
+                }
+
+                if (timer == 320) ResetAttack(); //reset attack
             }
 
         }
