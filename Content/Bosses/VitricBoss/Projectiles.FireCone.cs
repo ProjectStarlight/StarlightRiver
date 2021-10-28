@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f - 0.5f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
                 }
 
-                if (projectile.ai[0] == 78)
+                if (projectile.ai[1] == 1 && projectile.ai[0] == 78)
                 {
                     Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f + 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
                     Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f - 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);

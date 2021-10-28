@@ -71,13 +71,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetDefaults()
         {
             npc.aiStyle = -1;
-            npc.lifeMax = 5750;
+            npc.lifeMax = 6000;
             npc.damage = 30;
             npc.defense = 10;
             npc.knockBackResist = 0f;
             npc.width = 140;
             npc.height = 120;
-            npc.value = Item.buyPrice(0, 20, 0, 0);
+            npc.value = Item.buyPrice(0, 40, 0, 0);
             npc.npcSlots = 100f;
             npc.dontTakeDamage = true;
             npc.friendly = false;
@@ -105,9 +105,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(8500 * bossLifeScale);
+            npc.lifeMax = (int)(9000 * bossLifeScale);
             npc.damage = 40;
-            npc.defense = 12;
+            npc.defense = 14;
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -490,7 +490,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         case 0: MakeCrystalVulnerable(); break;
                         case 1: FireCage(); break;
-                        case 2: if (altAttack) CrystalSmashSpaced(); else CrystalSmash(); break;
+                        case 2: if (altAttack && BrokenCount >= 1) CrystalSmashSpaced(); else CrystalSmash(); break;
                         case 3: SpikeMines(); break;
                         case 4: if (altAttack) PlatformDashRain(); else PlatformDash(); break;
                     }

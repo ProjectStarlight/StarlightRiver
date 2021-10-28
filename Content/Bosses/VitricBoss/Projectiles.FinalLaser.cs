@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (LaserTimer == 135)
-                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 0.7f, 0, projectile.Center);
+                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, projectile.Center);
 
                 //if (LaserTimer == 150)
                 //Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     parent.npc.position += Vector2.Normalize(endpoint - projectile.Center) * -4.0f;
 
-                    float laserSpeed = Main.expertMode ? 0.015f : 0.0125f;
+                    float laserSpeed = Main.expertMode ? 0.0165f : 0.0135f;
 
                     for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
                     {
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         if (player.active && !player.dead && Helpers.Helper.CheckLinearCollision(projectile.Center, endpoint, player.Hitbox, out point))
                         {
-                            player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was reduced to ash"), 35, 0, false, false, false, 5);
+                            player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was reduced to ash"), Main.expertMode ? 45 : 35, 0, false, false, false, 5);
                             endpoint = point;
                             break;
                         }
