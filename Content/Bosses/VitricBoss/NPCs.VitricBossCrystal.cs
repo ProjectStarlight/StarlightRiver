@@ -233,9 +233,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     npc.friendly = false;
 
-                    if (timer < 30)
+                    int riseTime = 30 - Parent.BrokenCount * 4;
+
+                    if (timer < riseTime)
                     {
-                        npc.position.Y -= (30 - timer) / 2.5f;
+                        npc.position.Y -= (riseTime - timer) / 2.5f;
                         break;
                     }
 

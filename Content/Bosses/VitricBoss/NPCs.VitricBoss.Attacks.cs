@@ -13,11 +13,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
     {
+        public int BrokenCount => crystals.Count(n => n.ai[0] == 3);
+
         public void ResetAttack()
         {
             AttackTimer = 0;
             SetFrameY(0);
         }
+
         private void RandomizeTarget()
         {
             List<int> players = new List<int>();
@@ -42,6 +45,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 possibleLocations.ForEach(n => n += new Vector2(0, -48));
                 possibleLocations = Helper.RandomizeList(possibleLocations);
 
+                startPos = npc.Center;
+
                 for (int k = 0; k < crystals.Count; k++)
                 {
                     NPC crystalNpc = crystals[k];
@@ -54,6 +59,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalNpc.ai[2] = 1; //set them into this attack's mode
                 }
             }
+
+            if (AttackTimer < 60)
+                npc.Center = Vector2.SmoothStep(startPos, homePos, AttackTimer / 60f);
 
             if (AttackTimer == 180)
             {
@@ -76,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
                 RandomizeTarget();
-                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0); //spawn a sand cone attack
+                int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, BrokenCount >= 1 ? 1 : 0); //fire cone
 
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
 
@@ -134,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
-                    float addedRotation = crystals.Count(n => n.ai[0] == 3) * 2.2f;
+                    float addedRotation = BrokenCount * (Main.expertMode ? 2.3f : 1.8f);
                     crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - npc.Center).RotatedBy(-(AttackTimer - 360) / 480 * (4.72f + addedRotation));
 
                     //the chosen "favorite" or master crystal is the one where our opening should be
@@ -222,13 +230,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer > 270) npc.Center = Vector2.SmoothStep(startPos, endPos, (AttackTimer - 270) / 90); //smoothstep back to the center
 
+            int lockSpeed = 60 - BrokenCount * (Main.expertMode ? 7 : 4);
 
             //Crystals during the attack
             for (int k = 0; k < 4; k++)
             {
                 NPC crystal = crystals[k];
                 VitricBossCrystal crystalModNPC = crystal.modNPC as VitricBossCrystal;
-                if (AttackTimer == 60 + k * 60) //set motion points correctly
+                if (AttackTimer == lockSpeed + k * lockSpeed) //set motion points correctly
                 {
                     RandomizeTarget(); //pick a random target to smash a crystal down
 
@@ -238,13 +247,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalModNPC.TargetPos = new Vector2(player.Center.X + player.velocity.X * 50, player.Center.Y - 250); //endpoint is above the player
                     crystalModNPC.TargetPos.X = MathHelper.Clamp(crystalModNPC.TargetPos.X, homePos.X - 800, homePos.X + 800);
                 }
-
-                if (AttackTimer >= 60 + k * 60 && AttackTimer <= 60 + (k + 1) * 60) //move the crystal there
+             
+                if (AttackTimer >= lockSpeed + k * lockSpeed && AttackTimer <= lockSpeed + (k + 1) * lockSpeed) //move the crystal there
                 {
-                    crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - (60 + k * 60)) / 60);
+                    crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - (lockSpeed + k * lockSpeed)) / lockSpeed);
                 }
 
-                if (AttackTimer == 60 + (k + 1) * 60) //set the crystal into falling mode after moving
+                if (AttackTimer == lockSpeed + (k + 1) * lockSpeed) //set the crystal into falling mode after moving
                 {
                     Player player = Main.player[npc.target];
                     crystal.ai[2] = 3;
@@ -254,7 +263,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             //ending the attack
-            if (AttackTimer > 360) ResetAttack();
+            if (AttackTimer > 120 + lockSpeed * 4) ResetAttack();
         }
 
         private void CrystalSmashSpaced()
@@ -287,17 +296,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     Player player = Main.player[npc.target];
                     int fireRate = 60;
+                    float variance = 0;
 
                     if(crystal.ai[0] == 3)
                     {
                         fireRate = 35;
+                        variance = 0.5f;
                     }
 
                     if (Main.expertMode)
                         fireRate -= 10;
 
                     if (AttackTimer % fireRate == 0)
-                        Projectile.NewProjectile(crystal.Center, Vector2.Normalize(crystal.Center - player.Center) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
+                        Projectile.NewProjectile(crystal.Center + new Vector2(0, -32), Vector2.Normalize(crystal.Center - player.Center).RotatedByRandom(variance) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
+
+                    if (AttackTimer % 10 == 0)
+                        Dust.NewDustPerfect(crystal.Center, DustType<LavaSpew>());
                 }
             }
 
@@ -396,9 +410,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
                     else
                     {
-                        if (timer == 60) //sand cone
+                        if (timer == 60) //fire cone
                         {
-                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0);
+                            int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, BrokenCount >= 1 ? 1 : 0);
 
                             float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
 
@@ -443,7 +457,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (AttackTimer == 1) crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
 
-            for (int k = 0; k < 3; k++)
+            for (int k = 0; k < 1; k++)
             {
                 if (AttackTimer >= 140 + k * 140 && AttackTimer < 140 + (k + 1) * 140) //move between each platform
                 {
@@ -451,21 +465,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (timer == 0)
                     {
-                        if (npc.immortal)
-                        {
-                            ResetAttack();
-                            return;
-                        }
-
                         startPos = npc.Center;
-                        endPos = crystalLocations[k] + new Vector2(0, -30);
+                        endPos = crystalLocations[Main.rand.Next(crystalLocations.Count)] + new Vector2(0, -30);
                         RandomizeTarget();
                     } //set positions and randomize the target
 
                     if (timer < 60)
                         npc.Center = Vector2.SmoothStep(startPos, endPos, timer / 60f); //move our big sandy boi into the position of a platform
 
-                    if (k % 2 == 0) //pick one of these 2 projectile-based attacks, alternating every other platform
+                    if (k % 2 == 0) 
                     {
                         if (timer < 30)
                         {
@@ -483,7 +491,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         if (Main.expertMode) //expert variant of spike burst
                         {
-                            if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 6 spikes
+                            if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 8 spikes
                             {
                                 Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
@@ -515,43 +523,56 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
-            if (AttackTimer == 140 + 140 * 2) startPos = npc.Center; //set where we are to the start
+            if (AttackTimer == 280) startPos = npc.Center; //set where we are to the start
 
-            if (AttackTimer > 140 + 140 * 2) //going home
+            if (AttackTimer > 280) //going home
             {
-                int timer = (int)AttackTimer - (140 + 2 * 140);
-                npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 140f);
+                rotationLocked = true;
+                lockedRotation = 1.57f;
 
-                if(timer > 140 && timer <= 200)
+                int timer = (int)AttackTimer - 280;
+                npc.Center = Vector2.SmoothStep(startPos, homePos, timer / 60f);
+
+                if (timer == 60)
+                    Helper.PlayPitched("VitricBoss/ceiroslidopen", 0.5f, 0.5f, npc.Center);
+
+                if (timer > 60 && timer < 120)
                 {
                     SetFrameY(4);
-                    SetFrameX((int)((timer - 140) / 60f * 10));
+                    SetFrameX((int)((timer - 60) / 60f * 10));
                 }
 
-                if(timer == 180)
+                if (timer == 130)
                 {
-                    for(int k = 0; k < 10; k++)
+                    Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
+
+                    for (int k = 0; k < 10; k++)
                     {
                         Vector2 target = new Vector2(Main.rand.Next(-10, 10) * 100, 500);
                         SpawnDart(npc.Center, npc.Center + new Vector2(target.X / 2, -500), npc.Center + target, Main.rand.Next(60, 120));
                     }
                 }
 
-                if(timer > 240 && timer < 300)
+                if (timer == 150)
+                    Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.5f, npc.Center);
+
+                if (timer > 150 && timer < 210)
                 {
                     SetFrameY(4);
-                    SetFrameX(9 - (int)((timer - 240) / 60f * 10));
+                    SetFrameX(9 - (int)((timer - 150) / 60f * 10));
                 }
 
-                if (timer == 301)
+                if (timer > 120 && timer < 150)
+                    SetFrameX(9);
+
+                if (timer == 211)
                 {
                     SetFrameY(0);
                     SetFrameX(0);
                 }
 
-                if (timer == 320) ResetAttack(); //reset attack
+                if (timer == 220) ResetAttack(); //reset attack
             }
-
         }
         #endregion
 
@@ -705,24 +726,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 32, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 32, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 32, 0);
             }
             else
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 32, 0);
 
                 if (AttackTimer == 35 && npc.life <= npc.lifeMax * 0.33f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 32, 0);
 
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
-                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 38, 0);
+                    Projectile.NewProjectile(npc.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 32, 0);
             }
 
             if(AttackTimer == 40)

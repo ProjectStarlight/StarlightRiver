@@ -91,12 +91,24 @@ namespace StarlightRiver.Content.CustomHooks
                 if (tile != null && !tileBlock && wallBlock && !lava && !lit)
                 {
                     var yOff = j - StarlightWorld.VitricBiome.Y;
+
+                    var mult = (0.8f + (Main.dayTime ? (float)System.Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)System.Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
+
+                    if (mult > 1)
+                        mult = 1;
+
                     var progress = 0.5f + (yOff / ((float)StarlightWorld.VitricBiome.Height)) * 0.7f;
                     progress = MathHelper.Max(0.5f, progress);
 
-                    r = (0.3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0)) * progress;
-                    g = (0.48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0)) * progress;
-                    b = (0.65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0)) * progress;
+                    r = (0.3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0)) * progress * mult;
+                    g = (0.48f + (yOff > 70 ? ((yOff - 70) * 0.0005f) : 0)) * progress * mult;
+                    b = (0.65f - (yOff > 70 ? ((yOff - 70) * 0.005f) : 0)) * progress * mult;
+
+                    if (yOff > 90 && mult < 1)
+                    {
+                        r += (1 - mult * mult) * (progress) * 0.6f;
+                        g += (1 - mult * mult) * (progress) * 0.2f;
+                    }
                 }
             }
         }

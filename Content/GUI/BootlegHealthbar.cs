@@ -55,6 +55,9 @@ namespace StarlightRiver.Content.GUI
 		{
             Recalculate();
 
+            if (tracked is null)
+                return;
+
             if (tracked.life <= 0 || !tracked.active)
 			{             
                 if (Timer == 0)
