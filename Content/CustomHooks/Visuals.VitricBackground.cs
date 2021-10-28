@@ -138,9 +138,13 @@ namespace StarlightRiver.Content.CustomHooks
 
                         var progress = (float)Math.Sin(Main.GameUpdateCount / 50f);
                         var color = new Color(255, 255, 100);
+                        var colorAdd = 0f;
 
-                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + progress * 0.2f), false);
-                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + progress * 0.2f), false);
+                        if (!Main.dayTime)
+                            colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);
+
+                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
+                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
 
                         Main.spriteBatch.End();
                         Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -153,12 +157,24 @@ namespace StarlightRiver.Content.CustomHooks
                 int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
                 for (int k = (int)(screenCenterX - basepoint.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - basepoint.X) + (int)(Main.screenWidth * 1.5f); k += 30)
                 {
-                    Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(12000), 1800);
-                    if (Main.rand.Next(400) == 0)
-                        BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.3f, -0.3f)), 0, 0, Color.White, 2400, spawnPos));
+                    if (Main.bloodMoon)
+                    {
+                        Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(12000), 0);
+                        if (Main.rand.Next(400) == 0)
+                            BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(0.3f, 1.3f)), 0, 0, Color.Red, 2400, spawnPos));
 
-                    if (Main.rand.Next(1300) == 0)
-                        ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.9f, -0.3f)), 0, 0, Color.White, 1800, spawnPos));
+                        if (Main.rand.Next(1300) == 0)
+                            ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(0.3f, 1.9f)), 0, 0, Color.Red, 1800, spawnPos));
+                    }
+                    else
+                    {
+                        Vector2 spawnPos = basepoint + new Vector2(2000 + Main.rand.Next(12000), 1800);
+                        if (Main.rand.Next(400) == 0)
+                            BackgroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.3f, -0.3f)), 0, 0, Color.White, 2400, spawnPos));
+
+                        if (Main.rand.Next(1300) == 0)
+                            ForegroundParticles.AddParticle(new Particle(new Vector2(0, basepoint.Y + 1600), new Vector2(0, Main.rand.NextFloat(-1.9f, -0.3f)), 0, 0, Color.White, 1800, spawnPos));
+                    }
                 }
 
                 Main.spriteBatch.End();
@@ -212,7 +228,15 @@ namespace StarlightRiver.Content.CustomHooks
 
         private static void DrawLayer(Vector2 basepoint, Texture2D texture, float parallax, Vector2 off = default, Color color = default, bool flip = false)
         {
-            if (color == default) color = Color.White;
+            if (color == default)
+            {
+                color = Color.White;
+
+                byte a = color.A;
+
+                color *= (0.8f + (Main.dayTime ? (float)Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
+                color.A = a;
+            }
 
             for (int k = 0; k <= 5; k++)
             {
