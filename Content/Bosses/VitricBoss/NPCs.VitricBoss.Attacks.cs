@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
     {
-        private int BrokenCount => crystals.Count(n => n.ai[0] == 3);
+        public int BrokenCount => crystals.Count(n => n.ai[0] == 3);
 
         public void ResetAttack()
         {
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
-                    float addedRotation = BrokenCount * 2.4f;
+                    float addedRotation = BrokenCount * (Main.expertMode ? 2.3f : 1.8f);
                     crystal.Center = npc.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - npc.Center).RotatedBy(-(AttackTimer - 360) / 480 * (4.72f + addedRotation));
 
                     //the chosen "favorite" or master crystal is the one where our opening should be
@@ -230,13 +230,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer > 270) npc.Center = Vector2.SmoothStep(startPos, endPos, (AttackTimer - 270) / 90); //smoothstep back to the center
 
+            int lockSpeed = 60 - BrokenCount * (Main.expertMode ? 7 : 4);
 
             //Crystals during the attack
             for (int k = 0; k < 4; k++)
             {
                 NPC crystal = crystals[k];
                 VitricBossCrystal crystalModNPC = crystal.modNPC as VitricBossCrystal;
-                if (AttackTimer == 60 + k * 60) //set motion points correctly
+                if (AttackTimer == lockSpeed + k * lockSpeed) //set motion points correctly
                 {
                     RandomizeTarget(); //pick a random target to smash a crystal down
 
@@ -246,13 +247,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalModNPC.TargetPos = new Vector2(player.Center.X + player.velocity.X * 50, player.Center.Y - 250); //endpoint is above the player
                     crystalModNPC.TargetPos.X = MathHelper.Clamp(crystalModNPC.TargetPos.X, homePos.X - 800, homePos.X + 800);
                 }
-
-                if (AttackTimer >= 60 + k * 60 && AttackTimer <= 60 + (k + 1) * 60) //move the crystal there
+             
+                if (AttackTimer >= lockSpeed + k * lockSpeed && AttackTimer <= lockSpeed + (k + 1) * lockSpeed) //move the crystal there
                 {
-                    crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - (60 + k * 60)) / 60);
+                    crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - (lockSpeed + k * lockSpeed)) / lockSpeed);
                 }
 
-                if (AttackTimer == 60 + (k + 1) * 60) //set the crystal into falling mode after moving
+                if (AttackTimer == lockSpeed + (k + 1) * lockSpeed) //set the crystal into falling mode after moving
                 {
                     Player player = Main.player[npc.target];
                     crystal.ai[2] = 3;
@@ -262,7 +263,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             //ending the attack
-            if (AttackTimer > 360) ResetAttack();
+            if (AttackTimer > 120 + lockSpeed * 4) ResetAttack();
         }
 
         private void CrystalSmashSpaced()
@@ -295,17 +296,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     Player player = Main.player[npc.target];
                     int fireRate = 60;
+                    float variance = 0;
 
                     if(crystal.ai[0] == 3)
                     {
                         fireRate = 35;
+                        variance = 0.5f;
                     }
 
                     if (Main.expertMode)
                         fireRate -= 10;
 
                     if (AttackTimer % fireRate == 0)
-                        Projectile.NewProjectile(crystal.Center, Vector2.Normalize(crystal.Center - player.Center) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
+                        Projectile.NewProjectile(crystal.Center + new Vector2(0, -32), Vector2.Normalize(crystal.Center - player.Center).RotatedByRandom(variance) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
 
                     if (AttackTimer % 10 == 0)
                         Dust.NewDustPerfect(crystal.Center, DustType<LavaSpew>());
