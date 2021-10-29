@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         fireRate -= 10;
 
                     if (AttackTimer % fireRate == 0)
-                        Projectile.NewProjectile(crystal.Center + new Vector2(0, -32), Vector2.Normalize(crystal.Center - player.Center).RotatedByRandom(variance) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), npc.damage, 0, Main.myPlayer);
+                        Projectile.NewProjectile(crystal.Center + new Vector2(0, -32), Vector2.Normalize(crystal.Center - player.Center).RotatedByRandom(variance) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), 26, 0, Main.myPlayer);
 
                     if (AttackTimer % 10 == 0)
                         Dust.NewDustPerfect(crystal.Center, DustType<LavaSpew>());
