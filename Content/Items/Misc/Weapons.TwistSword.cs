@@ -14,17 +14,19 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	class TwistSword : ModItem
     {
+        public int charge = 0;
+
         int timer = 0;
 
         public override string Texture => AssetDirectory.MiscItem + Name;
+
+        public override bool CloneNewInstances => true;
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Twisted Greatsword");
             Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to accelerate upward");
         }
-
-        public int charge = 240;
 
 		public override bool Autoload(ref string name)
 		{
@@ -48,7 +50,19 @@ namespace StarlightRiver.Content.Items.Misc
             item.noUseGraphic = true;
         }
 
-        public override bool CanUseItem(Player player) => charge > 40;
+		public override ModItem Clone(Item item)
+		{
+			var clone = base.Clone(item);
+
+            item.modItem.HoldItem(Main.LocalPlayer);
+
+            (clone as TwistSword).charge = (item.modItem as TwistSword).charge;
+            (clone as TwistSword).timer = (item.modItem as TwistSword).timer;
+          
+            return clone;
+		}
+
+		public override bool CanUseItem(Player player) => charge > 40;
 
         public override bool UseItem(Player player)
         {
@@ -60,10 +74,13 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (player.channel)
             {
-                timer++; 
+                timer++;
 
-                if(player.controlJump && timer % 2 == 1)
+                if (player.controlJump && timer % 2 == 1)
+                {
+                    charge--;
                     timer++;
+                }
 
                 player.fallStart = (int)player.position.Y / 16;
 
@@ -91,16 +108,27 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (charge <= 0) 
                 player.channel = false;
+
+            if (charge < 600 && !player.channel)
+            {
+                if (player.velocity.Y == 0)
+                    charge += 10;
+                else
+                    charge += 2;
+            }
         }
 
         public override void UpdateInventory(Player player)
         {
-            if (charge < 800 && !player.channel)
+            if (player.HeldItem != item)
             {
-                if (player.velocity.Y == 0)
-                    charge += 20;
-                else
-                    charge += 5;
+                if (charge < 600 && !player.channel)
+                {
+                    if (player.velocity.Y == 0)
+                        charge += 10;
+                    else
+                        charge += 2;
+                }
             }
         }
 
@@ -114,8 +142,8 @@ namespace StarlightRiver.Content.Items.Misc
                 var tex = GetTexture(AssetDirectory.GUI + "SmallBar1");
                 var tex2 = GetTexture(AssetDirectory.GUI + "SmallBar0");
                 Point pos = (drawPlayer.Center + new Vector2(-tex.Width / 2, -40) + Vector2.UnitY * drawPlayer.gfxOffY - Main.screenPosition).ToPoint();
-                Rectangle target = new Rectangle(pos.X, pos.Y, (int)(charge / 800f * tex.Width), tex.Height);
-                Rectangle source = new Rectangle(0, 0, (int)(charge / 800f * tex.Width), tex.Height);
+                Rectangle target = new Rectangle(pos.X, pos.Y, (int)(charge / 600f * tex.Width), tex.Height);
+                Rectangle source = new Rectangle(0, 0, (int)(charge / 600f * tex.Width), tex.Height);
                 Rectangle target2 = new Rectangle(pos.X, pos.Y + 2, tex2.Width, tex2.Height);
                 Vector3 color = Vector3.Lerp(Color.Red.ToVector3(), Color.Aqua.ToVector3(), charge / 800f);
 
