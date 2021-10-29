@@ -4,4 +4,13 @@ This is a demo release. Everything here is subject to change. Report issues to h
 
 Starlight River is a content mod with a focus on high quality and balanced content that expands on all aspects of game. Join our Discord server for help and spoilers: https://discord.gg/snWQ3QE
 
-among us
+
+Special thanks to...
+
+Our developers: Ariame, Cultist, Daim, Dominic Karma, egshels, GabeHasWon, Gilded Turtle, Graydee, JellyFish, Kiraaaa, Nomis, OS, Oli, Pacnysam, pkpseudo, QuestionMark, Salvati, Sbubby, ScalarVector, Stevie, SuperAndyHero, Tobias, Trensient, Vinh, Void, Wasabi
+
+Our contributors: Alena, Alexander D. Moon, AwokenEngima, Blanc, Bravos, Calming, Darkpuppey, Davslav, Dual, Duranni, Energykid, Firel, Gallagade, IbanPlay, Iggysaur, Inkplasm, Invalid, JaceDaDorito, Jax, Lionspride, Lunatix, Monstrabot, Moonbee, Nat, SammySemicolon, Santra, Vectix, Vroomy, Webmilio, WhiteIce, Xelo, Zandora / Azura, Zoroarkcity
+
+Our patrons: 123nick, 501warhead, A Sponge, AetherBreaker, Andrey Mogilnikov, Asteros TheGreat, Blub, Ghillie, Lucky, PixelatedFireball, Plebius, Spencer Gilbert, SuperMage, Tury240, WH0S
+
+Our testers: AP STP, Ace, Anarchy, Arkh, Blind, BlurredTheLines, Cake, CantWontDo, CptZucchini, Davslav, Dottedboxguy, FuryForged, GalaxyNemesis, Gitgudwo, Hana, Invalid, Kostya, Krazysamurai, Lemmy, Max, Megasweave, Noddlescript, Onyx, ParchmentEngineer, Pope, RaisinJuice.Co, Velvet, Virukino, Waasephi, Yakumo
