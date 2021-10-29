@@ -65,7 +65,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer == 180)
             {
-                crystals.FirstOrDefault(n => n.ai[0] == 2).ai[0] = 0;
+                var crystal = crystals.FirstOrDefault(n => n.ai[0] == 2);
+
+                if(crystal != null)
+                    crystal.ai[0] = 0;
             }
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0)
