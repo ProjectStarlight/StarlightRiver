@@ -4,12 +4,14 @@ using StarlightRiver.Codex;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -48,11 +50,25 @@ namespace StarlightRiver.Content.CustomHooks
             UIText text = info.GetValue(self) as UIText;
 
             text.Left.Set(280, 0);
-		}
+
+            UICharacter character = (UICharacter)_playerPanel.GetValue(self);
+            Player player = (Player)_player.GetValue(character);
+            MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
+
+            if (mp3.medals.Count > 0) //expand only if medals are earned
+            {
+                self.Height.Set(152, 0);
+
+                var elements = (List<UIElement>)Elements.GetValue(self);
+                foreach (UIElement e in elements.Where(n => n.VAlign == 1))
+                    e.Top.Set(-56, 0);
+            }
+        }
 
 		//TODO: Create a reflection cache for this, or implement a global reflection caching utility
 		private readonly FieldInfo _playerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
         private readonly FieldInfo _player = typeof(UICharacter).GetField("_player", BindingFlags.NonPublic | BindingFlags.Instance);
+        private readonly FieldInfo Elements = typeof(UIElement).GetField("Elements", BindingFlags.NonPublic | BindingFlags.Instance);
 
         private void DrawSpecialCharacter(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
         {
@@ -65,6 +81,7 @@ namespace StarlightRiver.Content.CustomHooks
             Player player = (Player)_player.GetValue(character);
             AbilityHandler mp = player.GetHandler();
             CodexHandler mp2 = player.GetModPlayer<CodexHandler>();
+            MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
 
             if (mp == null || mp2 == null) { return; }
 
@@ -141,6 +158,27 @@ namespace StarlightRiver.Content.CustomHooks
                 spriteBatch.Draw(barrierTex, target, source, Color.White);
                 spriteBatch.Draw(barrierTex3, lineTarget, lineSource, Color.White);
             }
+
+            if(mp3.medals.Count > 0) //draw medals if any are earned
+			{
+                Rectangle boxMedals = new Rectangle((int)(origin.X + 10), (int)(origin.Y + 96), (int)self.GetDimensions().Width - 20, 50);
+                spriteBatch.Draw(Main.magicPixel, boxMedals, new Color(43, 56, 101)); //Medal box
+
+                for (int k = 0; k < mp3.medals.Count; k++) //Draw all medals
+				{
+                    var medal = mp3.medals[k];
+                    var tex = mp3.GetMedalTexture(medal.name);
+                    var frame = new Rectangle(36 * medal.difficulty, 0, 34, 46);
+
+                    spriteBatch.Draw(tex, origin + new Vector2(14 + k * 42, 98), frame, Color.White);
+
+                    var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
+                    if (rectangle.Contains(Main.MouseScreen.ToPoint()))
+                    {
+                        Utils.DrawBorderString(spriteBatch, medal.ToString(), origin + new Vector2(286, 70), Color.White);
+                    }
+				}
+			}
 
             if( //player is "complete"
                 player.statLifeMax == 500 &&
