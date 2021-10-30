@@ -248,6 +248,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void NPCLoot()
         {
+            foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+            {
+                player.GetModPlayer<MedalPlayer>().ProbeMedal(new Medal("Ceiros", Main.expertMode ? 1 : 0, 1));
+            }
+
             body.SpawnGores2();
 
             for(int k = 0; k < Main.rand.Next(30, 40); k++)
@@ -447,6 +452,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     const int arenaWidth = 1280;
                     const int arenaHeight = 884;
                     arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
+
+                    foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+                    {
+                        player.GetModPlayer<MedalPlayer>().QualifyForMedal(new Medal("Ceiros", Main.expertMode ? 1 : 0, 1));
+                    }
 
                     ChangePhase(AIStates.SpawnAnimation, true);
                     break;
