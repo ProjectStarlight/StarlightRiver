@@ -561,6 +561,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     npc.position.Y += 7;
                     Vignette.visible = false;
+                    Vignette.extraOpacity = 0;
 
                     if (GlobalTimer >= 180)
                     {

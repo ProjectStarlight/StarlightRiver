@@ -23,7 +23,10 @@ namespace StarlightRiver.Content.CustomHooks
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);//Main.spriteBatch.Begin()
 
             foreach (var fg in ForegroundLoader.Foregrounds)
-                fg.Render(Main.spriteBatch);
+            {
+                if(fg != null)
+                    fg.Render(Main.spriteBatch);
+            }
 
             Main.spriteBatch.End();
 
