@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Buffs
 
         public bool Inflicted(NPC npc)
         {
-            if(ModContent.GetModBuff(Type) != null)
+            if(ModContent.GetModBuff(Type) != null && npc.buffImmune.Length > Type)
                 return npc.active && npc.HasBuff(Type);
 
             return false;
