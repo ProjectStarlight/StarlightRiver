@@ -24,15 +24,18 @@ namespace StarlightRiver.Core.Loaders
         {
             if (!Main.dedServ)
             {
-                using (Control threadControl = new Control())
+                if(Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    IntPtr ptr = threadControl.Handle;//this needs to be accessed for it to be generated
-                    if (threadControl.IsHandleCreated)//if the icon doesn't show its its likely because this check failed
-                        threadControl.Invoke((Action)(() => 
-                        { GameForm = (Form)Control.FromHandle(Main.instance.Window.Handle); }));
-                }
+                    using (Control threadControl = new Control())
+                    {
+                        IntPtr ptr = threadControl.Handle;//this needs to be accessed for it to be generated
+                        if (threadControl.IsHandleCreated)//if the icon doesn't show its its likely because this check failed
+                            threadControl.Invoke((Action)(() =>
+                            { GameForm = (Form)Control.FromHandle(Main.instance.Window.Handle); }));
+                    }
 
-                TryFormChanges();
+                    TryFormChanges();
+                }
             }
         }
 
