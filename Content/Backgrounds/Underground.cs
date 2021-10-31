@@ -11,6 +11,9 @@ namespace StarlightRiver.Backgrounds
 
 		void ILoadable.Load()
 		{
+            if (Main.dedServ)
+                return;
+
             StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/Blank");
 
             StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/PermafrostBack");
