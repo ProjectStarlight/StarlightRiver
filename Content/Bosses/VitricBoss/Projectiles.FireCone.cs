@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LavaBurst");
                 Rectangle frame = new Rectangle(0, tex.Height / 7 * (int)((projectile.ai[0] - 66) / 4), tex.Width, tex.Height / 7);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 1, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height / 7), 2, 0, 0);
             }
 
             return false;
