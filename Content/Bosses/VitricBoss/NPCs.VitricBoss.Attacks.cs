@@ -332,7 +332,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)
             {
-                Projectile.NewProjectile(points[k] + Vector2.UnitY * 64, Vector2.Zero, ProjectileType<SpikeMine>(), 25, 0);
+                if (k < points.Count)
+                    Projectile.NewProjectile(points[k] + Vector2.UnitY * 64, Vector2.Zero, ProjectileType<SpikeMine>(), 25, 0);
             }
 
             ResetAttack();
