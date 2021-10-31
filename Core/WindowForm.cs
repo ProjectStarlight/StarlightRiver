@@ -24,7 +24,7 @@ namespace StarlightRiver.Core.Loaders
         {
             if (!Main.dedServ)
             {
-                if(Environment.OSVersion.Platform == PlatformID.Win32NT)
+                if(Environment.OSVersion.Platform == PlatformID.Win32NT && !Environment.Is64BitProcess)
                 {
                     using (Control threadControl = new Control())
                     {
