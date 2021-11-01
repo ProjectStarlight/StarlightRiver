@@ -261,7 +261,12 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-        public override void PlayerConnect(Player player)
+		public override void OnRespawn(Player player)
+		{
+            rotation = 0;
+        }
+
+		public override void PlayerConnect(Player player)
         {
             AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
             packet.Send();
