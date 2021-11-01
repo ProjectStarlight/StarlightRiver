@@ -53,9 +53,9 @@ namespace StarlightRiver.Content.CustomHooks
 
             UICharacter character = (UICharacter)_playerPanel.GetValue(self);
             Player player = (Player)_player.GetValue(character);
-            MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();
+            MedalPlayer mp3 = player.GetModPlayer<MedalPlayer>();         
 
-            if (mp3.medals.Count > 0) //expand only if medals are earned
+            if (mp3.player == player && mp3.medals.Count > 0) //expand only if medals are earned
             {
                 self.Height.Set(152, 0);
 

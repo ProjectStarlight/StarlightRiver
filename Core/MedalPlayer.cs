@@ -60,6 +60,8 @@ namespace StarlightRiver.Core
 
 		public override void Load(TagCompound tag)
 		{
+			medals.Clear();
+
 			var list = new List<Medal>();
 
 			var list2 = tag.GetList<TagCompound>("medals");
