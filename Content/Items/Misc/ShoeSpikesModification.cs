@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class ShoeSpikesModification : GlobalItem
+	public class ShoeSpikesModification : GlobalItem, IPostLoadable
     {
+        private static List<int> ShoeSpikeAccessories = new List<int>();
+
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
             if (ItemIsDerivativeOfShoeSpikes(item))
@@ -42,17 +45,28 @@ namespace StarlightRiver.Content.Items.Misc
         private bool ItemIsDerivativeOfShoeSpikes(Item item)
         {
             if (item.type == ItemID.ShoeSpikes || item.type == ItemID.ClimbingClaws || item.type == ItemID.MasterNinjaGear)
-            {
                 return true;
-            }
 
-            // TODO: This is an attempt at mod compatibility, but to work properly this would likely require a few layers of recursive searching for items with huge crafting trees.
+            return ShoeSpikeAccessories.Contains(item.type);
+        }
+
+		public void PostLoad()
+		{
             RecipeFinder finder = new RecipeFinder();
 
-            finder.SetResult(item.type);
-            finder.AddIngredient(ItemID.ShoeSpikes);
+            for (int k = Main.maxItems; k < ItemLoader.ItemCount; k++)
+            {
+                finder.SetResult(k);
+                finder.AddIngredient(ItemID.ShoeSpikes);
 
-            return finder.SearchRecipes().Count > 0;
+                if (finder.SearchRecipes().Count > 0)
+                    ShoeSpikeAccessories.Add(k);
+            }
         }
-    }
+
+        public void PostLoadUnload()
+		{
+            ShoeSpikeAccessories.Clear();
+        }
+	}
 }
