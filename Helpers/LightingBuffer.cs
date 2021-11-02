@@ -17,6 +17,8 @@ namespace StarlightRiver.Helpers
 
         public static bool GettingColors = false;
 
+        public static VertexBuffer lightingQuadBuffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+
         public RenderTarget2D ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public RenderTarget2D TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public RenderTarget2D TileLightingTempTexture;
@@ -30,6 +32,21 @@ namespace StarlightRiver.Helpers
         static int YMax => (int)(Main.screenHeight / 16 + (PADDING * 2 * factor));
 
         private Config config => ModContent.GetInstance<Config>();
+
+        public static void SetupLightingQuadBuffer()
+        {
+            VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
+
+            verticies[0] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
+            verticies[1] = new VertexPositionColorTexture(new Vector3(1, -1, 0), Color.White, new Vector2(1, 1));
+            verticies[2] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
+
+            verticies[3] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
+            verticies[4] = new VertexPositionColorTexture(new Vector3(-1, 1, 0), Color.White, new Vector2(0, 0));
+            verticies[5] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
+
+            lightingQuadBuffer.SetData(verticies);
+        }
 
         public void ResizeBuffers(int width, int height)
         {
@@ -98,23 +115,12 @@ namespace StarlightRiver.Helpers
 
         private void RenderLightingQuad()
         {
-            if (upscaleEffect is null) return;
+            if (upscaleEffect is null) 
+                return;
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
-            VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
 
-            verticies[0] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
-            verticies[1] = new VertexPositionColorTexture(new Vector3(1, -1, 0), Color.Red, new Vector2(1, 1));
-            verticies[2] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
-
-            verticies[3] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
-            verticies[4] = new VertexPositionColorTexture(new Vector3(-1, 1, 0), Color.Red, new Vector2(0, 0));
-            verticies[5] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
-
-            VertexBuffer buffer = new VertexBuffer(graphics, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
-            buffer.SetData(verticies);
-
-            graphics.SetVertexBuffer(buffer);
+            graphics.SetVertexBuffer(lightingQuadBuffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
             Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);

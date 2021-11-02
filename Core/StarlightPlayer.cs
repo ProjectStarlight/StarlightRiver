@@ -261,7 +261,19 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-        public override void PlayerConnect(Player player)
+		public override void OnRespawn(Player player)
+		{
+            panDown = 0;
+
+            ScreenMoveTime = 0;
+            ScreenMoveTarget = Vector2.Zero;
+            ScreenMovePan = Vector2.Zero;
+
+            rotation = 0;
+            inTutorial = false;
+        }
+
+		public override void PlayerConnect(Player player)
         {
             AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
             packet.Send();
