@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
                 var proj = Main.projectile[k];
 
                 if (!proj.active || proj.aiStyle != 7)
-                    return;
+                    continue;
 
                 if(proj.ai[0] != 1 && proj.timeLeft < 36000 - 3 && proj.Hitbox.Intersects(npc.Hitbox))
 				{
