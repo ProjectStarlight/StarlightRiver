@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
             RecipeFinder finder = new RecipeFinder();
 
-            for (int k = Main.maxItems; k < ItemLoader.ItemCount; k++)
+            for (int k = Main.maxItemTypes; k < ItemLoader.ItemCount; k++)
             {
                 finder.SetResult(k);
                 finder.AddIngredient(ItemID.ShoeSpikes);

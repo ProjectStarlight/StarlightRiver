@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
+            Helpers.LightingBuffer.SetupLightingQuadBuffer();
+
             Main.OnPreDraw += LightingTarget;
             On.Terraria.Main.SetDisplayMode += RefreshLightingTarget;
         }
