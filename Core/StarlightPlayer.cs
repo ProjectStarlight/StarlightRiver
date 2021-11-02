@@ -263,7 +263,14 @@ namespace StarlightRiver.Core
 
 		public override void OnRespawn(Player player)
 		{
+            panDown = 0;
+
+            ScreenMoveTime = 0;
+            ScreenMoveTarget = Vector2.Zero;
+            ScreenMovePan = Vector2.Zero;
+
             rotation = 0;
+            inTutorial = false;
         }
 
 		public override void PlayerConnect(Player player)
