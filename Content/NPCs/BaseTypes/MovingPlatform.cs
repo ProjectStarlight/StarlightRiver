@@ -35,16 +35,33 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         {
             SafeAI();
 
-            foreach (Player player in Main.player)
-                if (new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4).Intersects
-                (new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4)) && player.position.Y <= npc.position.Y)
-                    player.position += npc.velocity;
-
-            foreach (Projectile proj in Main.projectile.Where(n => n.active && n.aiStyle == 7 && n.ai[0] != 1 && n.timeLeft < 36000 - 3 && n.Hitbox.Intersects(npc.Hitbox)))
+            for (int k = 0; k < Main.maxPlayers; k++)
             {
-                proj.ai[0] = 2;
-                proj.netUpdate = true;
+                var player = Main.player[k];
+
+                if (!player.active)
+                    break;
+
+                var playerFeet = new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4);
+                var platformHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4);
+
+                if (playerFeet.Intersects(platformHitbox) && player.position.Y <= npc.position.Y)
+                    player.position += npc.velocity;
             }
+
+            for(int k = 0; k < Main.maxProjectiles; k++)
+			{
+                var proj = Main.projectile[k];
+
+                if (!proj.active || proj.aiStyle != 7)
+                    return;
+
+                if(proj.ai[0] != 1 && proj.timeLeft < 36000 - 3 && proj.Hitbox.Intersects(npc.Hitbox))
+				{
+                    proj.ai[0] = 2;
+                    proj.netUpdate = true;
+                }
+			}
         }
     }
 }
