@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
 		{
-			item.damage = 20;
+			item.damage = 32;
 			item.melee = true;
 			item.width = 36;
 			item.height = 44;
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private float LENGTH = 100;
 
-		private const float SWAY = 10;
+		private const float SWAY = 20;
 
 		private const int MAXCHARGE = 10;
 
@@ -264,7 +264,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 					{
 						if (angularVelocity < 0.6f)
 							angularVelocity *= 1.13f;
-						Vector2 tilePos = Player.Center + ((projectile.rotation).ToRotationVector2() * LENGTH);
+						Vector2 tilePos = Player.Center + ((projectile.rotation + (angularVelocity / 2)).ToRotationVector2() * LENGTH);
 						tilePos.Y += 15;
 						tilePos /= 16;
 
@@ -272,6 +272,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 						{
 							if (Main.tile[(int)tilePos.X, (int)tilePos.Y].collisionType == 1 && angularVelocity != 0 && Math.Sign(projectile.rotation.ToRotationVector2().X) == Math.Sign(direction.X))
 							{
+									for (int i = 0; i < 13; i++)
+									{
+										Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
+										dustVel.X *= 10;
+										Dust.NewDustPerfect((tilePos * 16) - new Vector2(Main.rand.Next(-20, 20), 17), ModContent.DustType<Dusts.CrescentSmoke>(), dustVel, 0, new Color(236, 214, 146) * 0.15f, Main.rand.NextFloat(0.5f, 1));
+									}
+
 								Player.GetModPlayer<StarlightPlayer>().Shake += 12;
 								angularVelocity = 0;
 								attackDuration = 30;
@@ -323,18 +330,30 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override bool? CanHitNPC(NPC target)
         {
-			if (attackDuration <= 0)
+			if (attackDuration <= 0 || pauseTime > 0 || target.immune[projectile.owner] > 0)
 				return false;
             return base.CanHitNPC(target);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			target.immune[projectile.owner] = 20;
+			target.immune[projectile.owner] = 30;
 			if (charge < MAXCHARGE)
 				charge++;
-			pauseTime = 7;
+			Player.GetModPlayer<StarlightPlayer>().Shake += 8;
+
+			if (currentAttack != CurrentAttack.Slam)
+				pauseTime = 7;
         }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			if (currentAttack == CurrentAttack.Slam)
+				damage = (int)(damage * 1.5f);
+
+			if (currentAttack == CurrentAttack.Spin)
+				damage = (int)(damage * 1.5f);
+		}
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
