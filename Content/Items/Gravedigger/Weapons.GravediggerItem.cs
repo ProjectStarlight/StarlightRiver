@@ -364,7 +364,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
     }
 
-	internal class GravediggerSlam : ModProjectile, IDrawOverTiles
+	public class GravediggerSlam : ModProjectile, IDrawOverTiles
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + "GraveDiggerSlam";
 		public override void SetStaticDefaults()
