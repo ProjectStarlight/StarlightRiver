@@ -95,6 +95,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void NPCLoot()
         {
+            for (int k = 0; k < Main.maxPlayers; k++)
+            {
+                Player player = Main.player[k];
+
+                if (player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
+                    player.GetModPlayer<MedalPlayer>().ProbeMedal("Auroracle");
+            }
+
             StarlightWorld.Flag(WorldFlags.SquidBossDowned);
         }
 
@@ -256,7 +264,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Phase = (int)AIStates.SpawnAnimation;
 
                 npc.damage = 0;
-                foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is IcePlatform)) platforms.Add(npc);
+                foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is IcePlatform))
+                {
+                    platforms.Add(npc);
+                }
 
                 spawnPoint = npc.Center;
 
@@ -268,6 +279,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
                 arenaBlocker = Main.npc[i];
+
+                for (int k = 0; k < Main.maxPlayers; k++)
+                {
+                    Player player = Main.player[k];
+
+                    if (player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
+                        player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
+                }
             }
 
             if (Phase == (int)AIStates.SpawnAnimation)

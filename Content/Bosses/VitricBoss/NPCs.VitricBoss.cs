@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
             {
-                player.GetModPlayer<MedalPlayer>().ProbeMedal(new Medal("Ceiros", Main.expertMode ? 1 : 0, 1));
+                player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
             }
 
             body.SpawnGores2();
@@ -455,7 +455,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
                     {
-                        player.GetModPlayer<MedalPlayer>().QualifyForMedal(new Medal("Ceiros", Main.expertMode ? 1 : 0, 1));
+                        player.GetModPlayer<MedalPlayer>().QualifyForMedal("Ceiros", 1);
                     }
 
                     ChangePhase(AIStates.SpawnAnimation, true);
