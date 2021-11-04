@@ -30,11 +30,11 @@ namespace StarlightRiver.Content.Tiles
     {
         public VerletBannerDummy() : base(TileType<VerletBanner>(), 32, 32) { }
 
-        private VerletChainInstance Chain;
+        private VerletChain Chain;
 
         public override void SafeSetDefaults()
         {
-            Chain = new VerletChainInstance(16, false, projectile.Center, 16)
+            Chain = new VerletChain(16, false, projectile.Center, 16)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override void Kill(int timeLeft)
         {
-            VerletChainInstance.toDraw.Remove(Chain);
+            VerletChain.toDraw.Remove(Chain);
         }
     }
 }

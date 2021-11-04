@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     internal class VitricBossSwoosh
     {
         readonly VitricBoss parent;
-        readonly VerletChainInstance chain;
+        readonly VerletChain chain;
         readonly Effect fireEffect;
         Vector2 position;
 
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
 
-                chain = new VerletChainInstance(length, true, parent.npc.Center + position, 8)
+                chain = new VerletChain(length, true, parent.npc.Center + position, 8)
                 {
                     constraintRepetitions = 2,
                     drag = 1.5f,

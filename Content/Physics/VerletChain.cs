@@ -8,12 +8,13 @@ using Terraria;
 
 namespace StarlightRiver.Physics
 {
-	public class VerletChainInstance
+	public class VerletChain
     {
         //static
         public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-        public static List<VerletChainInstance> toDraw = new List<VerletChainInstance>();
+        public static List<VerletChain> toDraw = new List<VerletChain>();
 
+        private static readonly BasicEffect basicEffectColor = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice) { VertexColorEnabled = true };
 
         #region verlet chain example
         /*Chain = new VerletChainInstance //chain example
@@ -65,9 +66,11 @@ namespace StarlightRiver.Physics
         public bool customGravity = false;
         public List<Vector2> forceGravities;//length must match the segment count
 
+        public VertexBuffer meshBuffer;
+
         public List<RopeSegment> ropeSegments;
 
-        public VerletChainInstance(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+        public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
@@ -79,7 +82,7 @@ namespace StarlightRiver.Physics
             //Start(false);
         }
 
-        public VerletChainInstance(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
+        public VerletChain(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
@@ -96,7 +99,7 @@ namespace StarlightRiver.Physics
             //Start(EndPoint != null);
         }
 
-        public VerletChainInstance(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null,
+        public VerletChain(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null,
             bool CustomGravs = false, List<Vector2> SegGravs = null,
             bool CustomDists = false, List<int> SegDists = null)
         {
@@ -231,17 +234,24 @@ namespace StarlightRiver.Physics
                     iterateMethod(i);
         }
 
-        public void PrepareStrip(out VertexBuffer buffer, Vector2 offset, float scale)
+        /// <summary>
+        /// Generates the mesh for this verlet chain if rendered to the banner RenderTarget. If you dont wish to render to this target, use the DrawStrip overload instead.
+        /// </summary>
+        /// <param name="buffer"> the vertex buffer used as the mesh </param>
+        /// <param name="offset"> the offset for the origin of the mesh </param>
+        /// <param name="scale"> the scale factor this should draw with </param>
+        public virtual void PrepareStrip(float scale)
         {
-            var buff = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
+            if(meshBuffer is null)
+                meshBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
             VertexPositionColor[] verticies = new VertexPositionColor[segmentCount * 9 - 6];
 
             float rotation = (ropeSegments[0].posScreen - ropeSegments[1].posScreen).ToRotation() + (float)Math.PI / 2;
 
-            verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + offset + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-            verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + offset + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-            verticies[2] = new VertexPositionColor((ropeSegments[1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[1].color);
+            verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+            verticies[2] = new VertexPositionColor((ropeSegments[1].posScreen).Vec3().ScreenCoord(), ropeSegments[1].color);
 
             for (int k = 1; k < segmentCount - 1; k++)
             {
@@ -250,9 +260,9 @@ namespace StarlightRiver.Physics
                 int point = k * 9 - 6;
                 int off = Math.Min(k, segmentCount - (segmentCount / 4));
 
-                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + offset + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-                verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen + offset).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+                verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+                verticies[point + 2] = new VertexPositionColor((ropeSegments[k + 1].posScreen).Vec3().ScreenCoord(), ropeSegments[k + 1].color);
 
                 int extra = k == 1 ? 0 : 6;
                 verticies[point + 3] = verticies[point];
@@ -264,19 +274,20 @@ namespace StarlightRiver.Physics
                 verticies[point + 8] = verticies[point - (1 + extra)];
             }
 
-            buff.SetData(verticies);
-
-            buffer = buff;
+            meshBuffer.SetData(verticies);
         }
 
-        private static readonly BasicEffect basicEffectColor = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice)
-        {
-            VertexColorEnabled = true
-        };
-
+        /// <summary>
+        /// used for drawing the strip was a mesh without drawing to the render target
+        /// </summary>
+        /// <param name="prepareFunction"> returns the vertex buffer used as the mesh </param>
+        /// <param name="effect"> the shader to apply to the mesh. Defaults to a BasicEffect </param>
+        /// <param name="offset"> the vector passed to prepareFunction as an offset </param>
         public void DrawStrip(Func<Vector2, VertexBuffer> prepareFunction, Effect effect = null, Vector2 offset = default)
         {
-            if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
+            if (!Active || ropeSegments.Count < 1 || Main.dedServ) 
+                return;
+
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
             var buffer = prepareFunction(offset);
@@ -292,24 +303,21 @@ namespace StarlightRiver.Physics
             }
         }
 
-        public void DrawStrip(float scale, Vector2 offset = default)
+        public void DrawStrip(float scale)
         {
-            if (!Active || ropeSegments.Count < 1 || Main.dedServ) return;
-
-            //Main.spriteBatch.Begin();
+            if (!Active || ropeSegments.Count < 1 || Main.dedServ) 
+                return;
 
             GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-            PrepareStrip(out var buffer, offset, scale);
-            graphics.SetVertexBuffer(buffer);
+            PrepareStrip(scale);
+            graphics.SetVertexBuffer(meshBuffer);
 
             foreach (EffectPass pass in basicEffectColor.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, segmentCount * 3 - 2);
             }
-
-            //Main.spriteBatch.End();
         }
 
         public static void DrawStripsPixelated(SpriteBatch spriteBatch)

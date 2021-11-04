@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     class BodyHandler
     {
         private VitricBoss parent;
-        private VerletChainInstance chain;
+        private VerletChain chain;
         private bool stopDrawingBody;
 
         public BodyHandler(VitricBoss parent)
@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             this.parent = parent;
 
             Vector2 end = new Vector2(parent.arena.Center.X, parent.arena.Bottom); //WIP, dunno how this works yet - will not change anything in-game
-            chain = new VerletChainInstance(9, true, parent.npc.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
+            chain = new VerletChain(9, true, parent.npc.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
             chain.drag = 1.1f;
         }
 
