@@ -49,6 +49,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 for (int k = 0; k < crystals.Count; k++)
                 {
+                    if (possibleLocations.Count >= k)
+                        return;
+
                     NPC crystalNpc = crystals[k];
                     VitricBossCrystal crystal = crystalNpc.modNPC as VitricBossCrystal;
 
