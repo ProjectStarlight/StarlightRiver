@@ -34,41 +34,66 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class LowWindBannerDummy : Dummy
     {
-        public LowWindBannerDummy() : base(TileType<LowWindBanner>(), 32, 32) { }
+        public LowWindBannerDummy() : base(TileType<LowWindBanner>(), 16, 200) { }
 
         private RectangularBanner Chain;
+        int blow;
 
-        public override void SafeSetDefaults()
+		public override int ParentY => (int)(projectile.position.Y / 16);
+
+		public override bool ValidTile(Tile tile)
+		{
+			return base.ValidTile(tile);
+		}
+
+		public override void SafeSetDefaults()
         {
-            Chain = new RectangularBanner(16, false, projectile.Center, 16)
+            Chain = new RectangularBanner(16, false, projectile.Center - Vector2.UnitY * 90, 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
-                forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-                scale = 0.6f
+                forceGravity = new Vector2(0f, 1.25f),//gravity x/y
+                scale = 15.0f
             };
         }
 
         public override void Update()
         {
-            Chain.UpdateChain(projectile.Center);
+            Chain.UpdateChain(projectile.Center - Vector2.UnitY * 90);
             Chain.IterateRope(WindForce);
 
             projectile.ai[0] += 0.005f;
+
+            if (blow > 0)
+                blow--;
+            else if (blow < 0)
+                blow++;
         }
 
-        private void WindForce(int index)//wind
+		public override void Collision(Player player)
+		{
+            if (blow == 0)
+                blow = (int)player.velocity.X;
+		}
+
+		private void WindForce(int index)//wind
         {
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            Vector2 pos = Chain.ropeSegments[index].posNow;
 
-            float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
+            if (index > 2)
+            {
+                int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
 
-            float cos = (float)System.Math.Cos(projectile.ai[0]);
-            float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
+                float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset);
+                float sin2 = (float)System.Math.Sin(Main.GameUpdateCount * 0.016f + offset);
 
-            Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 0.2f, Chain.ropeSegments[index].posNow.Y + sin * 0.4f);
+                float power = (float)System.Math.Sin(index / 16f * 3.14f) * 2;
 
-            Color color = new Color(150, 10, 35).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16));
+                pos = new Vector2(Chain.ropeSegments[index].posNow.X + (0.5f + sin2 * 0.5f) * (sin * 0.15f) * power, Chain.ropeSegments[index].posNow.Y);
+                pos.X += blow * 0.2f;
+            }
+
+            Color color = new Color(150, 10, 35).MultiplyRGB(Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16));
 
             Chain.ropeSegments[index].posNow = pos;
             Chain.ropeSegments[index].color = color;
