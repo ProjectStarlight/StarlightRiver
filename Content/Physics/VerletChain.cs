@@ -71,6 +71,10 @@ namespace StarlightRiver.Physics
         public List<RopeSegment> ropeSegments;
 
         public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+        public int simStartOffset = 0;
+        public int simEndOffset = 0;//if zero this gets set to the segment count on start
+
+        public VerletChainInstance(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
@@ -128,6 +132,14 @@ namespace StarlightRiver.Physics
         {
             Init = true;
             Active = true;
+
+            if (simEndOffset == 0)
+            {
+                simEndOffset = segmentCount;
+                if (useEndPoint)
+                    simEndOffset--;
+            }
+
             ropeSegments = new List<RopeSegment>();
 
             Vector2 nextRopePoint = startPoint;
@@ -151,6 +163,9 @@ namespace StarlightRiver.Physics
                         nextRopePoint.Y += distance;
                 }
             }
+
+            if (useEndPoint)
+                ropeSegments[simEndOffset].posNow = endPoint;
         }
 
         public void UpdateChain(Vector2 Start, Vector2 End)
@@ -177,7 +192,7 @@ namespace StarlightRiver.Physics
 
         private void Simulate()
         {
-            for (int i = 0; i < segmentCount; i++)
+            for (int i = simStartOffset; i < simEndOffset; i++)
             {
                 RopeSegment segment = ropeSegments[i];
                 Vector2 velocity = (segment.posNow - segment.posOld) / drag;
@@ -189,16 +204,16 @@ namespace StarlightRiver.Physics
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
             {
                 if (useStartPoint)
-                    ropeSegments[0].posNow = startPoint;
-                if (useEndPoint)
-                    ropeSegments[segmentCount - 1].posNow = endPoint;
+                    ropeSegments[simStartOffset].posNow = startPoint;
+                //if (useEndPoint)
+                //    ropeSegments[simEndOffset].posNow = endPoint;//if the end point clamp breaks, check this
                 ApplyConstraint();
             }
         }
 
         private void ApplyConstraint()
         {
-            for (int i = 0; i < segmentCount - 1; i++)
+            for (int i = simStartOffset; i < simEndOffset - 1; i++)
             {
                 float segmentDist = customDistances ? segmentDistances[i] : segmentDistance;
 
@@ -227,9 +242,16 @@ namespace StarlightRiver.Physics
             }
         }
 
-        public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index
+        public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index, limited to rope range
         {
-            if(Active)
+            if (Active)
+                for (int i = simStartOffset; i < simEndOffset; i++)
+                    iterateMethod(i);
+        }
+
+        public void IterateRopeFull(Action<int> iterateMethod) //method for stuff other than drawing
+        {
+            if (Active)
                 for (int i = 0; i < segmentCount; i++)
                     iterateMethod(i);
         }
