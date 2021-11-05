@@ -70,11 +70,10 @@ namespace StarlightRiver.Physics
 
         public List<RopeSegment> ropeSegments;
 
-        public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         public int simStartOffset = 0;
         public int simEndOffset = 0;//if zero this gets set to the segment count on start
 
-        public VerletChainInstance(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+        public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
@@ -82,8 +81,6 @@ namespace StarlightRiver.Physics
 
             if (!specialDraw)
                 toDraw.Add(this);
-
-            //Start(false);
         }
 
         public VerletChain(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
