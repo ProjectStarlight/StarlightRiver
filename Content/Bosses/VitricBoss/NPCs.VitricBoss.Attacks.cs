@@ -36,11 +36,29 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.target = players[random];
         }
 
+        private void BuildCrystalLocations()
+		{
+            crystalLocations.Clear();
+
+            for (int k = 0; k < Main.maxNPCs; k++) //finds all the large platforms to add them to the list of possible locations for the nuke attack
+            {
+                NPC npc = Main.npc[k];
+
+                if (npc != null && npc.active && (npc.type == NPCType<VitricBossPlatformUp>() || npc.type == NPCType<VitricBossPlatformDown>()))
+                    crystalLocations.Add(npc.Center + new Vector2(0, -48));
+            }
+        }
+
         #region phase 1
         private void MakeCrystalVulnerable()
         {
             if (AttackTimer == 1)
             {
+                while (crystalLocations.Count < 4)
+                {
+                    BuildCrystalLocations();
+                }
+
                 List<Vector2> possibleLocations = new List<Vector2>(crystalLocations);
                 possibleLocations.ForEach(n => n += new Vector2(0, -48));
                 possibleLocations = Helper.RandomizeList(possibleLocations);
@@ -49,9 +67,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 for (int k = 0; k < crystals.Count; k++)
                 {
-                    if (possibleLocations.Count >= k)
-                        return;
-
                     NPC crystalNpc = crystals[k];
                     VitricBossCrystal crystal = crystalNpc.modNPC as VitricBossCrystal;
 

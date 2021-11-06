@@ -443,11 +443,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 //on spawn effects
                 case (int)AIStates.SpawnEffects:
 
-                    for (int k = 0; k < Main.maxNPCs; k++) //finds all the large platforms to add them to the list of possible locations for the nuke attack
-                    {
-                        NPC npc = Main.npc[k];
-                        if (npc?.active == true && (npc.type == NPCType<VitricBossPlatformUp>() || npc.type == NPCType<VitricBossPlatformDown>())) crystalLocations.Add(npc.Center + new Vector2(0, -48));
-                    }
+                    BuildCrystalLocations();
 
                     const int arenaWidth = 1280;
                     const int arenaHeight = 884;
