@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Tiles.Void
     {
         public override string AssetRoot => AssetDirectory.VoidTile;
 
+        public override float Priority => 2.04f;
+
         public override void Load()
         {
             LoadTile(

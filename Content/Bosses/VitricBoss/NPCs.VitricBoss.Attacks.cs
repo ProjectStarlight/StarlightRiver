@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0)
             {
-                Projectile.NewProjectile(homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<GlassSpike>(), 15, 0);
+                Projectile.NewProjectile(homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
             }
 
             if (AttackTimer >= 720)
@@ -359,7 +359,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void PlatformDash()
         {
-            if (AttackTimer == 1) crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
+            if (AttackTimer == 1)
+            {
+                while (crystalLocations.Count < 4)
+                {
+                    BuildCrystalLocations();
+                }
+
+                crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
+            }
 
             for (int k = 0; k < crystalLocations.Count; k++)
             {
@@ -477,7 +485,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void PlatformDashRain()
         {
-            if (AttackTimer == 1) crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
+            if (AttackTimer == 1)
+            {
+                while (crystalLocations.Count < 4)
+                {
+                    BuildCrystalLocations();
+                }
+
+                crystalLocations.OrderBy(n => n.Y); //orders the points the boss should go to by height off the ground
+            }
 
             for (int k = 0; k < 1; k++)
             {

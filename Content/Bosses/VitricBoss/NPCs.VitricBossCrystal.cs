@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (phase == 1 || phase == 5)
                 return false;
 
-            return !(state == 0 || state == 1); //too tired of dealing with this sheeeet
+            return !(state == 0 || state == 1); //too tired of dealing with this 
         }
 
         public override void AI()
@@ -114,11 +114,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
                     Player player = Main.player[i];
+
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
                         Vignette.visible = false; //disable overlay
-                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
-                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 60;
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
@@ -129,12 +128,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         for (int k = 0; k < 20; k++)
                         {
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(150, 230, 255), 0.8f); //Crystal
+                            Dust.NewDustPerfect(npc.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
+                            Dust.NewDustPerfect(npc.Center, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(150, 230, 255), 0.8f); //Crystal
                         }
 
                         for (int k = 0; k < 40; k++)
-                            Dust.NewDustPerfect(Parent.npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
+                            Dust.NewDustPerfect(Parent.npc.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
 
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
@@ -178,7 +177,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     break;
 
-                case 1: //nuke attack
+                case 1: //vulnerability 
                     npc.velocity *= 0; //make sure we dont fall into oblivion
 
                     if (state == 0) 

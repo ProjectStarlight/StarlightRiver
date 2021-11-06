@@ -129,6 +129,9 @@ namespace StarlightRiver.Content.GUI
             var pos = GetDimensions().ToRectangle().TopLeft();
             var off = new Vector2(30, 14);
 
+            if (npc is null)
+                return;
+
             var texBack = GetTexture(AssetDirectory.GUI + "BossbarBack");
             var texFill = GetTexture(AssetDirectory.GUI + "BossbarFill");
             var texEdge = GetTexture(AssetDirectory.GUI + "BossbarEdge");

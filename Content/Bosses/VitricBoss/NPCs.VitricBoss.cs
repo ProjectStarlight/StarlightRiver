@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
             if (pain > 0)
-                painDirection += Helper.CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+                painDirection += CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
                 painDirection = (npc.Center - player.Center).ToRotation();
 
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
             if (pain > 0)
-                painDirection += Helper.CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+                painDirection += CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
                 painDirection = (npc.Center - projectile.Center).ToRotation();
 

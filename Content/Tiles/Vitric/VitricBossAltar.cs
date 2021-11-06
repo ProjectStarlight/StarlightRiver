@@ -6,6 +6,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -50,14 +51,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void SafeNearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
+
             if (Main.rand.Next(200) == 0 && tile.frameX < 90 && tile.frameX > 16)
-                {
+            {
                 Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
                 if (Main.rand.NextBool())
-                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle>(), Vector2.Zero);
+                    Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
                 else
-                    Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
+                    Dust.NewDustPerfect(pos, DustType<CrystalSparkle2>(), Vector2.Zero);
             }
+
             base.SafeNearbyEffects(i, j, closer);
         }
 
@@ -99,7 +102,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
         private NPC arenaLeft;
         private NPC arenaRight;
         private NPC boss;
-        private VitricBoss bossModNPC => boss.modNPC as VitricBoss;
 
         public ref float BarrierProgress => ref projectile.ai[0];
         public ref float CutsceneTimer => ref projectile.ai[1];
@@ -271,12 +273,33 @@ namespace StarlightRiver.Content.Tiles.Vitric
             //new Rectangle(0, 0, tex.Width, off), color);
         }
 
-        public void SpawnBoss()
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+            writer.Write(boss.whoAmI);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+            int id = reader.ReadInt32();
+
+            if(id >= 0 && id < Main.npc.Length)
+                boss = Main.npc[id];
+		}
+
+		public void SpawnBoss()
         {
             int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 500, NPCType<VitricBoss>());
+            var npc = Main.npc[i];
 
-            if (Main.npc[i].type == ModContent.NPCType<VitricBoss>())
+            npc.netUpdate = true;
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, i);
+
+            if (npc.type == NPCType<VitricBoss>())
                 boss = Main.npc[i];
+
+            projectile.netUpdate = true;
         }
     }
 }
