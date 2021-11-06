@@ -33,30 +33,40 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
-			if (Dummy is null)
-				return;
+			if (tile.frameX == 0 && tile.frameY == 0)
+			{
+				var dummy = Dummy(i, j);
 
-			if (((EvasionShrineDummy)Dummy.modProjectile).State == 0 && tile.frameX > 36)
-				tile.frameX -= 3 * 18;
+				if (dummy is null)
+					return;
+
+				if (((EvasionShrineDummy)dummy.modProjectile).State == 0 && tile.frameX > 36)
+					tile.frameX -= 3 * 18;
+			}
 		}
 
 		public override bool NewRightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 
-			if ((Dummy.modProjectile as EvasionShrineDummy).State == 0)
+			int x = i - tile.frameX / 16;
+			int y = j - tile.frameY / 16;
+
+			var dummy = Dummy(x, y);
+
+			if ((dummy.modProjectile as EvasionShrineDummy).State == 0)
 			{
-				for (int x = 0; x < 3; x++)
-					for (int y = 0; y < 6; y++)
+				for (int x1 = 0; x1 < 3; x1++)
+					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x + i - tile.frameX / 18;
-						int realY = y + j - tile.frameY / 18;
+						int realX = x1 + i - tile.frameX / 18;
+						int realY = y1 + j - tile.frameY / 18;
 
 						Framing.GetTileSafely(realX, realY).frameX += 3 * 18;
 					}
 
-				(Dummy.modProjectile as EvasionShrineDummy).State = 1;
-				(Dummy.modProjectile as EvasionShrineDummy).lives = 4;
+				(dummy.modProjectile as EvasionShrineDummy).State = 1;
+				(dummy.modProjectile as EvasionShrineDummy).lives = 4;
 				return true;
 			}
 

@@ -4,6 +4,7 @@ using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Packets;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -84,17 +85,30 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
-                (Dummy.modProjectile as VitricBossAltarDummy).trySpawnBoss = true;
-                Dummy.netImportant = true;
-                Dummy.netUpdate = true;
-                Dummy.netUpdate2 = true;
-
+                SpawnBoss(i, j);
                 return true;
             }
 
             return false;
         }
-	}
+
+        public void SpawnBoss(int i, int j)
+        {
+            if(Main.netMode == NetmodeID.MultiplayerClient)
+			{
+                var packet = new SpawnNPC(Main.myPlayer, i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
+                packet.Send(-1, -1, false);
+
+                return;
+			}
+
+            int n = NPC.NewNPC(i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
+            var npc = Main.npc[i];
+
+            if (npc.type == NPCType<VitricBoss>())
+                (Dummy(i, j).modProjectile as VitricBossAltarDummy).boss = Main.npc[n];
+        }
+    }
 
     class VitricBossAltarItem : QuickTileItem
     {
@@ -105,9 +119,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         private NPC arenaLeft;
         private NPC arenaRight;
-        private NPC boss;
 
-        public bool trySpawnBoss;
+        public NPC boss;
 
         public ref float BarrierProgress => ref projectile.ai[0];
         public ref float CutsceneTimer => ref projectile.ai[1];
@@ -146,12 +159,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Update()
         {
-            if(trySpawnBoss)
-			{
-                SpawnBoss();
-                trySpawnBoss = false;
-			}
-
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
@@ -288,30 +295,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void SendExtraAI(BinaryWriter writer)
 		{
             writer.Write(boss is null ? -1 : boss.whoAmI);
-            writer.Write(trySpawnBoss);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
             int id = reader.ReadInt32();
-            trySpawnBoss = reader.ReadBoolean();
 
             if(id >= 0 && id < Main.npc.Length)
                 boss = Main.npc[id];
 		}
-
-		public void SpawnBoss()
-        {
-            int i = NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 500, NPCType<VitricBoss>());
-            var npc = Main.npc[i];
-
-            npc.netUpdate = true;
-            npc.netUpdate2 = true;
-
-            if (npc.type == NPCType<VitricBoss>())
-                boss = Main.npc[i];
-
-            projectile.netUpdate = true;
-        }
     }
 }

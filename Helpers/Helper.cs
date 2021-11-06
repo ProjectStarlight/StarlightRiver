@@ -368,7 +368,10 @@ namespace StarlightRiver.Helpers
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
         public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
         {
-            for(int i = 0; i < instances.Count; i++)
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
+            for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -401,6 +404,9 @@ namespace StarlightRiver.Helpers
 
         public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
             if (position == default)
                 position = Vector2.One * -1;
 
@@ -409,6 +415,9 @@ namespace StarlightRiver.Helpers
 
         public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
             if (position == default)
                 position = Vector2.One * -1;
 

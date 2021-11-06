@@ -229,6 +229,9 @@ namespace StarlightRiver.Core
 
         public override void PostSpawnDummy(Projectile dummy)
         {
+            if (dummy is null)
+                return;
+
             WalkableCrystalDummy crystalDummy = (WalkableCrystalDummy)dummy.modProjectile;//a interface could be used instead, but that seemed overkill atm
             crystalDummy.variantCount = VariantCount;
             crystalDummy.drawOffset = DrawOffset;

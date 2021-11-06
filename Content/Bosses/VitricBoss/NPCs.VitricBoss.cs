@@ -409,6 +409,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
+            if(Main.netMode == NetmodeID.Server)
+			{
+                NetMessage.SendChatMessageToClient(Terraria.Localization.NetworkText.FromLiteral("Yes"), Color.White, 0);
+			}
+
             //Ticks the timer
             GlobalTimer++;
             AttackTimer++;
@@ -588,7 +593,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
             }
 
-            body.UpdateBody(); //update the physics on the body, last, so it can override framing
+            body?.UpdateBody(); //update the physics on the body, last, so it can override framing
         }
 
 		public override void ResetEffects()

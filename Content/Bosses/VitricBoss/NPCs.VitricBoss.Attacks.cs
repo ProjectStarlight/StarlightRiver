@@ -34,6 +34,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if(random < players.Count)
                 npc.target = players[random];
+
+            npc.netUpdate = true;
         }
 
         private void BuildCrystalLocations()
