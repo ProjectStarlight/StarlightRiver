@@ -25,7 +25,7 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            if (!Main.projectile.Any(n => n.active && n.type == type && n.position == new Vector2(i, j) * 16))
+            if (!Main.projectile.Any(n => n.active && n.type == type && n.position == new Vector2(x, y)))
             {
                 Projectile p = new Projectile();
                 p.SetDefaults(type);
