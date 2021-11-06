@@ -85,7 +85,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
-                SpawnBoss(i, j);
+                int x = i - (tile.frameX - 90) / 18;
+                int y = j - tile.frameY / 18;
+                SpawnBoss(x, y);
                 return true;
             }
 
