@@ -45,7 +45,6 @@ namespace StarlightRiver.Core.Loaders
         {
             if (Main.spriteBatch != null)
                 DrawToTarget();
-
         }
 
         private static void Main_Update(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)

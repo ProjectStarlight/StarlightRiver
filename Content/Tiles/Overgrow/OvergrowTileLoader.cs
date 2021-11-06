@@ -11,7 +11,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string AssetRoot => AssetDirectory.OvergrowTile;
 
-        public override void Load()
+		public override float Priority => 2.01f;
+
+		public override void Load()
         {
             LoadTile(
                 "LeafOvergrow",

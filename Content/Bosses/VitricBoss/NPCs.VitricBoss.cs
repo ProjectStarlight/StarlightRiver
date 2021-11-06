@@ -12,6 +12,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
 
@@ -36,10 +37,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public bool rotationLocked;
         public float lockedRotation;
 
-        private int favoriteCrystal = 0;
-        private bool altAttack = false;
         public Color glowColor = Color.Transparent;
 
+        private int favoriteCrystal = 0;
+        private bool altAttack = false;
+        private int randSeed = 1923712512;
+        private UnifiedRandom bossRand = new UnifiedRandom(1923712512);
+        
         private List<VitricBossSwoosh> swooshes;
         private BodyHandler body;
 
@@ -92,15 +96,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss1");
 
-            swooshes = new List<VitricBossSwoosh>()
+            if (Main.netMode != NetmodeID.Server)
             {
-            new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
-            new VitricBossSwoosh(new Vector2(16, -40), 6, this),
-            new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
-            new VitricBossSwoosh(new Vector2(46, -34), 10, this)
-            };
+                swooshes = new List<VitricBossSwoosh>()
+                {
+                new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
+                new VitricBossSwoosh(new Vector2(16, -40), 6, this),
+                new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
+                new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+                };
 
-            body = new BodyHandler(this);
+                body = new BodyHandler(this);
+            }
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -292,7 +299,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
             if (pain > 0)
-                painDirection += Helper.CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+                painDirection += CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
                 painDirection = (npc.Center - player.Center).ToRotation();
 
@@ -305,7 +312,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
             if (pain > 0)
-                painDirection += Helper.CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+                painDirection += CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
                 painDirection = (npc.Center - projectile.Center).ToRotation();
 
@@ -478,19 +485,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         npc.dontTakeDamage = true; //boss is immune at phase gate
                         npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
                         Main.PlaySound(SoundID.ForceRoar, npc.Center);
+
+                        RebuildRandom();
                     }
 
                     if (AttackTimer == 1) //switching out attacks
-                        if (npc.dontTakeDamage) AttackPhase = 0; //nuke attack once the boss turns immortal for a chance to break a crystal
+                    {
+                        if (npc.dontTakeDamage) //nuke attack once the boss turns immortal for a chance to break a crystal
+                            AttackPhase = 0; 
                         else //otherwise proceed with attacking pattern
                         {
                             AttackPhase++;
-                            altAttack = Main.rand.NextBool();
-                            npc.netUpdate = true;
+                            altAttack = bossRand.NextBool();
+                            RebuildRandom();
 
                             if (AttackPhase > 4)
                                 AttackPhase = 1;
                         }
+                    }
 
                     switch (AttackPhase) //Attacks
                     {
@@ -544,8 +556,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 AttackPhase = 0;
                         }
 
-                        altAttack = Main.rand.NextBool();
-                        npc.netUpdate = true;
+                        altAttack = bossRand.NextBool();
+                        RebuildRandom();
                     }
 
                     switch (AttackPhase) //switch for crystal behavior
@@ -585,7 +597,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
             }
 
-            body.UpdateBody(); //update the physics on the body, last, so it can override framing
+            body?.UpdateBody(); //update the physics on the body, last, so it can override framing
         }
 
 		public override void ResetEffects()
@@ -612,9 +624,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     speed *= 2;
 
                 if (twistTarget == 1)
-                    npc.rotation += Helper.CompareAngle(targetRot, npc.rotation) * speed;
+                    npc.rotation += CompareAngle(targetRot, npc.rotation) * speed;
                 if (twistTarget == -1)
-                    npc.rotation += Helper.CompareAngle(targetRot + 3.14f, npc.rotation) * speed;
+                    npc.rotation += CompareAngle(targetRot + 3.14f, npc.rotation) * speed;
             }
             else
                 npc.rotation = 0;
@@ -624,15 +636,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         #region Networking
         public override void SendExtraAI(System.IO.BinaryWriter writer)
-        {
+        {          
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
+            writer.Write(randSeed);
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
+            randSeed = reader.ReadInt32();
+            bossRand = new UnifiedRandom(randSeed);
         }
         #endregion Networking
 

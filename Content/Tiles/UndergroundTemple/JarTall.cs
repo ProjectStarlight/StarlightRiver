@@ -29,10 +29,13 @@ namespace StarlightRiver.Tiles.Temple
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (Dummy is null) return;
-
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
+                var dummy = Dummy(i, j);
+
+                if (dummy is null) 
+                    return;
+
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow");
                 Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2");
 
@@ -43,7 +46,7 @@ namespace StarlightRiver.Tiles.Temple
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
                 spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, Color.White);
-                spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColorProximity(150, 300, Dummy.Center));
+                spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-2, 0) - Main.screenPosition, Helper.IndicatorColorProximity(150, 300, dummy.Center));
 
             }
         }
