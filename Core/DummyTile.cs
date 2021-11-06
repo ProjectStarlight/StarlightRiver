@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Packets;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -25,6 +26,7 @@ namespace StarlightRiver.Core
             if (!Main.tileFrameImportant[Type] || SpawnConditions(i, j))
             {
                 int type = DummyType;//cache type here so you dont grab the it from a dict every single iteration
+
                 if (!Main.projectile.Any(n => n.active && n.type == type && n.position == new Vector2(i, j) * 16))
                 {
                     Projectile p = new Projectile();
@@ -32,6 +34,13 @@ namespace StarlightRiver.Core
 
                     int n = Projectile.NewProjectile(new Vector2(i, j) * 16 + p.Size / 2, Vector2.Zero, type, 1, 0);
                     Dummy = Main.projectile[n];
+
+                    if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
+                    {
+                        SpawnDummy packet = new SpawnDummy(Main.myPlayer, i * 16, j * 16, type);
+                        packet.Send(-1, -1, false);
+                    }
+
                     PostSpawnDummy(Dummy);
                     p = null;
                 }

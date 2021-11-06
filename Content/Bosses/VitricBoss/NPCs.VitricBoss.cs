@@ -92,15 +92,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss1");
 
-            swooshes = new List<VitricBossSwoosh>()
+            if (Main.netMode != NetmodeID.Server)
             {
-            new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
-            new VitricBossSwoosh(new Vector2(16, -40), 6, this),
-            new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
-            new VitricBossSwoosh(new Vector2(46, -34), 10, this)
-            };
+                swooshes = new List<VitricBossSwoosh>()
+                {
+                new VitricBossSwoosh(new Vector2(-16, -40), 6, this),
+                new VitricBossSwoosh(new Vector2(16, -40), 6, this),
+                new VitricBossSwoosh(new Vector2(-46, -34), 10, this),
+                new VitricBossSwoosh(new Vector2(46, -34), 10, this)
+                };
 
-            body = new BodyHandler(this);
+                body = new BodyHandler(this);
+            }
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)

@@ -84,7 +84,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
-                (Dummy.modProjectile as VitricBossAltarDummy).SpawnBoss();
+                (Dummy.modProjectile as VitricBossAltarDummy).trySpawnBoss = true;
+                Dummy.netImportant = true;
+                Dummy.netUpdate = true;
+                Dummy.netUpdate2 = true;
+
                 return true;
             }
 
@@ -102,6 +106,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
         private NPC arenaLeft;
         private NPC arenaRight;
         private NPC boss;
+
+        public bool trySpawnBoss;
 
         public ref float BarrierProgress => ref projectile.ai[0];
         public ref float CutsceneTimer => ref projectile.ai[1];
@@ -140,6 +146,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Update()
         {
+            if(trySpawnBoss)
+			{
+                SpawnBoss();
+                trySpawnBoss = false;
+			}
+
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
@@ -275,12 +287,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-            writer.Write(boss.whoAmI);
+            writer.Write(boss is null ? -1 : boss.whoAmI);
+            writer.Write(trySpawnBoss);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
             int id = reader.ReadInt32();
+            trySpawnBoss = reader.ReadBoolean();
 
             if(id >= 0 && id < Main.npc.Length)
                 boss = Main.npc[id];
@@ -292,9 +306,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             var npc = Main.npc[i];
 
             npc.netUpdate = true;
-
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-                NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, i);
+            npc.netUpdate2 = true;
 
             if (npc.type == NPCType<VitricBoss>())
                 boss = Main.npc[i];

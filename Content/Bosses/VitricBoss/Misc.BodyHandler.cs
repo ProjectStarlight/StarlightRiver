@@ -45,6 +45,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawBody(SpriteBatch sb)
         {
+            if (Main.netMode == Terraria.ID.NetmodeID.Server)
+                return;
+
             chain.DrawRope(sb, DrawSegment);
 
             if (parent.Phase == (int)VitricBoss.AIStates.FirstPhase && parent.npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
@@ -53,6 +56,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void DrawSegment(SpriteBatch sb, int index, Vector2 pos)
         {
+            if (Main.netMode == Terraria.ID.NetmodeID.Server)
+                return;
+
             if (stopDrawingBody && index > 0)
                 return;
 
@@ -150,6 +156,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void DrawShield(SpriteBatch sb, int index, Vector2 pos)
         {
+            if (Main.netMode == Terraria.ID.NetmodeID.Server)
+                return;
+
             if (index == 0)
                 return;
 

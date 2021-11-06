@@ -348,6 +348,9 @@ namespace StarlightRiver.Physics
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
         {
+            if (ropeSegments is null)
+                return;
+
             for (int i = 0; i < segmentCount; i++)
                 drawMethod_curPos(spritebatch, i, ropeSegments[i].posNow);
         }
