@@ -144,6 +144,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                         Parent.ResetAttack();
+                        Parent.RebuildRandom();
+                        npc.netUpdate = true;
 
                         foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
                         {
@@ -171,6 +173,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             npc.friendly = false;
                             ResetTimers();
+                            npc.netUpdate = true;
                         }
                     }
                     npc.scale = 1; //resets scale, just incase
@@ -201,6 +204,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             Parent.npc.life += 250; //heal the boss
                             Parent.npc.HealEffect(250, true);
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
+                            Parent.RebuildRandom();
+                            npc.netUpdate = true;
 
                             Vignette.visible = false; //reset vignette
 
@@ -301,6 +306,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
+
+            npc.netUpdate = true;
         }
 
         private void ResetTimers()

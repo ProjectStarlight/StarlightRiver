@@ -30,12 +30,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 players.Add(player.whoAmI);
             }
 
-            int random = Main.rand.Next(players.Count);
+            int random = bossRand.Next(players.Count);
 
             if(random < players.Count)
                 npc.target = players[random];
 
-            npc.netUpdate = true;
+            RebuildRandom();
         }
 
         private void BuildCrystalLocations()
@@ -50,6 +50,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalLocations.Add(npc.Center + new Vector2(0, -48));
             }
         }
+
+        public void RebuildRandom()
+		{
+            if(Main.netMode == NetmodeID.Server)
+			{
+                randSeed = Main.rand.Next(int.MaxValue);
+                npc.netUpdate = true;
+            }
+		}
 
         #region phase 1
         private void MakeCrystalVulnerable()
@@ -93,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0)
             {
-                Projectile.NewProjectile(homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+                Projectile.NewProjectile(homePos + new Vector2(bossRand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
             }
 
             if (AttackTimer >= 720)
@@ -109,14 +118,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 RandomizeTarget();
                 int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, BrokenCount >= 1 ? 1 : 0); //fire cone
 
-                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
+                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + bossRand.NextFloat(-0.5f, 0.5f);
 
                 Main.projectile[index].rotation = rot;
                 lockedRotation = rot + 3.14f;
             }
 
             if(AttackTimer % 110 == 25)
-                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, Main.rand.NextFloat(0.1f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, bossRand.NextFloat(0.1f, 1), npc.Center);
 
             if (AttackTimer > 110 && AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
 			{
@@ -140,7 +149,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (AttackTimer == 1) //set the crystal's home position to where they are
                 {
                     crystalModNPC.StartPos = crystal.Center;
-                    favoriteCrystal = Main.rand.Next(4); //randomize which crystal will have the opening
+                    favoriteCrystal = bossRand.Next(4); //randomize which crystal will have the opening
                 }
 
                 if (AttackTimer > 1 && AttackTimer <= 60) //suck the crystals in
@@ -453,7 +462,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         }
 
                         if(timer == 80)
-                            Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, Main.rand.NextFloat(0.3f, 1), npc.Center);
+                            Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, bossRand.NextFloat(0.3f, 1), npc.Center);
 
                         if (timer > 60 && timer < 140)
                         {
@@ -506,7 +515,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (timer == 0)
                     {
                         startPos = npc.Center;
-                        endPos = crystalLocations[Main.rand.Next(crystalLocations.Count)] + new Vector2(0, -30);
+                        endPos = crystalLocations[bossRand.Next(crystalLocations.Count)] + new Vector2(0, -30);
                         RandomizeTarget();
                     } //set positions and randomize the target
 
@@ -588,8 +597,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     for (int k = 0; k < 10; k++)
                     {
-                        Vector2 target = new Vector2(Main.rand.Next(-10, 10) * 100, 500);
-                        SpawnDart(npc.Center, npc.Center + new Vector2(target.X / 2, -500), npc.Center + target, Main.rand.Next(60, 120));
+                        Vector2 target = new Vector2(bossRand.Next(-10, 10) * 100, 500);
+                        SpawnDart(npc.Center, npc.Center + new Vector2(target.X / 2, -500), npc.Center + target, bossRand.Next(60, 120));
                     }
                 }
 
@@ -649,7 +658,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 lockedRotation = rot + 3.14f;
 
-                Helper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, Main.rand.NextFloat(0.3f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, bossRand.NextFloat(0.3f, 1), npc.Center);
 
             }
 
@@ -672,7 +681,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void WhirlAndSmash()
         {
-            if (AttackTimer == 1) favoriteCrystal = Main.rand.Next(2); //bootleg but I dont feel like syncing another var
+            if (AttackTimer == 1) favoriteCrystal = bossRand.Next(2); //bootleg but I dont feel like syncing another var
 
             if (AttackTimer < 240)
             {
@@ -714,14 +723,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     for (int k = 1; k < 12; k++)
                     {
-                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, Main.rand.NextFloat(7, 8)), ProjectileType<GlassSpike>(), 15, 0);
+                        Projectile.NewProjectile(homePos + new Vector2(-700 + k * 120, -460), new Vector2(0, bossRand.NextFloat(7, 8)), ProjectileType<GlassSpike>(), 15, 0);
                     }
 
                     if (Main.expertMode)
                     {
                         for (int k = 0; k < 4; k++)
                         {
-                            Projectile.NewProjectile(homePos + new Vector2(-700 + Main.rand.Next(1, 12) * 120 + 60, -460), new Vector2(0, Main.rand.NextFloat(5, 6)), ProjectileType<GlassSpike>(), 15, 0);
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + bossRand.Next(1, 12) * 120 + 60, -460), new Vector2(0, bossRand.NextFloat(5, 6)), ProjectileType<GlassSpike>(), 15, 0);
                         }
                     }
                 }
@@ -731,14 +740,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         for (int k = 1; k < 8; k++)
                         {
-                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 175, -460), new Vector2(0, Main.rand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 175, -460), new Vector2(0, bossRand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
                         }
                     }
                     else
                     {
                         for (int k = 1; k < 6; k++)
                         {
-                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, Main.rand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
+                            Projectile.NewProjectile(homePos + new Vector2(-700 + k * 233, -460), new Vector2(0, bossRand.NextFloat(3, 16)), ProjectileType<SpikeMine>(), 10, 1);
                         }
                     }
                 }
@@ -835,7 +844,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer % 70 == 30)
 				{
-                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + Main.rand.NextFloat(-0.35f, 0.35f);
+                    float rot = (Main.player[npc.target].Center - npc.Center).ToRotation() + bossRand.NextFloat(-0.35f, 0.35f);
 
                     if (Main.expertMode)
                     {
