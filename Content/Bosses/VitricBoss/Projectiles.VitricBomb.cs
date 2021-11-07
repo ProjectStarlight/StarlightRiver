@@ -71,9 +71,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Item.NewItem(projectile.Center, ItemID.Heart);
                 Main.PlaySound(SoundID.Shatter, projectile.Center);
-                return false;
             }
-            return true;
+
+            return false;
         }
 
         public override void AI()
@@ -94,6 +94,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (projectile.frame >= 8) projectile.frame = 0;
             }
         }
+
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);

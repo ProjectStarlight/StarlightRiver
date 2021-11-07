@@ -71,6 +71,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
+            if (phase == 2 && Parent != null && Parent.AttackTimer < 180)
+                return false;
+
             if (phase == 3)
                 return true;
 
