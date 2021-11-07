@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using NetEasy;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Packets
 {
@@ -39,6 +41,9 @@ namespace StarlightRiver.Packets
 
                 int n = Projectile.NewProjectile(spawnPos, Vector2.Zero, type, 0, 0, fromWho);
                 NetMessage.SendData(Terraria.ID.MessageID.SyncProjectile, -1, -1, null, n);
+
+                Point16 key = new Point16(x, y);
+                DummyTile.dummies[key] = Main.projectile[n];
             }
         }
     }
