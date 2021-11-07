@@ -462,6 +462,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
 
                     ChangePhase(AIStates.SpawnAnimation, true);
+                    RebuildRandom();
+
                     break;
 
                 case (int)AIStates.SpawnAnimation: //the animation that plays while the boss is spawning and the title card is shown
@@ -636,18 +638,77 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         #region Networking
         public override void SendExtraAI(System.IO.BinaryWriter writer)
-        {          
+        {
+            if (!npc.active)
+                return;
+
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
             writer.Write(randSeed);
+
+            writer.Write(arena.X);
+            writer.Write(arena.Y);
+            writer.Write(arena.Width);
+            writer.Write(arena.Height);
+
+            writer.Write(startPos.X);
+            writer.Write(startPos.Y);
+
+            writer.Write(endPos.X);
+            writer.Write(endPos.Y);
+
+            writer.Write(homePos.X);
+            writer.Write(homePos.Y);
+
+            if (crystals.Count >= 4)
+            {
+                for (int k = 0; k < 4; k++)
+                    writer.Write(crystals[k].whoAmI);
+            }
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
+            if (!npc.active)
+                return;
+
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
             randSeed = reader.ReadInt32();
             bossRand = new UnifiedRandom(randSeed);
+
+            arena = new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
+
+            startPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            endPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            homePos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+
+            if (reader.BaseStream.Position >= reader.BaseStream.Length)
+                return;
+
+            for (int k = 0; k < 4; k++)
+            {
+                if (crystals.Count > k)
+                    crystals[k] = Main.npc[reader.ReadInt32()];
+                else
+                {
+                    NPC npc = new NPC();
+                    npc.SetDefaults(NPCType<VitricBossCrystal>());
+
+                    Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
+                    npc.Center = target;
+                    npc.ai[0] = 2;
+
+                    (npc.modNPC as VitricBossCrystal).Parent = this;
+                    (npc.modNPC as VitricBossCrystal).StartPos = target;
+                    (npc.modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
+
+                    int index = reader.ReadInt32();
+                    Main.npc[index] = npc;
+
+                    crystals.Add(Main.npc[index]);
+                }
+            }
         }
         #endregion Networking
 

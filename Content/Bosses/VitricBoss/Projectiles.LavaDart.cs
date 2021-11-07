@@ -80,8 +80,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 200, 100), 0.5f);
 
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         private Vector2 PointOnSpline(float progress)

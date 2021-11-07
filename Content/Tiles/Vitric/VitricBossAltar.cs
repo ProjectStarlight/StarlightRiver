@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			}
 
             int n = NPC.NewNPC(i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
-            var npc = Main.npc[i];
+            var npc = Main.npc[n];
 
             if (npc.type == NPCType<VitricBoss>())
                 (Dummy(i, j).modProjectile as VitricBossAltarDummy).boss = Main.npc[n];
@@ -201,6 +201,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (parent.frameX == 0)
                 return;
+
+            if(Main.netMode == NetmodeID.Server && (boss is null || !boss.active))
+			{
+                for(int k = 0; k < Main.maxNPCs; k++) //TODO: Find a better way to find the boss or the server on sync it from the spawning client
+				{
+                    var npc = Main.npc[k];
+                    if(npc.active && npc.type == NPCType<VitricBoss>())
+					{
+                        boss = npc;
+                        projectile.netUpdate = true;
+                        return;
+					}
+				}
+			}
 
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {

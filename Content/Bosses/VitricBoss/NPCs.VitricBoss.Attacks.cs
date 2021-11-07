@@ -57,6 +57,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
                 randSeed = Main.rand.Next(int.MaxValue);
                 npc.netUpdate = true;
+
+                foreach (NPC npc in crystals)
+                    npc.netUpdate = true;
             }
 		}
 
@@ -72,7 +75,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 List<Vector2> possibleLocations = new List<Vector2>(crystalLocations);
                 possibleLocations.ForEach(n => n += new Vector2(0, -48));
-                possibleLocations = Helper.RandomizeList(possibleLocations);
+                possibleLocations = Helper.RandomizeList(possibleLocations, bossRand);
 
                 startPos = npc.Center;
 
@@ -357,7 +360,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             List<Vector2> points = new List<Vector2>();
             crystalLocations.ForEach(n => points.Add(n + new Vector2(0, -100)));
-            Helper.RandomizeList<Vector2>(points);
+            Helper.RandomizeList<Vector2>(points, bossRand);
 
             for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)
             {

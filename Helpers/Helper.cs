@@ -14,6 +14,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Helpers
@@ -307,13 +308,27 @@ namespace StarlightRiver.Helpers
             return output;
         }
 
-        public static List<T> RandomizeList<T>(List<T> input)
+		public static List<T> RandomizeList<T>(List<T> input)
+		{
+			int n = input.Count();
+			while (n > 1)
+			{
+				n--;
+				int k = Main.rand.Next(n + 1);
+				T value = input[k];
+				input[k] = input[n];
+				input[n] = value;
+			}
+			return input;
+		}
+
+        public static List<T> RandomizeList<T>(List<T> input, UnifiedRandom rand)
         {
             int n = input.Count();
             while (n > 1)
             {
                 n--;
-                int k = Main.rand.Next(n + 1);
+                int k = rand.Next(n + 1);
                 T value = input[k];
                 input[k] = input[n];
                 input[n] = value;

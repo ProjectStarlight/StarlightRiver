@@ -10,6 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Packets;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -138,12 +139,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
+                        if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
+						{
+                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI);
+                            packet.Send();
+                            return;
+						}
+
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
                         timer = 0; //reset timer
 
                         Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                         Parent.ResetAttack();
+
                         Parent.RebuildRandom();
                         npc.netUpdate = true;
 
@@ -151,6 +160,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             phase = 0;
                             npc.friendly = false; //damaging again
+                            npc.netUpdate = true;
                         }
                     }
                 }

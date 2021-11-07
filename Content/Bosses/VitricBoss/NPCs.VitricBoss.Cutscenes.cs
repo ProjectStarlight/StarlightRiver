@@ -134,7 +134,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.Center = Vector2.Lerp(startPos, startPos + new Vector2(0, -800), progress);
             }
 
-            if (GlobalTimer > 540) //summon crystal babies
+            if (GlobalTimer > 540 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer)) //summon crystal babies
+            {
                 for (int k = 0; k <= 4; k++)
                     if (GlobalTimer == 540 + k * 5)
                     {
@@ -145,6 +146,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         (Main.npc[index].modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
                         crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                     }
+
+                if(GlobalTimer == 560)
+                    RebuildRandom();
+            }
 
             if(GlobalTimer > 600 && GlobalTimer < 620)
 			{
