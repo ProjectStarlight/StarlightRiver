@@ -540,13 +540,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Min(1, GlobalTimer / 60f) * 0.9f;
 
                     Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.8f;
-                    Vignette.extraOpacity = 0.3f;
+                    Vignette.opacityMult = 0.3f;
+                    Vignette.visible = true;
 
                     if (GlobalTimer == 60)
                     {
                         npc.dontTakeDamage = false; //damagable again
-                        npc.friendly = false;
-                        Vignette.visible = true;
+                        npc.friendly = false;                    
                     }
 
                     if (AttackTimer == 1) //switching out attacks
@@ -580,8 +580,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     npc.position.Y += 7;
-                    Vignette.visible = false;
-                    Vignette.extraOpacity = 0;
 
                     if (GlobalTimer >= 180)
                     {

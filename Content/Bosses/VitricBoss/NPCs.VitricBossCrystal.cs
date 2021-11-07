@@ -102,9 +102,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (state == 0) //appears to be the "vulnerable" phase
             {
-                if(!Vignette.visible)
-                    Vignette.visible = true;
-
+                Vignette.visible = true;
                 Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
 
                 if (Main.rand.Next(27) == 0)
@@ -121,7 +119,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
-                        Vignette.visible = false; //disable overlay
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
@@ -219,8 +216,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
                             Parent.RebuildRandom();
                             npc.netUpdate = true;
-
-                            Vignette.visible = false; //reset vignette
 
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());

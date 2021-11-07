@@ -335,7 +335,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void DeathAnimation() //The animation that plays when the boss dies
         {
             Vignette.offset = Vector2.Zero;
-            Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
+            Vignette.opacityMult = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
             if (GlobalTimer == 1)
             {
