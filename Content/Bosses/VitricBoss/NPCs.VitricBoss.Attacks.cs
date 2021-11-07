@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0)
             {
-                Projectile.NewProjectile(homePos + new Vector2(bossRand.Next(-700, 700), -460), new Vector2(0, 12), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+                Projectile.NewProjectile(homePos + new Vector2(bossRand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
             }
 
             if (AttackTimer >= 720)
@@ -963,7 +963,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     for (float k = 0; k < 6.28f; k += 6.28f / 12) //ring of glass spikes
                     {
-                        Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 3.5f, ProjectileType<GlassSpike>(), 15, 0.2f);
+                        Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 5.5f, ProjectileType<GlassSpike>(), 15, 0.2f);
                     }
                 }
             }
