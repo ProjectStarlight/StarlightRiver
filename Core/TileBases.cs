@@ -268,20 +268,16 @@ namespace StarlightRiver.Core
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            //var tex = ModContent.GetTexture(AssetDirectory.ForestTile + "MonkSpearOver");
             Tile t = Parent;
-            //DrawHelper.TileDebugDraw(i, j, spriteBatch);
-            if (t.frameX > 0)
+
+            if (t.frameX > 0 && variantCount > 0)
             {
                 Texture2D tex = Main.tileTexture[t.type];
                 Rectangle frame = tex.Frame(variantCount, 1, t.frameX - 1);
-                //spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset, frame, DrawColor, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
-                //LightingBufferRenderer.DrawWithLighting((((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height), tex, frame, Color.Blue);
                 Vector2 pos = ((projectile.position - Main.screenPosition) + drawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
                 LightingBufferRenderer.DrawWithLighting(pos, tex, frame, drawColor);
 
             }
-
         }
     }
 
