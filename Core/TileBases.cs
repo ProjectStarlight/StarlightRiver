@@ -224,18 +224,18 @@ namespace StarlightRiver.Core
                 else
                     StructureHelper.Generator.GenerateStructure(FullStructPath, new Point16(x, y) - offset, StarlightRiver.Instance);
             }
+
+            Projectile dummy = Dummy(x, y);
+
+            if (dummy != null)
+            {
+                WalkableCrystalDummy crystalDummy = (WalkableCrystalDummy)dummy.modProjectile;//a interface could be used instead, but that seemed overkill atm
+                crystalDummy.variantCount = VariantCount;
+                crystalDummy.drawOffset = DrawOffset;
+                crystalDummy.drawColor = DrawColor;
+            }
+
             return 0;
-        }
-
-        public override void PostSpawnDummy(Projectile dummy)
-        {
-            if (dummy is null)
-                return;
-
-            WalkableCrystalDummy crystalDummy = (WalkableCrystalDummy)dummy.modProjectile;//a interface could be used instead, but that seemed overkill atm
-            crystalDummy.variantCount = VariantCount;
-            crystalDummy.drawOffset = DrawOffset;
-            crystalDummy.drawColor = DrawColor;
         }
 
         public override bool Drop(int i, int j)
