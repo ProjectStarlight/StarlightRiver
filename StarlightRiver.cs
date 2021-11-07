@@ -171,7 +171,6 @@ namespace StarlightRiver
 
 		public override void PostUpdateEverything()
 		{
-            Content.CustomHooks.DrawForegrounds.ResetForeground(); //TODO: Create an event for this and move these there perhaps?
             ZoomHandler.TickZoom();
 		}
 

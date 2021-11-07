@@ -3,8 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Underground
@@ -19,9 +22,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
         public override void SetDefaults()
         {
-            minPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(255, 150, 80), false, true, "The Boi");
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(255, 150, 80), false, false, "The Boi");
         }
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

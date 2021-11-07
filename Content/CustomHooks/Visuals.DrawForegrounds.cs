@@ -18,6 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
                 return;
 
             On.Terraria.Main.DrawInterface += DrawForeground;
+            On.Terraria.Main.DoUpdate += ResetForeground;
         }
 
 		public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
@@ -39,13 +40,15 @@ namespace StarlightRiver.Content.CustomHooks
             catch { }
         }
 
-        public static void ResetForeground()
+        private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
         {
             foreach (var fg in ForegroundLoader.Foregrounds)
             {
                 if (fg != null)
                     fg.Reset();
             }
+
+            orig(self, gameTime);
         }
     }
 }
