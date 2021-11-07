@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             item.useAnimation = 30;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.magic = true;
-            item.mana = 30;
+            item.mana = 60;
             item.shoot = ModContent.ProjectileType<ThunderbussShot>();
             item.shootSpeed = 10;
             item.value = Item.sellPrice(0, 1, 0, 0);
@@ -71,8 +71,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         {
             List<NPC> targets = FindTargets(player);
 
-            if (player.altFunctionUse != 2 && targets.Count == 0) //whiff
-                mult = 0;
+            if (player.altFunctionUse != 2) //whiff
+            {
+                if (targets.Count == 0)
+                    mult = 0;
+                else 
+                    mult = 0.25f;
+            }
         }
 
 
@@ -85,7 +90,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if(player.altFunctionUse == 2)
 			{
-                int i = Projectile.NewProjectile(player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), damage, 0, player.whoAmI);
+                int i = Projectile.NewProjectile(player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), (int)(damage * 1.25), 0, player.whoAmI);
                 ball = Main.projectile[i];
 
                 Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);

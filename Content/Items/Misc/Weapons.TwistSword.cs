@@ -36,7 +36,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
         {
-            item.damage = 25;
+            item.damage = 28;
+            item.crit = 5;
             item.melee = true;
             item.width = 40;
             item.height = 20;
