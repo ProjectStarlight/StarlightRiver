@@ -302,6 +302,8 @@ namespace StarlightRiver.Core
                 CreateCutaways();
 
             Physics.VerletChain.toDraw.Clear();
+
+            DummyTile.dummies.Clear();
         }
 
         public static void LearnRecipie(string key)
