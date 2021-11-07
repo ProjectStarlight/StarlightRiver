@@ -89,9 +89,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            if (projectile.ai[0] > 68 && projectile.ai[0] < 76)
+            if (projectile.ai[0] > 70 && projectile.ai[0] < 78)
             {
-                return Helper.CheckConicalCollision(projectile.Center, 700, projectile.rotation, 0.2f, targetHitbox);
+                return Helper.CheckConicalCollision(projectile.Center, (int)(((projectile.ai[0] - 70) / 8f) * 700), projectile.rotation, 0.2f, targetHitbox);
             }
 
             return false;
