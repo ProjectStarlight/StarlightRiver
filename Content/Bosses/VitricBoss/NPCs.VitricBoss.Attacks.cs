@@ -852,12 +852,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (Main.expertMode)
                     {
                         for (int k = -3; k <= 3; k++)
-                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.38f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.13f) * 700, 50);
+                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.18f) * 700, 50);
                     }
                     else
                     {
                         for (int k = -2; k <= 2; k++)
-                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.4f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.15f) * 700, 60);
+                            SpawnDart(npc.Center, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.425f) * 350, npc.Center + Vector2.UnitX.RotatedBy(rot + k * 0.175f) * 700, 60);
                     }
                 }
 
@@ -921,7 +921,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (LaserTimer == 60)
                 {
-                    int i2 = Projectile.NewProjectile(npc.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<FinalLaser>(), 100, 0, Main.myPlayer, 0, 0);
+                    int i2 = Projectile.NewProjectile(npc.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<FinalLaser>(), 45, 0, Main.myPlayer, 0, 0);
                     var laserCore = Main.projectile[i2];
 
                     if (laserCore.modProjectile is FinalLaser)
@@ -948,6 +948,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void AngerAttack()
         {
+            npc.dontTakeDamage = false;
+            npc.defense = Main.expertMode ? 30 : 20;
+
             if (crystals.Count(n => n.ai[0] == 2) == 0)
             {
                 Phase = (int)AIStates.FirstToSecond; //this is where we phase the boss
@@ -970,7 +973,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 crystals.FirstOrDefault(n => n.ai[0] == 1).ai[0] = 3;
                 Phase = (int)AIStates.FirstPhase; //go back to normal attacks after this is all over
                 AttackPhase = crystals.Count(n => n.ai[0] != 2); //unique first attack each to, so at the very least players see all of phase 1's attacks
-                npc.dontTakeDamage = false;
+
+                npc.defense = Main.expertMode ? 14 : 10;
+
                 ResetAttack();
             }
         }
