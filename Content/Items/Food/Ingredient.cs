@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria;

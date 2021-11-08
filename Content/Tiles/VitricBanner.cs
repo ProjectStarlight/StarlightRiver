@@ -28,11 +28,6 @@ namespace StarlightRiver.Content.Tiles
         }
     }
 
-    class VitricBannerItem : QuickTileItem
-	{
-        public VitricBannerItem() : base("Long Flowing Banner", "", TileType<VitricBanner>(), 1, AssetDirectory.VitricTile, false) { }
-	}
-
     internal class VitricBannerDummy : Dummy
     {
         public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }

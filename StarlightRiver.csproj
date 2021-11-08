@@ -34,6 +34,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Tiles\Paintings\" />
+    <Folder Include="Content\Items\Utility\" />
   </ItemGroup>
 </Project>
