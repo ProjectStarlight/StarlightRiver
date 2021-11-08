@@ -273,6 +273,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<SandstoneChunk>());
             }
 
+            if (Main.rand.Next(10) == 0)
+                Item.NewItem(npc.Center, ItemType<Tiles.Trophies.CeirosTrophyItem>());
+
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
 
