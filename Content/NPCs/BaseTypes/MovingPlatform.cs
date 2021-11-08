@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         {
             SafeSetDefaults();
 
-            npc.lifeMax = 1;
+            npc.lifeMax = 10;
             npc.immortal = true;
             npc.dontTakeDamage = true;
             npc.noGravity = true;

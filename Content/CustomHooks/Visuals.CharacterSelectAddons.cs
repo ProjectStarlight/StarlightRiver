@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.CustomHooks
 				{
                     var medal = mp3.medals[k];
                     var tex = mp3.GetMedalTexture(medal.name);
-                    var frame = new Rectangle(36 * medal.difficulty, 0, 34, 46);
+                    var frame = new Rectangle(36 * (medal.difficulty + 1), 0, 34, 46);
 
                     spriteBatch.Draw(tex, origin + new Vector2(14 + k * 42, 98), frame, Color.White);
 

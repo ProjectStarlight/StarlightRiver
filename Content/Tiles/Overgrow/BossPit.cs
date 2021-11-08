@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
         {
-            Main.tileSolid[Type] = Dummy.ai[1] == 0;
+            Main.tileSolid[Type] = Dummy(i, j).ai[1] == 0;
         }
     }
 

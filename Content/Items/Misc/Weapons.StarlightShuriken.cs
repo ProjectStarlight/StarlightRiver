@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             item.damage = 18;
             item.magic = true;
-            item.mana = 8;
+            item.mana = 10;
             item.width = 18;
             item.height = 34;
             item.useTime = 24;

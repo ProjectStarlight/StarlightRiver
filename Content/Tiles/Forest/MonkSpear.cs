@@ -48,12 +48,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 	{
         public MonkSpearDummy() : base(TileType<MonkSpear>(), 4 * 16, 6 * 16) { }
 
-        private VerletChainInstance ChainShort;
-        private VerletChainInstance ChainLong;
+        private VerletChain ChainShort;
+        private VerletChain ChainLong;
 
         public override void SafeSetDefaults()
         {
-            ChainLong = new VerletChainInstance(8, false, projectile.Center + new Vector2(14, -26), 8)
+            ChainLong = new VerletChain(8, false, projectile.Center + new Vector2(14, -26), 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                 scale = 0.4f
             };
 
-            ChainShort = new VerletChainInstance(6, false, projectile.Center + new Vector2(14, -26), 8)
+            ChainShort = new VerletChain(6, false, projectile.Center + new Vector2(14, -26), 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -125,8 +125,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void Kill(int timeLeft)
         {
-            VerletChainInstance.toDraw.Remove(ChainShort);
-            VerletChainInstance.toDraw.Remove(ChainLong);
+            VerletChain.toDraw.Remove(ChainShort);
+            VerletChain.toDraw.Remove(ChainLong);
         }
     }
 }

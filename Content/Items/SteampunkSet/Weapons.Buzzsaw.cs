@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
+			item.damage = 34;
 			item.width = 65;
 			item.height = 21;
 			item.useTime = 65;
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			item.rare = 3;
 			item.autoReuse = false;
 			item.shoot = ModContent.ProjectileType<BuzzsawProj>();
-			item.shootSpeed = 20f;
+			item.shootSpeed = 2f;
 			item.melee = true;
 			item.channel = true;
 			item.noUseGraphic = true;
@@ -233,8 +233,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void LaunchSaw(Player player)
 		{
 			released = true;
-			float speed = MathHelper.Lerp(8f, 14f, charge / (float)MAXCHARGE);
-			float damageMult = MathHelper.Lerp(0.75f, 2f, charge / (float)MAXCHARGE);
+			float speed = MathHelper.Lerp(8f, 12f, charge / (float)MAXCHARGE);
+			float damageMult = MathHelper.Lerp(0.85f, 2f, charge / (float)MAXCHARGE);
 			Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
 		}
 
@@ -244,6 +244,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Dust.NewDustPerfect(Vector2.Lerp(projectile.Center, player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 		}
 	}
+
 	public class BuzzsawProj2 : ModProjectile
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;

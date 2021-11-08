@@ -55,10 +55,7 @@ namespace StarlightRiver.Content.GUI
 		{
             Recalculate();
 
-            if (tracked is null)
-                return;
-
-            if (tracked.life <= 0 || !tracked.active)
+            if (tracked is null || tracked.life <= 0 || !tracked.active || !tracked.boss)
 			{             
                 if (Timer == 0)
                 {
@@ -128,6 +125,9 @@ namespace StarlightRiver.Content.GUI
             var npc = BootlegHealthbar.tracked;
             var pos = GetDimensions().ToRectangle().TopLeft();
             var off = new Vector2(30, 14);
+
+            if (npc is null)
+                return;
 
             var texBack = GetTexture(AssetDirectory.GUI + "BossbarBack");
             var texFill = GetTexture(AssetDirectory.GUI + "BossbarFill");

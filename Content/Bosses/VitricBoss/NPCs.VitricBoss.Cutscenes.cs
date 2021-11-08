@@ -106,7 +106,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 454)
             {
-                UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
+                if(Main.netMode != NetmodeID.Server)
+                    UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
 
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 30;
@@ -133,7 +134,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.Center = Vector2.Lerp(startPos, startPos + new Vector2(0, -800), progress);
             }
 
-            if (GlobalTimer > 540) //summon crystal babies
+            if (GlobalTimer > 540 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer)) //summon crystal babies
+            {
                 for (int k = 0; k <= 4; k++)
                     if (GlobalTimer == 540 + k * 5)
                     {
@@ -145,6 +147,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         crystals.Add(Main.npc[index]); //add this crystal to the list of crystals the boss controls
                     }
 
+                if(GlobalTimer == 560)
+                    RebuildRandom();
+            }
+
             if(GlobalTimer > 600 && GlobalTimer < 620)
 			{
                 SetFrameY(3);
@@ -155,8 +161,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
 
-                float progress = ((GlobalTimer - 600) / 20f);
-                Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    float progress = ((GlobalTimer - 600) / 20f);
+                    Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
+                }
             }
 
             if (GlobalTimer == 610)
@@ -167,8 +176,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 60;
 
-
-                Filters.Scene.Deactivate("Shockwave");
+                if (Main.netMode != NetmodeID.Server)
+                    Filters.Scene.Deactivate("Shockwave");
             }
 
             if(GlobalTimer == 690)
@@ -182,8 +191,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer > 780) //start the fight
             {
-                GUI.BootlegHealthbar.SetTracked(npc, ", Shattered Sentinel", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
-                GUI.BootlegHealthbar.visible = true;
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    BootlegHealthbar.SetTracked(npc, ", Shattered Sentinel", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
+                    BootlegHealthbar.visible = true;
+                }
+
                 SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
@@ -322,7 +335,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void DeathAnimation() //The animation that plays when the boss dies
         {
             Vignette.offset = Vector2.Zero;
-            Vignette.extraOpacity = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
+            Vignette.opacityMult = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
             if (GlobalTimer == 1)
             {

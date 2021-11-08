@@ -10,6 +10,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string AssetRoot => AssetDirectory.VitricTile;
 
+		public override float Priority => 2.03f;
+
 		public override void Load()
 		{
 			LoadTile(

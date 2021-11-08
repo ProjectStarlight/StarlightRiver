@@ -10,6 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Packets;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -70,6 +71,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
+            if (phase == 2 && Parent != null && Parent.AttackTimer < 180)
+                return false;
+
             if (phase == 3)
                 return true;
 
@@ -79,7 +83,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (phase == 1 || phase == 5)
                 return false;
 
-            return !(state == 0 || state == 1); //too tired of dealing with this sheeeet
+            return !(state == 0 || state == 1); //too tired of dealing with this 
         }
 
         public override void AI()
@@ -98,9 +102,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (state == 0) //appears to be the "vulnerable" phase
             {
-                if(!Vignette.visible)
-                    Vignette.visible = true;
-
+                Vignette.visible = true;
                 Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
 
                 if (Main.rand.Next(27) == 0)
@@ -114,11 +116,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
                     Player player = Main.player[i];
+
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
-                        Vignette.visible = false; //disable overlay
-                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
-                        //Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 60;
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
                         Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
@@ -129,15 +129,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         for (int k = 0; k < 20; k++)
                         {
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
-                            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(150, 230, 255), 0.8f); //Crystal
+                            Dust.NewDustPerfect(npc.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, default, 2.2f); //Crystal
+                            Dust.NewDustPerfect(npc.Center, DustType<Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(150, 230, 255), 0.8f); //Crystal
                         }
 
                         for (int k = 0; k < 40; k++)
-                            Dust.NewDustPerfect(Parent.npc.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
+                            Dust.NewDustPerfect(Parent.npc.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
 
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
+
+                        if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
+						{
+                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI);
+                            packet.Send();
+                            return;
+						}
 
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
@@ -146,10 +153,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                         Parent.ResetAttack();
 
+                        Parent.RebuildRandom();
+                        npc.netUpdate = true;
+
                         foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
                         {
                             phase = 0;
                             npc.friendly = false; //damaging again
+                            npc.netUpdate = true;
                         }
                     }
                 }
@@ -172,13 +183,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             npc.friendly = false;
                             ResetTimers();
+                            npc.netUpdate = true;
                         }
                     }
                     npc.scale = 1; //resets scale, just incase
 
                     break;
 
-                case 1: //nuke attack
+                case 1: //vulnerability 
                     npc.velocity *= 0; //make sure we dont fall into oblivion
 
                     if (state == 0) 
@@ -202,8 +214,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             Parent.npc.life += 250; //heal the boss
                             Parent.npc.HealEffect(250, true);
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
-
-                            Vignette.visible = false; //reset vignette
+                            Parent.RebuildRandom();
+                            npc.netUpdate = true;
 
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());
@@ -302,6 +314,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
+
+            npc.netUpdate = true;
         }
 
         private void ResetTimers()

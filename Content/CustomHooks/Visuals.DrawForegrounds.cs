@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using System;
 using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -16,9 +18,10 @@ namespace StarlightRiver.Content.CustomHooks
                 return;
 
             On.Terraria.Main.DrawInterface += DrawForeground;
+            On.Terraria.Main.DoUpdate += ResetForeground;
         }
 
-        public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
         {
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);//Main.spriteBatch.Begin()
 
@@ -35,6 +38,17 @@ namespace StarlightRiver.Content.CustomHooks
                 orig(self, gameTime);
             }
             catch { }
+        }
+
+        private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+        {
+            foreach (var fg in ForegroundLoader.Foregrounds)
+            {
+                if (fg != null)
+                    fg.Reset();
+            }
+
+            orig(self, gameTime);
         }
     }
 }

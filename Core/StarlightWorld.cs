@@ -305,7 +305,9 @@ namespace StarlightRiver.Core
             if (Main.netMode == NetmodeID.SinglePlayer)
                 CreateCutaways();
 
-            Physics.VerletChainInstance.toDraw.Clear();
+            Physics.VerletChain.toDraw.Clear();
+
+            DummyTile.dummies.Clear();
         }
 
         public static void LearnRecipie(string key)

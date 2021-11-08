@@ -14,6 +14,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Helpers
@@ -307,13 +308,27 @@ namespace StarlightRiver.Helpers
             return output;
         }
 
-        public static List<T> RandomizeList<T>(List<T> input)
+		public static List<T> RandomizeList<T>(List<T> input)
+		{
+			int n = input.Count();
+			while (n > 1)
+			{
+				n--;
+				int k = Main.rand.Next(n + 1);
+				T value = input[k];
+				input[k] = input[n];
+				input[n] = value;
+			}
+			return input;
+		}
+
+        public static List<T> RandomizeList<T>(List<T> input, UnifiedRandom rand)
         {
             int n = input.Count();
             while (n > 1)
             {
                 n--;
-                int k = Main.rand.Next(n + 1);
+                int k = rand.Next(n + 1);
                 T value = input[k];
                 input[k] = input[n];
                 input[n] = value;
@@ -368,7 +383,10 @@ namespace StarlightRiver.Helpers
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
         public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
         {
-            for(int i = 0; i < instances.Count; i++)
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
+            for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -401,6 +419,9 @@ namespace StarlightRiver.Helpers
 
         public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
             if (position == default)
                 position = Vector2.One * -1;
 
@@ -409,6 +430,9 @@ namespace StarlightRiver.Helpers
 
         public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
         {
+            if (Main.netMode == NetmodeID.Server)
+                return null;
+
             if (position == default)
                 position = Vector2.One * -1;
 

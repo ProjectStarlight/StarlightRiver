@@ -26,13 +26,24 @@ namespace StarlightRiver.Core
 
 		private Medal attemptedMedal;
 
+		private static int Difficulty => Main.expertMode ? 1 : 0;
+
 		public void QualifyForMedal(Medal medal)
 		{
 			attemptedMedal = medal;
 		}
 
-		public void ProbeMedal(Medal medal)
+		public void QualifyForMedal(string name, float order)
 		{
+			
+			var medal = new Medal(name, Difficulty, order);
+			QualifyForMedal(medal);
+		}
+
+		public void ProbeMedal(string name)
+		{
+			var medal = new Medal(name, Difficulty, attemptedMedal.order);
+
 			if (attemptedMedal.Equals(medal) && !medals.Any(n => n.name == medal.name && n.difficulty >= medal.difficulty))
 			{
 				medals.RemoveAll(n => n.name == medal.name && n.difficulty < medal.difficulty);
@@ -103,7 +114,7 @@ namespace StarlightRiver.Core
 		public override bool Equals(object obj)
 		{
 			var med = (Medal)obj;
-			return obj is Medal && med.name == name && med.difficulty == difficulty && med.order == order;
+			return obj is Medal && med.name == name && med.difficulty == difficulty;
 		}
 
 		public TagCompound SerializeData()

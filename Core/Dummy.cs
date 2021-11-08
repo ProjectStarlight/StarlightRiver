@@ -11,9 +11,9 @@ namespace StarlightRiver.Core
         private readonly int Width;
         private readonly int Height;
 
-        public Tile Parent => Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16];
-        public int ParentX => (int)projectile.Center.X / 16;
-        public int ParentY => (int)projectile.Center.Y / 16;
+        public Tile Parent => Main.tile[ParentX, ParentY];
+        public virtual int ParentX => (int)projectile.Center.X / 16;
+        public virtual int ParentY => (int)projectile.Center.Y / 16;
 
         public Dummy(int validType, int width, int height)
         {

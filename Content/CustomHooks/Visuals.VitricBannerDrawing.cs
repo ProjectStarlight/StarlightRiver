@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
 
-            VerletChainInstance.DrawStripsPixelated(Main.spriteBatch);
+            VerletChain.DrawStripsPixelated(Main.spriteBatch);
 
             Main.spriteBatch.End();
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void RefreshBannerTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (width != Main.screenWidth || height != Main.screenHeight)
-                VerletChainInstance.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                VerletChain.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             orig(width, height, fullscreen);
         }
@@ -53,12 +53,12 @@ namespace StarlightRiver.Content.CustomHooks
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
-            graphics.SetRenderTarget(VerletChainInstance.target);
+            graphics.SetRenderTarget(VerletChain.target);
             graphics.Clear(Color.Transparent);
 
             graphics.BlendState = BlendState.Opaque;
 
-            foreach (var i in VerletChainInstance.toDraw)
+            foreach (var i in VerletChain.toDraw)
                 i.DrawStrip(i.scale);
 
             graphics.SetRenderTarget(null);

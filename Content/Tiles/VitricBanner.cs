@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Physics;
 using Terraria;
 using Terraria.DataStructures;
@@ -36,11 +37,11 @@ namespace StarlightRiver.Content.Tiles
     {
         public VitricBannerDummy() : base(TileType<VitricBanner>(), 32, 32) { }
 
-        private VerletChainInstance Chain;
+        private TriangularBanner Chain;
 
         public override void SafeSetDefaults()
         {
-            Chain = new VerletChainInstance(16, false, projectile.Center, 16)
+            Chain = new TriangularBanner(16, false, projectile.Center, 16)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -52,7 +53,6 @@ namespace StarlightRiver.Content.Tiles
         public override void Update()
         {
             Chain.UpdateChain(projectile.Center);
-
             Chain.IterateRope(WindForce);
 
             projectile.ai[0] += 0.005f;
@@ -75,7 +75,9 @@ namespace StarlightRiver.Content.Tiles
             Chain.ropeSegments[index].color = color;
         }
 
-        public override void Kill(int timeLeft) => 
-            VerletChainInstance.toDraw.Remove(Chain);
+        public override void Kill(int timeLeft)
+        {
+            VerletChain.toDraw.Remove(Chain);
+        }
     }
 }

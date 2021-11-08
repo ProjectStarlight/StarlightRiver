@@ -92,10 +92,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					{
 						Vignette.visible = true;
 						Vignette.offset = Vector2.Zero;
-						Vignette.extraOpacity = 1 - distance / 500f;
+						Vignette.opacityMult = 1 - distance / 500f;
 					}
-					else
-						Vignette.visible = false;
 
 					npc.TargetClosest();
 
@@ -113,7 +111,6 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					if(Timer == 100)
 					{
-						Vignette.visible = false;
 						npc.noGravity = false;
 
 						Main.PlaySound(SoundID.Grass, npc.Center);

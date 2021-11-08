@@ -30,6 +30,8 @@ namespace StarlightRiver.Content.Foregrounds
 
         public virtual void Draw(SpriteBatch spriteBatch, float opacity) { }
 
+        public virtual void Reset() { }
+
         public virtual void OnLoad() { }
     }
 

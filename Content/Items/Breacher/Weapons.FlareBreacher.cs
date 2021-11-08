@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Breacher
             item.UseSound = SoundID.Item11;
             item.width = 24;
             item.height = 28;
-            item.damage = 25;
+            item.damage = 23;
             item.rare = ItemRarityID.Orange;
             item.value = Item.sellPrice(0, 1, 0, 0);
             item.noMelee = true;
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 target.StrikeNPC(projectile.damage, 0f, 0);
 
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
-            int numberOfProjectiles = Main.rand.Next(5, 8);
+            int numberOfProjectiles = Main.rand.Next(4, 6);
 
             for (int i = 0; i < numberOfProjectiles; i++)
             {

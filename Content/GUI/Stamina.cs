@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.GUI
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
-        public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax != 0;
+        public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax > 1;
 
 		public UIPanel abicon;
         private readonly Stam Stam1 = new Stam();
