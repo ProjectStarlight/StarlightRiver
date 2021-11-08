@@ -7,7 +7,7 @@ namespace StarlightRiver.Core
 {
 	public abstract class Dummy : ModProjectile
     {
-        private readonly int ValidType;
+        protected readonly int ValidType;
         private readonly int Width;
         private readonly int Height;
 

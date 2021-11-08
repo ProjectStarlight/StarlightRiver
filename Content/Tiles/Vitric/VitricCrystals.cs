@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal abstract class VitricCrystal : WalkableCrystal
     {
-        protected VitricCrystal(int maxWidth, int maxHeight, int variantCount = 1, string drop = null) :
-            base(maxWidth, maxHeight, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.GlassGravity>(), new Color(115, 202, 158), 2, default, 27)
+        protected VitricCrystal(int maxWidth, int maxHeight, string dummyName, int variantCount = 1, string drop = null) :
+            base(maxWidth, maxHeight, dummyName, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.GlassGravity>(), new Color(115, 202, 158), 2, 27)
         { }
 
         public override void SafeSetDefaults() =>
@@ -80,29 +80,40 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 
-        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+        public override void PostDraw(int i, int j, SpriteBatch spriteBatch)//broken?
         {
             Texture2D lavaFadeTex = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
-            int halfWidth = (MaxWidth / 2);//to account for odd numbers
 
-            for (int x = -halfWidth; x < halfWidth + 1; x++)
-                for (int y = MaxHeight - 1; y < 1; y++)
+            if (Main.tile[i, j].type == Type)
+            {
+                int val = (int)(Math.Sin(Main.GameUpdateCount * 0.04f + (i + j)) * 15f + 240f);
+                Color col = new Color(val, val, val, 0);
+
+                //Main.NewText(val / 255f);
+                Tile sideTile = Main.tile[i - 1, j];
+                Tile sideUpTile = Main.tile[i - 1, j - 1];
+
+                //if (sideTile.liquidType() == Tile.Liquid_Lava)
+                //    Terraria.Utils.DrawBorderString(spriteBatch, val.ToString(), ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), Color.White, 0.75f);
+
+                if (sideTile.liquidType() == Tile.Liquid_Lava)
+                    spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, (255f - sideTile.liquid) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile.liquid / 255f), SpriteEffects.None, 0);
+                else if (sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type)
+                    spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
+                else
                 {
-                    if (Main.tile[i + x, j + y].type == Type)
-                    {
-                        int val = (int)(Math.Sin(Main.GameUpdateCount * 0.05f + (y + x)) * 20f + 235f);
-                        Color col = new Color(val, val, val, 0);
-                        //Main.NewText(val / 255f);
-                        Tile sideTile = Main.tile[i + x - 1, j + y];
-                        Tile sideUpTile = Main.tile[i + x - 1, j + y - 1];
-                        if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
-                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + x, j + y) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
-                        sideTile = Main.tile[i + x + 1, j + y];
-                        sideUpTile = Main.tile[i + x + 1, j + y - 1];
-                        if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
-                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + x - 2, j + y) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
-                    }
+                    sideTile = Main.tile[i + 1, j];
+                    sideUpTile = Main.tile[i + 1, j - 1];
+
+                    //if (sideTile.liquidType() == Tile.Liquid_Lava)
+                    //    Terraria.Utils.DrawBorderString(spriteBatch, val.ToString(), ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), Color.White, 0.75f);
+
+                    if (sideTile.liquidType() == Tile.Liquid_Lava)
+                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, (255f - sideTile.liquid) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile.liquid / 255f), SpriteEffects.FlipHorizontally, 0);
+                    else if (sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type)
+                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
                 }
+            }
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -121,26 +132,37 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricGiantCrystal : VitricCrystal
     {
-        public VitricGiantCrystal() : base(10, 19, 4) { }//a
+        public VitricGiantCrystal() : base(10, 19, "VitricGiantDummy", 4) { }//a
     }
+    internal class VitricGiantDummy : WalkableCrystalDummy
+    { public VitricGiantDummy() : base(TileType<VitricGiantCrystal>(), 4) { } }
+
 
     internal class VitricLargeCrystal : VitricCrystal
     {
-        public VitricLargeCrystal() : base(13, 8, 2) {}
+        public VitricLargeCrystal() : base(13, 8, "VitricLargeDummy", 2) {}
     }
+    internal class VitricLargeDummy : WalkableCrystalDummy
+    { public VitricLargeDummy() : base(TileType<VitricLargeCrystal>(), 2) { } }
+
 
     internal class VitricMediumCrystal : VitricCrystal
     {
-        public VitricMediumCrystal() : base(7, 6, 4) { }
+        public VitricMediumCrystal() : base(7, 6, "VitricMediumDummy", 4) { }
     }
+    internal class VitricMediumDummy : WalkableCrystalDummy
+    { public VitricMediumDummy() : base(TileType<VitricMediumCrystal>(), 4) { } }
+
 
     internal class VitricSmallCrystal : VitricCrystal
     {
-        public VitricSmallCrystal() : base(3, 3, 2) { }
+        public VitricSmallCrystal() : base(3, 3, "VitricSmallDummy", 2) { }
     }
+    internal class VitricSmallDummy : WalkableCrystalDummy
+    { public VitricSmallDummy() : base(TileType<VitricSmallCrystal>(), 2) { } }
 
 
-    //internal class VitricLargeCrystal : ModTile
+    //internal class VitricLargeCrystal : ModTile //old crystal tiles
     //{
 
     //    public override bool Autoload(ref string name, ref string texture)
