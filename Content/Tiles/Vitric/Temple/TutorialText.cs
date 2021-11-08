@@ -28,6 +28,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Welcome to Starlight River! This is a demo version of Starlight River with a focus on Ceiros, the third (and currently most complete) boss in the mod. Try out some of the gear available at this progression point and tell us what you think!", 250, Main.fontItemStack, 0.8f), pos, Color.White, 0.8f);
 
+            Utils.DrawBorderString(spriteBatch, Helper.WrapString("Here is some of the gear from the mod for you to play with, be sure to check the tooltips and set bonuses!", 500, Main.fontItemStack, 0.8f), pos + new Vector2(-650, 50), Color.White, 0.8f);
+
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Melee", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-650, 150), Color.White, 1f);
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Ranged", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-500, 150), Color.White, 1f);
             Utils.DrawBorderString(spriteBatch, Helper.WrapString("Magic", 300, Main.fontItemStack, 0.8f), pos + new Vector2(-350, 150), Color.White, 1f);
