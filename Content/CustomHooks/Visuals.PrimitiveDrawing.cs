@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -24,6 +25,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Main.gameMenu)
                 return;
+
+            Main.graphics.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
             for (int k = 0; k < Main.maxProjectiles; k++) // Projectiles.
                 if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawPrimitive)

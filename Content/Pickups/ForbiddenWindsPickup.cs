@@ -225,9 +225,9 @@ namespace StarlightRiver.Pickups
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(4f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
+            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
 
-			trail1?.Render(effect);
+            trail1?.Render(effect);
 			trail2?.Render(effect);
 			trail3?.Render(effect);
 
