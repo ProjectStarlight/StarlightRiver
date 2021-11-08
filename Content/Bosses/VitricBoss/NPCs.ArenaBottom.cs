@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Random rand = new Random((int)npc.ai[3] + npc.whoAmI);//the seed changes each time this attack activates, whoAmI is added so the top/bottom are different
 
-                int eggIndex = rand.Next(50) == 0 ? rand.Next(0, npc.width / 18) * 18 : -1;// 1/50 chance
+                int eggIndex = rand.Next(25) == 0 ? rand.Next(0, npc.width / 18) * 18 : -1;// 1/25 chance
 
                 float off = Math.Min((npc.ai[0] - 120) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];

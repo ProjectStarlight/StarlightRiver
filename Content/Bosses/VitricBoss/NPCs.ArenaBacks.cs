@@ -301,6 +301,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+
+
+            if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            {
+                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Helpers.LightingBufferRenderer.DrawWithLighting(target, egg, source);
+            }
         }
 
         public override void ScrollDraw(SpriteBatch sb)
@@ -324,9 +331,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-            //Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
-            //Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex2, source1, default, sb, Configs.LightImportance.Some);
-            //Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex2, source2, default, sb, Configs.LightImportance.Some);
+            if(DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            {
+                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
+            }
         }
 
         public override void SpawnPlatforms(bool rising = true)
