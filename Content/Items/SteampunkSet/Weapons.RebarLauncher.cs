@@ -24,6 +24,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		}
 
 		//TODO: Adjust rarity sellprice and balance
+
+		Vector2 direction = Vector2.Zero;
 		public override void SetDefaults()
 		{
 			item.damage = 40;
@@ -44,11 +46,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
 			player.GetModPlayer<StarlightPlayer>().Shake += 4;
+			direction = new Vector2(speedX, speedY);
 			position += new Vector2(speedX, speedY) * 0.9f;
 			return true;
         }
 
-		public override Vector2? HoldoutOffset()
+        public override void HoldItem(Player player)
+        {
+			if (player.itemTime > 1)
+				Dust.NewDustPerfect(player.Center + (direction.RotatedBy(-0.1f * player.direction) * 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(30), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+			base.HoldItem(player);
+        }
+
+        public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-20, 0);
 		}
@@ -165,7 +175,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 								initialVel += vel;
 
-								projectile.damage = initialDamage + (int)Math.Pow(distanceIn, 0.8f);
+								projectile.damage = initialDamage + (int)Math.Pow(distanceIn, 0.5f);
 							}
 						}
 
@@ -225,6 +235,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 			Texture2D overlay = ModContent.GetTexture(Texture + "_White");
+			Texture2D glow = ModContent.GetTexture(Texture + "_Glow");
+			Color color = HeatColor(trailWidth / 4f, 0.5f);
+			color.A = 0;
+			spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, null, color, projectile.rotation, glow.Size() / 2, projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(overlay, projectile.Center - Main.screenPosition, null, HeatColor(trailWidth / 4f, 0.5f), projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
 			return false;
@@ -247,7 +261,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache = new List<Vector2>();
 				offsetCache = new List<Vector2>();
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 50; i++)
 				{
 					cache.Add(GetA4() + GetTop());
 
@@ -258,7 +272,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			cache.Add(GetA4() + GetTop());
 			offsetCache.Add((projectile.rotation + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache.Count > 30)
+			while (cache.Count > 50)
 			{
 				cache.RemoveAt(0);
 				offsetCache.RemoveAt(0);
@@ -268,17 +282,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache2 = new List<Vector2>();
 				offsetCache2 = new List<Vector2>();
-				for (int i = 0; i < 30; i++)
+				for (int i = 0; i < 50; i++)
 				{
-					cache2.Add(GetA4() + GetBottom());
+					cache2.Add(GetA4() + GetTop());
 					offsetCache2.Add((projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 				}
 			}
 
-			cache2.Add(GetA4() + GetBottom());
+			cache2.Add(GetA4() + GetTop());
 			offsetCache2.Add((projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache2.Count > 30)
+			while (cache2.Count > 50)
 			{
 				cache2.RemoveAt(0);
 				offsetCache2.RemoveAt(0);
@@ -288,12 +302,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
 			{
 				return Color.Red;
 			});
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
 			{
 				return Color.Red;
 			});
@@ -317,8 +331,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (!stuck)
 			{
-				trail.NextPosition = GetA4() + projectile.velocity;
-				trail2.NextPosition = GetA4() + projectile.velocity;
+				trail.NextPosition = GetA4() + projectile.velocity + GetTop();
+				trail2.NextPosition = GetA4() + projectile.velocity + GetTop();
 			}
 		}
 
@@ -354,18 +368,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public Vector2 GetA4()
 		{
-			return projectile.Center + ((projectile.rotation).ToRotationVector2() * 40);
+			return projectile.Center + ((projectile.rotation).ToRotationVector2() * 35);
 		}
 
 		public Vector2 GetTop()
         {
-			return (projectile.rotation + 1.57f).ToRotationVector2();
+			return (projectile.rotation - 1.57f).ToRotationVector2() * 5;
         }
-
-		public Vector2 GetBottom()
-		{
-			return (projectile.rotation - 1.57f).ToRotationVector2();
-		}
 		public void DrawPrimitives()
 		{
 			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;
