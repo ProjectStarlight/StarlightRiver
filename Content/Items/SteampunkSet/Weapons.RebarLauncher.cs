@@ -32,8 +32,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
-			item.useTime = 45;
-			item.useAnimation = 45;
+			item.useTime = 65;
+			item.useAnimation = 65;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true;
 			item.knockBack = 0;
@@ -45,6 +45,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
 			player.GetModPlayer<StarlightPlayer>().Shake += 4;
 			direction = new Vector2(speedX, speedY);
 			position += new Vector2(speedX, speedY) * 0.9f;
