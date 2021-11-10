@@ -99,16 +99,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public float distanceIn = 0;
 
+		public override bool Autoload(ref string name)
+		{
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "RebarProj");
+			return base.Autoload(ref name);
+		}
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Needle");
+			DisplayName.SetDefault("Rebar");
 		}
 
 		public override void SetDefaults()
 		{
 			projectile.penetrate = 1;
 			projectile.tileCollide = true;
-			projectile.timeLeft = 100;
+			projectile.timeLeft = 150;
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.width = projectile.height = 16;
@@ -194,11 +199,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 						var targetCollection = Main.npc.Where(n => n.active && !n.townNPC && (Collision.CheckAABBvLineCollision(n.position, n.Size, GetA3(), GetB3()) || Collision.CheckAABBvAABBCollision(projectile.position, projectile.Size, n.position, n.Size))).OrderBy(n => 1).FirstOrDefault();
 						if (targetCollection == default)
 						{
+							projectile.extraUpdates = 0;
+
 							if (projectile.timeLeft > 80)
 								projectile.timeLeft = 80;
+
 							projectile.friendly = false;
 							projectile.velocity = Vector2.Zero;
-							collided = true;
+
+							if (!collided)
+							{
+								projectile.alpha = 255;
+								Gore.NewGorePerfect(projectile.Center, initialVel, ModGore.GetGoreSlot(Texture));
+								collided = true;
+							}
 						}
 
 						projectile.position = target.position + offset;
@@ -232,7 +246,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			projectile.penetrate++;
-
+			projectile.extraUpdates = 0;
 			if (target.life > 0 && enemyID != target.whoAmI)
 			{
 				enemyID = target.whoAmI;
@@ -247,7 +261,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (!stuck && target.life > 0)
 			{
-				projectile.extraUpdates = 0;
 				initialDamage = projectile.damage;
 				initialVel = projectile.velocity;
 				stuck = true;
