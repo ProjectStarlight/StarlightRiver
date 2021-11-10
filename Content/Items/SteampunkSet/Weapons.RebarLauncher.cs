@@ -355,7 +355,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				return Color.Red;
 			});
 
-			if (trailWidth < 3.9f)
+			if (trailWidth < 3.9f && (collided || stuck || projectile.timeLeft % 6 == 0))
 			{
 				for (int i = 0; i < cache.Count; i++)
 				{
