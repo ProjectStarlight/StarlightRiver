@@ -69,10 +69,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
+		const int TRAILLENGTH = 150;
+
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
 		private Trail trail;
 		private Trail trail2;
+
+		private int trailCounter;
 
 		private List<Vector2> offsetCache;
 		private List<Vector2> offsetCache2;
@@ -133,9 +137,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				if (stuck)
 				{
-
-					cooldown--;
 					NPC target = Main.npc[enemyID];
+					cooldown--;
 
 					if (!target.active)
 					{
@@ -189,8 +192,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 							initialVel *= 0.5f;
 
 						var targetCollection = Main.npc.Where(n => n.active && !n.townNPC && (Collision.CheckAABBvLineCollision(n.position, n.Size, GetA3(), GetB3()) || Collision.CheckAABBvAABBCollision(projectile.position, projectile.Size, n.position, n.Size))).OrderBy(n => 1).FirstOrDefault();
-						if (targetCollection == default && projectile.timeLeft > 5)
-							projectile.timeLeft = 5;
+						if (targetCollection == default)
+						{
+							if (projectile.timeLeft > 80)
+								projectile.timeLeft = 80;
+							projectile.friendly = false;
+							projectile.velocity = Vector2.Zero;
+							collided = true;
+						}
 
 						projectile.position = target.position + offset;
 					}
@@ -204,6 +213,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 			else
             {
+				if (enemyID != -1)
+				{
+					NPC target = Main.npc[enemyID];
+					projectile.position = target.position + offset;
+				}
 				projectile.alpha += 4;
             }
 
@@ -276,18 +290,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache = new List<Vector2>();
 				offsetCache = new List<Vector2>();
-				for (int i = 0; i < 50; i++)
+				for (int i = 0; i < TRAILLENGTH; i++)
 				{
 					cache.Add(GetA4() + GetTop());
 
-					offsetCache.Add((projectile.rotation + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
+					offsetCache.Add(Vector2.Zero);
 				}
 			}
 
 			cache.Add(GetA4() + GetTop());
 			offsetCache.Add((projectile.rotation + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache.Count > 50)
+			while (cache.Count > TRAILLENGTH)
 			{
 				cache.RemoveAt(0);
 				offsetCache.RemoveAt(0);
@@ -297,32 +311,33 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache2 = new List<Vector2>();
 				offsetCache2 = new List<Vector2>();
-				for (int i = 0; i < 50; i++)
+				for (int i = 0; i < TRAILLENGTH; i++)
 				{
 					cache2.Add(GetA4() + GetTop());
-					offsetCache2.Add((projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
+					offsetCache2.Add(Vector2.Zero);
 				}
 			}
 
 			cache2.Add(GetA4() + GetTop());
 			offsetCache2.Add((projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache2.Count > 50)
+			while (cache2.Count > TRAILLENGTH)
 			{
 				cache2.RemoveAt(0);
 				offsetCache2.RemoveAt(0);
 			}
+			trailCounter++;
 		}
 
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
 			{
 				return Color.Red;
 			});
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor =>
 			{
 				return Color.Red;
 			});
@@ -402,7 +417,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			effect.Parameters["noiseTexture"].SetValue(ModContent.GetTexture(AssetDirectory.SteampunkItem + "RebarNoiseTexture"));
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["progress"].SetValue(trailWidth / 4f);
-			effect.Parameters["repeats"].SetValue(6);
+			effect.Parameters["repeats"].SetValue(18);
 			effect.Parameters["midColor"].SetValue(new Color(248, 126, 0).ToVector3());
 
 
