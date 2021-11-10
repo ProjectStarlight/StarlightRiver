@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private bool collided = false;
 
-		int enemyID;
+		int enemyID = -1;
 		bool stuck = false;
 		Vector2 offset = Vector2.Zero;
 
@@ -104,6 +104,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			projectile.penetrate = 1;
 			projectile.tileCollide = true;
+			projectile.timeLeft = 100;
 			projectile.hostile = false;
 			projectile.friendly = true;
 			projectile.width = projectile.height = 16;
@@ -114,7 +115,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override bool PreAI()
 		{
-			if (collided || stuck)
+			if (collided || stuck || projectile.timeLeft % 6== 0)
             {
 				if (trailWidth > 0.3f)
 				{
@@ -127,6 +128,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				else
 					trailWidth = 0;
 			}
+
 			if (!collided)
 			{
 				if (stuck)
@@ -186,11 +188,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 						if (initialVel.Length() > 0.02f)
 							initialVel *= 0.5f;
 
-						if (!Collision.CheckAABBvLineCollision(target.position, target.Size, GetA3(), GetB3()) && !Collision.CheckAABBvAABBCollision(projectile.position, projectile.Size, target.position, target.Size))
-						{
-							if (projectile.timeLeft > 5)
-								projectile.timeLeft = 5;
-						}
+						var targetCollection = Main.npc.Where(n => n.active && !n.townNPC && (Collision.CheckAABBvLineCollision(n.position, n.Size, GetA3(), GetB3()) || Collision.CheckAABBvAABBCollision(projectile.position, projectile.Size, n.position, n.Size))).OrderBy(n => 1).FirstOrDefault();
+						if (targetCollection == default && projectile.timeLeft > 5)
+							projectile.timeLeft = 5;
 
 						projectile.position = target.position + offset;
 					}
@@ -202,6 +202,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					ManageCaches();
 				}
 			}
+			else
+            {
+				projectile.alpha += 4;
+            }
+
 			ManageTrail();
 			return true;
 		}
@@ -213,11 +218,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			projectile.penetrate++;
+
+			if (target.life > 0 && enemyID != target.whoAmI)
+			{
+				enemyID = target.whoAmI;
+				offset = projectile.position - target.position;
+			}
+
 			if (stuck)
             {
 				cooldown = 30;
 				projectile.friendly = false;
             }
+
 			if (!stuck && target.life > 0)
 			{
 				projectile.extraUpdates = 0;
@@ -226,8 +239,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				stuck = true;
 				projectile.friendly = false;
 				projectile.tileCollide = false;
-				enemyID = target.whoAmI;
-				offset = projectile.position - target.position;
 				offset -= projectile.velocity;
 				projectile.timeLeft = 800;
 			}
@@ -239,9 +250,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Texture2D glow = ModContent.GetTexture(Texture + "_Glow");
 			Color color = HeatColor(trailWidth / 4f, 0.5f);
 			color.A = 0;
-			spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, null, color, projectile.rotation, glow.Size() / 2, projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(overlay, projectile.Center - Main.screenPosition, null, HeatColor(trailWidth / 4f, 0.5f), projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
+
+			float transparency = 1 - (projectile.alpha / 255f);
+
+			spriteBatch.Draw(glow, projectile.Center - Main.screenPosition, null, color * transparency, projectile.rotation, glow.Size() / 2, projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, lightColor * transparency, projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(overlay, projectile.Center - Main.screenPosition, null, HeatColor(trailWidth / 4f, 0.5f) * transparency, projectile.rotation, new Vector2(30, 3), projectile.scale, SpriteEffects.None, 0);
 			return false;
         }
 
@@ -332,8 +346,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (!stuck)
 			{
-				trail.NextPosition = GetA4() + projectile.velocity + GetTop();
-				trail2.NextPosition = GetA4() + projectile.velocity + GetTop();
+				trail.NextPosition = GetA4() + (projectile.rotation.ToRotationVector2() * 25) + GetTop();
+				trail2.NextPosition = GetA4() + (projectile.rotation.ToRotationVector2() * 25) + GetTop();
 			}
 		}
 
