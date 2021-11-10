@@ -246,11 +246,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			projectile.penetrate++;
-			projectile.extraUpdates = 0;
 			if (target.life > 0 && enemyID != target.whoAmI)
 			{
 				enemyID = target.whoAmI;
 				offset = projectile.position - target.position;
+				projectile.extraUpdates = 0;
 			}
 
 			if (stuck)
@@ -261,6 +261,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (!stuck && target.life > 0)
 			{
+				projectile.extraUpdates = 0;
 				initialDamage = projectile.damage;
 				initialVel = projectile.velocity;
 				stuck = true;
