@@ -19,10 +19,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return true;
         }
 
-		private void UpdateColission(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
-		{
+        private void UpdateColission(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+        {
             orig(self, gameTime);
-            Main.tileSolid[TileType<VitricBossBarrier>()] = SpecialNPCTracker.Tracked[NPCType<VitricBoss>()];
+
+            if (Main.gameMenu)
+                return;
+
+            Main.tileSolid[TileType<VitricBossBarrier>()] = Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>());
         }
 
 		public override void SetDefaults()
