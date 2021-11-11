@@ -1,4 +1,7 @@
-﻿using StarlightRiver.Core;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -12,19 +15,21 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = AssetDirectory.Invisible;
+            On.Terraria.Main.Update += UpdateColission; //TODO: Find a better/cleaner way to do this
             return true;
         }
 
-        public override void SetDefaults()
+		private void UpdateColission(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		{
+            orig(self, gameTime);
+            Main.tileSolid[TileType<VitricBossBarrier>()] = SpecialNPCTracker.Tracked[NPCType<VitricBoss>()];
+        }
+
+		public override void SetDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileBlockLight[Type] = false;
             minPick = 999;
-        }
-
-        public override void NearbyEffects(int i, int j, bool closer)
-        {
-            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<Bosses.VitricBoss.VitricBoss>());
         }
     }
 }
