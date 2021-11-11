@@ -116,8 +116,11 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void AI(NPC npc)
         {
-            foreach (NPC otherNPC in Main.npc.Where(n => n.active && n.life > 5 && !n.friendly &&
-                                                         n.type != NPCID.TargetDummy))
+            if (forestIvyPoisonVineCount <= 0)
+                return;
+
+            foreach (NPC otherNPC in Main.npc.Where(n => n.active && n.life > 5 && !n.friendly && n.type != NPCID.TargetDummy))
+            {
                 if (npc.Hitbox.Intersects(otherNPC.Hitbox))
                 {
                     if (npc.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount <=
@@ -128,6 +131,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
                     otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
                     otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact = 0;
                 }
+            }
         }
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)

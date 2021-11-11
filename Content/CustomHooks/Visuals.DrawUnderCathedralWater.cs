@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -45,29 +46,43 @@ namespace StarlightRiver.Content.CustomHooks
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is ArenaActor))
+            NPC npc = Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor);
+
+            if(npc != null && npc.active)
             {
                 (npc.modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
-                foreach (NPC npc2 in Main.npc.Where(n => n.active && n.modNPC is IUnderwater && !(n.modNPC is SquidBoss)))
-                    (npc2.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                int boss = -1;
 
-                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.modProjectile is IUnderwater))
+                for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
+                {
+                    var npc2 = Main.npc[k];
+
+                    if (npc2.active && npc2.modNPC is IUnderwater)
+                    {
+                        if (npc2.type == ModContent.NPCType<SquidBoss>())
+                            boss = k;
+                        else
+                            (npc2.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                    }
+                }
+
+                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.modProjectile is IUnderwater)) //draw all projectiles
                     (proj.modProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch);
 
-                foreach (NPC npc3 in Main.npc.Where(n => n.active && n.modNPC is SquidBoss))
-                    (npc3.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                if (boss != -1 && Main.npc[boss].modNPC is IUnderwater)
+                   (Main.npc[boss].modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch); //draw boss ontop if extant
 
                 var effect = Filters.Scene["Waves"].GetShader().Shader;
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect);
 
                 effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
                 effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
                 effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
                 effect.Parameters["sampleTexture"].SetValue(PermafrostGlobalTile.auroraBackTarget);
                 effect.Parameters["speed"].SetValue(50f);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect);
 
                 Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero, Color.White);
 
