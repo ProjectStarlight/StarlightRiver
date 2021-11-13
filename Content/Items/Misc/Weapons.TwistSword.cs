@@ -55,7 +55,10 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			var clone = base.Clone(item);
 
-            item.modItem.HoldItem(Main.LocalPlayer);
+            if (Main.myPlayer == item.owner && Main.mouseItem.type == ItemType<TwistSword>())
+            {
+                item.modItem.HoldItem(Main.player[item.owner]);
+            }
 
             (clone as TwistSword).charge = (item.modItem as TwistSword).charge;
             (clone as TwistSword).timer = (item.modItem as TwistSword).timer;
@@ -67,8 +70,12 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool UseItem(Player player)
         {
-            Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), item.damage, item.knockBack, player.whoAmI);
-            return true;
+            if (player.whoAmI == Main.myPlayer)
+            {
+                Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), item.damage, item.knockBack, player.whoAmI);
+                return true;
+            }
+            return false;
         }
 
         public override void HoldItem(Player player)
@@ -116,6 +123,11 @@ namespace StarlightRiver.Content.Items.Misc
                     charge += 10;
                 else
                     charge += 2;
+            }
+
+            if (charge > 600)
+            {
+                charge = 600;
             }
         }
 
