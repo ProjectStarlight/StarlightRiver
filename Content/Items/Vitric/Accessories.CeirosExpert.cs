@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SafeSetDefaults()
         {
+            item.expert = true;
             item.rare = ItemRarityID.Expert;
             item.accessory = true;
             item.width = 32;

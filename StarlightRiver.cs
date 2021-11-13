@@ -167,6 +167,8 @@ namespace StarlightRiver
                 AbilityKeys = new AbilityHotkeys(this);
                 AbilityKeys.LoadDefaults();
             }
+
+            CallBossChecklist();
         }
 
 		public override void PostUpdateEverything()

@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.Items.Vitric
             item.consumable = true;
             item.rare = ItemRarityID.Expert;
             item.expert = true;
+            
             item.maxStack = 999;
         }
 
