@@ -41,13 +41,16 @@ namespace StarlightRiver.Pickups
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Forbidden Winds");
 
-        public override void Visuals()
-        {
-            Dust dus = Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Sin(StarlightWorld.rottime) * 30, npc.Center.Y - 20), DustType<Content.Dusts.Air>(), Vector2.Zero);
-            dus.fadeIn = Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+		public override void Visuals()
+		{
+			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+			Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Sin(StarlightWorld.rottime) * 30, npc.Center.Y - 20 + (float)Math.Cos(StarlightWorld.rottime) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
 
-            Dust dus2 = Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Cos(StarlightWorld.rottime) * 15, npc.Center.Y), DustType<Content.Dusts.Air>(), Vector2.Zero);
-            dus2.fadeIn = Math.Abs((float)Math.Cos(StarlightWorld.rottime));
+			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.rottime));
+			Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Cos(StarlightWorld.rottime) * 25, npc.Center.Y + (float)Math.Sin(StarlightWorld.rottime) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
+
+            float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+            Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Sin(StarlightWorld.rottime + 2) * 15, npc.Center.Y + 20 + (float)Math.Cos(StarlightWorld.rottime + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
         }
 
         public override void PickupVisuals(int timer)
@@ -80,10 +83,6 @@ namespace StarlightRiver.Pickups
                     point1 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -160);
                     point2 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -160);
                     point3 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -160);
-
-                    //point1 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f) * 120, -160), player.Center, (timer - 300) / 60f);
-                    //point2 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f + 6.28f / 3) * 120, -160), player.Center, (timer - 300) / 60f);
-                    //point3 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f + 6.28f / 3 * 2) * 120, -160), player.Center, (timer - 300) / 60f);
                 }
 
                 if (cache1 != null && timer > 60)
@@ -242,8 +241,10 @@ namespace StarlightRiver.Pickups
     public class ForbiddenWindsPickupTile : AbilityPickupTile
     {
         public override int PickupType => NPCType<ForbiddenWindsPickup>();
+
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch) //get rid of this after demo
-        {   
+        {
+            return;
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-80, -62);
                 Utils.DrawBorderString(spriteBatch, "Dash into", pos, Color.White, 0.7f);
                 Utils.DrawBorderString(spriteBatch, "bright blue", pos + new Vector2(60, 0), Color.Cyan, 0.7f);
