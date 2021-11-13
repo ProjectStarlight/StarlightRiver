@@ -26,6 +26,7 @@ namespace StarlightRiver
             List<int> vitricBossCollection = new List<int>()
             {
                 ModContent.ItemType<Content.Tiles.Trophies.CeirosTrophyItem>(),
+                Instance.ItemType("VitricBoss1Item")
             };
             List<int> vitricBossLoot = new List<int>()
             {
