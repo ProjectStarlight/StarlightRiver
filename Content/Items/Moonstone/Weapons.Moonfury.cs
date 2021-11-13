@@ -45,6 +45,16 @@ namespace StarlightRiver.Content.Items.Moonstone
             Tooltip.SetDefault("Send a shard of the moon down upon your enemies \nStrike enemies inflicted with this shard for extra damage");
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 8);
+            recipe.AddIngredient(ItemID.Starfury, 1);
+            recipe.AddTile(TileID.Anvils);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
+
         public override void HoldItem(Player player)
         {
             cooldown--;
