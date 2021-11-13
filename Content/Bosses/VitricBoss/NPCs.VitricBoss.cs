@@ -92,6 +92,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
 
+            bossBag = ItemType<VitricBossBag>();
+
             npc.HitSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact");
 
             music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss1");
@@ -127,8 +129,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena
-                StarlightWorld.Flag(WorldFlags.VitricBossDowned);
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena                
                 return true;
             }
 
@@ -253,8 +254,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return false;
         }
 
+        
+
         public override void NPCLoot()
         {
+            StarlightWorld.Flag(WorldFlags.VitricBossDowned);
+
             foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
             {
                 player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
