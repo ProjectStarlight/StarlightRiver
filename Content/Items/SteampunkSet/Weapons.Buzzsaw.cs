@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
+using System.IO;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -53,13 +54,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private const int OFFSET = 30;
 		private const int MAXCHARGE = 20;
 
+		public ref float Charge => ref projectile.ai[0];
+		public ref float Angle => ref projectile.ai[1];
+
+		float oldAngle = 0f;
+
 		public Vector2 direction = Vector2.Zero;
 
 		private int counter;
 		private float bladeRotation;
-		private int charge;
 		private bool released = false;
 		private float flickerTime = 0;
+
+		//we keep track of when the saw hits so that we can show the gores in multiplayer
+		private bool justHit = false;
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
@@ -85,7 +93,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Player player = Main.player[projectile.owner];
 
-			if (charge >= MAXCHARGE)
+			if (Charge >= MAXCHARGE)
 			{
 				if (flickerTime == 0)
 					Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
@@ -97,18 +105,27 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			player.itemTime = 5; // Set item time to 2 frames while we are used
 			player.itemAnimation = 5; // Set item animation time to 2 frames while we are used
 
-			if (player.direction != 1)
-				player.itemRotation -= 3.14f;
-
 			float shake = 0;
 
 			if (player.channel && !released)
 			{
+				if (projectile.owner == Main.myPlayer)
+				{
+					Angle = (Main.MouseWorld - (player.Center)).ToRotation();
+
+					if (Math.Abs(oldAngle - Angle) > 0.1f) //only send a netupdate if the buzzsaw has rotated visibly
+					{
+						oldAngle = Angle;
+						projectile.netUpdate = true;
+					}
+				}
+
+				direction = Angle.ToRotationVector2();
+
 				bladeRotation += 1.2f;
-				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
-				shake = MathHelper.Lerp(0.04f, 0.15f, (float)charge / (float)MAXCHARGE);
-				direction = Main.MouseWorld - (player.Center);
-				direction.Normalize();
+				player.ChangeDir(direction.X > 0 ? 1 : -1);
+				shake = MathHelper.Lerp(0.04f, 0.15f, Charge / (float)MAXCHARGE);
+
 				counter++;
 				projectile.frame = ((counter / 5) % 2) + 2;
 
@@ -128,6 +145,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					projectile.active = false;
 			}
 
+
+
 			projectile.Center = player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
 			projectile.velocity = Vector2.Zero;
 			player.itemRotation = direction.ToRotation();
@@ -138,13 +157,33 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 
 			player.heldProj = projectile.whoAmI;
+
+			if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
+			{
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					NPC npc = Main.npc[i];
+					if (npc.active && npc.Hitbox.Intersects(projectile.Hitbox))
+					{
+						hitGore(npc);
+					}
+				}
+			}
+
+			justHit = false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (charge < MAXCHARGE)
-				charge++;
+			if (Charge < MAXCHARGE)
+				Charge++;
+			projectile.netUpdate = true;
+			justHit = true;
+			hitGore(target);
+		}
 
+		public void hitGore(NPC target)
+		{
 			for (int i = 0; i < 2; i++)
 			{
 				if (!Helper.IsFleshy(target))
@@ -165,15 +204,22 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					}
 				}
 			}
+		}
 
-			hitDirection = Math.Sign(direction.X);
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(justHit);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			justHit = reader.ReadBoolean();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
 		{
 			Color heatColor = new Color(255, 96, 0);
-			lightColor = Color.Lerp(lightColor, heatColor, (charge / (float)MAXCHARGE) * 0.6f);
+			lightColor = Color.Lerp(lightColor, heatColor, (Charge / (float)MAXCHARGE) * 0.6f);
 
 			Player player = Main.player[projectile.owner];
 			Texture2D texture = Main.projectileTexture[projectile.type];
@@ -199,7 +245,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
 			}
 
-			if (charge >= MAXCHARGE && !released && flickerTime < 16)
+			if (Charge >= MAXCHARGE && !released && flickerTime < 16)
 			{
 				texture = ModContent.GetTexture(Texture + "_White");
 				texture2 = ModContent.GetTexture(Texture + "_Blade_White");
@@ -233,14 +279,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void LaunchSaw(Player player)
 		{
 			released = true;
-			float speed = MathHelper.Lerp(8f, 12f, charge / (float)MAXCHARGE);
-			float damageMult = MathHelper.Lerp(0.85f, 2f, charge / (float)MAXCHARGE);
-			Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
+			if (Main.myPlayer == player.whoAmI)
+			{
+				float speed = MathHelper.Lerp(8f, 12f, Charge / (float)MAXCHARGE);
+				float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / (float)MAXCHARGE);
+				Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
+			}
 		}
 
 		private void ReleaseSteam(Player player)
-        {
-			float alphaMult = MathHelper.Lerp(0.75f, 3f, charge / (float)MAXCHARGE);
+		{
+			float alphaMult = MathHelper.Lerp(0.75f, 3f, Charge / (float)MAXCHARGE);
 			Dust.NewDustPerfect(Vector2.Lerp(projectile.Center, player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 		}
 	}
@@ -251,11 +300,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private float rotationCounter;
 
-		private int counter;
-
 		private Vector2 oldVel;
 
-		public int pauseTimer = -1;
+		private Player player => Main.player[projectile.owner];
+
+		public bool justLaunched = true;
+
+		public bool sentNetUpdate = false;
+
+
+		//would put these into ai[0] ai[1] but those are already used by vanilla aistyle 3
+		public bool justHit = false;
+		public short pauseTimer = -1;
 
 		public override void SetStaticDefaults()
 		{
@@ -279,6 +335,32 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override bool PreAI()
 		{
+
+			if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
+			{
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					NPC npc = Main.npc[i];
+					if (npc.active && npc.Hitbox.Intersects(projectile.Hitbox))
+					{
+						hitGore(npc);
+					}
+				}
+			}
+
+			//have to delay like this since the net update doesn't get in the same frame as the netupdate if netupdate was checked through child projectile
+			if (justHit && !sentNetUpdate && Main.myPlayer == projectile.owner)
+			{
+				sentNetUpdate = true;
+				projectile.netUpdate = true;
+			}
+			else
+			{
+				sentNetUpdate = false;
+				justHit = false;
+			}
+
+
 			if (--pauseTimer > 0)
 			{
 				if (projectile.velocity != Vector2.Zero)
@@ -296,14 +378,51 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void AI()
 		{
-			if (counter == 0)
+			if (justLaunched)
+            {
 				Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.whoAmI);
+			}
 
-			counter++;
+			justLaunched = false;
+
 			projectile.frameCounter += 1;
 			projectile.frame = (projectile.frameCounter / 5) % 2;
 			rotationCounter += 0.6f;
 			projectile.rotation = rotationCounter;
+			
+		}
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write(justHit);
+			writer.Write(pauseTimer);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			justHit = reader.ReadBoolean();
+			pauseTimer = reader.ReadInt16();
+        }
+
+        //for the multiplayer part of the onhit
+        public void hitGore(NPC target)
+        {
+			Vector2 direction = target.Center - projectile.Center;
+			direction.Normalize();
+			for (int i = 0; i < 2; i++)
+			{
+
+				if (!Helper.IsFleshy(target))
+					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+				else
+				{
+					Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+
+					for (int j = 0; j < 2; j++)
+						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+				}
+
+			}
 		}
 
 	}
@@ -330,6 +449,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			projectile.melee = true;
 			projectile.penetrate = -1;
 			projectile.timeLeft = 700;
+			projectile.tileCollide = false;
 			Main.projFrames[projectile.type] = 2;
 			projectile.extraUpdates = 1;
 			projectile.hide = true;
@@ -344,27 +464,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				projectile.active = false;
         }
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+
+			((BuzzsawProj2)parent.modProjectile).hitGore(target);
 
 			Vector2 direction = target.Center - projectile.Center;
-			direction.Normalize();
-			for (int i = 0; i < 2; i++)
-			{
-
-				if (!Helper.IsFleshy(target))
-					Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
-				else
-				{
-					Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
-
-					for (int j = 0; j < 2; j++)
-						Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
-				}
-
-			}
 			if (Helper.IsFleshy(target))
-            {
+			{
 				int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
 				int spriteDirection = Math.Sign(direction.X);
 
@@ -372,13 +479,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				proj.spriteDirection = -spriteDirection;
 			}
 
-			player.GetModPlayer<StarlightPlayer>().Shake += 6;
 			target.immune[projectile.owner] = 20;
 
 			if (parent.modProjectile is BuzzsawProj2 modProj)
+            {
 				modProj.pauseTimer = 16;
+				modProj.justHit = true;
+			}
+
+			player.GetModPlayer<StarlightPlayer>().Shake += 6;
 		}
-    }
+	}
 
 	public class BuzzsawBlood1 : ModProjectile
     {
