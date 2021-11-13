@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using StarlightRiver.Core;
 using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Content.Buffs;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -16,6 +17,8 @@ namespace StarlightRiver.Content.Items.Moonstone
     public class Moonfury : ModItem
     {
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
+
+        private int cooldown = 0;
 
         public override void SetDefaults()
         {
@@ -39,11 +42,20 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonfury");
-            Tooltip.SetDefault("Send a shard of the moon down upon your enemies");
+            Tooltip.SetDefault("Send a shard of the moon down upon your enemies \nStrike enemies inflicted with this shard for extra damage");
+        }
+
+        public override void HoldItem(Player player)
+        {
+            cooldown--;
+            base.HoldItem(player);
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+            if (cooldown > 0)
+                return false;
+            cooldown = 75;
             Vector2 direction = new Vector2(0, -1);
             direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
             position = Main.MouseWorld + (direction * 800);
@@ -51,7 +63,25 @@ namespace StarlightRiver.Content.Items.Moonstone
             direction *= -10;
             speedX = direction.X;
             speedY = direction.Y;
+            damage *= 2;
             return true;
+        }
+
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        {
+            if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
+            {
+                player.GetModPlayer<StarlightPlayer>().Shake += 10;
+                int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
+                target.DelBuff(index);
+                Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
+                damage += 5;
+                damage += (int)((float)target.defense / (float)5);
+                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
+
+                for (int i = 0; i < 16; i++)
+                    Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(Main.rand.NextFloat(6.28f)) * Main.rand.NextFloat(12), 0, new Color(50, 50, 255), 0.4f);
+            }
         }
     }
     internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
@@ -95,13 +125,21 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 var d = Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
                 d.customData = Main.rand.NextFloat(0.6f, 1.3f);
-                Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+                d.fadeIn = 10;
+                Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f).fadeIn = 10;
                 ManageCaches();
-                projectile.rotation = projectile.velocity.ToRotation() - 1.57f;
+
+                projectile.rotation = projectile.velocity.ToRotation() - 1.44f;
             }
             else
             {
+                projectile.friendly = false;
+
+                if (projectile.timeLeft <= 30)
+                    projectile.alpha += 10;
+
                 trailWidth *= 0.93f;
+
                 if (trailWidth > 0.05f)
                     trailWidth -= 0.05f;
                 else
@@ -113,12 +151,13 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (!stuck)
             {
+                //add hit sound effect here
                 Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
-                Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 60 ;
+                Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 194;
                 stuck = true;
                 projectile.extraUpdates = 0;
                 projectile.velocity = Vector2.Zero;
-                projectile.timeLeft = 60;
+                projectile.timeLeft = 90;
             }
             return false;
         }
@@ -126,8 +165,13 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = Main.projectileTexture[projectile.type];
-            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor * (1 - (projectile.alpha / 255f)), projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
             return false;
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+            target.AddBuff(ModContent.BuffType<MoonfuryDebuff>(), 150);
         }
         private void ManageCaches()
         {
@@ -153,14 +197,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(20), factor => (10 + factor * 25) * trailWidth, factor =>
             {
-                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
+                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth;
             });
 
             trail.Positions = cache.ToArray();
 
             trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(20), factor => (80 + 0 + factor * 0) * trailWidth, factor =>
-            { 
-                return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f;
+            {
+                return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * trailWidth;
             });
 
             trail2.Positions = cache.ToArray();
@@ -197,8 +241,133 @@ namespace StarlightRiver.Content.Items.Moonstone
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = ModContent.GetTexture(Texture + "_Additive");
-            Color color = Color.White;
+            Color color = Color.White * (1 - (projectile.alpha / 255f));
             spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color, projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
+        }
+    }
+    internal class MoonfuryRing : ModProjectile, IDrawPrimitive
+    {
+        public override string Texture => AssetDirectory.MoonstoneItem + "MoonfuryProj";
+
+        private List<Vector2> cache;
+
+        private Trail trail;
+        private Trail trail2;
+
+        private float Progress => 1 - (projectile.timeLeft / 10f);
+
+        private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+        public override void SetDefaults()
+        {
+            projectile.width = 80;
+            projectile.height = 80;
+            projectile.ranged = true;
+            projectile.friendly = true;
+            projectile.tileCollide = false;
+            projectile.penetrate = -1;
+            projectile.timeLeft = 10;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Orbital Strike");
+        }
+
+        public override void AI()
+        {
+            ManageCaches();
+            ManageTrail();
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (target.whoAmI == (int)projectile.ai[0])
+                return false;
+            return base.CanHitNPC(target);
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            Vector2 line = targetHitbox.Center.ToVector2() - projectile.Center;
+            line.Normalize();
+            line *= Radius;
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + line))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void ManageCaches()
+        {
+            cache = new List<Vector2>();
+            float radius = Radius;
+            for (int i = 0; i < 33; i++)
+            {
+                double rad = (i / 32f) * 6.28f;
+                Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
+                offset *= radius;
+                cache.Add(projectile.Center + offset);
+            }
+
+            while (cache.Count > 33)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
+            {
+                return Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress);
+            });
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            {
+                return Color.White;
+            });
+            float nextplace = 33f / 32f;
+            Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+            offset *= Radius;
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + offset;
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = projectile.Center + offset;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["alpha"].SetValue(1);
+
+            trail?.Render(effect);
+            trail2?.Render(effect);
+        }
+    }
+    class MoonfuryDebuff : SmartBuff
+    {
+        public MoonfuryDebuff() : base("Dreamfire", "Next Moonfury hit has increased damage", false) { }
+
+        public override void Update(NPC npc, ref int buffIndex)
+        {
+            Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, new Color(50, 50, 255), 0.4f).velocity = Vector2.Zero;
+
+            var d = Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Aurora>(), 0, 0, 0, new Color(20, 20, 100), 0.8f);
+            d.customData = Main.rand.NextFloat(0.6f, 1.3f);
+            d.fadeIn = 10; 
         }
     }
 }
