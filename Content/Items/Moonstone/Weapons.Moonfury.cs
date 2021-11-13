@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonfury");
-            Tooltip.SetDefault("Send a shard of the moon down upon your enemies \nStrike enemies inflicted with this shard for extra damage");
+            Tooltip.SetDefault("Call down a shard of moonstone, afflicting enemies with Dreamfire\nAfflicted enemies take extra damage on hit from Moonfury");
         }
 
         public override void HoldItem(Player player)
