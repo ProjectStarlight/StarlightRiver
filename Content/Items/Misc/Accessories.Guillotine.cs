@@ -96,7 +96,6 @@ namespace StarlightRiver.Content.Items.Misc
 				CombatText.NewText(projectile.Hitbox, new Color(255, 230, 100), "Ouch!", true);
 
 				NPC npc = Main.npc[(int)hitNpcIndex];
-				Main.NewText("index: " + hitNpcIndex + " npc name: " + npc.GivenName);
 				npc.StrikeNPCNoInteraction(9999, 1, 0, false, true);
 				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
 

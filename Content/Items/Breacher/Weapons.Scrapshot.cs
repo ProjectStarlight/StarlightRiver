@@ -89,6 +89,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
 				if (player.altFunctionUse != 2)
                 {
+					player.direction = (player.Center - Main.MouseWorld).ToRotation().ToRotationVector2().X < 0 ? 1 : -1;
 					player.itemRotation = (player.Center - Main.MouseWorld).ToRotation() + (player.direction == 1 ? 3.14f : 0);
 				}
 			}
