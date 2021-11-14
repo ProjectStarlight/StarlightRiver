@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -479,6 +480,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 projectile.tileCollide = false;
                 projectile.timeLeft = 30;
                 projectile.velocity *= 0;
+                projectile.netUpdate = true;
 
                 return true;
             }
@@ -486,7 +488,17 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return null;
 		}
 
-		public override void SetDefaults()
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(projectile.timeLeft);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            projectile.timeLeft = reader.ReadInt32();
+        }
+
+        public override void SetDefaults()
 		{
             projectile.width = 1;
             projectile.height = 1;
@@ -520,7 +532,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 				Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, projectile.Center);
                 Helper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
+                if (projectile.owner == Main.myPlayer)
+                {
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
+                }
             }
 
             if (projectile.timeLeft == 20)

@@ -12,6 +12,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System.IO;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -41,12 +42,15 @@ namespace StarlightRiver.Content.Items.Breacher
 			item.rare = ItemRarityID.Orange;
 			item.value = Item.sellPrice(0, 10, 0, 0);
 			item.noMelee = true;
-			item.useTurn = false;
 			item.useAmmo = AmmoID.Bullet;
 			item.ranged = true;
-			item.shoot = 1;
+			item.shoot = 0;
 			item.shootSpeed = 17;
+			
+
 		}
+
+		
 
 		public override Vector2? HoldoutOffset()
 		{
@@ -55,6 +59,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override bool CanUseItem(Player player)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != player.whoAmI && (hook == null || !hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.projectile.owner != player.whoAmI))
+			{
+				findHook(player);
+			}
+
 			if (player.altFunctionUse == 2)
 			{
 				item.useTime = 14;
@@ -69,38 +78,85 @@ namespace StarlightRiver.Content.Items.Breacher
 				item.useAnimation = 30;
 				item.noUseGraphic = false;
 
-				return true;
+				return (hook is null || (hook != null && (!hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || (hook.isHooked && !hook.struck))));
 			}
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-		{
+        public override void UseStyle(Player player)
+        {
+			//only know rotation for self
+			if (player.whoAmI == Main.myPlayer)
+            {
+				if (player.altFunctionUse != 2)
+                {
+					player.itemRotation = (player.Center - Main.MouseWorld).ToRotation() + (player.direction == 1 ? 3.14f : 0);
+				}
+			}
+		}
+
+        public override bool UseItem(Player player)
+        {
+			//even though this is a "gun" we are using useitem so that it runs on all clients. need to deconstruct the useammo and damage modifiers ourselves here
+
+			int damage = 0;
+			float speed = item.shootSpeed;
+			float speedX = 0;
+			float speedY = 0;
+			float knockback = 0;
+			if (Main.myPlayer == player.whoAmI)
+            {
+				damage = (int)(item.damage * player.rangedDamage);
+				float rotation = (player.Center - Main.MouseWorld).ToRotation() - 1.57f;
+				speedX = speed * (float)Math.Sin(rotation);
+				speedY = speed * -(float)Math.Cos(rotation);
+				knockback = item.knockBack;
+			}
+
 			if (player.altFunctionUse == 2)
 			{
-				int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), damage, knockBack, player.whoAmI);
-				hook = Main.projectile[i].modProjectile as ScrapshotHook;
+				if (Main.myPlayer == player.whoAmI)
+                {
+					int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), item.damage, item.knockBack, player.whoAmI);
+					hook = Main.projectile[i].modProjectile as ScrapshotHook;
+				}
 
 				Helper.PlayPitched("Guns/ChainShoot", 0.5f, 0, player.Center);
 			}
-			else if (hook is null || (hook != null && (!hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.hooked != null)))
+			else 
 			{
-				Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
 
 				float spread = 0.5f;
 
+				int type = ProjectileID.Bullet;
+				Item sample = new Item();
+				sample.SetDefaults(type);
+				sample.useAmmo = AmmoID.Bullet;
+				bool shoot = true;
+
+				if (Main.myPlayer == player.whoAmI)
+				{
+					Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
+					player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, !ConsumeAmmo(player));
+					shoot = player.HasAmmo(sample, shoot);
+
+					if (!shoot)
+					{
+						return false;
+					}
+				}
+
 				if (type == ProjectileID.Bullet)
 					type = ModContent.ProjectileType<ScrapshotShrapnel>();
+				
 
-				if (hook != null && hook.projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.projectile.active && hook.hooked != null)
+				if (hook != null && hook.projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.projectile.active && hook.isHooked)
 				{
-					spread = 0.05f;
-					damage += 4;
 
 					hook.struck = true;
-					hook.projectile.timeLeft = 20;
 
-					player.velocity = Vector2.Normalize(hook.startPos - Main.MouseWorld) * 12;
-					player.GetModPlayer<StarlightPlayer>().Shake += 12;
+					NPC hooked = Main.npc[hook.hookedNpcIndex];
+					hook.projectile.timeLeft = 20;
+					player.velocity = Vector2.Normalize(hook.startPos - hooked.Center) * 12;
 
 					Helper.PlayPitched("ChainHit", 0.5f, 0, player.Center);
 
@@ -109,34 +165,77 @@ namespace StarlightRiver.Content.Items.Breacher
 						var direction = Vector2.One.RotatedByRandom(6.28f);
 						Dust.NewDustPerfect(player.Center + direction * 10, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(2, 4), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 					}
+
+					if (Main.myPlayer == player.whoAmI)
+					{
+						spread = 0.05f;
+						damage += 4;
+						hook.projectile.netUpdate = true;
+
+						player.GetModPlayer<StarlightPlayer>().Shake += 12;
+					}
+
 				}
 
 				float rot = new Vector2(speedX, speedY).ToRotation();
+
+				if (Main.myPlayer != player.whoAmI)
+				{
+					hook = null;
+				}
 
 				for (int k = 0; k < 6; k++)
 				{
 					Vector2 offset = Vector2.UnitX.RotatedBy(rot);
 					var direction = offset.RotatedByRandom(spread);
 
-					int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * item.shootSpeed, type, damage, knockBack, player.whoAmI);
+					if (Main.myPlayer == player.whoAmI)
+                    {
+						int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * item.shootSpeed, type, damage, item.knockBack, player.whoAmI);
 
-					if(type != ModContent.ProjectileType<ScrapshotShrapnel>())
-						Main.projectile[i].timeLeft = 30;
+						if (type != ModContent.ProjectileType<ScrapshotShrapnel>())
+							Main.projectile[i].timeLeft = 30;
+					}
 
-					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
-					Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+					if (Main.myPlayer == player.whoAmI)
+                    {
+						//don't know direction for other players so we only add these for self.
+						Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+						Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+					}
 				}
 
 				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
 			}
 
-			return false;
+			return true;
+        }
+        public override bool ConsumeAmmo(Player player)
+		{
+			return player.altFunctionUse != 2;
 		}
+
+		/// <summary>
+		/// we are using the precondition that only 1 scrapshot hook can exist for a player in order to find and assign the hook in multiplayer
+		/// </summary>
+		/// <returns></returns>
+		private void findHook(Player player)
+        {
+			for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+				Projectile proj = Main.projectile[i];
+				if (proj.active && proj.owner == player.whoAmI && proj.type == ModContent.ProjectileType<ScrapshotHook>())
+                {
+					hook = (proj.modProjectile as ScrapshotHook);
+					return;
+				}
+            }
+        }
 	}
 
 	public class ScrapshotHook : ModProjectile
 	{
-		public NPC hooked;
+		public bool isHooked = false;
 		public Vector2 startPos;
 		public bool struck;
 
@@ -145,6 +244,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		ref float Progress => ref projectile.ai[0];
 		ref float Distance => ref projectile.ai[1];
 		bool Retracting => projectile.timeLeft < 30;
+
+		public byte hookedNpcIndex = 0;
 
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -176,10 +277,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Retracting)
 				projectile.Center = Vector2.Lerp(player.Center, startPos, projectile.timeLeft / 30f);
 
-			if (hooked != null && !struck)
+			if (isHooked && !struck)
 			{
 				timer++;
-
+				NPC hooked = Main.npc[hookedNpcIndex];
 				player.direction = startPos.X > hooked.Center.X ? -1 : 1;
 
 				if (timer == 1)
@@ -191,7 +292,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					return;
 				}
 
-				if (timer == 10)
+				if (timer >= 10)
 					startPos = player.Center;
 
 				projectile.timeLeft = 52;
@@ -251,15 +352,31 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			{
-				hooked = target;
+				hookedNpcIndex = (byte)target.whoAmI;
+				isHooked = true;
 				projectile.velocity *= 0;
 				startPos = player.Center;
 				Distance = Vector2.Distance(startPos, target.Center);
 				projectile.friendly = false;
+				projectile.netUpdate = true;
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			writer.Write(hookedNpcIndex);
+			writer.Write(isHooked);
+			writer.Write(struck);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			hookedNpcIndex = reader.ReadByte();
+			isHooked = reader.ReadBoolean();
+			struck = reader.ReadBoolean();
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			damage /= 4;
 			knockback /= 4f;
