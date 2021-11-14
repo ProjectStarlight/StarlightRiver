@@ -172,7 +172,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			//Main.NewText("item: " + item);
 			if (item != null && !item.IsAir)
 			{
 				
