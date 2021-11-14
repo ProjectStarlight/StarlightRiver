@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return base.Autoload(ref name);
 		}
 
-		public override void SafeSetDefaults()
+        public override void SafeSetDefaults()
 		{
 			item.rare = ItemRarityID.Orange;
 		}
@@ -57,28 +57,26 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Execute(NPC npc)
 		{
-			Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer);
-
-			npc.StrikeNPCNoInteraction(9999, 1, 0, false, true);
-			CombatText.NewText(npc.Hitbox, new Color(255, 230, 100), "Ouch!", true);
-
+			int flesh = 1;
 			if (Helpers.Helper.IsFleshy(npc))
 			{
-				Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 1, 0, npc.Center);
-
-				for (int k = 0; k < 200; k++)
-					Dust.NewDustPerfect(npc.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, 2);
+				flesh = 0;
 			}
-			else
-			{
-				Helpers.Helper.PlayPitched("ChainHit", 1, -0.5f, npc.Center);
-			}
+			Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, npc.whoAmI, flesh);
+			npc.StrikeNPCNoInteraction(9999, 1, 0, false, true);// kill npc locally prior to projectile so that multiple simultaneous hits don't cause a bunch of executions at once
 		}
 	}
 
 	class GuillotineVFX : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
+
+		public ref float hitNpcIndex => ref projectile.ai[0];
+
+		// 0 for fleshy, anything else for not fleshy
+		public ref float wasFleshy => ref projectile.ai[1];
+
+		private bool alreadyHit = false;
 
 		public override void SetDefaults()
 		{
@@ -89,7 +87,34 @@ namespace StarlightRiver.Content.Items.Misc
 			projectile.timeLeft = 45;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void AI()
+        {
+            if (!alreadyHit)
+            {
+				alreadyHit = true;
+
+				CombatText.NewText(projectile.Hitbox, new Color(255, 230, 100), "Ouch!", true);
+
+				NPC npc = Main.npc[(int)hitNpcIndex];
+				Main.NewText("index: " + hitNpcIndex + " npc name: " + npc.GivenName);
+				npc.StrikeNPCNoInteraction(9999, 1, 0, false, true);
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
+
+				if (wasFleshy == 0)
+				{
+					Helpers.Helper.PlayPitched("Impacts/GoreHeavy", 1, 0, projectile.Center);
+
+					for (int k = 0; k < 200; k++)
+						Dust.NewDustPerfect(projectile.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, default, 2);
+				}
+				else
+				{
+					Helpers.Helper.PlayPitched("ChainHit", 1, -0.5f, projectile.Center);
+				}
+			}
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			var tex = ModContent.GetTexture(AssetDirectory.MiscItem + "Guillotine");
 			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * (projectile.timeLeft / 45f), 0, tex.Size() / 2f, (1 - (projectile.timeLeft / 45f)) * 3f, 0, 0);

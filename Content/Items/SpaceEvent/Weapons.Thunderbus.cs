@@ -101,15 +101,16 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if(ball != null && player == Main.LocalPlayer && Vector2.Distance(ball.Center, Main.MouseWorld) < 128)
 			{
-                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI);
+                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, -1);
 
                 var mp = Main.projectile[i].modProjectile as ThunderbussShot;
 
-                mp.holdRot = (Main.MouseWorld - player.Center).ToRotation();
                 mp.projTarget = ball;
                 mp.power = 30;
 
-                ball.ai[1] = 1;
+                mp.projectile.netUpdate = true;
+
+                (ball.modProjectile as ThunderbussBall).ShouldFire = true;
 
                 return false;
 			}
@@ -134,25 +135,28 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             for (int k = 0; k < 3; k++)
             {
                 int targetIndex = k % targets.Count;
-                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI);
 
-                var mp = Main.projectile[i].modProjectile as ThunderbussShot;
-                mp.offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
+                float offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
 
                 if(targets.Count == 1)
 				{
-                    if (k == 1) mp.offset += 50f;
-                    if (k == 2) mp.offset -= 50f;
+                    if (k == 1) offset += 50f;
+                    if (k == 2) offset -= 50f;
                 }
 
                 if (targets.Count == 2)
                 {
-                    if (k == 2) mp.offset += 50f;
+                    if (k == 2) offset += 50f;
                 }
 
-                mp.offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
+                offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
 
-                mp.holdRot = (Main.MouseWorld - player.Center).ToRotation();
+                int targetId = targets[targetIndex].whoAmI;
+
+                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI,  targetId, offset);
+
+                var mp = Main.projectile[i].modProjectile as ThunderbussShot;
+
                 mp.target = targets[targetIndex];
                 mp.power = 20;
             }
@@ -187,15 +191,15 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public Projectile projOwner;
         public Projectile projTarget;
 
-        public float offset = 0;
-        public float holdRot = 0;
+        public bool sentProjOwner = false;
+
+        public ref float targetId => ref projectile.ai[0];
+        public ref float offset => ref projectile.ai[1];
 
         public NPC target;
 
         private List<Vector2> cache;
         private Trail trail;
-
-        private bool manuallyFoundTarget = false;
 
         private float dist1;
         private float dist2;
@@ -257,24 +261,39 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return total;
         }
 
-        private NPC FindTarget()
+        private void FindTarget()
 		{
-            List<NPC> targets = new List<NPC>();
 
-            foreach (NPC npc in Main.npc.Where(n => n.active &&
-             !n.dontTakeDamage &&
-             !n.townNPC &&
-             Vector2.Distance(projectile.Center, n.Center) < 500 &&
-             Utils.PlotLine((n.Center / 16).ToPoint16(), (projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+            if (targetId < 0) //no npc target which means we are targetting the ball instead, and need to find it
             {
-                targets.Add(npc);
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+                    {
+                        power = 30;
+                        projTarget = proj;
+                        return;
+                    }
+                }
+            } else
+            {
+                target = Main.npc[(int)targetId];
             }
+        }
 
-            if (targets.Count == 0)
-                return null;
-
-            manuallyFoundTarget = true;
-            return targets[Main.rand.Next(targets.Count)];
+        private void findProjOwner()
+        {
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+                {
+                    power = 15;
+                    projOwner = proj;
+                    return;
+                }
+            }
         }
 
         public override void AI()
@@ -282,11 +301,30 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             ManageCaches();
             ManageTrails();
 
-            if (target is null)
-                target = FindTarget();
+            if (target is null && projTarget is null)
+                FindTarget();
 
-            if (target is null)
+            if (target is null && projTarget is null)
+            {
+                //failed to find anything so we just skip for this client
                 projectile.active = false;
+                return;
+            }
+
+            if (offset == 1000000)
+            {
+                //extremely dirty hack where we abuse the offset field to determine if this has the start anchored to the thunder ball
+                if (projOwner is null)
+                {
+                    findProjOwner();
+                }
+            }
+
+            if (!sentProjOwner && projOwner != null && Main.myPlayer == projectile.owner)
+            {
+                sentProjOwner = true;
+                projectile.netUpdate = true;
+            }
 
             if (projectile.extraUpdates != 0)
                 projectile.rotation = projectile.velocity.ToRotation() - MathHelper.PiOver2;
@@ -304,20 +342,28 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
             }
 
-            if (!manuallyFoundTarget)
+            float effectiveOffset = offset;
+
+            if (projOwner is null)
             {
-                if (projOwner is null)
-                    startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 48;
-                else
-                    startPoint = projOwner.Center;
+                Player player = Main.player[projectile.owner];
+                float armRot = player.itemRotation + (player.direction == -1 ? 3.14f : 0);
+                startPoint = player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
             }
+            else
+            {
+                startPoint = projOwner.Center;
+                effectiveOffset = 0;
+            }
+                
+            
 
             if (projTarget is null)
                 endPoint = target.Center;
             else
                 endPoint = projTarget.Center;
 
-            midPoint = Vector2.Lerp(startPoint, endPoint, 0.5f) + Vector2.Normalize(endPoint - startPoint).RotatedBy(1.57f) * (offset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
+            midPoint = Vector2.Lerp(startPoint, endPoint, 0.5f) + Vector2.Normalize(endPoint - startPoint).RotatedBy(1.57f) * (effectiveOffset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
 
             projectile.Center = endPoint;
 
@@ -471,7 +517,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public override string Texture => AssetDirectory.Invisible;
 
         public ref float Stacks => ref projectile.ai[0];
-        public ref float ShouldFire => ref projectile.ai[1];
+
+
+        public bool ShouldFire = false;
 
 		public override bool? CanHitNPC(NPC target)
 		{
@@ -491,11 +539,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(projectile.timeLeft);
+            writer.Write(projectile.tileCollide);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             projectile.timeLeft = reader.ReadInt32();
+            projectile.tileCollide = reader.ReadBoolean();
         }
 
         public override void SetDefaults()
@@ -556,14 +606,14 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             Dust.NewDustPerfect(projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
 
-            if (ShouldFire > 0)
+            if (ShouldFire)
 			{
                 for(int k = 0; k < Main.maxNPCs; k++)
 				{
                     var npc = Main.npc[k];
                     if(npc.active && npc.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
 					{
-                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner);
+                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner, k, 1000000);
                         var proj = Main.projectile[i].modProjectile as ThunderbussShot;
 
                         proj.target = npc;
@@ -572,17 +622,17 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 					}
 				}
 
-                ShouldFire = 0;
+                ShouldFire = false;
 			}
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
+            projectile.tileCollide = false;
+            projectile.velocity *= 0;
             if (projectile.timeLeft > 30)
             {
-                projectile.tileCollide = false;
                 projectile.timeLeft = 30;
-                projectile.velocity *= 0;
             }
             return false;
 		}
