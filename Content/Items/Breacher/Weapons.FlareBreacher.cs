@@ -12,6 +12,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System.IO;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.Breacher
         int blinkCounter;
 
         Vector2 offset = Vector2.Zero;
-        
+
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetDefaults()
@@ -167,7 +168,22 @@ namespace StarlightRiver.Content.Items.Breacher
                 enemyID = target.whoAmI;
                 offset = projectile.position - target.position;
                 offset -= projectile.velocity;
+                projectile.netUpdate = true;
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(stuck);
+            writer.WritePackedVector2(offset);
+            writer.Write(enemyID);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            stuck = reader.ReadBoolean();
+            offset = reader.ReadPackedVector2();
+            enemyID = reader.ReadInt32();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -193,13 +209,16 @@ namespace StarlightRiver.Content.Items.Breacher
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(4, 6);
 
-            for (int i = 0; i < numberOfProjectiles; i++)
+            if (Main.myPlayer == projectile.owner)
             {
-                float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
-                var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
-                var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
+                for (int i = 0; i < numberOfProjectiles; i++)
+                {
+                    float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
+                    var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
+                    var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
 
-                Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
+                    Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
+                }
             }
 
             for (int i = 0; i < 4; i++)
