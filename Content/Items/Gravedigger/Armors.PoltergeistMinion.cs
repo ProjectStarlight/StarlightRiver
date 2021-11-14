@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -46,9 +47,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			projectile.magic = true;
 		}
 
-		public override void AI()
+        public override void Kill(int timeLeft)
+        {
+			if (owner?.armor[0]?.modItem != null)
+			{
+				(owner.armor[0].modItem as PoltergeistHead).minions.Remove(projectile);
+				
+			}
+		}
+
+        public override void AI()
 		{
-			Timer++;
+			
 
 			if (owner.dead && opacity > 0)
 				opacity -= 0.05f;
@@ -57,16 +67,23 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (owner.armor[0].type != ItemType<PoltergeistHead>() || !owner.armor[0].modItem.IsArmorSet(owner.armor[0], owner.armor[1], owner.armor[2]) || !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
 			{
-				projectile.active = false;
+				projectile.Kill();
 				return;
 			}
 
 			if (item != null && !item.IsAir)
 			{
+				if (Timer % 120 == 0)
+                {
+					projectile.netUpdate = true;
+                }
+
+				Timer++;
+
 				var helm = (owner.armor[0].modItem as PoltergeistHead);
 
 				int sleepTimer = helm.sleepTimer;
-				float progress = owner.GetModPlayer<StarlightPlayer>().Timer * 0.02f + helm.minions.IndexOf(projectile) / (float)helm.minions.Count * 6.28f;
+				float progress = Timer * 0.02f + helm.minions.IndexOf(projectile) / (float)helm.minions.Count * 6.28f;
 
 				projectile.timeLeft = 2;
 				targetPos = owner.Center + new Vector2(0, -100 + (float)Math.Sin(progress * 3.4f) * 20) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);
@@ -88,14 +105,55 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				{
 					float rot = (target.Center - projectile.Center).ToRotation();
 
-					Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(rot) * item.shootSpeed, item.shoot, item.damage / 2, item.knockBack, projectile.owner);
+					if (Main.myPlayer == owner.whoAmI)
+                    {
+						Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(rot) * item.shootSpeed, item.shoot, item.damage / 2, item.knockBack, projectile.owner);
+					}
+
 					Main.PlaySound(item.UseSound, projectile.Center);
 					targetRotation = rot + (Item.staff[item.type] ? 1.57f / 2 : 0);
 				}
 			}
 		}
 
-		private bool TryFindTarget(out NPC npc)
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+			if (item != null)
+            {
+				writer.Write(item.type);
+			} else
+            {
+				writer.Write(-1);
+            }
+
+			writer.Write((owner.armor[0].modItem as PoltergeistHead).sleepTimer);
+			
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+			int itemType = reader.ReadInt32();
+			if (itemType == -1)
+            {
+				item = null;
+            } else
+            {
+				item = new Item();
+				item.SetDefaults(itemType);
+			}
+			int sleepTimer = reader.ReadInt32();
+
+			if (owner?.armor[0]?.modItem != null)
+			{
+				(owner.armor[0].modItem as PoltergeistHead).sleepTimer = sleepTimer;
+				if (projectile.active && !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
+				{
+					(owner.armor[0].modItem as PoltergeistHead).minions.Add(projectile);
+				}
+			}
+		}
+
+        private bool TryFindTarget(out NPC npc)
 		{
 			for(int k = 0; k < Main.maxNPCs; k++)
 			{
@@ -114,8 +172,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
+			//Main.NewText("item: " + item);
 			if (item != null && !item.IsAir)
 			{
+				
 				var tex = Main.itemTexture[item.type];
 				//var frames = Main.itemFrame[item.type];
 
