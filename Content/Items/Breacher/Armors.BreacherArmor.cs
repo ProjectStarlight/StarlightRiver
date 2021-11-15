@@ -10,6 +10,8 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using static Terraria.ModLoader.ModContent;
+using System.IO;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -37,7 +39,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
             player.GetModPlayer<CritMultiPlayer>().RangedCritMult += 0.15f;
 		}
-	}
+    }
 
     [AutoloadEquip(EquipType.Body)]
     public class BreacherChest : ModItem
@@ -74,8 +76,6 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * player.rangedDamage), 1.5f, player.whoAmI);
             }
-
-            player.GetModPlayer<BreacherPlayer>().SetBonusActive = true;
         }
     }
 
@@ -109,13 +109,13 @@ namespace StarlightRiver.Content.Items.Breacher
     {
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
-        public int ScanTimer = 0;
+        public ref float ScanTimer => ref projectile.ai[0];
+
+        public ref float Charges => ref projectile.ai[1];
 
         public const int ScanTime = 230;
 
         public bool CanScan => ScanTimer <= 0;
-
-        public int Charges = 0;
 
         const float attackRange = 200;
 
@@ -141,11 +141,12 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Breacher Drone");
+            projectile.netImportant = true;
             Main.projPet[projectile.type] = true;
             Main.projFrames[projectile.type] = 1;
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-            ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
+            ProjectileID.Sets.MinionSacrificable[projectile.type] = false;
             ProjectileID.Sets.Homing[projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
         }
@@ -162,6 +163,11 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.timeLeft = 216000;
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
+        }
+
+        public void initiateEffect()
+        {
+
         }
 
         public override void AI()
@@ -182,6 +188,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 IdleMovement(player);
                 Vector2 direction = player.Center - projectile.Center;
                 projectile.rotation = direction.ToRotation() + 3.14f;
+                target = null;
             }
             else
                 AttackBehavior(player);
@@ -201,6 +208,29 @@ namespace StarlightRiver.Content.Items.Breacher
                 return;
 
             target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            if (target != null && target.active)
+            {
+                writer.Write(target.whoAmI);
+            } else
+            {
+                writer.Write(-1);
+            }
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            int targetIndex = reader.ReadInt32();
+            if (targetIndex < 0 )
+            {
+                target = null;
+            } else
+            {
+                target = Main.npc[targetIndex];
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -335,16 +365,23 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
+
         private void AttackBehavior(Player player)
         {
-            if (ScanTimer == ScanTime)
+            if (target == null || !target.active)
             {
+                ScanTimer = ScanTime;
                 NPC testtarget = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
 
                 if (testtarget != default)
                 {
                     if (Vector2.Distance(testtarget.Center, projectile.Center) < attackRange)
                     {
+                        if (Main.myPlayer == projectile.owner)
+                        {
+                            projectile.netUpdate = true;
+                        }
+                        
                         Helper.PlayPitched("Effects/Scan", 0.5f, 0);
                         target = testtarget;
                         ScanTimer--;
@@ -356,86 +393,81 @@ namespace StarlightRiver.Content.Items.Breacher
                 }
                 else
                     IdleMovement(player);
+                return;
+            }
+
+            if (ScanTimer > Charges)
+            {
+                target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
+                target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
+                BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
+
+                if (rotations == null)
+                {
+                    rotations = new List<float>();
+                    rotations2 = new List<float>();
+                }
+
+                rotations.Add(CurrentRotation);
+
+                while (rotations.Count > 8)
+                {
+                    rotations.RemoveAt(0);
+                }
+
+                rotations2.Add(CurrentRotation2);
+
+                while (rotations2.Count > 8)
+                {
+                    rotations2.RemoveAt(0);
+                }
+
+                if (ScanTimer < 150)
+                    player.GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)ScanTimer / 150f));
+
+                if (ScanTimer == 125)
+                    Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
+
+                ScanTimer--;
             }
             else
             {
-                if (!target.active || target == null)
-                {
-                    ScanTimer = ScanTime;
-                    return;
-                }
+                target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
 
-                if (ScanTimer > Charges)
-                {
-                    target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
-                    target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
-                    BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
+                if (attackDelay == 0)
+                    SummonStrike();
 
-                    if (rotations == null)
-                    {
-                        rotations = new List<float>();
-                        rotations2 = new List<float>();
-                    }
+                attackDelay--;
+            }
 
-                    rotations.Add(CurrentRotation);
+            if (ScanTimer == 100)
+                Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
 
-                    while (rotations.Count > 8)
-                    {
-                        rotations.RemoveAt(0);
-                    }
-
-                    rotations2.Add(CurrentRotation2);
-
-                    while (rotations2.Count > 8)
-                    {
-                        rotations2.RemoveAt(0);
-                    }
-
-                    if (ScanTimer < 150)
-                        player.GetModPlayer<StarlightPlayer>().Shake = (int)MathHelper.Lerp(0, 2, 1 - ((float)ScanTimer / 150f));
-
-                    if (ScanTimer == 125)
-                        Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
-
-                    ScanTimer--;
-                }
-                else
-                {
-                    target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
-
-                    if (attackDelay == 0)
-                        SummonStrike();
-
-                    attackDelay--;
-                }
-
-                if (ScanTimer == 100)
-                    Helper.PlayPitched("Effects/ScanComplete", 0.5f, 0);
-
-                if (ScanTimer > 100)
-                {
-                    target.GetGlobalNPC<BreacherGNPC>().Alpha = 1;
-                    AttackMovement(target);
-                    Vector2 direction = targetPos - projectile.Center;
-                    projectile.rotation = direction.ToRotation() + 3.14f;
-                }
-                else
-                {
-                    target.GetGlobalNPC<BreacherGNPC>().Alpha = (float)ScanTimer / 100f;
-                    IdleMovement(player);
-                    Vector2 direction = player.Center - projectile.Center;
-                    projectile.rotation = direction.ToRotation() + 3.14f;
-                }
-
+            if (ScanTimer > 100)
+            {
+                target.GetGlobalNPC<BreacherGNPC>().Alpha = 1;
+                AttackMovement(target);
+                Vector2 direction = targetPos - projectile.Center;
+                projectile.rotation = direction.ToRotation() + 3.14f;
+            }
+            else
+            {
+                target.GetGlobalNPC<BreacherGNPC>().Alpha = (float)ScanTimer / 100f;
+                IdleMovement(player);
+                Vector2 direction = player.Center - projectile.Center;
+                projectile.rotation = direction.ToRotation() + 3.14f;
             }
         }
 
         private void SummonStrike()
         {
             attackDelay = 6;
-            Vector2 direction = new Vector2(0, -1);
-            direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-            Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
+            if (projectile.owner == Main.myPlayer)
+            {
+                Vector2 direction = new Vector2(0, -1);
+                direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
+                Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), projectile.damage, projectile.knockBack, projectile.owner, target.whoAmI);
+            }
             Charges--;
         }
     }
@@ -729,12 +761,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public int ticks;
         public int Charges => ticks / CHARGETIME;
 
-        public bool SetBonusActive;
-
-        public override void ResetEffects()
-        {
-            SetBonusActive = false;
-        }
+        public bool SetBonusActive => player.armor[0].type == ItemType<BreacherHead>() && player.armor[1].type == ItemType<BreacherChest>() && player.armor[2].type == ItemType<BreacherLegs>();
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
