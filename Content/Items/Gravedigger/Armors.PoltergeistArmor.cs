@@ -72,6 +72,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             {
                 if (GetManaRestrict() > manaRestrictFade)
                     manaRestrictFade++;
+
                 if (GetManaRestrict() < manaRestrictFade)
                     manaRestrictFade--;
             }

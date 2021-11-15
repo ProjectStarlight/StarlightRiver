@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	class TwistSword : ModItem
+    class TwistSword : ModItem
     {
         public int charge = 0;
 
@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Items.Misc
             Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to accelerate upward");
         }
 
-		public override bool Autoload(ref string name)
-		{
+        public override bool Autoload(ref string name)
+        {
             On.Terraria.Main.DrawPlayer += DrawChargeBar;
             return true;
-		}
+        }
 
-		public override void SetDefaults()
+        public override void SetDefaults()
         {
             item.damage = 28;
             item.crit = 5;
@@ -52,22 +52,20 @@ namespace StarlightRiver.Content.Items.Misc
             item.noUseGraphic = true;
         }
 
-		public override ModItem Clone(Item item)
-		{
-			var clone = base.Clone(item);
+        public override ModItem Clone(Item item)
+        {
+            var clone = base.Clone(item);
 
             if (Main.mouseItem.type == ItemType<TwistSword>())
-            {
                 item.modItem.HoldItem(Main.player[Main.myPlayer]);
-            }
 
             (clone as TwistSword).charge = (item.modItem as TwistSword).charge;
             (clone as TwistSword).timer = (item.modItem as TwistSword).timer;
 
             return clone;
-		}
+        }
 
-		public override bool CanUseItem(Player player) => charge > 40;
+        public override bool CanUseItem(Player player) => charge > 40;
 
         public override bool UseItem(Player player)
         {
@@ -108,18 +106,18 @@ namespace StarlightRiver.Content.Items.Misc
                 if (player.velocity.Y > 2)
                     player.velocity.Y = 2;
 
-                if (player.velocity.X < 5 && player.controlRight) 
-                        player.velocity.X += 0.2f;
+                if (player.velocity.X < 5 && player.controlRight)
+                    player.velocity.X += 0.2f;
 
-                if (player.velocity.X > -5 && player.controlLeft) 
-                        player.velocity.X -= 0.2f;
+                if (player.velocity.X > -5 && player.controlLeft)
+                    player.velocity.X -= 0.2f;
 
                 charge--;
             }
-			else
-			{
+            else
+            {
                 timer = 0;
-			}
+            }
 
             if (timer % 20 == 0 && timer > 0)
                 Helper.PlayPitched("Magic/WaterWoosh", 0.3f, Main.rand.NextFloat(0.2f, 0.4f), player.Center);
@@ -127,7 +125,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (timer % 20 == 10 && timer > 0)
                 Helper.PlayPitched("Magic/WaterWoosh", 0.3f, -0.4f, player.Center);
 
-            if (charge <= 0) 
+            if (charge <= 0)
                 player.channel = false;
 
             if (charge < 600 && !player.channel)
@@ -139,9 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             if (charge > 600)
-            {
                 charge = 600;
-            }
         }
 
         public override void UpdateInventory(Player player)
@@ -200,17 +196,17 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.melee = true;
         }
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
             float rot = projectile.ai[0] % 80 / 80f * 6.28f;
             float x = (float)Math.Cos(-rot) * 160;
             float y = (float)Math.Sin(-rot) * 70;
             Vector2 off = new Vector2(x, y);
 
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + off);
-		}
+        }
 
-		public override void AI()
+        public override void AI()
         {
             if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
             {
@@ -218,9 +214,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     NPC npc = Main.npc[i];
                     if (npc.active && Colliding(projectile.Hitbox, npc.Hitbox).GetValueOrDefault())
-                    {
                         onHitEffect(npc);
-                    }
                 }
             }
 
@@ -238,8 +232,8 @@ namespace StarlightRiver.Content.Items.Misc
 
             projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
 
-            if (player.channel && player.HeldItem.type == ItemType<TwistSword>()) 
-                projectile.timeLeft = 2;             
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>())
+                projectile.timeLeft = 2;
 
             if (projectile.ai[1] > 200 && player.velocity.Y > -4)
                 player.velocity.Y -= 0.0004f * projectile.ai[1];
@@ -256,12 +250,12 @@ namespace StarlightRiver.Content.Items.Misc
             if (Main.rand.Next(3) == 0)
                 Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.Glow>(), off * Main.rand.NextFloat(0.01f), 0, new Color(10, 30, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-            if(Main.rand.Next(25) == 0)
+            if (Main.rand.Next(25) == 0)
                 Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-            if (player.channel && player.HeldItem.type == ItemType<TwistSword>()) 
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>())
                 player.UpdateRotation(rot);
-            else 
+            else
                 player.UpdateRotation(0);
 
             Lighting.AddLight(projectile.Center + off, new Vector3(0.1f, 0.25f, 0.6f));
