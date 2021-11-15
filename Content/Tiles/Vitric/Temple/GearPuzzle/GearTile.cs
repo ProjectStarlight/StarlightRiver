@@ -8,11 +8,17 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class GearTile : DummyTile
 	{
-		public override int DummyType => base.DummyType;
+		public override int DummyType => ModContent.ProjectileType<GearTileDummy>();
+
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = AssetDirectory.Debug;
+			return base.Autoload(ref name, ref texture);
+		}
 	}
 
 	class GearTileDummy : Dummy
