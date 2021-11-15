@@ -109,8 +109,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             if (spearOn)
             {
-                player.inventory[58] = dummySpear;
+                if (!Main.mouseItem.IsTheSameAs(dummySpear) && !Main.mouseItem.IsAir)
+                {
+                    Main.LocalPlayer.QuickSpawnClonedItem(Main.mouseItem);
+                }
                 Main.mouseItem = dummySpear;
+                player.inventory[58] = dummySpear;
                 player.selectedItem = 58;
 
                 moonCharge--;
