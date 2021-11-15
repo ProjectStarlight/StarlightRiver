@@ -50,10 +50,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void Kill(int timeLeft)
         {
 			if (owner?.armor[0]?.modItem != null)
-			{
 				(owner.armor[0].modItem as PoltergeistHead).minions.Remove(projectile);
-				
-			}
 		}
 
         public override void AI()
@@ -74,9 +71,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (item != null && !item.IsAir)
 			{
 				if (Timer % 120 == 0)
-                {
 					projectile.netUpdate = true;
-                }
 
 				Timer++;
 
@@ -106,9 +101,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					float rot = (target.Center - projectile.Center).ToRotation();
 
 					if (Main.myPlayer == owner.whoAmI)
-                    {
 						Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(rot) * item.shootSpeed, item.shoot, item.damage / 2, item.knockBack, projectile.owner);
-					}
 
 					Main.PlaySound(item.UseSound, projectile.Center);
 					targetRotation = rot + (Item.staff[item.type] ? 1.57f / 2 : 0);
@@ -119,12 +112,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void SendExtraAI(BinaryWriter writer)
         {
 			if (item != null)
-            {
 				writer.Write(item.type);
-			} else
-            {
+			 else
 				writer.Write(-1);
-            }
 
 			writer.Write((owner.armor[0].modItem as PoltergeistHead).sleepTimer);
 			
@@ -134,22 +124,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			int itemType = reader.ReadInt32();
 			if (itemType == -1)
-            {
 				item = null;
-            } else
+            else
             {
 				item = new Item();
 				item.SetDefaults(itemType);
 			}
+
 			int sleepTimer = reader.ReadInt32();
 
 			if (owner?.armor[0]?.modItem != null)
 			{
 				(owner.armor[0].modItem as PoltergeistHead).sleepTimer = sleepTimer;
 				if (projectile.active && !(owner.armor[0].modItem as PoltergeistHead).minions.Contains(projectile))
-				{
 					(owner.armor[0].modItem as PoltergeistHead).minions.Add(projectile);
-				}
 			}
 		}
 

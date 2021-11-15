@@ -170,9 +170,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 }
 
                 if (Main.rand.Next(4) == 0)
-                {
                     sparkles.AddParticle(new Particle(new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
-                }
             }
         }
 

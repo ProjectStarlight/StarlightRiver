@@ -16,7 +16,7 @@ using System.IO;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
-	public class FlareBreacher : ModItem
+    public class FlareBreacher : ModItem
     {
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f,0.1f));
+            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Breacher
         bool red;
         bool stuck;
 
-		int explosionTimer = 100;
+        int explosionTimer = 100;
         int enemyID;
         int blinkCounter;
 
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
             {
-                for (float i = 0; i < 1; i+= 0.25f)
+                for (float i = 0; i < 1; i += 0.25f)
                 {
                     Dust dust = Dust.NewDustPerfect(projectile.Center - (projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
                     dust.scale = 0.85f;
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Items.Breacher
             for (int i = 0; i < 4; i++)
             {
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5, 10);
                 dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Items.Breacher
             for (int i = 0; i < 8; i++)
             {
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10, 20);
                 dust.scale = Main.rand.NextFloat(0.75f, 1f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -266,7 +266,7 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = 1;
-            projectile.timeLeft = Main.rand.Next(50,70);
+            projectile.timeLeft = Main.rand.Next(50, 70);
             projectile.extraUpdates = 4;
             projectile.alpha = 255;
         }

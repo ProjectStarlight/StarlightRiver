@@ -35,10 +35,10 @@ namespace StarlightRiver.Content.Items.Breacher
             item.rare = 3;
         }
 
-		public override void UpdateEquip(Player player)
-		{
+        public override void UpdateEquip(Player player)
+        {
             player.GetModPlayer<CritMultiPlayer>().RangedCritMult += 0.15f;
-		}
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -73,9 +73,7 @@ namespace StarlightRiver.Content.Items.Breacher
             player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
 
             if (player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !player.dead)
-            {
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * player.rangedDamage), 1.5f, player.whoAmI);
-            }
         }
     }
 
@@ -165,16 +163,11 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.ignoreWater = true;
         }
 
-        public void initiateEffect()
-        {
-
-        }
-
         public override void AI()
         {
             Player player = Main.player[projectile.owner];
             BatteryCharge(player);
-            
+
             if (player.dead)
                 projectile.active = false;
 
@@ -213,24 +206,18 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void SendExtraAI(BinaryWriter writer)
         {
             if (target != null && target.active)
-            {
                 writer.Write(target.whoAmI);
-            } else
-            {
+            else
                 writer.Write(-1);
-            }
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             int targetIndex = reader.ReadInt32();
-            if (targetIndex < 0 )
-            {
+            if (targetIndex < 0)
                 target = null;
-            } else
-            {
+            else
                 target = Main.npc[targetIndex];
-            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -262,7 +249,7 @@ namespace StarlightRiver.Content.Items.Breacher
             if (ScanTimer == ScanTime || ScanTimer <= 100 || rotations == null || rotations.Count < 2 || rotations2.Count < 2)
                 return true;
 
-            Color color = Color.Lerp(new Color(255,0,0), Color.Red, 0.65f);
+            Color color = Color.Lerp(new Color(255, 0, 0), Color.Red, 0.65f);
             color.A = 0;
 
             float oldRot = rotations[0];
@@ -336,7 +323,7 @@ namespace StarlightRiver.Content.Items.Breacher
             lerper *= lerper * lerper;
             Color color = Color.Lerp(Color.Red, new Color(255, 0, 0), (lerper * lerper) / 2);
             color.A = 0;
-            spriteBatch.Draw(Main.magicPixel, projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color* lerper * 0.5f, rot, Vector2.Zero, new Vector2((targetPosition - projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            spriteBatch.Draw(Main.magicPixel, projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color * lerper * 0.5f, rot, Vector2.Zero, new Vector2((targetPosition - projectile.Center).Length(), 2), SpriteEffects.None, 0);
         }
 
         private void IdleMovement(Entity entity)
@@ -378,10 +365,8 @@ namespace StarlightRiver.Content.Items.Breacher
                     if (Vector2.Distance(testtarget.Center, projectile.Center) < attackRange)
                     {
                         if (Main.myPlayer == projectile.owner)
-                        {
                             projectile.netUpdate = true;
-                        }
-                        
+
                         Helper.PlayPitched("Effects/Scan", 0.5f, 0);
                         target = testtarget;
                         ScanTimer--;
@@ -393,6 +378,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 }
                 else
                     IdleMovement(player);
+
                 return;
             }
 
@@ -605,7 +591,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             trail2?.Render(effect);
         }
-  
+
         private void Explode(NPC target)
         {
             Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
@@ -799,15 +785,15 @@ namespace StarlightRiver.Content.Items.Breacher
             On.Terraria.Main.DrawNPCs += DrawBreacherOverlay;
         }
 
-		private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
-		{
+        private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+        {
             orig(self, behindTiles);
 
-            if(anyScanned)
+            if (anyScanned)
                 DrawNPCTarget();
         }
 
-		public static void ResizeTarget()
+        public static void ResizeTarget()
         {
             npcTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
         }

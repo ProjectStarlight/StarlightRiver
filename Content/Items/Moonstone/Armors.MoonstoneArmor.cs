@@ -126,9 +126,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 }
             }
             else if (Main.mouseItem == dummySpear)
-            {
                 Main.mouseItem = new Item();
-            }
         }
 
         private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
