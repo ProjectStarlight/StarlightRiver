@@ -42,6 +42,9 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
+            return true;
+
             player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             return true;
 
