@@ -443,7 +443,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             //Main AI
             Lighting.AddLight(npc.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
-            if (Phase != (int)AIStates.Leaving && arena != new Rectangle() && !Main.player.Any(n => n.active && n.statLife > 0 && n.Hitbox.Intersects(arena))) //if no valid players are detected
+            if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && n.statLife > 0 && n.Hitbox.Intersects(arena))) //if no valid players are detected
             {
                 GlobalTimer = 0;
                 Phase = (int)AIStates.Leaving; //begone thot!
