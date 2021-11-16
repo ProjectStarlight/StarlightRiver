@@ -62,7 +62,7 @@ namespace StarlightRiver.Compat.BossChecklist
 		{
 			var spriteBatch = Main.spriteBatch;
 
-			if (drawnTexture == ModContent.GetTexture("StarlightRiver/Assets/BossChecklist/VitricBoss"))
+			if (drawnTexture == ModContent.GetTexture("StarlightRiver/Assets/BossChecklist/VitricBoss")) //todo: More general to avoid this becoming a weird godclass
 			{
 				if (Main.rand.Next(2) == 0)
 					ceirosSystem.AddParticle(new Particle(self.GetDimensions().Center() + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100), Vector2.UnitY * -3, 0, Main.rand.NextFloat(0.3f), new Color(200, 200, 0), 100, Vector2.Zero));
