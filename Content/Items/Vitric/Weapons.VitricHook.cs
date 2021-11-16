@@ -70,6 +70,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
+        Player player => Main.player[projectile.owner];
+
         public override void SetDefaults()
         {
             projectile.width = 16;
@@ -81,15 +83,24 @@ namespace StarlightRiver.Content.Items.Vitric
         }
 
 
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            {
+                hooked = npc;
+                projectile.velocity *= 0;
+                startPos = player.Center;
+                Distance = Vector2.Distance(startPos, npc.Center);
+            }
+        }
+
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
 
             projectile.rotation = projectile.velocity.ToRotation();
             if(projectile.timeLeft < 40)//slows down the projectile by 8%, for about 10 ticks before it retracts
-            {
                 projectile.velocity *= 0.92f;
-            }
+            
 
             if(projectile.timeLeft == 30)
             {
@@ -98,11 +109,16 @@ namespace StarlightRiver.Content.Items.Vitric
             }
 
             if(Retracting)
-            {
                 projectile.Center = Vector2.Lerp(player.Center, startPos, projectile.timeLeft / 30f);
+
+            if (hooked is null && !Retracting && Main.myPlayer != projectile.owner)
+            {
+                projectile.friendly = true; //otherwise it will stop just short of actually intersecting the hitbox
+                findIfHit(); //since onhit hooks are client side only, all other clients will manually check for collisions
             }
 
-            if(hooked != null && !struck)
+
+            if (hooked != null && !struck)
             {
                 projectile.timeLeft = 32;
                 projectile.Center = hooked.Center;
@@ -139,8 +155,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Player player = Main.player[projectile.owner];
-
             if (target.life <= 0) return;
 
             if (!Retracting && hooked is null)
@@ -168,7 +182,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
             Texture2D chainTex1 = GetTexture(AssetDirectory.VitricItem + "VitricHookChain1");
             Texture2D chainTex2 = GetTexture(AssetDirectory.VitricItem + "VitricHookChain2");
-            Player player = Main.player[projectile.owner];
 
             float dist = Vector2.Distance(player.Center, projectile.Center);
             float rot = (player.Center - projectile.Center).ToRotation() + (float)Math.PI / 2f;

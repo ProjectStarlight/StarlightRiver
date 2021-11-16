@@ -57,9 +57,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool CanUseItem(Player player)
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != player.whoAmI && (hook == null || !hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.projectile.owner != player.whoAmI))
-                findHook(player);
-
             if (player.altFunctionUse == 2)
             {
                 item.useTime = 14;
@@ -73,6 +70,9 @@ namespace StarlightRiver.Content.Items.Breacher
                 item.useTime = 30;
                 item.useAnimation = 30;
                 item.noUseGraphic = false;
+
+                if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != player.whoAmI && (hook == null || !hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.projectile.owner != player.whoAmI))
+                    findHook(player);
 
                 return (hook is null || (hook != null && (!hook.projectile.active || hook.projectile.type != ModContent.ProjectileType<ScrapshotHook>() || (hook.isHooked && !hook.struck))));
             }
@@ -128,22 +128,21 @@ namespace StarlightRiver.Content.Items.Breacher
                 Item sample = new Item();
                 sample.SetDefaults(type);
                 sample.useAmmo = AmmoID.Bullet;
+
                 bool shoot = true;
 
-                if (Main.myPlayer == player.whoAmI)
-                {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
-                    player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, !ConsumeAmmo(player));
-                    shoot = player.HasAmmo(sample, shoot);
+                player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, !ConsumeAmmo(player));
+                shoot = player.HasAmmo(sample, shoot);
 
-                    if (!shoot)
-                        return false;
-
-                }
+                if (!shoot)
+                    return false;
 
                 if (type == ProjectileID.Bullet)
                     type = ModContent.ProjectileType<ScrapshotShrapnel>();
 
+                if (Main.myPlayer == player.whoAmI)
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
+                
 
                 if (hook != null && hook.projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.projectile.active && hook.isHooked)
                 {
@@ -166,7 +165,6 @@ namespace StarlightRiver.Content.Items.Breacher
                     {
                         spread = 0.05f;
                         damage += 4;
-                        hook.projectile.netUpdate = true;
 
                         player.GetModPlayer<StarlightPlayer>().Shake += 12;
                     }
@@ -190,10 +188,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                         if (type != ModContent.ProjectileType<ScrapshotShrapnel>())
                             Main.projectile[i].timeLeft = 30;
-                    }
 
-                    if (Main.myPlayer == player.whoAmI)
-                    {
                         //don't know direction for other players so we only add these for self.
                         Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
                         Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
@@ -240,7 +235,9 @@ namespace StarlightRiver.Content.Items.Breacher
         ref float Distance => ref projectile.ai[1];
         bool Retracting => projectile.timeLeft < 30;
 
-        public byte hookedNpcIndex = 0;
+        Player player => Main.player[projectile.owner];
+
+        public sbyte hookedNpcIndex = 0;
 
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -254,9 +251,26 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.penetrate = 2;
         }
 
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            {
+                if (player.HeldItem.modItem is Scrapshot)
+                {
+                    player.itemAnimation = 1;
+                    player.itemTime = 1;
+                }
+
+                isHooked = true;
+                projectile.velocity *= 0;
+                startPos = player.Center;
+                Distance = Vector2.Distance(startPos, npc.Center);
+                hookedNpcIndex = (sbyte)npc.whoAmI;
+            }
+        }
+
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
 
             projectile.rotation = projectile.velocity.ToRotation();
 
@@ -271,6 +285,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (Retracting)
                 projectile.Center = Vector2.Lerp(player.Center, startPos, projectile.timeLeft / 30f);
+
+            if (!isHooked && !Retracting && Main.myPlayer != projectile.owner)
+            {
+                projectile.friendly = true; //otherwise it will stop just short of actually intersecting the hitbox
+                findIfHit(); //since onhit hooks are client side only, all other clients will manually check for collisions
+            }
 
             if (isHooked && !struck)
             {
@@ -335,9 +355,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Player player = Main.player[projectile.owner];
 
-            if (target.life <= 0)
+            if (target.life <= 0 || Retracting)
                 return;
 
             if (player.HeldItem.modItem is Scrapshot)
@@ -347,28 +366,13 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             {
-                hookedNpcIndex = (byte)target.whoAmI;
+                hookedNpcIndex = (sbyte)target.whoAmI;
                 isHooked = true;
                 projectile.velocity *= 0;
                 startPos = player.Center;
                 Distance = Vector2.Distance(startPos, target.Center);
                 projectile.friendly = false;
-                projectile.netUpdate = true;
             }
-        }
-
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.Write(hookedNpcIndex);
-            writer.Write(isHooked);
-            writer.Write(struck);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            hookedNpcIndex = reader.ReadByte();
-            isHooked = reader.ReadBoolean();
-            struck = reader.ReadBoolean();
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
