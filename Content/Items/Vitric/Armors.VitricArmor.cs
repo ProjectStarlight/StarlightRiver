@@ -76,19 +76,18 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             player.setBonus = "Accumulate powerful glass shards over time\nDouble tap DOWN to load these shards into your bow\nShards fired from bows have high velocity and damage";
 
+            if (player.whoAmI != Main.myPlayer)
+                return;
+
             if (shardCount < 3 && !loaded)
             {
                 shardTimer++;
 
                 if (shardTimer == 210)
                 {
-                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI);
+                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI, 0, shardCount);
                     var proj = Main.projectile[i].modProjectile as VitricArmorProjectileIdle;
-                    proj.offset = new Vector2(0, -50).RotatedBy(0.2f + (shardCount - 1) / -2f * 1.5f);
-                    proj.rotOffset = 0.2f + (shardCount - 1) / -2f * 1.6f;
                     proj.parent = this;
-                    proj.index = shardCount;
-                    proj.maxSize = shardCount == 1 ? 0.9f : 0.8f;
                 }
 
                 if (shardTimer >= 240)
