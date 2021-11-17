@@ -29,13 +29,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override bool NewRightClick(int i, int j)
 		{
-			if(Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
+			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
+
+			if (dummy.gearAnimation > 0)
+				return false;
+
+			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
 			{
-				(Dummy(i, j).modProjectile as GearTileDummy).Toggle();
+				dummy.Toggle();			
 				return true;
 			}
 
-			(Dummy(i, j).modProjectile as GearTileDummy).Size++;
+			dummy.oldSize = dummy.Size;
+			dummy.Size++;
+			dummy.gearAnimation = 40;
 
 			return true;
 		}
@@ -43,9 +50,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	class GearTileDummy : Dummy
 	{
-		private int size;
+		public int gearAnimation;
+		public int oldSize;
+
 		bool engaged = false;
 		float direction = 0;
+
+		private int size;
 
 		public int Size
 		{
@@ -63,10 +74,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			switch (size)
 			{
 				case 0: return 1;
-				case 1: return 8;
-				case 2: return 16;
-				case 3: return 24;
+				case 1: return 4;
+				case 2: return 8;
+				case 3: return 12;
 				default: return 1;
+			}
+		}
+
+		public override void Update()
+		{
+			if (gearAnimation > 0)
+				gearAnimation--;
+
+			if (oldSize == 0 && gearAnimation > 20) //no fadeout when there is nothing to fade out
+				gearAnimation = 20;
+
+			if(gearAnimation == 15 && size != 0)
+			{
+				for (int k = 0; k < 10 * size; k++)
+				{
+					Vector2 off = Vector2.One.RotatedByRandom(6.28f);
+					Dust.NewDustPerfect(projectile.Center + off * size * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(size * 2 - 2, size * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
+				}
 			}
 		}
 
@@ -76,11 +105,38 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			switch (size)
 			{
-				case 0: return;
-				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearSmall"); break;
-				case 2: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearMid"); break;
-				case 3: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearLarge"); break;
-				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearSmall"); break;
+				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
+				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+				case 2: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
+				case 3: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
+				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+			}
+
+			if(gearAnimation > 0) //switching between sizes animation
+			{
+				Texture2D texOld;
+
+				switch (oldSize)
+				{
+					case 0: texOld = ModContent.GetTexture(AssetDirectory.Invisible); break;
+					case 1: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+					case 2: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
+					case 3: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
+					default: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+				}
+
+				if (gearAnimation > 20)
+				{
+					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
+					spriteBatch.Draw(texOld, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
+				}
+				else
+				{
+					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
+					spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
+				}
+
+				return;
 			}
 
 			float rot = 0;
@@ -91,7 +147,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (direction > 0)
 				rot += 0.2f;
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, rot, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, rot, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void RecurseOverGears(Action<Point16, int> action)
