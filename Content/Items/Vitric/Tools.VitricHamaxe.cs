@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -13,6 +14,8 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public int heat = 0;
         public int heatTime = 0;
+
+        bool prevMouseRight = false;
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -41,48 +44,44 @@ namespace StarlightRiver.Content.Items.Vitric
             item.useTurn = true;
         }
 
-        public override bool AltFunctionUse(Player player) => true;
-
-        public override bool CanUseItem(Player player)
+        public override void NetSend(BinaryWriter writer)
         {
-            if(player.altFunctionUse == 2)
-            {
-                item.axe = 0;
-                item.hammer = 0;
-                item.noMelee = true;
-            }
-            else
-            {
-                item.axe = 20;
-                item.hammer = 60;
-                item.noMelee = false;
-            }
+            writer.Write(heat);
+            writer.Write(heatTime);
+        }
 
-            return true;
+        public override void NetRecieve(BinaryReader reader)
+        {
+            heat = reader.ReadInt32();
+            heatTime = reader.ReadInt32();
         }
 
         public override void HoldItem(Player player)
         {
-            if (item.hammer > 0)
-                return;
-
-            if(Main.mouseRight)
+            ControlsPlayer cPlayer = player.GetModPlayer<ControlsPlayer>();
+            if (Main.myPlayer == player.whoAmI && cPlayer.mouseRight != prevMouseRight)
             {
-                if (player.itemAnimation == 12)
+                cPlayer.sendControls = true;
+                prevMouseRight = cPlayer.mouseRight;
+            }
+            item.noMelee = false;
+
+            if (cPlayer.mouseRight)
+            {
+                item.noMelee = true;
+                player.itemAnimation = 13;
+
+                if (heat < 100)
                 {
-                    player.itemAnimation = 13;
+                    heat++;
 
-                    if (heat < 100)
-                    {
-                        heat++;
-
-                        var off = Vector2.One.RotatedByRandom(6.28f) * 20;
-                        Dust.NewDustPerfect(player.MountedCenter + (Vector2.One * 40).RotatedBy(player.itemRotation - (player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
-                    }
-
-                    if (heat == 98)
-                        Main.PlaySound(SoundID.DD2_BetsyFireballShot, player.Center);
+                    var off = Vector2.One.RotatedByRandom(6.28f) * 20;
+                    Dust.NewDustPerfect(player.MountedCenter + (Vector2.One * 40).RotatedBy(player.itemRotation - (player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
                 }
+
+                if (heat == 98)
+                    Main.PlaySound(SoundID.DD2_BetsyFireballShot, player.Center);
+                
             }
         }
 

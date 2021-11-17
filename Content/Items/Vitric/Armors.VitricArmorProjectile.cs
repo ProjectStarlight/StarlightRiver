@@ -54,6 +54,18 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AI()
         {
+            if (Owner.dead)
+            {
+                if (Main.myPlayer == Owner.whoAmI)
+                {
+                    parent.shardCount = 0;
+                    parent.shardTimer = 0;
+                    parent.loaded = false;
+                }
+                    
+                projectile.Kill();
+            }
+
             offset = new Vector2(0, -50).RotatedBy(0.2f + (Index - 1) / -2f * 1.5f);
             rotOffset = 0.2f + (Index - 1) / -2f * 1.6f;
             maxSize = Index == 1 ? 0.9f : 0.8f;
