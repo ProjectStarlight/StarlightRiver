@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				rot = Main.GameUpdateCount * 0.01f * direction;
 
 			if (direction > 0)
-				rot += 0.2f;
+				rot += (float)Math.PI / Teeth;
 
 			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, rot, tex.Size() / 2, 1, 0, 0);
 		}
