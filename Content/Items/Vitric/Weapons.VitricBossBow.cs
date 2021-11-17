@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
@@ -90,6 +91,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public ref float State => ref projectile.ai[0];
         public ref float Angle => ref projectile.ai[1];
 
+        private float prevRotation;
+
         public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
 
         public override void SetDefaults()
@@ -102,9 +105,15 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
             if(owner == Main.LocalPlayer)
+            {
                 Angle = (owner.Center - Main.MouseWorld).ToRotation() + MathHelper.Pi;
-
-            projectile.netUpdate = true;
+                if (Math.Abs(projectile.rotation - prevRotation) > 0.2f)
+                {
+                    projectile.netUpdate = true;
+                    prevRotation = projectile.rotation;
+                }
+            }
+                
 
             projectile.rotation = Angle; 
             projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 24;
@@ -119,18 +128,22 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (charge == 1)
                 {
-                    Projectile.NewProjectile(projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, 1);
+                    if (Main.myPlayer == projectile.owner)
+                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, 1);
                     Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
                 }
-
-                for (int k = 2; k < 4; k++)
-				{
-                    if (charge == 19 * k + 1)
+                if (Main.myPlayer == projectile.owner)
+                {
+                    for (int k = 2; k < 4; k++)
                     {
-                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
-                        Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
+                        if (charge == 19 * k + 1)
+                        {
+                            Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
+                            Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(projectile.damage * damageMult), 1, projectile.owner, 0, k);
+                        }
                     }
-				}
+                }
+
             }
 
             else if (charge > 0)
@@ -234,12 +247,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public ref float Timer => ref projectile.ai[0];
 
+        public ref float Rotation => ref projectile.ai[1];
+
         public int fadeIn = 15;
 
         private Vector2 startPoint;
         private Vector2 startCenter;
         private Vector2 targetPoint;
         private float storedRotation;
+
+        private float prevRotation;
         private float targetRotation => (targetPoint - startCenter).ToRotation();
         private float targetDist => Vector2.Distance(targetPoint, startPoint);
         float dist1;
@@ -304,8 +321,18 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (Timer < fadeIn)
                     Timer++;
 
-                projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+                if (Main.myPlayer == projectile.owner)
+                {
+                    Rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+                    if (Math.Abs(projectile.rotation - prevRotation) > 0.2f)
+                    {
+                        projectile.netUpdate = true;
+                        prevRotation = projectile.rotation;
+                    }
+                        
+                }
 
+                projectile.rotation = Rotation;
                 projectile.timeLeft = 121;
                 projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + projectile.velocity.X * 6) * 10);
             }
@@ -316,14 +343,30 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if(Timer == 16)
 				{
-					projectile.rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+                    
+                    if (Main.myPlayer == projectile.owner)
+                    {
+                        targetPoint = Main.MouseWorld;
+                        Rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+                        if (Math.Abs(projectile.rotation - prevRotation) > 0.2f)
+                        {
+                            projectile.netUpdate = true;
+                            prevRotation = projectile.rotation;
+                        }
+                    }
+
+                    projectile.rotation = Rotation;
                     projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + projectile.velocity.X * 6) * 10);
                 }
 
                 if (startPoint == Vector2.Zero)
                 {
                     if (owner == Main.LocalPlayer)
+                    {
                         targetPoint = Main.MouseWorld;
+                        projectile.netUpdate = true;
+                    }
+                        
 
                     startPoint = projectile.Center;
                     startCenter = owner.Center;
@@ -420,7 +463,17 @@ namespace StarlightRiver.Content.Items.Vitric
             }
 		}
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(targetPoint);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            targetPoint = reader.ReadPackedVector2();
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
 		{
             var tex = GetTexture(AssetDirectory.MiscTextures + "DirectionalBeam");
             var tex2 = GetTexture(AssetDirectory.VitricItem + "BossBowArrow");
