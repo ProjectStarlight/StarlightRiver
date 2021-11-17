@@ -27,7 +27,22 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			QuickBlock.QuickSetFurniture(this, 1, 1, 1, 1, new Color(1, 1, 1));
 		}
 
-		public override bool NewRightClick(int i, int j)
+        public override bool SpawnConditions(int i, int j)
+        {
+			Tile tile = Main.tile[i, j];
+			return tile.frameX < 4 && tile.frameY == 0;
+		}
+
+        public override void SafeNearbyEffects(int i, int j, bool closer)
+        {
+			var tile = Framing.GetTileSafely(i, j);
+			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
+
+			if(dummy != null)
+				dummy.Size = tile.frameX;
+        }
+
+        public override bool NewRightClick(int i, int j)
 		{
 			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
 
@@ -61,7 +76,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public int Size
 		{
 			get => size;
-			set => size = value % 4;
+			set
+            {
+				size = value % 4;
+				Parent.frameX = (short)size;
+            }
 		}
 
 		public int Teeth => GetTeeth();
@@ -69,7 +88,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public GearTileDummy() : base(ModContent.TileType<GearTile>(), 16, 16) { }
 
-		public int GetTeeth()
+        public int GetTeeth()
 		{
 			switch (size)
 			{
