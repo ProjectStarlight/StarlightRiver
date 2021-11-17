@@ -22,8 +22,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public int shardCount = 0;
         public bool loaded = false;
 
-        public List<Projectile> idleShards = new List<Projectile>();
-
         public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override bool Autoload(ref string name)
