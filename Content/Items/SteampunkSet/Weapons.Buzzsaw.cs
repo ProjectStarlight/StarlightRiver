@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         }
     }
 
+    //TODO this would probably be cleaner with less data required for netcode if this is changed to no longer use vanilla ai to not need the phantom saw
     public class BuzzsawProj : ModProjectile
     {
         private const int OFFSET = 30;
@@ -302,10 +303,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public bool justLaunched = true;
 
-        public bool sentNetUpdate = false;
-
-
-        //would put these into ai[0] ai[1] but those are already used by vanilla aistyle 3
         public bool justHit = false;
         public short pauseTimer = -1;
 
@@ -331,30 +328,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool PreAI()
         {
-
-            if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
-            {
-                for (int i = 0; i < Main.maxNPCs; i++)
-                {
-                    NPC npc = Main.npc[i];
-                    if (npc.active && npc.Hitbox.Intersects(projectile.Hitbox))
-                        hitGore(npc);
-                }
-            }
-
-            //have to delay like this since the net update doesn't get in the same frame as the netupdate if netupdate was checked through child projectile
-            if (justHit && !sentNetUpdate && Main.myPlayer == projectile.owner)
-            {
-                sentNetUpdate = true;
-                projectile.netUpdate = true;
-            }
-            else
-            {
-                sentNetUpdate = false;
-                justHit = false;
-            }
-
-
             if (--pauseTimer > 0)
             {
                 if (projectile.velocity != Vector2.Zero)
@@ -373,10 +346,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void AI()
         {
             if (justLaunched)
-                Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.whoAmI);
-
-            justLaunched = false;
-
+            {
+                int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner);
+                ((PhantomBuzzsaw)Main.projectile[proj].modProjectile).parent = projectile;
+            }
+                
             projectile.frameCounter += 1;
             projectile.frame = (projectile.frameCounter / 5) % 2;
             rotationCounter += 0.6f;
@@ -384,19 +358,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         }
 
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.Write(justHit);
-            writer.Write(pauseTimer);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            justHit = reader.ReadBoolean();
-            pauseTimer = reader.ReadInt16();
-        }
-
-        //for the multiplayer part of the onhit
         public void hitGore(NPC target)
         {
             Vector2 direction = target.Center - projectile.Center;
@@ -422,7 +383,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
     {
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 
-        private Projectile parent => Main.projectile[(int)projectile.ai[0]];
+        public Projectile parent;
 
         private Player player => Main.player[projectile.owner];
 
@@ -447,13 +408,45 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             projectile.hide = true;
         }
 
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            {
+                Main.NewText(npc.immune[projectile.owner]);
+                OnHitNPC(npc, 0, 0, false);
+            }
+        }
+
         public override void AI()
         {
+            if (parent is null)
+            {
+                //have to find the parent in mp note that projectile arrays are NOT synced like npc and player arrays so we can't use the index in ai[0]
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<BuzzsawProj2>())
+                    {
+                        parent = proj;
+                        break;
+                    }
+                }
+            }
+
+            if (parent is null || !parent.active)
+            {
+                projectile.active = false;
+                return;
+            }
+                
+
+            if (Main.myPlayer != projectile.owner)
+                findIfHit();
+
             projectile.Center = parent.Center;
             projectile.velocity = parent.velocity;
 
-            if (!parent.active)
-                projectile.active = false;
+
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -461,15 +454,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             ((BuzzsawProj2)parent.modProjectile).hitGore(target);
 
-            Vector2 direction = target.Center - projectile.Center;
-            if (Helper.IsFleshy(target))
+            if (Main.myPlayer == projectile.owner)
             {
-                int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
-                int spriteDirection = Math.Sign(direction.X);
+                Vector2 direction = target.Center - projectile.Center;
+                if (Helper.IsFleshy(target))
+                {
+                    int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
+                    int spriteDirection = Math.Sign(direction.X);
 
-                Projectile proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, bloodID, 0, 0, projectile.owner);
-                proj.spriteDirection = -spriteDirection;
+                    Projectile proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, bloodID, 0, 0, projectile.owner);
+                    proj.spriteDirection = -spriteDirection;
+                }
+
+                player.GetModPlayer<StarlightPlayer>().Shake += 6;
             }
+
 
             target.immune[projectile.owner] = 20;
 
@@ -479,7 +478,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 modProj.justHit = true;
             }
 
-            player.GetModPlayer<StarlightPlayer>().Shake += 6;
+            
         }
     }
 
