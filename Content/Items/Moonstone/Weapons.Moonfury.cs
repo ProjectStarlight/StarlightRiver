@@ -45,6 +45,16 @@ namespace StarlightRiver.Content.Items.Moonstone
             Tooltip.SetDefault("Call down a shard of moonstone, afflicting enemies with Dreamfire\nAfflicted enemies take extra damage on hit from Moonfury");
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 8);
+            recipe.AddIngredient(ItemID.Starfury, 1);
+            recipe.AddTile(TileID.Anvils);
+            recipe.SetResult(this);
+            recipe.AddRecipe();
+        }
+
         public override void HoldItem(Player player)
         {
             cooldown--;

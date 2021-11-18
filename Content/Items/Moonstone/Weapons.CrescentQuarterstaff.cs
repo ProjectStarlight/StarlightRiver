@@ -49,6 +49,15 @@ namespace StarlightRiver.Content.Items.Moonstone
 			item.noMelee = true;
 			item.autoReuse = false;
 		}
+
+		public override void AddRecipes()
+		{
+			ModRecipe recipe = new ModRecipe(mod);
+			recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.SetResult(this);
+			recipe.AddRecipe();
+		}
 	}
 
 	internal class CrescentQuarterstaffProj : ModProjectile
