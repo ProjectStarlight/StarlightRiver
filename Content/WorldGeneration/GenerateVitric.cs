@@ -306,7 +306,7 @@ namespace StarlightRiver.Core
                 {
                     makingLake = true;
                     lakeStart = xDif;
-                    lakeWidth = genRand.Next(20, 35);
+                    lakeWidth = genRand.Next(15, 40);
                 }
 
                 for (int y = layers["FLOOR"] - 9; y < layers["BOTTOM"] + 8; ++y)
