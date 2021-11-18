@@ -412,7 +412,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
             {
-                Main.NewText(npc.immune[projectile.owner]);
                 OnHitNPC(npc, 0, 0, false);
             }
         }
