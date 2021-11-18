@@ -59,11 +59,10 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void HoldItem(Player player)
         {
             ControlsPlayer cPlayer = player.GetModPlayer<ControlsPlayer>();
-            if (Main.myPlayer == player.whoAmI && cPlayer.mouseRight != prevMouseRight)
-            {
-                cPlayer.sendControls = true;
-                prevMouseRight = cPlayer.mouseRight;
-            }
+
+            if (Main.myPlayer == player.whoAmI)
+                player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+
             item.noMelee = false;
 
             if (cPlayer.mouseRight)

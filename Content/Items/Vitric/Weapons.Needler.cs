@@ -44,11 +44,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			return new Vector2(-10, 0);
 		}
 
-		//TODO: Add glowmask to weapon
-		//TODO: Add holdoffset
-		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool UseItem(Player player)
+        {
+			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), player.position);
+			return true;
+		}
+
+        //TODO: Add glowmask to weapon
+        //TODO: Add holdoffset
+        public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/SMG2"), position);
 			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Vector2 direction = new Vector2(speedX, speedY);
 			float itemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
@@ -112,9 +117,6 @@ namespace StarlightRiver.Content.Items.Vitric
 		//TODO: Turn needles into getnset
 		public override bool PreAI()
 		{
-			if (Main.myPlayer != projectile.owner)
-				findIfHit();
-
 			if (stuck)
 			{
 				NPC target = Main.npc[enemyID];
@@ -171,7 +173,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			return true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void PostAI()
+        {
+			if (Main.myPlayer != projectile.owner && !stuck)
+				findIfHit();
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (!stuck && target.life > 0)
 			{

@@ -91,8 +91,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public ref float State => ref projectile.ai[0];
         public ref float Angle => ref projectile.ai[1];
 
-        private float prevRotation;
-
         public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
 
         public override void SetDefaults()
@@ -105,15 +103,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
             if(owner == Main.LocalPlayer)
-            {
-                Angle = (owner.Center - Main.MouseWorld).ToRotation() + MathHelper.Pi;
-                if (Math.Abs(projectile.rotation - prevRotation) > 0.2f)
-                {
-                    projectile.netUpdate = true;
-                    prevRotation = projectile.rotation;
-                }
-            }
-                
+                owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
+            
+
+            Angle = (owner.Center - owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
 
             projectile.rotation = Angle; 
             projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(projectile.rotation) * 24;
@@ -321,16 +314,11 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (Timer < fadeIn)
                     Timer++;
 
-                if (Main.myPlayer == projectile.owner)
-                {
-                    Rotation = projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
-                    if (Math.Abs(projectile.rotation - prevRotation) > 0.2f)
-                    {
-                        projectile.netUpdate = true;
-                        prevRotation = projectile.rotation;
-                    }
-                        
-                }
+                if (owner == Main.LocalPlayer)
+                    owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
+
+
+                Rotation = projectile.velocity.ToRotation() + (owner.Center - owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
 
                 projectile.rotation = Rotation;
                 projectile.timeLeft = 121;
