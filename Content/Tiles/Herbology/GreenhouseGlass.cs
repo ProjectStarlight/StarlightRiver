@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
@@ -54,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Glass, 10);
-            recipe.AddIngredient(ModContent.ItemType<Items.AstralMeteor.AluminumBar>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<AluminumBarItem>(), 1);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this, 10);
             recipe.AddRecipe();

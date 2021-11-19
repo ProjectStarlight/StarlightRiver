@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         public override void AddRecipes()
         {
             ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<AluminumBar>(), 20);
+            recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
