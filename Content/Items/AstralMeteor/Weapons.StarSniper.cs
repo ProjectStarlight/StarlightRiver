@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         {
             ModRecipe recipe = new ModRecipe(mod);
             recipe.AddIngredient(ItemID.Boomstick);
-            recipe.AddIngredient(ItemType<AluminumBar>(), 20);
+            recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
             recipe.AddIngredient(ItemID.FallenStar, 5);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
