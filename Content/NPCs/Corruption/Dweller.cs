@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			Attacking
 		};
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/Corruption/Dweller";
+		public override string Texture => AssetDirectory.CorruptionNPC + Name;
 
 		public override void SetDefaults()
 		{

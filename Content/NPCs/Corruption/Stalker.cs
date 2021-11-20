@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 {
 	class Stalker : ModNPC
 	{
-		public override string Texture => AssetDirectory.Assets + "NPCs/Corruption/" + Name;
+		public override string Texture => AssetDirectory.CorruptionNPC + Name;
 
 		public ref float Timer => ref npc.ai[0];
 		public ref float State => ref npc.ai[1];
