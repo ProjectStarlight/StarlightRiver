@@ -48,6 +48,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
             npc.damage = -1;
             npc.lifeMax = 100;
+            npc.lifeRegen = 2;
             npc.knockBackResist = 2;
         }
 
@@ -64,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
             NPCAimedTarget player = npc.GetTargetData();
             Vector2 playerCenter = player.Invalid ? npc.Center : player.Center;
 
-            bool npcInRange = LatchableNPCInRange(800f, out int id);
+            bool npcInRange = LatchableNPCInRange(1000f, out int id);
 
             switch (State)
             {
@@ -101,6 +102,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
                         else
                             jumpDirection = npc.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 6;
                     }
+
+                    if (npc.Distance(targetNPC.Center) > 500)
+                        npc.velocity.X += npc.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 4;
 
                     break;
             }
@@ -234,11 +238,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
             for (int j = 0; j < segments + 1; j++)
             {
-                float pulseTime = MathHelper.Clamp((float)Math.Sin(((HealTime / 10) - j) % (HealRate * 50)), 0, 1);
-                float pulse = MathHelper.SmoothStep(1f, 1.8f, pulseTime);
+                float pulseTime = MathHelper.Clamp((float)Math.Sin(((HealTime / 7) - j) % (HealRate * 50)), 0, 1);
+                float pulse = MathHelper.SmoothStep(1f, 1.5f, pulseTime);
                 Vector2 difference = leechPoints[j + 1] - leechPoints[j];
                 Vector2 scale = new Vector2(pulse, (difference.Length() / 19.5f) + (pulse * 0.2f));
-                Color pulseColor = Color.Lerp(Color.White, Color.IndianRed, pulseTime);
+                Color pulseColor = Color.Lerp(Color.White, new Color(255, 128, 128), pulseTime);
                 Color light = new Color(Lighting.GetSubLight(leechPoints[j]));
                 spriteBatch.Draw(leechTexture, leechPoints[j] - Main.screenPosition, null, light.MultiplyRGB(pulseColor), difference.ToRotation() - MathHelper.PiOver2, leechTexture.Size() * new Vector2(0.5f, 0), scale, SpriteEffects.None, 0);
 
