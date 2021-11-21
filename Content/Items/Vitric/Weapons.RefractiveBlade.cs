@@ -49,16 +49,18 @@ namespace StarlightRiver.Content.Items.Vitric
             item.noUseGraphic = true;
         }
 
-        public override bool CanUseItem(Player player)
+        public override void HoldItem(Player player)
         {
+            if (Main.myPlayer == player.whoAmI)
+                player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+
             if (player.altFunctionUse == 2)
                 item.useStyle = ItemUseStyleID.HoldingOut;
             else
                 item.useStyle = ItemUseStyleID.SwingThrow;
-            return true;
         }
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
             if(player.altFunctionUse == 2)
 			{
@@ -153,11 +155,30 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (Timer >= maxTime)
                 projectile.timeLeft = 0;
-		}
+
+            if (Main.myPlayer != Owner.whoAmI)
+                checkHits();
+
+        }
+
+        public void checkHits()
+        {
+            // done manually for clients that aren't the projectile owner since onhit methods are clientside
+            foreach (NPC npc in Main.npc.Where(n => n.active &&
+                 !n.dontTakeDamage &&
+                 !n.townNPC &&
+                 n.immune[Owner.whoAmI] <= 0 &&
+                 Colliding(new Rectangle(), n.Hitbox) == true))
+            {
+                OnHitNPC(npc, 0, 0, false);
+            }
+        }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
+
+            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
 
             Helper.CheckLinearCollision(Owner.Center, projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual npc ref, soo...
 
@@ -298,7 +319,12 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.Center = Owner.Center;
             Owner.itemAnimation = Owner.itemAnimationMax;
 
-            float targetRot = (Main.MouseWorld - Owner.Center).ToRotation();
+            ControlsPlayer cplayer = Owner.GetModPlayer<ControlsPlayer>();
+
+            if (Main.myPlayer == Owner.whoAmI)
+                cplayer.mouseRotationListener = true;
+
+            float targetRot = (cplayer.mouseWorld - Owner.Center).ToRotation();
             float diff = Helper.CompareAngle(LaserRotation, targetRot);
             float maxRot = firing ? 0.02f : 0.08f;
             LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
@@ -319,7 +345,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 projectile.scale = 0.5f + (Charge / 12f) * 0.5f;
             }
 
-            if (Main.mouseRight && !firing)
+            if (cplayer.mouseRight && !firing)
 			{
                 if (Charge < 35)
                     Charge++;
@@ -348,7 +374,24 @@ namespace StarlightRiver.Content.Items.Vitric
                     break;
                 }
             }
+
+            if (Main.myPlayer != Owner.whoAmI)
+                checkHits();
 		}
+
+        public void checkHits()
+        {
+            // done manually for clients that aren't the projectile owner since onhit methods are clientside
+
+            foreach (NPC npc in Main.npc.Where(n => n.active &&
+                 !n.dontTakeDamage &&
+                 !n.townNPC &&
+                 Colliding(new Rectangle(), n.Hitbox) == true))
+            {
+                OnHitNPC(npc, 0, 0, false);
+            }
+
+        }
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
@@ -364,7 +407,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
             target.velocity += Vector2.UnitX.RotatedBy(LaserRotation) * 0.25f * target.knockBackResist;
-            target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
+
+            if (Main.myPlayer == Owner.whoAmI)
+                target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
 		}
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
