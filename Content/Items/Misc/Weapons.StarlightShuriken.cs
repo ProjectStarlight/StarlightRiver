@@ -53,9 +53,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if(amountToThrow == 1)
 			{
-				int i = Projectile.NewProjectile(player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
-                var proj = Main.projectile[i].modProjectile as StarGlaive;
-				proj.color = new Color(240, 100, 255);
+				Projectile.NewProjectile(player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
 
                 amountToThrow = 3;
                 return false;
@@ -64,9 +62,8 @@ namespace StarlightRiver.Content.Items.Misc
             for(int k = 0; k < amountToThrow; k++)
 			{
                 float maxAngle = amountToThrow == 3 ? 0.21f : 0.16f;
-                int i = Projectile.NewProjectile(player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockBack, player.whoAmI);
+                int i = Projectile.NewProjectile(player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockBack, player.whoAmI, 0, amountToThrow);
                 var proj = Main.projectile[i].modProjectile as StarShuriken;
-                proj.color = amountToThrow == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
                 proj.creator = this;
 			}
 
@@ -89,6 +86,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public Color color = new Color(100, 210, 255);
 
 		public ref float State => ref projectile.ai[0];
+
+		public ref float numThrown => ref projectile.ai[1];
 
 		public Player Owner => Main.player[projectile.owner];
 
@@ -113,6 +112,8 @@ namespace StarlightRiver.Content.Items.Misc
 				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, projectile.Center);
 			}
 
+			color = numThrown == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
+
 			projectile.rotation += 0.05f;
 			projectile.velocity *= 0.998f;
 
@@ -129,6 +130,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 			ManageCaches();
 			ManageTrail();
+
+			if (projectile.owner != Main.myPlayer && State == 0)
+				findIfHit();
+		}
+
+		private void findIfHit()
+		{
+			foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+			{
+				OnHitNPC(npc, 0, 0, false);
+			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -231,7 +243,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public Color color = new Color(100, 210, 255);
+		public Color color = new Color(240, 100, 255);
 
 		public ref float State => ref projectile.ai[0];
 		public ref float BounceSoundCooldown => ref projectile.ai[1];
