@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,14 +30,26 @@ namespace StarlightRiver.Content.Items.Starwood
             var player = Main.player[projectile.owner];
 
             if (Equipped(player) && crit)
-                Item.NewItem(target.Center, ItemID.Star, 1, false, 0, true);
+                spawnStar(target.Center);
         }
 
 		private void SpawnManaOnCrit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
 		{
             if (Equipped(player) && crit)
-                Item.NewItem(target.Center, ItemID.Star, 1, false, 0, true);
-		}
+                spawnStar(target.Center);
+
+        }
+
+        private void spawnStar(Vector2 position)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                StarPacket packet = new StarPacket(position);
+                packet.Send(-1, Main.myPlayer, false);
+            }
+            else
+                Item.NewItem(position, ItemID.Star, 1, true, 0, true);
+        }
 
         public override void SafeUpdateEquip(Player player)
         {
@@ -66,4 +80,26 @@ namespace StarlightRiver.Content.Items.Starwood
             return false;
 		}
 	}
+
+	[Serializable]
+	public class StarPacket : Module
+	{
+        Vector2 position;
+
+		public StarPacket(Vector2 position)
+		{
+            this.position = position;
+		}
+
+		protected override void Receive()
+		{
+
+			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+			{
+                Item.NewItem(position, ItemID.Star, 1, false, 0, true);
+            }
+		}
+	}
+
+
 }
