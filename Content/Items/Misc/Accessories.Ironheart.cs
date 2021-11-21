@@ -110,6 +110,7 @@ namespace StarlightRiver.Core
                     level - (ironheartLevel - IronheartMaxLevel) : level) * 2;
 
                 ironheartLevel = ironheartLevel > IronheartMaxLevel ? IronheartMaxLevel : ironheartLevel;//caps value
+                player.GetModPlayer<ShieldPlayer>().sendUpdatePacket = true;
                 player.AddBuff(buffType, 1);
             }
         }

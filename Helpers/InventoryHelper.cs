@@ -77,6 +77,21 @@ namespace StarlightRiver.Helpers
             return items >= count;
         }
 
+        /// <summary>
+        /// returns first open non ammo or coin slot if player has atleast 1 slot empty otherwise returns -1
+        /// </summary>
+        public static int getFreeInventorySlot(Player player)
+        {
+            for (int k = 0; k < 49; k++)
+            {
+                Item item = player.inventory[k];
+                if (item is null || item.IsAir)
+                    return k;
+            }
+
+            return -1;
+        }
+
         public static bool TryTakeItem(Player player, int type, int count)
         {
             if (HasItem(player, type, count))

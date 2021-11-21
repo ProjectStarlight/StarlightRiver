@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
@@ -204,7 +205,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
         {
-            if (IsArmorSet(player) && !player.dead)
+            if (IsArmorSet(player) && !player.dead && PlayerTarget.canUseTarget)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

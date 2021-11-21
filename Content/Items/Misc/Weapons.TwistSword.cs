@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -158,7 +159,9 @@ namespace StarlightRiver.Content.Items.Misc
         {
             orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 
-            if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>())
+
+
+            if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
             {
                 int charge = (drawPlayer.HeldItem.modItem as TwistSword).charge;
                 var tex = GetTexture(AssetDirectory.GUI + "SmallBar1");

@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool? CanHitNPC(NPC target)
         {
             var player = Main.player[projectile.owner];
-            return projectile.timeLeft < (int)(50 * player.meleeSpeed);
+            return (projectile.timeLeft < (int)(50 * player.meleeSpeed)) && target.active && !target.dontTakeDamage && !target.townNPC;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

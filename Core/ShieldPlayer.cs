@@ -1,17 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core
 {
-	class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that players and NPCs share
+	public class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that players and NPCs share
 	{
 		public int MaxShield = 0;
 		public int Shield = 0;
@@ -29,8 +34,22 @@ namespace StarlightRiver.Core
 		public float rechargeAnimation;
 		public Item barrierDyeItem;
 
-		public BarrierDye dye => (barrierDyeItem is null || barrierDyeItem.IsAir) ? null : (barrierDyeItem.modItem as BarrierDye);
+		public bool sendUpdatePacket = true; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
 
+		public BarrierDye dye
+		{
+			get
+			{
+				if (barrierDyeItem is null || barrierDyeItem.IsAir)
+                {
+					Item item = new Item();
+					item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
+					barrierDyeItem = item;
+				}
+
+				return (barrierDyeItem.modItem as BarrierDye);
+			}
+		}
 		public override bool Autoload(ref string name)
 		{
 			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
@@ -165,6 +184,22 @@ namespace StarlightRiver.Core
 			TimeSinceLastHit = 0;
 		}
 
+		public override void clientClone(ModPlayer clientClone)
+		{
+			ShieldPlayer clone = clientClone as ShieldPlayer;
+			// Here we would make a backup clone of values that are only correct on the local players Player instance.
+			clone.barrierDyeItem = barrierDyeItem;
+		}
+
+		public override void SendClientChanges(ModPlayer clientPlayer)
+        {
+			ShieldPlayer clone = clientPlayer as ShieldPlayer;
+			if (sendUpdatePacket || clone?.barrierDyeItem?.type != barrierDyeItem?.type)
+            {
+				ShieldPacket packet = new ShieldPacket(this);
+				packet.Send(-1, player.whoAmI, false);
+			}
+		}
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (LiveOnOnlyShield && Shield > 0) //if the player has no max life, its implied they can live off of shield
@@ -207,4 +242,45 @@ namespace StarlightRiver.Core
 			}
 		}
 	}
+
+	[Serializable]
+	public class ShieldPacket : Module
+	{
+		public readonly sbyte whoAmI;
+		public readonly int shield;
+		public readonly int dyeType;
+
+		public ShieldPacket(ShieldPlayer sPlayer)
+		{
+			whoAmI = (sbyte)sPlayer.player.whoAmI;
+			shield = sPlayer.Shield;
+
+			if (sPlayer.barrierDyeItem is null)
+				dyeType = ModContent.ItemType<BaseBarrierDye>();
+			else
+				dyeType = sPlayer.barrierDyeItem.type;
+		}
+
+		protected override void Receive()
+		{
+			ShieldPlayer player = Main.player[whoAmI].GetModPlayer<ShieldPlayer>();
+
+			player.Shield = shield;
+			
+			if (player.barrierDyeItem is null || player.barrierDyeItem.type != dyeType)
+            {
+				Item item = new Item();
+				item.SetDefaults(dyeType);
+				player.barrierDyeItem = item;
+				player.rechargeAnimation = 0;
+            }
+
+			if (Main.netMode == Terraria.ID.NetmodeID.Server)
+			{
+				Send(-1, player.player.whoAmI, false);
+				return;
+			}
+		}
+	}
+
 }
