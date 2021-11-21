@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -277,7 +278,43 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     }
                 }
             }
-            else
+            else if ((int)targetId == 0) //targetting with ai[0] of zero which 99% of the time means this was fired from a poltergeist minion, so we check if poltergeist minion, then npc manually
+            {
+                List<NPC> targets = new List<NPC>();
+
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<PoltergeistMinion>() && ((PoltergeistMinion)proj.modProjectile).item.type == ModContent.ItemType<Thunderbuss>())
+                    {
+                        projOwner = proj;
+                    }
+                }
+
+                if (projOwner is null)
+                {
+                    //wasn't actually a poltergeist minion so we can just set directly
+                    target = Main.npc[(int)targetId];
+                    return;
+                }
+
+
+                foreach (NPC npc in Main.npc.Where(n => n.active &&
+                 !n.dontTakeDamage &&
+                 !n.townNPC &&
+                 n.CanBeChasedBy(projOwner) &&
+                 Vector2.Distance(projectile.Center, n.Center) < 500 &&
+                 Utils.PlotLine((n.Center / 16).ToPoint16(), (projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+                {
+                    targets.Add(npc);
+                }
+
+                if (targets.Count == 0)
+                    return;
+
+                target = targets[Main.rand.Next(targets.Count)];
+                targetId = target.whoAmI;
+            } else
                 target = Main.npc[(int)targetId];
         }
 
