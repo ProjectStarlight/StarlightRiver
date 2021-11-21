@@ -13,6 +13,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -81,17 +82,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
-		{
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+			Main.NewText("hit");
 			if (active && !Shield)
 				damageCounter += 100;
-		}
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+        }
 
-		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
-		{
-			if (active && !Shield)
-				damageCounter += 100;
-		}
 	}
 	public class ReactivePlatingHelper : ILoadable
 	{
