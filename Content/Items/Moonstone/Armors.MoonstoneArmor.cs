@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
@@ -45,28 +46,30 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
 			{
-                var head = Main.player[projectile.owner].armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
-			}
+                addCharge(Main.player[projectile.owner], damage);
+            }
 		}
 
 		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
             if (item.melee && IsArmorSet(player))
             {
-                var head = player.armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
+                addCharge(player, damage);
             }
+        }
+
+        private void addCharge(Player player, int damage)
+        {
+            var head = player.armor[0].modItem as MoonstoneHead;
+
+            int oldCharge = head.moonCharge;
+            head.moonCharge += (int)(damage * 0.45f);
+
+            if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
+                head.moonFlash = 30;
+
+            MoonstoneArmorPacket packet = new MoonstoneArmorPacket(player.whoAmI, head.moonCharge, head.spearOn);
+            packet.Send(-1, player.whoAmI, false);
         }
 
 		public override void SetStaticDefaults()
@@ -145,6 +148,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 {
                     dummySpear.SetDefaults(ItemType<Datsuzei>());                
                     helm.spearOn = true;
+                    MoonstoneArmorPacket packet = new MoonstoneArmorPacket(player.whoAmI, helm.moonCharge, helm.spearOn);
+                    packet.Send(-1, player.whoAmI, false);
 
                     int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<DatsuzeiProjectile>(), 1, 0, player.whoAmI, -1, 160);
                     Main.projectile[i].timeLeft = 160;
@@ -357,6 +362,39 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
+        }
+    }
+
+    [Serializable]
+    public class MoonstoneArmorPacket : Module
+    {
+        public readonly sbyte whoAmI;
+        public readonly int charge;
+        public readonly bool spearOn;
+
+        public MoonstoneArmorPacket(int whoAmI, int charge, bool spearOn)
+        {
+            this.whoAmI = (sbyte)whoAmI;
+            this.charge = charge;
+            this.spearOn = spearOn;
+
+        }
+
+        protected override void Receive()
+        {
+            if (Main.netMode == NetmodeID.Server)
+            {
+                Send(-1, whoAmI, false);
+                return;
+            }
+
+            Player player = Main.player[whoAmI];
+            if (player.armor[0] != null && player.armor[0].type == ModContent.ItemType<MoonstoneHead>())
+            {
+                var head = player.armor[0].modItem as MoonstoneHead;
+                head.moonCharge = charge;
+                head.spearOn = spearOn;
+            }
         }
     }
 }
