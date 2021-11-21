@@ -195,8 +195,11 @@ namespace StarlightRiver.Content.NPCs.Crimson
             Vector2 squishScale = Vector2.Lerp(squashScale, new Vector2(0.9f, 2f), MathHelper.Clamp(Math.Abs(npc.velocity.Y) * 0.15f, 0, 1));
             spriteBatch.Draw(baseTexture, npc.Bottom - Main.screenPosition, baseFrame, drawColor, npc.rotation, baseFrame.Size() * new Vector2(0.5f, 0.8f), squishScale, direction, 0);
 
-            Dust blood = Dust.NewDustDirect(npc.Center - new Vector2(20), 40, 40, DustID.Blood, npc.velocity.X, npc.velocity.Y, 0, new Color(Lighting.GetSubLight(npc.Center)), 0.5f + Main.rand.NextFloat());
-            blood.noGravity = true;
+            if (Main.rand.Next(2) == 0)
+            {
+                Dust blood = Dust.NewDustDirect(npc.Center - new Vector2(20), 40, 40, DustID.Blood, npc.velocity.X, npc.velocity.Y, 0, new Color(Lighting.GetSubLight(npc.Center)), 0.5f + Main.rand.NextFloat());
+                blood.noGravity = true;
+            }
 
             return false;
         }
@@ -243,12 +246,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
                 Color pulseColor = Color.Lerp(Color.White, new Color(255, 128, 128), pulseTime);
                 Color light = new Color(Lighting.GetSubLight(leechPoints[j]));
                 spriteBatch.Draw(leechTexture, leechPoints[j] - Main.screenPosition, null, light.MultiplyRGB(pulseColor), difference.ToRotation() - MathHelper.PiOver2, leechTexture.Size() * new Vector2(0.5f, 0), scale, SpriteEffects.None, 0);
-
-                if (Timer % 5 == 0)
-                {
-                    Dust blood = Dust.NewDustPerfect(leechPoints[j] + Main.rand.NextVector2Circular(2, 2), DustID.Blood, Vector2.Zero, 0, light, 1f + Main.rand.NextFloat());
-                    blood.noGravity = true;
-                }
             }
         }
     }
