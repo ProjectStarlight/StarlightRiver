@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.UI;
 using Terraria.ID;
 using StarlightRiver.Content.Items.BarrierDye;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -60,9 +61,6 @@ namespace StarlightRiver.Content.GUI
             var mp = player.GetModPlayer<ShieldPlayer>();
             var Item = mp.barrierDyeItem;
 
-            if (IsMouseHovering)
-                Main.LocalPlayer.mouseInterface = true;
-
             Texture2D tex = Main.inventoryBack8Texture; 
             Texture2D texSlot = ModContent.GetTexture("StarlightRiver/Assets/GUI/BarrierDyeSlot");
 
@@ -77,10 +75,14 @@ namespace StarlightRiver.Content.GUI
 
             if (IsMouseHovering)
             {
+                Main.LocalPlayer.mouseInterface = true;
+
                 if (Item.type != ModContent.ItemType<BaseBarrierDye>())
                 {
                     Main.HoverItem = Item.Clone();
                     Main.hoverItemName = Item.Name;
+                    if (Main.keyState.PressingShift() && Helper.getFreeInventorySlot(Main.LocalPlayer) != -1)
+                        Main.cursorOverride = 7;
                 }
                 else
 				{
@@ -89,14 +91,30 @@ namespace StarlightRiver.Content.GUI
             }
         }
 
+        
+
         public override void Click(UIMouseEvent evt)
         {
+            Main.isMouseLeftConsumedByUI = true;
             var player = Main.LocalPlayer;
             var mp = player.GetModPlayer<ShieldPlayer>();
             var Item = mp.barrierDyeItem;
 
             if (Item.type == ModContent.ItemType<BaseBarrierDye>())
                 Item.TurnToAir();
+
+            //shift left click means they want to quick place into inventory
+            if (PlayerInput.Triggers.Current.SmartSelect)
+            {
+                int invSlot = Helper.getFreeInventorySlot(Main.LocalPlayer);
+                if (!Item.IsAir && invSlot != -1)
+                {
+                    Main.LocalPlayer.GetItem(Main.myPlayer, Item.Clone());
+                    Item.TurnToAir();
+                }
+
+                return;
+            }
 
             if (Main.mouseItem.IsAir && !Item.IsAir) //if the cursor is empty and there is something in the slot, take the item out
             {
@@ -123,8 +141,6 @@ namespace StarlightRiver.Content.GUI
                 Main.PlaySound(SoundID.Grab);
                 mp.rechargeAnimation = 0;
             }
-
-            Main.isMouseLeftConsumedByUI = true;
         }
 
         public override void Update(GameTime gameTime)
