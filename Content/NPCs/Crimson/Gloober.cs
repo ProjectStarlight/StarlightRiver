@@ -93,7 +93,20 @@ namespace StarlightRiver.Content.NPCs.Crimson
                     NPC targetNPC = Main.npc[id];
                     latchedPos = targetNPC.Center;
 
-                    HealTarget(targetNPC);
+                    HealTime++;
+                    if (HealTime > 100)
+                        HealRate = 3;
+                    else if (HealTime > 60)
+                        HealRate = 5;
+                    else
+                        HealRate = 10;
+                    if (Timer % HealRate == 0)
+                        targetNPC.life++;
+                    if (targetNPC.life > targetNPC.lifeMax)
+                    {
+                        targetNPC.life = targetNPC.lifeMax;
+                        HealTime = 0;
+                    }
 
                     if (Timer % jumpCooldown == 0)
                     {
@@ -122,6 +135,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
             if (npc.velocity.Y == 0)
                 npc.velocity.X *= 0.9f;
 
+            npc.direction = jumpDirection > 0 ? -1 : 1;
+            npc.spriteDirection = npc.direction;
             npc.rotation = MathHelper.Clamp(npc.velocity.Y * 0.12f, -0.7f, 0.7f) * npc.direction;
         }
 
@@ -150,23 +165,6 @@ namespace StarlightRiver.Content.NPCs.Crimson
             return true;
         }
 
-        public void HealTarget(NPC targetNPC)
-        {
-            HealTime++;
-            if (HealTime > 100)
-                HealRate = 3;
-            else if (HealTime > 60)
-                HealRate = 5;
-            else 
-                HealRate = 10;
-            if (Timer % HealRate == 0)
-                targetNPC.life++;
-            if (targetNPC.life > targetNPC.lifeMax)
-            {
-                targetNPC.life = targetNPC.lifeMax;
-                HealTime = 0;
-            }
-        }
 
         public float lerpEndPos = 0;
         public float landingCounter = 0;
@@ -248,7 +246,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
                 if (Timer % 5 == 0)
                 {
-                    Dust blood = Dust.NewDustPerfect(leechPoints[j] + Main.rand.NextVector2Circular(2, 2), DustID.Blood, Vector2.Zero, 0, light, 0.5f + Main.rand.NextFloat());
+                    Dust blood = Dust.NewDustPerfect(leechPoints[j] + Main.rand.NextVector2Circular(2, 2), DustID.Blood, Vector2.Zero, 0, light, 1f + Main.rand.NextFloat());
                     blood.noGravity = true;
                 }
             }
