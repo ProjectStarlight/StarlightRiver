@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void Kill(int timeLeft)
         {
-			if (owner?.armor[0]?.modItem != null)
+			if (owner?.armor[0]?.modItem != null && owner.armor[0].type == ModContent.ItemType<PoltergeistHead>())
 				(owner.armor[0].modItem as PoltergeistHead).minions.Remove(projectile);
 		}
 

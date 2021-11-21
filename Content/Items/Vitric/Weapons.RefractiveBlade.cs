@@ -143,15 +143,18 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
             projectile.rotation = targetAngle + 1.57f * 0.5f;
 
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != Terraria.ID.NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
 
-            var color = new Color(255, 140 + (int)(40 * SinProgress), 105);
+                var color = new Color(255, 140 + (int)(40 * SinProgress), 105);
 
-            Lighting.AddLight(projectile.Center, color.ToVector3() * SinProgress);
+                Lighting.AddLight(projectile.Center, color.ToVector3() * SinProgress);
 
-            if(Main.rand.Next(2) == 0)
-                Dust.NewDustPerfect(projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
+                if (Main.rand.Next(2) == 0)
+                    Dust.NewDustPerfect(projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
+            }
 
             if (Timer >= maxTime)
                 projectile.timeLeft = 0;

@@ -42,13 +42,13 @@ namespace StarlightRiver.Content.Items.Starwood
 
         private void spawnStar(Vector2 position)
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+            int item = Item.NewItem(position, ItemID.Star, 1, true, 0, true);
+
+
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
             {
-                StarPacket packet = new StarPacket(position);
-                packet.Send(-1, Main.myPlayer, false);
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
             }
-            else
-                Item.NewItem(position, ItemID.Star, 1, true, 0, true);
         }
 
         public override void SafeUpdateEquip(Player player)
@@ -80,26 +80,4 @@ namespace StarlightRiver.Content.Items.Starwood
             return false;
 		}
 	}
-
-	[Serializable]
-	public class StarPacket : Module
-	{
-        Vector2 position;
-
-		public StarPacket(Vector2 position)
-		{
-            this.position = position;
-		}
-
-		protected override void Receive()
-		{
-
-			if (Main.netMode == Terraria.ID.NetmodeID.Server)
-			{
-                Item.NewItem(position, ItemID.Star, 1, false, 0, true);
-            }
-		}
-	}
-
-
 }
