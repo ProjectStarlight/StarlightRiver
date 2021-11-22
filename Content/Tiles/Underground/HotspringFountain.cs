@@ -132,8 +132,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 18f, 0, 0);
+			var tex = Main.blackTileTexture; //ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 18f, 0, 0);
 		}
 	}
 }

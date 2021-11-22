@@ -15,7 +15,7 @@ float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
 {
     float2 st = screenSpace.xy;
 
-    float power = tex2D(samplerTex2, st).r;
+    float power = tex2D(samplerTex2, st - offset).r;
     float4 color = tex2D(samplerTex, st);
 
     float factor = (0.6 + sin(power * 30.0 + time) * 0.4) * power;
