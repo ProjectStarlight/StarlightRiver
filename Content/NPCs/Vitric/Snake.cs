@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                             npc.frame.Y = npc.height * (int)(ActionTimer / 30f * 12);
                         }
 
-                        if (ActionTimer == 30)
+                        if (ActionTimer == 30 && (Main.netMode == Terraria.ID.NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
                             npc.Center = FindNewPosition();
 
                         if (ActionTimer > 60 && ActionTimer <= 105)
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     else if (ActionTimer > 30 && ActionTimer < 50)
                         npc.frame.Y = npc.height * (7 - (int)(((ActionTimer - 30) / 20f) * 5));
 
-                    if (ActionTimer == 20)
+                    if (ActionTimer == 20 && (Main.netMode == Terraria.ID.NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
                         Projectile.NewProjectile(npc.Center, Vector2.Normalize(target.Center - npc.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
                     if (ActionTimer == 140)
@@ -171,6 +171,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     !Framing.GetTileSafely(randPos + new Point16(1, -1)).active() && Framing.GetTileSafely(randPos + new Point16(1, -1)).liquid == 0
                     )
                 {
+                    npc.netUpdate = true;
                     return randPos.ToVector2() * 16 + new Vector2(16, -36);
                 }
             }
