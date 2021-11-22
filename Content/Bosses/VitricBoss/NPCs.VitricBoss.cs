@@ -254,19 +254,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return false;
         }
 
-        
-
         public override void NPCLoot()
         {
-            StarlightWorld.Flag(WorldFlags.VitricBossDowned);
-
-            foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
-            {
-                player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
-            }
-
-            body.SpawnGores2();
-
             for(int k = 0; k < Main.rand.Next(30, 40); k++)
 			{
                 var rot = Main.rand.NextFloat(6.28f);
@@ -304,8 +293,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life <= 0)
+            {
+                StarlightWorld.Flag(WorldFlags.VitricBossDowned);
+
+                foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+                {
+                    player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+                }
+
+                body.SpawnGores2();
+            }
+        }
+
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
+            //these pain things are server only in multiplayer may need to be reworked
             if (pain > 0)
                 painDirection += CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -319,6 +324,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
+            //these pain things are server only in multiplayer may need to be reworked
             if (pain > 0)
                 painDirection += CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -421,6 +427,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
+            //find crystals
+            if (crystals.Count < 4)
+                findCrystals();
+
             //Ticks the timer
             GlobalTimer++;
             AttackTimer++;
@@ -468,7 +478,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         player.GetModPlayer<MedalPlayer>().QualifyForMedal("Ceiros", 1);
                     }
-
                     ChangePhase(AIStates.SpawnAnimation, true);
                     RebuildRandom();
 
@@ -608,6 +617,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             body?.UpdateBody(); //update the physics on the body, last, so it can override framing
         }
 
+        public void findCrystals()
+        {
+            //finds the crystals for ceiros for mp if they haven't been found yet
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBossCrystal>() && !crystals.Contains(npc))
+                {
+                    crystals.Add(npc);
+                }
+            }
+        }
+
 		public override void ResetEffects()
 		{
             rotationLocked = false;
@@ -665,12 +687,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             writer.Write(homePos.X);
             writer.Write(homePos.Y);
-
-            if (crystals.Count >= 4)
-            {
-                for (int k = 0; k < 4; k++)
-                    writer.Write(crystals[k].whoAmI);
-            }
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
@@ -688,33 +704,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             startPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             endPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
             homePos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-
-            if (reader.BaseStream.Position >= reader.BaseStream.Length)
-                return;
-
-            for (int k = 0; k < 4; k++)
-            {
-                if (crystals.Count > k)
-                    crystals[k] = Main.npc[reader.ReadInt32()];
-                else
-                {
-                    NPC npc = new NPC();
-                    npc.SetDefaults(NPCType<VitricBossCrystal>());
-
-                    Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
-                    npc.Center = target;
-                    npc.ai[0] = 2;
-
-                    (npc.modNPC as VitricBossCrystal).Parent = this;
-                    (npc.modNPC as VitricBossCrystal).StartPos = target;
-                    (npc.modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
-
-                    int index = reader.ReadInt32();
-                    Main.npc[index] = npc;
-
-                    crystals.Add(Main.npc[index]);
-                }
-            }
         }
         #endregion Networking
 

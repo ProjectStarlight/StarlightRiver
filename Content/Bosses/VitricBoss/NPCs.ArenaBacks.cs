@@ -24,6 +24,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public int shake = 0;
 
+        private float prevState = 0;
+
         public override string Texture => AssetDirectory.Invisible;
 
         public override bool CheckActive() => false;
@@ -64,7 +66,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Timer++;
 
-                SpawnPlatforms();
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    SpawnPlatforms();
+
+
                 ScrollDelay = 20; //initial acceleration delay
 
                 if (Timer == Risetime - 1) //hitting the top
@@ -114,7 +119,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (ScrollTimer > Scrolltime)
             {
                 ScrollTimer = 0;
-                ResyncPlatforms();
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    ResyncPlatforms();
             }
 
             if (State == 4)
@@ -136,6 +142,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (ScrollTimer > Scrolltime) 
                     ScrollTimer = 0;
             }
+
+            if (prevState != State && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                npc.netUpdate = true;
+                prevState = State;
+            }
+                
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
@@ -247,6 +260,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public void SyncPlatform(NPC platform, int y, bool rising)
 		{
             platform.position.Y = (int)npc.position.Y - y - platform.height;
+            platform.netUpdate = true;
 		}
     }
 

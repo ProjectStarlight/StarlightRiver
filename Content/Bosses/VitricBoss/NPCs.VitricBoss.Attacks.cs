@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystal.ai[0] = 0;
             }
 
-            if (AttackTimer > 180 && AttackTimer % 25 == 0)
+            if (AttackTimer > 180 && AttackTimer % 25 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 Projectile.NewProjectile(homePos + new Vector2(bossRand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
             }
@@ -119,6 +119,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
                 RandomizeTarget();
+                //todo sync
                 int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, BrokenCount >= 1 ? 1 : 0); //fire cone
 
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + bossRand.NextFloat(-0.5f, 0.5f);
@@ -342,7 +343,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (Main.expertMode)
                         fireRate -= 10;
 
-                    if (AttackTimer % fireRate == 0)
+                    if (AttackTimer % fireRate == 0 && Main.netMode != NetmodeID.MultiplayerClient)
                         Projectile.NewProjectile(crystal.Center + new Vector2(0, -32), Vector2.Normalize(crystal.Center - player.Center).RotatedByRandom(variance) * -10, ProjectileType<NPCs.Vitric.SnakeSpit>(), 26, 0, Main.myPlayer);
 
                     if (AttackTimer % 10 == 0)
@@ -364,7 +365,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 1 + crystals.Count(n => n.ai[0] == 3) + (Main.expertMode ? 1 : 0); k++)
             {
-                if (k < points.Count)
+                if (k < points.Count && Main.netMode != NetmodeID.MultiplayerClient)
                     Projectile.NewProjectile(points[k] + Vector2.UnitY * 64, Vector2.Zero, ProjectileType<SpikeMine>(), 25, 0);
             }
 
@@ -430,8 +431,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
-
-                                Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
                                 Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                             }
                         }
@@ -443,8 +444,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
-
-                                Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
                                 Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                             }
                         }
@@ -550,8 +551,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
-
-                                Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(spewPos, vel.RotatedBy(sin), ProjectileType<GlassSpike>(), 15, 0);
                                 Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                             }
                         }
@@ -563,8 +564,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
-
-                                Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
+                                if (Main.netMode != NetmodeID.MultiplayerClient)
+                                    Projectile.NewProjectile(spewPos, vel, ProjectileType<GlassSpike>(), 15, 0);
                                 Dust.NewDustPerfect(spewPos, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(vel.ToRotation()), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                             }
                         }
@@ -655,6 +656,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer % 90 == 0)
             {
+                //todo sync
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
                 int index = Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0);
                 Main.projectile[index].rotation = rot;
@@ -696,7 +698,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     RandomizeTarget();
                     Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, npc.Center);
-                    Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -2, ProjectileType<GlassVolleyShard>(), 12, 1);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                        Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -2, ProjectileType<GlassVolleyShard>(), 12, 1);
                 }
             }
 
@@ -722,7 +725,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
                 Main.PlaySound(SoundID.NPCDeath43, npc.Center);
 
-                if (altAttack)
+                if (altAttack && Main.netMode != NetmodeID.MultiplayerClient)
                 {
                     for (int k = 1; k < 12; k++)
                     {
@@ -737,7 +740,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         }
                     }
                 }
-                else
+                else if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
                     if (Main.expertMode)
                     {
@@ -775,7 +778,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(x);
             }
 
-            if (altAttack)
+            if (altAttack && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (AttackTimer == 30)
                     Projectile.NewProjectile(npc.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 32, 0);
@@ -786,7 +789,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (AttackTimer == 40 && npc.life <= npc.lifeMax * 0.25f)
                     Projectile.NewProjectile(npc.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 32, 0);
             }
-            else
+            else if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
                 if (AttackTimer == 30)
                     Projectile.NewProjectile(npc.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 32, 0);
@@ -885,6 +888,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
         {
+            //todo sync
             int i = Projectile.NewProjectile(start, Vector2.Zero, ProjectileType<LavaDart>(), 25, 0, Main.myPlayer);
             var mp = (Main.projectile[i].modProjectile as LavaDart);
             mp.endPoint = end;
@@ -921,6 +925,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (LaserTimer == 60)
                 {
+                    //todo sync
                     int i2 = Projectile.NewProjectile(npc.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<FinalLaser>(), 45, 0, Main.myPlayer, 0, 0);
                     var laserCore = Main.projectile[i2];
 
@@ -957,13 +962,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 GlobalTimer = 0;
             }
 
-            for (int i = 0; i < crystals.Count(n => n.ai[0] == 1 || n.ai[0] == 3) + (Main.expertMode ? 1 : 0); i++)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                if (AttackTimer == 30 + i * 45)
+                for (int i = 0; i < crystals.Count(n => n.ai[0] == 1 || n.ai[0] == 3) + (Main.expertMode ? 1 : 0); i++)
                 {
-                    for (float k = 0; k < 6.28f; k += 6.28f / 12) //ring of glass spikes
+                    if (AttackTimer == 30 + i * 45)
                     {
-                        Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 5.5f, ProjectileType<GlassSpike>(), 15, 0.2f);
+                        for (float k = 0; k < 6.28f; k += 6.28f / 12) //ring of glass spikes
+                        {
+                            Projectile.NewProjectile(npc.Center, Vector2.One.RotatedBy(k + (i % 2 == 0 ? 6.28f / 24 : 0)) * 5.5f, ProjectileType<GlassSpike>(), 15, 0.2f);
+                        }
                     }
                 }
             }

@@ -11,6 +11,7 @@ using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Packets;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -86,6 +87,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return !(state == 0 || state == 1); //too tired of dealing with this 
         }
 
+        public bool findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    Parent = npc.modNPC as VitricBoss;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public override void AI()
         {
             /* AI fields:
@@ -94,7 +109,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: phase
              * 3: alt timer
              */
-            if (Parent == null) npc.Kill();
+            if (Parent == null)
+            {
+                if (!findParent())
+                {
+                    npc.Kill();
+                    return;
+                }
+            }
+
+            if (!Parent.npc.active)
+            {
+                npc.Kill();
+                return;
+            }
+
             npc.frame = new Rectangle(0, npc.height * (int)state, npc.width, npc.height); //frame finding based on state
 
             timer++; //ticks the timers
@@ -309,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
 
-            if (state == 3)
+            if (state == 3 && Main.netMode != NetmodeID.MultiplayerClient)
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer);
 
             for (int k = 0; k < 40; k++)
@@ -441,7 +470,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     shouldDrawArc = false;
 			}
 
-            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
+            if(Parent != null && Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
 			{
                 if (Parent.AttackTimer > 360)
                 {

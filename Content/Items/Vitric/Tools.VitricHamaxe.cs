@@ -15,8 +15,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public int heat = 0;
         public int heatTime = 0;
 
-        bool prevMouseRight = false;
-
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()

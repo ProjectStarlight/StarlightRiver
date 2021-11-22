@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
             }
 
-			if (Main.expertMode)
+			if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				if (projectile.ai[0] == 70)
 					Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(projectile.rotation + 3.14f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), projectile.damage, 1, projectile.owner);
