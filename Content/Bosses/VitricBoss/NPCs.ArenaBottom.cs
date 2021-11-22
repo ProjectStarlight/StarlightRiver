@@ -6,14 +6,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class ArenaBottom : ModNPC, IDrawAdditive
+    internal class ArenaBottom : ModNPC, IDrawAdditive
     {
         public VitricBoss Parent;
+
+        private float prevState = 0;
         public override string Texture => AssetDirectory.VitricBoss + "CrystalWaveHot";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
@@ -44,6 +47,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
         }
 
+        public void findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    Parent = npc.modNPC as VitricBoss;
+                    return;
+                }
+            }
+        }
+
         public override void AI()
         {
             /* AI fields:
@@ -51,10 +67,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 1: state
              * 2: mirrored?
              */
-            if (Parent?.npc.active != true) 
-            { 
-                npc.active = false; 
-                return; 
+            if (Parent is null)
+                findParent();
+
+            if (Parent?.npc.active != true)
+            {
+                npc.active = false;
+                return;
             }
 
             if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0 && npc.ai[1] != 2)
@@ -118,6 +137,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Dust.NewDust(npc.position, npc.width, npc.height, Terraria.ID.DustID.Fire);
 
                     if (npc.ai[0] >= 150)
+                    {
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
                             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 840, npc.width, npc.height);
@@ -144,7 +164,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 target.jumpAgainSail = true;
                             }
                         }
+                    }
                     break;
+            }
+            if (npc.ai[1] != prevState && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                npc.netUpdate = true;
+                prevState = npc.ai[1];
             }
         }
 
@@ -171,8 +197,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int k = 0; k < npc.width; k += 18)
                 {
                     Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals
-                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; 
-                    
+                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition;
+
                     if (eggIndex == k)//ugly but I this way its only checked once
                     {
                         Texture2D eggTex = GetTexture(AssetDirectory.VitricBoss + "MagMegg");
@@ -192,7 +218,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             var tex = GetTexture(AssetDirectory.VitricBoss + "LongGlow");
 
-            if (npc.ai[1] == 2) 
+            if (npc.ai[1] == 2)
             {
                 Color color;
 
@@ -255,7 +281,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 2) * 1.4f );
+            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 2) * 1.4f);
 
             var color = Color.White * (projectile.timeLeft / 30f);
             spriteBatch.Draw(GetTexture(Texture + "Hot"), projectile.position - Main.screenPosition, color);

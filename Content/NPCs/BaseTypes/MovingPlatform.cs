@@ -35,21 +35,21 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         {
             SafeAI();
 
-            for (int k = 0; k < Main.maxPlayers; k++)
-            {
-                var player = Main.player[k];
+            //for (int k = 0; k < Main.maxPlayers; k++)
+            //{
+            //    var player = Main.player[k];
 
-                if (!player.active)
-                    break;
+            //    if (!player.active)
+            //        break;
 
-                var playerFeet = new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4);
-                var platformHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4);
+            //    var playerFeet = new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4);
+            //    var platformHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4);
 
-                if (playerFeet.Intersects(platformHitbox) && player.position.Y <= npc.position.Y)
-                    player.position += npc.velocity;
-            }
+            //    if (playerFeet.Intersects(platformHitbox) && player.position.Y <= npc.position.Y)
+            //        player.position += npc.velocity;
+            //}
 
-            for(int k = 0; k < Main.maxProjectiles; k++)
+            for (int k = 0; k < Main.maxProjectiles; k++)
 			{
                 var proj = Main.projectile[k];
 

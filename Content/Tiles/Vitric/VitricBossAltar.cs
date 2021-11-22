@@ -159,6 +159,21 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
+        public void findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    boss = npc;
+                    return;
+                }
+            }
+            boss = null;
+            return;
+        }
+
         public override void Update()
         {
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
@@ -202,19 +217,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (parent.frameX == 0)
                 return;
 
-            if(Main.netMode == NetmodeID.Server && (boss is null || !boss.active))
-			{
-                for(int k = 0; k < Main.maxNPCs; k++) //TODO: Find a better way to find the boss or the server on sync it from the spawning client
-				{
-                    var npc = Main.npc[k];
-                    if(npc.active && npc.type == NPCType<VitricBoss>())
-					{
-                        boss = npc;
-                        projectile.netUpdate = true;
-                        return;
-					}
-				}
-			}
+            if (boss is null)
+                findParent();
+
+            if (boss is null || !boss.active || boss.type != ModContent.NPCType<VitricBoss>())
+                boss = null;
+
 
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
@@ -261,7 +269,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
                 }
             }
-            else if (BarrierProgress > 0 && boss != null && !boss.active)
+            else if (BarrierProgress > 0 && (boss == null || !boss.active))
                 BarrierProgress--;
         }
 

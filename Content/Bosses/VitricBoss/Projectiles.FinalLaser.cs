@@ -40,10 +40,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return false;
 		}
 
-		public override void AI()
+        public void findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    parent = npc.modNPC as VitricBoss;
+                    return;
+                }
+            }
+            return;
+        }
+
+        public override void AI()
         {
             Timer++;
             projectile.timeLeft = 2;
+
+            if (parent is null)
+                findParent();
 
             projectile.Center = parent.npc.Center + new Vector2(4, -4);
 

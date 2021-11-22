@@ -20,8 +20,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public bool buffed = false;
         public int buffPower = 0;
 
-        private bool prevMouseRight = false;
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Facet & Lattice");
