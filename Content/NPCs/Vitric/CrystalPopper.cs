@@ -48,18 +48,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.spriteDirection = npc.direction;
         }
 
-        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit) =>
-            OnHit(Main.player[projectile.owner], damage);
-
-        public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit) =>
-            OnHit(player, damage);
-
         const int maxIgnoreDamage = 1;
-        private void OnHit(Player player, int damage)
-        {
-            if (npc.ai[0] == 0 && damage > maxIgnoreDamage)
-                ExitSleep();
-        }
 
         private void ExitSleep()
         {
@@ -96,12 +85,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         npc.ai[1] = 0;
                         npc.ai[0] = 2;
 
-                        for (int k = -1; k <= 1; k++)
-                            Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            for (int k = -1; k <= 1; k++)
+                                Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+                        }
 
                         npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;
 
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        if (Main.netMode == NetmodeID.Server)
                             npc.netUpdate = true;
                     }
                     break;
@@ -119,6 +111,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
             }
         }
 
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (npc.life <= 0 && Main.netMode != NetmodeID.Server)
+            {
+                for (int k = 0; k <= 4; k++)
+                    Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k));
+            }
+
+            if (npc.ai[0] == 0 && damage > maxIgnoreDamage)
+                ExitSleep();
+        }
+
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
@@ -128,9 +132,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void NPCLoot()
         {
             Item.NewItem(npc.getRect(), mod.ItemType("VitricSandItem"), Main.rand.Next(10, 12));
-
-            for (int k = 0; k <= 4; k++)
-                Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k));
         }
 
         public override void FindFrame(int frameHeight)
