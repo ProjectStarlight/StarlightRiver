@@ -72,6 +72,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     npc.velocity.X += Main.rand.NextBool() ? 5 : -5;
                     npc.velocity.Y = -10;
                     ActionState = 0;
+                    if (Main.netMode == NetmodeID.Server)
+                        npc.netUpdate = true;
                 }
 			}
 
@@ -150,12 +152,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.frame.Height = 40;
         }
 
-        public override void NPCLoot()
+        public override void HitEffect(int hitDirection, double damage)
         {
-            for(int k = 0; k < 30; k++)
-                Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+            if (npc.life <= 0 && Main.netMode != NetmodeID.Server)
+            {
+                for (int k = 0; k < 30; k++)
+                    Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
 
-            Main.PlaySound(SoundID.DD2_GoblinHurt, npc.Center);
+                Main.PlaySound(SoundID.DD2_GoblinHurt, npc.Center);
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
