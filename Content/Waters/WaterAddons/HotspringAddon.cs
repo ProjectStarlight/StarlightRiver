@@ -30,7 +30,8 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["sampleTexture2"].SetValue(HotspringMapTarget.hotspringMapTarget);
 			effect.Parameters["sampleTexture3"].SetValue(HotspringMapTarget.hotspringShineTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
-			effect.Parameters["offset"].SetValue((Main.screenPosition - Main.sceneWaterPos) / (Helpers.Helper.ScreenSize * new Vector2(1.3f, 1.5f)));
+			var a = Vector2.Normalize(Helpers.Helper.ScreenSize);
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
 
 			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 		}
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["sampleTexture3"].SetValue(HotspringMapTarget.hotspringShineTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 			//the multiply by 1.3 and 1.5 seem to fix the jittering when moving, seems to be tied to the 2 magic numbers in Visuals.HotspringMapTarget.cs
-			effect.Parameters["offset"].SetValue((Main.screenPosition - Main.sceneBackgroundPos) / (Helpers.Helper.ScreenSize * new Vector2(1.3f, 1.5f)));
+			effect.Parameters["offset"].SetValue(Vector2.Zero);
 
 			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 		}
