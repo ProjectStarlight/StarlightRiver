@@ -94,7 +94,7 @@ Section 1: File and Class structure
 
 =========================================================================================================================================================
 
-Section 2: Class/Interface/Strut structure
+Section 2: Class/Interface/Struct structure
 
 2.1: Ordering
 
