@@ -8,7 +8,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	internal abstract class DummyTile : ModTile
+	public abstract class DummyTile : ModTile
     {
         public static Dictionary<Point16, Projectile> dummies = new Dictionary<Point16, Projectile>();
 

@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	class GearTile : DummyTile
+	public abstract class GearTile : DummyTile
 	{
 		public override int DummyType => ModContent.ProjectileType<GearTileDummy>();
 
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
-	class GearTileDummy : Dummy
+	public abstract class GearTileDummy : Dummy
 	{
 		public int gearAnimation;
 		public int oldSize;
@@ -279,6 +279,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 			}
 
+			OnEngage();
 			engaged = true;
 		}
 
@@ -299,6 +300,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				}
 			}
 
+			OnDisengage();
 			engaged = false;
 		}
 
@@ -315,6 +317,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				TryEngage(new Point16(ParentX, ParentY), Size);
 			}
 		}
+
+		public virtual void OnEngage() { }
+
+		public virtual void OnDisengage() { }
 	}
 
 	class GearTilePlacer : QuickTileItem
