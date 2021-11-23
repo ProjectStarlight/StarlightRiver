@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		bool engaged = false;
 		float direction = 0;
 
-		private int size;
+		protected int size;
 
 		public int Size
 		{
@@ -83,10 +83,25 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
 		}
 
+		public float Rotation
+		{
+			get
+			{
+				float rot = 0;
+
+				if (engaged)
+					rot = Main.GameUpdateCount * 0.01f * direction;
+
+				if (direction > 0)
+					rot += (float)Math.PI / Teeth;
+
+				return rot;
+			}
+		}
+
 		public int Teeth => GetTeeth();
 
-
-		public GearTileDummy() : base(ModContent.TileType<GearTile>(), 16, 16) { }
+		public GearTileDummy(int type) : base(type, 16, 16) { }
 
         public int GetTeeth()
 		{
@@ -131,42 +146,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
 			}
 
-			if(gearAnimation > 0) //switching between sizes animation
-			{
-				Texture2D texOld;
-
-				switch (oldSize)
-				{
-					case 0: texOld = ModContent.GetTexture(AssetDirectory.Invisible); break;
-					case 1: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
-					case 2: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
-					case 3: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
-					default: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
-				}
-
-				if (gearAnimation > 20)
-				{
-					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
-					spriteBatch.Draw(texOld, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
-				}
-				else
-				{
-					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
-					spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
-				}
-
-				return;
-			}
-
-			float rot = 0;
-
-			if (engaged)
-				rot = Main.GameUpdateCount * 0.01f * direction;
-
-			if (direction > 0)
-				rot += (float)Math.PI / Teeth;
-
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, rot, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void RecurseOverGears(Action<Point16, int> action)
@@ -261,21 +241,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		private void TryEngage(Point16 pos, int size)
 		{
-			var tile = Framing.GetTileSafely(pos);
-			if (tile.type == ModContent.TileType<GearTile>())
+			if (DummyTile.DummyExists<GearTileDummy>(pos.X, pos.Y))
 			{
-				if (DummyTile.DummyExists(pos.X, pos.Y, ModContent.ProjectileType<GearTileDummy>()))
+				var gearDummy = (GearTileDummy)DummyTile.GetDummy<GearTileDummy>(pos.X, pos.Y).modProjectile;
+
+				if (gearDummy.size == size && !gearDummy.engaged)
 				{
-					var gearDummy = (GearTileDummy)DummyTile.GetDummy(pos.X, pos.Y, ModContent.ProjectileType<GearTileDummy>()).modProjectile;
+					int thisSize = Teeth;
+					int nextSize = gearDummy.Teeth;
 
-					if (gearDummy.size == size && !gearDummy.engaged)
-					{
-						int thisSize = Teeth;
-						int nextSize = gearDummy.Teeth;
-
-						gearDummy.direction = direction * -1 * (thisSize / (float)nextSize);
-						gearDummy.RecurseOverGears(gearDummy.TryEngage);
-					}
+					gearDummy.direction = direction * -1 * (thisSize / (float)nextSize);
+					gearDummy.RecurseOverGears(gearDummy.TryEngage);
 				}
 			}
 
@@ -285,18 +261,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		private void TryDisengage(Point16 pos, int size)
 		{
-			var tile = Framing.GetTileSafely(pos);
-			if (tile.type == ModContent.TileType<GearTile>())
+			if (DummyTile.DummyExists<GearTileDummy>(pos.X, pos.Y))
 			{
-				if (DummyTile.DummyExists(pos.X, pos.Y, ModContent.ProjectileType<GearTileDummy>()))
-				{
-					var gearDummy = (GearTileDummy)DummyTile.GetDummy(pos.X, pos.Y, ModContent.ProjectileType<GearTileDummy>()).modProjectile;
+				var gearDummy = (GearTileDummy)DummyTile.GetDummy<GearTileDummy>(pos.X, pos.Y).modProjectile;
 
-					if (gearDummy.size == size && gearDummy.engaged)
-					{
-						gearDummy.direction = 0;
-						gearDummy.RecurseOverGears(gearDummy.TryDisengage);
-					}
+				if (gearDummy.size == size && gearDummy.engaged)
+				{
+					gearDummy.direction = 0;
+					gearDummy.RecurseOverGears(gearDummy.TryDisengage);
 				}
 			}
 
@@ -321,10 +293,5 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public virtual void OnEngage() { }
 
 		public virtual void OnDisengage() { }
-	}
-
-	class GearTilePlacer : QuickTileItem
-	{
-		public GearTilePlacer() : base("Gear puzzle", "Debug item", ModContent.TileType<GearTile>(), 8, AssetDirectory.Debug, true) { }
 	}
 }

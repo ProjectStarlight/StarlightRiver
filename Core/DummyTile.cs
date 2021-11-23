@@ -29,12 +29,43 @@ namespace StarlightRiver.Core
             return null;
 		}
 
+        public static Projectile GetDummy<T>(int i, int j) where T : Dummy
+		{
+            Point16 key = new Point16(i, j);
+
+            if (dummies.TryGetValue(key, out Projectile dummy))
+            {
+                if (dummy.modProjectile is T)
+                    return dummy;
+            }
+
+            return null;
+        }
+
         public static bool DummyExists(int i, int j, int type)
 		{
+            if (GetDummy(i, j, type) != null)
+                return true;
+
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
-                if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Terraria.DataStructures.Point16(i, j))
+                if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Point16(i, j))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool DummyExists<T>(int i, int j) where T : Dummy
+		{
+            if (GetDummy<T>(i, j) != null)
+                return true;
+
+            for (int k = 0; k < Main.maxProjectiles; k++)
+            {
+                var proj = Main.projectile[k];
+                if (proj.active && proj.modProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
                     return true;
             }
 
