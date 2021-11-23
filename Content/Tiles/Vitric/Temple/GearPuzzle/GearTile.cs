@@ -72,6 +72,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		float direction = 0;
 
 		protected int size;
+		protected float rotationOffset;
 
 		public int Size
 		{
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				if (direction > 0)
 					rot += (float)Math.PI / Teeth;
 
-				return rot;
+				return rot + rotationOffset;
 			}
 		}
 
@@ -251,6 +252,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					int nextSize = gearDummy.Teeth;
 
 					gearDummy.direction = direction * -1 * (thisSize / (float)nextSize);
+					gearDummy.rotationOffset = (projectile.Center - gearDummy.projectile.Center).ToRotation();
 					gearDummy.RecurseOverGears(gearDummy.TryEngage);
 				}
 			}
