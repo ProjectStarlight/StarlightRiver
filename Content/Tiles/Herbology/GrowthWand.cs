@@ -39,6 +39,10 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            //Main.windSpeed += 0.8f;
+            //float scale = System.Math.Min(0.03f + (Main.windSpeed * 0.07f), 0.12f);
+            //Main.NewText(Main.windSpeed);
+            //Main.NewText(scale);
             int x = (int)Main.MouseWorld.X / 16;
             int y = (int)Main.MouseWorld.Y / 16;
 
