@@ -252,7 +252,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					int nextSize = gearDummy.Teeth;
 
 					gearDummy.direction = direction * -1 * (thisSize / (float)nextSize);
-					gearDummy.rotationOffset = (projectile.Center - gearDummy.projectile.Center).ToRotation();
+
+					float angleOff = (projectile.Center - gearDummy.projectile.Center).ToRotation();
+					//float dist = Vector2.Distance(projectile.Center, gearDummy.projectile.Center);
+					float secant = angleOff * (2f + this.size * 2);
+					gearDummy.rotationOffset = secant / (2f + gearDummy.size * 2);
+
+					gearDummy.rotationOffset -= rotationOffset;
+
+					//gearDummy.rotationOffset = 0;
+
 					gearDummy.RecurseOverGears(gearDummy.TryEngage);
 				}
 			}
