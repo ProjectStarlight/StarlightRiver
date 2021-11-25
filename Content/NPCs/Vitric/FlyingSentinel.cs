@@ -64,15 +64,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void Update()
         {
-            for (int k = 0; k < Main.maxProjectiles; k++)
-            {
-                Projectile proj = Main.projectile[k];
-                if (proj.active && proj.type == ProjectileType<Tiles.Vitric.Temple.LightBeam>() && proj.Hitbox.Intersects(projectile.Hitbox))
-                {
-                    WorldGen.KillTile(ParentX, ParentY);
-                    NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<FlyingSentinel>());
-                }
-            }
+
         }
     }
 }
