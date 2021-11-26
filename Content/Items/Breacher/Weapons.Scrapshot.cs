@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         Player player => Main.player[projectile.owner];
 
-        public sbyte hookedNpcIndex = 0;
+        public byte hookedNpcIndex = 0;
 
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -265,7 +265,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 projectile.velocity *= 0;
                 startPos = player.Center;
                 Distance = Vector2.Distance(startPos, npc.Center);
-                hookedNpcIndex = (sbyte)npc.whoAmI;
+                hookedNpcIndex = (byte)npc.whoAmI;
             }
         }
 
@@ -366,7 +366,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             {
-                hookedNpcIndex = (sbyte)target.whoAmI;
+                hookedNpcIndex = (byte)target.whoAmI;
                 isHooked = true;
                 projectile.velocity *= 0;
                 startPos = player.Center;
@@ -445,8 +445,12 @@ namespace StarlightRiver.Content.Items.Breacher
                 projectile.velocity *= Main.rand.NextFloat(1.5f, 2);
 
             projectile.velocity *= 0.95f;
-            ManageCaches();
-            ManageTrail();
+
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         private void ManageCaches()

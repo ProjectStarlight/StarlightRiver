@@ -263,8 +263,11 @@ namespace StarlightRiver.Content.Items.Misc
 
             Lighting.AddLight(projectile.Center + off, new Vector3(0.1f, 0.25f, 0.6f));
 
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
 

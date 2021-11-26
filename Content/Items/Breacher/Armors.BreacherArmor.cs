@@ -503,9 +503,12 @@ namespace StarlightRiver.Content.Items.Breacher
                 direction *= 10;
                 if (direction.Y > 0)
                     projectile.velocity = direction;
-                ManageCaches();
+                if (Main.netMode != NetmodeID.Server)
+                    ManageCaches();
             }
-            ManageTrail();
+
+            if (Main.netMode != NetmodeID.Server)
+                ManageTrail();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -635,8 +638,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void AI()
         {
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
@@ -808,7 +814,7 @@ namespace StarlightRiver.Content.Items.Breacher
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            if (Main.dedServ || spriteBatch is null || npcTarget is null || gD is null)
+            if (Main.gameMenu || Main.dedServ || spriteBatch is null || npcTarget is null || gD is null)
                 return;
 
             RenderTargetBinding[] bindings = gD.GetRenderTargets();

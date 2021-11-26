@@ -56,11 +56,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
-            Timer++;
-            projectile.timeLeft = 2;
-
             if (parent is null)
                 findParent();
+
+            if (parent is null)
+                return;
+
+            Timer++;
+            projectile.timeLeft = 2;
 
             projectile.Center = parent.npc.Center + new Vector2(4, -4);
 
@@ -144,6 +147,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
+            if (parent is null)
+                return;
+
             Texture2D texGlow = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
             int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);

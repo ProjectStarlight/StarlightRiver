@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     break;
 			}
 
-            if (Timer > 1)
+            if (Timer > 1 && Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
                 ManageTrail();

@@ -246,13 +246,13 @@ namespace StarlightRiver.Core
 	[Serializable]
 	public class ShieldPacket : Module
 	{
-		public readonly sbyte whoAmI;
+		public readonly byte whoAmI;
 		public readonly int shield;
 		public readonly int dyeType;
 
 		public ShieldPacket(ShieldPlayer sPlayer)
 		{
-			whoAmI = (sbyte)sPlayer.player.whoAmI;
+			whoAmI = (byte)sPlayer.player.whoAmI;
 			shield = sPlayer.Shield;
 
 			if (sPlayer.barrierDyeItem is null)

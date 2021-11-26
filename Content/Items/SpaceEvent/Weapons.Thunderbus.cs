@@ -334,8 +334,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         public override void AI()
         {
-            ManageCaches();
-            ManageTrails();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrails();
+            }
 
             if (target is null && projTarget is null)
                 FindTarget();
@@ -599,8 +602,12 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             if (Stacks < 1.5f)
                 Stacks += 0.04f;
 
-            ManageCaches();
-            ManageTrails();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrails();
+            }
+
 
             if (projectile.timeLeft == 29)
             {

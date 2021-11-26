@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -16,6 +17,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
         public List<NPC> platforms = new List<NPC>();
+
+        protected static int platformCount = 8;
 
         protected ref float Timer => ref npc.ai[0];
         protected ref float State => ref npc.ai[1];
@@ -48,6 +51,32 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.noTileCollide = true;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
+            npc.netAlways = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    writer.Write((byte)platforms[i].whoAmI);
+                }
+            }
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    if (i >= platforms.Count)
+                        platforms.Add(Main.npc[(int)reader.ReadByte()]);
+                    else
+                        platforms[i] = Main.npc[(int)reader.ReadByte()];
+                }
+            }
         }
 
         public override void AI()
@@ -89,13 +118,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (State == 2)
+            {
                 Timer = Risetime;
+
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 0;
+                    npc.ai[1] = 0;
+                }
+                ResyncPlatforms();
+            }
 
             if (State == 3) //scrolling
             {
                 Timer++;
 
-                if(Timer <= Risetime + 120) //when starting moving
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 1;
+                }
+
+                if (Timer <= Risetime + 120) //when starting moving
                     shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
                 if(Timer == Risetime + 120)
@@ -119,8 +162,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (ScrollTimer > Scrolltime)
             {
                 ScrollTimer = 0;
-                if (Main.netMode != NetmodeID.MultiplayerClient)
-                    ResyncPlatforms();
+
+                ResyncPlatforms();
             }
 
             if (State == 4)
@@ -131,19 +174,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
                     {
-                        npc.Center = (npc.modNPC as VitricBossPlatformUp).storedCenter;
                         npc.ai[0] = 0;
                     }
+                    ResyncPlatforms();
 
                     State = 2;
                     ScrollDelay = 20; //reset acceleration delay
                 }
 
-                if (ScrollTimer > Scrolltime) 
-                    ScrollTimer = 0;
             }
 
-            if (prevState != State && Main.netMode != NetmodeID.MultiplayerClient)
+            if (prevState != State && Main.netMode == NetmodeID.Server)
             {
                 npc.netUpdate = true;
                 prevState = State;
@@ -213,6 +254,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
 
+        protected virtual int getPlatformCount => 8;
+
         public virtual void SpawnPlatforms(bool rising = true)
         {
             PlacePlatform(205, 136, NPCType<VitricBossPlatformUp>(), rising);
@@ -260,7 +303,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public void SyncPlatform(NPC platform, int y, bool rising)
 		{
             platform.position.Y = (int)npc.position.Y - y - platform.height;
-            platform.netUpdate = true;
 		}
     }
 
@@ -352,6 +394,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Helpers.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
             }
         }
+
+        protected override int getPlatformCount => 7;
 
         public override void SpawnPlatforms(bool rising = true)
         {

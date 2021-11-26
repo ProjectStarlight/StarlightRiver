@@ -37,13 +37,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
-            ManageCaches(ref cache);
-            ManageTrail(ref trail, cache, 50);
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches(ref cache);
+                ManageTrail(ref trail, cache, 50);
+            }
 
             for (int k = 0; k < 8; k++)
             {
                 float rot = Main.rand.NextFloat(0, 6.28f);
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
+                if (Main.netMode != NetmodeID.Server)
+                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
             }
         }
 
@@ -57,11 +61,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             target.velocity += Vector2.Normalize(target.Center - projectile.Center) * 8;
             target.AddBuff(BuffID.OnFire, 180);
 
-            for (int k = 0; k < 4; k++)
+            if (Main.netMode != NetmodeID.MultiplayerClient)
             {
-                Vector2 vel = Vector2.Normalize(target.Center - projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
+                for (int k = 0; k < 4; k++)
+                {
+                    Vector2 vel = Vector2.Normalize(target.Center - projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-                Projectile.NewProjectile(target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                    Projectile.NewProjectile(target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                }
             }
         }
 

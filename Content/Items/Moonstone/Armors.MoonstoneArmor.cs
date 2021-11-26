@@ -368,13 +368,13 @@ namespace StarlightRiver.Content.Items.Moonstone
     [Serializable]
     public class MoonstoneArmorPacket : Module
     {
-        public readonly sbyte whoAmI;
+        public readonly byte whoAmI;
         public readonly int charge;
         public readonly bool spearOn;
 
         public MoonstoneArmorPacket(int whoAmI, int charge, bool spearOn)
         {
-            this.whoAmI = (sbyte)whoAmI;
+            this.whoAmI = (byte)whoAmI;
             this.charge = charge;
             this.spearOn = spearOn;
 

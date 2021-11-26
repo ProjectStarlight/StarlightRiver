@@ -69,7 +69,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());
                 }
 
-                Item.NewItem(projectile.Center, ItemID.Heart);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Item.NewItem(projectile.Center, ItemID.Heart);
+
+                projectile.netUpdate = true;
                 Main.PlaySound(SoundID.Shatter, projectile.Center);
             }
 
@@ -92,6 +95,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 projectile.frame++;
                 if (projectile.frame >= 8) projectile.frame = 0;
+            }
+
+            for (int i = 0; i < Main.maxPlayers; i++)
+            {
+                Player player = Main.player[i];
+                if (player.active)
+                    CanHitPlayer(player);
             }
         }
 
@@ -122,7 +132,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             for (int k = 0; k < 4; k++)
             {
                 Gore.NewGore(projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Mine" + k));
-                Projectile.NewProjectile(projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    Projectile.NewProjectile(projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
             }
 
             foreach (Player player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, projectile.Center) < 1500))

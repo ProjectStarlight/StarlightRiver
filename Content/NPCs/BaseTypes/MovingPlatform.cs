@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
@@ -29,6 +30,18 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
             npc.noGravity = true;
             npc.knockBackResist = 0; //very very important!!
             npc.aiStyle = -1;
+            npc.damage = 0;
+            npc.netAlways = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(npc.velocity);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            npc.velocity = reader.ReadPackedVector2();
         }
 
         public sealed override void AI()
