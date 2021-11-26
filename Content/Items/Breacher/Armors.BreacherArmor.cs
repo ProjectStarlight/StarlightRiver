@@ -494,6 +494,14 @@ namespace StarlightRiver.Content.Items.Breacher
             ProjectileID.Sets.TrailingMode[projectile.type] = 0;
         }
 
+        private void findIfHit()
+        { //for other players to determine if this has hit
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            {
+                OnHitNPC(npc, 0, 0f, false);
+            }
+        }
+
         public override void AI()
         {
             if (!hit)
@@ -506,6 +514,8 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (Main.netMode != NetmodeID.Server)
                     ManageCaches();
             }
+            else if (Main.myPlayer != projectile.owner)
+                findIfHit();
 
             if (Main.netMode != NetmodeID.Server)
                 ManageTrail();
@@ -529,7 +539,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 9;
+            if (Main.myPlayer == projectile.owner)
+                Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 9;
+
             projectile.friendly = false;
             projectile.penetrate++;
             hit = true;

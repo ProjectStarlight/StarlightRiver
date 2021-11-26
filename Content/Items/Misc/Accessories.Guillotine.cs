@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Misc
                 flesh = 0;
 
             Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, npc.whoAmI, flesh);
-            npc.StrikeNPCNoInteraction(9999, 1, 0, false, true);// kill npc locally prior to projectile so that multiple simultaneous hits don't cause a bunch of executions at once
+            npc.StrikeNPC(9999, 0f, 1, false, true, false);// kill npc
         }
     }
 

@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void Tick(Player player)
 		{
+			if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
+				return; //only spawn for singleplayer or on the server
+
 			if (Main.rand.Next(4) == 0 && Main.npc.Count(n => n.active && n.type == NPCType<MagmitePassive>()) < 5)
 			{
 				Point16 coords = Helpers.Helper.FindTile(((player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.active() && n.liquidType() == 1 && n.liquid > 0, 10, 2, 2);

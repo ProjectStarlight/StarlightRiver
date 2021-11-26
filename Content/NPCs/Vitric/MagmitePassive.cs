@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -45,6 +46,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override Color? GetAlpha(Color drawColor)
         {
             return Color.White;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(npc.velocity);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            npc.velocity = reader.ReadPackedVector2();
         }
 
         public override void AI()
