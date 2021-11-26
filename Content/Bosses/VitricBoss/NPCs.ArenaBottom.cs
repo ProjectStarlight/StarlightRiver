@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -40,6 +41,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
             npc.hide = true;
+            npc.damage = 0;
         }
 
         public override void DrawBehind(int index)
@@ -109,7 +111,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (npc.ai[0] % 32 == 0) //summons a crystal at every tile covered by the NPC
                     {
                         Vector2 pos = new Vector2(npc.ai[2] == 1 ? npc.position.X + npc.width - npc.ai[0] : npc.position.X + npc.ai[0], npc.position.Y + 48);
-                        Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
                     }
                     if (npc.ai[0] > npc.width)
                     {
@@ -172,14 +176,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.netUpdate = true;
                 prevState = npc.ai[1];
             }
-        }
-
-        public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
-        {
-            Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 820, npc.width, npc.height);
-
-            if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) //duplicate?? leaving in for now since unsure
-                target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;

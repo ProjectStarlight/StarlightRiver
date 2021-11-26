@@ -92,14 +92,14 @@ namespace StarlightRiver.Core
     [Serializable]
     public class ControlsPacket : Module
     {
-        public readonly sbyte whoAmI;
+        public readonly byte whoAmI;
         public readonly byte controls;
         public readonly short xDist;
         public readonly short yDist;
 
         public ControlsPacket(ControlsPlayer cPlayer)
         {
-            whoAmI = (sbyte)cPlayer.player.whoAmI;
+            whoAmI = (byte)cPlayer.player.whoAmI;
 
             if (cPlayer.mouseRight) controls |= 0b10000000;
 

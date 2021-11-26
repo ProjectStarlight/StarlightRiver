@@ -119,17 +119,20 @@ namespace StarlightRiver.Content.Items.Misc
 
 			projectile.velocity.Y += 0.01f;
 
-			if (Main.rand.Next(10) == 0)
-				Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				if (Main.rand.Next(10) == 0)
+					Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
 
-			if (Main.rand.Next(30) == 0)
-			{			
-				var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
-				d.customData = Main.rand.NextFloat(0.8f, 1.1f);
+				if (Main.rand.Next(30) == 0)
+				{
+					var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
+					d.customData = Main.rand.NextFloat(0.8f, 1.1f);
+				}
+
+				ManageCaches();
+				ManageTrail();
 			}
-
-			ManageCaches();
-			ManageTrail();
 
 			if (projectile.owner != Main.myPlayer && State == 0)
 				findIfHit();
@@ -274,16 +277,19 @@ namespace StarlightRiver.Content.Items.Misc
 			if (projectile.velocity.Length() < 8)
 				projectile.velocity = Vector2.Normalize(projectile.velocity) * 8;
 
-			if (Main.rand.Next(15) == 0)
+			if (Main.netMode != NetmodeID.Server)
 			{
-				Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
+				if (Main.rand.Next(15) == 0)
+				{
+					Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
 
-				var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(2, 3), 0, color * 0.4f, 0.5f);
-				d.customData = Main.rand.NextFloat(0.8f, 1.1f);
+					var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(2, 3), 0, color * 0.4f, 0.5f);
+					d.customData = Main.rand.NextFloat(0.8f, 1.1f);
+				}
+
+				ManageCaches();
+				ManageTrail();
 			}
-
-			ManageCaches();
-			ManageTrail();
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

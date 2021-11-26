@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
         private void SpawnAnimation() //The animation which plays when the boss is spawning
         {
+            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
+                return;  //mp player not in arena so we can just skip
+
             rotationLocked = true;
             lockedRotation = 1.57f;
 
@@ -206,11 +209,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 (Main.npc[index].modNPC as ArenaBottom).Parent = this;
                 ChangePhase(AIStates.FirstPhase, true);
                 ResetAttack();
+                npc.netUpdate = true;
             }
         }
 
 		private void PhaseTransitionAnimation() //The animation that plays when the boss transitions from phase 1 to 2
 		{
+            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
+                return;  //mp player not in arena so we can just skip
+
             rotationLocked = true;       
 
             if (GlobalTimer == 2)
@@ -334,6 +341,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void DeathAnimation() //The animation that plays when the boss dies
         {
+            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
+                return;  //mp player not in arena so we can just skip
+
             Vignette.offset = Vector2.Zero;
             Vignette.opacityMult = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
@@ -352,7 +362,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer == 1)
                 Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
-            if (GlobalTimer > 100 && GlobalTimer < 120)
+            if (GlobalTimer > 100 && GlobalTimer < 120 && Main.netMode != NetmodeID.Server)
             {
                 SetFrameY(3);
                 SetFrameX((int)((GlobalTimer - 100) / 20f * 8));
@@ -363,10 +373,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 10), 0, default, Main.rand.NextFloat(0.5f, 0.7f));
 
                 float progress = ((GlobalTimer - 100) / 20f);
+
                 Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
             }
 
-            if (GlobalTimer == 120)
+            if (GlobalTimer == 120 && Main.netMode != NetmodeID.Server)
             {
                 StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
                 mp.Shake += 60;
@@ -407,13 +418,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 600)
             {
-                for (int k = 0; k < 50; k++)
-                    Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
 
-                for(int k = 0; k < 40; k++)
-                    Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.7f, 1.5f));
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    for (int k = 0; k < 50; k++)
+                        Dust.NewDustPerfect(npc.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
 
-                body.SpawnGores();
+                    for (int k = 0; k < 40; k++)
+                        Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.7f, 1.5f));
+
+                    body.SpawnGores2();
+
+                    body.SpawnGores();
+                }
+
+                StarlightWorld.Flag(WorldFlags.VitricBossDowned);
+
+                foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
+                {
+                    player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+                }
 
                 Vignette.visible = false;
                 npc.Kill();

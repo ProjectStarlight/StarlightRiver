@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.CustomHooks
                     if (!self.justJumped && self.velocity.Y >= 0)
                     {
                         if (fallThrough)
-                            self.GetModPlayer<StarlightPlayer>().platformTimer = 5;
+                            self.GetModPlayer<StarlightPlayer>().platformTimer = 10;
 
                         self.gfxOffY = npc.gfxOffY;
                         self.velocity.Y = 0;

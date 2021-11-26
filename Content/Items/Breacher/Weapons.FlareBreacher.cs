@@ -280,8 +280,11 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void AI()
         {
             projectile.velocity *= 0.96f;
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         public override bool? CanHitNPC(NPC target)

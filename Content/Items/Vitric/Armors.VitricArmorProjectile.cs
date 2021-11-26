@@ -208,8 +208,11 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Main.rand.Next(5) == 0)
                 Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
 
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

@@ -75,13 +75,13 @@ namespace StarlightRiver.Content.Items.Misc
         //this serves as a replacement for the strikeNPC packet so that we can keep track of which player actually did the striking to invoke all our onhit effects especially for accessories and armor.
         //projectiles can usually do the onhit code deterministically and should be done bespoke instead of using this
 
-        private readonly sbyte whoAmI;
-        private readonly sbyte npcIndex;
+        private readonly byte whoAmI;
+        private readonly byte npcIndex;
 
         public StrikeNPCPacket(int whoAmI, int npcIndex)
         {
-            this.whoAmI = (sbyte)whoAmI;
-            this.npcIndex = (sbyte)npcIndex;
+            this.whoAmI = (byte)whoAmI;
+            this.npcIndex = (byte)npcIndex;
         }
 
         protected override void Receive()

@@ -93,14 +93,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (parent == null || !parent.npc.active)
                 findParent();
 
-
             if (npc.ai[0] == 0)
+            {
                 if (npc.ai[1] > 0)
                 {
                     npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
                     npc.ai[1]--;
                 }
-                else npc.velocity.Y = 0;
+                else
+                    npc.velocity.Y = 0;
+            }
+
 
             if (npc.ai[0] == 1)
             {
@@ -113,7 +116,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
                 storedCenter = npc.Center;
-
         }
     }
 
