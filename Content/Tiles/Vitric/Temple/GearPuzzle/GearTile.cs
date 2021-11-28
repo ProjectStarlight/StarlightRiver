@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = AssetDirectory.Debug;
+			texture = AssetDirectory.Invisible;
 			return base.Autoload(ref name, ref texture);
 		}
 
