@@ -22,7 +22,7 @@ namespace StarlightRiver.Core
 
             if (dummies.TryGetValue(key, out Projectile dummy))
 			{
-                if (dummy.type == type)
+                if (dummy.type == type && dummy.active)
                     return dummy;
 			}
 
@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 
             if (dummies.TryGetValue(key, out Projectile dummy))
             {
-                if (dummy.modProjectile is T)
+                if (dummy.modProjectile is T && dummy.active)
                     return dummy;
             }
 

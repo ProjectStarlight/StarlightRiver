@@ -239,9 +239,10 @@ namespace StarlightRiver.Core
 
         public static void CreateCutaways()
 		{
-            var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
+            //TODO: Create new overlay for this when the structure is done
+            /*var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
             templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
-            CutawayHandler.NewCutaway(templeCutaway);
+            CutawayHandler.NewCutaway(templeCutaway);*/
 
             cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
             cathedralOverlay.inside = CheckForSquidArena;
