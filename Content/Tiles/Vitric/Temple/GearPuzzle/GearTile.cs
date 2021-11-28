@@ -93,9 +93,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				if (engaged)
 					rot = Main.GameUpdateCount * 0.01f * direction;
 
-				if (direction > 0)
-					rot += (float)Math.PI / Teeth;
-
 				return rot + rotationOffset;
 			}
 		}
@@ -250,17 +247,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				{
 					int thisSize = Teeth;
 					int nextSize = gearDummy.Teeth;
+					float ratio = (thisSize / (float)nextSize);
 
-					gearDummy.direction = direction * -1 * (thisSize / (float)nextSize);
+					gearDummy.direction = direction * -1 * ratio;
 
-					float angleOff = (projectile.Center - gearDummy.projectile.Center).ToRotation();
-					//float dist = Vector2.Distance(projectile.Center, gearDummy.projectile.Center);
-					float secant = angleOff * (2f + this.size * 2);
-					gearDummy.rotationOffset = secant / (2f + gearDummy.size * 2);
+					float trueAngle = (projectile.Center - gearDummy.projectile.Center).ToRotation();
 
-					gearDummy.rotationOffset -= rotationOffset;
+					gearDummy.rotationOffset = -(ratio * rotationOffset) + ((1 + ratio) * trueAngle) + (float)Math.PI / gearDummy.Teeth;
 
-					//gearDummy.rotationOffset = 0;
+					//gearDummy.rotationOffset += rotationOffset;
 
 					gearDummy.RecurseOverGears(gearDummy.TryEngage);
 				}
@@ -279,6 +274,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				if (gearDummy.size == size && gearDummy.engaged)
 				{
 					gearDummy.direction = 0;
+					gearDummy.rotationOffset = 0;
 					gearDummy.RecurseOverGears(gearDummy.TryDisengage);
 				}
 			}

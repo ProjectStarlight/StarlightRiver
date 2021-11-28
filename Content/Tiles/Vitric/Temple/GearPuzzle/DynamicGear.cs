@@ -66,8 +66,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 
 			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
-
-			Utils.DrawBorderString(spriteBatch, "r: " + rotationOffset, projectile.Center - Main.screenPosition, Color.White, 0.8f, 0.5f, 0);
 		}
 	}
 
