@@ -31,12 +31,6 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
-            {
-                Send(-1, fromWho, false);
-                return;
-            }
-
             Player player = Main.player[fromWho];
             AbilityHandler handler = player.GetHandler();
 
@@ -49,6 +43,9 @@ namespace StarlightRiver.Packets
             if ((unlocks & 0b01000000) == 0b01000000) handler.Unlock<Wisp>();
             if ((unlocks & 0b00100000) == 0b00100000) handler.Unlock<Pure>();
             if ((unlocks & 0b00010000) == 0b00010000) handler.Unlock<Smash>();
+
+            if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
+                Send(-1, fromWho, false);
         }
     }
 }

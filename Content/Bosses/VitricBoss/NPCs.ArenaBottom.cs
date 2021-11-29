@@ -3,17 +3,21 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	internal class ArenaBottom : ModNPC, IDrawAdditive
+    internal class ArenaBottom : ModNPC, IDrawAdditive
     {
         public VitricBoss Parent;
+
+        private float prevState = 0;
         public override string Texture => AssetDirectory.VitricBoss + "CrystalWaveHot";
 
         public override bool? CanBeHitByProjectile(Projectile projectile) => false;
@@ -37,11 +41,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
             npc.hide = true;
+            npc.damage = 0;
         }
 
         public override void DrawBehind(int index)
         {
             Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
+        }
+
+        public void findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    Parent = npc.modNPC as VitricBoss;
+                    return;
+                }
+            }
         }
 
         public override void AI()
@@ -51,10 +69,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 1: state
              * 2: mirrored?
              */
-            if (Parent?.npc.active != true) 
-            { 
-                npc.active = false; 
-                return; 
+            if (Parent is null)
+                findParent();
+
+            if (Parent?.npc.active != true)
+            {
+                npc.active = false;
+                return;
             }
 
             if (Parent.Phase == (int)VitricBoss.AIStates.FirstPhase && Parent.AttackPhase == 0 && npc.ai[1] != 2)
@@ -90,7 +111,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (npc.ai[0] % 32 == 0) //summons a crystal at every tile covered by the NPC
                     {
                         Vector2 pos = new Vector2(npc.ai[2] == 1 ? npc.position.X + npc.width - npc.ai[0] : npc.position.X + npc.ai[0], npc.position.Y + 48);
-                        Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
                     }
                     if (npc.ai[0] > npc.width)
                     {
@@ -118,6 +141,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Dust.NewDust(npc.position, npc.width, npc.height, Terraria.ID.DustID.Fire);
 
                     if (npc.ai[0] >= 150)
+                    {
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
                             Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 840, npc.width, npc.height);
@@ -144,16 +168,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 target.jumpAgainSail = true;
                             }
                         }
+                    }
                     break;
             }
-        }
-
-        public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
-        {
-            Rectangle rect = new Rectangle((int)npc.position.X, (int)npc.position.Y - 820, npc.width, npc.height);
-
-            if (target.Hitbox.Intersects(rect) || target.Hitbox.Intersects(npc.Hitbox)) //duplicate?? leaving in for now since unsure
-                target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+            if (npc.ai[1] != prevState && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                npc.netUpdate = true;
+                prevState = npc.ai[1];
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
@@ -164,15 +186,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Random rand = new Random((int)npc.ai[3] + npc.whoAmI);//the seed changes each time this attack activates, whoAmI is added so the top/bottom are different
 
-                int eggIndex = rand.Next(50) == 0 ? rand.Next(0, npc.width / 18) * 18 : -1;// 1/50 chance
+                int eggIndex = rand.Next(25) == 0 ? rand.Next(0, npc.width / 18) * 18 : -1;// 1/25 chance
 
                 float off = Math.Min((npc.ai[0] - 120) / 30f * 32, 32);
                 Texture2D tex = Main.npcTexture[npc.type];
                 for (int k = 0; k < npc.width; k += 18)
                 {
                     Vector2 pos = npc.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; //actually draw the crystals
-                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition; 
-                    
+                    Vector2 pos2 = npc.position + new Vector2(k, -940 + 32 + off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - Main.screenPosition;
+
                     if (eggIndex == k)//ugly but I this way its only checked once
                     {
                         Texture2D eggTex = GetTexture(AssetDirectory.VitricBoss + "MagMegg");
@@ -192,7 +214,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             var tex = GetTexture(AssetDirectory.VitricBoss + "LongGlow");
 
-            if (npc.ai[1] == 2) 
+            if (npc.ai[1] == 2)
             {
                 Color color;
 
@@ -255,7 +277,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 2) * 1.4f );
+            spriteBatch.Draw(GetTexture(Texture), projectile.position - Main.screenPosition, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 2) * 1.4f);
 
             var color = Color.White * (projectile.timeLeft / 30f);
             spriteBatch.Draw(GetTexture(Texture + "Hot"), projectile.position - Main.screenPosition, color);

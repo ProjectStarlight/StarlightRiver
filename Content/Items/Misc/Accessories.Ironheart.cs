@@ -97,6 +97,8 @@ namespace StarlightRiver.Core
 
         public void SetIronHeart(int damage)
         {
+            shouldSendHitPacket = true;
+
             int buffType = ModContent.BuffType<IronheartBuff>();
 
             if (!player.HasBuff(buffType))

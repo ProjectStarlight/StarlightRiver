@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -49,10 +50,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     if (Timer == 1) //dont spawn on the ground
                         npc.position.Y -= 32;
 
-                    if (Timer % 30 == 0)
+                    npc.spriteDirection = npc.direction;
+
+                    if (Timer % 30 == 0 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
                     {
                         npc.direction = Main.rand.NextBool() ? 1 : -1;
-                        npc.spriteDirection = npc.direction;
                         SavedRotation = Main.rand.NextFloat(-0.7f, 0.3f);
                         npc.netUpdate = true;
                     }
@@ -80,7 +82,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                         npc.direction = (Main.player[npc.target].Center - npc.Center).X > 0 ? 1 : -1;
                         npc.spriteDirection = npc.direction;
-
                     }
 
                     if (Timer == 60)
@@ -108,7 +109,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
         }
 
-		public override void FindFrame(int frameHeight)
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(npc.direction == 1 ? true : false);
+            writer.Write(SavedRotation);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            npc.direction = reader.ReadBoolean() ? 1 : -1;
+            SavedRotation = reader.ReadSingle();
+        }
+
+        public override void FindFrame(int frameHeight)
 		{
             npc.frame = new Rectangle(0, frameHeight * (int)(Timer / 3 % 3), npc.width, frameHeight);
 		}

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -17,12 +18,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public const int Risetime = 360;
         public List<NPC> platforms = new List<NPC>();
 
+        protected static int platformCount = 8;
+
         protected ref float Timer => ref npc.ai[0];
         protected ref float State => ref npc.ai[1];
         protected ref float ScrollTimer => ref npc.ai[2];
         protected ref float ScrollDelay => ref npc.ai[3];
 
         public int shake = 0;
+
+        private float prevState = 0;
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -46,6 +51,32 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.noTileCollide = true;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
+            npc.netAlways = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    writer.Write((byte)platforms[i].whoAmI);
+                }
+            }
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    if (i >= platforms.Count)
+                        platforms.Add(Main.npc[(int)reader.ReadByte()]);
+                    else
+                        platforms[i] = Main.npc[(int)reader.ReadByte()];
+                }
+            }
         }
 
         public override void AI()
@@ -64,7 +95,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Timer++;
 
-                SpawnPlatforms();
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    SpawnPlatforms();
+
+
                 ScrollDelay = 20; //initial acceleration delay
 
                 if (Timer == Risetime - 1) //hitting the top
@@ -84,13 +118,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (State == 2)
+            {
                 Timer = Risetime;
+
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 0;
+                    npc.ai[1] = 0;
+                }
+                ResyncPlatforms();
+            }
 
             if (State == 3) //scrolling
             {
                 Timer++;
 
-                if(Timer <= Risetime + 120) //when starting moving
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 1;
+                }
+
+                if (Timer <= Risetime + 120) //when starting moving
                     shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
                 if(Timer == Risetime + 120)
@@ -114,6 +162,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (ScrollTimer > Scrolltime)
             {
                 ScrollTimer = 0;
+
                 ResyncPlatforms();
             }
 
@@ -125,17 +174,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
                     {
-                        npc.Center = (npc.modNPC as VitricBossPlatformUp).storedCenter;
                         npc.ai[0] = 0;
                     }
+                    ResyncPlatforms();
 
                     State = 2;
                     ScrollDelay = 20; //reset acceleration delay
                 }
 
-                if (ScrollTimer > Scrolltime) 
-                    ScrollTimer = 0;
             }
+
+            if (prevState != State && Main.netMode == NetmodeID.Server)
+            {
+                npc.netUpdate = true;
+                prevState = State;
+            }
+                
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
@@ -199,6 +253,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
+
+        protected virtual int getPlatformCount => 8;
 
         public virtual void SpawnPlatforms(bool rising = true)
         {
@@ -301,6 +357,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+
+
+            if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            {
+                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Helpers.LightingBufferRenderer.DrawWithLighting(target, egg, source);
+            }
         }
 
         public override void ScrollDraw(SpriteBatch sb)
@@ -324,10 +387,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-            //Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
-            //Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex2, source1, default, sb, Configs.LightImportance.Some);
-            //Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex2, source2, default, sb, Configs.LightImportance.Some);
+            if(DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            {
+                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
+                Helpers.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
+            }
         }
+
+        protected override int getPlatformCount => 7;
 
         public override void SpawnPlatforms(bool rising = true)
         {

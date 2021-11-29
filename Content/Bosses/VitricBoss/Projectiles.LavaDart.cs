@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Helpers;
+using System.IO;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -22,7 +23,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private Vector2 startPoint;
         public Vector2 endPoint;
         public Vector2 midPoint;
-        public int duration;
+
+        public ref float Duration => ref projectile.ai[0];
 
         public float dist1;
         public float dist2;
@@ -48,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            float timer = (duration + 30) - projectile.timeLeft;
+            float timer = (Duration + 30) - projectile.timeLeft;
 
             if (timer > 30)
                 return base.Colliding(projHitbox, targetHitbox);
@@ -63,17 +65,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (startPoint == Vector2.Zero)
             {
                 startPoint = projectile.Center;
-                projectile.timeLeft = duration + 30;
+                projectile.timeLeft = (int)Duration + 30;
 
                 dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
                 dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+
+                if (Main.netMode == NetmodeID.Server)
+                    projectile.netUpdate = true;
             }
 
-            float timer = (duration + 30) - projectile.timeLeft;
+            float timer = (Duration + 30) - projectile.timeLeft;
 
             if (endPoint != Vector2.Zero && timer > 30)
             {
-                projectile.Center = PointOnSpline((timer - 30) / duration);
+                projectile.Center = PointOnSpline((timer - 30) / Duration);
             }
 
             projectile.rotation = (projectile.position - projectile.oldPos[0]).ToRotation() + 1.57f;
@@ -117,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            int timer = (duration + 30) - projectile.timeLeft;
+            int timer = ((int)Duration + 30) - projectile.timeLeft;
 
             if (timer < 30)
             {
@@ -153,6 +158,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 cache.RemoveAt(0);
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(midPoint);
+            writer.WritePackedVector2(endPoint);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            midPoint = reader.ReadPackedVector2();
+            endPoint = reader.ReadPackedVector2();
+
+            dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+            dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
         }
 
         private void ManageTrail()

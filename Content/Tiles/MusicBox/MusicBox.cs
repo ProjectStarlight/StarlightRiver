@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 	public class MusicBox : Core.Loaders.TileLoader
 	{
 		private static AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, 2, 0);
-		private static FurnitureLoadData boxData = new FurnitureLoadData(2, 2, 0, 0, false, new Color(255, 200, 100), false, false, "Music Box", anchor);
+		private static FurnitureLoadData boxData = new FurnitureLoadData(2, 2, 0, 0, true, new Color(255, 200, 100), false, false, "Music Box", anchor);
 
 		public override string AssetRoot => "StarlightRiver/Assets/Tiles/MusicBox/";
 
@@ -26,6 +26,7 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 			LoadMusicBox("VitricPassive", "Music Box (Vitric Desert)", "Sounds/Music/GlassPassive");
 			LoadMusicBox("VitricTemple", "Music Box (Vitric Temple)", "Sounds/Music/GlassTemple");
 			LoadMusicBox("Miniboss", "Music Box (Miniboss)", "Sounds/Music/Miniboss");
+			LoadMusicBox("Overgrow", "Music Box (Overgrow)", "Sounds/Music/Overgrow");
 		}
 
 		private void LoadMusicBox(string name, string displayName, string path)

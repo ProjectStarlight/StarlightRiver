@@ -35,8 +35,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
-		}
+            int item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
+
+            // Sync the drop for multiplayer
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+        }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
         {
@@ -71,7 +75,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
+            int item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
+
+            // Sync the drop for multiplayer
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
         }
     }
 

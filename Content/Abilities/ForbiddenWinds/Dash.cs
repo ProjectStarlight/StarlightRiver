@@ -103,7 +103,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         {
             base.UpdateActive();
 
-            ManageCaches();
+            if (Main.netMode != NetmodeID.Server)
+                ManageCaches();
 
             var progress = Time > 7 ? 1 - (Time - 7) / 8f : 1;
 
@@ -163,7 +164,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		{
             if (EffectTimer > 0 && cache != null)
             {
-                ManageTrail();
+                if (Main.netMode != NetmodeID.Server)
+                    ManageTrail();
                 EffectTimer--;
             }
 

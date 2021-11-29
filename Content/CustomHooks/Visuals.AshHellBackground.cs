@@ -17,7 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            On.Terraria.Main.DrawUnderworldBackground += DrawAltBackground;
+            //Disabled since this is horrible
+            //On.Terraria.Main.DrawUnderworldBackground += DrawAltBackground;
         }
 
         //this is just gross stolen vanilla code. I'll replace it later. TODO: Replace this later

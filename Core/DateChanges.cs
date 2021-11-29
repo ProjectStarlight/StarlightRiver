@@ -8,19 +8,18 @@ using System.IO;
 using Terraria.ModLoader;
 using System.Reflection;
 
-namespace StarlightRiver.Core.Loaders
+namespace StarlightRiver.Core
 {
 	class DateChanges : ILoadable
     {
         public static bool AprilFirst = false;
-
         public static bool Anniversary = false;
-
         public static bool Halloween = false;
-
         public static bool Christmas = false;
-
         public static bool NewYears = false;
+
+        public static bool AnySpecialEvent = false;
+
 
         //random on startup
         public static int StartupRandom16 = 0;//32767
@@ -29,6 +28,7 @@ namespace StarlightRiver.Core.Loaders
         //randomized each real life day
         public static int DateRandom16 = 0;//32767
         public static int DateRandom8 = 0;//255
+
 
         public float Priority => 0.5f;
 
@@ -48,11 +48,13 @@ namespace StarlightRiver.Core.Loaders
 
             StartupRandom8 = Main.rand.Next(256);
 
-            int date = DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Year;
+            int dateSeed = DateTime.Now.Month + DateTime.Now.Day + DateTime.Now.Year;
 
-            DateRandom16 = new Random(date).Next(32768);
+            DateRandom16 = new Random(dateSeed).Next(32768);
 
-            DateRandom8 = new Random(date).Next(256);
+            DateRandom8 = new Random(dateSeed).Next(256);
+
+            AnySpecialEvent = AprilFirst || Anniversary || Halloween || Christmas || NewYears;
         }
 
         public void Unload()
