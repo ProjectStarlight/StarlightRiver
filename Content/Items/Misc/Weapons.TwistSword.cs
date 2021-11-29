@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -209,20 +210,16 @@ namespace StarlightRiver.Content.Items.Misc
             return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + off);
         }
 
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && Colliding(projectile.Hitbox, n.Hitbox) == true))
+            {
+                OnHitNPC(npc, 0, 0, false);
+            }
+        }
+
         public override void AI()
         {
-            if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
-            {
-                for (int i = 0; i < Main.maxNPCs; i++)
-                {
-                    NPC npc = Main.npc[i];
-                    if (npc.active && Colliding(projectile.Hitbox, npc.Hitbox).GetValueOrDefault())
-                        onHitEffect(npc);
-                }
-            }
-
-            justHit = false;
-
             Player player = Main.player[projectile.owner];
 
             if (projectile.ai[1] < 400)
@@ -268,6 +265,9 @@ namespace StarlightRiver.Content.Items.Misc
                 ManageCaches();
                 ManageTrail();
             }
+
+            if (Main.myPlayer != projectile.owner)
+                findIfHit();
         }
 
 
@@ -283,11 +283,12 @@ namespace StarlightRiver.Content.Items.Misc
             float rot = projectile.ai[0] % 80 / 80f * 6.28f;
             var away = Vector2.UnitX.RotatedBy(rot);
 
+            target.immune[projectile.owner] = 10; //same as regular pierce projectile but explicit for multiplayer compatibility
+
             target.velocity += away * 8 * target.knockBackResist;
 
-            projectile.netUpdate = true;
-            justHit = true;
-            onHitEffect(target);
+            if (Main.netMode != NetmodeID.Server)
+                onHitEffect(target);
         }
 
         public void onHitEffect(NPC target)
@@ -299,16 +300,6 @@ namespace StarlightRiver.Content.Items.Misc
             var away = Vector2.UnitX.RotatedBy(rot);
             for (int k = 0; k < 20; k++)
                 Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), away.RotatedByRandom(0.2f) * Main.rand.NextFloat(4), 0, new Color(50, 110, 255), 0.4f);
-        }
-
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.Write(justHit);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            justHit = reader.ReadBoolean();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

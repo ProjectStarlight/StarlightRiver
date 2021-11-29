@@ -17,8 +17,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool Autoload(ref string name)
         {
-            StarlightNPC.ModifyHitByItemEvent += ModifyCrit;
-            StarlightNPC.ModifyHitByProjectileEvent += ModifyCritProj;
+            StarlightPlayer.ModifyHitNPCEvent += ModifyCrit;
+            StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyCritProj;
             return base.Autoload(ref name);
         }
 
@@ -27,42 +27,45 @@ namespace StarlightRiver.Content.Items.Misc
             item.rare = ItemRarityID.Orange;
         }
 
-        private void ModifyCritProj(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        private void ModifyCritProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (Equipped(Main.player[projectile.owner]))
+            if (Equipped(Main.player[proj.owner]))
             {
-                float multiplier = 2 + CritMultiPlayer.GetMultiplier(projectile);
+                float multiplier = 2 + CritMultiPlayer.GetMultiplier(proj);
 
                 if (crit)
-                    damage += (int)((damage / multiplier) * (1.5f - (npc.life / npc.lifeMax) / 2));
+                    damage += (int)((damage / multiplier) * (1.5f - (target.life / target.lifeMax) / 2));
 
-                if (!npc.boss && (npc.life / npc.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > npc.life)
-                    Execute(npc);
+                if (!target.boss && (target.life / target.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > target.life)
+                    Execute(target, proj.owner);
             }
         }
 
-        private void ModifyCrit(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+        private void ModifyCrit(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
             if (Equipped(player))
             {
                 float multiplier = 2 + CritMultiPlayer.GetMultiplier(item);
 
                 if (crit)
-                    damage += (int)((damage / multiplier) * (1.5f - (npc.life / npc.lifeMax) / 2));
+                    damage += (int)((damage / multiplier) * (1.5f - (target.life / target.lifeMax) / 2));
 
-                if (!npc.boss && (npc.life / npc.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > npc.life)
-                    Execute(npc);
+                if (!target.boss && (target.life / target.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > target.life)
+                    Execute(target, player.whoAmI);
             }
         }
 
-        private void Execute(NPC npc)
+        private void Execute(NPC npc, int owner)
         {
             int flesh = 1;
             if (Helpers.Helper.IsFleshy(npc))
                 flesh = 0;
 
-            Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, npc.whoAmI, flesh);
-            npc.StrikeNPC(9999, 0f, 1, false, true, false);// kill npc
+            if (Main.myPlayer == owner)
+            {
+                Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, npc.whoAmI, flesh);
+                npc.StrikeNPC(9999, 0f, 1, false, true, false);// kill npc
+            }
         }
     }
 

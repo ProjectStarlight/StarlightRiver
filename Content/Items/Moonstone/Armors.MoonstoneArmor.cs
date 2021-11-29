@@ -36,21 +36,21 @@ namespace StarlightRiver.Content.Items.Moonstone
             On.Terraria.Player.KeyDoubleTap += ActivateSpear;
             On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
             StarlightPlayer.PreDrawEvent += DrawMoonCharge;
-            StarlightNPC.ModifyHitByItemEvent += ChargeFromMelee;
-            StarlightNPC.ModifyHitByProjectileEvent += ChargeFromProjectile;
+            StarlightPlayer.OnHitNPCEvent += ChargeFromMelee;
+            StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
 
             return true;
 		}
 
-		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ChargeFromProjectile(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
+			if(proj.melee && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(player))
 			{
-                addCharge(Main.player[projectile.owner], damage);
+                addCharge(player, damage);
             }
 		}
 
-		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void ChargeFromMelee(Player player, Item item, NPC target, int damage, float knockback, bool crit)
 		{
             if (item.melee && IsArmorSet(player))
             {
@@ -68,8 +68,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
                 head.moonFlash = 30;
 
-            MoonstoneArmorPacket packet = new MoonstoneArmorPacket(player.whoAmI, head.moonCharge, head.spearOn);
-            packet.Send(-1, player.whoAmI, false);
+            player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
         }
 
 		public override void SetStaticDefaults()

@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
             var player = Main.player[projectile.owner];
 
-            if (Equipped(player) && crit)
+            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
                 spawnStar(target.Center);
         }
 
 		private void SpawnManaOnCrit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
 		{
-            if (Equipped(player) && crit)
+            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
                 spawnStar(target.Center);
 
         }

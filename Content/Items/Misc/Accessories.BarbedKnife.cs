@@ -34,10 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 BleedStack.ApplyBleedStack(target, 300, true);
                 if (Main.netMode == NetmodeID.MultiplayerClient)
-                {
-                    StrikeNPCPacket packet = new StrikeNPCPacket(player.whoAmI, target.whoAmI);
-                    packet.Send(-1, player.whoAmI, false);
-                }
+                    player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
             }
         }
 
@@ -66,32 +63,6 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.SetResult(this);
 
             recipe.AddRecipe();
-        }
-    }
-
-    [Serializable]
-    public class StrikeNPCPacket : Module
-    {
-        //this serves as a replacement for the strikeNPC packet so that we can keep track of which player actually did the striking to invoke all our onhit effects especially for accessories and armor.
-        //projectiles can usually do the onhit code deterministically and should be done bespoke instead of using this
-
-        private readonly byte whoAmI;
-        private readonly byte npcIndex;
-
-        public StrikeNPCPacket(int whoAmI, int npcIndex)
-        {
-            this.whoAmI = (byte)whoAmI;
-            this.npcIndex = (byte)npcIndex;
-        }
-
-        protected override void Receive()
-        {
-            BleedStack.ApplyBleedStack(Main.npc[npcIndex], 300, true);
-
-            if (Main.netMode == NetmodeID.Server)
-            {
-                Send(-1, whoAmI, false);
-            }
         }
     }
 }

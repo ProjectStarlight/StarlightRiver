@@ -23,33 +23,57 @@ namespace StarlightRiver.Core
             ModifyHitByNPCEvent?.Invoke(player, npc, ref damage, ref crit);
         }
 
-        //For stuff like fire gauntlet
-        public delegate void ModifyHitNPCDelegate(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit);
+
+        /// <summary>
+        /// Use this event for the player hitting an NPC with an item directly (true melee).
+        /// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
+        /// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
+        /// </summary>
         public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
+        public delegate void ModifyHitNPCDelegate(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit);
         public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
+            addHitPacket(null, target, damage, knockback, crit);
             ModifyHitNPCEvent?.Invoke(player, item, target, ref damage, ref knockback, ref crit);
         }
 
-        public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
+
+        /// <summary>
+        /// Use this event for projectile hitting npcs for situations where a projectile should be owned by a player.
+        /// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
+        /// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
+        /// </summary>
         public static event ModifyHitNPCWithProjDelegate ModifyHitNPCWithProjEvent;
+        public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
         public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
+            addHitPacket(proj, target, damage, knockback, crit);
             ModifyHitNPCWithProjEvent?.Invoke(player, proj, target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
-        public delegate void OnHitNPCDelegate(Player player, Item item, NPC target, int damage, float knockback, bool crit);
+        /// <summary>
+        /// Use this event for the player hitting an NPC with an item directly (true melee).
+        /// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiplayer.
+        /// </summary>
         public static event OnHitNPCDelegate OnHitNPCEvent;
+        public delegate void OnHitNPCDelegate(Player player, Item item, NPC target, int damage, float knockback, bool crit);
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
         {
             OnHitNPCEvent?.Invoke(player, item, target, damage, knockback, crit);
+            sendHitPacket();
         }
 
-        public delegate void OnHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit);
+
+        /// <summary>
+        /// Use this event for projectile hitting npcs for situations where a projectile should be owned by a player.
+        /// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiplayer.
+        /// </summary>
         public static event OnHitNPCWithProjDelegate OnHitNPCWithProjEvent;
+        public delegate void OnHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit);
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
             OnHitNPCWithProjEvent?.Invoke(player, proj, target, damage, knockback, crit);
+            sendHitPacket();
         }
 
         public delegate void NaturalLifeRegenDelegate(Player player, ref float regen);
