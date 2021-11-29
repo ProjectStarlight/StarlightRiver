@@ -20,7 +20,7 @@ namespace StarlightRiver.Core
         }
 
 
-        //these modify hit bys should only be used for editting the ref variables if you want them changed in a way that happens after the player on hit effects run. no extra effects will be sycned in multiplayer outside of the ref variables
+        //these modify hit bys should only be used for editting the ref variables if you want them changed in a way that happens BEFORE player on hit effects run. no extra effects will be sycned in multiplayer outside of the ref variables
         public delegate void ModifyHitByItemDelegate(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit);
         public static event ModifyHitByItemDelegate ModifyHitByItemEvent;
         public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
