@@ -86,11 +86,11 @@ namespace StarlightRiver.Content.Items.Vitric
             else
                 projectile.rotation = rotTarget;
 
-                if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
-			{
+            if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
+            {
                 State = 2;
                 timer = 0;
-			}
+            }
 
             if(State == 0)
 			{

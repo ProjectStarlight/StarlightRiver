@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             for (int k = 0; k < 8; k++)
             {
                 float rot = Main.rand.NextFloat(0, 6.28f);
+
                 if (Main.netMode != NetmodeID.Server)
                     Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
             }
