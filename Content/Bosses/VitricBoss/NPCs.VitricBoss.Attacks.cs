@@ -668,7 +668,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                    Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0, ai1: rot);
+                    Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0, Main.myPlayer, 0, rot);
 
                 lockedRotation = rot + 3.14f;
 
