@@ -81,6 +81,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     Main.HoverItem = Item.Clone();
                     Main.hoverItemName = Item.Name;
+
                     if (Main.keyState.PressingShift() && Helper.getFreeInventorySlot(Main.LocalPlayer) != -1)
                         Main.cursorOverride = 7;
                 }
@@ -107,6 +108,7 @@ namespace StarlightRiver.Content.GUI
             if (PlayerInput.Triggers.Current.SmartSelect)
             {
                 int invSlot = Helper.getFreeInventorySlot(Main.LocalPlayer);
+
                 if (!Item.IsAir && invSlot != -1)
                 {
                     Main.LocalPlayer.GetItem(Main.myPlayer, Item.Clone());

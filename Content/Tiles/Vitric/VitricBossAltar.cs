@@ -164,6 +164,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             boss = null;
             arenaLeft = null;
             arenaRight = null;
+
             for (int i = 0; i < Main.maxNPCs; i++)
             {
                 NPC npc = Main.npc[i];
@@ -226,11 +227,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (parent.frameX == 0)
                 return;
 
-
-
             if (boss is null || !boss.active || boss.type != ModContent.NPCType<VitricBoss>())
                 boss = null;
-
 
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
@@ -244,12 +242,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
                         Main.musicFade[Main.curMusic] = 1 - ((CutsceneTimer - 120) / 120f);
 
                     if (CutsceneTimer == 180)
-                    {
                         Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, projectile.Center);
-                    }
                 }
 
                 CutsceneTimer++;
+
                 if (CutsceneTimer > 180)
                 {
                     StarlightWorld.Flag(WorldFlags.VitricBossOpen);
@@ -272,13 +269,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (BarrierProgress < 120 && boss != null && boss.active)
             {
                 BarrierProgress++;
+
                 if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
-                    if (BarrierProgress % 3 == 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
+                    if (BarrierProgress % 3 == 0) 
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
+
                     if (BarrierProgress == 119) //hitting the top
                     {
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
-                        //for (int k = 0; k < 5; k++) 
                         Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
                     }
                 }

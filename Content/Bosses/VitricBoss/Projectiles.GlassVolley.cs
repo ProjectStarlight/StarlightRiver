@@ -32,7 +32,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Timer++; //ticks up the timer
 
             if (Timer >= 30) //when this projectile goes off
+            {
                 for (int k = 0; k < 8; k++)
+                {
                     if (Timer == 30 + k * 3)
                     {
                         float rot = (k - 4) / 10f; //rotational offset
@@ -42,6 +44,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
+                }
+            }
 
             if (Timer == 50)
                 projectile.Kill(); //kill it when it expires
