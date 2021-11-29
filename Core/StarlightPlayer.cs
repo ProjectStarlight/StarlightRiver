@@ -15,6 +15,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using NetEasy;
 
 namespace StarlightRiver.Core
 {
@@ -55,6 +56,9 @@ namespace StarlightRiver.Core
         public float rotation;
 
         public static List<PlayerTicker> spawners = new List<PlayerTicker>();
+
+        public bool shouldSendHitPacket = false;
+        public OnHitPacket hitPacket = null;
 
         public override void PreUpdate()
         {
@@ -105,6 +109,8 @@ namespace StarlightRiver.Core
             itemSpeed = 1;
 
             trueInvisible = false;
+
+            shouldSendHitPacket = false;
 
             if (Shake > 120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult)
                 Shake = (int)(120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult);
@@ -241,6 +247,33 @@ namespace StarlightRiver.Core
                 else if (info.drawPlayer.armor[12].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[12].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
             }
             #endregion
+        }
+
+        /// <summary>
+        /// This is expected to be run PRIOR to the modify hit hooks so that when we send the data we can send it as it was prior to the edits so when it runs on the other client the modify hooks should be the same at the end
+        /// </summary>
+        /// <param name="proj"></param>
+        /// <param name="target"></param>
+        /// <param name="damage"></param>
+        /// <param name="knockback"></param>
+        /// <param name="crit"></param>
+        public void addHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            if (Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+                hitPacket = new OnHitPacket(player, proj, target, damage, knockback, crit);
+        }
+
+        /// <summary>
+        /// This is expected to run AFTER the on hit hooks so that if and only if any event during the modify and/or hit hooks wants the data to be synced we will do so
+        /// </summary>
+        public void sendHitPacket()
+        {
+            if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                hitPacket.Send(-1, Main.myPlayer, false);
+                shouldSendHitPacket = false;
+                hitPacket = null;
+            }
         }
 
         public override void OnEnterWorld(Player player)
