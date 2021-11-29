@@ -14,16 +14,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
     class DynamicGear : GearTile
     {
         public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
+
+		public override void OnEngage(GearTileEntity entity)
+		{
+			base.OnEngage(entity);
+		}
 	}
 
     class DynamicGearDummy : GearTileDummy
     {
         public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
-
-        public override void OnEngage()
-        {
-
-        }
 
 		public override void Update()
 		{
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Texture2D tex;
 
-			switch (size)
+			switch (Size)
 			{
 				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
 				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;

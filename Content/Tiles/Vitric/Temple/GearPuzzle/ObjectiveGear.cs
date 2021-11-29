@@ -27,16 +27,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			return true;
 		}
+
+		public override void OnEngage(GearTileEntity entity)
+		{
+			base.OnEngage(entity);
+		}
 	}
 
 	class ObjectiveGearDummy : GearTileDummy
 	{
 		public ObjectiveGearDummy() : base(ModContent.TileType<ObjectiveGear>()) { }
-
-		public override void OnEngage()
-		{
-
-		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Texture2D tex;
 
-			switch (size)
+			switch (Size)
 			{
 				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
 				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "CeramicGearSmall"); break;
