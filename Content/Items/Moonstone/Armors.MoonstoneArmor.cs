@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
@@ -34,38 +36,39 @@ namespace StarlightRiver.Content.Items.Moonstone
             On.Terraria.Player.KeyDoubleTap += ActivateSpear;
             On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
             StarlightPlayer.PreDrawEvent += DrawMoonCharge;
-            StarlightNPC.ModifyHitByItemEvent += ChargeFromMelee;
-            StarlightNPC.ModifyHitByProjectileEvent += ChargeFromProjectile;
+            StarlightPlayer.OnHitNPCEvent += ChargeFromMelee;
+            StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
 
             return true;
 		}
 
-		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ChargeFromProjectile(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
+			if(proj.melee && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(player))
 			{
-                var head = Main.player[projectile.owner].armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
-			}
+                addCharge(player, damage);
+            }
 		}
 
-		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void ChargeFromMelee(Player player, Item item, NPC target, int damage, float knockback, bool crit)
 		{
             if (item.melee && IsArmorSet(player))
             {
-                var head = player.armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
+                addCharge(player, damage);
             }
+        }
+
+        private void addCharge(Player player, int damage)
+        {
+            var head = player.armor[0].modItem as MoonstoneHead;
+
+            int oldCharge = head.moonCharge;
+            head.moonCharge += (int)(damage * 0.45f);
+
+            if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
+                head.moonFlash = 30;
+
+            player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
         }
 
 		public override void SetStaticDefaults()
@@ -109,8 +112,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             if (spearOn)
             {
-                player.inventory[58] = dummySpear;
+                if (!Main.mouseItem.IsTheSameAs(dummySpear) && !Main.mouseItem.IsAir)
+                {
+                    Main.LocalPlayer.QuickSpawnClonedItem(Main.mouseItem);
+                }
                 Main.mouseItem = dummySpear;
+                player.inventory[58] = dummySpear;
                 player.selectedItem = 58;
 
                 moonCharge--;
@@ -122,9 +129,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 }
             }
             else if (Main.mouseItem == dummySpear)
-            {
                 Main.mouseItem = new Item();
-            }
         }
 
         private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
@@ -142,6 +147,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 {
                     dummySpear.SetDefaults(ItemType<Datsuzei>());                
                     helm.spearOn = true;
+                    MoonstoneArmorPacket packet = new MoonstoneArmorPacket(player.whoAmI, helm.moonCharge, helm.spearOn);
+                    packet.Send(-1, player.whoAmI, false);
 
                     int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<DatsuzeiProjectile>(), 1, 0, player.whoAmI, -1, 160);
                     Main.projectile[i].timeLeft = 160;
@@ -202,7 +209,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
         {
-            if (IsArmorSet(player) && !player.dead)
+            if (IsArmorSet(player) && !player.dead && PlayerTarget.canUseTarget)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
@@ -354,6 +361,39 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
             recipe.AddRecipe();
+        }
+    }
+
+    [Serializable]
+    public class MoonstoneArmorPacket : Module
+    {
+        public readonly byte whoAmI;
+        public readonly int charge;
+        public readonly bool spearOn;
+
+        public MoonstoneArmorPacket(int whoAmI, int charge, bool spearOn)
+        {
+            this.whoAmI = (byte)whoAmI;
+            this.charge = charge;
+            this.spearOn = spearOn;
+
+        }
+
+        protected override void Receive()
+        {
+            if (Main.netMode == NetmodeID.Server)
+            {
+                Send(-1, whoAmI, false);
+                return;
+            }
+
+            Player player = Main.player[whoAmI];
+            if (player.armor[0] != null && player.armor[0].type == ModContent.ItemType<MoonstoneHead>())
+            {
+                var head = player.armor[0].modItem as MoonstoneHead;
+                head.moonCharge = charge;
+                head.spearOn = spearOn;
+            }
         }
     }
 }

@@ -128,9 +128,10 @@ namespace StarlightRiver.Core
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Tile t = Parent;
-
+            
             if (t.frameX > 0 && variantCount > 0)
             {
+                
                 Texture2D tex = Main.tileTexture[t.type];
                 Rectangle frame = tex.Frame(variantCount, 1, t.frameX - 1);
                 Vector2 pos = ((projectile.position - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);

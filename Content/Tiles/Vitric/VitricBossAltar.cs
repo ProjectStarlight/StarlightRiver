@@ -159,6 +159,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
+        public void findParent()
+        {
+            boss = null;
+            arenaLeft = null;
+            arenaRight = null;
+
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                    boss = npc;
+
+                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropLeft>())
+                    arenaLeft = npc;
+
+                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropRight>())
+                    arenaRight = npc;
+            }
+            
+            return;
+        }
+
         public override void Update()
         {
             Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
@@ -167,8 +189,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
                 CutsceneTimer = 999;
 
+            if (boss is null || arenaLeft is null || arenaRight is null)
+                findParent();
+
             //This controls spawning the rest of the arena
-            if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active)
+            if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 foreach (NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
                  (
@@ -202,35 +227,26 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (parent.frameX == 0)
                 return;
 
-            if(Main.netMode == NetmodeID.Server && (boss is null || !boss.active))
-			{
-                for(int k = 0; k < Main.maxNPCs; k++) //TODO: Find a better way to find the boss or the server on sync it from the spawning client
-				{
-                    var npc = Main.npc[k];
-                    if(npc.active && npc.type == NPCType<VitricBoss>())
-					{
-                        boss = npc;
-                        projectile.netUpdate = true;
-                        return;
-					}
-				}
-			}
+            if (boss is null || !boss.active || boss.type != ModContent.NPCType<VitricBoss>())
+                boss = null;
 
             if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
-                Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
-                Dust.NewDust(projectile.Center + new Vector2(72, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
-
-                if (CutsceneTimer > 120 && CutsceneTimer <= 240)
-                    Main.musicFade[Main.curMusic] = 1 - ((CutsceneTimer - 120) / 120f);
-
-                if (CutsceneTimer == 180)
+                if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
-                    Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, projectile.Center);
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
+                    Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
+                    Dust.NewDust(projectile.Center + new Vector2(72, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
+
+                    if (CutsceneTimer > 120 && CutsceneTimer <= 240)
+                        Main.musicFade[Main.curMusic] = 1 - ((CutsceneTimer - 120) / 120f);
+
+                    if (CutsceneTimer == 180)
+                        Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, projectile.Center);
                 }
 
                 CutsceneTimer++;
+
                 if (CutsceneTimer > 180)
                 {
                     StarlightWorld.Flag(WorldFlags.VitricBossOpen);
@@ -253,15 +269,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (BarrierProgress < 120 && boss != null && boss.active)
             {
                 BarrierProgress++;
-                if (BarrierProgress % 3 == 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
-                if (BarrierProgress == 119) //hitting the top
+
+                if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
-                    //for (int k = 0; k < 5; k++) 
-                    Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
+                    if (BarrierProgress % 3 == 0) 
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
+
+                    if (BarrierProgress == 119) //hitting the top
+                    {
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
+                        Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
+                    }
                 }
             }
-            else if (BarrierProgress > 0 && boss != null && !boss.active)
+            else if (BarrierProgress > 0 && (boss == null || !boss.active))
                 BarrierProgress--;
         }
 

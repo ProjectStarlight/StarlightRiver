@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +44,12 @@ namespace StarlightRiver.Content.Items.Vitric
             item.UseSound = SoundID.DD2_MonkStaffSwing;
         }
 
-        public override bool CanUseItem(Player player)
+        public override void HoldItem(Player player)
         {
-            if (player.altFunctionUse == 2)
+            if (player.whoAmI == Main.myPlayer)
+                player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+
+            if (player.GetModPlayer<ControlsPlayer>().mouseRight)
             {
                 item.shoot = ModContent.ProjectileType<BossSpearShieldProjectile>();
                 item.UseSound = SoundID.DD2_CrystalCartImpact;
@@ -61,8 +65,6 @@ namespace StarlightRiver.Content.Items.Vitric
                 item.useTime = 35;
                 item.knockBack = 8;
             }
-
-            return true;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -79,8 +81,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             if (buffed && player.altFunctionUse != 2)
             {
-                int i = Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
-                Main.projectile[i].ai[1] = buffPower;
+                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI, 0, buffPower);
                 buffed = false;
 
                 return false;
@@ -99,6 +100,14 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool UseItem(Player player)
         {
             //player.velocity += Vector2.Normalize(player.Center - Main.MouseWorld) * 10;
+            if (player.GetModPlayer<ControlsPlayer>().mouseRight)
+            {
+                Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, player.position);
+            } else
+            {
+                Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, player.position);
+            }
+
             return true;
         }
     }
@@ -142,12 +151,20 @@ namespace StarlightRiver.Content.Items.Vitric
 
                  player.velocity += Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
             }
+
+
+        }
+
+        public override void PostAI()
+        {
+            if (Main.myPlayer != projectile.owner)
+                findIfHit();
         }
 
         public override bool? CanHitNPC(NPC target)
         {
             var player = Main.player[projectile.owner];
-            return projectile.timeLeft < (int)(50 * player.meleeSpeed);
+            return (projectile.timeLeft < (int)(50 * player.meleeSpeed)) && target.active && !target.dontTakeDamage && !target.townNPC;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -165,6 +182,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 BuffPower = 0;
             }
+
+            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
+
+
+            if (Main.myPlayer == projectile.owner)
+                projectile.netUpdate = true;
 
             if (Helpers.Helper.IsFleshy(target))
             {
@@ -184,6 +207,17 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
                     Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Glow>(), Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.5f));
                 }
+            }
+        }
+
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active  && !n.dontTakeDamage && !n.townNPC && n.life > 0 && projectile.timeLeft < (int)(50 * Main.player[projectile.owner].meleeSpeed) && n.immune[projectile.owner] <= 0 &&  n.Hitbox.Intersects(projectile.Hitbox) ))
+            {
+                int zero = 0;
+                float zerof = 0f;
+                bool none = false;
+                ModifyHitNPC(npc, ref zero, ref zerof, ref none, ref zero);
             }
         }
 
@@ -222,6 +256,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public ref float ShieldLife => ref projectile.ai[0];
 
+        public ref float Rotation => ref projectile.ai[1];
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Lattice");
@@ -251,6 +287,14 @@ namespace StarlightRiver.Content.Items.Vitric
             }
         }
 
+        private void findIfHit()
+        {
+            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            {
+                OnHitNPC(npc, 0, 0, false);
+            }
+        }
+
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             ShieldLife -= target.damage / 2;
@@ -261,6 +305,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
             var item = (player.HeldItem.modItem as BossSpear);
 
+            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
+
             if (item != null && !item.buffed)
             {
                 item.buffed = true;
@@ -269,26 +315,39 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (ShieldLife <= 0)
                 projectile.Kill();
+
+            if (Main.myPlayer == projectile.owner)
+                projectile.netUpdate = true;
         }
 
         public override void AI()
         {
             var player = Main.player[projectile.owner];
             projectile.frameCounter++;
-            if (projectile.timeLeft > 5 && player == Main.LocalPlayer && !Main.mouseRight)
+
+            ControlsPlayer cplayer = player.GetModPlayer<ControlsPlayer>();
+
+            if (Main.myPlayer == projectile.owner)
+            {
+                cplayer.mouseRotationListener = true;
+                cplayer.rightClickListener = true;
+            }
+                
+
+            if (projectile.timeLeft > 5 && !cplayer.mouseRight)
             {
                 projectile.timeLeft = 5;
                 player.itemTime = 20;
                 player.itemAnimation = 20;
             }
-            if (Main.mouseRight && player == Main.LocalPlayer && projectile.timeLeft < 10)
+            if (cplayer.mouseRight && projectile.timeLeft < 10)
             {
                 projectile.timeLeft = 10;
                 player.itemTime = 20;
                 player.itemAnimation = 20;
             }
 
-            projectile.ai[1] = (Main.MouseWorld - player.Center).ToRotation() - (float)Math.PI;
+            Rotation = (cplayer.mouseWorld - player.Center).ToRotation() - (float)Math.PI;
 
             if (projectile.timeLeft == 60)
             {
@@ -299,16 +358,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
             var progress = projectile.timeLeft > 50 ? (60 - projectile.timeLeft) / 10f : projectile.timeLeft < 5 ? (projectile.timeLeft / 5f) : 1;
 
-            projectile.Center = player.Center + Vector2.UnitY * player.gfxOffY + Vector2.UnitX.RotatedBy(projectile.ai[1]) * 28 * -progress;
+            projectile.Center = player.Center + Vector2.UnitY * player.gfxOffY + Vector2.UnitX.RotatedBy(Rotation) * 28 * -progress;
             projectile.scale = progress;
-            projectile.rotation = projectile.ai[1] + (float)Math.PI;
+            projectile.rotation = Rotation + (float)Math.PI;
 
-            if (Main.MouseWorld.X > player.Center.X)
+            if (cplayer.mouseWorld.X > player.Center.X)
                 player.direction = 1;
             else
                 player.direction = -1;
 
-            player.itemRotation = projectile.ai[1] + (float)Math.PI; //TODO: Wrap properly when facing left
+            player.itemRotation = Rotation + (float)Math.PI; //TODO: Wrap properly when facing left
 
             if (player.direction != 1)
                 player.itemRotation -= 3.14f;
@@ -355,6 +414,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (ShieldLife <= 0)
                 projectile.Kill();
+        }
+
+        public override void PostAI()
+        {
+            if (Main.myPlayer != projectile.owner)
+                findIfHit();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

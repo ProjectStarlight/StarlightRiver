@@ -11,6 +11,8 @@ using Terraria.ModLoader;
 using static StarlightRiver.Content.Bosses.VitricBoss.VitricBoss;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Packets;
+using Terraria.ID;
+using System.IO;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -25,6 +27,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public ref float timer => ref npc.ai[1];
         public ref float phase => ref npc.ai[2];
         public ref float altTimer => ref npc.ai[3];
+
+        public float prevState;
+        public float prevPhase;
 
         public override string Texture => AssetDirectory.VitricBoss + Name;
 
@@ -57,6 +62,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.dontTakeDamage = true;
             npc.dontTakeDamageFromHostiles = true;
             npc.behindTiles = true;
+            npc.netAlways = true;
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -86,6 +92,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return !(state == 0 || state == 1); //too tired of dealing with this 
         }
 
+        public bool findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    Parent = npc.modNPC as VitricBoss;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(TargetPos);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            TargetPos = reader.ReadPackedVector2();
+        }
+
         public override void AI()
         {
             /* AI fields:
@@ -94,7 +124,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: phase
              * 3: alt timer
              */
-            if (Parent == null) npc.Kill();
+            if (Parent == null)
+            {
+                if (!findParent())
+                {
+                    npc.Kill();
+                    return;
+                }
+            }
+
+            if (!Parent.npc.active)
+            {
+                npc.Kill();
+                return;
+            }
+
             npc.frame = new Rectangle(0, npc.height * (int)state, npc.width, npc.height); //frame finding based on state
 
             timer++; //ticks the timers
@@ -102,8 +146,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (state == 0) //appears to be the "vulnerable" phase
             {
-                Vignette.visible = true;
-                Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
+                if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
+                {
+                    Vignette.visible = true;
+                    Vignette.offset = (npc.Center - Main.LocalPlayer.Center) * 0.7f; //clientside vignette offset
+                }
+
 
                 if (Main.rand.Next(27) == 0)
                 {
@@ -139,7 +187,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
-                        if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
+                        if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient && Main.myPlayer == player.whoAmI)
 						{
                             var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI);
                             packet.Send();
@@ -166,8 +214,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
+            npc.scale = 1; //resets scale, just incase
+
             switch (phase)
             {
+                
                 case 0: //nothing / spawning animation, sensitive to friendliness
                     if (npc.rotation != 0) //normalize rotation
                     {
@@ -186,7 +237,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             npc.netUpdate = true;
                         }
                     }
-                    npc.scale = 1; //resets scale, just incase
 
                     break;
 
@@ -215,7 +265,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             Parent.npc.HealEffect(250, true);
                             Parent.npc.dontTakeDamage = false; //make the boss vulnerable again so you can take that new 250 HP back off
                             Parent.RebuildRandom();
-                            npc.netUpdate = true;
+                            Parent.npc.netUpdate = true;
 
                             for (float k = 0; k < 1; k += 0.03f) //dust visuals
                                 Dust.NewDustPerfect(Vector2.Lerp(npc.Center, Parent.npc.Center, k), DustType<Dusts.Starlight>());
@@ -299,6 +349,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     break;
             }
+
+            if (Main.netMode == NetmodeID.Server && (phase != prevPhase || state != prevState))
+            {
+                prevPhase = phase;
+                prevState = state;
+                npc.netUpdate = true;
+            }
+
         }
         
         private void Impact()
@@ -309,7 +367,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
 
-            if (state == 3)
+            if (state == 3 && Main.netMode != NetmodeID.MultiplayerClient)
                 Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer);
 
             for (int k = 0; k < 40; k++)
@@ -441,7 +499,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     shouldDrawArc = false;
 			}
 
-            if(Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
+            if(Parent != null && Parent.Phase == (float)AIStates.FirstPhase && Parent.AttackPhase == 1) //total bodge, these should draw on every crystal not just the oens that draw arcs. this detects the attack on the parent
 			{
                 if (Parent.AttackTimer > 360)
                 {
