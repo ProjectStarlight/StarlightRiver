@@ -171,6 +171,9 @@ namespace StarlightRiver.Core
 
         public override void ModifyScreenPosition()
         {
+            if (Main.myPlayer != player.whoAmI)
+                return;
+
             var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
             Main.screenPosition -= adj;
 
