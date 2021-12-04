@@ -23,6 +23,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void RandomizeTarget()
         {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
             List<int> players = new List<int>();
 
             foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint()) ))
@@ -30,12 +33,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 players.Add(player.whoAmI);
             }
 
-            int random = bossRand.Next(players.Count);
+            int random = Main.rand.Next(players.Count);
 
             if(random < players.Count)
                 npc.target = players[random];
 
-            RebuildRandom();
+            npc.netUpdate = true;
         }
 
         private void BuildCrystalLocations()
@@ -79,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     List<Vector2> possibleLocations = new List<Vector2>(crystalLocations);
                     possibleLocations.ForEach(n => n += new Vector2(0, -48));
-                    possibleLocations = Helper.RandomizeList(possibleLocations, bossRand);
+                    possibleLocations = Helper.RandomizeList(possibleLocations, Main.rand);
                     for (int k = 0; k < crystals.Count; k++)
                     {
                         NPC crystalNpc = crystals[k];
@@ -107,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(homePos + new Vector2(bossRand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+                Projectile.NewProjectile(homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
 
             if (AttackTimer >= 720)
                 ResetAttack();
@@ -117,23 +120,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (AttackTimer % 110 == 0 && AttackTimer != 0 && AttackTimer < 800) //the sand cones the boss fires
             {
-
-                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + bossRand.NextFloat(-0.5f, 0.5f);
-
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
+                    float rot = (npc.Center - Main.player[npc.target].Center).ToRotation() + Main.rand.NextFloat(-0.5f, 0.5f);
+
                     int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, rot); //fire cone
 
                     (Main.projectile[index].modProjectile as FireCone).extraShots = BrokenCount >= 1;
+
+                    lockedRotation = rot + 3.14f;
+
+                    RandomizeTarget();
                 }
-
-                RandomizeTarget();
-
-                lockedRotation = rot + 3.14f;
             }
 
             if(AttackTimer % 110 == 25)
-                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, bossRand.NextFloat(0.1f, 1), npc.Center);
+                Helper.PlayPitched("VitricBoss/ceiroslidopensmall", 0.5f, Main.rand.NextFloat(0.1f, 1), npc.Center);
 
             if (AttackTimer > 110 && AttackTimer % 110 > 10 && AttackTimer % 110 <= 90)
 			{
@@ -453,16 +455,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         if (timer == 60) //fire cone
                         {
-                            float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
+                            
 
                             if (Main.netMode != NetmodeID.MultiplayerClient)
                             {
+                                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
+
                                 int index = Projectile.NewProjectile(npc.Center + new Vector2(0, 30), Vector2.Zero, ProjectileType<FireCone>(), 25, 0, Main.myPlayer, 0, rot); //fire cone
 
                                 (Main.projectile[index].modProjectile as FireCone).extraShots = BrokenCount >= 1;
-                            }
 
-                            lockedRotation = rot + 3.14f;
+                                lockedRotation = rot + 3.14f;
+                                npc.netUpdate = true;
+                            }
                         }
 
                         if(timer == 80)
@@ -582,8 +587,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
-            if (AttackTimer == 280) 
+            if (AttackTimer == 280)
+            {
                 startPos = npc.Center; //set where we are to the start
+                npc.netUpdate = true;
+            }
+                
 
             if (AttackTimer > 280) //going home
             {
@@ -665,12 +674,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (AttackTimer % 90 == 0)
             {
-                float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
-
                 if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    float rot = (npc.Center - Main.player[npc.target].Center).ToRotation();
+
                     Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<GlassVolley>(), 0, 0, Main.myPlayer, 0, rot);
 
-                lockedRotation = rot + 3.14f;
+                    lockedRotation = rot + 3.14f;
+
+                    npc.netUpdate = true;
+                }
 
                 Helper.PlayPitched("VitricBoss/ceiroslidopendelayed", 0.5f, bossRand.NextFloat(0.3f, 1), npc.Center);
             }

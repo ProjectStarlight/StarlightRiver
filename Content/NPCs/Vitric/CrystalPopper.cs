@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core;
 using System;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,6 +29,20 @@ namespace StarlightRiver.Content.NPCs.Vitric
         {
             DisplayName.SetDefault("Sand Bat");
             Main.npcFrameCount[npc.type] = 7;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(npc.noGravity);
+            writer.Write(npc.target);
+            writer.WritePackedVector2(npc.velocity);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            npc.noGravity = reader.ReadBoolean();
+            npc.target = reader.ReadInt32();
+            npc.velocity = reader.ReadPackedVector2();
         }
 
         public override void SetDefaults()
@@ -63,7 +78,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             npc.TargetClosest(true);
             switch (npc.ai[0])
             {
-                case 0://sleepinh: in ground checking for player
+                case 0://sleeping: in ground checking for player
                     npc.velocity.X *= 0.9f;
                     if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) <= 180)
                         ExitSleep();
