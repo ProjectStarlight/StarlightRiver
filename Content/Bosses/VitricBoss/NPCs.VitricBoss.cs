@@ -282,7 +282,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
-
             else
             {
                 int weapon = Main.rand.Next(4);
@@ -716,7 +715,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
-            writer.Write(randSeed);
+            writer.Write(lockedRotation);
 
             writer.WritePackedVector2(startPos);
             writer.WritePackedVector2(endPos);
@@ -733,8 +732,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
-            randSeed = reader.ReadInt32();
-            bossRand = new UnifiedRandom(randSeed);
+            lockedRotation = reader.ReadSingle();
 
             startPos = reader.ReadPackedVector2();
             endPos = reader.ReadPackedVector2();
