@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
         {
-            if(!GUI.Stam.specialVesselTextures.Contains(Texture))
+            if(!GUI.Stam.specialVesselTextures.Contains(Texture) && Main.myPlayer == player.whoAmI)
                 GUI.Stam.specialVesselTextures.Add(Texture);
         }
     }
