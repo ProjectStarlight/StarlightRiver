@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -15,9 +16,27 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
     {
         public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
 
-		public override void OnEngage(GearTileEntity entity)
+		public override bool NewRightClick(int i, int j)
 		{
-			base.OnEngage(entity);
+			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
+
+			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
+
+			if (entity is null)
+				return false;
+
+			if (dummy is null || dummy.gearAnimation > 0)
+				return false;
+
+			entity.Disengage();
+
+			dummy.oldSize = dummy.Size;
+			dummy.Size++;
+			dummy.gearAnimation = 40;
+
+			GearPuzzleHandler.PuzzleOriginEntity?.Engage(2);
+
+			return true;
 		}
 	}
 

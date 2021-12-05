@@ -32,31 +32,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			QuickBlock.QuickSetFurniture(this, 1, 1, 1, 1, new Color(1, 1, 1));
 		}
 
-        public override bool NewRightClick(int i, int j)
-		{
-			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
-
-			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
-
-			if (entity is null)
-				return false;
-
-			if (dummy is null || dummy.gearAnimation > 0)
-				return false;
-
-			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
-			{
-				entity.Toggle();			
-				return true;
-			}
-
-			dummy.oldSize = dummy.Size;
-			dummy.Size++;
-			dummy.gearAnimation = 40;
-
-			return true;
-		}
-
 		public virtual void OnEngage(GearTileEntity entity) { }
 
 		public virtual void OnDisengage(GearTileEntity entity) { }
@@ -66,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	{
 		public bool engaged = false;
 		public int size;
-		public float direction;
+		public float rotationVelocity;
 		public float rotationOffset;
 
 		public int Teeth
@@ -102,6 +77,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			return Place(i, j);
 		}
 
+		/// <summary>
+		/// Performs an action on all gears in a system. Has no built-in base case, you must implement one in your action.
+		/// </summary>
+		/// <param name="action">The action to be performed on all connected gears, including this one</param>
 		public void RecurseOverGears(Action<Point16, int> action)
 		{
 			if (size > 0)
@@ -192,7 +171,18 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			action(pos + new Point16(5, -3), size);
 		}
 
-		private void TryEngage(Point16 pos, int size)
+		/// <summary>
+		/// Disengages the connected system and then restarts it from this gear, with the given initial speed
+		/// </summary>
+		/// <param name="rotationVelocity">The speed of this gear in the new engagement</param>
+		public void Engage(float rotationVelocity)
+		{
+			Disengage();
+			this.rotationVelocity = rotationVelocity;
+			Engage(Position, size);
+		}
+
+		private void Engage(Point16 pos, int size)
 		{
 			if (!ByPosition.ContainsKey(pos))
 				return;
@@ -207,25 +197,36 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					int nextSize = entity.Teeth;
 					float ratio = (thisSize / (float)nextSize);
 
-					entity.direction = direction * -1 * ratio;
+					entity.rotationVelocity = rotationVelocity * -1 * ratio;
+
+					if (entity == this) //This is here to prevent the first gear which engages from reversing itself
+						entity.rotationVelocity *= -1;
 
 					float trueAngle = ((Position.ToVector2() * 16 + Vector2.One * 8) - (entity.Position.ToVector2() * 16 + Vector2.One * 8)).ToRotation();
 
 					entity.rotationOffset = -(ratio * rotationOffset) + ((1 + ratio) * trueAngle) + (float)Math.PI / entity.Teeth;
 
-					//gearDummy.rotationOffset += rotationOffset;
 					engaged = true;
-					entity.RecurseOverGears(entity.TryEngage);
+
+					Tile tile = Main.tile[Position.X, Position.Y];
+					(ModContent.GetModTile(tile.type) as GearTile)?.OnEngage(this);
+
+					entity.RecurseOverGears(entity.Engage);
 				}
 			}
 
-			engaged = true;
-
-			Tile tile = Main.tile[Position.X, Position.Y];
-			(ModContent.GetModTile(tile.type) as GearTile)?.OnEngage(this);		
+			engaged = true;					
 		}
 
-		private void TryDisengage(Point16 pos, int size)
+		/// <summary>
+		/// Disengage the gear system connected to this gear
+		/// </summary>
+		public void Disengage()
+		{
+			Disengage(Position, size);
+		}
+
+		private void Disengage(Point16 pos, int size)
 		{
 			if (!ByPosition.ContainsKey(pos))
 				return;
@@ -236,31 +237,33 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				if (entity.size == size && entity.engaged)
 				{
-					entity.direction = 0;
+					entity.rotationVelocity = 0;
 					entity.rotationOffset = 0;
 
 					engaged = false;
-					entity.RecurseOverGears(entity.TryDisengage);
+
+					Tile tile = Main.tile[Position.X, Position.Y];
+					(ModContent.GetModTile(tile.type) as GearTile)?.OnDisengage(this);
+
+					entity.RecurseOverGears(entity.Disengage);
 				}
 			}
 
 			engaged = false;
-
-			Tile tile = Main.tile[Position.X, Position.Y];
-			(ModContent.GetModTile(tile.type) as GearTile)?.OnDisengage(this);		
 		}
 
-		public void Toggle()
+		/// <summary>
+		/// Toggles the connected gear system between being on and off
+		/// </summary>
+		/// <param name="rotationVelocity">The speed of this gear in the new system if toggling on</param>
+		public void Toggle(float rotationVelocity)
 		{
 			if (engaged)
-			{
-				//engaged = false;
-				TryDisengage(Position, size);
-			}
+				Disengage(Position, size);
 			else
 			{
-				direction = 2;
-				TryEngage(Position, size);
+				this.rotationVelocity = rotationVelocity;
+				Engage(Position, size);
 			}
 		}
 
@@ -268,7 +271,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			writer.Write(engaged);
 			writer.Write(size);
-			writer.Write(direction);
+			writer.Write(rotationVelocity);
 			writer.Write(rotationOffset);
 		}
 
@@ -276,7 +279,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			engaged = reader.ReadBoolean();
 			size = reader.ReadInt32();
-			direction = reader.ReadSingle();
+			rotationVelocity = reader.ReadSingle();
 			rotationOffset = reader.ReadSingle();
 		}
 
@@ -286,7 +289,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				["engaged"] = engaged,
 				["size"] = size,
-				["direction"] = direction,
+				["direction"] = rotationVelocity,
 				["rotationOffset"] = rotationOffset
 			};
 		}
@@ -295,7 +298,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			engaged = tag.GetBool("engaged");
 			size = tag.GetInt("size");
-			direction = tag.GetFloat("direction");
+			rotationVelocity = tag.GetFloat("direction");
 			rotationOffset = tag.GetFloat("rotationOffset");
 		}
 	}
@@ -305,16 +308,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public int gearAnimation;
 		public int oldSize;
 
-		bool Engaged
+		protected bool Engaged
 		{
 			get => Entity.engaged;
 			set => Entity.engaged = value;
 		}
 
-		float Direction
+		protected float RotationVelocity
 		{
-			get => Entity.direction;
-			set => Entity.direction = value;
+			get => Entity.rotationVelocity;
+			set => Entity.rotationVelocity = value;
 		}
 
 		protected float RotationOffset
@@ -323,7 +326,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			set => Entity.rotationOffset = value;
 		}
 
-		private GearTileEntity Entity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
+		protected GearTileEntity Entity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
 
 		public int Size
 		{
@@ -338,7 +341,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				float rot = 0;
 
 				if (Engaged)
-					rot = Main.GameUpdateCount * 0.01f * Direction;
+					rot = Main.GameUpdateCount * 0.01f * RotationVelocity;
 
 				return rot + RotationOffset;
 			}

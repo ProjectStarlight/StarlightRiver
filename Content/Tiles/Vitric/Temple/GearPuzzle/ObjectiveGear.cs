@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void OnEngage(GearTileEntity entity)
 		{
-			base.OnEngage(entity);
+			GearPuzzleHandler.engagedObjectives++;
 		}
 	}
 
