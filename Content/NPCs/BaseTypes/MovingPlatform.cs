@@ -20,6 +20,10 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("");
 
+        public virtual void SafeSendExtraAI() { }
+
+        public virtual void SafeReceiveExtraAI() { }
+
         public sealed override void SetDefaults()
         {
             SafeSetDefaults();
@@ -34,33 +38,19 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
             npc.netAlways = true;
         }
 
-        public override void SendExtraAI(BinaryWriter writer)
+        public override sealed void SendExtraAI(BinaryWriter writer)
         {
-            writer.WritePackedVector2(npc.velocity);
+            SafeSendExtraAI();
         }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
+        public override sealed void ReceiveExtraAI(BinaryReader reader)
         {
-            npc.velocity = reader.ReadPackedVector2();
+            SafeReceiveExtraAI();
         }
 
         public sealed override void AI()
         {
             SafeAI();
-
-            //for (int k = 0; k < Main.maxPlayers; k++)
-            //{
-            //    var player = Main.player[k];
-
-            //    if (!player.active)
-            //        break;
-
-            //    var playerFeet = new Rectangle((int)player.position.X, (int)player.position.Y + (player.height - 2), player.width, 4);
-            //    var platformHitbox = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 4);
-
-            //    if (playerFeet.Intersects(platformHitbox) && player.position.Y <= npc.position.Y)
-            //        player.position += npc.velocity;
-            //}
 
             for (int k = 0; k < Main.maxProjectiles; k++)
 			{

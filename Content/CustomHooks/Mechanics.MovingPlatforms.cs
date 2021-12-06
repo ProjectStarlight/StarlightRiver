@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.CustomHooks
                 return;
             }
 
-            Vector2 bonusNpcVelocity = Vector2.Zero;
             foreach (NPC npc in Main.npc)
             {
                 if (!npc.active || npc.modNPC == null || !(npc.modNPC is MovingPlatform))
@@ -56,7 +55,7 @@ namespace StarlightRiver.Content.CustomHooks
                         self.velocity.Y = 0;
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = npc.position.Y - self.height + 4;
-                        bonusNpcVelocity = npc.velocity;
+                        self.position += npc.velocity;
                     }
                 }
             }
