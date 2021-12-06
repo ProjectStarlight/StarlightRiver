@@ -15,7 +15,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using NetEasy;
 
 namespace StarlightRiver.Core
 {
@@ -295,6 +294,8 @@ namespace StarlightRiver.Core
             BootlegHealthbar.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;
+
+            DummyTile.dummies.Clear();
         }
 
 		public override void OnRespawn(Player player)

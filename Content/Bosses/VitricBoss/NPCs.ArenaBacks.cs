@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -258,26 +259,34 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public virtual void SpawnPlatforms(bool rising = true)
         {
-            PlacePlatform(205, 136, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(140, 420, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(440, 668, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(210, 30, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(400, 230, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(280, 310, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(230, 570, NPCType<VitricBossPlatformUpSmall>(), rising);
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
             PlacePlatform(260, 790, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(440, 668, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(230, 570, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(140, 420, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(280, 310, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(400, 230, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(205, 136, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(210, 30, NPCType<VitricBossPlatformUpSmall>(), rising);
         }
 
         public virtual void ResyncPlatforms()
 		{
-            SyncPlatform(platforms[0], 136, true);
-            SyncPlatform(platforms[1], 420, true);
-            SyncPlatform(platforms[2], 668, true);
-            SyncPlatform(platforms[3], 30, true);
-            SyncPlatform(platforms[4], 230, true);
-            SyncPlatform(platforms[5], 310, true);
-            SyncPlatform(platforms[6], 570, true);
-            SyncPlatform(platforms[7], 790, true);
+            if (platforms.Count != getPlatformCount)
+            {
+                return;
+            }
+
+            SyncPlatform(platforms[0], 790, true);
+            SyncPlatform(platforms[1], 668, true);
+            SyncPlatform(platforms[2], 570, true);
+            SyncPlatform(platforms[3], 420, true);
+            SyncPlatform(platforms[4], 310, true);
+            SyncPlatform(platforms[5], 230, true);
+            SyncPlatform(platforms[6], 136, true);
+            SyncPlatform(platforms[7], 30, true);
         }
 
         public void PlacePlatform(int x, int y, int type, bool rising)
@@ -301,9 +310,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         public void SyncPlatform(NPC platform, int y, bool rising)
-		{
+        {
             platform.position.Y = (int)npc.position.Y - y - platform.height;
-		}
+        }
     }
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
@@ -399,24 +408,32 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SpawnPlatforms(bool rising = true)
         {
-            PlacePlatform(160, 90, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(272, 330, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(192, 580, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(394, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
             PlacePlatform(294, 760, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(192, 580, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(272, 330, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(394, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(160, 90, NPCType<VitricBossPlatformDown>(), rising);
         }
 
         public override void ResyncPlatforms()
         {
-            SyncPlatform(platforms[0], 90, false);
-            SyncPlatform(platforms[1], 330, false);
+            if (platforms.Count != getPlatformCount)
+            {
+                return;
+            }
+
+            SyncPlatform(platforms[0], 760, false);
+            SyncPlatform(platforms[1], 660, false);
             SyncPlatform(platforms[2], 580, false);
-            SyncPlatform(platforms[3], 198, false);
-            SyncPlatform(platforms[4], 440, false);
-            SyncPlatform(platforms[5], 660, false);
-            SyncPlatform(platforms[6], 760, false);
+            SyncPlatform(platforms[3], 440, false);
+            SyncPlatform(platforms[4], 330, false);
+            SyncPlatform(platforms[5], 198, false);
+            SyncPlatform(platforms[6], 90, false);
         }
     }
 }

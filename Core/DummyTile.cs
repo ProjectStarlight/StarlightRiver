@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Packets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -8,11 +9,24 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	internal abstract class DummyTile : ModTile
+	internal abstract class DummyTile : ModTile, ILoadable
     {
-        public static Dictionary<Point16, Projectile> dummies = new Dictionary<Point16, Projectile>();
+        public static Dictionary<Point16, int> dummies;
 
         public virtual int DummyType { get; }
+
+        public float Priority => 1f;
+
+        public void Load()
+        {
+            dummies = new Dictionary<Point16, int>();
+        }
+
+        public void Unload()
+        {
+            dummies.Clear();
+            dummies = null;
+        }
 
         public Projectile Dummy(int i, int j) => GetDummy(i, j, DummyType);
 
@@ -20,10 +34,10 @@ namespace StarlightRiver.Core
 		{
             Point16 key = new Point16(i, j);
 
-            if (dummies.TryGetValue(key, out Projectile dummy))
+            if (dummies.TryGetValue(key, out int dummyIndex))
 			{
-                if (dummy.type == type)
-                    return dummy;
+                if (Main.projectile[dummyIndex].type == type)
+                    return Main.projectile[dummyIndex];
 			}
 
             return null;
@@ -31,13 +45,27 @@ namespace StarlightRiver.Core
 
         public static bool DummyExists(int i, int j, int type)
 		{
+            //check dictionary first incase we can skip iterating through proj array
+            Point16 key = new Point16(i, j);
+
+            Projectile dummy = GetDummy(i, j, type);
+
+            if (dummy != null && dummy.active && dummy.type == type)
+                return true;
+
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
-                if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Terraria.DataStructures.Point16(i, j))
+                if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Point16(i, j))
+                {
+                    //assign to dict since it wasn't there before
+                    
+                    dummies[key] = proj.whoAmI;
                     return true;
+                }
             }
 
+            dummies.Remove(key);
             return false;
         }
 
@@ -56,9 +84,7 @@ namespace StarlightRiver.Core
             if (!Main.tileFrameImportant[Type] || SpawnConditions(i, j))
             {
                 int type = DummyType;//cache type here so you dont grab the it from a dict every single iteration
-                var dummy = Dummy(i, j);
-
-                if (dummy is null || !dummy.active)
+                if (!DummyExists(i, j, type))
                 {
                     if (Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient)
                     {
@@ -74,7 +100,7 @@ namespace StarlightRiver.Core
                     int n = Projectile.NewProjectile(spawnPos, Vector2.Zero, type, 1, 0);
 
                     Point16 key = new Point16(i, j);
-                    dummies[key] = Main.projectile[n];
+                    dummies[key] = n;
 
                     PostSpawnDummy(Main.projectile[n]);
                 }
