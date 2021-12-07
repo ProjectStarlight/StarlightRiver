@@ -632,6 +632,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 case (int)AIStates.Leaving:
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
+                    npc.dontTakeDamage = true;
+
                     npc.position.Y += 7;
 
                     if (GlobalTimer >= 180)
