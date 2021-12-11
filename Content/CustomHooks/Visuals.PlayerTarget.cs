@@ -194,6 +194,7 @@ namespace StarlightRiver.Content.CustomHooks
                     oldMountedCenter = Main.player[i].MountedCenter;
                     oldScreen = Main.screenPosition;
                     oldItemLocation = Main.player[i].itemLocation;
+                    int oldHeldProj = Main.player[i].heldProj;
 
                     //temp change player's actual position to lock into their frame
                     positionOffset = getPositionOffset(i);
@@ -201,6 +202,7 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.player[i].Center = oldCenter - oldPos + positionOffset;
                     Main.player[i].itemLocation = oldItemLocation - oldPos + positionOffset;
                     Main.player[i].MountedCenter = oldMountedCenter - oldPos + positionOffset;
+                    Main.player[i].heldProj = -1;
                     Main.screenPosition = Vector2.Zero;
                     playerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, 0f, Vector2.Zero, 0f });
 
@@ -209,6 +211,7 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.screenPosition = oldScreen;
                     Main.player[i].itemLocation = oldItemLocation;
                     Main.player[i].MountedCenter = oldMountedCenter;
+                    Main.player[i].heldProj = oldHeldProj;
                 }
 
             }
