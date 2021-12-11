@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossAltar : DummyTile
+    internal class VitricBossAltar : DummyTile
     {
         public override int DummyType => ProjectileType<VitricBossAltarDummy>();
 
@@ -33,8 +33,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             minPick = int.MaxValue;
         }
 
-		public override bool CanExplode(int i, int j)
-		{
+        public override bool CanExplode(int i, int j)
+        {
             Tile tile = Framing.GetTileSafely(i, j);
 
             if (tile.type == TileType<VitricBossAltar>())
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             return base.CanExplode(i, j);
         }
 
-		public override bool SpawnConditions(int i, int j)
+        public override bool SpawnConditions(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
             return tile.frameX % 90 == 0 && tile.frameY == 0;
@@ -96,13 +96,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public void SpawnBoss(int i, int j)
         {
-            if(Main.netMode == NetmodeID.MultiplayerClient)
-			{
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
                 var packet = new SpawnNPC(Main.myPlayer, i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
                 packet.Send(-1, -1, false);
 
                 return;
-			}
+            }
 
             int n = NPC.NewNPC(i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
             var npc = Main.npc[n];
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (npc.active && npc.type == ModContent.NPCType<VitricBackdropRight>())
                     arenaRight = npc;
             }
-            
+
             return;
         }
 
@@ -273,7 +273,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 }
             }
 
-            if(CutsceneTimer > 240 && CutsceneTimer < 660)
+            if (CutsceneTimer > 240 && CutsceneTimer < 660)
                 Main.musicFade[Main.curMusic] = 0;
 
             CutsceneTimer++;
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
-                    if (BarrierProgress % 3 == 0) 
+                    if (BarrierProgress % 3 == 0)
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
 
                     if (BarrierProgress == 119) //hitting the top

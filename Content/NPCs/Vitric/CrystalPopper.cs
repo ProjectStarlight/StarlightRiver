@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class CrystalPopper : ModNPC
+    internal class CrystalPopper : ModNPC
     {
         private const int animFramesLoop = 6; //amount of frames in the main loop
         private readonly float AnimSpeedMult = 0.3f;

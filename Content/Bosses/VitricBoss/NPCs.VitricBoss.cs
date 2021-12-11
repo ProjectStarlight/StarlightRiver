@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private int favoriteCrystal = 0;
         private bool altAttack = false;
         private int randSeed = 1923712512;
-        
+
         private List<VitricBossSwoosh> swooshes;
         private BodyHandler body;
 
@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     player.immune = true;
                 }
 
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) 
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp))
                     npc.ai[1] = 4;
 
                 ChangePhase(AIStates.Dying, true);
@@ -266,8 +266,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void NPCLoot()
         {
 
-            for(int k = 0; k < Main.rand.Next(30, 40); k++)
-			{
+            for (int k = 0; k < Main.rand.Next(30, 40); k++)
+            {
                 var rot = Main.rand.NextFloat(6.28f);
                 Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
             }
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Item.NewItem(npc.Center, ItemType<MagmaCore>(), Main.rand.Next(1, 2));
                 Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
 
-                if(Main.rand.Next(10) == 0)
+                if (Main.rand.Next(10) == 0)
                     Item.NewItem(npc.Center, ItemType<Items.BarrierDye.VitricBossBarrierDye>());
             }
         }
@@ -365,7 +365,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         private int GetTwistDirection(float angle)
-		{
+        {
             int direction = 0;
 
             if (angle > 1.57f && angle < 1.57f * 3)
@@ -434,7 +434,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (arena == new Rectangle())
                 arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
-            
+
 
             //find crystals
             if (crystals.Count < 4)
@@ -512,7 +512,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (shieldShaderTimer > 0)
                         shieldShaderTimer--;
 
-                    
+
                     if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
                     {
                         if (!npc.dontTakeDamage)
@@ -522,14 +522,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
                             Main.PlaySound(SoundID.ForceRoar, npc.Center);
                         }
-                        
+
                         npc.dontTakeDamage = true; //boss is immune at phase gate
                     }
 
                     if (AttackTimer == 1) //switching out attacks
                     {
                         if (npc.dontTakeDamage) //nuke attack once the boss turns immortal for a chance to break a crystal
-                            AttackPhase = 0; 
+                            AttackPhase = 0;
                         else //otherwise proceed with attacking pattern
                         {
                             AttackPhase++;
@@ -568,10 +568,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         }
 
                         npc.dontTakeDamage = true; //boss is immune at phase gate
-                    } else
-                    {
-                        npc.dontTakeDamage = false;
                     }
+                    else
+                        npc.dontTakeDamage = false;
 
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
 
@@ -600,7 +599,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (GlobalTimer == 60)
                     {
                         npc.dontTakeDamage = false; //damagable again
-                        npc.friendly = false;                    
+                        npc.friendly = false;
                     }
 
                     if (AttackTimer == 1) //switching out attacks
@@ -671,19 +670,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 NPC npc = Main.npc[i];
                 if (npc.active && npc.type == ModContent.NPCType<VitricBossCrystal>() && !crystals.Contains(npc))
-                {
                     crystals.Add(npc);
-                }
             }
         }
 
-		public override void ResetEffects()
-		{
+        public override void ResetEffects()
+        {
             rotationLocked = false;
         }
 
-		private void DoRotation()
-		{
+        private void DoRotation()
+        {
             if (GlobalTimer % 30 == 0)
             {
                 if (rotationLocked)
@@ -714,7 +711,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         #region Networking
         public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
-            
+
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
             writer.Write(lockedRotation);

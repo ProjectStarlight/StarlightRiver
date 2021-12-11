@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	internal abstract class DummyTile : ModTile, ILoadable
+    internal abstract class DummyTile : ModTile, ILoadable
     {
         public static Dictionary<Point16, int> dummies;
 
@@ -31,20 +31,20 @@ namespace StarlightRiver.Core
         public Projectile Dummy(int i, int j) => GetDummy(i, j, DummyType);
 
         public static Projectile GetDummy(int i, int j, int type)
-		{
+        {
             Point16 key = new Point16(i, j);
 
             if (dummies.TryGetValue(key, out int dummyIndex))
-			{
+            {
                 if (Main.projectile[dummyIndex].type == type)
                     return Main.projectile[dummyIndex];
-			}
+            }
 
             return null;
-		}
+        }
 
         public static bool DummyExists(int i, int j, int type)
-		{
+        {
             //check dictionary first incase we can skip iterating through proj array
             Point16 key = new Point16(i, j);
 
@@ -59,7 +59,7 @@ namespace StarlightRiver.Core
                 if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Point16(i, j))
                 {
                     //assign to dict since it wasn't there before
-                    
+
                     dummies[key] = proj.whoAmI;
                     return true;
                 }
