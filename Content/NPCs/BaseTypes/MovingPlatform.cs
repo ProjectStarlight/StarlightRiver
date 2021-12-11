@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
-	internal abstract class MovingPlatform : ModNPC
+    internal abstract class MovingPlatform : ModNPC
     {
         public virtual void SafeSetDefaults() { }
 
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
             float yDistTraveled = npc.position.Y - prevPos.Y;
 
-            if (npc.velocity != Vector2.Zero && Math.Abs(npc.velocity.Y) > 1f && (npc.velocity.Y < 0 && yDistTraveled < npc.velocity.Y * 1.5 && yDistTraveled > npc.velocity.Y * 6))
+            if (npc.velocity != Vector2.Zero && npc.velocity.Y < -1f && yDistTraveled < npc.velocity.Y * 1.5 && yDistTraveled > npc.velocity.Y * 6)
             {
                 //this loop outside of the normal moving platform loop in Mechanics is mainly for multiplayer with some potential for extreme lag situations on fast platforms
                 //what is happening is that when terraria skips frames (or lags in mp) they add the npc velocity multiplied by the skipped frames up to 5x a normal frame until caught up, but only run the ai once
@@ -86,21 +86,21 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
                     }
                 }
             }
-            
+
 
             for (int k = 0; k < Main.maxProjectiles; k++)
-			{
+            {
                 var proj = Main.projectile[k];
 
                 if (!proj.active || proj.aiStyle != 7)
                     continue;
 
-                if(proj.ai[0] != 1 && proj.timeLeft < 36000 - 3 && proj.Hitbox.Intersects(npc.Hitbox))
-				{
+                if (proj.ai[0] != 1 && proj.timeLeft < 36000 - 3 && proj.Hitbox.Intersects(npc.Hitbox))
+                {
                     proj.ai[0] = 2;
                     proj.netUpdate = true;
                 }
-			}
+            }
 
             prevPos = npc.position;
         }
