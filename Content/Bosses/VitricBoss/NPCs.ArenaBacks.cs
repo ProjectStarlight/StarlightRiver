@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
+    public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 3: scroll acceleration
              */
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0) 
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0)
                 State = 1; //when the altar is hit, make the BG rise out of the ground
 
             if (State == 1)
@@ -108,10 +108,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Helper.PlayPitched("ArenaHit", 0.2f, 0, npc.Center);
                 }
 
-                if (Timer > Risetime) 
+                if (Timer > Risetime)
                     State = 2;
 
-                if (Timer % 10 == 0) 
+                if (Timer % 10 == 0)
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += Timer < 100 ? 3 : 2;
 
                 for (int k = 0; k < 18; k++)
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (Timer <= Risetime + 120) //when starting moving
                     shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
-                if(Timer == Risetime + 120)
+                if (Timer == Risetime + 120)
                 {
                     for (int k = 0; k < 200; k++)
                     {
@@ -190,20 +190,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.netUpdate = true;
                 prevState = State;
             }
-                
+
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
-		public void DrawMoonlordLayer(SpriteBatch spriteBatch)
-		{
-			if (!npc.active)
-				return;
+        public void DrawMoonlordLayer(SpriteBatch spriteBatch)
+        {
+            if (!npc.active)
+                return;
 
             if (State == 3 || State == 4)
-				ScrollDraw(spriteBatch);
-			else  //animation for rising out of the sand
-				MainDraw(spriteBatch);
+                ScrollDraw(spriteBatch);
+            else  //animation for rising out of the sand
+                MainDraw(spriteBatch);
         }
 
         public virtual void MainDraw(SpriteBatch sb)
@@ -273,11 +273,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         public virtual void ResyncPlatforms()
-		{
+        {
             if (platforms.Count != getPlatformCount)
-            {
                 return;
-            }
 
             SyncPlatform(platforms[0], 790, true);
             SyncPlatform(platforms[1], 668, true);
@@ -396,7 +394,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-            if(DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
             {
                 Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
                 Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
@@ -423,9 +421,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void ResyncPlatforms()
         {
             if (platforms.Count != getPlatformCount)
-            {
                 return;
-            }
 
             SyncPlatform(platforms[0], 760, false);
             SyncPlatform(platforms[1], 660, false);
