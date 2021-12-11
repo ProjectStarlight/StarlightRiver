@@ -16,9 +16,6 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
-using Terraria.Localization;
-using Terraria.ID;
-using StarlightRiver.Content.Bosses.VitricBoss;
 
 namespace StarlightRiver
 {
