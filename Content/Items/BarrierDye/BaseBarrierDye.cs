@@ -34,14 +34,13 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			Item prevBarrierItem = mp.barrierDyeItem;
 			player.GetModPlayer<ShieldPlayer>().barrierDyeItem = item.Clone();
 			item.TurnToAir();
+			mp.rechargeAnimation = 0;
+
 
 			Main.EquipPageSelected = 2;
 
 			if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
-            {
 				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone());
-			}
-				
         }
     }
 

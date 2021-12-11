@@ -39,7 +39,6 @@ namespace StarlightRiver.Packets
                 Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                 Parent.ResetAttack();
 
-                Parent.RebuildRandom();
                 crystal.netUpdate = true;
 
                 foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
