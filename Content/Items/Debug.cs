@@ -42,69 +42,7 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
             return true;
-
-            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
-            return true;
-
-            if (ZoomHandler.ExtraZoomTarget == 0.8f)
-            {
-                ZoomHandler.SetZoomAnimation(0.65f);
-                Main.NewText("Zoom: 65%");
-            }
-
-            else if (ZoomHandler.ExtraZoomTarget == 0.65f)
-            {
-                ZoomHandler.SetZoomAnimation(0.5f);
-                Main.NewText("Zoom: 50%");
-            }
-
-            else if (ZoomHandler.ExtraZoomTarget == 0.5f)
-            {
-                ZoomHandler.SetZoomAnimation(1);
-                Main.NewText("Zoom: Default");
-            }
-
-            else
-            {
-                ZoomHandler.SetZoomAnimation(0.8f);
-                Main.NewText("Zoom: 80%");
-            }
-
-            return true;
-
-            for (int x = 0; x < Main.maxTilesX; x++)
-                for (int y = 0; y < Main.maxTilesY; y++)
-                    Main.tile[x, y].ClearEverything();
-
-            return true;
-
-            Player dummy = new Player();
-            dummy.active = true;
-
-            var item = new Item();
-            item.SetDefaults(ModContent.ItemType<UndergroundTemple.TempleRune>());
-
-            dummy.armor[5] = item;
-            dummy.Center = Main.LocalPlayer.Center;
-
-            Main.player[1] = dummy;
-            dummy.team = Main.LocalPlayer.team;
-            dummy.name = "Johnathan Testicle";
-            dummy.statLife = 400;
-            dummy.statLifeMax = 500;
-
-            return true;
-
-            /*
-            foreach (NPC npc in Main.npc)
-                npc.active = false;
-
-            NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
-            player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
-
-            return true;*/
         }
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
