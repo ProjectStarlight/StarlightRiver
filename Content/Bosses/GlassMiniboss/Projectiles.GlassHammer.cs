@@ -62,8 +62,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         Vector2 vector = Vector2.UnitY.RotatedByRandom((float)Math.PI / 2);
                         Dust.NewDustPerfect(projectile.Center + vector * Main.rand.NextFloat(25), DustType<Dusts.Sand>(), vector * Main.rand.NextFloat(3, 5), 150, Color.White, 0.5f);
                     }
-
-                    GlassMiniboss.SpawnShards(6, projectile.Center);
                 }
             }
         }
