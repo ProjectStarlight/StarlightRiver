@@ -89,7 +89,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (AttackTimer <= 60)
             {
-                Frame = (int)(AttackTimer / 60f * 16);
                 glowStrength = 0.25f + ((60 - AttackTimer) / 60f * 0.75f);
             }
 

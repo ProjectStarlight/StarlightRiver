@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -107,7 +108,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (projectile.timeLeft < 140 && tile.type == mod.TileType("VitricGlass"))
                 projectile.position.Y -= 128;
 
-            if (projectile.timeLeft < 150 && projectile.velocity.Y == 0 && projectile.timeLeft % 10 == 0)
+            if (projectile.timeLeft < 150 && projectile.velocity.Y == 0 && projectile.timeLeft % 20 == 0)
                 Projectile.NewProjectile(projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), projectile.damage, 0, projectile.owner);
 
             if (projectile.velocity.X == 0)
@@ -126,9 +127,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void SetDefaults()
         {
             projectile.width = 16;
-            projectile.height = 16;
+            projectile.height = 1;
             projectile.hostile = true;
-            projectile.timeLeft = 80;
+            projectile.hide = true;
+            projectile.timeLeft = 120;
             projectile.tileCollide = false;
             projectile.aiStyle = -1;
             projectile.penetrate = -1;
@@ -153,33 +155,39 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Main.PlaySound(SoundID.Item70, projectile.Center);
             }
 
-            if (projectile.ai[0] >= 50 && projectile.ai[0] <= 55)
+            if (projectile.ai[0] >= 50)
             {
-                int factor = (int)((projectile.ai[0] - 50) / 5f * 128);
+                int off = (int)(Helpers.Helper.SwoopEase((projectile.ai[0] - 50) / 30f) * 170);
 
-                projectile.position.Y = projectile.ai[1] - factor;
-                projectile.height = factor;
-            }
+                if (projectile.ai[0] > 80)
+                    off = 170 - (int)((projectile.ai[0] - 80) / 40f * 170);
 
-            if (projectile.ai[0] >= 55 && projectile.ai[0] <= 80)
-            {
-                int factor = 128 - (int)((projectile.ai[0] - 55) / 25f * 128);
-
-                projectile.position.Y = projectile.ai[1] - factor;
-                projectile.height = factor;
+                projectile.position.Y = projectile.ai[1] - off;
+                projectile.height = off;
             }
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		{
+            drawCacheProjsBehindNPCsAndTiles.Add(index);
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             if (projectile.ai[0] > 50)
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/GlassMiniboss/Spike");
 
-                int off = projectile.ai[0] < 55 ? (int)((projectile.ai[0] - 50) / 5f * 128) : 128 - (int)((projectile.ai[0] - 55) / 25f * 128);
-                Rectangle targetRect = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.ai[1] - off - Main.screenPosition.Y), tex.Width, off);
+                int off = (int)(Helpers.Helper.SwoopEase((projectile.ai[0] - 50) / 30f) * 170);
+
+                if (projectile.ai[0] > 80)
+                    off = 170 - (int)((projectile.ai[0] - 80) / 40f * 170);
+
+                Rectangle targetRect = new Rectangle((int)(projectile.position.X - Main.screenPosition.X) + off / 4, (int)(projectile.ai[1] - off + 26 - Main.screenPosition.Y), tex.Width, off);
                 Rectangle sourceRect = new Rectangle(0, 0, tex.Width, off);
                 spriteBatch.Draw(tex, targetRect, sourceRect, lightColor, 0, Vector2.Zero, 0, 0);
+
+
             }
         }
 
@@ -191,8 +199,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 float factor = 2 * projectile.ai[0] / 25f - (float)Math.Pow(projectile.ai[0], 2) / 625f;
                 Color color = new Color(255, 180, 50) * factor;
 
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, 0, new Vector2(tex.Width / 2, tex.Height + 8), 1, 0, 0);
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * factor, 0, new Vector2(tex.Width / 2, tex.Height + 8), 0.5f, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, 0, new Vector2(tex.Width / 2, tex.Height + 8), 2, 0, 0);
+                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * factor, 0, new Vector2(tex.Width / 2, tex.Height + 8), 1, 0, 0);
                 Lighting.AddLight(projectile.Center, color.ToVector3() * 0.75f);
             }
 

@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         AttackPhase++;
 
-                        if (AttackPhase > 0) 
+                        if (AttackPhase > 2) 
                             AttackPhase = 0;
 
                         attackVariant = Main.rand.NextBool();
@@ -122,6 +122,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     switch (AttackPhase)
                     {
                         case 0: Knives(); break;
+                        case 1: Hammer(); break;
+                        case 2: Spears(); break;
                     }
 
                     break;
