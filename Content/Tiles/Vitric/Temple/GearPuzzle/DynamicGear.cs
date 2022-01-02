@@ -16,6 +16,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
     {
         public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
 
+		public override void MouseOver(int i, int j)
+		{
+			Player player = Main.LocalPlayer;
+			player.showItemIcon2 = ModContent.ItemType<GearTilePlacer>();
+			player.noThrow = 2;
+			player.showItemIcon = true;
+		}
+
 		public override bool NewRightClick(int i, int j)
 		{
 			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
@@ -100,6 +108,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 	class GearTilePlacer : QuickTileItem
 	{
-		public GearTilePlacer() : base("Gear puzzle", "Debug item", ModContent.TileType<DynamicGear>(), 8, AssetDirectory.Debug, true) { }
+		public GearTilePlacer() : base("Gear puzzle", "Debug item", ModContent.TileType<DynamicGear>(), 8, AssetDirectory.VitricTile) { }
 	}
 }
