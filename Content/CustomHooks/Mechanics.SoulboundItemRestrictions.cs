@@ -64,10 +64,10 @@ namespace StarlightRiver.Content.CustomHooks
             ILCursor c = new ILCursor(il);
 
             c.TryGotoNext(i => i.MatchLdloc(1), i => i.MatchLdcI4(1), i => i.MatchSub());
-            Instruction target = c.Prev.Previous;
+            Instruction target = c.Prev.Next;
 
             c.TryGotoPrev(n => n.MatchLdfld<Item>("favorited"));
-            c.Index++;
+            c.Index -= 4;
 
             c.Emit(OpCodes.Ldloc_0);
             c.EmitDelegate<SoulboundDelegate>(EmitSoulboundDel);
@@ -75,6 +75,7 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         private delegate bool SoulboundDelegate(int index);
+
         private bool EmitSoulboundDel(int index)
         {
             return Main.LocalPlayer.inventory[index].modItem is SoulboundItem;
