@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 //Player.velocity = (Main.MouseScreen - oldMouse) * -1;
                 Player.velocity += (Main.MouseScreen - oldMouse) * -0.03f;
 
-                if(Vector2.Distance(Player.Center, endPoint) > 500)
+                if(Vector2.Distance(Player.Center, endPoint) > 600)
                     Player.velocity += (Player.Center - endPoint) * -0.005f;
 
                 Player.velocity.Y -= 0.43f;
