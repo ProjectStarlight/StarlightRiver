@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         public bool endRooted; //if the endpoint is "rooted" to a certain location and cant be moved
 
         public Vector2 oldMouse;
+        public float targetRot;
 
         public NPC attachedNPC; //if the whip is attached to an npc, what is it attached to?
 
@@ -37,6 +38,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         {
             Player.mount.Dismount(Player);
 
+            targetRot = (Main.MouseWorld - Player.Center).ToRotation();
             endPoint = Player.Center;
         }
 
@@ -44,32 +46,34 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         {
             bool control = StarlightRiver.Instance.AbilityKeys.Get<Whip>().Current;
 
-            if(!control)
-			{
+            if (!control)
+            {
                 endRooted = false;
                 attached = false;
                 attachedNPC = null;
 
-                endPoint += (Player.Center - endPoint) * 0.15f;
-
-                if (Vector2.Distance(endPoint, Player.Center) < 10)
-                    Deactivate();
+                Deactivate();
 
                 oldMouse = Main.MouseScreen;
                 return;
             }
 
             if (!endRooted)
-                endPoint += (Main.MouseWorld - endPoint) * 0.05f;
+            {
+                var dist = Vector2.Distance(Player.Center, endPoint);
+
+                if (dist < 500)
+                    endPoint += Vector2.UnitX.RotatedBy(targetRot) * 30;
+            }
             else
-			{
+            {
                 if (attachedNPC != null && attachedNPC.active)
                     endPoint = attachedNPC.Center;
 
                 //Player.velocity = (Main.MouseScreen - oldMouse) * -1;
                 Player.velocity += (Main.MouseScreen - oldMouse) * -0.03f;
 
-                if(Vector2.Distance(Player.Center, endPoint) > 500)
+                if (Vector2.Distance(Player.Center, endPoint) > 500)
                     Player.velocity += (Player.Center - endPoint) * -0.005f;
 
                 Player.velocity.Y -= 0.43f;
