@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Abilities
         {
             return new Ability[]
             {
-                new Dash(), new Wisp(), new Pure(), new Smash()//, new Superdash()
+                new Dash(), new Whip(), new Pure(), new Smash()//, new Superdash()
             };
         }
     }

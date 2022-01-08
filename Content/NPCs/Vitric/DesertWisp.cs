@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if (distance.Length() <= 180 && !mp.Unlocked<Wisp>() || Main.dayTime) npc.ai[3] = 1;
+            if (distance.Length() <= 180 && !mp.Unlocked<Whip>() || Main.dayTime) npc.ai[3] = 1;
 
             if (npc.ai[3] == 1)
             {

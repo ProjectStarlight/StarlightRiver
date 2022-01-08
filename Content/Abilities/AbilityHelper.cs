@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Abilities
         public static bool CheckWisp(Player player, Rectangle hitbox)
         {
             if (!player.active) return false;
-            return player.ActiveAbility<Wisp>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
+            return player.ActiveAbility<Whip>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool CheckSmash(Player player, Rectangle hitbox)
