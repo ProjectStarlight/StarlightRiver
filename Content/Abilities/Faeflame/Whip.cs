@@ -66,8 +66,10 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 if (attachedNPC != null && attachedNPC.active)
                     endPoint = attachedNPC.Center;
 
-                Player.velocity = (Main.MouseScreen - oldMouse) * -1;
-                Player.velocity += (Player.Center - endPoint) * -0.005f;
+                //Player.velocity = (Main.MouseScreen - oldMouse) * -1;
+                Player.velocity += (Main.MouseScreen - oldMouse) * -0.08f;
+                //Player.velocity += (Player.Center - endPoint) * -0.005f;
+                Player.velocity.Y -= 0.43f;
 
                 if (Player.velocity.Length() > 20)
                     Player.velocity = Vector2.Normalize(Player.velocity) * 19.9f;
