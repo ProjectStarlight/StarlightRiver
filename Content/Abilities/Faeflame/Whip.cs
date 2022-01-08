@@ -73,6 +73,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
                 if (Player.velocity.Length() > 20)
                     Player.velocity = Vector2.Normalize(Player.velocity) * 19.9f;
+
+                Player.velocity *= 0.95f;
             }
 
             if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).collisionType == 1) //debug
