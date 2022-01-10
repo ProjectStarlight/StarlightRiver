@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
 		public override void DrawActiveEffects(SpriteBatch spriteBatch)
 		{
-            if (!Active)
+            if (!Active || !CustomHooks.PlayerTarget.canUseTarget)
                 return;
 
             var tex = ModContent.GetTexture(AssetDirectory.Debug);
@@ -115,8 +115,9 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
             for (int k = 0; k < dist; k += 10)
             {
-                spriteBatch.Draw(tex, Vector2.Lerp(Player.Center, endPoint, k / (float)dist) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, 0, 0);
-                Lighting.AddLight(Vector2.Lerp(Player.Center, endPoint, k  / (float)dist), new Vector3(1, 0.9f, 0.3f) * 0.5f);
+                var pos = Vector2.Lerp(Player.Center, endPoint, k / (float)dist);
+                spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, 0, 0);
+                Lighting.AddLight(pos, new Vector3(1, 0.9f, 0.3f) * 0.5f);
             }
 
             Utils.DrawBorderString(spriteBatch, Player.velocity.Length() + " m/s", Player.Center + Vector2.UnitY * -40 - Main.screenPosition, Color.White);
