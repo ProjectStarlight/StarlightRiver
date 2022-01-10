@@ -2,7 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
+using System;
+using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
@@ -26,7 +29,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.lifeMax = 10;
         }
 
-		public override void SafeAI()
+        public virtual bool findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropLeft>())
+                {
+                    parent = npc.modNPC as VitricBackdropLeft;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override void SafeAI()
         {
             /*AI fields:
              * 0: state
@@ -34,13 +51,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: acceleration delay
              */
 
+            if (parent == null || !parent.npc.active)
+                findParent();
+
             if (npc.ai[0] == 0)
+            {
                 if (npc.ai[1] > 0)
                 {
                     npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
                     npc.ai[1]--;
                 }
-                else npc.velocity.Y = 0;
+                else 
+                    npc.velocity.Y = 0;
+            }
 
             if (npc.ai[0] == 1)
             {
@@ -65,6 +88,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
     internal class VitricBossPlatformDown : VitricBossPlatformUp
     {
+
+        public override bool findParent()
+        {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropRight>())
+                {
+                    parent = npc.modNPC as VitricBackdropRight;
+                    return true;
+                }
+            }
+            return false;
+        }
         public override void SafeAI()
         {
             /*AI fields:
@@ -73,13 +110,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: acceleration delay
              */
 
+            if (parent == null || !parent.npc.active)
+                findParent();
+
             if (npc.ai[0] == 0)
+            {
                 if (npc.ai[1] > 0)
                 {
                     npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
                     npc.ai[1]--;
                 }
-                else npc.velocity.Y = 0;
+                else
+                    npc.velocity.Y = 0;
+            }
+
 
             if (npc.ai[0] == 1)
             {
@@ -92,7 +136,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
                 storedCenter = npc.Center;
-
         }
     }
 

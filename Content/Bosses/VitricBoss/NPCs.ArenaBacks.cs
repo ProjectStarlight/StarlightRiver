@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -11,11 +13,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
+    public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
         public List<NPC> platforms = new List<NPC>();
+
+        protected static int platformCount = 8;
 
         protected ref float Timer => ref npc.ai[0];
         protected ref float State => ref npc.ai[1];
@@ -23,6 +27,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         protected ref float ScrollDelay => ref npc.ai[3];
 
         public int shake = 0;
+
+        private float prevState = 0;
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -46,6 +52,32 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             npc.noTileCollide = true;
             npc.dontTakeDamage = true;
             npc.dontCountMe = true;
+            npc.netAlways = true;
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    writer.Write((byte)platforms[i].whoAmI);
+                }
+            }
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            if (State != 0 && State != 1)
+            {
+                for (int i = 0; i < getPlatformCount; i++)
+                {
+                    if (i >= platforms.Count)
+                        platforms.Add(Main.npc[(int)reader.ReadByte()]);
+                    else
+                        platforms[i] = Main.npc[(int)reader.ReadByte()];
+                }
+            }
         }
 
         public override void AI()
@@ -57,14 +89,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 3: scroll acceleration
              */
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0) 
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && State == 0)
                 State = 1; //when the altar is hit, make the BG rise out of the ground
 
             if (State == 1)
             {
                 Timer++;
 
-                SpawnPlatforms();
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                    SpawnPlatforms();
+
+
                 ScrollDelay = 20; //initial acceleration delay
 
                 if (Timer == Risetime - 1) //hitting the top
@@ -73,10 +108,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Helper.PlayPitched("ArenaHit", 0.2f, 0, npc.Center);
                 }
 
-                if (Timer > Risetime) 
+                if (Timer > Risetime)
                     State = 2;
 
-                if (Timer % 10 == 0) 
+                if (Timer % 10 == 0)
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += Timer < 100 ? 3 : 2;
 
                 for (int k = 0; k < 18; k++)
@@ -84,16 +119,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (State == 2)
+            {
                 Timer = Risetime;
+
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 0;
+                    npc.ai[1] = 0;
+                }
+                ResyncPlatforms();
+            }
 
             if (State == 3) //scrolling
             {
                 Timer++;
 
-                if(Timer <= Risetime + 120) //when starting moving
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                {
+                    npc.ai[0] = 1;
+                }
+
+                if (Timer <= Risetime + 120) //when starting moving
                     shake = (int)(Helper.BezierEase(120 - (Timer - Risetime)) * 5); //this should work?
 
-                if(Timer == Risetime + 120)
+                if (Timer == Risetime + 120)
                 {
                     for (int k = 0; k < 200; k++)
                     {
@@ -114,6 +163,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (ScrollTimer > Scrolltime)
             {
                 ScrollTimer = 0;
+
                 ResyncPlatforms();
             }
 
@@ -125,30 +175,35 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
                     {
-                        npc.Center = (npc.modNPC as VitricBossPlatformUp).storedCenter;
                         npc.ai[0] = 0;
                     }
+                    ResyncPlatforms();
 
                     State = 2;
                     ScrollDelay = 20; //reset acceleration delay
                 }
 
-                if (ScrollTimer > Scrolltime) 
-                    ScrollTimer = 0;
             }
+
+            if (prevState != State && Main.netMode == NetmodeID.Server)
+            {
+                npc.netUpdate = true;
+                prevState = State;
+            }
+
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
 
-		public void DrawMoonlordLayer(SpriteBatch spriteBatch)
-		{
-			if (!npc.active)
-				return;
+        public void DrawMoonlordLayer(SpriteBatch spriteBatch)
+        {
+            if (!npc.active)
+                return;
 
             if (State == 3 || State == 4)
-				ScrollDraw(spriteBatch);
-			else  //animation for rising out of the sand
-				MainDraw(spriteBatch);
+                ScrollDraw(spriteBatch);
+            else  //animation for rising out of the sand
+                MainDraw(spriteBatch);
         }
 
         public virtual void MainDraw(SpriteBatch sb)
@@ -200,28 +255,36 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
 
+        protected virtual int getPlatformCount => 8;
+
         public virtual void SpawnPlatforms(bool rising = true)
         {
-            PlacePlatform(205, 136, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(140, 420, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(440, 668, NPCType<VitricBossPlatformUp>(), rising);
-            PlacePlatform(210, 30, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(400, 230, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(280, 310, NPCType<VitricBossPlatformUpSmall>(), rising);
-            PlacePlatform(230, 570, NPCType<VitricBossPlatformUpSmall>(), rising);
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
             PlacePlatform(260, 790, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(440, 668, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(230, 570, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(140, 420, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(280, 310, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(400, 230, NPCType<VitricBossPlatformUpSmall>(), rising);
+            PlacePlatform(205, 136, NPCType<VitricBossPlatformUp>(), rising);
+            PlacePlatform(210, 30, NPCType<VitricBossPlatformUpSmall>(), rising);
         }
 
         public virtual void ResyncPlatforms()
-		{
-            SyncPlatform(platforms[0], 136, true);
-            SyncPlatform(platforms[1], 420, true);
-            SyncPlatform(platforms[2], 668, true);
-            SyncPlatform(platforms[3], 30, true);
-            SyncPlatform(platforms[4], 230, true);
-            SyncPlatform(platforms[5], 310, true);
-            SyncPlatform(platforms[6], 570, true);
-            SyncPlatform(platforms[7], 790, true);
+        {
+            if (platforms.Count != getPlatformCount)
+                return;
+
+            SyncPlatform(platforms[0], 790, true);
+            SyncPlatform(platforms[1], 668, true);
+            SyncPlatform(platforms[2], 570, true);
+            SyncPlatform(platforms[3], 420, true);
+            SyncPlatform(platforms[4], 310, true);
+            SyncPlatform(platforms[5], 230, true);
+            SyncPlatform(platforms[6], 136, true);
+            SyncPlatform(platforms[7], 30, true);
         }
 
         public void PlacePlatform(int x, int y, int type, bool rising)
@@ -245,9 +308,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         public void SyncPlatform(NPC platform, int y, bool rising)
-		{
+        {
             platform.position.Y = (int)npc.position.Y - y - platform.height;
-		}
+        }
     }
 
     public class VitricBackdropRight : VitricBackdropLeft //im lazy
@@ -331,7 +394,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-            if(DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+            if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
             {
                 Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
                 Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
@@ -339,26 +402,34 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
+        protected override int getPlatformCount => 7;
+
         public override void SpawnPlatforms(bool rising = true)
         {
-            PlacePlatform(160, 90, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(272, 330, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(192, 580, NPCType<VitricBossPlatformDown>(), rising);
-            PlacePlatform(394, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
-            PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                return;
+
             PlacePlatform(294, 760, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(424, 660, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(192, 580, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(94, 440, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(272, 330, NPCType<VitricBossPlatformDown>(), rising);
+            PlacePlatform(394, 198, NPCType<VitricBossPlatformDownSmall>(), rising);
+            PlacePlatform(160, 90, NPCType<VitricBossPlatformDown>(), rising);
         }
 
         public override void ResyncPlatforms()
         {
-            SyncPlatform(platforms[0], 90, false);
-            SyncPlatform(platforms[1], 330, false);
+            if (platforms.Count != getPlatformCount)
+                return;
+
+            SyncPlatform(platforms[0], 760, false);
+            SyncPlatform(platforms[1], 660, false);
             SyncPlatform(platforms[2], 580, false);
-            SyncPlatform(platforms[3], 198, false);
-            SyncPlatform(platforms[4], 440, false);
-            SyncPlatform(platforms[5], 660, false);
-            SyncPlatform(platforms[6], 760, false);
+            SyncPlatform(platforms[3], 440, false);
+            SyncPlatform(platforms[4], 330, false);
+            SyncPlatform(platforms[5], 198, false);
+            SyncPlatform(platforms[6], 90, false);
         }
     }
 }

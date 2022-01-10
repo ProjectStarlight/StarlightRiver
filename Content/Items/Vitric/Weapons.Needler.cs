@@ -4,6 +4,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -43,11 +44,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			return new Vector2(-10, 0);
 		}
 
-		//TODO: Add glowmask to weapon
-		//TODO: Add holdoffset
-		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool UseItem(Player player)
+        {
+			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), player.position);
+			return true;
+		}
+
+        //TODO: Add glowmask to weapon
+        //TODO: Add holdoffset
+        public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			//Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/SMG2"), position);
 			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Vector2 direction = new Vector2(speedX, speedY);
 			float itemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
@@ -97,6 +103,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			projectile.width = projectile.height = 20;
 			ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
 			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+		}
+
+		private void findIfHit()
+		{
+			foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+			{
+				OnHitNPC(npc, 0, 0, false);
+			}
 		}
 
 		//TODO: Move methods to top + method breaks
@@ -159,7 +173,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			return true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        public override void PostAI()
+        {
+			if (Main.myPlayer != projectile.owner && !stuck)
+				findIfHit();
+		}
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (!stuck && target.life > 0)
 			{
@@ -324,7 +344,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (needleTimer == 1)
 			{
 				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
-				Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);
+				if (needlePlayer == Main.myPlayer)
+                {
+					Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);
+					for (int i = 0; i < 5; i++)
+					{
+						Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f, 1.15f);
+					}
+					Main.player[npc.target].GetModPlayer<StarlightPlayer>().Shake = 20;
+				}
+					
 				for (int i = 0; i < 10; i++)
 				{
 					Dust dust = Dust.NewDustDirect(npc.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<NeedlerDust>());
@@ -343,11 +372,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					Dust.NewDustPerfect(npc.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<NeedlerDustFour>()).scale = 0.9f;
 				}
-				for (int i = 0; i < 5; i++)
-                {
-					Projectile.NewProjectileDirect(npc.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f,1.15f);
-                }
-				Main.player[npc.target].GetModPlayer<StarlightPlayer>().Shake = 20;
+
+				
 				needles = 0;
 			}
 			if (needleTimer > 30)

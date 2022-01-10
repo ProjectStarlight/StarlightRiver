@@ -117,7 +117,7 @@ namespace StarlightRiver.Core
 
         private void ReadNPCUpgrades(BinaryReader reader)
 		{
-            foreach (KeyValuePair<string, bool> upgrade in TownUpgrades)
+            for (int i = 0; i <  TownUpgrades.Count(); i++)
                 TownUpgrades[reader.ReadString()] = reader.ReadBoolean();
         }
 

@@ -14,6 +14,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     {
         public override string Texture => AssetDirectory.Invisible;
 
+        public ref float Timer => ref projectile.ai[0];
+        public ref float Rotation => ref projectile.ai[1];
+
         public override void SetDefaults()
         {
             projectile.hostile = false;
@@ -25,27 +28,35 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void AI()
         {
             projectile.timeLeft = 2;
-            projectile.ai[0]++; //ticks up the timer
+            projectile.rotation = Rotation;
+            Timer++; //ticks up the timer
 
-            if (projectile.ai[0] >= 30) //when this projectile goes off
+            if (Timer >= 30) //when this projectile goes off
+            {
                 for (int k = 0; k < 8; k++)
-                    if (projectile.ai[0] == 30 + k * 3)
+                {
+                    if (Timer == 30 + k * 3)
                     {
                         float rot = (k - 4) / 10f; //rotational offset
-                        Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
+
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                            Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
+
                         Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
+                }
+            }
 
-            if (projectile.ai[0] == 50)
+            if (Timer == 50)
                 projectile.Kill(); //kill it when it expires
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            if (projectile.ai[0] <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
+            if (Timer <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell");
-                float alpha = (float)Math.Sin((projectile.ai[0] / 30f) * 3.14f) * 0.8f;
+                float alpha = (float)Math.Sin((Timer / 30f) * 3.14f) * 0.8f;
                 spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
         }

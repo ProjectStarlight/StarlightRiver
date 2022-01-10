@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            if (Equipped(player) && proj.arrow && crit)
+            if (Equipped(player) && proj.arrow && crit && Main.myPlayer == player.whoAmI)
             {
                 for (int i = 0; i < 3; i++)
                 {

@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -17,14 +18,18 @@ namespace StarlightRiver.Content.Items.Vitric
         public Vector2 offset = Vector2.Zero;
         public float rotOffset = 0;
         public VitricHead parent;
-        public int index;
+        
         public float maxSize;
 
         Vector2 posTarget;
         float rotTarget;
+        float prevRotTarget;
 
+        public float timer;
         public ref float State => ref projectile.ai[0];
-        public ref float Timer => ref projectile.ai[1];
+
+        float prevState;
+        public ref float Index => ref projectile.ai[1];
         public Player Owner => Main.player[projectile.owner];
 
         public override string Texture => AssetDirectory.VitricItem + Name;
@@ -39,6 +44,7 @@ namespace StarlightRiver.Content.Items.Vitric
             projectile.timeLeft = 15;
             projectile.tileCollide = false;
             projectile.ignoreWater = true;
+            projectile.netImportant = true;
         }
 
         public override void SetStaticDefaults()
@@ -48,7 +54,23 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AI()
         {
-            Timer++;
+            if (Owner.dead)
+            {
+                if (Main.myPlayer == Owner.whoAmI)
+                {
+                    parent.shardCount = 0;
+                    parent.shardTimer = 0;
+                    parent.loaded = false;
+                }
+                    
+                projectile.Kill();
+            }
+
+            offset = new Vector2(0, -50).RotatedBy(0.2f + (Index - 1) / -2f * 1.5f);
+            rotOffset = 0.2f + (Index - 1) / -2f * 1.6f;
+            maxSize = Index == 1 ? 0.9f : 0.8f;
+
+            timer++;
 
             if (State != 2) //persist
                 projectile.timeLeft = 15;
@@ -64,43 +86,49 @@ namespace StarlightRiver.Content.Items.Vitric
             else
                 projectile.rotation = rotTarget;
 
-            if(Owner.armor[0].type != ModContent.ItemType<VitricHead>())
-			{
+            if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
+            {
                 State = 2;
-                Timer = 0;
-			}
+                timer = 0;
+            }
 
             if(State == 0)
 			{
-                rotTarget = (float)Math.Sin(Timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
+                rotTarget = (float)Math.Sin(timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
 
-                if(Timer <= 30)
-                    projectile.scale = Timer / 30f * maxSize;
+                if(timer <= 30)
+                    projectile.scale = timer / 30f * maxSize;
 
-                if (parent != null && parent.loaded)
+                if (Main.myPlayer == Owner.whoAmI && parent != null && parent.loaded)
 				{
-                    if (Timer < 30)
+                    if (timer < 30)
                         projectile.active = false;
 
                     State = 1;
-                    Timer = 0;
+                    timer = 0;
 				}
             }
 
-            if(State == 1) //loaded
+            if(State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
 			{
-                rotTarget = Helpers.Helper.LerpFloat(projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, Timer / 30f));
+
+                rotTarget = Helpers.Helper.LerpFloat(projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+                if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
+                {
+                    prevRotTarget = rotTarget;
+                    projectile.netUpdate = true;
+                }
 
                 if (parent != null && !parent.loaded)
                 {
                     State = 0;
-                    Timer = 30;
+                    timer = 30;
                 }
 
-                if (parent != null && parent.shardCount <= index)
+                if (parent != null && parent.shardCount <= Index)
 				{
                     State = 2;
-                    Timer = 0;
+                    timer = 0;
 				}
 			}
 
@@ -108,9 +136,27 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
                 projectile.scale = projectile.timeLeft / 15f * maxSize;
 			}
+
+            if (Main.myPlayer == Owner.whoAmI && prevState != State)
+            {
+                prevState = State;
+                projectile.netUpdate = true;
+            }
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(rotTarget);
+            writer.Write(timer);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            rotTarget = reader.ReadSingle();
+            timer = reader.ReadInt32();
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
             var tex = ModContent.GetTexture(Texture);
             var texGlow = ModContent.GetTexture(Texture + "Glow");
@@ -119,10 +165,10 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
 
             if(State == 0)
-                spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, VitricSummonOrb.MoltenGlow(Timer / 30f * 110), projectile.rotation, texGlow.Size() / 2, projectile.scale, 0, 0);
+                spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, VitricSummonOrb.MoltenGlow(timer / 30f * 110), projectile.rotation, texGlow.Size() / 2, projectile.scale, 0, 0);
 
             if (State == 1)
-                spriteBatch.Draw(texHot, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, Timer / 30f), projectile.rotation, texHot.Size() / 2, projectile.scale, 0, 0);
+                spriteBatch.Draw(texHot, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), projectile.rotation, texHot.Size() / 2, projectile.scale, 0, 0);
 
             return false;
 		}
@@ -162,8 +208,11 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Main.rand.Next(5) == 0)
                 Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
 
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

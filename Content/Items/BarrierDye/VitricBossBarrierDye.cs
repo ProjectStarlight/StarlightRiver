@@ -40,10 +40,15 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void PostDrawEffects(SpriteBatch spriteBatch, Player player)
 		{
+			if (!CustomHooks.PlayerTarget.canUseTarget)
+				return;
+
 			var barrier = player.GetModPlayer<ShieldPlayer>();
 
 			Texture2D tex = CustomHooks.PlayerTarget.Target;
-			var pos = player.Center - Main.screenPosition;
+
+			var pos = CustomHooks.PlayerTarget.getPositionOffset(player.whoAmI);
+
 
 			var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenFormAndColor"].GetShader().Shader;
             effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap"));
@@ -54,7 +59,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-            spriteBatch.Draw(tex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+            spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), Color.White);
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

@@ -31,6 +31,13 @@ namespace StarlightRiver
 
         public bool HasLoaded;
 
+        //debug hook to view RTs
+        //public override void PostDrawInterface(SpriteBatch spriteBatch)
+        //{
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringMapTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Purple * 0.5f);
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringShineTarget, new Rectangle(Main.screenWidth - (Main.screenWidth / 4), 0, Main.screenWidth / 4, Main.screenHeight / 4), Color.White * 0.5f);
+        //}
+
         public static StarlightRiver Instance { get; set; }
 
         public StarlightRiver() => Instance = this;

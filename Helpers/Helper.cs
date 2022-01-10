@@ -25,6 +25,17 @@ namespace StarlightRiver.Helpers
         private static float tiltMax;
 
         public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0, 0, (int)vector.X, (int)vector.Y);
+
+        public static Vector2 Round(this Vector2 vector) => new Vector2((float)Math.Round(vector.X), (float)Math.Round(vector.Y));
+
+        /// <summary>
+        /// Runs math.min on both the X and Y seperately, returns the smaller value for each
+        /// </summary>
+        public static Vector2 TwoValueMin(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Min(vector.X, vector2.X), Math.Min(vector.Y, vector2.Y));
+        /// <summary>
+        /// Runs math.max on both the X and Y seperately, returns the largest value for each
+        /// </summary>
+        public static Vector2 TwoValueMax(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Max(vector.X, vector2.X), Math.Max(vector.Y, vector2.Y));
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
         public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);

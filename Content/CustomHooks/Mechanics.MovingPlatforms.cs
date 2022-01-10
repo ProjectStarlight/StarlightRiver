@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            On.Terraria.Player.Update_NPCCollision += PlatformCollision;
+            On.Terraria.Player.SlopingCollision += PlatformCollision;
 
             IL.Terraria.Projectile.VanillaAI += GrapplePlatforms;
         }
@@ -27,17 +27,12 @@ namespace StarlightRiver.Content.CustomHooks
             IL.Terraria.Projectile.VanillaAI -= GrapplePlatforms;
         }
 
-        private void PlatformCollision(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
+        private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough)
         {
-            if (self.controlDown && self == Main.LocalPlayer)
-            {
-                self.GetModPlayer<StarlightPlayer>().platformTimer = 5;
-                NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);
-            }
 
-            if (self.controlDown || self.GetModPlayer<StarlightPlayer>().platformTimer > 0 || self.GoingDownWithGrapple)
+            if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0 || self.GoingDownWithGrapple)
             {
-                orig(self);
+                orig(self, fallThrough);
                 return;
             }
 
@@ -48,20 +43,20 @@ namespace StarlightRiver.Content.CustomHooks
 
                 Rectangle playerRect = new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1);
                 Rectangle npcRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, 8 + (self.velocity.Y > 0 ? (int)self.velocity.Y : 0));
-
+                
                 if (playerRect.Intersects(npcRect) && self.position.Y <= npc.position.Y)
                 {
                     if (!self.justJumped && self.velocity.Y >= 0)
                     {
+                        if (fallThrough)
+                            self.GetModPlayer<StarlightPlayer>().platformTimer = 10;
+
                         self.gfxOffY = npc.gfxOffY;
                         self.velocity.Y = 0;
+                        self.jump = 0;
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = npc.position.Y - self.height + 4;
-
-                        if(self == Main.LocalPlayer)
-                            NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);
-
-                        orig(self);
+                        self.position += npc.velocity;
                     }
                 }
             }
@@ -71,7 +66,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (mp.controller != null && mp.controller.npc.active)
                 self.velocity.Y = 0;
 
-            orig(self);
+            orig(self, fallThrough);
         }
 
         private void GrapplePlatforms(ILContext il)

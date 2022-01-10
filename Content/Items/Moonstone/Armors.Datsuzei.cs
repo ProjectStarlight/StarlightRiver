@@ -170,9 +170,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 }
 
                 if (Main.rand.Next(4) == 0)
-                {
                     sparkles.AddParticle(new Particle(new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
-                }
             }
         }
 
@@ -218,22 +216,18 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 case 0:
                     int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 0, 40);
-                    Main.projectile[i].timeLeft = 40;
                     break;
 
                 case 1:
                     i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 1, 30);
-                    Main.projectile[i].timeLeft = 30;
                     break;
 
                 case 2:
                     i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 2, 30);
-                    Main.projectile[i].timeLeft = 30;
                     break;
 
                 case 3:
                     i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, player.whoAmI, 3, 120);
-                    Main.projectile[i].timeLeft = 120;
                     break;
             }
 
@@ -246,14 +240,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void HoldItem(Player player)
 		{
-            if (!(player.armor[0].modItem is MoonstoneHead) || !(player.armor[0].modItem as MoonstoneHead).IsArmorSet(player))
+            if (player.whoAmI == Main.myPlayer)
             {
-                item.TurnToAir();
-                Main.mouseItem = new Item();
-            }
+                if (!(player.armor[0].modItem is MoonstoneHead) || !(player.armor[0].modItem as MoonstoneHead).IsArmorSet(player))
+                {
+                    item.TurnToAir();
+                    Main.LocalPlayer.QuickSpawnClonedItem(Main.mouseItem);
+                    Main.mouseItem = new Item();
+                }
 
-            if (activationTimer < 120)
-                activationTimer++;
+                if (activationTimer < 120)
+                    activationTimer++;
+            }
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -280,6 +278,8 @@ namespace StarlightRiver.Content.Items.Moonstone
         public ref float Maxtime => ref projectile.ai[1];
         public float Timer => Maxtime - projectile.timeLeft;
 
+        private bool hasSetTimeLeft = false;
+
         public Player Owner => Main.player[projectile.owner];
 
 		public override void SetDefaults()
@@ -295,6 +295,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void AI()
 		{
+            if (!hasSetTimeLeft)
+            {
+                projectile.timeLeft = (int)Maxtime;
+                hasSetTimeLeft = true;
+            }
+
             Owner.heldProj = projectile.whoAmI;
 
             if (ComboState != -1 && Timer % 2 == 0)
@@ -395,7 +401,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     break;
 			}
 
-            if (Timer > 1)
+            if (Timer > 1 && Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
                 ManageTrail();

@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,16 +16,16 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SpaceEvent
 {
-	class Thunderbuss : ModItem
-	{
+    class Thunderbuss : ModItem
+    {
         public Projectile ball;
 
         public override string Texture => "StarlightRiver/Assets/Items/SpaceEvent/Thunderbuss";
 
         public override bool AltFunctionUse(Player player) => !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<ThunderbussBall>());
 
-		public override void SetStaticDefaults()
-		{
+        public override void SetStaticDefaults()
+        {
             DisplayName.SetDefault("Thunderbuss");
 
             Tooltip.SetDefault("Fires powerful lightning at enemies in a cone\n" +
@@ -31,10 +33,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 "Shooting at the orb zaps all enemies near it\n" +
                 "The orb explodes on impact, and only one may be active at once\n" +
                 "'Crush the path of most resistance'");
-		}
+        }
 
-		public override void SetDefaults()
-		{
+        public override void SetDefaults()
+        {
             item.damage = 32;
             item.useTime = 30;
             item.useAnimation = 30;
@@ -47,10 +49,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             item.rare = ItemRarityID.Orange;
         }
 
-		public override Vector2? HoldoutOffset()
-		{
-			return new Vector2(-10, 0);
-		}
+        public override Vector2? HoldoutOffset()
+        {
+            return new Vector2(-10, 0);
+        }
 
         public override bool CanUseItem(Player player)
         {
@@ -62,7 +64,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             else
             {
                 item.useTime = 30;
-                item.useAnimation = 30;         
+                item.useAnimation = 30;
             }
             return true;
         }
@@ -75,48 +77,49 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             {
                 if (targets.Count == 0)
                     mult = 0;
-                else 
+                else
                     mult = 0.25f;
             }
         }
 
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
-		{
+        {
             float aim = (player.Center - Main.MouseWorld).ToRotation();
 
             if (ball != null && (!ball.active || ball.type != ModContent.ProjectileType<ThunderbussBall>()))
                 ball = null;
 
-            if(player.altFunctionUse == 2)
-			{
+            if (player.altFunctionUse == 2)
+            {
                 int i = Projectile.NewProjectile(player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), (int)(damage * 1.25), 0, player.whoAmI);
                 ball = Main.projectile[i];
 
                 Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);
 
                 return false;
-			}
+            }
 
-            if(ball != null && player == Main.LocalPlayer && Vector2.Distance(ball.Center, Main.MouseWorld) < 128)
-			{
-                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI);
+            if (ball != null && player == Main.LocalPlayer && Vector2.Distance(ball.Center, Main.MouseWorld) < 128)
+            {
+                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, -1);
 
                 var mp = Main.projectile[i].modProjectile as ThunderbussShot;
 
-                mp.holdRot = (Main.MouseWorld - player.Center).ToRotation();
                 mp.projTarget = ball;
                 mp.power = 30;
 
-                ball.ai[1] = 1;
+                mp.projectile.netUpdate = true;
+
+                (ball.modProjectile as ThunderbussBall).ShouldFire = true;
 
                 return false;
-			}
+            }
 
             List<NPC> targets = FindTargets(player);
 
-            if(targets.Count == 0) //whiff
-			{
+            if (targets.Count == 0) //whiff
+            {
                 Main.PlaySound(SoundID.DD2_BallistaTowerShot, player.Center);
 
                 for (int k = 0; k < 20; k++)
@@ -126,38 +129,41 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 }
 
                 return false;
-			}
+            }
 
             targets.Sort((a, b) => (int)(Vector2.Distance(a.Center, player.Center) - Vector2.Distance(b.Center, player.Center)));
 
             for (int k = 0; k < 3; k++)
             {
                 int targetIndex = k % targets.Count;
-                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI);
 
-                var mp = Main.projectile[i].modProjectile as ThunderbussShot;
-                mp.offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
+                float offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
 
-                if(targets.Count == 1)
-				{
-                    if (k == 1) mp.offset += 50f;
-                    if (k == 2) mp.offset -= 50f;
+                if (targets.Count == 1)
+                {
+                    if (k == 1) offset += 50f;
+                    if (k == 2) offset -= 50f;
                 }
 
                 if (targets.Count == 2)
                 {
-                    if (k == 2) mp.offset += 50f;
+                    if (k == 2) offset += 50f;
                 }
 
-                mp.offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
+                offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
 
-                mp.holdRot = (Main.MouseWorld - player.Center).ToRotation();
+                int targetId = targets[targetIndex].whoAmI;
+
+                int i = Projectile.NewProjectile(player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, targetId, offset);
+
+                var mp = Main.projectile[i].modProjectile as ThunderbussShot;
+
                 mp.target = targets[targetIndex];
                 mp.power = 20;
             }
 
             return false;
-		}
+        }
 
         private List<NPC> FindTargets(Player player)
         {
@@ -186,15 +192,15 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public Projectile projOwner;
         public Projectile projTarget;
 
-        public float offset = 0;
-        public float holdRot = 0;
+        public bool sentProjOwner = false;
+
+        public ref float targetId => ref projectile.ai[0];
+        public ref float offset => ref projectile.ai[1];
 
         public NPC target;
 
         private List<Vector2> cache;
         private Trail trail;
-
-        private bool manuallyFoundTarget = false;
 
         private float dist1;
         private float dist2;
@@ -256,36 +262,106 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return total;
         }
 
-        private NPC FindTarget()
-		{
-            List<NPC> targets = new List<NPC>();
+        private void FindTarget()
+        {
 
-            foreach (NPC npc in Main.npc.Where(n => n.active &&
-             !n.dontTakeDamage &&
-             !n.townNPC &&
-             Vector2.Distance(projectile.Center, n.Center) < 500 &&
-             Utils.PlotLine((n.Center / 16).ToPoint16(), (projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+            if (targetId < 0) //no npc target which means we are targetting the ball instead, and need to find it
             {
-                targets.Add(npc);
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+                    {
+                        power = 30;
+                        projTarget = proj;
+                        return;
+                    }
+                }
             }
+            else if ((int)targetId == 0) //targetting with ai[0] of zero which 99% of the time means this was fired from a poltergeist minion, so we check if poltergeist minion, then npc manually
+            {
+                List<NPC> targets = new List<NPC>();
 
-            if (targets.Count == 0)
-                return null;
+                for (int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<PoltergeistMinion>() && ((PoltergeistMinion)proj.modProjectile).item.type == ModContent.ItemType<Thunderbuss>())
+                    {
+                        projOwner = proj;
+                    }
+                }
 
-            manuallyFoundTarget = true;
-            return targets[Main.rand.Next(targets.Count)];
+                if (projOwner is null)
+                {
+                    //wasn't actually a poltergeist minion so we can just set directly
+                    target = Main.npc[(int)targetId];
+                    return;
+                }
+
+
+                foreach (NPC npc in Main.npc.Where(n => n.active &&
+                 !n.dontTakeDamage &&
+                 !n.townNPC &&
+                 n.CanBeChasedBy(projOwner) &&
+                 Vector2.Distance(projectile.Center, n.Center) < 500 &&
+                 Utils.PlotLine((n.Center / 16).ToPoint16(), (projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+                {
+                    targets.Add(npc);
+                }
+
+                if (targets.Count == 0)
+                    return;
+
+                target = targets[Main.rand.Next(targets.Count)];
+                targetId = target.whoAmI;
+            } else
+                target = Main.npc[(int)targetId];
+        }
+
+        private void findProjOwner()
+        {
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+                {
+                    power = 15;
+                    projOwner = proj;
+                    return;
+                }
+            }
         }
 
         public override void AI()
         {
-            ManageCaches();
-            ManageTrails();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrails();
+            }
 
-            if (target is null)
-                target = FindTarget();
+            if (target is null && projTarget is null)
+                FindTarget();
 
-            if (target is null)
+            if (target is null && projTarget is null)
+            {
+                //failed to find anything so we just skip for this client
                 projectile.active = false;
+                return;
+            }
+
+            if (offset == 1000000)
+            {
+                //extremely dirty hack where we abuse the offset field to determine if this has the start anchored to the thunder ball
+                if (projOwner is null)
+                    findProjOwner();
+            }
+
+            if (!sentProjOwner && projOwner != null && Main.myPlayer == projectile.owner)
+            {
+                sentProjOwner = true;
+                projectile.netUpdate = true;
+            }
 
             if (projectile.extraUpdates != 0)
                 projectile.rotation = projectile.velocity.ToRotation() - MathHelper.PiOver2;
@@ -297,26 +373,34 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, projectile.Center);
 
                 savedPos = projectile.Center;
-                startPoint = projectile.Center;       
+                startPoint = projectile.Center;
 
                 dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
                 dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
             }
 
-            if (!manuallyFoundTarget)
+            float effectiveOffset = offset;
+
+            if (projOwner is null)
             {
-                if (projOwner is null)
-                    startPoint = Main.player[projectile.owner].Center + Vector2.UnitX.RotatedBy(holdRot) * 48;
-                else
-                    startPoint = projOwner.Center;
+                Player player = Main.player[projectile.owner];
+                float armRot = player.itemRotation + (player.direction == -1 ? 3.14f : 0);
+                startPoint = player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
             }
+            else
+            {
+                startPoint = projOwner.Center;
+                effectiveOffset = 0;
+            }
+
+
 
             if (projTarget is null)
                 endPoint = target.Center;
             else
                 endPoint = projTarget.Center;
 
-            midPoint = Vector2.Lerp(startPoint, endPoint, 0.5f) + Vector2.Normalize(endPoint - startPoint).RotatedBy(1.57f) * (offset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
+            midPoint = Vector2.Lerp(startPoint, endPoint, 0.5f) + Vector2.Normalize(endPoint - startPoint).RotatedBy(1.57f) * (effectiveOffset + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 10);
 
             projectile.Center = endPoint;
 
@@ -330,7 +414,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
                 for (int k = 1; k < nodeCount; k++)
                 {
-                    nodes.Add(PointOnSpline( k / (float)nodeCount) +
+                    nodes.Add(PointOnSpline(k / (float)nodeCount) +
                         (k == nodes.Count - 1 ? Vector2.Zero : Vector2.Normalize(point1 - point2).RotatedBy(1.58f) * (Main.rand.NextFloat(2) - 1) * 30 / 3));
                 }
 
@@ -460,7 +544,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
     }
 
     internal class ThunderbussBall : ModProjectile, IDrawAdditive, IDrawPrimitive
-	{
+    {
         private List<Vector2> cache;
         private Trail trail;
 
@@ -470,57 +554,77 @@ namespace StarlightRiver.Content.Items.SpaceEvent
         public override string Texture => AssetDirectory.Invisible;
 
         public ref float Stacks => ref projectile.ai[0];
-        public ref float ShouldFire => ref projectile.ai[1];
 
-		public override bool? CanHitNPC(NPC target)
-		{
+
+        public bool ShouldFire = false;
+
+        public override bool? CanHitNPC(NPC target)
+        {
             if (projectile.timeLeft > 30 && Helper.CheckCircularCollision(projectile.Center, 64, target.Hitbox))
             {
                 projectile.tileCollide = false;
                 projectile.timeLeft = 30;
                 projectile.velocity *= 0;
+                projectile.netUpdate = true;
 
                 return true;
             }
 
             return null;
-		}
+        }
 
-		public override void SetDefaults()
-		{
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(projectile.timeLeft);
+            writer.Write(projectile.tileCollide);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            projectile.timeLeft = reader.ReadInt32();
+            projectile.tileCollide = reader.ReadBoolean();
+        }
+
+        public override void SetDefaults()
+        {
             projectile.width = 1;
             projectile.height = 1;
             projectile.timeLeft = 600;
             projectile.magic = true;
             projectile.penetrate = -1;
             projectile.damage = 0;
-		}
+        }
 
-		public override void AI()
-		{
+        public override void AI()
+        {
             projectile.velocity.Y += 0.015f;
 
-            if(Stacks < 1.5f)
+            if (Stacks < 1.5f)
                 Stacks += 0.04f;
 
-            ManageCaches();
-            ManageTrails();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrails();
+            }
 
-			if (projectile.timeLeft == 29)
-			{
-				for (int k = 0; k < 50; k++)
-				{
-					Dust.NewDustPerfect(projectile.Center + new Vector2(0, 100), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
+
+            if (projectile.timeLeft == 29)
+            {
+                for (int k = 0; k < 50; k++)
+                {
+                    Dust.NewDustPerfect(projectile.Center + new Vector2(0, 100), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
                 }
 
-                for(int k = 0; k < 20; k++)
-				{
+                for (int k = 0; k < 20; k++)
+                {
                     Dust.NewDustPerfect(projectile.Center + new Vector2(0, 50), ModContent.DustType<Dusts.LightningBolt>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 0.8f);
                 }
 
-				Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, projectile.Center);
+                Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, projectile.Center);
                 Helper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
+                if (projectile.owner == Main.myPlayer)
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
             }
 
             if (projectile.timeLeft == 20)
@@ -534,65 +638,64 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             }
 
             if (projectile.timeLeft <= 30)
-			{
-
+            {
                 return;
-			}
+            }
 
             Dust.NewDustPerfect(projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
 
-            if (ShouldFire > 0)
-			{
-                for(int k = 0; k < Main.maxNPCs; k++)
-				{
+            if (ShouldFire)
+            {
+                for (int k = 0; k < Main.maxNPCs; k++)
+                {
                     var npc = Main.npc[k];
-                    if(npc.active && npc.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
-					{
-                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner);
+                    if (npc.active && npc.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(projectile.Center, (int)(150 * Stacks), npc.Hitbox))
+                    {
+                        int i = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), projectile.damage, 0, projectile.owner, k, 1000000);
                         var proj = Main.projectile[i].modProjectile as ThunderbussShot;
 
                         proj.target = npc;
                         proj.projOwner = projectile;
                         proj.power = 15;
-					}
-				}
+                    }
+                }
 
-                ShouldFire = 0;
-			}
-		}
+                ShouldFire = false;
+            }
+        }
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            projectile.tileCollide = false;
+            projectile.velocity *= 0;
             if (projectile.timeLeft > 30)
             {
-                projectile.tileCollide = false;
                 projectile.timeLeft = 30;
-                projectile.velocity *= 0;
             }
             return false;
-		}
+        }
 
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
             float scale = 0;
             float opacity = 1;
 
             var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
             var texRing = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/BombTell");
 
-			if (projectile.timeLeft <= 30)
-			{
-				scale = Helper.SwoopEase(1 - projectile.timeLeft / 30f);
-				opacity = Helper.SwoopEase(projectile.timeLeft / 30f);
+            if (projectile.timeLeft <= 30)
+            {
+                scale = Helper.SwoopEase(1 - projectile.timeLeft / 30f);
+                opacity = Helper.SwoopEase(projectile.timeLeft / 30f);
 
-				spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - projectile.timeLeft / 30f) * 1.4f, 0, 0);
-			}
+                spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * 0.8f * (projectile.timeLeft / 30f), 0, texRing.Size() / 2, (1 - projectile.timeLeft / 30f) * 1.4f, 0, 0);
+            }
 
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(160, 230, 255) * opacity, 0, tex.Size() / 2, (1.5f + scale * 3) * (Stacks / 1.5f), 0, 0);
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(200, 230, 255) * opacity, 0, tex.Size() / 2, (1f + scale * 2) * (Stacks / 1.5f), 0, 0);
 
-            if(projectile.timeLeft > 30)
-			    spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(120, 200, 255) * 0.4f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
+            if (projectile.timeLeft > 30)
+                spriteBatch.Draw(texRing, projectile.Center - Main.screenPosition, null, new Color(120, 200, 255) * 0.4f * opacity, 0, texRing.Size() / 2, 0.75f * Stacks, 0, 0);
         }
 
         private void ManageCaches()
@@ -617,7 +720,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     rad += Helper.SwoopEase((30 - projectile.timeLeft) / 30f) * 80;
 
                 var baseOffset = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + (i / 10f) * 5) * rad;
-				cache.Add(projectile.Center + new Vector2(baseOffset.X, baseOffset.Y * 0.4f));
+                cache.Add(projectile.Center + new Vector2(baseOffset.X, baseOffset.Y * 0.4f));
 
                 var baseOffset2 = Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.15f + 3.14f + (i / 10f) * 5) * rad;
                 cache2.Add(projectile.Center + new Vector2(baseOffset2.X * 0.4f, baseOffset2.Y));
@@ -630,12 +733,12 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             }
         }
 
-		private void ManageTrails()
-		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - projectile.timeLeft / 30f) * 30 : 0), factor =>
-			{
-				if (factor.X > 0.95f)
-					return Color.Transparent;
+        private void ManageTrails()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - projectile.timeLeft / 30f) * 30 : 0), factor =>
+            {
+                if (factor.X > 0.95f)
+                    return Color.Transparent;
 
                 float mul = 1;
                 if (projectile.timeLeft < 30)
@@ -643,10 +746,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 
                 return new Color(100, 220, 255) * factor.X * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.15f) * 0.25f) * mul;
-			});
+            });
 
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + (11 / 10f) * 3) * 60;
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = projectile.Center + Vector2.UnitX.RotatedBy(Main.GameUpdateCount * 0.1f + (11 / 10f) * 3) * 60;
 
             trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 10 + factor * 4 + (projectile.timeLeft <= 30 ? Helper.SwoopEase(1 - projectile.timeLeft / 30f) * 30 : 0), factor =>
             {
@@ -677,7 +780,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/LightningTrail"));
 
-			trail?.Render(effect);
+            trail?.Render(effect);
             trail2?.Render(effect);
         }
     }

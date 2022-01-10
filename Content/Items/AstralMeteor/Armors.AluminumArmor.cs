@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Tiles.AstralMeteor;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -46,7 +47,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void AddRecipes()
             {
                 ModRecipe recipe = new ModRecipe(mod);
-                recipe.AddIngredient(ItemType<AluminumBar>(), 10);
+                recipe.AddIngredient(ItemType<AluminumBarItem>(), 10);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);
                 recipe.AddRecipe();
@@ -80,7 +81,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void AddRecipes()
             {
                 ModRecipe recipe = new ModRecipe(mod);
-                recipe.AddIngredient(ItemType<AluminumBar>(), 20);
+                recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);
                 recipe.AddRecipe();
@@ -115,7 +116,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             public override void AddRecipes()
             {
                 ModRecipe recipe = new ModRecipe(mod);
-                recipe.AddIngredient(ItemType<AluminumBar>(), 15);
+                recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);
                 recipe.AddRecipe();

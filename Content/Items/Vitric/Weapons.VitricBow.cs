@@ -43,10 +43,12 @@ namespace StarlightRiver.Content.Items.Vitric
             Main.projectile[proj].scale = 0.5f;
             Main.projectile[proj].damage /= 2;
             Main.projectile[proj].noDropItem = true;
+            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
             int proj2 = Projectile.NewProjectile(player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockBack, player.whoAmI);
             Main.projectile[proj2].scale = 0.5f;
             Main.projectile[proj2].damage /= 2;
             Main.projectile[proj2].noDropItem = true;
+            NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj2);
             return true;
         }
 

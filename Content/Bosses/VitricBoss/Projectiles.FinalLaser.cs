@@ -40,8 +40,28 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return false;
 		}
 
-		public override void AI()
+        public void findParent()
         {
+            for (int i = 0; i < Main.maxNPCs; i++)
+            {
+                NPC npc = Main.npc[i];
+                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                {
+                    parent = npc.modNPC as VitricBoss;
+                    return;
+                }
+            }
+            return;
+        }
+
+        public override void AI()
+        {
+            if (parent is null)
+                findParent();
+
+            if (parent is null)
+                return;
+
             Timer++;
             projectile.timeLeft = 2;
 
@@ -127,6 +147,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
+            if (parent is null)
+                return;
+
             Texture2D texGlow = GetTexture("StarlightRiver/Assets/Keys/Glow");
 
             int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);

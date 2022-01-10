@@ -12,10 +12,11 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using System.IO;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
-	public class FlareBreacher : ModItem
+    public class FlareBreacher : ModItem
     {
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -64,7 +65,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f,0.1f));
+            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
     }
@@ -74,12 +75,12 @@ namespace StarlightRiver.Content.Items.Breacher
         bool red;
         bool stuck;
 
-		int explosionTimer = 100;
+        int explosionTimer = 100;
         int enemyID;
         int blinkCounter;
 
         Vector2 offset = Vector2.Zero;
-        
+
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetDefaults()
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
             {
-                for (float i = 0; i < 1; i+= 0.25f)
+                for (float i = 0; i < 1; i += 0.25f)
                 {
                     Dust dust = Dust.NewDustPerfect(projectile.Center - (projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
                     dust.scale = 0.85f;
@@ -167,7 +168,22 @@ namespace StarlightRiver.Content.Items.Breacher
                 enemyID = target.whoAmI;
                 offset = projectile.position - target.position;
                 offset -= projectile.velocity;
+                projectile.netUpdate = true;
             }
+        }
+
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(stuck);
+            writer.WritePackedVector2(offset);
+            writer.Write(enemyID);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            stuck = reader.ReadBoolean();
+            offset = reader.ReadPackedVector2();
+            enemyID = reader.ReadInt32();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -193,19 +209,22 @@ namespace StarlightRiver.Content.Items.Breacher
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
             int numberOfProjectiles = Main.rand.Next(4, 6);
 
-            for (int i = 0; i < numberOfProjectiles; i++)
+            if (Main.myPlayer == projectile.owner)
             {
-                float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
-                var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
-                var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
+                for (int i = 0; i < numberOfProjectiles; i++)
+                {
+                    float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
+                    var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
+                    var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
 
-                Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
+                    Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
+                }
             }
 
             for (int i = 0; i < 4; i++)
             {
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5,10);
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5, 10);
                 dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -214,7 +233,7 @@ namespace StarlightRiver.Content.Items.Breacher
             for (int i = 0; i < 8; i++)
             {
                 Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10,20);
+                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10, 20);
                 dust.scale = Main.rand.NextFloat(0.75f, 1f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -247,7 +266,7 @@ namespace StarlightRiver.Content.Items.Breacher
             projectile.ranged = true;
             projectile.friendly = true;
             projectile.penetrate = 1;
-            projectile.timeLeft = Main.rand.Next(50,70);
+            projectile.timeLeft = Main.rand.Next(50, 70);
             projectile.extraUpdates = 4;
             projectile.alpha = 255;
         }
@@ -261,8 +280,11 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void AI()
         {
             projectile.velocity *= 0.96f;
-            ManageCaches();
-            ManageTrail();
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         public override bool? CanHitNPC(NPC target)
