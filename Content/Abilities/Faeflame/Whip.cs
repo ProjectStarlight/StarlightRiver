@@ -75,6 +75,9 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                         endRooted = true;
                 }
 
+                if (dist > 450)
+                    Deactivate();
+
                 length = dist - 80;
                 if (length < 100)
                     length = 100;
@@ -96,7 +99,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 Player.velocity *= 0.92f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
-                Player.velocity += (pullPoint - Player.Center) * 0.07f;
+                Player.velocity += (pullPoint - Player.Center) * 0.06f;
                 extraVelocity = (pullPoint - Player.Center) * 0.05f;
             }
         }
