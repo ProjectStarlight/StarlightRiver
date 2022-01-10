@@ -24,6 +24,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         public bool attached; //if the whip is attached to anything
         public bool endRooted; //if the endpoint is "rooted" to a certain location and cant be moved
 
+        public float length;
+
         public Vector2 oldMouse;
         public float targetRot;
 
@@ -62,33 +64,37 @@ namespace StarlightRiver.Content.Abilities.Faeflame
             {
                 var dist = Vector2.Distance(Player.Center, endPoint);
 
-                if (dist < 900)
-                    endPoint += Vector2.UnitX.RotatedBy(targetRot) * 70;
+                for (int k = 0; k < 4; k++)
+                {
+                    if (dist < 900)
+                        endPoint += Vector2.UnitX.RotatedBy(targetRot) * 16;
+
+                    if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).collisionType == 1) //debug
+                        endRooted = true;
+                }
+
+                length = dist - 80;
+                if (length < 180)
+                    length = 180;
             }
             else
             {
                 if (attachedNPC != null && attachedNPC.active)
                     endPoint = attachedNPC.Center;
+                
+                Player.velocity.Y -= 0.43f;
 
-                //Player.velocity = (Main.MouseScreen - oldMouse) * -1;
-                Vector2 distToEnd = endPoint - Main.MouseWorld;
-                if (distToEnd.Length() > 20)
-                    Player.velocity = Vector2.Lerp(Player.velocity, distToEnd * 0.07f, 0.02f);//+= (Main.MouseScreen - oldMouse) * -0.03f;
-                else
-                    Player.velocity *= 0.6f;
-                Player.gravity = MathHelper.Lerp(Player.gravity, 0, 0.8f);
+                Player.velocity += (Main.MouseScreen - oldMouse) * -0.1f;
+                oldMouse = Main.MouseScreen;
 
-                if (Vector2.Distance(Player.Center, endPoint) > 900)
-                    Player.velocity += (Player.Center - endPoint) * -0.005f;
+                if (Player.velocity.Length() > 30)
+                    Player.velocity = Vector2.Normalize(Player.velocity) * 29.99f;
 
-                if (Player.velocity.Length() > 20)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 19.9f;
+                Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
+                Player.position += (pullPoint - Player.Center) * 0.25f;
 
-                Player.velocity *= 0.98f;
+                Player.velocity *= 0.95f;
             }
-
-            if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).collisionType == 1) //debug
-                endRooted = true;
 
             oldMouse = Main.MouseScreen;
 
