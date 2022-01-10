@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         {
             bool control = StarlightRiver.Instance.AbilityKeys.Get<Whip>().Current;
 
-            if (!control)
+            if (!control || Player.GetHandler().Stamina <= 0)
             {
                 endRooted = false;
                 attached = false;
@@ -83,7 +83,9 @@ namespace StarlightRiver.Content.Abilities.Faeflame
             {
                 if (attachedNPC != null && attachedNPC.active)
                     endPoint = attachedNPC.Center;
-                
+
+                Player.velocity -= oldMouse;
+
                 Player.velocity.Y -= 0.43f;
 
                 Player.velocity += (Main.MouseWorld - endPoint) * -0.01f;
@@ -91,14 +93,12 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 if (Player.velocity.Length() > 18)
                     Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
 
-                Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
-                Player.position += (pullPoint - Player.Center) * 0.05f;
-
                 Player.velocity *= 0.92f;
+
+                Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
+                Player.velocity += (pullPoint - Player.Center) * 0.05f;
+                oldMouse = (pullPoint - Player.Center) * 0.05f;
             }
-
-            oldMouse = Main.MouseScreen;
-
         }
 
 		public override void DrawActiveEffects(SpriteBatch spriteBatch)
