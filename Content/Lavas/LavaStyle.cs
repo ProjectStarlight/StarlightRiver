@@ -5,9 +5,12 @@ namespace StarlightRiver.Content.Lavas
 {
 	public abstract class LavaStyle : ModWaterStyle
     {
+        public string texturePath;
+
         public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {
             LavaLoader.lavas?.Add(this);
+            texturePath = texture;
             return SafeAutoload(ref name, ref texture, ref blockTexture);
         }
 
