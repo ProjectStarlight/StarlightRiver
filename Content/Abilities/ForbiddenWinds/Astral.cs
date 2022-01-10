@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
         public override string Texture => "StarlightRiver/Assets/Abilities/Astral";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
 
         public override void SetStaticDefaults()
         {
@@ -72,6 +73,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Silver;
 
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame1";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush II");
@@ -89,6 +92,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     class Astral3 : Astral
     {
         public override InfusionTier Tier => InfusionTier.Gold;
+
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame2";
 
         public override void SetStaticDefaults()
         {

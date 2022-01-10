@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/Blink";
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
 
         public override void SetStaticDefaults()
         {

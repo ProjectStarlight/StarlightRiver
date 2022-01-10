@@ -12,6 +12,7 @@ namespace StarlightRiver.Content.Abilities
 	public abstract partial class InfusionItem : ModItem
     {
         public override string Texture => "StarlightRiver/Assets/Invisible";
+        public virtual string FrameTexture => AssetDirectory.Debug;
 
         public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
@@ -21,24 +22,10 @@ namespace StarlightRiver.Content.Abilities
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity, bool glow)
         {
-            Texture2D outlineTex = GetTexture("StarlightRiver/Assets/Abilities/Tier" + (int)Tier);
+            Texture2D outlineTex = GetTexture(FrameTexture);
             spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, 1, 0, 0);
             Texture2D mainTex = GetTexture(Texture);
             spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, 1, 0, 0);
-
-            if (glow)
-            {
-                Texture2D glowTex = GetTexture("StarlightRiver/Assets/Abilities/InfusionGlow");
-                Color color;
-
-                if (AbilityType == null || Ability == null)
-                    color = Color.Gray;
-                else
-                    color = Ability.Color;
-
-                float sin = 0.75f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
-                spriteBatch.Draw(glowTex, position, null, color * sin * opacity, 0, glowTex.Size() / 2, 1, 0, 0);
-            }
         }
 
         public override void Update(ref float gravity, ref float maxFallSpeed)

@@ -8,6 +8,8 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
 
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DefaultFrame";
+
         public override Type AbilityType => null;
 
         public override void SetStaticDefaults()

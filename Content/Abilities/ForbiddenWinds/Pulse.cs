@@ -11,6 +11,7 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/Pulse";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
 
         public override void SetStaticDefaults()
         {
