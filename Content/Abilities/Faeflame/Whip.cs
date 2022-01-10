@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
                 for (int k = 0; k < 4; k++)
                 {
-                    if (dist < 900)
+                    if (dist < 450)
                         endPoint += Vector2.UnitX.RotatedBy(targetRot) * 16;
 
                     if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).collisionType == 1) //debug
@@ -85,13 +85,12 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 Player.velocity.Y -= 0.43f;
 
                 Player.velocity += (Main.MouseWorld - endPoint) * -0.01f;
-                oldMouse = Main.MouseScreen;
 
-                if (Player.velocity.Length() > 30)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 29.99f;
+                if (Player.velocity.Length() > 15)
+                    Player.velocity = Vector2.Normalize(Player.velocity) * 14.99f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
-                Player.position += (pullPoint - Player.Center) * 0.09f;
+                Player.position += (pullPoint - Player.Center) * 0.05f;
 
                 Player.velocity *= 0.92f;
             }
