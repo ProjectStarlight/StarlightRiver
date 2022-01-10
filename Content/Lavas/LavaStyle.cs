@@ -9,9 +9,11 @@ namespace StarlightRiver.Content.Lavas
 
         public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
         {
+            var value = SafeAutoload(ref name, ref texture, ref blockTexture);
+
             LavaLoader.lavas?.Add(this);
             texturePath = texture;
-            return SafeAutoload(ref name, ref texture, ref blockTexture);
+            return value;
         }
 
         public virtual bool SafeAutoload(ref string name, ref string texture, ref string blockTexture) => true;
