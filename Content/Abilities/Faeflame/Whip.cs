@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 	public class Whip : Ability
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
-        public override float ActivationCostDefault => 0.5f;
+        public override float ActivationCostDefault => 0.15f;
         public override Color Color => new Color(255, 247, 126);
 
         public Vector2 endPoint; //where the "tip" of the whip is in the world
@@ -60,6 +60,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 return;
             }
 
+            Player.GetHandler().Stamina -= 0.005f;
+
             if (!endRooted)
             {
                 var dist = Vector2.Distance(Player.Center, endPoint);
@@ -74,8 +76,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 }
 
                 length = dist - 80;
-                if (length < 180)
-                    length = 180;
+                if (length < 100)
+                    length = 100;
             }
             else
             {
@@ -86,8 +88,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
                 Player.velocity += (Main.MouseWorld - endPoint) * -0.01f;
 
-                if (Player.velocity.Length() > 15)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 14.99f;
+                if (Player.velocity.Length() > 18)
+                    Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
                 Player.position += (pullPoint - Player.Center) * 0.05f;
