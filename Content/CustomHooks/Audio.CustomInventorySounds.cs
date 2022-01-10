@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private SoundEffectInstance PlayNewSound(int originalSoundID, Item item)
 		{
-			Config config = GetInstance<Config>();
+			AudioConfig config = GetInstance<AudioConfig>();
 
 			if (config.InvSounds == CustomSounds.None)
 				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
