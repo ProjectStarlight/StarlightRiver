@@ -40,15 +40,9 @@ namespace StarlightRiver.Core
 
                     if (Helper.OnScreen(particle.Position))
                         spriteBatch.Draw(Texture, particle.Position, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
-
-                    if (particle.Timer <= 0)
-                    {
-                        Particles.Remove(particle);
-                        Particles[k] = null;
-                    }
                 }
 
-                Particles.RemoveAll(n => n is null);
+                Particles.RemoveAll(n => n is null || n.Timer <= 0);
             }
         }
 
