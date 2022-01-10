@@ -88,15 +88,15 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
                 Player.velocity.Y -= 0.43f;
 
-                Player.velocity += (Main.MouseWorld - endPoint) * -(0.15f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.1f);
+                Player.velocity += (Main.MouseWorld - endPoint) * -(0.05f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
 
-                if (Player.velocity.Length() > 24)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 23.99f;
+                if (Player.velocity.Length() > 18)
+                    Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
 
                 Player.velocity *= 0.92f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
-                Player.velocity += (pullPoint - Player.Center) * 0.05f;
+                Player.velocity += (pullPoint - Player.Center) * 0.07f;
                 extraVelocity = (pullPoint - Player.Center) * 0.05f;
             }
         }
@@ -110,8 +110,11 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
             var dist = Vector2.Distance(Player.Center, endPoint);
 
-            for(int k = 0; k < dist; k += 10)
-            spriteBatch.Draw(tex, Vector2.Lerp(Player.Center, endPoint, k / (float)dist) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, 0, 0);
+            for (int k = 0; k < dist; k += 10)
+            {
+                spriteBatch.Draw(tex, Vector2.Lerp(Player.Center, endPoint, k / (float)dist) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, 0, 0);
+                Lighting.AddLight(Vector2.Lerp(Player.Center, endPoint, k  / (float)dist), new Vector3(1, 0.9f, 0.3f) * 0.5f);
+            }
 
             Utils.DrawBorderString(spriteBatch, Player.velocity.Length() + " m/s", Player.Center + Vector2.UnitY * -40 - Main.screenPosition, Color.White);
 		}
