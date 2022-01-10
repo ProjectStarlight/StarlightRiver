@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 
                 Player.velocity.Y -= 0.43f;
 
-                Player.velocity += (Main.MouseScreen - oldMouse) * -0.1f;
+                Player.velocity += (Main.MouseWorld - endPoint) * -0.1f;
                 oldMouse = Main.MouseScreen;
 
                 if (Player.velocity.Length() > 30)
