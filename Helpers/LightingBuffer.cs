@@ -31,7 +31,7 @@ namespace StarlightRiver.Helpers
         static int XMax => Main.screenWidth / 16 + PADDING * 2;
         static int YMax => (int)(Main.screenHeight / 16 + (PADDING * 2 * factor));
 
-        private Config config => ModContent.GetInstance<Config>();
+        private GraphicsConfig config => ModContent.GetInstance<GraphicsConfig>();
 
         public static void SetupLightingQuadBuffer()
         {
@@ -139,7 +139,7 @@ namespace StarlightRiver.Helpers
 
         public void DebugDraw()
         {
-            if (ModContent.GetInstance<Config>().HighQualityLighting)
+            if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
             {
                 refreshTimer++;
 
@@ -200,7 +200,7 @@ namespace StarlightRiver.Helpers
                 0, 0, 0, 1
             );
 
-            if (!ModContent.GetInstance<Config>().HighQualityLighting)
+            if (!ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
             {
                 Rectangle checkZone = Rectangle.Intersect(pos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
                 Color topLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);

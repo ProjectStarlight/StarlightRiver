@@ -127,7 +127,6 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.gameMenu)
                 return;
 
-
             if (Main.ActivePlayersCount > 0)
                 DrawPlayerTarget();
 
