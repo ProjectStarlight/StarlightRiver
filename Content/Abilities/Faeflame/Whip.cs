@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 
                 Player.velocity.Y -= 0.43f;
 
-                Player.velocity += (Main.MouseWorld - endPoint) * -0.1f;
+                Player.velocity += (Main.MouseWorld - endPoint) * -0.01f;
                 oldMouse = Main.MouseScreen;
 
                 if (Player.velocity.Length() > 30)
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
                 Player.position += (pullPoint - Player.Center) * 0.25f;
 
-                Player.velocity *= 0.95f;
+                Player.velocity *= 0.92f;
             }
 
             oldMouse = Main.MouseScreen;
