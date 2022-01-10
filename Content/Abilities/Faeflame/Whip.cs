@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                     Player.velocity = Vector2.Normalize(Player.velocity) * 29.99f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
-                Player.position += (pullPoint - Player.Center) * 0.25f;
+                Player.position += (pullPoint - Player.Center) * 0.09f;
 
                 Player.velocity *= 0.92f;
             }
