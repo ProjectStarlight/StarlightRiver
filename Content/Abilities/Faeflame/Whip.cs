@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
         public float length;
 
-        public Vector2 oldMouse;
+        public Vector2 extraVelocity;
         public float targetRot;
 
         public NPC attachedNPC; //if the whip is attached to an npc, what is it attached to?
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
                 Deactivate();
 
-                oldMouse = Main.MouseScreen;
+                extraVelocity = Main.MouseScreen;
                 return;
             }
 
@@ -84,20 +84,20 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 if (attachedNPC != null && attachedNPC.active)
                     endPoint = attachedNPC.Center;
 
-                Player.velocity -= oldMouse;
+                Player.velocity -= extraVelocity;
 
                 Player.velocity.Y -= 0.43f;
 
-                Player.velocity += (Main.MouseWorld - endPoint) * -0.01f;
+                Player.velocity += (Main.MouseWorld - endPoint) * -(0.15f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.1f);
 
-                if (Player.velocity.Length() > 18)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
+                if (Player.velocity.Length() > 24)
+                    Player.velocity = Vector2.Normalize(Player.velocity) * 23.99f;
 
                 Player.velocity *= 0.92f;
 
                 Vector2 pullPoint = endPoint + Vector2.Normalize(Player.Center - endPoint) * length;
                 Player.velocity += (pullPoint - Player.Center) * 0.05f;
-                oldMouse = (pullPoint - Player.Center) * 0.05f;
+                extraVelocity = (pullPoint - Player.Center) * 0.05f;
             }
         }
 
@@ -112,6 +112,8 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
             for(int k = 0; k < dist; k += 10)
             spriteBatch.Draw(tex, Vector2.Lerp(Player.Center, endPoint, k / (float)dist) - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, 0, 0);
+
+            Utils.DrawBorderString(spriteBatch, Player.velocity.Length() + " m/s", Player.Center + Vector2.UnitY * -40 - Main.screenPosition, Color.White);
 		}
 
 		public override void OnExit()
