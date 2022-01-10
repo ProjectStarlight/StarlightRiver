@@ -4,6 +4,8 @@ using MonoMod.Cil;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,9 +14,12 @@ namespace StarlightRiver.Content.Lavas
 	class LavaLoader : ILoadable
     {
         public static List<LavaStyle> lavas = new List<LavaStyle>();
+        public static LavaStyle activeStyle;
 
         public void Load()
         {
+            StarlightPlayer.ResetEffectsEvent += UpdateActiveStyle;
+
             if (Main.dedServ)
                 return;
 
@@ -24,7 +29,13 @@ namespace StarlightRiver.Content.Lavas
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
         }
 
-        public void Unload()
+        private void UpdateActiveStyle(StarlightPlayer player)
+		{
+            if(!Main.gameMenu)
+                activeStyle = lavas.FirstOrDefault(n => n.ChooseLavaStyle());
+		}
+
+		public void Unload()
         {
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw -= DrawSpecialLava;
             IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
@@ -46,8 +57,8 @@ namespace StarlightRiver.Content.Lavas
 
         private int LavaBody(int arg)
         {
-            foreach(var style in lavas)
-                if (style.ChooseLavaStyle()) return style.Type;
+            if (activeStyle != null)
+                return activeStyle.Type;
 
             return arg;
         }
@@ -70,20 +81,15 @@ namespace StarlightRiver.Content.Lavas
 
         private Texture2D LavaBlockBody(Texture2D arg, int x, int y, Tile up, Tile left, Tile right, Tile down)
         {
+            if (activeStyle is null)
+                return arg;
+
             if (arg != GetTexture("Terraria/Liquid_1"))
                 return arg;
 
-            foreach (var style in lavas)
-                if (style.ChooseLavaStyle())
-                {
-                    string path = "";
-                    string garbage = "", garbage2 = "";
-                    style.SafeAutoload(ref garbage, ref path, ref garbage2);
-                    style.DrawBlockEffects(x, y, up, left, right, down);
-                    return GetTexture(path + "_Block");
-                }
-
-            return arg;
+            string path = activeStyle.texturePath;
+            activeStyle.DrawBlockEffects(x, y, up, left, right, down);
+            return GetTexture(path + "_Block");
         }
 
         private void SwapLavaDrawEffects(ILContext il)
@@ -106,11 +112,8 @@ namespace StarlightRiver.Content.Lavas
 
         private bool SwapLava(int x, int y)
         {
-            foreach (var style in lavas)
-                if (style.ChooseLavaStyle())
-                {
-                    return style.DrawEffects(x, y);
-                }
+            if (activeStyle != null)
+                return activeStyle.DrawEffects(x, y);
 
             return false;
         }
