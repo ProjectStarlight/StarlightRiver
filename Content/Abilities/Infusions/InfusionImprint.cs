@@ -85,10 +85,10 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             var pos = new Vector2(x, y);
 
-            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + item.Name, pos, new Color(170, 120, 255));
+            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.mouseTextColorReal));
             pos.Y += 28;
 
-            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Color.White);
+            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.mouseTextColorReal);
             pos.Y += 28;
 
             foreach (var objective in objectives)
@@ -139,8 +139,8 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
         {
-            var wrapped = ("    " + text + ": " + progress + "/" + maxProgress);
-            Utils.DrawBorderString(sb, wrapped, pos, Color.White);
+            var wrapped = (">  " + text + ": " + progress + "/" + maxProgress);
+            Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.mouseTextColorReal) : Main.mouseTextColorReal);
             pos.X += Main.fontMouseText.MeasureString(wrapped).X + 8;
             pos.Y += 2;
 
@@ -149,7 +149,8 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, (int)(progress / maxProgress * texFill.Width), texFill.Height);
             var fillSource = new Rectangle(0, 0, (int)(progress / maxProgress * texFill.Width), texFill.Height);
 
-            sb.Draw(texFill, fillRect, fillSource, Color.White);
+            var color = progress >= maxProgress ? Color.Lerp(new Color(80, 180, 255), new Color(120, 255, 255), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f) : new Color(80, 180, 255);
+            sb.Draw(texFill, fillRect, fillSource, color);
             sb.Draw(tex, pos, Color.White);
 
             return pos.Y;
