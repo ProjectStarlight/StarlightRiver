@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Abilities.AbilityContent.Infusions;
+using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -113,9 +114,52 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Bronze;
         public override string Texture => "StarlightRiver/Assets/Abilities/AstralImprint";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
         public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
 
-        public override void SetStaticDefaults()
+        public override int TransformTo => ItemType<Astral>();
+
+		public override bool Autoload(ref string name)
+		{
+            StarlightNPC.ModifyHitByItemEvent += TrackKillsMelee;
+            StarlightNPC.ModifyHitByProjectileEvent += TrackKillsRanged;
+
+            StarlightItem.OnPickupEvent += TrackPickup;
+
+            return base.Autoload(ref name);
+		}
+
+		private bool TrackPickup(Item item, Player player)
+		{
+            if (item.type == ItemID.FallenStar)
+            {
+                var objective = FindObjective(player, "Loot Fallen Stars");
+
+                if(objective != null)
+                    objective.progress += item.stack;
+            }
+
+            return true;
+		}
+
+		private void TrackKillsRanged(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+            var player = Main.player[projectile.owner];
+            var killObjective = FindObjective(player, "Strike Foes");
+
+            if (killObjective != null)
+                killObjective.progress++;
+		}
+
+		private void TrackKillsMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		{
+            var killObjective = FindObjective(player, "Strike Foes");
+
+            if (killObjective != null)
+                killObjective.progress++;
+        }
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush");
             Tooltip.SetDefault("Dash farther and carry more speed");
@@ -123,12 +167,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override void SetDefaults()
         {
-            objectives.Add(new InfusionObjective("Jump", 100, CheckKillEnemies, Color.Orange));
-        }
-
-        public void CheckKillEnemies(InfusionObjective objective)
-        {
-            if (Player.controlJump) objective.progress++;
+            objectives.Add(new InfusionObjective("Strike Foes", 10, Color.Orange));
+            objectives.Add(new InfusionObjective("Loot Fallen Stars", 5, Color.Orange));
         }
     }
 }

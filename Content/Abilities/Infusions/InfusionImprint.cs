@@ -5,8 +5,11 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Abilities.AbilityContent.Infusions
@@ -14,9 +17,11 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 	public abstract class InfusionImprint : InfusionItem
     {
         public override Type AbilityType => null;
+
         public List<InfusionObjective> objectives = new List<InfusionObjective>();
 
         public virtual string PreviewVideo => AssetDirectory.Debug;
+        public virtual int TransformTo => ItemID.DirtBlock;
 
         public override void SetStaticDefaults()
         {
@@ -31,37 +36,88 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             item.rare = ItemRarityID.Blue;
         }
 
+        public InfusionObjective FindObjective(Player player, string objectiveText)
+        {
+            for (int k = 0; k < player.inventory.Length; k++)
+            {
+                var item = player.inventory[k];
+
+                if (item.modItem is InfusionImprint)
+                {
+                    var objective = (item.modItem as InfusionImprint).objectives.FirstOrDefault(n => n.text == objectiveText);
+
+                    if (objective != null)
+                        return objective;
+                }
+            }
+
+            return null;
+        }
+
         public override void UpdateInventory(Player player)
         {
             bool transform = true;
 
+            if (objectives.Count <= 0)
+                return;
+
             foreach (var objective in objectives)
             {
-                objective.check(objective);
                 if (objective.progress < objective.maxProgress) 
                     transform = false;
+
+                if (objective.progress > objective.maxProgress)
+                    objective.progress = objective.maxProgress;
             }
 
             if (transform)
             {
-                item.TurnToAir();
-                Main.NewText("Debug Objectives Complete!");
+                item.SetDefaults(TransformTo);
+                item.newAndShiny = true;
+                Main.NewText("Objectives Complete! You've obtained: " + item.Name);
             }           
         }
-    }
+
+        public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+        {
+            var pos = new Vector2(x, y);
+
+            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate", pos, new Color(170, 120, 255));
+            pos.Y += 28;
+
+            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Color.White);
+            pos.Y += 28;
+
+            foreach (var objective in objectives)
+            {
+                objective.DrawTextAndBar(Main.spriteBatch, pos);
+                pos.Y += 28;
+            }
+
+            return false;
+        }
+
+		public override ModItem Clone(Item item)
+		{
+            var newClone = base.Clone(item);
+
+            if (newClone is InfusionImprint)
+                (newClone as InfusionImprint).objectives = objectives;
+
+            return newClone;
+        }
+	}
 
     public class InfusionObjective
     {
         public float progress;
-        private string text;
+        public string text;
         public float maxProgress;
-        public Action<InfusionObjective> check;
 
-        public InfusionObjective(string text, float maxProgress, Action<InfusionObjective> check, Color color = default)
+        public InfusionObjective(string text, float maxProgress, Color color = default)
         {
             this.text = text;
             this.maxProgress = maxProgress;
-            this.check = check;
         }
 
         public void DrawBar(SpriteBatch sb, Vector2 pos)
@@ -70,13 +126,27 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             sb.Draw(tex, pos, Color.White);
         }
 
-        public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
-        {
+        public float DrawText(SpriteBatch sb, Vector2 pos)
+		{
             var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 140, Main.fontItemStack, 0.8f);
             sb.DrawString(Main.fontItemStack, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
-            pos.Y += Main.fontItemStack.MeasureString(wrapped).Y;
+
+            return Main.fontItemStack.MeasureString(wrapped).Y * 0.8f;
+        }
+
+        public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
+        {
+            var wrapped = ("    " + text + ": " + progress + "/" + maxProgress);
+            Utils.DrawBorderString(sb, wrapped, pos, Color.White);
+            pos.X += Main.fontMouseText.MeasureString(wrapped).X + 8;
+            pos.Y += 2;
 
             var tex = GetTexture(AssetDirectory.GUI + "ChungusMeter");
+            var texFill = GetTexture(AssetDirectory.GUI + "ChungusMeterFill");
+            var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, (int)(progress / maxProgress * texFill.Width), texFill.Height);
+            var fillSource = new Rectangle(0, 0, (int)(progress / maxProgress * texFill.Width), texFill.Height);
+
+            sb.Draw(texFill, fillRect, fillSource, Color.White);
             sb.Draw(tex, pos, Color.White);
 
             return pos.Y;
