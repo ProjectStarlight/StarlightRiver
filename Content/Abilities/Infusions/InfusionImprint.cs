@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,13 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         public virtual string PreviewVideo => AssetDirectory.Debug;
         public virtual int TransformTo => ItemID.DirtBlock;
 
-        public override void SetStaticDefaults()
+		public sealed override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("NO_NAME");
-            Tooltip.SetDefault("NO_TOOLTIP");
+            SafeSetStaticDefaults();
+            InfusionMaker.infusionOptions.Add(item.type);
         }
+
+        public virtual void SafeSetStaticDefaults() { }
 
         public override void SetDefaults()
         {
@@ -82,7 +85,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             var pos = new Vector2(x, y);
 
-            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate", pos, new Color(170, 120, 255));
+            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + item.Name, pos, new Color(170, 120, 255));
             pos.Y += 28;
 
             Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Color.White);
@@ -128,7 +131,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public float DrawText(SpriteBatch sb, Vector2 pos)
 		{
-            var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 140, Main.fontItemStack, 0.8f);
+            var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Main.fontItemStack, 0.8f);
             sb.DrawString(Main.fontItemStack, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
             return Main.fontItemStack.MeasureString(wrapped).Y * 0.8f;

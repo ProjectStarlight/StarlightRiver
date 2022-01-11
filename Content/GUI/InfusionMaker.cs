@@ -17,6 +17,7 @@ using ProjectStarlight.Interchange.Utilities;
 using static Terraria.ModLoader.ModContent;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -27,6 +28,8 @@ namespace StarlightRiver.Content.GUI
         public override bool Visible => visible;
 
         public static bool visible;
+
+        public static List<int> infusionOptions = new List<int>();
 
         private Vector2 basePos;
         private float previewFade;
@@ -70,11 +73,6 @@ namespace StarlightRiver.Content.GUI
             setElement(craftButton, new Vector2(400, 16), new Vector2(32, 32));
         }
 
-		public override void Click(UIMouseEvent evt)
-		{
-
-        }
-
 		public override void Draw(SpriteBatch spriteBatch)
         {
             if(new Rectangle((int)(basePos.X), (int)(basePos.Y), 384, 478).Contains(Main.MouseScreen.ToPoint()))
@@ -111,7 +109,7 @@ namespace StarlightRiver.Content.GUI
                     pos.Y += objective.DrawText(spriteBatch, pos);
                 }
 
-                spriteBatch.DrawString(Main.fontItemStack, Helpers.Helper.WrapString(selected.output.item.ToolTip.GetLine(0), 140, Main.fontItemStack, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+                spriteBatch.DrawString(Main.fontItemStack, Helpers.Helper.WrapString(selected.output.item.ToolTip.GetLine(0), 130, Main.fontItemStack, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
                 if (previewFade < 1 && !crafting)
                     previewFade += 0.05f;
@@ -160,7 +158,9 @@ namespace StarlightRiver.Content.GUI
 
                 for (int k = 0; k < 5; k++)
                 {
-                    spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "charm"), basePos + new Vector2(94, 232) + Vector2.UnitX.RotatedBy(Main.GameUpdateCount / 8f + k) * 16, null, Color.White * ((k + 1) / 5f), 0, Vector2.Zero, 0.5f, 0, 0);
+                    var pos = basePos + new Vector2(94, 232) + Vector2.UnitX.RotatedBy(Main.GameUpdateCount / 8f + k) * 16;
+                    var color = Color.White * ((k + 1) / 5f) * previewFade;
+                    spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "charm"), pos, null, color, 0, Vector2.Zero, 0.5f, 0, 0);
                 }
 			}
 
@@ -186,13 +186,16 @@ namespace StarlightRiver.Content.GUI
             }
         }
 
-        public void PopulateList()
+        public void PopulateList() //TODO: Decide if available listing should be ability-specific? with ability specific slates?
         {
-            var imprint = new InfusionRecipieEntry(ItemType<AstralImprint>());
-            imprint.Width.Set(100, 0);
-            imprint.Height.Set(32, 0);
-            imprint.Left.Set(12, 0);
-            options.Add(imprint);
+            foreach (int n in infusionOptions)
+            {
+                var imprint = new InfusionRecipieEntry(n);
+                imprint.Width.Set(100, 0);
+                imprint.Height.Set(28, 0);
+                imprint.Left.Set(12, 0);
+                options.Add(imprint);
+            }
         }
 
         public override void OnInitialize()
@@ -201,8 +204,6 @@ namespace StarlightRiver.Content.GUI
             Append(options);
             craftButton.OnClick += Craft;
             Append(craftButton);
-
-            //previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
         }
 
         private void Craft(UIMouseEvent evt, UIElement listeningElement)
@@ -230,6 +231,8 @@ namespace StarlightRiver.Content.GUI
 
     class InfusionRecipieEntry : UIElement 
     {
+        public static CancellationTokenSource tokenSource;
+
         public InfusionImprint output;
 
         public InfusionRecipieEntry(int type)
@@ -246,9 +249,9 @@ namespace StarlightRiver.Content.GUI
             if(output != null)
             {
                 var tex = GetTexture(output.Texture);
-                output.Draw(spriteBatch, pos + Vector2.One * 16, 1, false);
+                output.Draw(spriteBatch, pos + new Vector2(14, 13), 1, false);
                 var color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
-                spriteBatch.DrawString(Main.fontItemStack, output.item.Name, pos + new Vector2(38, 8), color, 0, Vector2.Zero, 0.8f, 0, 0);
+                spriteBatch.DrawString(Main.fontItemStack, output.item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
             }
         }
 
@@ -260,20 +263,30 @@ namespace StarlightRiver.Content.GUI
             {
                 (parent as InfusionMaker).selected = this;
                 (parent as InfusionMaker).previewGif = null;
-                Task.Factory.StartNew(LoadGif);
+
+                tokenSource?.Cancel();
+
+                tokenSource = new CancellationTokenSource();
+                var token = tokenSource.Token;
+                Task.Factory.StartNew(n => LoadGif(token), token);
             }
 
             Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
         }
 
-        private void LoadGif()
+        private void LoadGif(CancellationToken token)
 		{
             var parent = Parent.Parent.Parent;
 
             byte[] file = GetFileBytes(output.PreviewVideo + ".gif");
             Stream stream = new MemoryStream(file);
 
-            (parent as InfusionMaker).previewGif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2);
+            var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2);
+
+            if (token.IsCancellationRequested)
+                return;
+
+            (parent as InfusionMaker).previewGif = gif;
             (parent as InfusionMaker).previewGif.ShouldLoop = true;
             (parent as InfusionMaker).previewGif.Play();
         }

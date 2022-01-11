@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.AbilityContent.Infusions;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Blink");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by short-range spontaneous travel");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nInstantly teleport a short distance ahead, avoiding enemies and their attacks");
         }
 
         public override void SetDefaults()
@@ -113,6 +114,32 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         public override void UpdateActiveEffects()
         {
             // No visuals from the original.
+        }
+    }
+
+    class BlinkImprint : InfusionImprint
+    {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+        public override string Texture => "StarlightRiver/Assets/Abilities/BlinkImprint";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
+        public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+
+        public override int TransformTo => ModContent.ItemType<Blink>();
+
+        public override bool Autoload(ref string name)
+        {
+            return base.Autoload(ref name);
+        }
+
+        public override void SafeSetStaticDefaults()
+        {
+            DisplayName.SetDefault("Blink");
+            Tooltip.SetDefault("Instantly teleport a short distance ahead, avoiding enemies and their attacks");
+        }
+
+        public override void SetDefaults()
+        {
+            objectives.Add(new InfusionObjective("Implement Objectives", 1, Color.Orange));
         }
     }
 }

@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 killObjective.progress++;
         }
 
-		public override void SetStaticDefaults()
+		public override void SafeSetStaticDefaults()
         {
             DisplayName.SetDefault("Comet Rush");
             Tooltip.SetDefault("Dash farther and carry more speed");

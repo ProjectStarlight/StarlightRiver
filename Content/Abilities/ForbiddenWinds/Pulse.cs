@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.AbilityContent.Infusions;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 {
@@ -85,6 +87,32 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
                     d.noGravity = true;
                     d.noLight = true;
                 }
+        }
+    }
+
+    class PulseImprint : InfusionImprint
+    {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+        public override string Texture => "StarlightRiver/Assets/Abilities/PulseImprint";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
+        public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+
+        public override int TransformTo => ModContent.ItemType<Pulse>();
+
+        public override bool Autoload(ref string name)
+        {
+            return base.Autoload(ref name);
+        }
+
+        public override void SafeSetStaticDefaults()
+        {
+            DisplayName.SetDefault("Pulse");
+            Tooltip.SetDefault("Dash is replaced by a short, frequent, and potent burst of speed");
+        }
+
+        public override void SetDefaults()
+        {
+            objectives.Add(new InfusionObjective("Implement Objectives", 1, Color.Orange));
         }
     }
 }
