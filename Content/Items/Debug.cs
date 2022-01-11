@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -42,6 +43,9 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            InfusionMaker.visible = !InfusionMaker.visible;
+            return true;
+
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
             return true;
 

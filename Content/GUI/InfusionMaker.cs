@@ -12,7 +12,11 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
+using ProjectStarlight.Interchange;
+using ProjectStarlight.Interchange.Utilities;
 using static Terraria.ModLoader.ModContent;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -20,7 +24,9 @@ namespace StarlightRiver.Content.GUI
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
-        public override bool Visible => Main.LocalPlayer.mapStyle; //lol
+        public override bool Visible => visible;
+
+        public static bool visible;
 
         private Vector2 basePos;
         private float previewFade;
@@ -30,10 +36,11 @@ namespace StarlightRiver.Content.GUI
 
         private ParticleSystem particles = new ParticleSystem(AssetDirectory.GUI + "Holy", ParticleUpdate);
 
+        public TextureGIF previewGif = null;
+
         UIList options = new UIList();
         InfusionMakerSlot inSlot = new InfusionMakerSlot();
         UIImageButton craftButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "BackButton"));
-        GifPlayer previewPlayer = new GifPlayer();
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -144,9 +151,20 @@ namespace StarlightRiver.Content.GUI
 
             base.Draw(spriteBatch);
 
-            previewPlayer.Update();
-            previewPlayer.framerate = 2;
-            spriteBatch.Draw(GetTexture(AssetDirectory.Debug), new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
+            previewGif?.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
+            previewGif?.UpdateGIF();
+
+            if(previewGif is null && selected != null)
+			{
+                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
+
+                for (int k = 0; k < 5; k++)
+                {
+                    spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "charm"), basePos + new Vector2(94, 232) + Vector2.UnitX.RotatedBy(Main.GameUpdateCount / 8f + k) * 16, null, Color.White * ((k + 1) / 5f), 0, Vector2.Zero, 0.5f, 0, 0);
+                }
+			}
+
+            spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "InfusionVideoFrame"), basePos + new Vector2(0, 140), Color.White);
         }
 
         private void SpawnParticles()
@@ -239,9 +257,25 @@ namespace StarlightRiver.Content.GUI
             var parent = Parent.Parent.Parent;
 
             if (parent is InfusionMaker && !(parent as InfusionMaker).crafting)
+            {
                 (parent as InfusionMaker).selected = this;
+                (parent as InfusionMaker).previewGif = null;
+                Task.Factory.StartNew(LoadGif);
+            }
 
             Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
+        }
+
+        private void LoadGif()
+		{
+            var parent = Parent.Parent.Parent;
+
+            byte[] file = GetFileBytes(output.PreviewVideo + ".gif");
+            Stream stream = new MemoryStream(file);
+
+            (parent as InfusionMaker).previewGif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2);
+            (parent as InfusionMaker).previewGif.ShouldLoop = true;
+            (parent as InfusionMaker).previewGif.Play();
         }
     }
 
