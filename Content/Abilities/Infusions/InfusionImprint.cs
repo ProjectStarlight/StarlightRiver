@@ -146,12 +146,17 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
             var tex = GetTexture(AssetDirectory.GUI + "ChungusMeter");
             var texFill = GetTexture(AssetDirectory.GUI + "ChungusMeterFill");
-            var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, (int)(progress / maxProgress * texFill.Width), texFill.Height);
+            var fill = (int)(progress / maxProgress * texFill.Width);
+
+            var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, fill, texFill.Height);
             var fillSource = new Rectangle(0, 0, (int)(progress / maxProgress * texFill.Width), texFill.Height);
 
             var color = progress >= maxProgress ? Color.Lerp(new Color(80, 180, 255), new Color(120, 255, 255), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.2f) * 0.5f) : new Color(80, 180, 255);
             sb.Draw(texFill, fillRect, fillSource, color);
             sb.Draw(tex, pos, Color.White);
+
+            if(fill > 4)
+                sb.Draw(Main.magicPixel, new Rectangle((int)pos.X + 14 + fill, (int)pos.Y + 4, 2, 10), Color.White);
 
             return pos.Y;
         }
