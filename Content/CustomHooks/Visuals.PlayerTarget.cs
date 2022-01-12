@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (canUseTarget)
                 return orig.Invoke(x, y);
 
-            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X)/16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
+            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
         }
 
         public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.CustomHooks
         /// <returns></returns>
         public static Vector2 getPlayerTargetPosition(int whoAmI)
         {
-            return  Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX/2, sheetSquareY/2);
+            return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
         }
 
 
@@ -126,7 +126,6 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Main.gameMenu)
                 return;
-
 
             if (Main.ActivePlayersCount > 0)
                 DrawPlayerTarget();
@@ -155,7 +154,7 @@ namespace StarlightRiver.Content.CustomHooks
         public static Vector2 getPositionOffset(int whoAmI)
         {
             if (playerIndexLookup.ContainsKey(whoAmI))
-                return new Vector2(playerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX /2, sheetSquareY/2);
+                return new Vector2(playerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX / 2, sheetSquareY / 2);
 
             return Vector2.Zero;
         }
@@ -194,6 +193,7 @@ namespace StarlightRiver.Content.CustomHooks
                     oldMountedCenter = Main.player[i].MountedCenter;
                     oldScreen = Main.screenPosition;
                     oldItemLocation = Main.player[i].itemLocation;
+                    int oldHeldProj = Main.player[i].heldProj;
 
                     //temp change player's actual position to lock into their frame
                     positionOffset = getPositionOffset(i);
@@ -201,6 +201,7 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.player[i].Center = oldCenter - oldPos + positionOffset;
                     Main.player[i].itemLocation = oldItemLocation - oldPos + positionOffset;
                     Main.player[i].MountedCenter = oldMountedCenter - oldPos + positionOffset;
+                    Main.player[i].heldProj = -1;
                     Main.screenPosition = Vector2.Zero;
                     playerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, 0f, Vector2.Zero, 0f });
 
@@ -209,6 +210,7 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.screenPosition = oldScreen;
                     Main.player[i].itemLocation = oldItemLocation;
                     Main.player[i].MountedCenter = oldMountedCenter;
+                    Main.player[i].heldProj = oldHeldProj;
                 }
 
             }

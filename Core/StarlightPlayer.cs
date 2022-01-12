@@ -15,7 +15,6 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using NetEasy;
 
 namespace StarlightRiver.Core
 {
@@ -112,8 +111,8 @@ namespace StarlightRiver.Core
 
             shouldSendHitPacket = false;
 
-            if (Shake > 120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult)
-                Shake = (int)(120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult);
+            if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)
+                Shake = (int)(120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult);
         }
 
         public override void PostUpdate()
@@ -171,6 +170,9 @@ namespace StarlightRiver.Core
 
         public override void ModifyScreenPosition()
         {
+            if (Main.myPlayer != player.whoAmI)
+                return;
+
             var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
             Main.screenPosition -= adj;
 
@@ -195,7 +197,7 @@ namespace StarlightRiver.Core
                 }
             }
 
-            float mult = ModContent.GetInstance<Configs.Config>().ScreenshakeMult;
+            float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
             mult *= Main.screenWidth / 2048f; //normalize for screen resolution
 
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
@@ -292,6 +294,8 @@ namespace StarlightRiver.Core
             BootlegHealthbar.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;
+
+            DummyTile.dummies.Clear();
         }
 
 		public override void OnRespawn(Player player)

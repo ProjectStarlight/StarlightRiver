@@ -10,13 +10,11 @@ using System.Reflection;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class WindowForm : ILoadable
+	class WindowForm
     {
         public static Form GameForm;
 
-        public float Priority => 1.3f;
-
-        const string DefaultTitle = "Starlight River: Ceiros";
+        const string DefaultTitle = "Starlight River Test Build";
 
         const int iconSize = 48; //16, 32, 48
 

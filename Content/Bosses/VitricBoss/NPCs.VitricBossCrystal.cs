@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     {
         public Vector2 StartPos;
         public Vector2 TargetPos;
+        public Vector2 prevTargetPos;
         public VitricBoss Parent;
 		public bool shouldDrawArc;
 
@@ -108,11 +109,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SendExtraAI(BinaryWriter writer)
         {
+            writer.WritePackedVector2(StartPos);
             writer.WritePackedVector2(TargetPos);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
+            StartPos = reader.ReadPackedVector2();
             TargetPos = reader.ReadPackedVector2();
         }
 
@@ -201,7 +204,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                         Parent.ResetAttack();
 
-                        Parent.RebuildRandom();
                         npc.netUpdate = true;
 
                         foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
@@ -350,8 +352,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
             }
 
-            if (Main.netMode == NetmodeID.Server && (phase != prevPhase || state != prevState))
+            if (Main.netMode == NetmodeID.Server && (phase != prevPhase || state != prevState || TargetPos != prevTargetPos))
             {
+                prevTargetPos = TargetPos;
                 prevPhase = phase;
                 prevState = state;
                 npc.netUpdate = true;

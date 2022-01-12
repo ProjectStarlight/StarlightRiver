@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class BoomBug : ModNPC, IDrawAdditive
+    internal class BoomBug : ModNPC, IDrawAdditive
     {
         public ref float Timer => ref npc.ai[0];
         public ref float State => ref npc.ai[1];
@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
         {
             Timer++;
 
-            switch(State)
-			{
+            switch (State)
+            {
                 case 0: //wander
 
                     if (Timer == 1) //dont spawn on the ground
@@ -59,16 +59,26 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         npc.netUpdate = true;
                     }
 
-                    npc.velocity = (Vector2.UnitX * npc.spriteDirection).RotatedBy(SavedRotation) * (Timer % 30) * 0.15f;
+                    float maxSpeed = 4.0f;
 
-                    npc.TargetClosest();
-                    if (Vector2.DistanceSquared(npc.Center, Main.player[npc.target].Center) <= Math.Pow(400, 2))
-					{
+                    npc.velocity = ((Vector2.UnitX * npc.spriteDirection).RotatedBy(SavedRotation) * 0.15f + npc.velocity);
+                    if (npc.velocity.Length() > maxSpeed)
+                    {
+                        npc.velocity.Normalize();
+                        npc.velocity = npc.velocity * maxSpeed;
+                    }
+
+
+                    npc.TargetClosest(false);
+                    Player player = Main.player[npc.target];
+                    if (Vector2.DistanceSquared(npc.Center, player.Center) <= Math.Pow(400, 2) && Collision.CanHitLine(npc.position, npc.width, npc.height, player.position, player.width, player.height))
+                    {
                         Timer = 0;
                         State = 1;
-					}
+                        npc.netUpdate = true;
+                    }
 
-                break;
+                    break;
 
                 case 1: //attack
 
@@ -78,7 +88,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     if (Timer == 20)
                     {
                         SavedRotation = (Main.player[npc.target].Center - npc.Center).ToRotation();
-                        npc.netUpdate = true;
 
                         npc.direction = (Main.player[npc.target].Center - npc.Center).X > 0 ? 1 : -1;
                         npc.spriteDirection = npc.direction;
@@ -93,46 +102,57 @@ namespace StarlightRiver.Content.NPCs.Vitric
                             npc.velocity *= 1.05f;
 
                         if (npc.velocity == Vector2.Zero)
+                        {
                             Explode();
+                            return;
+                        }
 
-                        for(int x = -2; x <= 2; x++)
+                        for (int x = -2; x <= 2; x++)
                             for (int y = -2; y <= 2; y++)
-							{
+                            {
                                 Tile tile = Framing.GetTileSafely((int)(npc.Center.X / 16) + x, (int)(npc.Center.Y / 16) + y);
 
-                                if(tile.collisionType != 0)
+                                if (tile.collisionType != 0 && Main.tileSolid[tile.type])
+                                {
                                     Explode();
-							}
+                                    return;
+                                }
+
+                            }
                     }
 
                     break;
-			}
+            }
         }
 
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.Write(npc.direction == 1 ? true : false);
             writer.Write(SavedRotation);
+            writer.Write(npc.target);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
             npc.direction = reader.ReadBoolean() ? 1 : -1;
             SavedRotation = reader.ReadSingle();
+            npc.target = reader.ReadInt32();
         }
 
         public override void FindFrame(int frameHeight)
-		{
+        {
             npc.frame = new Rectangle(0, frameHeight * (int)(Timer / 3 % 3), npc.width, frameHeight);
-		}
+        }
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
-		{
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
             Explode();
-		}
+        }
+
+
 
         private void Explode()
-		{
+        {
             Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
             npc.active = false;
 
@@ -142,8 +162,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 d.rotation = Main.rand.NextFloat(6.28f);
             }
 
-            for(int k = 0; k < Main.maxPlayers; k++)
-			{
+            for (int k = 0; k < Main.maxPlayers; k++)
+            {
                 var player = Main.player[k];
 
                 if (!player.active)
@@ -151,13 +171,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 var mp = player.GetModPlayer<StarlightPlayer>();
 
-                if(mp.Shake < 60)
+                if (mp.Shake < 60)
                     mp.Shake += (int)Math.Max(0, 20 - Vector2.Distance(npc.Center, player.Center) / 8f);
-			}
+            }
         }
 
         public void DrawAdditive(SpriteBatch sb)
-		{
+        {
             var glowTex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
             float sin = (float)Math.Sin(Timer / 5f);
             float sin2 = (float)Math.Sin(Timer / 7f);
@@ -180,9 +200,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     sb.Draw(tex, pos, source, color * colorMult, SavedRotation, origin, 1, 0, 0);
                 }
             }
-		}
+        }
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
         }

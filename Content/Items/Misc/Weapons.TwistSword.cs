@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void HoldItem(Player player)
         {
-            if (player.channel)
+            if (player.channel && !player.noItems)
             {
                 timer++;
 
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (charge <= 0)
                 player.channel = false;
 
-            if (charge < 600 && !player.channel)
+            if (charge < 600 && (!player.channel || player.noItems))
             {
                 if (player.velocity.Y == 0)
                     charge += 10;
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (player.HeldItem != item)
             {
-                if (charge < 600 && !player.channel)
+                if (charge < 600)
                 {
                     if (player.velocity.Y == 0)
                         charge += 10;
@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
 
-            if (player.channel && player.HeldItem.type == ItemType<TwistSword>())
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>() && !player.noItems)
                 projectile.timeLeft = 2;
 
             if (projectile.ai[1] > 200 && player.velocity.Y > -4)
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (Main.rand.Next(25) == 0)
                 Dust.NewDustPerfect(player.Center + off, DustType<Content.Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-            if (player.channel && player.HeldItem.type == ItemType<TwistSword>())
+            if (player.channel && player.HeldItem.type == ItemType<TwistSword>() && !player.noItems)
                 player.UpdateRotation(rot);
             else
                 player.UpdateRotation(0);

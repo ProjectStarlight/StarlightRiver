@@ -47,14 +47,21 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public static List<WaterAddon> addons = new List<WaterAddon>();
 
-		public static WaterAddon activeAddon => addons.FirstOrDefault(n => n.Visible);
+		public static WaterAddon activeAddon; 
 
 		public override float Priority => 1.1f;
 
 		public override void Load()
 		{
+			StarlightPlayer.PostUpdateEvent += UpdateActiveAddon;
+
 			IL.Terraria.Main.DoDraw += AddWaterShader;
 			IL.Terraria.Main.DrawTiles += SwapBlockTexture;
+		}
+
+		private void UpdateActiveAddon(Player player)
+		{
+			activeAddon = addons.FirstOrDefault(n => n.Visible);
 		}
 
 		public override void Unload()
@@ -77,7 +84,10 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			var tile = Framing.GetTileSafely(x, y);
 
-			if (tile.liquidType() != 0 || activeAddon is null)
+			if (tile.liquidType() != 0)
+				return arg;
+
+			if (activeAddon is null) //putting this in the same check as above dosent seem to short circuit properly? 
 				return arg;
 
 			return activeAddon.BlockTexture(arg, x, y);
@@ -96,8 +106,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdfld<Main>("backWaterTarget"));
-			c.Emit(OpCodes.Pop);
-			c.Emit(OpCodes.Pop);
+			c.Index -= 2;
 			c.EmitDelegate<Action>(NewDrawBack);
 			c.Emit(OpCodes.Br, label);
 
@@ -109,7 +118,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label2 = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdsfld<Main>("waterTarget"));
-			c.Emit(OpCodes.Pop);
+			c.Index--;
 			c.EmitDelegate<Action>(NewDraw);
 			c.Emit(OpCodes.Br, label2);
 		}
