@@ -172,6 +172,9 @@ namespace StarlightRiver.Content.Abilities
         /// <returns>Whether the item can be added.</returns>
         public bool CanSetInfusion(InfusionItem item)
         {
+            if (!item.Equippable)
+                return false;
+
             if (item == null)
                 return true;
 

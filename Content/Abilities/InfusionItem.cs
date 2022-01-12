@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.Abilities
     {
         public abstract InfusionTier Tier { get; }
         public virtual Type AbilityType { get; }
+        public virtual bool Equippable => true;
         public Player Player => Main.player[item.owner];
         public Ability Ability
         {

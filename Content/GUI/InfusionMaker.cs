@@ -196,6 +196,8 @@ namespace StarlightRiver.Content.GUI
                 imprint.Left.Set(12, 0);
                 options.Add(imprint);
             }
+
+            options._items.Sort((a, b) => (a as InfusionRecipieEntry).output.Visible ? 0 : 1);
         }
 
         public override void OnInitialize()
@@ -248,15 +250,27 @@ namespace StarlightRiver.Content.GUI
 
             if(output != null)
             {
-                var tex = GetTexture(output.Texture);
-                output.Draw(spriteBatch, pos + new Vector2(14, 13), 1, false);
-                var color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
-                spriteBatch.DrawString(Main.fontItemStack, output.item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
+                if (output.Visible)
+                {
+                    var tex = GetTexture(output.Texture);
+                    output.Draw(spriteBatch, pos + new Vector2(14, 13), 1, false);
+                    var color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
+                    spriteBatch.DrawString(Main.fontItemStack, output.item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
+                }
+                else
+				{
+                    var tex = GetTexture(output.FrameTexture);
+                    spriteBatch.Draw(tex, pos, Color.Gray);
+                    spriteBatch.DrawString(Main.fontItemStack, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
+                }
             }
         }
 
         public override void Click(UIMouseEvent evt)
         {
+            if (!output.Visible)
+                return;
+
             var parent = Parent.Parent.Parent;
 
             if (parent is InfusionMaker && !(parent as InfusionMaker).crafting)

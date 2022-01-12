@@ -19,10 +19,13 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
     {
         public override Type AbilityType => null;
 
+        public override bool Equippable => false;
+
         public List<InfusionObjective> objectives = new List<InfusionObjective>();
 
         public virtual string PreviewVideo => AssetDirectory.Debug;
         public virtual int TransformTo => ItemID.DirtBlock;
+        public virtual bool Visible => true;
 
 		public sealed override void SetStaticDefaults()
         {

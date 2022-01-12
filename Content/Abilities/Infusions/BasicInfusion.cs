@@ -10,12 +10,14 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public override string FrameTexture => "StarlightRiver/Assets/Abilities/DefaultFrame";
 
+        public override bool Equippable => false;
+
         public override Type AbilityType => null;
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Basic Infusion I");
-            Tooltip.SetDefault("Generic Infusion\nSlightly improves stamina regeneration\nUsed to create other infusions");
+            DisplayName.SetDefault("Blank Slate");
+            Tooltip.SetDefault("La Tabula Rasa\nCan be imprinted with challenges at an infusion station\nComplete challenges to transform into an infusion\nNew infusions become available as you progress");
         }
 
         public override void SetDefaults()
@@ -23,11 +25,6 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             item.width = 20;
             item.height = 14;
             item.rare = ItemRarityID.Blue;
-        }
-
-        public override void UpdateFixed()
-        {
-            Player.GetHandler().StaminaRegenRate += 0.2f;
         }
     }
 }

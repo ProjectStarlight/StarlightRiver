@@ -99,6 +99,8 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 
         public override int TransformTo => ModContent.ItemType<Pulse>();
 
+        public override bool Visible => Main.LocalPlayer.controlHook;
+
         public override bool Autoload(ref string name)
         {
             return base.Autoload(ref name);
