@@ -11,6 +11,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Abilities.AbilityContent.Infusions
@@ -112,6 +113,33 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
             return newClone;
         }
+
+        public override TagCompound Save()
+        {
+            List<TagCompound> objectiveTags = new List<TagCompound>();
+
+            foreach (InfusionObjective obj in objectives)
+                objectiveTags.Add(obj.Save());
+
+            return new TagCompound()
+            {
+                ["objectives"] = objectiveTags
+            };
+        }
+
+        public override void Load(TagCompound tag)
+        {
+            objectives.Clear();
+
+            var tags = tag.GetList<TagCompound>("objectives");
+
+            foreach (TagCompound objectiveTag in tags)
+            {
+                var objective = new InfusionObjective("Invalid Objective", 1);
+                objective.Load(objectiveTag);
+                objectives.Add(objective);
+            }
+        }
 	}
 
     public class InfusionObjective
@@ -124,6 +152,23 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             this.text = text;
             this.maxProgress = maxProgress;
+        }
+
+        public TagCompound Save()
+		{
+            return new TagCompound()
+            {
+                ["progress"] = progress,
+                ["maxProgress"] = maxProgress,
+                ["text"] = text
+            };
+		}
+
+        public void Load(TagCompound tag)
+		{
+            progress = tag.GetFloat("progress");
+            maxProgress = tag.GetFloat("maxProgress");
+            text = tag.GetString("text");
         }
 
         public void DrawBar(SpriteBatch sb, Vector2 pos)
