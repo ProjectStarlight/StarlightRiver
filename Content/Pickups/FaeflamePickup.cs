@@ -9,7 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	internal class FaeflamePickup : AbilityPickup
     {

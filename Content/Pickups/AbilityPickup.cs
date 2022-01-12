@@ -9,7 +9,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	internal abstract class AbilityPickup : ModNPC, IDrawAdditive
     {
@@ -22,6 +22,8 @@ namespace StarlightRiver.Pickups
 
         public sealed override void SetDefaults()
         {
+            SafeSetDefaults();
+
             npc.width = 32;
             npc.height = 32;
             npc.lifeMax = 2;
@@ -33,6 +35,8 @@ namespace StarlightRiver.Pickups
             npc.aiStyle = -1;
             npc.friendly = false;
         }
+
+        public virtual void SafeSetDefaults() { }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
         {

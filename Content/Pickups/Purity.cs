@@ -13,7 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.NPCs.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	internal class Purity : ModNPC
     {

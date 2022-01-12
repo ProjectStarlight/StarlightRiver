@@ -43,6 +43,9 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
+            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 0;
+            return true;
+
             InfusionMaker.visible = !InfusionMaker.visible;
             return true;
 

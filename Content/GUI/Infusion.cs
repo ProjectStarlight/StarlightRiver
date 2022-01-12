@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.GUI
             Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Infusions");
             spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels, infusionElement.Top.Pixels), Color.White);
 
-            if(true) //TODO: Figure out some sort of cool condition for this
+            if(false) //TODO: Figure out some sort of cool condition for this
             {
                 Texture2D charm = GetTexture(AssetDirectory.GUI + "charm");
                 spriteBatch.Draw(charm, new Vector2(92, 318), Color.White);
@@ -122,14 +122,14 @@ namespace StarlightRiver.Content.GUI
             if (!Unlocked) //draw a lock instead for locked slots
             {
                 Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/InfusionLock");
-                spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
+                //spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
             }
 
             //Draws the slot
             else if (equipped != null)
             {
                 //Draws the item itself
-                equipped.Draw(spriteBatch, GetInnerDimensions().Center(), 1, false);
+                equipped.Draw(spriteBatch, GetInnerDimensions().Center() + Vector2.UnitY, 1, false);
 
                 if (IsMouseHovering && Main.mouseItem.IsAir)
                 {
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.GUI
             else if (Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
             {
                 float opacity = 0.33f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
-                mouseItem.Draw(spriteBatch, GetDimensions().Center(), opacity, false);
+                mouseItem.Draw(spriteBatch, GetDimensions().Center() + Vector2.UnitY, opacity, false);
             }
         }
 

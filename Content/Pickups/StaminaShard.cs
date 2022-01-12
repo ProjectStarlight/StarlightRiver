@@ -9,7 +9,7 @@ using System;
 using Terraria;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	class StaminaShardPickup : AbilityPickup
     {

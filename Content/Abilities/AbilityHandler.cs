@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Abilities
             set => stamina = MathHelper.Clamp(value, 0, StaminaMax);
         }
         public float StaminaRegenRate { get; set; }
-        public int InfusionLimit { get; set; } = 1;
+        public int InfusionLimit { get; set; } = 0;
 
         public float StaminaCostMultiplier { get; set; }
         public float StaminaCostBonus { get; set; }
@@ -172,11 +172,11 @@ namespace StarlightRiver.Content.Abilities
         /// <returns>Whether the item can be added.</returns>
         public bool CanSetInfusion(InfusionItem item)
         {
-            if (!item.Equippable)
-                return false;
-
             if (item == null)
                 return true;
+
+            if (!item.Equippable)
+                return false;
 
             for (int i = 0; i < infusions.Length; i++)
             {

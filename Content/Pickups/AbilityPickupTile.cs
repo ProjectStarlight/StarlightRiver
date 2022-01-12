@@ -3,7 +3,7 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	public abstract class AbilityPickupTile : ModTile
     {
