@@ -13,12 +13,12 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class CustomInventorySounds : HookGroup
 	{
-        public override SafetyLevel Safety => SafetyLevel.Questionable;
+		public override SafetyLevel Safety => SafetyLevel.Fragile; //gonna break if anyone else touches playSound
 
-        public override void Load()
-        {
-            IL.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += PlayCustomSound;
-        }
+		public override void Load()
+		{
+			IL.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += PlayCustomSound;
+		}
 
 		private void PlayCustomSound(ILContext il)
 		{
@@ -36,6 +36,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 				c.EmitDelegate<Func<int, Item, SoundEffectInstance>>(PlayNewSound); //play the custom sound if applicable
 				c.Emit(OpCodes.Br, branchTarget); //move past sound call
+
+				//load a sound ID back onto the stack since mac / linux check both paths even if its an unconditional branch ()
+				c.Emit(OpCodes.Ldc_I4_0); //putting a 0 but the actual value does not matter
 
 				c.Index += 7; //so we wont keep patching the same call lol
 			}
@@ -56,7 +59,7 @@ namespace StarlightRiver.Content.CustomHooks
 				pitch += 0.6f;
 			}
 
-			if (originalSoundID != 7) 
+			if (originalSoundID != 7)
 				pitch += 0.3f;
 
 			//this is gross. The alternative is moving this into a GlobalItem instead. Thus its here.
