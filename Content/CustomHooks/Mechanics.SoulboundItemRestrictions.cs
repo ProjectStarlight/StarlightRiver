@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
             c.TryGotoPrev(n => n.MatchLdfld<Item>("favorited"));
             c.Index -= 4;
 
-            c.Emit(OpCodes.Ldloc_0);
+            c.Emit(OpCodes.Ldloc, 1);
             c.EmitDelegate<SoulboundDelegate>(EmitSoulboundDel);
             c.Emit(OpCodes.Brtrue_S, target);
         }
