@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.GUI
 
         public static List<int> infusionOptions = new List<int>();
 
-        private Vector2 basePos;
+        private Vector2 basePos = new Vector2(700, 100);
         private float previewFade;
 
         private Vector2 offset;
