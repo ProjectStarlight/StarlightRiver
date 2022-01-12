@@ -106,8 +106,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdfld<Main>("backWaterTarget"));
-			c.Emit(OpCodes.Pop);
-			c.Emit(OpCodes.Pop);
+			c.Index -= 2;
 			c.EmitDelegate<Action>(NewDrawBack);
 			c.Emit(OpCodes.Br, label);
 
@@ -119,7 +118,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label2 = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdsfld<Main>("waterTarget"));
-			c.Emit(OpCodes.Pop);
+			c.Index--;
 			c.EmitDelegate<Action>(NewDraw);
 			c.Emit(OpCodes.Br, label2);
 		}
