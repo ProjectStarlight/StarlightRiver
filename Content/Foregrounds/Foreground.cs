@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Foregrounds
 
         public virtual bool Visible => false;
 
+        public virtual bool OverUI => false;
+
         public Foreground() 
         {
             OnLoad();

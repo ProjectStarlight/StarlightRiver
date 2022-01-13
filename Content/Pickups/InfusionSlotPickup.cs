@@ -2,6 +2,7 @@
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -54,9 +55,52 @@ namespace StarlightRiver.Content.Pickups
                 player.legPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
 
                 Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), player.Center);
+                Main.PlaySound(SoundID.PlayerHit, player.Center);
             }
 
-            if (timer == 459) 
+            if(timer >= 15)
+			{
+                CreepyVignette.visible = true;
+                CreepyVignette.opacityMult = 0.5f;
+                CreepyVignette.holeSize = Vector2.One * 400;
+            }
+
+            if (timer == 360)
+            {
+                Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), player.Center); //placeholder sound
+            }
+
+            if(timer >= 360)
+			{
+                CreepyVignette.offset = Vector2.SmoothStep(Vector2.Zero, new Vector2(-Main.screenWidth / 2 + 100, -Main.screenHeight / 2 + 300), Math.Min(1, (timer - 360) / 120f));
+                CreepyVignette.opacityMult = 0.5f + Math.Min(1, (timer - 360) / 120f) * 0.25f;
+                CreepyVignette.holeSize = Vector2.One * (400 -  Math.Min(1, (timer - 360) / 120f) * 64);
+            }
+
+            if (timer < 360)
+                if (Main.playerInventory)
+                {
+                    player.controlInv = true;
+                    player.releaseInventory = true;
+                    Main.playerInventory = false;
+                }
+
+            if(timer >= 360)
+                if (!Main.playerInventory)
+                {
+                    player.ToggleInv();
+                    Main.playerInventory = true;
+                }
+
+            if(timer > 530)
+			{
+                CreepyVignette.visible = false;
+                CreepyVignette.offset = new Vector2(-Main.screenWidth / 2 + 100, -Main.screenHeight / 2 + 300);
+                CreepyVignette.opacityMult = 0.75f - Math.Min(1, (timer - 530) / 30f) * 0.75f;
+                CreepyVignette.holeSize = Vector2.One * (336 + (Math.Min(1, (timer - 530) / 30f) * 512));
+            }
+
+            if (timer == 559) 
             {
                 UILoader.GetUIState<TextCard>().Display("Mysterious Technology", "What has it done to you?", time: 360);
                 Helper.UnlockEntry<InfusionEntry>(Main.LocalPlayer);
@@ -70,7 +114,7 @@ namespace StarlightRiver.Content.Pickups
         public override void PickupEffects(Player player)
         {
             player.GetHandler().InfusionLimit = 1;
-            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 460;
+            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 560;
         }
 
 		public override void DrawBehind(int index)
@@ -83,7 +127,7 @@ namespace StarlightRiver.Content.Pickups
             var player = Main.LocalPlayer;
             var timer = player.GetModPlayer<StarlightPlayer>().PickupTimer;
 
-            if (timer < 1 || timer > 459)
+            if (timer < 1 || timer > 559)
                 return;
 
             var tex = ModContent.GetTexture("StarlightRiver/Assets/Abilities/BrassSpike");

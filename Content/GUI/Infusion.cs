@@ -84,13 +84,13 @@ namespace StarlightRiver.Content.GUI
             if (ReturnConditions())
                 return;
 
-            Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/Infusions");
-            spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels, infusionElement.Top.Pixels), Color.White);
+            var mp = Main.LocalPlayer.GetHandler();
 
-            if(false) //TODO: Figure out some sort of cool condition for this
+            if (mp.InfusionLimit > 0)
             {
-                Texture2D charm = GetTexture(AssetDirectory.GUI + "charm");
-                spriteBatch.Draw(charm, new Vector2(92, 318), Color.White);
+                Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/InfusionFrame");
+                Rectangle source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
+                spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels, infusionElement.Top.Pixels), source, Color.White);
             }
 
             base.Draw(spriteBatch);

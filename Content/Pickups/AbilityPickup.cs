@@ -106,7 +106,6 @@ namespace StarlightRiver.Content.Pickups
             {
                 PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
                 Main.blockInput = true;
-                Main.playerInventory = false;
                 // TODO sync it so they're not floating? idk
             }
         }

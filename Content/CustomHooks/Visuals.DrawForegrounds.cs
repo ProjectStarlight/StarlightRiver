@@ -21,23 +21,29 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Main.DoUpdate += ResetForeground;
         }
 
-		public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+        public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
         {
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);//Main.spriteBatch.Begin()
 
-            foreach (var fg in ForegroundLoader.Foregrounds)
+            foreach (var fg in ForegroundLoader.Foregrounds) //TODO: Perhaps create some sort of ActiveForeground list later? especially since we iterate twice for the over UI ones
             {
-                if(fg != null)
+                if (fg != null && !fg.OverUI)
                     fg.Render(Main.spriteBatch);
             }
 
             Main.spriteBatch.End();
 
-            try //I dont know why this is ehre but it was in the old one so im keeping it to be safe
+            orig(self, gameTime);
+
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
+
+            foreach (var fg in ForegroundLoader.Foregrounds)
             {
-                orig(self, gameTime);
+                if (fg != null && fg.OverUI)
+                    fg.Render(Main.spriteBatch);
             }
-            catch { }
+
+            Main.spriteBatch.End();
         }
 
         private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
