@@ -7,7 +7,7 @@ using Terraria;
 
 namespace StarlightRiver.Core
 {
-	public class Primitives : IDisposable
+    public class Primitives : IDisposable
     {
         public bool IsDisposed { get; private set; }
 
@@ -86,7 +86,7 @@ namespace StarlightRiver.Core
         /// <summary>
         /// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. projectile.Center) and Positions[0] is assumed to be the end.
         /// </summary>
-        public Vector2[] Positions 
+        public Vector2[] Positions
         {
             get => positions;
             set
@@ -140,7 +140,7 @@ namespace StarlightRiver.Core
         {
             VertexPositionColorTexture[] verticesTemp = new VertexPositionColorTexture[maxPointCount * 2];
 
-            List<short> indicesTemp = new List<short>();
+            short[] indicesTemp = new short[maxPointCount * 6 - 6];
 
             // k = 0 indicates starting at the end of the trail (furthest from the origin of it).
             for (int k = 0; k < Positions.Length; k++)
@@ -152,7 +152,7 @@ namespace StarlightRiver.Core
                 float width = trailWidthFunction?.Invoke(factorAlongTrail) ?? defaultWidth;
 
                 Vector2 current = Positions[k];
-                Vector2 next = (k == Positions.Length - 1 ? Positions[Positions.Length - 1] + (Positions[Positions.Length - 1] - Positions[Positions.Length - 2]) : Positions[k + 1]);   
+                Vector2 next = (k == Positions.Length - 1 ? Positions[Positions.Length - 1] + (Positions[Positions.Length - 1] - Positions[Positions.Length - 2]) : Positions[k + 1]);
 
                 Vector2 normalToNext = (next - current).SafeNormalize(Vector2.Zero);
                 Vector2 normalPerp = normalToNext.RotatedBy(MathHelper.PiOver2);
@@ -201,29 +201,23 @@ namespace StarlightRiver.Core
              */
             for (short k = 0; k < maxPointCount - 1; k++)
             {
-                short[] tris = new short[]
-                {
-                    /* 0---1
-                     * |  /|
-                     * A / B
-                     * |/  |
-                     * 2---3
-                     * 
-                     * This illustration is the most basic set of points (where n = 2).
-                     * In this, we want to make triangles (2, 3, 1) and (1, 0, 2).
-                     * Generalising this, if we consider A to be k = 0 and B to be k = 1, then the indices we want are going to be (k + n, k + n + 1, k + 1) and (k + 1, k, k + n)
-                     */
+                /* 0---1
+                 * |  /|
+                 * A / B
+                 * |/  |
+                 * 2---3
+                 * 
+                 * This illustration is the most basic set of points (where n = 2).
+                 * In this, we want to make triangles (2, 3, 1) and (1, 0, 2).
+                 * Generalising this, if we consider A to be k = 0 and B to be k = 1, then the indices we want are going to be (k + n, k + n + 1, k + 1) and (k + 1, k, k + n)
+                 */
 
-                    (short)(k + maxPointCount), 
-                    (short)(k + maxPointCount + 1), 
-                    (short)(k + 1),
-
-                    (short)(k + 1),
-                    k,
-                    (short)(k + maxPointCount)
-                };
-
-                indicesTemp.AddRange(tris);
+                indicesTemp[k * 6] = (short)(k + maxPointCount);
+                indicesTemp[k * 6 + 1] = (short)(k + maxPointCount + 1);
+                indicesTemp[k * 6 + 2] = (short)(k + 1);
+                indicesTemp[k * 6 + 3] = (short)(k + 1);
+                indicesTemp[k * 6 + 4] = k;
+                indicesTemp[k * 6 + 5] = (short)(k + maxPointCount);
             }
 
             // The next available index will be the next value after the count of points (starting at 0).
@@ -232,7 +226,7 @@ namespace StarlightRiver.Core
             vertices = verticesTemp;
 
             // Maybe we could use an array instead of a list for the indices, if someone figures out how to add indices to an array properly.
-            indices = indicesTemp.ToArray();
+            indices = indicesTemp;
         }
 
         private void SetupMeshes()
@@ -249,7 +243,7 @@ namespace StarlightRiver.Core
 
         public void Render(Effect effect)
         {
-            if (Positions == null && !(primitives?.IsDisposed ?? true)) 
+            if (Positions == null && !(primitives?.IsDisposed ?? true))
             {
                 return;
             }
@@ -324,11 +318,11 @@ namespace StarlightRiver.Core
                 new VertexPositionColorTexture(c.Vec3(), colorC, texCoordC)
             };
 
-            indices = new short[] 
-            { 
-                (short)startFromIndex, 
-                (short)(startFromIndex + 1), 
-                (short)(startFromIndex + 2) 
+            indices = new short[]
+            {
+                (short)startFromIndex,
+                (short)(startFromIndex + 1),
+                (short)(startFromIndex + 2)
             };
         }
     }
@@ -382,7 +376,7 @@ namespace StarlightRiver.Core
                 float rotationFactor = k / (float)(accuracy - 1);
 
                 // Rotates by pi/2 - (factor * pi) so that when the factor is 0 we get A and when it is 1 we get E.
-                float angle = MathHelper.PiOver2 - (rotationFactor * MathHelper.Pi);
+                float angle = (rotationFactor * MathHelper.Pi) - MathHelper.PiOver2;
 
                 Vector2 circlePoint = trailTipPosition + (trailTipNormal.RotatedBy(angle) * (trailWidthFunction?.Invoke(1) ?? 1));
 
@@ -406,8 +400,8 @@ namespace StarlightRiver.Core
                      * The reason these are offset by 1 is because index 0 is taken by the fan center.
                      */
 
-                    (short)startFromIndex, 
-                    (short)(startFromIndex + k + 1), 
+                    (short)startFromIndex,
+                    (short)(startFromIndex + k + 1),
                     (short)(startFromIndex + k + 2)
                 };
 
