@@ -3,6 +3,7 @@ using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Permafrost;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -124,7 +125,7 @@ namespace StarlightRiver.Content.CustomHooks
                 return base.CanUseItem(item, player);
 
             //list of item ids that don't place items in the normal way so we need to specifically take them out
-            List<int> forbiddenItemIds = new List<int> { ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.ActuationRod, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb };
+            List<int> forbiddenItemIds = new List<int> { ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket, ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.ActuationRod, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb };
 
             if (item.createTile != -1 || item.createWall != -1 || forbiddenItemIds.Contains(item.type))
             {
