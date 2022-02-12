@@ -132,21 +132,21 @@ namespace StarlightRiver.Content.GUI
 
             switch (GetInstance<GUIConfig>().OverheadStaminaState)
             {
-                case GUIConfig.OverlayState.AlwaysOn:
+                case OverlayState.AlwaysOn:
                     time = 120;
                     break;
 
-                case GUIConfig.OverlayState.WhileNotFull:
+                case OverlayState.WhileNotFull:
                     if (mp.Stamina < mp.StaminaMax)
                         time = 120;
                     break;
 
-                case GUIConfig.OverlayState.WhileUsing:
+                case OverlayState.WhileUsing:
                     if (mp.ActiveAbility != null)
                         time = 120;
                     break;
 
-                case GUIConfig.OverlayState.Never:
+                case OverlayState.Never:
                     time = 0;
                     break;
             }
