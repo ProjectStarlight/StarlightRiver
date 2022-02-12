@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
         /// <returns></returns>
         private bool IsProtected(int x, int y)
         {
-            if (!Main.gameMenu) //shouldnt trigger while generating the world from the menu
+            if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
             {
                 foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
                 {
@@ -125,7 +125,11 @@ namespace StarlightRiver.Content.CustomHooks
                 return base.CanUseItem(item, player);
 
             //list of item ids that don't place items in the normal way so we need to specifically take them out
-            List<int> forbiddenItemIds = new List<int> { ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket, ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.ActuationRod, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb };
+            List<int> forbiddenItemIds = new List<int>{ ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket,
+                                                        ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench,
+                                                        ItemID.ActuationRod, ItemID.Actuator, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb,
+                                                        ItemID.Paintbrush, ItemID.PaintRoller, ItemID.PaintScraper,
+                                                        ItemID.SpectrePaintbrush, ItemID.SpectrePaintRoller, ItemID.SpectrePaintScraper};
 
             if (item.createTile != -1 || item.createWall != -1 || forbiddenItemIds.Contains(item.type))
             {
@@ -224,5 +228,37 @@ namespace StarlightRiver.Content.CustomHooks
 
             return tag;
 		}
-	}
+
+        public override void NetSend(BinaryWriter writer)
+        {
+            writer.Write(ProtectedRegions.Count);
+
+            for (int i = 0; i < ProtectedRegions.Count; i++)
+            {
+                var region = ProtectedRegions[i];
+                writer.Write(region.X);
+                writer.Write(region.Y);
+                writer.Write(region.Width);
+                writer.Write(region.Height);
+            }
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            ProtectedRegions.Clear();
+
+            int numRegions = reader.ReadInt32();
+
+            for (int i = 0; i < numRegions; i++)
+            {
+                ProtectedRegions.Add(new Rectangle
+                {
+                    X = reader.ReadInt32(),
+                    Y = reader.ReadInt32(),
+                    Width = reader.ReadInt32(),
+                    Height = reader.ReadInt32()
+                });
+            }
+        }
+    }
 }
