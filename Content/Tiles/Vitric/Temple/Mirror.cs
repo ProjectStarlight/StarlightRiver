@@ -44,9 +44,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             spriteBatch.Draw(tex, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 - Main.screenPosition, tex.Frame(), Lighting.GetColor(i, j), tile.frameX * 1.57f, tex.Size() / 2 + Vector2.One * 4, 1, 0, 0);
         }
     }
-
-    class MirrorItem : QuickTileItem
-    {
-        public MirrorItem() : base("Light Mirror", "", TileType<Mirror>(), 1, AssetDirectory.VitricTile) { }
-    }
 }

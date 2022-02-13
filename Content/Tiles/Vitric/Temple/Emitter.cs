@@ -48,9 +48,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             return false;
         }
     }
-
-    class EmitterItem : QuickTileItem
-    {
-        public EmitterItem() : base("Light Emitter", "", TileType<Emitter>(), 1, AssetDirectory.VitricTile) { }
-    }
 }

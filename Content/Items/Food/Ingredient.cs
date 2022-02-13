@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria;
@@ -33,11 +32,6 @@ namespace StarlightRiver.Content.Items.Food
         public override bool Autoload(ref string name)
         {
             return base.Autoload(ref name);
-        }
-
-        public override void AddRecipes() //this is dumb, too bad!
-        {
-            ChefBag.ingredientTypes.Add(item.type);
         }
 
         ///<summary>Where the effects of this food item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>

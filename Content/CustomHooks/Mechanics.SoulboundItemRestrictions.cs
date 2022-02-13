@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
+using System;
 using Terraria;
 using Terraria.ID;
 
@@ -18,12 +19,14 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Player.ItemFitsItemFrame += NoSoulboundFrame;
             On.Terraria.Player.ItemFitsWeaponRack += NoSoulboundRack;
 
-            IL.Terraria.UI.ChestUI.DepositAll += PreventSoulboundStack;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                IL.Terraria.UI.ChestUI.DepositAll += PreventSoulboundStack;
         }
 
         public override void Unload()
         {
-            IL.Terraria.UI.ChestUI.DepositAll -= PreventSoulboundStack;
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                IL.Terraria.UI.ChestUI.DepositAll -= PreventSoulboundStack;
         }
 
         private bool NoSoulboundFrame(On.Terraria.Player.orig_ItemFitsItemFrame orig, Player self, Item i) => !(i.modItem is SoulboundItem) && orig(self, i);

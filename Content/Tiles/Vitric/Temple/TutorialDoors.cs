@@ -49,11 +49,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         }
     }
 
-    class TutorialDoor1Item : QuickTileItem
-    {
-        public TutorialDoor1Item() : base("TutorialDoor1", "Debug item", TileType<TutorialDoor1>(), 1, AssetDirectory.Debug, true) { }
-    }
-
     class TutorialDoor2 : DummyTile
     {
         public override int DummyType => ProjectileType<TutorialDoor2Dummy>();
@@ -102,10 +97,5 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
             spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Helper.IndicatorColor);
         }
-    }
-
-    class TutorialDoor2Item : QuickTileItem
-    {
-        public TutorialDoor2Item() : base("TutorialDoor2", "Debug item", TileType<TutorialDoor2>(), 1, AssetDirectory.Debug, true) { }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Breacher;
-using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
 using StarlightRiver.Packets;
@@ -136,12 +134,6 @@ namespace StarlightRiver.Core
                 if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
                     ScreenMoveTimer++;
             }
-
-            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
-
-            if (validTile && Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
-                panDown++;
-            else if (panDown > 0) panDown--;
         }
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)

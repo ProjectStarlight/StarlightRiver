@@ -40,8 +40,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SafeSetDefaults() => (this).QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
     }
-    class VitricLootBoxItem : QuickTileItem
-    {
-        public VitricLootBoxItem() : base("Vitric Loot Box Item", "", TileType<VitricLootBox>(), 1, AssetDirectory.Debug, true) { }
-    }
 }

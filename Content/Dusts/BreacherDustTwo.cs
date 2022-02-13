@@ -4,7 +4,6 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
-using StarlightRiver.Content.NPCs.Actors;
 
 namespace StarlightRiver.Content.Dusts
 {

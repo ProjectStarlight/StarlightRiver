@@ -1,10 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Breacher;
-using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Items.Armor;
 using StarlightRiver.Packets;

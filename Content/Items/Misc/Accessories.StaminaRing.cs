@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Items.Overgrow;
+//using StarlightRiver.Content.Items.Overgrow;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;

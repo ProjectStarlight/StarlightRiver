@@ -34,9 +34,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
             spriteBatch.Draw(tex, pos, source, Color.White * (0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f));
         }
     }
-
-    class ForgeInnerDoorItem : QuickTileItem
-    {
-        public ForgeInnerDoorItem() : base("Forge Inner Door", "Debug item", TileType<ForgeInnerDoor>(), 1, AssetDirectory.Debug, true) { }
-    }
 }

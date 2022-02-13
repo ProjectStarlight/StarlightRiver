@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Decoration;
-using Terraria;
+﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -10,25 +9,6 @@ namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModWorld
     {
-        private void VineGen(GenerationProgress progress)
-        {
-            progress.Message = "Hanging vines...";
-            for (int x = 30; x < Main.maxTilesX - 30; x++)
-            {
-                int y = AnyTree(x);
-                if (y != 0)
-                {
-                    Point16 target = ScanTrees(x, y);
-                    if (y != 0 && target != new Point16(0, 0))
-                    {
-                        WorldGen.PlaceTile(x, y - 1, TileType<VineBanner>(), true, true);
-                        Main.tile[x, y - 1].frameX = target.X;
-                        Main.tile[x, y - 1].frameY = target.Y;
-                    }
-                }
-            }
-        }
-
         private static int AnyTree(int x)
         {
             int tree = 0;

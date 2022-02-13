@@ -12,9 +12,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void FountainActive(int i, int j, bool closer) =>
             Main.LocalPlayer.GetModPlayer<BiomeHandler>().FountainVitric = true;
     }
-
-    internal class VitricLargeFountainItem : QuickTileItem
-    {
-        public VitricLargeFountainItem() : base("Vitric Large Fountain", "Debug item", "VitricLargeFountain", texturePath: AssetDirectory.VitricTile) { }
-    }
 }

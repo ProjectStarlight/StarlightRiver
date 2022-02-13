@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.SquidBoss;
 using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -41,13 +40,6 @@ namespace StarlightRiver.Content.CustomHooks
 
             graphics.Clear(Color.Transparent);
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-            for (int k = 0; k < Main.maxNPCs; k++)
-            {
-                NPC npc = Main.npc[k];
-                if (npc.active && npc.modNPC is ArenaActor)
-                    (npc.modNPC as ArenaActor).DrawWater(Main.spriteBatch);
-            }
 
             Main.spriteBatch.End();
 

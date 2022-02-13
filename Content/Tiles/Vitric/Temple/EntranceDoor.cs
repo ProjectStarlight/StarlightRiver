@@ -29,11 +29,4 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             else tile.inActive(false);
         }
     }
-
-    class EntranceDoorItem : QuickTileItem
-    {
-        public override string Texture => AssetDirectory.Debug;
-
-        public EntranceDoorItem() : base("EntranceDoor", "Debug item", TileType<EntranceDoor>(), 1, AssetDirectory.VitricTile) { }
-    }
 }

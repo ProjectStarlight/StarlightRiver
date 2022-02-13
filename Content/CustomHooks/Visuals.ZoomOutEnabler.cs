@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Load()
 		{
+			return; //disabled to improve performance on demo, needs to be optimized later!
+
 			if (Main.dedServ)
 				return;
 

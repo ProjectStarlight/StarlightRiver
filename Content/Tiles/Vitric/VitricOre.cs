@@ -142,14 +142,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
             spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
         }
     }
-
-    class VitricOreItem : QuickTileItem
-    {
-        public VitricOreItem() : base("Vitric Ore Crystal Item", "", TileType<VitricOre>(), 1, AssetDirectory.Debug, true) { }
-    }
-
-    class VitricOreFloatItem : QuickTileItem
-    {
-        public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", TileType<VitricOreFloat>(), 1, AssetDirectory.Debug, true) { }
-    }
 }

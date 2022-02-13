@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Hell
 {
-	class MagmaSword : ModItem, IGlowingItem
+	/*class MagmaSword : ModItem, IGlowingItem
     {
         public override string Texture => "StarlightRiver/Assets/Items/Hell/MagmaSword";
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Hell
                 Main.playerDrawData.Add(new DrawData(tex2, info.itemLocation - Main.screenPosition, frame, Color.White, player.itemRotation, origin, player.HeldItem.scale, info.spriteEffects, 0));
             }
         }
-    }
+    }*/
 
     class MagmaSwordBlob : ModProjectile
     {

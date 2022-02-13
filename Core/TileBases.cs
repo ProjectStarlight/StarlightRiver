@@ -1,6 +1,5 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;

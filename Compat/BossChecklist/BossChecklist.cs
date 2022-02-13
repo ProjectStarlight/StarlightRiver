@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Items.Permafrost;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
@@ -15,7 +14,7 @@ namespace StarlightRiver.Compat
             if (bcl is null) 
                 return;
 
-            List<int> SquidBossCollection = new List<int>();
+            /*List<int> SquidBossCollection = new List<int>();
             List<int> SquidBossLoot = new List<int>();
             string SquidBossInfo = "Drop Auroracle Bait into the prismatic waters of the permafrost shrine.";
             bcl.Call("AddBoss", 2.6f, ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>(), StarlightRiver.Instance, "Auroracle", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned)), ModContent.ItemType<SquidBossSpawn>(), SquidBossCollection, SquidBossLoot, SquidBossInfo, null, "StarlightRiver/Assets/BossChecklist/SquidBoss");
@@ -24,6 +23,7 @@ namespace StarlightRiver.Compat
             List<int> vitricMiniBossLoot = new List<int>();
             string vitricMiniBossInfo = "Talk to the glassweaver in the vitric desert.";
             bcl.Call("AddMiniBoss", 4.1f, ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassMiniboss>(), StarlightRiver.Instance, "Glassweaver", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.DesertOpen)), null, vitricMiniBossCollection, vitricMiniBossLoot, vitricMiniBossInfo);
+            */
 
             List<int> vitricBossCollection = new List<int>()
             {

@@ -72,9 +72,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
             VerletChain.toDraw.Remove(Chain);
         }
     }
-
-    class RedBannerShortItem : QuickTileItem
-	{
-        public RedBannerShortItem() : base("Short Flowing Banner", "Debug item", TileType<RedBannerShort>(), 2, AssetDirectory.VitricTile, false) { }
-	}
 }

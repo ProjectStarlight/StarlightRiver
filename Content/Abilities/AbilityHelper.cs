@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.GaiasFist;
 using Terraria;
 
 namespace StarlightRiver.Content.Abilities
@@ -13,18 +11,6 @@ namespace StarlightRiver.Content.Abilities
         {
             if (!player.active) return false;
             return player.ActiveAbility<Dash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
-        }
-
-        public static bool CheckWisp(Player player, Rectangle hitbox)
-        {
-            if (!player.active) return false;
-            return player.ActiveAbility<Wisp>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
-        }
-
-        public static bool CheckSmash(Player player, Rectangle hitbox)
-        {
-            if (!player.active) return false;
-            return player.ActiveAbility<Smash>() && Collision.CheckAABBvAABBCollision(player.Hitbox.TopLeft(), player.Hitbox.Size(), hitbox.TopLeft(), hitbox.Size());
         }
 
         public static bool UsingAnyAbility(this Player player) => player.GetHandler().ActiveAbility != null;

@@ -25,12 +25,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            tile.inActive(!NPC.AnyNPCs(NPCType<Bosses.GlassMiniboss.GlassMiniboss>()));
         }
-    }
-
-    class ForgeDoorItem : QuickTileItem
-    {
-        public ForgeDoorItem() : base("Forge Door", "Debug item", TileType<ForgeDoor>(), 1, AssetDirectory.Debug, true) { }
     }
 }

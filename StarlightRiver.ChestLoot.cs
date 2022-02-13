@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Tiles.Misc;
 using StarlightRiver.Content.WorldGeneration;
 using StarlightRiver.Helpers;
 using System;
@@ -110,10 +109,6 @@ namespace StarlightRiver
             if (type != ItemID.None)
             {
                 Item item = SetupItem(type, 1, true);
-
-                Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
-                TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
-                (TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = item;
             }
         }
 
