@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override bool NewRightClick(int i, int j)
         {
             WorldGen.KillTile(i, j);
-            Item.NewItem(Main.LocalPlayer.Center, ItemType<Items.Vitric.GlassIdolPremiumEdition>());
+            Main.LocalPlayer.QuickSpawnItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>());
 
             return true;
         }
