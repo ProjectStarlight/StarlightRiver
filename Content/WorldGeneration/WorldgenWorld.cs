@@ -41,6 +41,9 @@ namespace StarlightRiver.Core
         {
             isDemoWorld = true;
 
+            //dirty hack where we force the old man into existence in the demo world so that he doesn't constantly try to spawn in the non-existant dungeon and cause index out of bounds errors TODO: make sure this is removed if the dungeon is being generated in the future
+            NPC.NewNPC(64, 64, Terraria.ID.NPCID.OldMan);
+
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
