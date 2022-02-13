@@ -30,6 +30,9 @@ namespace StarlightRiver.Packets
                 int n = NPC.NewNPC(x, y, type);
                 NetMessage.SendData(Terraria.ID.MessageID.SyncNPC, -1, -1, null, n);
             }
+
+            if (Main.netMode == Terraria.ID.NetmodeID.SinglePlayer)
+                NPC.NewNPC(x, y, type);
         }
     }
 }
