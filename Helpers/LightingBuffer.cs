@@ -24,8 +24,6 @@ namespace StarlightRiver.Helpers
         public RenderTarget2D TileLightingTempTexture;
         public Vector2 TileLightingCenter;
 
-        private readonly Effect upscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
-
         private int refreshTimer;
 
         static int XMax => Main.screenWidth / 16 + PADDING * 2;
@@ -115,8 +113,10 @@ namespace StarlightRiver.Helpers
 
         private void RenderLightingQuad()
         {
-            if (upscaleEffect is null) 
+            if (Main.dedServ) 
                 return;
+
+            Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
