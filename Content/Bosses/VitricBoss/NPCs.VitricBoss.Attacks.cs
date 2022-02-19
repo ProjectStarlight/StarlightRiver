@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             List<int> players = new List<int>();
 
-            foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint()) ))
+            foreach (Player player in Main.player.Where(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()) ))
             {
                 players.Add(player.whoAmI);
             }

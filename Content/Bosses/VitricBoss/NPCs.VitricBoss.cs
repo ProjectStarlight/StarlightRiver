@@ -747,8 +747,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         }
         #endregion Networking
-
-        private int IconFrame = 0;
-        private int IconFrameCounter = 0;
     }
 }

@@ -4,8 +4,6 @@ using StarlightRiver.Configs;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
-using StarlightRiver.Configs;
-using StarlightRiver.Physics;
 using static StarlightRiver.Helpers.DrawHelper;
 
 namespace StarlightRiver.Helpers
