@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
             On.Terraria.Player.PickTile += DontPickInZone;
             On.Terraria.WorldGen.PlaceTile += DontManuallyPlaceInZone;
+            On.Terraria.WorldGen.PoundTile += DontPoundTile;
             On.Terraria.WorldGen.PlaceWire += DontPlaceWire;
             On.Terraria.WorldGen.PlaceWire2 += DontPlaceWire2;
             On.Terraria.WorldGen.PlaceWire3 += DontPlaceWire3;
@@ -46,6 +47,16 @@ namespace StarlightRiver.Content.CustomHooks
 
             return false;
         }
+
+        private bool DontPoundTile(On.Terraria.WorldGen.orig_PoundTile orig, int x, int y)
+        {
+            if (IsProtected(x, y))
+            {
+                FailFX(new Point16(x, y));
+                return false;
+            }
+            return orig(x, y);
+        } 
 
 
         private bool DontPlaceWire(On.Terraria.WorldGen.orig_PlaceWire orig, int x, int y)
