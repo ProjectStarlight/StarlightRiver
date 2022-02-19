@@ -18,11 +18,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	public sealed partial class VitricBoss : ModNPC
 	{
+        private bool IsInsideArena()
+        {
+            //certain client side effects should only happen when player is in arena (or everywhere in single player)
+            //and not occur for the server
+            return Main.netMode == NetmodeID.SinglePlayer || Main.LocalPlayer.Hitbox.Intersects(arena);
+        }
         private void SpawnAnimation() //The animation which plays when the boss is spawning
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
-                return;  //mp player not in arena so we can just skip
-
             rotationLocked = true;
             lockedRotation = 1.57f;
 
@@ -32,9 +35,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 RandomizeTarget(); //pick a random target so the eyes will follow them
                 startPos = npc.Center;
 
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.ScreenMoveTarget = npc.Center + new Vector2(0, -600);
-                mp.ScreenMoveTime = 650;
+                if (IsInsideArena()) 
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.ScreenMoveTarget = npc.Center + new Vector2(0, -600);
+                    mp.ScreenMoveTime = 650;
+                }
 
                 music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
 
@@ -53,16 +59,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 120)
             {
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 10;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 10;
+
+                    ZoomHandler.SetZoomAnimation(1.1f, 60);
+                }
 
                 for (int k = 0; k < 10; k++)
                     Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Cluster" + Main.rand.Next(1, 19)));
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
-
-                ZoomHandler.SetZoomAnimation(1.1f, 60);
             }
 
             if (GlobalTimer == 210)
@@ -71,16 +80,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 240)
             {
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 20;
+                if(IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 20;
+
+                    ZoomHandler.SetZoomAnimation(1.2f, 60);
+                }
 
                 for (int k = 0; k < 10; k++)
                     Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Cluster" + Main.rand.Next(1, 19)));
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
-
-                ZoomHandler.SetZoomAnimation(1.2f, 60);
             }
 
             if (GlobalTimer == 330)
@@ -89,16 +101,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 360)
             {
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 25;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 25;
+
+                    ZoomHandler.SetZoomAnimation(1.3f, 60);
+                }
 
                 for (int k = 0; k < 10; k++)
                     Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), ModGore.GetGoreSlot(AssetDirectory.VitricBoss + "Gore/Cluster" + Main.rand.Next(1, 19)));
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
-
-                ZoomHandler.SetZoomAnimation(1.3f, 60);
             }
 
             if (GlobalTimer == 424)
@@ -112,8 +127,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if(Main.netMode != NetmodeID.Server)
                     UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
 
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 30;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 30;
+                }
 
                 ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
 
@@ -143,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (GlobalTimer == 540 + k * 5)
                     {
                         Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
-                        int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone forme
+                        int index = NPC.NewNPC((int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone form
                         (Main.npc[index].modNPC as VitricBossCrystal).Parent = this;
                         (Main.npc[index].modNPC as VitricBossCrystal).StartPos = target;
                         (Main.npc[index].modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
@@ -176,8 +194,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 620)
 			{
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 60;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 60;
+                }
 
                 if (Main.netMode != NetmodeID.Server)
                     Filters.Scene.Deactivate("Shockwave");
@@ -211,13 +232,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 ResetAttack();
                 npc.netUpdate = true;
             }
+
+            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
+            {
+                prevTickGlobalTimer++;
+                SpawnAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
+            }
         }
 
 		private void PhaseTransitionAnimation() //The animation that plays when the boss transitions from phase 1 to 2
 		{
-            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
-                return;  //mp player not in arena so we can just skip
-
             rotationLocked = true;       
 
             if (GlobalTimer == 2)
@@ -240,14 +264,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(1);
                 npc.friendly = true; //so we wont get contact damage
 
-                StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp2.ScreenMoveTarget = arena.Center();
-                mp2.ScreenMoveTime = 480;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp2.ScreenMoveTarget = arena.Center();
+                    mp2.ScreenMoveTime = 480;
+                }
             }
 
             if (GlobalTimer > 140 && GlobalTimer < 400)
             {
-                ZoomHandler.AddFlatZoom(0.2f);
+                if (IsInsideArena())
+                    ZoomHandler.AddFlatZoom(0.2f);
             }
 
             if (GlobalTimer > 20 && GlobalTimer < 140)
@@ -306,8 +334,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 360)
             {
-                StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp2.Shake += 40;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp2.Shake += 40;
+                }
 
                 for (int k = 0; k < 40; k++)
                 {
@@ -337,13 +368,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Vignette.visible = true;
             }
+
+            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
+            {
+                prevTickGlobalTimer++;
+                PhaseTransitionAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
+            }
         }
 
         private void DeathAnimation() //The animation that plays when the boss dies
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient && !Main.LocalPlayer.Hitbox.Intersects(arena))
-                return;  //mp player not in arena so we can just skip
-
             Vignette.offset = Vector2.Zero;
             Vignette.opacityMult = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
@@ -379,8 +413,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer == 120 && Main.netMode != NetmodeID.Server)
             {
-                StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                mp.Shake += 60;
+                if (IsInsideArena())
+                {
+                    StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
+                    mp.Shake += 60;
+                }
 
                 Main.PlaySound(SoundID.Roar, npc.Center, 0);
 
@@ -441,6 +478,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Vignette.visible = false;
                 npc.Kill();
+            }
+
+            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
+            {
+                prevTickGlobalTimer++;
+                DeathAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
             }
         }
 	}
