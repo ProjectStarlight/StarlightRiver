@@ -663,6 +663,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 npc.netUpdate = true;
             }
 
+            prevTickGlobalTimer = GlobalTimer; //potentially just shifted so we store the previous value in case of fastforwarding
             justRecievedPacket = false; //at end of frame set to no longer just recieved
         }
 
@@ -733,7 +734,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
             justRecievedPacket = true;
-            prevTickGlobalTimer = GlobalTimer; //potentially just shifted so we store the previous value in case of fastforwarding
 
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();

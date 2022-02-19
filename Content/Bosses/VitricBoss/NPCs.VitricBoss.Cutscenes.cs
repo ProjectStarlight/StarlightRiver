@@ -24,12 +24,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             //and not occur for the server
             return Main.netMode == NetmodeID.SinglePlayer || Main.LocalPlayer.Hitbox.Intersects(arena);
         }
+
+        private bool checkSpecificTime(int time)
+        {
+            //if the globaltimer gets fastforwarded from recieving a packet (generally rare to skip)
+            //we want to make sure we still perform all the specific timer increments so things aren't lost like assigning the music or other effects
+            //possible to reverse a few ticks aswell but thats generally safe and the worst that happens is doubling up on screenshake since a few frames of offset duplicate sound effects is indistinguishable
+            return (GlobalTimer == time || (justRecievedPacket && prevTickGlobalTimer < time && GlobalTimer > time));
+        }
         private void SpawnAnimation() //The animation which plays when the boss is spawning
         {
             rotationLocked = true;
             lockedRotation = 1.57f;
 
-            if (GlobalTimer == 2)
+            if (checkSpecificTime(2))
             {
                 npc.friendly = true; //so he wont kill you during the animation
                 RandomizeTarget(); //pick a random target so the eyes will follow them
@@ -52,12 +60,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Helper.PlayPitched("VitricBoss/CeirosRumble", 0.4f, 0, npc.Center);
             }
 
-            if (GlobalTimer == 90)
+            if (checkSpecificTime(90))
                 //Helper.PlayPitched("VitricBoss/StoneBreak", 0.25f, 0.3f, npc.Center);
                 Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.4f, npc.Center);
 
 
-            if (GlobalTimer == 120)
+            if (checkSpecificTime(120))
             {
                 if (IsInsideArena())
                 {
@@ -74,11 +82,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
             }
 
-            if (GlobalTimer == 210)
+            if (checkSpecificTime(210))
                 //Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.35f, 0.2f, npc.Center);
                 Helper.PlayPitched("VitricBoss/StoneBreak", 0.35f, 0.2f, npc.Center);
 
-            if (GlobalTimer == 240)
+            if (checkSpecificTime(240))
             {
                 if(IsInsideArena())
                 {
@@ -95,11 +103,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
             }
 
-            if (GlobalTimer == 330)
+            if (checkSpecificTime(330))
                 //Helper.PlayPitched("VitricBoss/ceiroslidclose", 0.5f, 0.1f, npc.Center);
                 Helper.PlayPitched("VitricBoss/StoneBreak", 0.5f, 0, npc.Center);
 
-            if (GlobalTimer == 360)
+            if (checkSpecificTime(360))
             {
                 if (IsInsideArena())
                 {
@@ -116,13 +124,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
             }
 
-            if (GlobalTimer == 424)
+            if (checkSpecificTime(424))
             {
                 Helper.PlayPitched("VitricBoss/StoneBreak", 0.7f, 0, npc.Center);
                 Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, npc.Center);
             }
 
-            if (GlobalTimer == 454)
+            if (checkSpecificTime(454))
             {
                 if(Main.netMode != NetmodeID.Server)
                     UILoader.GetUIState<TextCard>().Display(npc.FullName, Main.rand.Next(10000) == 0 ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
@@ -189,10 +197,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
-            if (GlobalTimer == 610)
+            if (checkSpecificTime(610))
                 Helper.PlayPitched("VitricBoss/CeirosRoar", 1, 0, npc.Center);
 
-            if (GlobalTimer == 620)
+            if (checkSpecificTime(620))
 			{
                 if (IsInsideArena())
                 {
@@ -204,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Filters.Scene.Deactivate("Shockwave");
             }
 
-            if(GlobalTimer == 690)
+            if(checkSpecificTime(690))
                 Helper.PlayPitched("VitricBoss/ceiroslidclose", 1, 0, npc.Center);
 
             if (GlobalTimer > 690 && GlobalTimer < 750)
@@ -232,19 +240,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 ResetAttack();
                 npc.netUpdate = true;
             }
-
-            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
-            {
-                prevTickGlobalTimer++;
-                SpawnAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
-            }
         }
 
 		private void PhaseTransitionAnimation() //The animation that plays when the boss transitions from phase 1 to 2
 		{
             rotationLocked = true;       
 
-            if (GlobalTimer == 2)
+            if (checkSpecificTime(2))
             {
                 lockedRotation = 3.14f;
 
@@ -259,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 crystals[0].ai[2] = 6;
             }
 
-            if (GlobalTimer == 140)
+            if (checkSpecificTime(140))
             {
                 SetFrameX(1);
                 npc.friendly = true; //so we wont get contact damage
@@ -308,7 +310,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
             }
 
-            if (GlobalTimer == 325)
+            if (checkSpecificTime(325))
                 Helper.PlayPitched("VitricBoss/StoneBreakTwo", 0.7f, 0, npc.Center);
 
             if (GlobalTimer >= 340 && GlobalTimer < 370)
@@ -322,18 +324,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX(4 + (int)((GlobalTimer - 350) / 20f * 6));
             }
 
-            if (GlobalTimer == 350)
+            if (checkSpecificTime(350))
                 foreach (NPC crystal in crystals) //kill all the crystals
                     crystal.Kill();
 
-            if (GlobalTimer == 359) 
+            if (checkSpecificTime(359)) 
                 music = mod.GetSoundSlot(SoundType.Music, "ThisSoundDoesntExist"); //handles the music transition
 
-            if (GlobalTimer == 360)
+            if (checkSpecificTime(360))
+            {
                 music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBoss2");
 
-            if (GlobalTimer == 360)
-            {
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
@@ -355,7 +356,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         };
             }
 
-            if(GlobalTimer == 460)
+            if(checkSpecificTime(460))
                 lockedRotation = 2f;
 
             if (GlobalTimer > 480)
@@ -368,12 +369,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Vignette.visible = true;
             }
-
-            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
-            {
-                prevTickGlobalTimer++;
-                PhaseTransitionAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
-            }
         }
 
         private void DeathAnimation() //The animation that plays when the boss dies
@@ -381,8 +376,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Vignette.offset = Vector2.Zero;
             Vignette.opacityMult = 0.5f + Math.Min(GlobalTimer / 60f, 0.5f);
 
-            if (GlobalTimer == 1)
+            if (checkSpecificTime(1))
             {
+                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
+
                 startPos = npc.Center;
                 npc.rotation = 0;
 
@@ -392,9 +389,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (GlobalTimer > 3 && GlobalTimer <= 100)
                 npc.Center = Vector2.SmoothStep(startPos, homePos, GlobalTimer / 100f);
-
-            if (GlobalTimer == 1)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBossDeath"));
 
             if (GlobalTimer > 100 && GlobalTimer < 120 && Main.netMode != NetmodeID.Server)
             {
@@ -411,7 +405,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Filters.Scene.Activate("Shockwave", npc.Center).GetShader().UseProgress(Main.screenWidth / (float)Main.screenHeight).UseIntensity(300 - (int)(Math.Sin(progress * 3.14f) * 220)).UseDirection(new Vector2(progress * 0.8f, progress * 0.9f));
             }
 
-            if (GlobalTimer == 120 && Main.netMode != NetmodeID.Server)
+            if (checkSpecificTime(120) && Main.netMode != NetmodeID.Server)
             {
                 if (IsInsideArena())
                 {
@@ -429,7 +423,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameX((int)(8 - (GlobalTimer - 120) / 40f * 8));
             }
 
-            if(GlobalTimer == 160)
+            if(checkSpecificTime(160))
 			{
                 SetFrameX(2);
                 SetFrameY(0);
@@ -453,7 +447,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (GlobalTimer > 3 && GlobalTimer < 595)
                 Main.musicFade[Main.curMusic] = MathHelper.Clamp(1 - (GlobalTimer - 63) / 60f, 0, 1);
 
-            if (GlobalTimer == 600)
+            if (checkSpecificTime(600))
             {
 
                 if (Main.netMode != NetmodeID.Server)
@@ -478,12 +472,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Vignette.visible = false;
                 npc.Kill();
-            }
-
-            if (justRecievedPacket && prevTickGlobalTimer < GlobalTimer - 1)
-            {
-                prevTickGlobalTimer++;
-                DeathAnimation(); //recursive call through this function when skipping ticks to make sure music or other sounds arent lost in mp
             }
         }
 	}
