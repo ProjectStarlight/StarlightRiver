@@ -345,12 +345,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void AI()
         {
-            if (justLaunched)
+            if (justLaunched && Main.myPlayer == projectile.owner)
             {
                 int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner);
                 ((PhantomBuzzsaw)Main.projectile[proj].modProjectile).parent = projectile;
+                justLaunched = false;
             }
-                
+
             projectile.frameCounter += 1;
             projectile.frame = (projectile.frameCounter / 5) % 2;
             rotationCounter += 0.6f;
@@ -437,7 +438,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 projectile.active = false;
                 return;
             }
-                
+
 
             if (Main.myPlayer != projectile.owner)
                 findIfHit();
@@ -450,8 +451,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-
-            ((BuzzsawProj2)parent.modProjectile).hitGore(target);
 
             if (Main.myPlayer == projectile.owner)
             {
@@ -473,11 +472,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             if (parent.modProjectile is BuzzsawProj2 modProj)
             {
+                modProj.hitGore(target);
                 modProj.pauseTimer = 16;
                 modProj.justHit = true;
             }
 
-            
+
         }
     }
 
