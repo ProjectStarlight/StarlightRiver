@@ -451,6 +451,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool InstancePerEntity => true;
 		public bool damageIncreased = true;
 
+        public override void ResetEffects(NPC npc)
+        {
+			damageIncreased = false;
+        }
+
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			if (projectile.ranged && damageIncreased)
