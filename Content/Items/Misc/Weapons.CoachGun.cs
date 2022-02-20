@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var list = Main.projectile.Where(x => x.Hitbox.Intersects(Hitbox));
 			foreach (var proj in list)
 			{
-				if (proj.GetGlobalProjectile<CoachGunGlobalProj>().shotFromGun && projectile.timeLeft > 2)
+				if (proj.GetGlobalProjectile<CoachGunGlobalProj>().shotFromGun && projectile.timeLeft > 2 && proj.active)
 				{
 					shot = true;
 					projectile.timeLeft = 2;
