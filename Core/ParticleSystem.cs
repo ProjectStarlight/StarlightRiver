@@ -46,7 +46,6 @@ namespace StarlightRiver.Core
                     if (particle.Timer <= 0)
                     {
                         Particles.Remove(particle);
-                        Particles[k] = null;
                     }
                 }
         }

@@ -184,8 +184,6 @@ namespace StarlightRiver.Content.Items.Misc
         private List<Vector2> cache;
         private Trail trail;
 
-        private bool justHit = false; //for mp sync
-
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetDefaults()

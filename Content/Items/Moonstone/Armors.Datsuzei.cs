@@ -16,25 +16,40 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-    public class Datsuzei : InworldItem
+    public class Datsuzei : InworldItem, ILoadable
     {
         public static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
         public int comboState = 0;
 
-        public static ParticleSystem sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
+        public static ParticleSystem sparkles;
 
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
         public override bool VisibleInUI => false;
 
-		public override bool Autoload(ref string name)
+        public float Priority => 1f;
+
+        public override bool Autoload(ref string name)
 		{
-            StarlightPlayer.PostUpdateEvent += PlayerFrame;
-            On.Terraria.Main.DrawInterface_30_Hotbar += OverrideHotbar;
             return true;
 		}
 
-		public override void SetStaticDefaults()
+        public void Load()
+        {
+            StarlightPlayer.PostUpdateEvent += PlayerFrame;
+            On.Terraria.Main.DrawInterface_30_Hotbar += OverrideHotbar;
+            activationTimer = 0;
+            sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
+    }
+
+        public void Unload()
+        {
+            StarlightPlayer.PostUpdateEvent -= PlayerFrame;
+            On.Terraria.Main.DrawInterface_30_Hotbar -= OverrideHotbar;
+            sparkles = null;
+        }
+
+        public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("Datsuzei");
             Tooltip.SetDefault("Unleash the moon");
@@ -258,7 +273,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
             tooltips[0].overrideColor = new Color(100, 255, 255);
 		}
-	}
+    }
 
 	public class DatsuzeiProjectile : ModProjectile, IDrawPrimitive
     {

@@ -60,6 +60,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
 
+
+        private bool justRecievedPacket = false; //true for the frame this recieves a packet update to handle any syncronizing
+        private float prevTickGlobalTimer; //since globalTimer can jump around from from to frame from recieving packets, we want to make sure we catch logic for every number in the cutscenes if it fastforwarded from a packet (reversed is ignored so we don't double up on sounds/shake)
         private float prevPhase = 0;
         private float prevAttackPhase = 0;
 
@@ -653,13 +656,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             body?.UpdateBody(); //update the physics on the body, last, so it can override framing
 
-            if (Main.netMode == NetmodeID.Server && (Phase != prevPhase || AttackPhase != prevPhase))
+            if (Main.netMode == NetmodeID.Server && (Phase != prevPhase || AttackPhase != prevAttackPhase))
             {
                 prevPhase = Phase;
                 prevAttackPhase = AttackPhase;
                 npc.netUpdate = true;
             }
 
+            prevTickGlobalTimer = GlobalTimer; //potentially just shifted so we store the previous value in case of fastforwarding
+            justRecievedPacket = false; //at end of frame set to no longer just recieved
         }
 
         public void findCrystals()
@@ -711,7 +716,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         #region Networking
         public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
-
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
             writer.Write(lockedRotation);
@@ -729,6 +733,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
+            justRecievedPacket = true;
+
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
             lockedRotation = reader.ReadSingle();
@@ -747,8 +753,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         }
         #endregion Networking
-
-        private int IconFrame = 0;
-        private int IconFrameCounter = 0;
     }
 }
