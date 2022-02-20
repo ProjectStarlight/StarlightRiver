@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					for (int i = 0; i < 5; i++)
 					{
-						Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(proj.velocity).RotatedBy(Main.rand.NextFloat(-0.6f,0.6f)) * Main.rand.NextFloat(1.3f, 3), ModContent.ProjectileType<CoachGunEmber>(), 0, 0, owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+						Projectile.NewProjectileDirect(projectile.Center, Vector2.Normalize(proj.velocity).RotatedBy(Main.rand.NextFloat(-0.6f,0.6f)) * Main.rand.NextFloat(1.3f, 3), ModContent.ProjectileType<CoachGunEmber>(), projectile.damage, 0, owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 					}
 				}
 			}
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), projectile.damage, 0, owner.whoAmI);
+			Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), projectile.damage * (shot ? 2 : 1), 0, owner.whoAmI);
 			for (int i = 0; i < 10; i++)
 			{
 				Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
@@ -311,6 +311,12 @@ namespace StarlightRiver.Content.Items.Misc
 				dust.scale = 0.6f * projectile.scale;
 				dust.rotation = Main.rand.NextFloatDirection();
 			}
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.AddBuff(ModContent.BuffType<CoachDebuff>(), 170);
+			target.AddBuff(BuffID.OnFire, 170);
 		}
 	}
 
