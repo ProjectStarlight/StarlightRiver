@@ -31,7 +31,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-	float2 st = float2(input.TexCoords.x, input.TexCoords.y);
+	float2 st = float2(input.TexCoords.x, input.TexCoords.y * 0.5f);
 
 	float3 color = tex2D(samplerTex, st).xyz;
 

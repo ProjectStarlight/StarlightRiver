@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			if (projectile.ranged && damageIncreased)
-				damage = (int)(damage * 1.1f);
+				damage = (int)(damage * 1.2f);
         }
     }
 }
