@@ -14,7 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Abilities
 {
-	public partial class AbilityHandler : ModPlayer, ILoadable
+	public class AbilityHandler : ModPlayer, ILoadable
     {
         // The player's active ability.
         public Ability ActiveAbility
@@ -73,6 +73,15 @@ namespace StarlightRiver.Content.Abilities
         private Ability nextAbility;
 
         public float Priority => 1;
+
+        //for some reason without specifically setting these values to zero with cloneNewInstances => false and contructor,
+        ////on a server if someone unlocks or modifies these it will impact newly created characters from then on for that instance
+        public override bool CloneNewInstances => false;
+        public AbilityHandler()
+        {
+            infusions = new InfusionItem[Infusion.InfusionSlots];
+            unlockedAbilities = new Dictionary<Type, Ability>();
+        }
 
         public void Load()
 		{
@@ -237,9 +246,9 @@ namespace StarlightRiver.Content.Abilities
                 // Load max infusions
                 InfusionLimit = tag.GetInt(nameof(InfusionLimit));
             }
-            catch
+            catch (Exception e)
             {
-
+                StarlightRiver.Instance.Logger.Debug("handled error loading player: " + e);
             }
         }
 
