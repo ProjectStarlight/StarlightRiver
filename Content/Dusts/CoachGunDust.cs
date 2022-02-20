@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Dusts
             dust.noGravity = true;
             dust.scale *= 0.15f;
             dust.frame = new Rectangle(0, 0, 64, 64);
-            dust.color = Color.Yellow;
+            dust.color = Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat());
             dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
         }
 
