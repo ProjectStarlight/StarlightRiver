@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-	public abstract class CursedAccessory : SmartAccessory, ILoadable
+	public abstract class CursedAccessory : SmartAccessory
     {
         public static readonly Color CurseColor = new Color(25, 17, 49);
 
@@ -28,14 +28,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public static ParticleSystem ShardsSystem;
 
-        public float Priority => 1f;
-        public void Load()
+        public static void Load()
         {
             CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
             ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
         }
 
-        public void Unload()
+        public static void Unload()
         {
             CursedSystem = null;
             ShardsSystem = null;
