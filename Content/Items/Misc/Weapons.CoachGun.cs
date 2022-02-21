@@ -21,7 +21,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coach Gun");
-			Tooltip.SetDefault("I dont get paid to write descriptions lol");
+			Tooltip.SetDefault("M2 to throw out a lit bundle of dynamite\n" +
+				"Explodes in 5 seconds, dealing DoT and weakening enemies\n" +
+				"Shoot it to detonate it early\n" +
+				"'My business, my rules'");
 
 		}
 
@@ -36,7 +39,7 @@ namespace StarlightRiver.Content.Items.Misc
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true;
 			item.knockBack = 0;
-			item.rare = ItemRarityID.Orange;
+			item.rare = ItemRarityID.Blue;
 			item.shoot = ModContent.ProjectileType<CoachGunBomb>();
 			item.shootSpeed = 12f;
 			item.useAmmo = AmmoID.Bullet;
@@ -90,6 +93,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 					Dust.NewDustPerfect(position + (offset * 70), ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
+
+				Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f));
 				Dust.NewDustPerfect(player.Center + offset * 70, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
 				Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
@@ -160,6 +166,7 @@ namespace StarlightRiver.Content.Items.Misc
 			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
 
 			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), projectile.Center);
+			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)
 			{
