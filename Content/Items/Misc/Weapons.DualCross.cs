@@ -45,6 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 			item.autoReuse = true;
 			item.shootSpeed = 7.8f;
 			item.crit = 6;
+            item.noUseGraphic = true;
 
 		}
 
@@ -91,10 +92,74 @@ namespace StarlightRiver.Content.Items.Misc
                 Vector2 offset = Vector2.Normalize(new Vector2(speedX, speedY)).RotatedBy(-1.57f * player.direction) * 10;
                 position += offset;
                 player.itemTime = 19;
+                Projectile.NewProjectile(position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, player.whoAmI);
             }
             else
                 position -= new Vector2(speedX, speedY);
             return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+        }
+    }
+
+    public class DualCrossHeld : ModProjectile
+    {
+        public override string Texture => AssetDirectory.MiscItem + Name;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Dual Cross");
+
+        Player owner => Main.player[projectile.owner];
+
+        private bool initialized = false;
+
+        private Vector2 currentDirection => projectile.rotation.ToRotationVector2();
+
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.ranged = true;
+            projectile.width = 2;
+            projectile.height = 2;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = -1;
+            projectile.tileCollide = false;
+            projectile.timeLeft = 999999;
+            projectile.ignoreWater = true;
+            projectile.alpha = 255;
+            Main.projFrames[projectile.type] = 4;
+        }
+
+        public override void AI()
+        {
+            owner.heldProj = projectile.whoAmI;
+            if (owner.itemTime <= 1)
+                projectile.active = false;
+            projectile.Center = owner.Center;
+
+            if (!initialized)
+            {
+                initialized = true;
+                projectile.rotation = projectile.DirectionTo(Main.MouseWorld).ToRotation();
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D texture = Main.projectileTexture[projectile.type];
+            Vector2 position = (owner.Center + (currentDirection * 15)) - Main.screenPosition;
+
+            if (owner.direction == 1)
+            {
+                SpriteEffects effects1 = SpriteEffects.None;
+                Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), texture.Size() / 2, projectile.scale, effects1, 0.0f);
+            }
+
+            else
+            {
+                SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
+                Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, texture.Size() / 2, projectile.scale, effects1, 0.0f);
+
+            }
+            return false;
         }
     }
 
@@ -169,6 +234,34 @@ namespace StarlightRiver.Content.Items.Misc
             return speed;
         }
 
+        private static int GetProjType(Item weapon, Item obj, Player player, int type)
+        {
+            if (obj.shoot > 0)
+                type = obj.shoot;
+            if (weapon.type == 3019 && type == 1)
+                type = 485;
+
+            if (type == 42)
+            {
+                if (obj.type == 370)
+                {
+                    type = 65;
+                }
+                else if (obj.type == 408)
+                {
+                    type = 68;
+                }
+                else if (obj.type == 1246)
+                {
+                    type = 354;
+                }
+            }
+
+            if (player.inventory[player.selectedItem].type == 2888 && type == 1)
+                type = 469;
+            return type;
+        }
+
         public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
         {
             if (weapon.type != ModContent.ItemType<DualCross>())
@@ -176,6 +269,8 @@ namespace StarlightRiver.Content.Items.Misc
                 base.PickAmmo(weapon, ammo, player, ref type, ref speed, ref damage, ref knockback);
                 return;
             }
+
+            int type2 = 0;
 
             var mp = weapon.modItem as DualCross;
             int ticker = mp.ticker;
@@ -191,52 +286,20 @@ namespace StarlightRiver.Content.Items.Misc
 
             mp.ticker++;
 
-            if (obj.shoot > 0)
-                type = obj.shoot;
-            if (weapon.type == 3019 && type == 1)
-                type = 485;
+            type = GetProjType(weapon, obj, player, type);
+            type2 = GetProjType(weapon, obj2, player, type2);
 
-            if (type == 42)
-            {
-                if (obj.type == 370)
-                {
-                    type = 65;
-                    damage += 5;
-                }
-                else if (obj.type == 408)
-                {
-                    type = 68;
-                    damage += 5;
-                }
-                else if (obj.type == 1246)
-                {
-                    type = 354;
-                    damage += 5;
-                }
-            }
+            Projectile proj = new Projectile();
+            proj.SetDefaults(type);
 
-            if (player.inventory[player.selectedItem].type == 2888 && type == 1)
-                type = 469;
-            if (player.magicQuiver && (weapon.useAmmo == AmmoID.Arrow || weapon.useAmmo == AmmoID.Stake))
-            {
-                knockback = (float)(int)((double)knockback * 1.1);
-            }
-            if (obj.ranged)
-            {
-                if (obj.damage > 0)
-                    damage += (int)((double)obj.damage * (double)player.rangedDamage);
-            }
-            else
-                damage += obj.damage;
-            if (weapon.useAmmo == AmmoID.Arrow && player.archery)
-            {
-                damage = (int)((double)damage * 1.2);
-            }
-            knockback += obj.knockBack;
+            Projectile proj2 = new Projectile();
+            proj2.SetDefaults(type2);
 
-            float speed1 = GetSpeed(player, obj, weapon, speed);
-            float speed2 = GetSpeed(player, obj2, weapon, speed);
-            speed = (speed1 + speed2) / 2;
+            float speed1 = GetSpeed(player, obj, weapon, speed) * (proj.extraUpdates + 1);
+            float speed2 = GetSpeed(player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
+
+
+            speed = ((speed1 + speed2) / 2) / (proj.extraUpdates + 1);
 
             bool flag2 = false;
 
