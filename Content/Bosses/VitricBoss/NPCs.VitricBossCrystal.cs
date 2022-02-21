@@ -170,9 +170,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                        if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
+                            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
-                        Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
+                        Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, (int)npc.Center.X, (int)npc.Center.Y);
                         Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 2, -0.5f);
 
                         player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
@@ -190,12 +191,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
+                        
                         if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient && Main.myPlayer == player.whoAmI)
 						{
-                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI);
-                            packet.Send();
+                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI, player.velocity);
+                            packet.Send(runLocally: false);
                             return;
 						}
+                        
 
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
