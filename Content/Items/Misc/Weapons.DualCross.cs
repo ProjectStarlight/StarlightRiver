@@ -23,8 +23,8 @@ namespace StarlightRiver.Content.Items.Misc
         private int ammoToUse;
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Dual Cross");
-			Tooltip.SetDefault("Alternates between your top 2 arrows");
+			DisplayName.SetDefault("Double Cross");
+			Tooltip.SetDefault("Alternates between your highest two ammo slots");
 		}
 		public override void SetDefaults()
 		{
