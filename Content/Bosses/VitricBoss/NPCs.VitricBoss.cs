@@ -139,7 +139,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena                
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp))
+                        npc.active = false; //reset arena      
+                }
                 return true;
             }
 
@@ -600,10 +604,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Vignette.visible = true;
 
                     if (GlobalTimer == 60)
-                    {
                         npc.dontTakeDamage = false; //damagable again
-                        npc.friendly = false;
-                    }
 
                     if (AttackTimer == 1) //switching out attacks
                     {
