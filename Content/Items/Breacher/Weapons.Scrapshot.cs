@@ -344,7 +344,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (struck)
             {
-                player.fullRotation = (projectile.timeLeft / 20f) * 3.14f * player.direction;
+                player.fullRotation += (projectile.timeLeft / 20f) * 3.14f * player.direction;
                 player.fullRotationOrigin = player.Size / 2;
                 player.velocity *= 0.95f;
             }

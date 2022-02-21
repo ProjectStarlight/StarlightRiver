@@ -85,11 +85,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
                 drawInfo.drawPlayer.fullRotationOrigin = drawInfo.drawPlayer.Size / 2;
                 drawInfo.drawPlayer.fullRotation = realAngle + (float)Math.PI * 0.5f * angleTimer / 59f;
             }
-            else
-            {
-                drawInfo.drawPlayer.fullRotationOrigin = Vector2.Zero;
-                drawInfo.drawPlayer.fullRotation = 0;
-            }
         }
 
         public override void PostUpdate()

@@ -109,6 +109,8 @@ namespace StarlightRiver.Core
 
             trueInvisible = false;
 
+            player.fullRotation = 0;
+
             shouldSendHitPacket = false;
 
             if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)

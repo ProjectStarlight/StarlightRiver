@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.player[i].MountedCenter = oldMountedCenter - oldPos + positionOffset;
                     Main.player[i].heldProj = -1;
                     Main.screenPosition = Vector2.Zero;
-                    playerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, 0f, Vector2.Zero, 0f });
+                    playerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, Main.player[i].fullRotation, Main.player[i].fullRotationOrigin, 0f });
 
                     Main.player[i].position = oldPos;
                     Main.player[i].Center = oldCenter;
