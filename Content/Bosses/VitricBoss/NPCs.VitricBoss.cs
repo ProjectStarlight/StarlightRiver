@@ -657,6 +657,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             body?.UpdateBody(); //update the physics on the body, last, so it can override framing
 
+            if (Main.netMode == NetmodeID.Server)
+            {
+                //instantly switch targets if no longer valid
+                Player target = Main.player[npc.target];
+                if (!target.active || target.dead || !arena.Contains(target.Center.ToPoint()))
+                {
+                    RandomizeTarget();
+                    npc.netUpdate = true;
+                }
+            }
+
             if (Main.netMode == NetmodeID.Server && (Phase != prevPhase || AttackPhase != prevAttackPhase))
             {
                 prevPhase = Phase;
@@ -729,7 +740,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             writer.Write(npc.defense);
 
             writer.Write(npc.target);
-
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)

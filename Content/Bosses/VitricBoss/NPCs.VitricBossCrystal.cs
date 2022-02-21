@@ -13,6 +13,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Packets;
 using Terraria.ID;
 using System.IO;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -323,6 +324,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
 
                     if (npc.Center.Y > TargetPos.Y)
+                    {
                         foreach (Vector2 point in Parent.crystalLocations) //Better than cycling througn Main.npc, still probably a better way to do this
                         {
                             Rectangle hitbox = new Rectangle((int)point.X - 110, (int)point.Y + 48, 220, 16); //grabs the platform hitbox
@@ -332,6 +334,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 Impact();
                             }
                         }
+                    }
 
                     Tile tile = Framing.GetTileSafely((int)npc.Center.X / 16, (int)(npc.Center.Y + 24) / 16);
 
@@ -378,8 +381,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
-
-            npc.netUpdate = true;
         }
 
         private void ResetTimers()
