@@ -30,7 +30,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             //if the globaltimer gets fastforwarded from recieving a packet (generally rare to skip)
             //we want to make sure we still perform all the specific timer increments so things aren't lost like assigning the music or other effects
             //possible to reverse a few ticks aswell but thats generally safe and the worst that happens is doubling up on screenshake since a few frames of offset duplicate sound effects is indistinguishable
-            return (GlobalTimer == time || (justRecievedPacket && prevTickGlobalTimer < time && GlobalTimer > time));
+            //limit the tick difference cause otherwise may end up with a super reverse of the whole cutscene when some weirdness happens, if the lag is extreme enough, things may just break
+            return (GlobalTimer == time || (justRecievedPacket && prevTickGlobalTimer < time && GlobalTimer > time && Math.Abs(prevTickGlobalTimer - GlobalTimer) < 15));
         }
         private void SpawnAnimation() //The animation which plays when the boss is spawning
         {
@@ -39,7 +40,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (checkSpecificTime(2))
             {
-                npc.friendly = true; //so he wont kill you during the animation
                 RandomizeTarget(); //pick a random target so the eyes will follow them
                 startPos = npc.Center;
 
@@ -232,7 +232,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
-                npc.friendly = false; //and hurt when touched
                 homePos = npc.Center; //set the NPCs home so it can return here after attacks
                 int index = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<ArenaBottom>());
                 (Main.npc[index].modNPC as ArenaBottom).Parent = this;
@@ -264,7 +263,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (checkSpecificTime(140))
             {
                 SetFrameX(1);
-                npc.friendly = true; //so we wont get contact damage
 
                 if (IsInsideArena())
                 {

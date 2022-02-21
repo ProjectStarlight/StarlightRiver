@@ -139,7 +139,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena                
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp))
+                        npc.active = false; //reset arena      
+                }
                 return true;
             }
 
@@ -600,10 +604,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Vignette.visible = true;
 
                     if (GlobalTimer == 60)
-                    {
                         npc.dontTakeDamage = false; //damagable again
-                        npc.friendly = false;
-                    }
 
                     if (AttackTimer == 1) //switching out attacks
                     {
@@ -655,6 +656,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             body?.UpdateBody(); //update the physics on the body, last, so it can override framing
+
+            if (Main.netMode == NetmodeID.Server)
+            {
+                //instantly switch targets if no longer valid
+                Player target = Main.player[npc.target];
+                if (!target.active || target.dead || !arena.Contains(target.Center.ToPoint()))
+                {
+                    RandomizeTarget();
+                    npc.netUpdate = true;
+                }
+            }
 
             if (Main.netMode == NetmodeID.Server && (Phase != prevPhase || AttackPhase != prevAttackPhase))
             {
@@ -728,7 +740,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             writer.Write(npc.defense);
 
             writer.Write(npc.target);
-
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)

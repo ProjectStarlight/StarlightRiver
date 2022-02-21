@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             AttackTimer = 0;
             SetFrameY(0);
+            npc.netUpdate = true;
         }
 
         private void RandomizeTarget()
@@ -73,12 +74,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 startPos = npc.Center;
 
+                while (crystalLocations.Count < 4)
+                {
+                    BuildCrystalLocations();
+                }
+
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    while (crystalLocations.Count < 4)
-                    {
-                        BuildCrystalLocations();
-                    }
 
                     List<Vector2> possibleLocations = new List<Vector2>(crystalLocations);
                     possibleLocations.ForEach(n => n += new Vector2(0, -48));
@@ -248,6 +250,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void CrystalSmash()
         {
+            while (crystalLocations.Count < 4)
+            {
+                BuildCrystalLocations();
+            }
+
             //boss during the attack
             if (AttackTimer == 1)
                 endPos = npc.Center; //set the ending point to the center of the arena so we can come back later
@@ -276,7 +283,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 NPC crystal = crystals[k];
                 VitricBossCrystal crystalModNPC = crystal.modNPC as VitricBossCrystal;
-                if (AttackTimer == lockSpeed + k * lockSpeed) //set motion points correctly
+                if (AttackTimer == lockSpeed + k * lockSpeed && Main.netMode != NetmodeID.MultiplayerClient) //set motion points correctly
                 {
                     RandomizeTarget(); //pick a random target to smash a crystal down
 
@@ -285,8 +292,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalModNPC.StartPos = crystal.Center;
                     crystalModNPC.TargetPos = new Vector2(player.Center.X + player.velocity.X * 50, player.Center.Y - 250); //endpoint is above the player
                     crystalModNPC.TargetPos.X = MathHelper.Clamp(crystalModNPC.TargetPos.X, homePos.X - 800, homePos.X + 800);
+                    crystal.netUpdate = true;
                 }
-             
+
                 if (AttackTimer >= lockSpeed + k * lockSpeed && AttackTimer <= lockSpeed + (k + 1) * lockSpeed) //move the crystal there
                     crystal.Center = Vector2.SmoothStep(crystalModNPC.StartPos, crystalModNPC.TargetPos, (AttackTimer - (lockSpeed + k * lockSpeed)) / lockSpeed);
 
@@ -298,7 +306,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     crystalModNPC.TargetPos = player.Center;
                 }
             }
-
+            
             //ending the attack
             if (AttackTimer > 120 + lockSpeed * 4) ResetAttack();
         }
@@ -398,7 +406,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         startPos = npc.Center; 
                         endPos = crystalLocations[k] + new Vector2(0, -30); 
-                        RandomizeTarget(); 
+                        RandomizeTarget();
                     } //set positions and randomize the target
 
                     if (timer < 60)
@@ -523,7 +531,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     int timer = (int)AttackTimer - (140 + k * 140); //0 to 240, grabs the relative timer for ease of writing code
 
-                    if (timer == 0)
+                    if (timer == 0 && Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         startPos = npc.Center;
                         endPos = crystalLocations[bossRand.Next(crystalLocations.Count)] + new Vector2(0, -30);
