@@ -18,6 +18,14 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
+		public override bool Autoload(ref string name)
+		{
+			StarlightRiver.Instance.AddGore(AssetDirectory.MiscItem + "CoachGunCasing");
+			return base.Autoload(ref name);
+		}
+
+		private int cooldown = 0;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coach Gun");
@@ -46,15 +54,27 @@ namespace StarlightRiver.Content.Items.Misc
 			item.autoReuse = true;
 		}
 
+        public override void HoldItem(Player player)
+        {
+			cooldown--;
+        }
+
         public override bool CanUseItem(Player player)
         {
 			if (player.altFunctionUse == 2)
 			{
 				item.useStyle = ItemUseStyleID.SwingThrow;
 				item.noUseGraphic = true;
+
+				item.useTime = 15;
+				item.useAnimation = 15;
+				if (cooldown > 0)
+					return false;
 			}
 			else
             {
+				item.useTime = 35;
+				item.useAnimation = 35;
 				item.useStyle = ItemUseStyleID.HoldingOut;
 				item.noUseGraphic = false;
 			}
@@ -63,7 +83,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override Vector2? HoldoutOffset()
 		{
-			return new Vector2(-10, 0);
+			return new Vector2(-15, 0);
 		}
 
 		public override bool AltFunctionUse(Player player)
@@ -75,6 +95,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
 			if (player.altFunctionUse == 2)
             {
+				cooldown = 130;
 				Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY)) * 9;
 				speedX = dir.X;
 				speedY = dir.Y;
@@ -85,7 +106,7 @@ namespace StarlightRiver.Content.Items.Misc
 				float rot = new Vector2(speedX, speedY).ToRotation();
 				float spread = 0.4f;
 
-                Vector2 offset = new Vector2(1, -0.1f * player.direction).RotatedBy(rot);
+                Vector2 offset = new Vector2(1, -0.05f * player.direction).RotatedBy(rot);
 
 				for (int k = 0; k < 15; k++)
 				{
@@ -98,13 +119,66 @@ namespace StarlightRiver.Content.Items.Misc
 				Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f));
 				Dust.NewDustPerfect(player.Center + offset * 70, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
-				Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
+				Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY) * 2, type, damage, knockBack, player.whoAmI);
 				proj.GetGlobalProjectile<CoachGunGlobalProj>().shotFromGun = true;
+
+				Projectile.NewProjectile(position + (offset * 70), Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
+
+				Gore.NewGore(player.Center, new Vector2(player.direction * -1, -0.5f) * 4, ModGore.GetGoreSlot(AssetDirectory.MiscItem + "CoachGunCasing"), 1f);
+
 				return false;
             }
 			return true;
         }
     }
+
+	public class CoachGunMuzzleFlash : ModProjectile
+    {
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		private Player owner => Main.player[projectile.owner];
+
+		private Vector2 offset = Vector2.Zero;
+
+		private bool initialized = false;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Muzzle Flash");
+		}
+		public override void SetDefaults()
+		{
+			projectile.width = 2;
+			projectile.damage = 0;
+			projectile.height = 2;
+			projectile.ranged = false;
+			projectile.timeLeft = 5;
+			projectile.friendly = false;
+		}
+
+        public override void AI()
+        {
+            if (!initialized)
+            {
+				initialized = true;
+				offset = projectile.Center - owner.Center;
+            }
+			Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.4f);
+			projectile.Center = owner.Center + offset;
+			projectile.rotation = projectile.ai[0];
+        }
+		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		{
+			Texture2D mainTex = Main.projectileTexture[projectile.type];
+			spriteBatch.Draw(mainTex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, new Vector2(8, mainTex.Height / 2), projectile.scale, SpriteEffects.None, 0f);
+
+			Texture2D glowTex = ModContent.GetTexture(Texture + "_Glow");
+			Color glowColor = Color.Orange;
+			glowColor.A = 0;
+			spriteBatch.Draw(glowTex, projectile.Center - Main.screenPosition, null, glowColor, projectile.rotation, new Vector2(8, glowTex.Height / 2), projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
 	public class CoachGunBomb : ModProjectile
     {
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -137,7 +211,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float progress = 1 - (projectile.timeLeft / 150f);
 			for (int i = 0; i < 3; i++)
 			{
-				Dust sparks = Dust.NewDustPerfect(projectile.Center + (projectile.rotation.ToRotationVector2()) * 14, ModContent.DustType<CoachGunSparks>(), (projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f,1.2f));
+				Dust sparks = Dust.NewDustPerfect(projectile.Center + (projectile.rotation.ToRotationVector2()) * 17, ModContent.DustType<CoachGunSparks>(), (projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f,1.2f));
 				sparks.fadeIn = progress * 45;
 			}
 
