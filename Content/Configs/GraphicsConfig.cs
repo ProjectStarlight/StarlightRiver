@@ -6,26 +6,7 @@ using System.ComponentModel;
 
 namespace StarlightRiver.Configs
 {
-	public enum TitleScreenStyle
-    {
-        Starlight = 0,
-        Vitric = 1,
-        Overgrow = 2,
-        CorruptJungle = 3,
-        CrimsonJungle = 4,
-        HallowJungle = 5,
-        None = 6
-    }
-
-    public enum CustomSounds
-    {
-        All = 0,
-        Specific = 1,
-        None = 2
-
-    }
-
-    public class Config : ModConfig
+    public class GraphicsConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
@@ -58,11 +39,5 @@ namespace StarlightRiver.Configs
         [Tooltip("Enables/Disables fancy lighting on large textures. \nDisable this if you have performance issues.")]
         [DefaultValue(true)]
         public bool HighQualityLighting = true;
-
-        [Label("Custom Inventory Sounds")]
-        [DrawTicks]
-        [Tooltip("If custom inventory sounds should play for all items, select few, or none.")]
-        [DefaultValue(typeof(CustomSounds), "All")]
-        public CustomSounds InvSounds = CustomSounds.All;
     }
 }

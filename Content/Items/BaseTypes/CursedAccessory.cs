@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-	public abstract class CursedAccessory : SmartAccessory
+	public abstract class CursedAccessory : SmartAccessory, ILoadable
     {
         public static readonly Color CurseColor = new Color(25, 17, 49);
 
@@ -22,10 +22,24 @@ namespace StarlightRiver.Content.Items.BaseTypes
         private int boomTimer = 0;
 
         private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
-        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+        public static ParticleSystem CursedSystem;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
-        public static ParticleSystem ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+
+        public static ParticleSystem ShardsSystem;
+
+        public float Priority => 1f;
+        public void Load()
+        {
+            CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+            ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+        }
+
+        public void Unload()
+        {
+            CursedSystem = null;
+            ShardsSystem = null;
+        }
 
         protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
         {
@@ -201,5 +215,5 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
-	}
+    }
 }

@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-    public class BootlegHealthbar : SmartUIState
+    public class BootlegHealthbar : SmartUIState, ILoadable
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         public override bool Visible => visible;
@@ -24,12 +24,28 @@ namespace StarlightRiver.Content.GUI
         public int Timer;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
-        private static ParticleSystem ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
-        private static ParticleSystem ShardsSystem2 = new ParticleSystem("StarlightRiver/Assets/GUI/BossbarBack", UpdateShards);
+
+        
+
+        private static ParticleSystem ShardsSystem;
+        private static ParticleSystem ShardsSystem2;
 
         private Bar bar = new Bar();
 
-		public override void OnInitialize()
+        public float Priority => 1f;
+        public void Load()
+        {
+            ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+            ShardsSystem2 = new ParticleSystem("StarlightRiver/Assets/GUI/BossbarBack", UpdateShards);
+        }
+
+        public void Unload()
+        {
+            ShardsSystem = null;
+            ShardsSystem2 = null;
+        }
+
+        public override void OnInitialize()
 		{
             bar.Left.Set(-258, 0.5f);
             bar.Top.Set(-80, 1);
@@ -116,7 +132,7 @@ namespace StarlightRiver.Content.GUI
             if (tex != default)
                 Texture = tex;
         }
-	}
+    }
 
     public class Bar : UIElement
 	{

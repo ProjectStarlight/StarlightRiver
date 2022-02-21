@@ -109,10 +109,12 @@ namespace StarlightRiver.Core
 
             trueInvisible = false;
 
+            player.fullRotation = 0;
+
             shouldSendHitPacket = false;
 
-            if (Shake > 120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult)
-                Shake = (int)(120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult);
+            if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)
+                Shake = (int)(120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult);
         }
 
         public override void PostUpdate()
@@ -197,7 +199,7 @@ namespace StarlightRiver.Core
                 }
             }
 
-            float mult = ModContent.GetInstance<Configs.Config>().ScreenshakeMult;
+            float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
             mult *= Main.screenWidth / 2048f; //normalize for screen resolution
 
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
@@ -312,8 +314,8 @@ namespace StarlightRiver.Core
 
 		public override void PlayerConnect(Player player)
         {
-            AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
-            packet.Send();
+            AbilityProgress packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
+            packet.Send(runLocally: false);
         }
 
         public override float UseTimeMultiplier(Item item) => itemSpeed;
