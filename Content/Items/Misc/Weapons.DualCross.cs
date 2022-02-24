@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Dual Cross");
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Double Cross");
 
         Player owner => Main.player[projectile.owner];
 
