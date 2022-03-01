@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -130,6 +131,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void ResetEffects()
         {
+            if (!SetBonusActive)
+                storedGem = StoredGem.None;
             SetBonusActive = false;
 
             if (DiamondStored && RubyStored && EmeraldStored && SapphireStored && TopazStored && AmethystStored)
@@ -152,6 +155,47 @@ namespace StarlightRiver.Content.Items.Geomancer
                 if (allTimer < 0)
                     storedGem = StoredGem.None;
             }
+        }
+
+        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+        {
+            if (SetBonusActive)
+            {
+
+                layers.Insert(layers.FindIndex(x => x.Name == "Head" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemHead",
+                   delegate (PlayerDrawInfo info) {
+                       DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems"), info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
+                   }));
+
+                layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemBody",
+                   delegate (PlayerDrawInfo info) {
+                       DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems"), info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+                   }));
+
+
+                layers.Insert(layers.FindIndex(x => x.Name == "Legs" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemLegs",
+                    delegate (PlayerDrawInfo info) {
+                        DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems"), info, info.drawPlayer.legFrame, info.drawPlayer.legRotation);
+                    }));
+            }
+        }
+
+        public void DrawGemArmor(Texture2D texture, PlayerDrawInfo info, Rectangle frame, float rotation)
+        {
+            Player armorOwner = info.drawPlayer;
+
+            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 4);
+            Main.playerDrawData.Add(new DrawData(
+                    texture,
+                    new Vector2((int)drawPos.X,(int)drawPos.Y),
+                    frame,
+                    GetArmorColor(armorOwner),
+                    rotation,
+                    new Vector2(frame.Width / 2, frame.Height / 2),
+                    1,
+                    armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                    0
+                ));
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
@@ -206,6 +250,28 @@ namespace StarlightRiver.Content.Items.Geomancer
                     break;
             }
             Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), itemType, 1);
+        }
+
+        private static Color GetArmorColor(Player player)
+        {
+            StoredGem storedGem = player.GetModPlayer<GeomancerPlayer>().storedGem;
+            switch (storedGem)
+            {
+                case StoredGem.Amethyst:
+                    return Color.Purple;
+                case StoredGem.Topaz:
+                    return Color.Yellow;
+                case StoredGem.Emerald:
+                    return Color.Green;
+                case StoredGem.Sapphire:
+                    return Color.Blue;
+                case StoredGem.Diamond:
+                    return Color.Cyan;
+                case StoredGem.Ruby:
+                    return Color.Red;
+                default:
+                    return Color.White;
+            }
         }
     }
 
