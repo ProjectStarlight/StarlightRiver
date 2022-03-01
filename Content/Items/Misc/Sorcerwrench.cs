@@ -267,6 +267,12 @@ namespace StarlightRiver.Content.Items.Misc
                         dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
                         dust.alpha = 70 + Main.rand.Next(60);
                         dust.rotation = Main.rand.NextFloat(6.28f);
+
+                        Dust dust2 = Dust.NewDustDirect(new Vector2(i * 16, j * 16), 0, 0, ModContent.DustType<SorcerwrenchSparkle>());
+                        dust2.velocity = Main.rand.NextVector2Circular(6, 6);
+                        dust2.scale = Main.rand.NextFloat(0.1f, 0.2f);
+                        dust2.alpha = Main.rand.Next(60);
+                        dust2.rotation = Main.rand.NextFloat(6.28f);
                     }
 
                     WorldGen.KillTile(i, j, false, false, false);
@@ -433,7 +439,54 @@ namespace StarlightRiver.Content.Items.Misc
             dust.noGravity = true;
             dust.scale *= Main.rand.NextFloat(0.8f, 2f);
             dust.frame = new Rectangle(0, 0, 34, 36);
+            dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat() / 2));
+        }
+
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return dust.color * ((255 - dust.alpha) / 255f) * 0.6f;
+        }
+
+        public override bool Update(Dust dust)
+        {
+            if (Math.Abs(dust.velocity.Length()) > 3)
+                dust.velocity *= 0.9f;
+            else
+                dust.velocity *= 0.95f;
+
+            Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
+            if (dust.alpha > 100)
+            {
+                //dust.scale += 0.01f;
+                dust.alpha += 4;
+            }
+            else
+            {
+                dust.scale *= 0.985f;
+                dust.alpha += 8;
+            }
+            dust.position += dust.velocity;
+            if (dust.alpha >= 255)
+                dust.active = false;
+
+            return false;
+        }
+    }
+    public class SorcerwrenchSparkle : ModDust
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.Dust + "Aurora";
+            return true;
+        }
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.scale *= Main.rand.NextFloat(0.2f, 0.4f);
+            dust.noLight = false;
+            dust.frame = new Rectangle(0, 0, 100, 100);
             dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat()));
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -447,6 +500,8 @@ namespace StarlightRiver.Content.Items.Misc
                 dust.velocity *= 0.85f;
             else
                 dust.velocity *= 0.92f;
+
+            dust.shader.UseColor(dust.color * ((255 - dust.alpha) / 255f) * 0.6f);
 
             Lighting.AddLight(dust.position, Color.White.ToVector3() * 1.4f * ((255 - dust.alpha) / 255f));
             if (dust.alpha > 100)
