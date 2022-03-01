@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -255,7 +256,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 projectile.active = false;
 
-                foreach (Vector2 pos in tilesToDestroy)
+                foreach (Vector2 pos in tilesToDestroy.OrderBy(x => x.Y))
                 {
                     int i = (int)pos.X;
                     int j = (int)pos.Y;
