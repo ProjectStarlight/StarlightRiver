@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.shoot = ProjectileType<SorcerwrenchProjectile>();
             item.shootSpeed = 1;
             item.channel = true;
+            item.value = Item.buyPrice(1, 0, 0, 0);
             item.rare = ItemRarityID.Orange;
         }
 
@@ -460,6 +461,18 @@ namespace StarlightRiver.Content.Items.Misc
                 dust.active = false;
 
             return false;
+        }
+    }
+
+    public class SorcerwrenchGlobalNPC : GlobalNPC
+    {
+        public override void SetupShop(int type, Chest shop, ref int nextSlot)
+        {
+            if (type == NPCID.Mechanic)
+            {
+                shop.item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
+                nextSlot++;
+            }
         }
     }
 }
