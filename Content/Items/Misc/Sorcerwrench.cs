@@ -19,7 +19,8 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sorcerwrench");
-            Tooltip.SetDefault("I dont get paid to write these");
+            Tooltip.SetDefault("Select an area of blocks to be broken\n" +
+            "Consumes 2 mana per block broken");
         }
 
         public override void SetDefaults()
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.shoot = ProjectileType<SorcerwrenchProjectile>();
             item.shootSpeed = 1;
             item.channel = true;
+            item.rare = ItemRarityID.Orange;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -290,7 +292,7 @@ namespace StarlightRiver.Content.Items.Misc
                         DrawPixel(spriteBatch, Color.Red, new Vector2(i, j));
                     else
                     {
-                        Color shadeColor = Color.Yellow;
+                        Color shadeColor = Color.LightSalmon;
                         DrawPixel(spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
                     }
                 }
@@ -401,7 +403,7 @@ namespace StarlightRiver.Content.Items.Misc
             float opacity = (DESTRUCTIONTIME - projectile.timeLeft) / (float)DESTRUCTIONTIME;
             opacity = EaseFunction.EaseQuadIn.Ease(opacity);
 
-            Color color = Color.Lerp(Color.CornflowerBlue, Color.White, opacity) * opacity;
+            Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
 
             int xIncrement = Math.Sign(endCornerGoal.X - startCorner.X) * 2;
             int yIncrement = Math.Sign(endCornerGoal.Y - startCorner.Y) * 2;
@@ -427,7 +429,7 @@ namespace StarlightRiver.Content.Items.Misc
             dust.noGravity = true;
             dust.scale *= Main.rand.NextFloat(0.8f, 2f);
             dust.frame = new Rectangle(0, 0, 34, 36);
-            dust.color = Color.Lerp(Color.White, Color.CornflowerBlue, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat()));
+            dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat()));
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
