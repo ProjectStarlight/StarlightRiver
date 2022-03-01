@@ -363,6 +363,9 @@ namespace StarlightRiver.Content.Items.Misc
             if (projectile == null)
                 return;
 
+            if (projectile.released)
+                return;
+
             int manaMissing = (player.statManaMax2 - player.statMana) / 20;
 
             for (int i = 1; i < player.statManaMax2 / 20 + 1; i++) //iterate each mana star
