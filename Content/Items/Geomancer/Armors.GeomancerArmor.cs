@@ -5,12 +5,18 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Dyes;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Microsoft.Xna.Framework;
+using Terraria.UI;
 using Microsoft.Xna.Framework.Graphics;
+
+using ReLogic.Graphics;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -128,9 +134,20 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         private int allTimer = 150;
 
+        static Item rainbowDye;
+        static bool rainbowDyeInitialized = false;
+        static int shaderValue = 0;
 
         public override void ResetEffects()
         {
+            if (!rainbowDyeInitialized)
+            {
+                rainbowDyeInitialized = true;
+                rainbowDye = new Item();
+                rainbowDye.SetDefaults(ModContent.ItemType<RainbowCycleDye>());
+                shaderValue = rainbowDye.dye;
+            }
+
             if (!SetBonusActive)
                 storedGem = StoredGem.None;
             SetBonusActive = false;
@@ -172,6 +189,11 @@ namespace StarlightRiver.Content.Items.Geomancer
                        DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems"), info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
                    }));
 
+                layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemBody2",
+                   delegate (PlayerDrawInfo info) {
+                       DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims"), info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+                   }));
+
 
                 layers.Insert(layers.FindIndex(x => x.Name == "Legs" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemLegs",
                     delegate (PlayerDrawInfo info) {
@@ -184,18 +206,61 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             Player armorOwner = info.drawPlayer;
 
-            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 4);
-            Main.playerDrawData.Add(new DrawData(
-                    texture,
-                    new Vector2((int)drawPos.X,(int)drawPos.Y),
-                    frame,
-                    GetArmorColor(armorOwner),
-                    rotation,
-                    new Vector2(frame.Width / 2, frame.Height / 2),
-                    1,
-                    armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-                    0
-                ));
+            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - player.gfxOffY);
+            float timerVar = (float)(Main.GlobalTime % 2.4f / 2.4f) * 6.28f;
+            float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
+
+            timer = 0.8f;
+
+            Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GlobalTime * 0.1f);
+
+            DrawData value = new DrawData(
+                        texture,
+                        new Vector2((int)drawPos.X, (int)drawPos.Y),
+                        frame,
+                        GetArmorColor(armorOwner),
+                        rotation,
+                        new Vector2(frame.Width / 2, frame.Height / 2),
+                        1,
+                        armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                        0
+                    )
+            {
+                //shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue : 0
+                shader = shaderValue
+            };
+
+            Main.playerDrawData.Add(value);
+
+            /*for (float i = 0; i < 6.28f; i += 1.57f)
+            {
+                Vector2 offset = (i.ToRotationVector2() * 2 * timer);
+                DrawData value2 = new DrawData(
+                        texture,
+                        new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
+                        frame,
+                        armorOwner.GetDeathAlpha(GetArmorColor(armorOwner)) * 0.25f,
+                        rotation,
+                        new Vector2(frame.Width / 2, frame.Height / 2),
+                        1,
+                        armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                        0
+                    )
+                {
+                 //shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue : 0
+                    shader = shaderValue
+                };
+
+                Main.playerDrawData.Add(value2);
+            }*/
+        }
+
+        public override void PreUpdate()
+        {
+            if (!SetBonusActive)
+                return;
+
+            Lighting.AddLight(player.Center, (GetArmorColor(player)).ToVector3());
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
@@ -252,11 +317,17 @@ namespace StarlightRiver.Content.Items.Geomancer
             Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), itemType, 1);
         }
 
-        private static Color GetArmorColor(Player player)
+        public static Color GetArmorColor(Player player)
         {
             StoredGem storedGem = player.GetModPlayer<GeomancerPlayer>().storedGem;
+
+            return Color.White;
+            return Main.hslToRgb((Main.GlobalTime * 0.2f) % 1, 1f, 0.5f);
+
             switch (storedGem)
             {
+                case StoredGem.All:
+                    return Main.hslToRgb((Main.GlobalTime * 0.1f) % 1, 1f, 0.5f);
                 case StoredGem.Amethyst:
                     return Color.Purple;
                 case StoredGem.Topaz:
@@ -337,7 +408,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         protected override void SetBonus(Player player)
         {
             int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 20);
-            player.HealEffect(healAmount);
+            player.HealEffect(20);
             player.statLife += healAmount;
 
             player.GetModPlayer<GeomancerPlayer>().EmeraldStored = true;
@@ -403,7 +474,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override bool OnPickup(Player player)
         {
             int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 5);
-            player.HealEffect(healAmount);
+            player.HealEffect(5);
             player.statLife += healAmount;
 
             Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
@@ -411,5 +482,26 @@ namespace StarlightRiver.Content.Items.Geomancer
         }
 
         public override Color? GetAlpha(Color lightColor) => new Color(200, 200, 200, 100);
+    }
+
+    public class RainbowCycleDye : ModItem
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + Name;
+        public override void SetDefaults()
+        {
+            /*				
+			this.name = "Gel Dye";
+			this.width = 20;
+			this.height = 20;
+			this.maxStack = 99;
+			this.value = Item.sellPrice(0, 1, 50, 0);
+			this.rare = 3;
+			*/
+            // item.dye is already assigned to this item prior to SetDefaults because of the GameShaders.Armor.BindShader code in ExampleMod.Load. 
+            // This code here remembers item.dye so that information isn't lost during CloneDefaults. The above code is the data being cloned by CloneDefaults, for informational purposes.
+            byte dye = item.dye;
+            item.CloneDefaults(ItemID.GelDye);
+            item.dye = dye;
+        }
     }
 }
