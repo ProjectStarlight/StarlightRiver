@@ -137,6 +137,46 @@ namespace StarlightRiver.Content.Items.Geomancer
         static Item rainbowDye;
         static bool rainbowDyeInitialized = false;
         static int shaderValue = 0;
+        static int shaderValue2 = 0;
+
+        public override bool Autoload(ref string name)
+        {
+            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
+            return base.Autoload(ref name);
+        }
+
+        private void PreDrawGlowFX(Player player, SpriteBatch spriteBatch)
+        {
+            if (!player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
+                return;
+            spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+            float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
+            float opacity = 1.25f - ((sin / 2) + 0.5f);
+
+            Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
+            effect.Parameters["uTime"].SetValue(Main.GlobalTime * 0.6f);
+            effect.Parameters["uOpacity"].SetValue(opacity);
+            effect.CurrentTechnique.Passes[0].Apply();
+
+            for (int k = 0; k < 8; k++)
+            {
+                Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 1.6f);
+                var color = Color.White * (opacity - sin * 0.1f) * 0.9f;
+
+                spriteBatch.Draw(CustomHooks.PlayerTarget.Target, Vector2.Zero + dir, color);
+            }
+
+            spriteBatch.End();
+
+            SamplerState samplerState = Main.DefaultSamplerState;
+
+            if (player.mount.Active)
+                samplerState = Main.MountedSamplerState;
+
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
+        }
 
         public override void ResetEffects()
         {
@@ -146,6 +186,10 @@ namespace StarlightRiver.Content.Items.Geomancer
                 rainbowDye = new Item();
                 rainbowDye.SetDefaults(ModContent.ItemType<RainbowCycleDye>());
                 shaderValue = rainbowDye.dye;
+
+                Item rainbowDye2 = new Item();
+                rainbowDye2.SetDefaults(ModContent.ItemType<RainbowCycleDye2>());
+                shaderValue2 = rainbowDye2.dye;
             }
 
             if (!SetBonusActive)
@@ -210,9 +254,10 @@ namespace StarlightRiver.Content.Items.Geomancer
             float timerVar = (float)(Main.GlobalTime % 2.4f / 2.4f) * 6.28f;
             float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
 
-            timer = 0.8f;
-
             Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GlobalTime * 0.1f);
+
+            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GlobalTime * 0.1f);
+            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
 
             DrawData value = new DrawData(
                         texture,
@@ -239,7 +284,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                         texture,
                         new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
                         frame,
-                        armorOwner.GetDeathAlpha(GetArmorColor(armorOwner)) * 0.25f,
+                        GetArmorColor(armorOwner) * 0.25f,
                         rotation,
                         new Vector2(frame.Width / 2, frame.Height / 2),
                         1,
@@ -247,8 +292,8 @@ namespace StarlightRiver.Content.Items.Geomancer
                         0
                     )
                 {
-                 //shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue : 0
-                    shader = shaderValue
+                    //shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue2: 0
+                    shader = shaderValue2
                 };
 
                 Main.playerDrawData.Add(value2);
@@ -487,6 +532,27 @@ namespace StarlightRiver.Content.Items.Geomancer
     public class RainbowCycleDye : ModItem
     {
         public override string Texture => AssetDirectory.GeomancerItem + Name;
+        public override void SetDefaults()
+        {
+            /*				
+			this.name = "Gel Dye";
+			this.width = 20;
+			this.height = 20;
+			this.maxStack = 99;
+			this.value = Item.sellPrice(0, 1, 50, 0);
+			this.rare = 3;
+			*/
+            // item.dye is already assigned to this item prior to SetDefaults because of the GameShaders.Armor.BindShader code in ExampleMod.Load. 
+            // This code here remembers item.dye so that information isn't lost during CloneDefaults. The above code is the data being cloned by CloneDefaults, for informational purposes.
+            byte dye = item.dye;
+            item.CloneDefaults(ItemID.GelDye);
+            item.dye = dye;
+        }
+    }
+
+    public class RainbowCycleDye2 : ModItem
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + "RainbowCycleDye";
         public override void SetDefaults()
         {
             /*				
