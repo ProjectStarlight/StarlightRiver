@@ -77,6 +77,15 @@ namespace StarlightRiver.Content.Items.Geomancer
 
                     modPlayer.storedGem = StoredGem.All;
                     modPlayer.allTimer = 300;
+
+                    for (int i = 0; i < 3; i++)
+                    {
+                        float angle = Main.rand.NextFloat(6.28f);
+                        Dust dust = Dust.NewDustPerfect(Main.player[projectile.owner].Center + (angle.ToRotationVector2() * 20), ModContent.DustType<GeoRainbowDust>());
+                        dust.scale = 1f;
+                        dust.velocity = angle.ToRotationVector2() * Main.rand.NextFloat() * 4;
+                    }
+
                 }
             }
             if (!modPlayer.SetBonusActive)
