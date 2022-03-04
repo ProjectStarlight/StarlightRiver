@@ -42,10 +42,24 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     return colour * uOpacity;
 }
 
+float4 PixelShaderFunction2(float2 uv : TEXCOORD0) : COLOR0
+{
+    float4 prismColor = float4(uColor, 1);
+    float4 colour = tex2D(uImage0, uv);
+    if (colour.a == 0)
+        return float4(0,0,0,0);
+    colour = lerp(colour, prismColor, 0.5f);
+    return colour * uOpacity;
+}
+
 technique Technique1
 {
     pass BasicPass
     {
         PixelShader = compile ps_2_0 PixelShaderFunction();
+    }
+    pass BasicPass2
+    {
+        PixelShader = compile ps_2_0 PixelShaderFunction2();
     }
 }
