@@ -67,6 +67,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 }
                 if (offsetLerper <= 0)
                 {
+                    Destroy();
                     projectile.active = false;
                     modPlayer.AmethystStored = false;
                     modPlayer.TopazStored = false;
@@ -116,6 +117,8 @@ namespace StarlightRiver.Content.Items.Geomancer
         }
 
         protected virtual void SafeAI() { }
+
+        protected virtual void Destroy() { }
     }
 
     public class GeoAmethystProj : GeoProj
@@ -203,6 +206,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             {
                 projectile.scale = 1;
             }
+        }
+
+        protected override void Destroy()
+        {
+            Player player = Main.player[projectile.owner];
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0)
+                Projectile.NewProjectile(Main.player[projectile.owner].Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, projectile.owner);
         }
     }
 

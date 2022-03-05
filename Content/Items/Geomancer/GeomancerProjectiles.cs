@@ -51,6 +51,151 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override Color? GetAlpha(Color lightColor) => new Color(200, 200, 200, 100);
     }
 
+    public class TopazShield : ModProjectile, IDrawAdditive
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
+
+        public int shieldLife = 100;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Topaz Shield");
+        }
+
+        public override void SetDefaults()
+        {
+            projectile.friendly = true;
+            projectile.magic = true;
+            projectile.tileCollide = false;
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.penetrate = -1;
+            projectile.hide = true;
+        }
+
+        public override void AI()
+        {
+            Player player = Main.player[projectile.owner];
+
+            Vector2 direction = Main.MouseWorld - player.Center;
+            direction.Normalize();
+
+            projectile.rotation = direction.ToRotation();
+
+            projectile.Center = player.Center + (direction * 50);
+
+            if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+                projectile.timeLeft = 2;
+
+            for (int k = 0; k < Main.maxProjectiles; k++)
+            {
+                var proj = Main.projectile[k];
+
+                if (proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(projectile.Hitbox))
+                {
+                    var diff = proj.damage - shieldLife;
+
+                    if (diff <= 0)
+                    {
+                        proj.penetrate -= 1;
+                        proj.friendly = true;
+                        shieldLife -= proj.damage;
+                        CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage);
+                    }
+                    else
+                    {
+                        CombatText.NewText(projectile.Hitbox, Color.Yellow, "Cant block!");
+                        proj.damage -= (int)shieldLife;
+                        Destroy();
+                        return;
+                    }
+                }
+            }
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            hitDirection = Math.Sign(projectile.Center.X - Main.player[projectile.owner].Center.X);
+
+            shieldLife -= target.damage;
+            CombatText.NewText(projectile.Hitbox, Color.Yellow, target.damage);
+
+            if (shieldLife <= 0)
+                Destroy();
+        }
+
+        public void Destroy()
+        {
+            projectile.active = false;
+        }
+    }
+    public class AmethystShard : ModProjectile, IDrawAdditive
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + "GeoAmethyst";
+
+        private bool initialized = false;
+        private Vector2 offset = Vector2.Zero;
+
+        private int fadeIn;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Amethyst Shard");
+        }
+
+        public override void SetDefaults()
+        {
+            projectile.friendly = false;
+            projectile.magic = true;
+            projectile.tileCollide = false;
+            projectile.Size = new Vector2(16, 16);
+            projectile.penetrate = 1;
+            projectile.hide = true;
+        }
+
+        public override void AI()
+        {
+            NPC target = Main.npc[(int)projectile.ai[1]];
+            if (!initialized)
+            {
+                initialized = true;
+                offset = projectile.Center - target.Center;
+            }
+            if (fadeIn < 15)
+                fadeIn++;
+
+            projectile.scale = (fadeIn / 15f);
+
+            if (!target.active || target.life <= 0 || projectile.ai[0] >= target.GetGlobalNPC<GeoNPC>().amethystDebuff)
+                return;
+            projectile.timeLeft = 2;
+
+            projectile.Center = target.Center + offset;
+
+            Vector2 direction = target.Center - projectile.Center;
+            projectile.rotation = direction.ToRotation();
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * (fadeIn / 15f), projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 4; i++)
+                Dust.NewDustDirect(projectile.position, projectile.width, projectile.height, DustID.AmethystBolt).velocity *= 1.4f;
+        }
+    }
+
     public class RubyDagger : ModProjectile,IDrawAdditive
     {
         public override string Texture => AssetDirectory.GeomancerItem + "GeoRuby";

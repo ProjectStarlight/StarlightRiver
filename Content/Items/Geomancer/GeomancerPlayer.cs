@@ -288,6 +288,23 @@ namespace StarlightRiver.Content.Items.Geomancer
             {
                 Projectile.NewProjectile(player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(damage * 0.3f), knockback, player.whoAmI, target.whoAmI);
             }
+
+            if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
+            {
+                if (Main.rand.Next((10 / player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) == 0)
+                {
+                    Projectile.NewProjectile(
+                        target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
+                        Vector2.Zero,
+                        ModContent.ProjectileType<AmethystShard>(),
+                        0,
+                        0,
+                        player.whoAmI,
+                        target.GetGlobalNPC<GeoNPC>().amethystDebuff,
+                        target.whoAmI);
+                    target.GetGlobalNPC<GeoNPC>().amethystDebuff += 30;
+                }
+            }
         }
 
         private static void SpawnGem(NPC target, GeomancerPlayer modPlayer)
@@ -343,6 +360,34 @@ namespace StarlightRiver.Content.Items.Geomancer
                     return Color.Red;
                 default:
                     return Color.White;
+            }
+        }
+    }
+
+    public class GeoNPC : GlobalNPC
+    {
+        public override bool InstancePerEntity => true;
+
+        public int amethystDebuff;
+
+        public override bool PreAI(NPC npc)
+        {
+            if (amethystDebuff > 0)
+                amethystDebuff--;
+
+            return base.PreAI(npc);
+        }
+
+        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        {
+            if (npc.lifeRegen > 0)
+            {
+                npc.lifeRegen = 0;
+            }
+            npc.lifeRegen -= amethystDebuff / 50;
+            if (damage < 1)
+            {
+                damage = 1;
             }
         }
     }
