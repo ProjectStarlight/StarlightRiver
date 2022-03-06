@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             npc.lifeRegen -= amethystDebuff / 50;
             if (damage < 1)
             {
-                damage = 1;
+                damage = amethystDebuff / 150;
             }
         }
     }
