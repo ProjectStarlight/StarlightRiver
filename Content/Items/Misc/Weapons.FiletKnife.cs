@@ -218,10 +218,7 @@ namespace StarlightRiver.Content.Items.Misc
             projectile.Center = target.Center;
 
             if (direction == Vector2.Zero)
-            {
                 direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * (target.width + target.height) * 0.06f;
-                Main.NewText(direction.ToRotation().ToString());
-            }
             cache = new List<Vector2>();
 
             float progress = (BASETIMELEFT - projectile.timeLeft) / (float)BASETIMELEFT;
