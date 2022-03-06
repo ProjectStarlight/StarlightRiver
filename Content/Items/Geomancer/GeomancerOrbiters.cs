@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                     modPlayer.DiamondStored = false;
 
                     modPlayer.storedGem = StoredGem.All;
-                    modPlayer.allTimer = 300;
+                    modPlayer.allTimer = 400;
 
                     for (int i = 0; i < 3; i++)
                     {

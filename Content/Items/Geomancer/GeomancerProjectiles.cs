@@ -55,7 +55,12 @@ namespace StarlightRiver.Content.Items.Geomancer
     {
         public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
 
+        private const int EXPLOSIONTIME = 2;
+
         public int shieldLife = 100;
+
+        public float shieldSpring = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Topaz Shield");
@@ -70,6 +75,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             projectile.height = 32;
             projectile.penetrate = -1;
             projectile.hide = true;
+            projectile.timeLeft = 60;
         }
 
         public override void AI()
@@ -81,34 +87,55 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             projectile.rotation = direction.ToRotation();
 
-            projectile.Center = player.Center + (direction * 50);
+            shieldSpring *= 0.9f;
+
+            projectile.Center = player.Center + (direction * MathHelper.Lerp(35, 26, shieldSpring));
 
             if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
-                projectile.timeLeft = 2;
-
-            for (int k = 0; k < Main.maxProjectiles; k++)
             {
-                var proj = Main.projectile[k];
+                if (projectile.timeLeft > EXPLOSIONTIME)
+                    projectile.timeLeft = EXPLOSIONTIME + 2;
+            }
+            else
+                projectile.active = false;
 
-                if (proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(projectile.Hitbox))
+            if (projectile.timeLeft > EXPLOSIONTIME)
+            {
+                for (int k = 0; k < Main.maxProjectiles; k++)
                 {
-                    var diff = proj.damage - shieldLife;
+                    var proj = Main.projectile[k];
 
-                    if (diff <= 0)
+                    if (proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(projectile.Hitbox))
                     {
-                        proj.penetrate -= 1;
-                        proj.friendly = true;
-                        shieldLife -= proj.damage;
-                        CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage);
-                    }
-                    else
-                    {
-                        CombatText.NewText(projectile.Hitbox, Color.Yellow, "Cant block!");
-                        proj.damage -= (int)shieldLife;
-                        Destroy();
-                        return;
+                        var diff = proj.damage - shieldLife;
+
+                        if (diff <= 0)
+                        {
+                            shieldSpring = 1;
+                            proj.penetrate -= 1;
+                            proj.friendly = true;
+                            shieldLife -= proj.damage;
+                            CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage);
+                        }
+                        else
+                        {
+                            CombatText.NewText(projectile.Hitbox, Color.Yellow, shieldLife);
+                            proj.damage -= (int)shieldLife;
+                            projectile.timeLeft = EXPLOSIONTIME;
+                            return;
+                        }
                     }
                 }
+            }
+            else
+            {
+                /*float progress = EXPLOSIONTIME - projectile.timeLeft;
+
+                float deviation = (float)Math.Sqrt(progress) * 0.08f;
+                projectile.rotation += Main.rand.NextFloat(-deviation,deviation);
+
+                Vector2 dustDir = Main.rand.NextFloat(6.28f).ToRotationVector2();
+                Dust.NewDustPerfect(projectile.Center - (dustDir * 50), DustID.TopazBolt, dustDir * 10, 0, default, (float)Math.Sqrt(progress) * 0.3f).noGravity = true;*/
             }
         }
 
@@ -119,22 +146,79 @@ namespace StarlightRiver.Content.Items.Geomancer
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
         }
 
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (projectile.timeLeft <= EXPLOSIONTIME)
+                return false;
+            return base.CanHitNPC(target);
+        }
+
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             hitDirection = Math.Sign(projectile.Center.X - Main.player[projectile.owner].Center.X);
 
             shieldLife -= target.damage;
+            shieldSpring = 1;
             CombatText.NewText(projectile.Hitbox, Color.Yellow, target.damage);
 
             if (shieldLife <= 0)
-                Destroy();
+                projectile.timeLeft = EXPLOSIONTIME;
         }
 
-        public void Destroy()
+        public override void Kill(int timeLeft)
         {
-            projectile.active = false;
+            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 4;
+            Vector2 direction = Vector2.Normalize(Main.MouseWorld - Main.player[projectile.owner].Center);
+            for (int i = 0; i < 4; i++)
+                Projectile.NewProjectile(projectile.Center, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.6f, 1f) * 15, ModContent.ProjectileType<TopazShard>(), projectile.damage * 2, projectile.knockBack, projectile.owner);
         }
     }
+
+    public class TopazShard : ModProjectile, IDrawAdditive
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + Name;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Topaz Shard");
+            ProjectileID.Sets.TrailCacheLength[projectile.type] = 8;
+            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+        }
+
+        public override void SetDefaults()
+        {
+            projectile.friendly = true;
+            projectile.magic = true;
+            projectile.tileCollide = false;
+            projectile.Size = new Vector2(8, 8);
+            projectile.penetrate = 1;
+            projectile.hide = true;
+            projectile.timeLeft = 60;
+        }
+
+        public override void AI()
+        {
+            var target = Main.npc.Where(x => x.active && !x.friendly && !x.townNPC && projectile.Distance(x.Center) < 150).OrderBy(x => projectile.Distance(x.Center)).FirstOrDefault();
+            if (target != default)
+                projectile.velocity = Vector2.Lerp(projectile.velocity, projectile.DirectionTo(target.Center) * 30, 0.05f);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                float rand = Main.rand.NextFloat(0.3f);
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.TopazBolt, projectile.velocity.X * rand, projectile.velocity.Y * rand);
+            }
+        }
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+        }
+
+    }
+
     public class AmethystShard : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.GeomancerItem + "GeoAmethyst";
@@ -157,6 +241,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             projectile.Size = new Vector2(16, 16);
             projectile.penetrate = 1;
             projectile.hide = true;
+            projectile.timeLeft = 3;
         }
 
         public override void AI()
@@ -185,6 +270,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             Texture2D tex = Main.projectileTexture[projectile.type];
+            for (int k = projectile.oldPos.Length - 1; k > 0; k--) //TODO: Clean this shit up
+            {
+                Vector2 drawPos = projectile.oldPos[k] + (new Vector2(projectile.width, projectile.height) / 2);
+                Color color = Color.White * (float)(((float)(projectile.oldPos.Length - k) / (float)projectile.oldPos.Length));
+                    spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+            }
 
             spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * (fadeIn / 15f), projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
         }
@@ -275,7 +366,8 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                direction = Vector2.Normalize(target.Center - projectile.Center);
+                if (target.active && target.life > 0)
+                    direction = Vector2.Normalize(target.Center - projectile.Center);
                 projectile.velocity = direction * 30;
                 projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
             }
