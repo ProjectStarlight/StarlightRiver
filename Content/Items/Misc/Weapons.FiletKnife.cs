@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.UseSound = SoundID.Item1;
             item.autoReuse = false;
             item.useTurn = true;
-            item.crit = 12;
+            item.crit = 10;
         }
         public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
