@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 
             int critRate = Math.Min(player.HeldItem.crit, 4);
-            critRate = (int)(critRate * player.magicCrit);
+            critRate += player.magicCrit;
 
             if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) 
             {
