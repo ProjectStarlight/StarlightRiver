@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults(NPC npc)
         {
-            if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(30))
+            if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(50))
                 hasSword = true;
             base.SetDefaults(npc);
         }
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void NPCLoot(NPC npc)
         {
-            if (hasSword)
+            if (hasSword && Main.rand.NextBool(3))
                 Item.NewItem(npc.Center, ModContent.ItemType<FiletKnife>());
             base.NPCLoot(npc);
         }
