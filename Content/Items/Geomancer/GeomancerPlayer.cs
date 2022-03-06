@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (SetBonusActive)
+            if (SetBonusActive && storedGem != StoredGem.None)
             {
 
                 layers.Insert(layers.FindIndex(x => x.Name == "Head" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemHead",
@@ -264,13 +264,19 @@ namespace StarlightRiver.Content.Items.Geomancer
             if (!SetBonusActive)
                 return;
 
-            if ((crit || target.life <= 0) && Main.rand.NextBool(1) && storedGem != StoredGem.All) //TOOD: Change nextbool to 15
+            if (!proj.magic)
+                return;
+
+            if ((crit || target.life <= 0) && Main.rand.NextBool(15) && storedGem != StoredGem.All)
             {
                 SpawnGem(target, player.GetModPlayer<GeomancerPlayer>());
             }
 
 
-            if (crit && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) //TODO: instead of being just on crit, make it equal to crit chance
+            int critRate = Math.Min(player.HeldItem.crit, 4);
+            critRate = (int)(critRate * player.magicCrit);
+
+            if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) 
             {
                 int numStars = Main.rand.Next(3) + 1;
                 for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
@@ -279,7 +285,16 @@ namespace StarlightRiver.Content.Items.Geomancer
                 }
             }
 
-            if (crit && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
+            if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && crit)
+            {
+                int extraDamage = target.defense / 2;
+                extraDamage += (int)(proj.damage * 0.2f * (target.life / (float)target.lifeMax));
+                CombatText.NewText(target.Hitbox, new Color(200, 200, 255), extraDamage);
+                target.life -= extraDamage;
+                target.HitEffect(0, extraDamage);
+            }
+
+            if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
             {
                 Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
             }
