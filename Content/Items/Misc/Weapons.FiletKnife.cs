@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((target.width + target.height) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (projectile.timeLeft /(float)(BASETIMELEFT + 5)))) * (projectile.timeLeft / (float)BASETIMELEFT), factor =>
             {
-                return Color.White * 0.8f;
+                return Color.Lerp(Color.Red,Color.DarkRed,factor.X) * 0.8f;
             });
 
             trail.Positions = cache.ToArray();
