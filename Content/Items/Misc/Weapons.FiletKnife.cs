@@ -18,7 +18,9 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Filet Knife");
-            Tooltip.SetDefault("egshels update this lol");
+            Tooltip.SetDefault("Critical strikes carve chunks of flesh from enemies\n" +
+            "Devour chunks to heal and gain Blood Frenzy\n" +
+            "Blood Frenzy grants increased attack speed and decreased critical strike chance");
         }
         public override void SetDefaults()
         {
@@ -30,7 +32,7 @@ namespace StarlightRiver.Content.Items.Misc
             item.useAnimation = 25;
             item.useStyle = ItemUseStyleID.SwingThrow;
             item.knockBack = 7.5f;
-            item.value = 1000;
+            item.value = Item.sellPrice(0,1,0,0);
             item.rare = ItemRarityID.Green;
             item.UseSound = SoundID.Item1;
             item.autoReuse = false;
@@ -39,13 +41,15 @@ namespace StarlightRiver.Content.Items.Misc
         }
         public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
-            if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()))
+            if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
                 crit = false;
         }
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
             if (crit)
             {
+                Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
+
                 int itemType = -1;
                 switch (Main.rand.Next(3))
                 {
@@ -269,7 +273,7 @@ namespace StarlightRiver.Content.Items.Misc
 
     public class FiletFrenzyBuff : SmartBuff
     {
-        public FiletFrenzyBuff() : base("Frenzy", "Increased melee speed, but Filet Knife can no longer crit", false, false) { }
+        public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed, but decreased crit rate on Filet Knife", false, false) { }
 
         public override void Update(Player player, ref int buffIndex)
         {
