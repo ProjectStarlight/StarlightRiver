@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Filet Giblet");
+            DisplayName.SetDefault("Giblet");
             Tooltip.SetDefault("You shouldn't see this");
         }
 
@@ -104,6 +105,39 @@ namespace StarlightRiver.Content.Items.Misc
 
         public int DOT = 0;
 
+        public bool hasSword = false;
+
+        public override void SetDefaults(NPC npc)
+        {
+            if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(30))
+                hasSword = true;
+            base.SetDefaults(npc);
+        }
+
+        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
+        {     
+            if (hasSword)
+            {
+                Texture2D tex = ModContent.GetTexture(AssetDirectory.MiscItem + "FiletKnifeEmbedded");
+                bool facingLeft = npc.direction == -1;
+
+                Vector2 origin = facingLeft ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
+                SpriteEffects effects = facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                float rotation = facingLeft ? 0.78f : -0.78f;
+
+
+                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, drawColor, rotation, origin, npc.scale, effects, 0f);
+            }
+            return base.PreDraw(npc, spriteBatch, drawColor);
+        }
+
+        public override void NPCLoot(NPC npc)
+        {
+            if (hasSword)
+                Item.NewItem(npc.Center, ModContent.ItemType<FiletKnife>());
+            base.NPCLoot(npc);
+        }
+
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
             if (DOT == 0)
@@ -126,6 +160,9 @@ namespace StarlightRiver.Content.Items.Misc
                 if (Main.rand.Next(5) < DOT)
                     Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood, npc.velocity.X * 0.4f, npc.velocity.Y * 0.4f, default, default(Color), 1.25f);
             }
+
+            if (hasSword)
+                Dust.NewDustPerfect(npc.Center - new Vector2(npc.spriteDirection * 12, 0), DustID.Blood, Vector2.Zero);
         }
     }
 }
