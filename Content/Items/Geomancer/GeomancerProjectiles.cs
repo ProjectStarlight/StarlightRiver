@@ -51,6 +51,51 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override Color? GetAlpha(Color lightColor) => new Color(200, 200, 200, 100);
     }
 
+    public class TopazShieldFade : ModProjectile, IDrawAdditive
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
+
+        private float progress => (30 - projectile.timeLeft) / 30f;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Topaz Shield");
+        }
+
+        public override void SetDefaults()
+        {
+            projectile.friendly = true;
+            projectile.magic = true;
+            projectile.tileCollide = false;
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.penetrate = -1;
+            projectile.hide = true;
+            projectile.timeLeft = 30;
+        }
+
+        public override void AI()
+        {
+            Player player = Main.player[projectile.owner];
+
+            Vector2 direction = Main.MouseWorld - player.Center;
+            direction.Normalize();
+
+            projectile.rotation = direction.ToRotation();
+
+            projectile.Center = player.Center + (direction * 35);
+        }
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+
+            float transparency = (float)Math.Pow(1 - progress, 2);
+            float scale = 1f + (progress * 2);
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * transparency, projectile.rotation, tex.Size() / 2, projectile.scale * scale, SpriteEffects.None, 0f);
+        }
+    }
+
     public class TopazShield : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.GeomancerItem + "TopazShield";
@@ -167,6 +212,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void Kill(int timeLeft)
         {
+            Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, projectile.owner);
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 4;
             Vector2 direction = Vector2.Normalize(Main.MouseWorld - Main.player[projectile.owner].Center);
             for (int i = 0; i < 4; i++)
