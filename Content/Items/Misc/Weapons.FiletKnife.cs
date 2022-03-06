@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -36,7 +37,11 @@ namespace StarlightRiver.Content.Items.Misc
             item.useTurn = true;
             item.crit = 12;
         }
-
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        {
+            if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()))
+                crit = false;
+        }
         public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
             if (crit)
@@ -96,6 +101,7 @@ namespace StarlightRiver.Content.Items.Misc
             player.statLife += healAmount;
 
             player.AddBuff(BuffID.WellFed, 18000);
+            player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
             Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
             return false;
         }
@@ -261,6 +267,16 @@ namespace StarlightRiver.Content.Items.Misc
             effect.Projection = projection;
 
             trail?.Render(effect);
+        }
+    }
+
+    public class FiletFrenzyBuff : SmartBuff
+    {
+        public FiletFrenzyBuff() : base("Frenzy", "Increased melee speed, but Filet Knife can no longer crit", false, false) { }
+
+        public override void Update(Player player, ref int buffIndex)
+        {
+            player.meleeSpeed += 0.3f;
         }
     }
 }
