@@ -1,7 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
 using System.Linq;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -56,6 +59,8 @@ namespace StarlightRiver.Content.Items.Misc
                 if (target.GetGlobalNPC<FiletNPC>().DOT < 3)
                     target.GetGlobalNPC<FiletNPC>().DOT += 1;
 
+
+                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
 
                 Vector2 direction = Vector2.Normalize(target.Center - player.Center);
                 for (int j = 0; j < 15; j++)
@@ -163,6 +168,99 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (hasSword)
                 Dust.NewDustPerfect(npc.Center - new Vector2(npc.spriteDirection * 12, 0), DustID.Blood, Vector2.Zero);
+        }
+    }
+    public class FiletSlash : ModProjectile, IDrawPrimitive
+    {
+        public override string Texture => AssetDirectory.MiscItem + "FiletKnife";
+
+        private readonly int BASETIMELEFT = 12;
+
+        BasicEffect effect;
+
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private Vector2 direction = Vector2.Zero;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Slash");
+
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.melee = true;
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = -1;
+            projectile.tileCollide = false;
+            projectile.timeLeft = BASETIMELEFT - 2;
+            projectile.ignoreWater = true;
+            projectile.alpha = 255;
+        }
+
+        public override void AI()
+        {
+            if (effect == null)
+            {
+                effect = new BasicEffect(Main.instance.GraphicsDevice);
+                effect.VertexColorEnabled = true;
+            }
+
+            NPC target = Main.npc[(int)projectile.ai[0]];
+            projectile.Center = target.Center;
+
+            if (direction == Vector2.Zero)
+            {
+                direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * (target.width + target.height) * 0.06f;
+                Main.NewText(direction.ToRotation().ToString());
+            }
+            cache = new List<Vector2>();
+
+            float progress = (BASETIMELEFT - projectile.timeLeft) / (float)BASETIMELEFT;
+
+            int widthExtra = (int)(6 * Math.Sin(progress * 3.14f));
+
+            int min = (BASETIMELEFT - (20 + widthExtra)) - projectile.timeLeft;
+            int max = (BASETIMELEFT + (widthExtra)) - projectile.timeLeft;
+
+            int average = (min + max) / 2;
+            for (int i = min; i < max; i++)
+            {
+                float offset = (float)Math.Pow(Math.Abs(i - average) / (float)(max - min), 2);
+                Vector2 offsetVector = (direction.RotatedBy(1.57f) * offset * 10);
+
+                cache.Add(target.Center + (direction * i));
+            }
+
+            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((target.width + target.height) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (projectile.timeLeft /(float)(BASETIMELEFT + 5)))) * (projectile.timeLeft / (float)BASETIMELEFT), factor =>
+            {
+                return Color.White * 0.8f;
+            });
+
+            trail.Positions = cache.ToArray();
+
+            float offset2 = (float)Math.Pow(Math.Abs((max + 1) - average) / (float)(max - min), 2);
+
+            Vector2 offsetVector2 = (direction.RotatedBy(1.57f) * offset2 * 10);
+            trail.NextPosition = target.Center + (direction * (max + 1));
+        }
+
+        public void DrawPrimitives()
+        {
+            if (effect == null)
+                return;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.World = world;
+            effect.View = view;
+            effect.Projection = projection;
+
+            trail?.Render(effect);
         }
     }
 }
