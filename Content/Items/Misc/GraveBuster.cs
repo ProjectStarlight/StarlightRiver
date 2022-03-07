@@ -33,8 +33,8 @@ namespace StarlightRiver.Content.Items.Misc
             item.shoot = ProjectileType<GraveBusterHeld>();
             item.shootSpeed = 1;
             item.channel = true;
-            item.value = Item.buyPrice(1, 0, 0, 0);
-            item.rare = ItemRarityID.Orange;
+            item.value = Item.sellPrice(0, 0, 20, 0);
+            item.rare = ItemRarityID.Blue;
             item.noUseGraphic = true;
         }
 
