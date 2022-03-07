@@ -25,6 +25,8 @@ namespace StarlightRiver
 
         private List<ILoadable> loadCache;
 
+        private List<IRecipeGroup> recipeGroupCache;
+
         public static float Rotation;
 
         public static LightingBuffer LightingBufferInstance = null;
@@ -155,6 +157,21 @@ namespace StarlightRiver
                 loadCache[k].Load();
             }
 
+
+            recipeGroupCache = new List<IRecipeGroup>();
+
+            foreach (Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    recipeGroupCache.Add(instance as IRecipeGroup);
+                }
+
+                recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+            }
+
+
             if (!Main.dedServ)
             {
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
@@ -218,6 +235,8 @@ namespace StarlightRiver
 
             //SwapFile();
         }
+
+
 
 
         //TODO: (important) remove before puplic release
@@ -298,6 +317,14 @@ namespace StarlightRiver
         //        File.Delete(path + tempName);
         //    }
         //}
+
+        public override void AddRecipeGroups()
+        {
+            foreach (var group in recipeGroupCache)
+            {
+                group.AddRecipeGroups();
+            }
+        }
 
         public override void PostAddRecipes()
         {
