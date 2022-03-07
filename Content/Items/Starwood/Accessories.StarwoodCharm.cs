@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -27,15 +29,27 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
             var player = Main.player[projectile.owner];
 
-            if (Equipped(player) && crit)
-                Item.NewItem(target.Center, ItemID.Star, 1, false, 0, true);
+            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
+                spawnStar(target.Center);
         }
 
 		private void SpawnManaOnCrit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
 		{
-            if (Equipped(player) && crit)
-                Item.NewItem(target.Center, ItemID.Star, 1, false, 0, true);
-		}
+            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
+                spawnStar(target.Center);
+
+        }
+
+        private void spawnStar(Vector2 position)
+        {
+            int item = Item.NewItem(position, ItemID.Star, 1, true, 0, true);
+
+
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+            {
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+            }
+        }
 
         public override void SafeUpdateEquip(Player player)
         {

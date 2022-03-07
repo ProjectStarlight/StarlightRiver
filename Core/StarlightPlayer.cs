@@ -56,6 +56,9 @@ namespace StarlightRiver.Core
 
         public static List<PlayerTicker> spawners = new List<PlayerTicker>();
 
+        public bool shouldSendHitPacket = false;
+        public OnHitPacket hitPacket = null;
+
         public override void PreUpdate()
         {
             if (PickupTarget != null)
@@ -106,8 +109,12 @@ namespace StarlightRiver.Core
 
             trueInvisible = false;
 
-            if (Shake > 120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult)
-                Shake = (int)(120 * ModContent.GetInstance<Configs.Config>().ScreenshakeMult);
+            player.fullRotation = 0;
+
+            shouldSendHitPacket = false;
+
+            if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)
+                Shake = (int)(120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult);
         }
 
         public override void PostUpdate()
@@ -165,6 +172,9 @@ namespace StarlightRiver.Core
 
         public override void ModifyScreenPosition()
         {
+            if (Main.myPlayer != player.whoAmI)
+                return;
+
             var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
             Main.screenPosition -= adj;
 
@@ -189,7 +199,7 @@ namespace StarlightRiver.Core
                 }
             }
 
-            float mult = ModContent.GetInstance<Configs.Config>().ScreenshakeMult;
+            float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
             mult *= Main.screenWidth / 2048f; //normalize for screen resolution
 
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
@@ -243,6 +253,33 @@ namespace StarlightRiver.Core
             #endregion
         }
 
+        /// <summary>
+        /// This is expected to be run PRIOR to the modify hit hooks so that when we send the data we can send it as it was prior to the edits so when it runs on the other client the modify hooks should be the same at the end
+        /// </summary>
+        /// <param name="proj"></param>
+        /// <param name="target"></param>
+        /// <param name="damage"></param>
+        /// <param name="knockback"></param>
+        /// <param name="crit"></param>
+        public void addHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            if (Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+                hitPacket = new OnHitPacket(player, proj, target, damage, knockback, crit);
+        }
+
+        /// <summary>
+        /// This is expected to run AFTER the on hit hooks so that if and only if any event during the modify and/or hit hooks wants the data to be synced we will do so
+        /// </summary>
+        public void sendHitPacket()
+        {
+            if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                hitPacket.Send(-1, Main.myPlayer, false);
+                shouldSendHitPacket = false;
+                hitPacket = null;
+            }
+        }
+
         public override void OnEnterWorld(Player player)
         {
             ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
@@ -259,6 +296,8 @@ namespace StarlightRiver.Core
             BootlegHealthbar.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;
+
+            DummyTile.dummies.Clear();
         }
 
 		public override void OnRespawn(Player player)
@@ -275,8 +314,8 @@ namespace StarlightRiver.Core
 
 		public override void PlayerConnect(Player player)
         {
-            AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
-            packet.Send();
+            AbilityProgress packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
+            packet.Send(runLocally: false);
         }
 
         public override float UseTimeMultiplier(Item item) => itemSpeed;

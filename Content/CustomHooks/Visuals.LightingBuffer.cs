@@ -13,8 +13,6 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            Helpers.LightingBuffer.SetupLightingQuadBuffer();
-
             Main.OnPreDraw += LightingTarget;
             On.Terraria.Main.SetDisplayMode += RefreshLightingTarget;
         }
@@ -26,7 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
-            if (width != Main.screenWidth || height != Main.screenHeight)
+            if (!Main.gameInactive && width != Main.screenWidth || height != Main.screenHeight)
                 StarlightRiver.LightingBufferInstance.ResizeBuffers(width, height);
 
             orig(width, height, fullscreen);

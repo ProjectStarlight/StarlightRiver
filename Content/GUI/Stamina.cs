@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Configs;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.GUI
                 var slotTex = emptyTex;
 
                 //if (k < specialVesselTextures.Count)
-                    //slotTex = GetTexture(specialVesselTextures[k]);
+                //slotTex = GetTexture(specialVesselTextures[k]);
 
                 if (k >= mp.StaminaMax - specialVesselTextures.Count)
                     slotTex = GetTexture(specialVesselTextures[(int)mp.StaminaMax - k - 1]);
@@ -129,8 +130,26 @@ namespace StarlightRiver.Content.GUI
                 }
             }
 
-            if (mp.ActiveAbility != null)
-                time = 120;
+            switch (GetInstance<GUIConfig>().OverheadStaminaState)
+            {
+                case OverlayState.AlwaysOn:
+                    time = 120;
+                    break;
+
+                case OverlayState.WhileNotFull:
+                    if (mp.Stamina < mp.StaminaMax)
+                        time = 120;
+                    break;
+
+                case OverlayState.WhileUsing:
+                    if (mp.ActiveAbility != null)
+                        time = 120;
+                    break;
+
+                case OverlayState.Never:
+                    time = 0;
+                    break;
+            }
 
             if (time > 0)
             {

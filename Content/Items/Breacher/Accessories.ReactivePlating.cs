@@ -13,6 +13,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -81,17 +82,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
-		{
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
 			if (active && !Shield)
 				damageCounter += 100;
-		}
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+        }
 
-		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
-		{
-			if (active && !Shield)
-				damageCounter += 100;
-		}
 	}
 	public class ReactivePlatingHelper : ILoadable
 	{
@@ -114,12 +111,15 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
 
-			if (modPlayer.Shield && drawPlayer == Main.LocalPlayer)
-				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer);
+			if (modPlayer.Shield)
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, drawPlayer);
 		}
 
-		private static void DrawPlayerTarget(int flickerTime, int shieldTimer)
+		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {
+			if (!PlayerTarget.canUseTarget)
+				return;
+
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			RenderTarget2D target = PlayerTarget.Target;
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				return;
 
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
 			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 200f, 0.25f));
 
 			spriteBatch.End();
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["red2"].SetValue(color.ToVector4());
 
 			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

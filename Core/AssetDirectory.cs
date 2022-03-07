@@ -93,6 +93,7 @@ namespace StarlightRiver.Core
         public const string ForestNPC =             Assets + "NPCs/Forest/";
 
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";
+        public const string HerbologyCropTile = Assets + "Tiles/Herbology/Crops/";
 
         public const string PureTile =              Assets + "Tiles/Purified/";
 

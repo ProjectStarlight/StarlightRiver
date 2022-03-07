@@ -248,6 +248,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnGores2()
 		{
+            if (chain?.ropeSegments[0]?.posNow == null)
+                return;
+
             var pos = chain.ropeSegments[0].posNow;
 
             GoreMe(pos, new Vector2(-60, -30), AssetDirectory.VitricBoss + "Gore/HeadLeft");
@@ -267,6 +270,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public void SpawnGores()
 		{
             stopDrawingBody = true;
+
+            if (chain?.ropeSegments == null)
+                return;
 
             for (int k = 0; k < chain.ropeSegments.Count; k++)
 			{

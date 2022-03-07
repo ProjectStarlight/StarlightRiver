@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -66,10 +67,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
 
+
             for (int k = 0; k < 4; k++) //smooth animation for restricting/unrestricting mana
             {
                 if (GetManaRestrict() > manaRestrictFade)
                     manaRestrictFade++;
+
                 if (GetManaRestrict() < manaRestrictFade)
                     manaRestrictFade--;
             }
@@ -82,6 +85,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
             if (sleepTimer > 0) //decrement sleep timer
                 sleepTimer--;
+            
         }
 
         private void HauntItem(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
@@ -122,13 +126,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
         private int GetManaRestrict(Item add = null)
 		{
             int manaRestrict = 0;
-
             for (int k = 0; k < minions.Count; k++)
             {
+                
                 var proj = minions[k].modProjectile as PoltergeistMinion;
                 manaRestrict += (int)(proj.item.mana * (60f / proj.item.useTime) * 2);
             }
-
             return manaRestrict + (add is null ? 0 : ((int)(add.mana * (60f / add.useTime) * 2)));
         }
 
@@ -138,7 +141,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             {
                 var helm = player.armor[0].modItem as PoltergeistHead;
 
-                if (helm.minions.Any(n => (n.modProjectile as PoltergeistMinion).item.type == item.type))
+                if (helm.minions.Any(n => (n.modProjectile as PoltergeistMinion)?.item?.type == item.type))
                     return false;
 
                 if (item.magic)

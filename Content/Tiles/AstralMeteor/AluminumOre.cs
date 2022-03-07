@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.AstralMeteor
             return base.Autoload(ref name, ref texture); }
 
         public override void SetDefaults() =>
-            this.QuickSet(0, DustType<Dusts.Electric>(), SoundID.Tink, new Color(156, 172, 177), ItemType<Items.AstralMeteor.AluminumOre>(), true, true, "Aluminum Ore");
+            this.QuickSet(0, DustType<Dusts.Electric>(), SoundID.Tink, new Color(156, 172, 177), ItemType<AluminumOreItem>(), true, true, "Aluminum Ore");
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
@@ -33,5 +33,12 @@ namespace StarlightRiver.Content.Tiles.AstralMeteor
 
         public override void FloorVisuals(Player player) => 
             player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+    }
+
+    public class AluminumOreItem : QuickTileItem
+    {
+        public AluminumOreItem() : base("Astral Aluminum", "", "AluminumOre", ItemRarityID.Blue, AssetDirectory.AluminumTile) { }
+
+        public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
     }
 }

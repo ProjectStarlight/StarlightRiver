@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using System.IO;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
@@ -52,19 +53,33 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			return ActionState == 3 && base.CanHitPlayer(target, ref cooldownSlot);
 		}
 
-		public override void AI()
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.Write(npc.target);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            npc.target = reader.ReadInt32();
+        }
+
+        public override void AI()
         {
             ActionTimer++;
 
+            npc.frame.Width = npc.width;
+            npc.frame.Height = npc.height;
+
             switch (ActionState)
             {
-                case 0: // Default/spawningd
-                    npc.frame.Width = npc.width;
-                    npc.frame.Height = npc.height;
-
+                case 0: // Default/spawning
                     npc.TargetClosest();
-                    if (Vector2.Distance(npc.Center, target.Center) < 300)
+                    if (Vector2.Distance(npc.Center, target.Center) < 300 && Main.netMode != NetmodeID.MultiplayerClient)
+                    {
                         ChangeState(1);
+                        npc.netUpdate = true;
+                    }
+                        
 
                     break;
 
@@ -97,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                             npc.frame.Y = npc.height * (int)(ActionTimer / 30f * 12);
                         }
 
-                        if (ActionTimer == 30)
+                        if (ActionTimer == 30 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
                             npc.Center = FindNewPosition();
 
                         if (ActionTimer > 60 && ActionTimer <= 105)
@@ -120,7 +135,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     else if (ActionTimer > 30 && ActionTimer < 50)
                         npc.frame.Y = npc.height * (7 - (int)(((ActionTimer - 30) / 20f) * 5));
 
-                    if (ActionTimer == 20)
+                    if (ActionTimer == 20 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
                         Projectile.NewProjectile(npc.Center, Vector2.Normalize(target.Center - npc.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
                     if (ActionTimer == 140)
@@ -171,6 +186,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     !Framing.GetTileSafely(randPos + new Point16(1, -1)).active() && Framing.GetTileSafely(randPos + new Point16(1, -1)).liquid == 0
                     )
                 {
+                    npc.netUpdate = true;
                     return randPos.ToVector2() * 16 + new Vector2(16, -36);
                 }
             }
@@ -184,10 +200,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
             return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
         }
 
-        public override void NPCLoot()
+        public override void HitEffect(int hitDirection, double damage)
         {
-            for (int k = 0; k <= 5; k++)
-                Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k));
+            if (npc.life <= 0 && Main.netMode != NetmodeID.Server)
+            {
+                for (int k = 0; k <= 5; k++)
+                    Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k));
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)

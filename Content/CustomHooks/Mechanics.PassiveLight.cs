@@ -12,15 +12,30 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class PassiveLight : HookGroup
     {
+        private static float mult = 0;
+        private static bool vitricLava = false;
+
         //Rare method to hook but not the best finding logic. Also old code.
         public override SafetyLevel Safety => SafetyLevel.Fragile;
 
         public override void Load()
         {
             IL.Terraria.Lighting.PreRenderPhase += VitricLighting;
+            On.Terraria.Main.Update += UpdateLightingVars; //TODO: Change to an event in modworld update hook eventually?
         }
 
-        public override void Unload()
+		private void UpdateLightingVars(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		{
+            if (!Main.gameMenu)
+            {
+                mult = (0.8f + (Main.dayTime ? (float)System.Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)System.Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
+                vitricLava = Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass;
+            }
+
+            orig(self, gameTime);
+		}
+
+		public override void Unload()
         {
             IL.Terraria.Lighting.PreRenderPhase -= VitricLighting;
         }
@@ -85,15 +100,13 @@ namespace StarlightRiver.Content.CustomHooks
                 bool lava = tile.liquidType() == 1;
                 bool lit = Main.tileLighted[tile.type];
 
-                if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass && tile != null && lava)
+                if (vitricLava && lava)
                     (r, g, b) = (1, 0, 0);
 
-                if (tile != null && !tileBlock && wallBlock && !lava && !lit)
+                if (!tileBlock && wallBlock && !lava && !lit)
                 {
                     var yOff = j - StarlightWorld.VitricBiome.Y;
-
-                    var mult = (0.8f + (Main.dayTime ? (float)System.Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)System.Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
-
+                 
                     if (mult > 1)
                         mult = 1;
 

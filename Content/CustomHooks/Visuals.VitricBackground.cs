@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.CustomHooks
         internal static ParticleSystem ForegroundParticles;
         internal static ParticleSystem BackgroundParticles;
 
-        //Its just drawing, but its alot of drawing, and some questionable vanilla RenderBlack replication stuff that likely needs to be removed at some point.
+        //Its just drawing, but its alot of drawing
         public override SafetyLevel Safety => SafetyLevel.Questionable;
 
         public override void Load()
