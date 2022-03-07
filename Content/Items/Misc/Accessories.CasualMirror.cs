@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -26,13 +27,13 @@ namespace StarlightRiver.Content.Items.Misc
 	}
 
 	class CasualMirrorPlayer : ModPlayer
-    {
+	{
 		public bool equipped = false;
 
-        public override void ResetEffects()
-        {
+		public override void ResetEffects()
+		{
 			equipped = false;
-        }
+		}
 
 		public override void NaturalLifeRegen(ref float regen)
 		{
@@ -41,6 +42,14 @@ namespace StarlightRiver.Content.Items.Misc
 				regen *= -1f;
 				player.lifeRegen *= -1;
 			}
+		}
+		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		{
+			if (equipped && hitDirection == 0 && damageSource.SourceOtherIndex == 8)
+			{
+				damageSource = PlayerDeathReason.ByCustomReason(player.name + " didn't read the tooltip");
+			}
+			return true;
 		}
 	}
 }
