@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
     }
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
     }
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
     }
@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
     }
@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
 
@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
             else
             {
-                projectile.scale = 1;
+                projectile.scale = 0.75f;
             }
         }
     }
