@@ -121,6 +121,7 @@ namespace StarlightRiver.Core.Loaders
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
             spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
+            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition, Color.White);
             spriteBatch.End();
 
             gD.SetRenderTargets(bindings);

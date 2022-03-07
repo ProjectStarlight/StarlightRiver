@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Items.Misc
         {
             item.width = 32;
             item.height = 32;
-            item.useTime = 40;
-            item.useAnimation = 40;
+            item.useTime = 80;
+            item.useAnimation = 80;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.noMelee = true;
             item.autoReuse = false;
@@ -86,6 +86,27 @@ namespace StarlightRiver.Content.Items.Misc
                 DestroyGraves();
                 projectile.active = false;
             }
+            if (projectile.timeLeft % 6 == 0 && owner.itemTime > 15)
+            {
+                Vector2 range = new Vector2(25, 25);
+                Vector2 startPos = (projectile.Center / 16) - range;
+                Vector2 endPos = (projectile.Center / 16) + range;
+
+                for (int i = (int)startPos.X; i < (int)endPos.X; i++)
+                {
+                    for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
+                    {
+                        Tile tile = Main.tile[i, j];
+                        Tile tile2 = Main.tile[i + 1, j + 1];
+                        if (tile.type == 85 && tile.active() && tile2.type == 85 && tile2.active())
+                        {
+                            Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
+                            Vector2 offset = Main.rand.NextVector2Circular(8, 8);
+                            Projectile.NewProjectile(graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, projectile.owner);
+                        }
+                    }
+                }
+            }
             projectile.Center = owner.Center;
 
             if (!initialized)
@@ -126,7 +147,22 @@ namespace StarlightRiver.Content.Items.Misc
                 for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
                 {
                     Tile tile = Main.tile[i, j];
-                    if (tile.type == 85)
+
+                    Tile tile2 = Main.tile[i + 1, j + 1];
+                    if (tile.type == 85 && tile.active() && tile2.type == 85 && tile2.active())
+                    {
+                        Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
+                        for (int t = 0; t < 10; t++)
+                        {
+                            Dust dust = Dust.NewDustDirect(graveCenter - new Vector2(16, 16), 0, 0, ModContent.DustType<GraveBusterDust>());
+                            dust.velocity = Main.rand.NextVector2Circular(7, 7);
+                            dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+                            dust.alpha = 70 + Main.rand.Next(60);
+                            dust.rotation = Main.rand.NextFloat(6.28f);
+                        }
+                    }
+
+                    if (tile.type == 85 && tile.active())
                     {
                         tile.active(false);
                         if (!Main.tile[i, j].active() && Main.netMode != NetmodeID.SinglePlayer)
@@ -136,6 +172,149 @@ namespace StarlightRiver.Content.Items.Misc
                     }
                 }
             }
+        }
+    }
+    public class GraveSlash : ModProjectile, IDrawPrimitive
+    {
+        public override string Texture => AssetDirectory.MiscItem + "GraveBuster";
+
+        private readonly int BASETIMELEFT = 25;
+
+        BasicEffect effect;
+
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private Vector2 direction = Vector2.Zero;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Slash");
+
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.melee = true;
+            projectile.width = 32;
+            projectile.height = 32;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = -1;
+            projectile.tileCollide = false;
+            projectile.timeLeft = BASETIMELEFT - 2;
+            projectile.ignoreWater = true;
+            projectile.alpha = 255;
+        }
+
+        public override void AI()
+        {
+            if (effect == null)
+            {
+                effect = new BasicEffect(Main.instance.GraphicsDevice);
+                effect.VertexColorEnabled = true;
+            }
+
+            if (direction == Vector2.Zero)
+                direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * (32) * 0.06f;
+            cache = new List<Vector2>();
+
+            float progress = (BASETIMELEFT - projectile.timeLeft) / (float)BASETIMELEFT;
+
+            int widthExtra = (int)(6 * Math.Sin(progress * 3.14f));
+
+            int min = (BASETIMELEFT - (20 + widthExtra)) - projectile.timeLeft;
+            int max = (BASETIMELEFT + (widthExtra)) - projectile.timeLeft;
+
+            int average = (min + max) / 2;
+            for (int i = min; i < max; i++)
+            {
+                float offset = (float)Math.Pow(Math.Abs(i - average) / (float)(max - min), 2);
+                Vector2 offsetVector = (direction.RotatedBy(1.57f) * offset * 10);
+
+                cache.Add(projectile.Center + (direction * i));
+            }
+
+            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((32) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (projectile.timeLeft / (float)(BASETIMELEFT + 5)))) * (projectile.timeLeft / (float)BASETIMELEFT), factor =>
+            {
+                return Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f;
+            });
+
+            trail.Positions = cache.ToArray();
+
+            float offset2 = (float)Math.Pow(Math.Abs((max + 1) - average) / (float)(max - min), 2);
+
+            Vector2 offsetVector2 = (direction.RotatedBy(1.57f) * offset2 * 10);
+            trail.NextPosition = projectile.Center + (direction * (max + 1));
+        }
+
+        public void DrawPrimitives()
+        {
+            if (effect == null)
+                return;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.World = world;
+            effect.View = view;
+            effect.Projection = projection;
+
+            trail?.Render(effect);
+        }
+    }
+
+    public class GraveBusterDust : ModDust
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.Dust + "NeedlerDust";
+            return true;
+        }
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.scale *= Main.rand.NextFloat(0.4f, 1.25f);
+            dust.frame = new Rectangle(0, 0, 34, 36);
+        }
+
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            Color gray = new Color(25, 25, 25);
+            Color ret;
+            if (dust.alpha < 80)
+            {
+                ret = Color.Red;
+            }
+            else if (dust.alpha < 140)
+            {
+                ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
+            }
+            else
+                ret = gray;
+            return ret * ((255 - dust.alpha) / 255f);
+        }
+
+        public override bool Update(Dust dust)
+        {
+            if (dust.velocity.Length() > 3)
+                dust.velocity *= 0.85f;
+            else
+                dust.velocity *= 0.92f;
+            if (dust.alpha > 100)
+            {
+                dust.scale += 0.01f;
+                dust.alpha += 2;
+            }
+            else
+            {
+                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+                dust.scale *= 0.985f;
+                dust.alpha += 4;
+            }
+            dust.position += dust.velocity;
+            if (dust.alpha >= 255)
+                dust.active = false;
+
+            return false;
         }
     }
 }
