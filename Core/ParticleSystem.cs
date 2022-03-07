@@ -27,28 +27,30 @@ namespace StarlightRiver.Core
         public void DrawParticles(SpriteBatch spriteBatch)
         {
             if (GetInstance<Config>().ParticlesActive)
+            {
                 for (int k = 0; k < Particles.Count; k++)
                 {
                     Particle particle = Particles[k];
 
-                    if(particle is null)
-					{
+                    if (particle is null)
+                    {
                         Particles.Remove(particle);
                         continue;
                     }
 
-                    if (!Main.gameInactive) 
+                    if (!Main.gameInactive)
                         UpdateDelegate(particle);
 
-                    if (Helper.OnScreen(particle.Position))                 
+                    if (Helper.OnScreen(particle.Position))
                         spriteBatch.Draw(Texture, particle.Position, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
 
                     if (particle.Timer <= 0)
                     {
                         Particles.Remove(particle);
-                        Particles[k] = null;
+                        //Particles[k] = null;
                     }
                 }
+            }
         }
 
         public void AddParticle(Particle particle)
