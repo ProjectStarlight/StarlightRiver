@@ -119,9 +119,9 @@ namespace StarlightRiver.Core.Loaders
             gD.SetRenderTarget(tileTarget); //doing this to (hopefully) crop the rendertarget?
             gD.Clear(Color.Transparent);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
             spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
-            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition, Color.White);
+            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
             spriteBatch.End();
 
             gD.SetRenderTargets(bindings);
