@@ -65,13 +65,20 @@ namespace StarlightRiver.Content.Items.Geomancer
             if (!player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
                 return;
 
+            if (!CustomHooks.PlayerTarget.canUseTarget)
+                return;
+
+
             spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
             Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
+            var barrier = player.GetModPlayer<ShieldPlayer>();
+
             if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
             {
+
                 float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
                 float opacity = 1.25f - (((sin / 2) + 0.5f) * 0.8f);
 
@@ -84,7 +91,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                     Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
                     var color = Color.White * (opacity - sin * 0.1f) * 0.9f;
 
-                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, Vector2.Zero + dir, color * 0.25f);
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color * 0.25f);
                 }
             }
             else if (player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
@@ -102,7 +109,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 {
                     Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
 
-                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, Vector2.Zero + dir, Color.White * 0.25f);
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), Color.White * 0.25f);
                 }
             }
 
