@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = Item.sellPrice(0, 1, 0, 0);
+            item.value = 1;
             item.rare = ItemRarityID.LightRed;
         }
 
@@ -44,6 +44,12 @@ namespace StarlightRiver.Content.Items.Misc
     public class SoulOfFrogGNPC : GlobalNPC
     {
         public override bool InstancePerEntity => true;
+
+        public override void NPCLoot(NPC npc)
+        {
+            if (npc.type == NPCID.Frog && Main.rand.NextBool(1000))
+                Item.NewItem(npc.Center, ModContent.ItemType<SoulOfFrog>());
+        }
 
         public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
         {
