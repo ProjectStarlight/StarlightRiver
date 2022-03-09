@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             }
 
-            if (prevState != State && Main.netMode == NetmodeID.Server)
+            if ((prevState != State || (State == 3 && Timer % 60 == 0)) && Main.netMode == NetmodeID.Server)
             {
                 npc.netUpdate = true;
                 prevState = State;
