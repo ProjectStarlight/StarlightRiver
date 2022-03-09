@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
             Projectile.NewProjectile(position + (dir * 60), new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
             charge = 1;
-            return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            return false;
         }
 
         public override void HoldItem(Player player)
