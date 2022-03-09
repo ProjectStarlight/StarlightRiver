@@ -34,6 +34,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Alchemy\Modifiers\" />
     <Folder Include="Content\Tiles\Paintings\" />
   </ItemGroup>
 </Project>
