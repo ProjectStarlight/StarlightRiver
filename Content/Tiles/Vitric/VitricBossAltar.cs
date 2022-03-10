@@ -216,6 +216,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                  )))
                 {
                     npc.active = false;
+                    npc.netUpdate = true;
                 }
 
                 Vector2 center = projectile.Center + new Vector2(0, 60);
