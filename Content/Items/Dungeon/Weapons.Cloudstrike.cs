@@ -51,7 +51,9 @@ namespace StarlightRiver.Content.Items.Dungeon
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
-            Projectile.NewProjectile(position + (dir * 60), new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
+            Projectile.NewProjectile(position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5), new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
+            if (charge > 60)
+                player.velocity -= dir * (float)Math.Sqrt(charge - 60);
             charge = 1;
             return false;
         }
@@ -75,7 +77,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private float chargeSqrt => (float)Math.Sqrt(charge);
 
-        private int reach => ((int)charge * 3) + 100;
+        private int reach => ((int)charge * 5) + 100;
 
         private bool initialized = false;
 
@@ -94,6 +96,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private Vector2 startPoint = Vector2.Zero;
 
+        private Vector2 mousePos = Vector2.Zero;
+
+        private float curve;
+
+        private bool hitNPC = false;
 
         public override void SetDefaults()
         {
@@ -102,7 +109,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             projectile.friendly = true;
             projectile.ranged = true;
             projectile.timeLeft = 60;
-            projectile.tileCollide = false;
+            projectile.tileCollide = true;
             projectile.ignoreWater = true;
             projectile.magic = true;
             projectile.extraUpdates = 14;
@@ -122,7 +129,12 @@ namespace StarlightRiver.Content.Items.Dungeon
                 startPoint = projectile.Center;
                 ManageCaches();
                 initialized = true;
-                projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 30) + 45;
+                if (projectile.ai[1] == 0)
+                {
+                    projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 30) + 45;
+                    mousePos = Main.MouseWorld;
+                }
+                player.GetModPlayer<StarlightPlayer>().Shake += (int)chargeSqrt;
             }
 
             if (Main.netMode != NetmodeID.Server && (projectile.timeLeft % 4 == 0 || projectile.timeLeft <= 25))
@@ -142,6 +154,12 @@ namespace StarlightRiver.Content.Items.Dungeon
             }
 
             var temptarget = Main.npc.Where(x => x.active && !x.townNPC /*&& !x.immortal && !x.dontTakeDamage /&& !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
+
+            if (hitNPC && temptarget == default)
+            {
+                projectile.timeLeft = 25;
+                return;
+            }
             if (Main.rand.NextBool(30))
             {
                 target = temptarget;
@@ -154,25 +172,51 @@ namespace StarlightRiver.Content.Items.Dungeon
             }
             else
             {
+                if (projectile.ai[1] != 0)
+                {
+                    if (Main.rand.NextBool(4))
+                        mousePos = projectile.Center + (projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * 30);
+                }
+                else if (Main.rand.NextBool(6))
+                    curve = Main.rand.NextFloat(-0.4f, 0.4f);
                 Vector2 dir = Vector2.Zero;
                 if (!reachedMouse)
                 {
-                    dir = Main.MouseWorld - projectile.Center;
+                    dir = mousePos - projectile.Center;
                     if (dir.Length() < 30)
                         reachedMouse = true;
                 }
                 else
                 {
-                    dir = Main.MouseWorld - player.Center;
+                    dir = mousePos - player.Center;
                 }
-                projectile.velocity = Vector2.Normalize(dir) * 10;
+                projectile.velocity = Vector2.Normalize(dir).RotatedBy(curve) * 10;
+            }
+
+            if (Main.rand.NextBool((int)charge + 50) && projectile.ai[1] == 0)
+            {
+                Projectile proj = Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), projectile.damage, projectile.knockBack, player.whoAmI, charge, 1);
+                proj.timeLeft = (int)((projectile.timeLeft - 25) * 0.75f) + 25;
+                var modProj = proj.modProjectile as CloudstrikeShot;
+                modProj.mousePos = proj.Center + (proj.velocity * 30);
             }
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+            hitNPC = true;
             hitTargets.Add(target);
             base.OnHitNPC(target, damage, knockback, crit);
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            if (projectile.timeLeft > 25)
+            {
+                ManageCaches();
+                projectile.timeLeft = 25;
+            }
+            return false;
         }
 
         private void ManageCaches()
@@ -206,7 +250,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private void ManageTrails()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 150, new TriangularTip(40 * 4), factor => 4 * (float)Math.Pow(chargeSqrt, 0.7f), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 150, new TriangularTip(40 * 4), factor => 16 * (float)Math.Pow(chargeSqrt, 0.7f), factor =>
             {
                 if (factor.X > 0.99f)
                     return Color.Transparent;
@@ -243,18 +287,23 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             var tex = ModContent.GetTexture("StarlightRiver/Assets/GlowTrail");
 
+            var tex2 = ModContent.GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
+
+            var color = new Color(200, 230, 255) * (projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(projectile.timeLeft / 25f) : 1);
+
+            sb.Draw(tex2, startPoint - Main.screenPosition, null, color, 0, tex2.Size() / 2, (float)Math.Sqrt(chargeSqrt) * 0.5f, SpriteEffects.None, 0f);
+
             for (int k = 1; k < cache2.Count; k++)
             {
                 Vector2 prevPos = k == 1 ? point1 : cache2[k - 1];
 
-                var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(cache2[k], prevPos) + 1, power);
+                var target = new Rectangle((int)(prevPos.X - Main.screenPosition.X), (int)(prevPos.Y - Main.screenPosition.Y), (int)Vector2.Distance(cache2[k], prevPos) + 2, power);
                 var origin = new Vector2(0, tex.Height / 2);
                 var rot = (cache2[k] - prevPos).ToRotation();
-                var color = new Color(200, 230, 255) * (projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(projectile.timeLeft / 25f) : 1);
 
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
 
-                if (Main.rand.Next(20) == 0)
+                if (Main.rand.Next(40) == 0)
                     Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
             }
         }

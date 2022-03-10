@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Double Cross");
-			Tooltip.SetDefault("Alternates between your highest two ammo slots");
+			Tooltip.SetDefault("Shoots your highest two ammo slots at once");
 		}
 		public override void SetDefaults()
 		{
