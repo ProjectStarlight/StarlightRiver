@@ -229,12 +229,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     BootlegHealthbar.visible = true;
                 }
 
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    int index = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<ArenaBottom>());
+                    (Main.npc[index].modNPC as ArenaBottom).Parent = this;
+                }
+
                 SetFrameY(0);
 
                 npc.dontTakeDamage = false; //make him vulnerable
                 homePos = npc.Center; //set the NPCs home so it can return here after attacks
-                int index = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<ArenaBottom>());
-                (Main.npc[index].modNPC as ArenaBottom).Parent = this;
                 ChangePhase(AIStates.FirstPhase, true);
                 ResetAttack();
                 npc.netUpdate = true;

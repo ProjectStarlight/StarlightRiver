@@ -30,8 +30,41 @@ namespace StarlightRiver.Content.CustomHooks
         private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough)
         {
 
-            if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0 || self.GoingDownWithGrapple)
+            if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
             {
+                orig(self, fallThrough);
+                return;
+            }
+
+            if (self.GoingDownWithGrapple)
+            {
+                if (self.grapCount == 1)
+                {
+                    //if the player is using a single grappling hook we can check if they are colliding with it and its embedded in the moving platform, while its changing Y position so we can give the player their jump back
+                    foreach (int eachGrappleIndex in self.grappling)
+                    {
+                        if (eachGrappleIndex < 0 || eachGrappleIndex > Main.maxProjectiles)//somehow this can be invalid at this point?
+                            continue;
+
+                        Projectile grappleHookProj = Main.projectile[eachGrappleIndex];
+
+                        foreach (NPC npc in Main.npc)
+                        {
+                            if (!npc.active || npc.modNPC == null || !(npc.modNPC is MovingPlatform))
+                                continue;
+
+                            if (grappleHookProj.active && npc.Hitbox.Intersects(grappleHookProj.Hitbox) && self.Hitbox.Intersects(grappleHookProj.Hitbox))
+                            {
+                                self.position = grappleHookProj.position + new Vector2(grappleHookProj.width / 2 - self.width / 2, grappleHookProj.height / 2 - self.height / 2);
+                                self.position += npc.velocity;
+                                self.velocity.Y = 0;
+                                self.jump = 0;
+                                self.fallStart = (int)(self.position.Y / 16f);
+                            }
+                        }
+                    }
+                }
+
                 orig(self, fallThrough);
                 return;
             }
@@ -49,6 +82,9 @@ namespace StarlightRiver.Content.CustomHooks
                     //if the player is using a single grappling hook we can check if they are colliding with it and its embedded in the moving platform, while its changing Y position so we can give the player their jump back
                     foreach (int eachGrappleIndex in self.grappling)
                     {
+                        if (eachGrappleIndex < 0 || eachGrappleIndex > Main.maxProjectiles)//somehow this can be invalid at this point?
+                            continue;
+
                         Projectile grappleHookProj = Main.projectile[eachGrappleIndex];
                         if (grappleHookProj.active && npc.Hitbox.Intersects(grappleHookProj.Hitbox) && self.Hitbox.Intersects(grappleHookProj.Hitbox))
                         {
