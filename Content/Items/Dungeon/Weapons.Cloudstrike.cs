@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             if (Main.rand.NextBool(10 + (int)Math.Sqrt((Cloudstrike.MAXCHARGE + 2) - charge)) && !(branch || miniature)) //small, non damaging branches
             {
                 Projectile proj = Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, player.whoAmI, 1, 1);
-                proj.timeLeft = Main.rand.Next(40,70);
+                proj.timeLeft = Math.Min(Main.rand.Next(40,70), projectile.timeLeft);
 
                 var modProj = proj.modProjectile as CloudstrikeShot;
                 modProj.mousePos = proj.Center + (proj.velocity * 30);
