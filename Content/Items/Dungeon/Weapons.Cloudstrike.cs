@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 {
     class Cloudstrike : ModItem
     {
-        public const int MAXCHARGE = 100;
+        public const int MAXCHARGE = 120;
 
         private int charge; //How much charge the weapon has (out of MAXCHARGE)
 
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         private static void CreateStatic(int charge, Player player, bool fullCharge = false)
         {
             Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
-            Vector2 offset = Main.rand.NextBool() ? new Vector2(Main.rand.Next(-10, 10), player.height / 2) : dir * Main.rand.NextFloat(30);
+            Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), player.height / 2);
 
             float smalLCharge = fullCharge ? 0.5f : 0.01f;
 
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 initialized = true;
                 if (!branch && !miniature)
                 {
-                    projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 30) + 45;
+                    projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 20) + 45;
                     mousePos = Main.MouseWorld;
                 }
             }
@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private void CalculateTarget()
         {
-            var temptarget = Main.npc.Where(x => x.active && !x.townNPC /*&& !x.immortal && !x.dontTakeDamage /&& !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
+            var temptarget = Main.npc.Where(x => x.active && !x.townNPC/* && !x.immortal && !x.dontTakeDamage && !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
 
             if (temptarget != default && Main.rand.NextBool((int)Math.Sqrt(temptarget.Distance(projectile.Center)) + 1))
                 target = temptarget;
