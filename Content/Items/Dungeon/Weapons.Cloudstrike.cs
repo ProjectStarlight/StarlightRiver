@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 {
     class Cloudstrike : ModItem
     {
-        private const int MAXCHARGE = 100;
+        public const int MAXCHARGE = 100;
 
         private int charge; //How much charge the weapon has (out of MAXCHARGE)
 
@@ -62,6 +62,9 @@ namespace StarlightRiver.Content.Items.Dungeon
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
             Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
             Projectile.NewProjectile(pos, new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
+
+            player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(charge) * 2);
+
             //Dust.NewDustPerfect(pos, DustID.Electric, dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5));
             if (charge > 60)
                 player.velocity -= dir * (float)Math.Sqrt(charge - 60);
@@ -188,7 +191,6 @@ namespace StarlightRiver.Content.Items.Dungeon
                     projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 30) + 45;
                     mousePos = Main.MouseWorld;
                 }
-                player.GetModPlayer<StarlightPlayer>().Shake += (int)chargeSqrt;
             }
 
             if (Main.netMode != NetmodeID.Server && (projectile.timeLeft % 4 == 0 || projectile.timeLeft <= 25))
@@ -221,67 +223,17 @@ namespace StarlightRiver.Content.Items.Dungeon
                 return;
             }
 
-            var temptarget = Main.npc.Where(x => x.active && !x.townNPC /*&& !x.immortal && !x.dontTakeDamage /&& !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
-
             oldVel = projectile.velocity / 6;
 
-            if (Main.rand.NextBool(30))
-                target = temptarget;
+            CalculateTarget();
 
-            if (hitTargets.Contains(target))
-                target = default;
-
-            Vector2 rotToBe = Vector2.One;
-            float distance = 100;
-            if (target != default)
-            {
-                Vector2 dir = target.Center - projectile.Center;
-                distance = dir.Length();
-                rotToBe = Vector2.Normalize(dir);
-            }
-            else
-            {
-                if (branch || miniature)
-                {
-                    if (Main.rand.NextBool(4))
-                        mousePos = projectile.Center + (projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * 30);
-                }
-                else if (Main.rand.NextBool(6))
-                    curve = Main.rand.NextFloat(-0.4f, 0.4f);
-                Vector2 dir = Vector2.Zero;
-                if (!reachedMouse)
-                {
-                    dir = mousePos - projectile.Center;
-                    if (dir.Length() < 30)
-                        reachedMouse = true;
-                }
-                else
-                {
-                    dir = mousePos - player.Center;
-                }
-                distance = dir.Length();
-                rotToBe = Vector2.Normalize(dir).RotatedBy(curve);
-            }
-
-            if (miniature)
-            {
-                Vector2 dir2 = (player.Center + Main.rand.NextVector2Circular(12,12)) - projectile.Center;
-                distance = dir2.Length();
-                rotToBe = Vector2.Normalize(dir2).RotatedBy(curve * 3);
-            }
-
-            float rotDifference = ((((rotToBe.ToRotation() - projectile.velocity.ToRotation()) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
-
-            float lerper = MathHelper.Lerp(0.55f, 0.35f, MathHelper.Min(1, distance / 300f));
-            if (miniature)
-                lerper /= 3;
-            float rot = MathHelper.Lerp(projectile.velocity.ToRotation(), projectile.velocity.ToRotation() + rotDifference, lerper);
-            projectile.velocity = rot.ToRotationVector2() * velocityMult;
+            CalculateVelocity();
 
             if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature))
             {
                 Projectile proj = Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), projectile.damage, projectile.knockBack, player.whoAmI, charge, 1);
                 proj.timeLeft = (int)((projectile.timeLeft - 25) * 0.75f) + 25;
+
                 var modProj = proj.modProjectile as CloudstrikeShot;
                 modProj.mousePos = proj.Center + (proj.velocity * 30);
             }
@@ -399,7 +351,71 @@ namespace StarlightRiver.Content.Items.Dungeon
             var tex = ModContent.GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
 
             var color = new Color(200, 230, 255) * fade;
-            sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 12, charge / 100f) * ((branch || miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+            sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 12, charge / (float)Cloudstrike.MAXCHARGE) * ((branch || miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+        }
+
+        private void CalculateTarget()
+        {
+            var temptarget = Main.npc.Where(x => x.active && !x.townNPC /*&& !x.immortal && !x.dontTakeDamage /&& !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
+
+            if (temptarget != default && Main.rand.NextBool((int)Math.Sqrt(temptarget.Distance(projectile.Center)) + 1))
+                target = temptarget;
+
+            if (hitTargets.Contains(target))
+                target = default;
+        }
+
+        private void CalculateVelocity()
+        {
+            Vector2 rotToBe;
+            float distance;
+            if (target != default)
+            {
+                Vector2 dir = target.Center - projectile.Center;
+                distance = dir.Length();
+                rotToBe = Vector2.Normalize(dir);
+            }
+            else
+            {
+                if (branch || miniature)
+                {
+                    if (Main.rand.NextBool(4))
+                        mousePos = projectile.Center + (projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * 30);
+                }
+                else if (Main.rand.NextBool(6))
+                    curve = Main.rand.NextFloat(-0.4f, 0.4f);
+                Vector2 dir;
+                if (!reachedMouse)
+                {
+                    dir = mousePos - projectile.Center;
+
+                    Vector2 pToM = mousePos - player.Center;
+                    Vector2 pToL = projectile.Center - player.Center;
+                    if (pToL.Length() > pToM.Length())
+                        reachedMouse = true;
+                }
+                else
+                {
+                    dir = mousePos - player.Center;
+                }
+                distance = dir.Length();
+                rotToBe = Vector2.Normalize(dir).RotatedBy(curve);
+            }
+
+            if (miniature)
+            {
+                Vector2 dir2 = (player.Center + Main.rand.NextVector2Circular(12, 12)) - projectile.Center;
+                distance = dir2.Length();
+                rotToBe = Vector2.Normalize(dir2).RotatedBy(curve * 3);
+            }
+
+            float rotDifference = ((((rotToBe.ToRotation() - projectile.velocity.ToRotation()) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+
+            float lerper = MathHelper.Lerp(0.55f, 0.35f, MathHelper.Min(1, distance / 300f));
+            if (miniature)
+                lerper /= 3;
+            float rot = MathHelper.Lerp(projectile.velocity.ToRotation(), projectile.velocity.ToRotation() + rotDifference, lerper);
+            projectile.velocity = rot.ToRotationVector2() * velocityMult;
         }
     }
 
