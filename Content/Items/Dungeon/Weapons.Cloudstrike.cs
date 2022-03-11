@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 if (Main.rand.Next(40 * (projectile.extraUpdates + 1)) == 0)
                 {
                     Vector2 prevPos = k == 1 ? startPoint : cache2[k - 1];
-                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (power / 30f), 0.5f);
+                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<CloudstrikeGlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (power / 30f), 0.5f);
                 }
             }
 
@@ -247,9 +247,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             hitTargets.Add(target);
-
-            int dustType = charge > 50 ? ModContent.DustType<CloudstrikeStarDust>() : ModContent.DustType<CloudstrikeCircleDust>();
-            Dust.NewDustPerfect(projectile.Center, dustType, Vector2.Zero, 0, default, (float)Math.Pow(chargeSqrt, 0.3f));
+            Dust.NewDustPerfect(projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Vector2.Zero, 0, default, (float)Math.Pow(chargeSqrt, 0.3f));
 
             for (int i = 0; i < 20; i++)
                 Dust.NewDustPerfect(target.Center + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 6, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
@@ -418,48 +416,6 @@ namespace StarlightRiver.Content.Items.Dungeon
             projectile.velocity = rot.ToRotationVector2() * velocityMult;
         }
     }
-
-    class CloudstrikeStarDust : ModDust
-    {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return true;
-        }
-
-        public override void OnSpawn(Dust dust)
-        {
-            dust.color = Color.Transparent;
-            dust.fadeIn = 0;
-            dust.noLight = false;
-            dust.frame = new Rectangle(0, 0, 64, 64);
-           // dust.rotation = Main.rand.NextFloat(6.28f);
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
-        }
-
-        public override bool Update(Dust dust)
-        {
-            if (dust.color == Color.Transparent)
-                dust.position -= Vector2.One * 32 * dust.scale;
-
-            //dust.rotation += dust.velocity.Y * 0.1f;
-            dust.position += dust.velocity;
-
-            dust.color = new Color(200, 230, 255);
-            dust.shader.UseColor(dust.color * (1 - (dust.alpha / 255f)));
-
-            dust.alpha += 15;
-            if (dust.velocity == Vector2.Zero)
-                dust.alpha += 10;
-
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.4f * dust.scale);
-
-            if (dust.alpha > 255)
-                dust.active = false;
-
-            return false;
-        }
-    }
     class CloudstrikeCircleDust : ModDust
     {
         public override bool Autoload(ref string name, ref string texture)
@@ -498,6 +454,53 @@ namespace StarlightRiver.Content.Items.Dungeon
             if (dust.alpha > 255)
                 dust.active = false;
 
+            return false;
+        }
+    }
+
+    class CloudstrikeGlowLine : ModDust
+    {
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = AssetDirectory.VitricBoss + "RoarLine";
+            return true;
+        }
+
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return dust.color * MathHelper.Min(1, dust.fadeIn / 20f);
+        }
+
+        public override void OnSpawn(Dust dust)
+        {
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.frame = new Rectangle(0, 0, 8, 128);
+
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+        }
+
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(4, 64) * dust.scale;
+                dust.customData = 1;
+            }
+
+            dust.rotation = dust.velocity.ToRotation() + 1.57f;
+            dust.position += dust.velocity;
+
+            dust.velocity *= 0.98f;
+            dust.color *= 0.95f;
+
+            dust.shader.UseColor(dust.color);
+            dust.fadeIn+= 2;
+
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
+
+            if (dust.fadeIn > 60)
+                dust.active = false;
             return false;
         }
     }
