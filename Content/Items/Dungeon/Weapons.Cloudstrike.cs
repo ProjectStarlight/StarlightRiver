@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private void CalculateTarget()
         {
-            var temptarget = Main.npc.Where(x => x.active && !x.townNPC/* && !x.immortal && !x.dontTakeDamage && !x.friendly*/ && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
+            var temptarget = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && !hitTargets.Contains(x) && x.Distance(projectile.Center) < reach).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
 
             if (temptarget != default && Main.rand.NextBool((int)Math.Sqrt(temptarget.Distance(projectile.Center)) + 1))
                 target = temptarget;
