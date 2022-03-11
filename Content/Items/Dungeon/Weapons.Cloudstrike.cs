@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 if (Main.rand.Next(40 * (projectile.extraUpdates + 1)) == 0)
                 {
                     Vector2 prevPos = k == 1 ? startPoint : cache2[k - 1];
-                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<CloudstrikeGlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (power / 30f), 0.5f);
+                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<CloudstrikeGlowLine >(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (power / 30f), 0.5f);
                 }
             }
 
@@ -229,10 +229,19 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             CalculateVelocity();
 
-            if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature))
+            if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature)) //damaging, large branches
             {
                 Projectile proj = Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), projectile.damage, projectile.knockBack, player.whoAmI, charge, 1);
                 proj.timeLeft = (int)((projectile.timeLeft - 25) * 0.75f) + 25;
+
+                var modProj = proj.modProjectile as CloudstrikeShot;
+                modProj.mousePos = proj.Center + (proj.velocity * 30);
+            }
+
+            if (Main.rand.NextBool(10 + (int)Math.Sqrt((Cloudstrike.MAXCHARGE + 2) - charge)) && !(branch || miniature)) //small, non damaging branches
+            {
+                Projectile proj = Projectile.NewProjectileDirect(projectile.Center, projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, player.whoAmI, 1, 1);
+                proj.timeLeft = Main.rand.Next(40,70);
 
                 var modProj = proj.modProjectile as CloudstrikeShot;
                 modProj.mousePos = proj.Center + (proj.velocity * 30);
@@ -313,7 +322,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = projectile.Center + oldVel;
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(chargeSqrt, 0.7f) * Main.rand.NextFloat(0.75f, 1.25f), factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(chargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
             {
                 float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
                 return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
