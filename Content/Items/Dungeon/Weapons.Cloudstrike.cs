@@ -355,6 +355,9 @@ namespace StarlightRiver.Content.Items.Dungeon
             if (point1 == Vector2.Zero)
                 return;
 
+            if (branch)
+                return;
+
             var tex = ModContent.GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
 
             var color = new Color(200, 230, 255) * fade;
