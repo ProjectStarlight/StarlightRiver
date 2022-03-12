@@ -400,7 +400,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             var color = new Color(200, 230, 255) * fade;
             for (int i = 0; i < chargeSqrt; i++)
-                sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 4, charge / (float)Cloudstrike.MAXCHARGE) * ((branch || miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+                sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 2, chargeSqrt / (float)Math.Sqrt(Cloudstrike.MAXCHARGE)) * ((branch || miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
         }
 
         private void CalculateTarget()
