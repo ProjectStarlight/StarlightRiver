@@ -23,6 +23,8 @@ namespace StarlightRiver.Content.Items.Dungeon
         private int charge = 1; //How much charge the weapon has (out of MAXCHARGE)
 
         private float chargeRatio => charge / (float)MAXCHARGE;
+
+        private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
 
         public override void SetStaticDefaults()
@@ -62,6 +64,18 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
+            if (charge == 1)
+            {
+                //Regular channel attack sound here
+            }
+            else if (charge == MAXCHARGE)
+            {
+                //Full charge attack sound here
+            }
+            else
+            {
+                //staggered attack sound here
+            }
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
             Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
             Projectile.NewProjectile(pos, new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
@@ -77,15 +91,28 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override void HoldItem(Player player)
         {
+            counter++;
             if (charge < MAXCHARGE && !player.channel)
             {
                 charge++;
                 if (charge == MAXCHARGE)
                 {
+                    //REACHING FULL CHARGE SOUND HERE
                     for (int i = 0; i < 12; i++)
                         CreateStatic(charge, player, true);
                 }
+                
+                if (counter % 10 == 0) //change the 10 to the number of ticks you want the sound to loop on
+                {
+                    //CHARGING SOUND HERE
+                }
             }
+
+            if (charge == MAXCHARGE && counter % 10 == 0) //change the 10 to the number of ticks you want the sound to loop on
+            {
+                //CHARGED IDLE SOUND HERE
+            }
+
             if (Main.rand.NextBool((int)(50 / (float)Math.Sqrt(charge))) && !player.channel)
             {
                 CreateStatic(charge, player);
