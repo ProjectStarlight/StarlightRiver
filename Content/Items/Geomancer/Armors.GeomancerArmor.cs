@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Geomancer hood");
+            DisplayName.SetDefault("Geomancer's Hood");
             //Tooltip.SetDefault("15% increased ranged critical strike damage");
         }
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Geomancer Robe");
+            DisplayName.SetDefault("Geomancer's Cowl");
             //Tooltip.SetDefault("10% increased ranged damage");
         }
 
@@ -112,7 +112,10 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void UpdateArmorSet(Player player)
         {
-            player.setBonus = "egshels update this lol";
+            player.setBonus = "Kills ands critical strikes have a chance to drop magic gems\n" +
+            "Each gem activates a different effect when picked up\n" +
+            "Obtaining another gem stores the previous effect\n" +
+            "Collecting all breifly activates every effect at once";
 
             player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
         }
@@ -125,7 +128,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Geomancer Pants");
+            DisplayName.SetDefault("Geomancer's Greaves");
             //Tooltip.SetDefault("up to 20% ranged critical strike damage based on speed");
         }
 
