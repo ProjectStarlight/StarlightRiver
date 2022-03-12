@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.SpaceEvent;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,7 +20,7 @@ namespace StarlightRiver.Content.Items.Dungeon
     {
         public const int MAXCHARGE = 120;
 
-        private int charge; //How much charge the weapon has (out of MAXCHARGE)
+        private int charge = 1; //How much charge the weapon has (out of MAXCHARGE)
 
         private float chargeRatio => charge / (float)MAXCHARGE;
         public override string Texture => AssetDirectory.DungeonItem + Name;
@@ -116,24 +117,36 @@ namespace StarlightRiver.Content.Items.Dungeon
             flat = (int)((MathHelper.Lerp(25, 100, chargeRatio) - 45) * player.magicDamage);
         }
 
+        public override void AddRecipes()
+        {
+            ModRecipe recipe = new ModRecipe(mod);
+            recipe.AddIngredient(ModContent.ItemType<InertStaff>(), 1);
+            recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
+            recipe.AddTile(TileID.Anvils);
+
+            recipe.SetResult(this);
+
+            recipe.AddRecipe();
+        }
+
     }
 
     public class CloudstrikeShot : ModProjectile, IDrawAdditive, IDrawPrimitive
     {
         public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
 
-        public bool followPlayer = false;
+        public bool followPlayer = false; //Whether or not the bolt stays on the player if they move/rotate their mouse
 
-        public float thickness = 1;
+        public float thickness = 1; //Thickness of the trail
 
-        public int velocityMult = 10;
+        public int velocityMult = 10; //How fast the bolt travels
 
         public Color baseColor = new Color(200, 230, 255);
         public Color endColor = Color.Purple;
 
         private bool initialized = false;
 
-        private bool reachedMouse = false;
+        private bool reachedMouse = false; //Whether or not the bolt has gone further past the player than the mouse
 
         private List<Vector2> cache;
         private List<Vector2> cache2;
@@ -147,11 +160,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         private Vector2 mousePos = Vector2.Zero;
 
-        private float curve;
+        private float curve; //How much the bolt curves toward it's target position
 
-        private Vector2 oldVel = Vector2.Zero;
+        private Vector2 oldVel = Vector2.Zero; //Velocity of the projectile before it stops. Useful for predicting primitive positions
 
-        private Vector2 oldPlayerPos = Vector2.Zero;
+        private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the player
         private float oldRotation = 0f;
 
         private float charge => projectile.ai[0];
