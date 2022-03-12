@@ -117,6 +117,8 @@ namespace StarlightRiver.Content.Items.Dungeon
     {
         public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
 
+        public bool followPlayer = false;
+
         public float thickness = 1;
 
         public int velocityMult = 10;
@@ -143,6 +145,9 @@ namespace StarlightRiver.Content.Items.Dungeon
         private float curve;
 
         private Vector2 oldVel = Vector2.Zero;
+
+        private Vector2 oldPlayerPos = Vector2.Zero;
+        private float oldRotation = 0f;
 
         private float charge => projectile.ai[0];
 
@@ -191,6 +196,13 @@ namespace StarlightRiver.Content.Items.Dungeon
                     projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 20) + 45;
                     mousePos = Main.MouseWorld;
                 }
+
+                if (charge < 10 && !(branch || miniature))
+                    followPlayer = true;
+
+                oldRotation = (Main.MouseWorld - player.Center).ToRotation();
+                oldPlayerPos = player.Center;
+
             }
 
             if (Main.netMode != NetmodeID.Server && (projectile.timeLeft % 4 == 0 || projectile.timeLeft <= 25))
@@ -236,6 +248,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
                 var modProj = proj.modProjectile as CloudstrikeShot;
                 modProj.mousePos = proj.Center + (proj.velocity * 30);
+                modProj.followPlayer = followPlayer;
             }
 
             if (Main.rand.NextBool(10 + (int)Math.Sqrt((Cloudstrike.MAXCHARGE + 2) - charge)) && !(branch || miniature)) //small, non damaging branches
@@ -245,6 +258,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
                 var modProj = proj.modProjectile as CloudstrikeShot;
                 modProj.mousePos = proj.Center + (proj.velocity * 30);
+                modProj.followPlayer = followPlayer;
             }
         }
         public override bool? CanHitNPC(NPC target)
@@ -333,6 +347,22 @@ namespace StarlightRiver.Content.Items.Dungeon
         }
         public void DrawPrimitives()
         {
+            if (followPlayer)
+            {
+                UpdatePosition();
+                UpdateRotation();
+            }
+            if (trail != null)
+            {
+                trail.Positions = cache.ToArray();
+                trail.NextPosition = projectile.Center + oldVel;
+            }
+
+            if (trail2 != null)
+            {
+                trail2.Positions = cache2.ToArray();
+                trail2.NextPosition = projectile.Center;
+            }
             Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
@@ -350,6 +380,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public void DrawAdditive(SpriteBatch sb)
         {
+            if (followPlayer)
+            {
+                UpdatePosition();
+                UpdateRotation();
+            }
+
             var point1 = startPoint;
 
             if (point1 == Vector2.Zero)
@@ -426,6 +462,60 @@ namespace StarlightRiver.Content.Items.Dungeon
                 lerper /= 3;
             float rot = MathHelper.Lerp(projectile.velocity.ToRotation(), projectile.velocity.ToRotation() + rotDifference, lerper);
             projectile.velocity = rot.ToRotationVector2() * velocityMult;
+        }
+
+        private void UpdatePosition()
+        {
+            if (!followPlayer)
+                return;
+            Vector2 center = player.Center;
+            if (oldPlayerPos != center)
+            {
+                Vector2 offset = center - oldPlayerPos;
+                oldPlayerPos = center;
+
+                startPoint += offset;
+                projectile.Center += offset;
+                if (cache != null)
+                {
+                    for (int i = 0; i < cache.Count; i++)
+                        cache[i] += offset;
+                }
+
+                if (cache2 != null)
+                {
+                    for (int i = 0; i < cache2.Count; i++)
+                        cache2[i] += offset;
+                }
+            }
+        }
+
+        private void UpdateRotation()
+        {
+            if (!followPlayer)
+                return;
+            float rot = (Main.MouseWorld - player.Center).ToRotation();
+            if (rot != oldRotation)
+            {
+                float difference = rot - oldRotation;
+
+                startPoint = (startPoint - player.Center).RotatedBy(difference) + player.Center;
+                projectile.Center = (projectile.Center - player.Center).RotatedBy(difference) + player.Center;
+
+                if (cache != null)
+                {
+                    for (int i = 0; i < cache.Count; i++)
+                        cache[i] = (cache[i] - player.Center).RotatedBy(difference) + player.Center;
+                }
+
+                if (cache2 != null)
+                {
+                    for (int i = 0; i < cache2.Count; i++)
+                        cache2[i] = (cache2[i] - player.Center).RotatedBy(difference) + player.Center;
+                }
+
+                oldRotation = rot;
+            }
         }
     }
     class CloudstrikeCircleDust : ModDust
