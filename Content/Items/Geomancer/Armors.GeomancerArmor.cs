@@ -153,12 +153,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             DisplayName.SetDefault("Effects of different gems:");
             Tooltip.SetDefault(
-            "Diamond does a funny \n" +
-            "Topaz does a funny \n" + 
-            "Emerald does a funny \n" +
-            "Sapphire does a funny \n" + 
-            "Amethyst does a funny \n" + 
-            "Ruby does a funny");
+            "Diamond: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
+            "Topaz: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier \n" +
+            "Emerald: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart \n" +
+            "Sapphire: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars \n" + 
+            "Amethyst: All strikes inflict Toxic Amethyst, a stacking poison debuff \n" + 
+            "Ruby: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage");
         }
 
         public override void SetDefaults()
