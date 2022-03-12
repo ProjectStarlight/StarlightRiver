@@ -497,6 +497,9 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             if (!followPlayer)
                 return;
+
+            if (player.itemTime != 1)
+                return;
             float rot = (Main.MouseWorld - player.Center).ToRotation();
             if (rot != oldRotation)
             {
