@@ -89,8 +89,6 @@ namespace StarlightRiver.Content.Items.Dungeon
             {
                 CreateStatic(charge, player);
             }
-
-            item.damage = (int)MathHelper.Lerp(25, 100, chargeRatio);
             base.HoldItem(player);
         }
 
@@ -111,6 +109,11 @@ namespace StarlightRiver.Content.Items.Dungeon
             mp.baseColor = charge == MAXCHARGE ? new Color(200, 230, 255) : Color.Violet;
             if (charge == MAXCHARGE && Main.rand.NextBool(10))
                 mp.baseColor = Color.Cyan;
+        }
+
+        public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
+        {
+            flat = (int)((MathHelper.Lerp(25, 100, chargeRatio) - 45) * player.magicDamage);
         }
 
     }
