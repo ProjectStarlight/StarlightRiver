@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override void SetDefaults()
         {
-            item.damage = 32;
+            item.damage = 45;
             item.useTime = 5;
             item.useAnimation = 5;
             item.useStyle = ItemUseStyleID.HoldingOut;
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 CreateStatic(charge, player);
             }
 
-            item.damage = (int)MathHelper.Lerp(20, 70, chargeRatio);
+            item.damage = (int)MathHelper.Lerp(25, 100, chargeRatio);
             base.HoldItem(player);
         }
 
