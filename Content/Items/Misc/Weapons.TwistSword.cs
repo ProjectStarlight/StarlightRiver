@@ -21,6 +21,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         int timer = 0;
 
+        bool noItemLastFrame = false;
+
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override bool CloneNewInstances => true;
@@ -93,6 +95,25 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void HoldItem(Player player)
         {
+            if (noItemLastFrame && player.whoAmI == Main.myPlayer && !player.noItems && player.channel && CanUseItem(player))
+            {
+                //if the player gets hit by a noItem effect like cursed or forbidden winds dash, the twist sword projectile will die, but if they continue to hold left click through it we want to resummon the twist sword at the end
+                //alteratively we could change the logic to have noitem set player.channel to false so they have to manually reclick once the effect ends but I think this feels more polished
+                bool doesntOwnTwistSwordProj = true;
+                for(int i = 0; i < Main.maxProjectiles; i++)
+                {
+                    Projectile proj = Main.projectile[i];
+                    if(proj.active && proj.owner == player.whoAmI && proj.type == ModContent.ProjectileType<TwistSwordProjectile>())
+                    {
+                        doesntOwnTwistSwordProj = false;
+                        break;
+                    }
+                }
+                if (doesntOwnTwistSwordProj)
+                    UseItem(player);
+            }
+                
+
             if (player.channel && !player.noItems)
             {
                 timer++;
@@ -140,6 +161,8 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (charge > 600)
                 charge = 600;
+
+            noItemLastFrame = player.noItems;
         }
 
         public override void UpdateInventory(Player player)
@@ -221,7 +244,7 @@ namespace StarlightRiver.Content.Items.Misc
             Player player = Main.player[projectile.owner];
 
             if (projectile.ai[1] < 400)
-                projectile.ai[1]++;
+            projectile.ai[1]++;
 
             if (!player.controlJump && projectile.ai[1] > 200)
                 projectile.ai[1] = 200;
