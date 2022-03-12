@@ -28,7 +28,9 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             DisplayName.SetDefault("Cloudstrike");
 
-            Tooltip.SetDefault("Update this later");
+            Tooltip.SetDefault("Accumulate electrical charge while not firing\n" +
+            "Damage and range of your next shot increases with charge\n" +
+            "'Meet this storm of sound and fury, till thunder-clashes fade to silence'");
         }
 
         public override void SetDefaults()
