@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.Items.Dungeon
             item.mana = 100;
             item.shoot = ModContent.ProjectileType<CloudstrikeShot>();
             item.shootSpeed = 10;
-            item.value = Item.sellPrice(0, 1, 0, 0);
-            item.rare = ItemRarityID.Orange;
+            item.value = Item.sellPrice(0, 5, 0, 0);
+            item.rare = ItemRarityID.Green;
             item.autoReuse = true;
             item.channel = true;
             item.noMelee = true;
