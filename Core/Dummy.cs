@@ -27,7 +27,7 @@ namespace StarlightRiver.Core
             Height = height;
         }
 
-        public virtual bool ValidTile(Tile tile) => tile is null || tile.type == ValidType; //the tile is null only where tiles are unloaded in multiplayer. We don't want to kill off dummies on unloaded tiles until tile is known because projectile is recieved MUCH farther than the tiles.
+        public virtual bool ValidTile(Tile tile) => tile is null || (tile.type == ValidType && tile.active()); //the tile is null only where tiles are unloaded in multiplayer. We don't want to kill off dummies on unloaded tiles until tile is known because projectile is recieved MUCH farther than the tiles.
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
 
