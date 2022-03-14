@@ -43,6 +43,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             SetBonus(player);
             Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            player.GetModPlayer<GeomancerPlayer>().timer = 1200;
             return false;
         }
 
@@ -143,7 +144,6 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.TopazStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, player.whoAmI);
                 Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, player.whoAmI, rotation);
                 modPlayer.TopazStored = true;
                 modPlayer.storedGem = StoredGem.Topaz;
