@@ -2,12 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -63,6 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
 						pitch = 1;
 
 					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
+					Main.PlaySound(item.UseSound, player.Center);
 
 					comboState++;
 					comboState %= 4;
@@ -75,7 +78,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class SwordBookProjectile : ModProjectile
+	class SwordBookProjectile : ModProjectile, IDrawPrimitive
 	{
 		public float length;
 		public int comboState;
@@ -84,7 +87,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public float baseAngle;
 		public float holdOut;
 
-		bool flipSprite = false;
+		private bool flipSprite = false;
+		private List<Vector2> cache;
+		private Trail trail;
 
 		public float Progress => 1 - projectile.timeLeft / (float)lifeSpan;
 		public int Direction => (Math.Abs(baseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
@@ -176,11 +181,12 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						projectile.damage += (int)(projectile.damage * 1.5f);
 						projectile.scale += 0.25f;
+						length += length * 0.25f;
 						projectile.timeLeft += 40;
 						lifeSpan += 40;
 					}
 
-					projectile.rotation = baseAngle + (Helpers.Helper.BezierEase(Progress) * 6.28f * Direction);
+					projectile.rotation = baseAngle + Direction + (Helpers.Helper.BezierEase(Progress) * 6.28f * Direction);
 					holdOut = Progress * 32;
 
 					var rot = projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
@@ -188,11 +194,14 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.rand.Next(6) == 0)
 					{
 						var pos = Vector2.Lerp(Owner.Center, Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut), Main.rand.NextFloat());
-						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, new Color(Main.rand.Next(255), Main.rand.Next(255), Main.rand.Next(255)), Main.rand.NextFloat(0.5f, 1));
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, new Color(Main.rand.Next(255), 0, Main.rand.Next(255)), Main.rand.NextFloat(0.5f, 1));
 					}
 
 					break;
 			}
+
+			ManageCaches();
+			ManageTrail();
 		}
 
 		public float SwingEase(float progress)
@@ -224,6 +233,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 			Owner.GetModPlayer<StarlightPlayer>().Shake += 3;
+
+			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * projectile.knockBack * 2 * target.knockBackResist;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
@@ -235,6 +246,63 @@ namespace StarlightRiver.Content.Items.Misc
 
 			spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, projectile.scale, effects, 0);
 			return false;
+		}
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 50; i++)
+				{
+					cache.Add(Vector2.UnitX.RotatedBy(projectile.rotation - Math.PI / 4f) * length * 0.75f);
+				}
+			}
+
+			cache.Add(Vector2.UnitX.RotatedBy(projectile.rotation - Math.PI / 4f) * length * 0.75f);
+
+			while (cache.Count > 50)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+			{
+				if (factor.X >= 0.98f)
+					return Color.White * 0;
+
+				return new Color(150 + (int)(Math.Sin(factor.X * 3.14f + 2) * 100), 150 + (int)(Math.Sin(factor.X * 3.14f + 4) * 100), 150 + (int)(Math.Sin(factor.X * 3.14f) * 100)) * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
+			});
+
+			Vector2[] realCache = new Vector2[50];
+
+			for(int k = 0; k < 50; k++)
+			{
+				realCache[k] = cache[k] + Owner.Center;
+			}
+
+			trail.Positions = realCache;
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+			effect.Parameters["repeats"].SetValue(8f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
+
+			trail?.Render(effect);
 		}
 	}
 }
