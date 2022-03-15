@@ -48,10 +48,11 @@ namespace StarlightRiver.Content.Items.Geomancer
             item.rare = 3;
         }
 
-        /*public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player player)
 		{
-            player.GetModPlayer<CritMultiPlayer>().RangedCritMult += 0.15f;
-		}*/
+            if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+                player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
+        }
 
         private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
         {

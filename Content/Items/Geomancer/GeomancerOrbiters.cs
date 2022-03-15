@@ -128,8 +128,16 @@ namespace StarlightRiver.Content.Items.Geomancer
         protected override void SafeAI()
         {
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+
             if (modPlayer.storedGem == StoredGem.Amethyst && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.AmethystStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else
@@ -148,6 +156,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Ruby && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.RubyStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else
@@ -165,6 +180,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Sapphire && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.SapphireStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else
@@ -182,6 +204,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Emerald && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.EmeraldStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else
@@ -200,6 +229,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Topaz && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.TopazStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else
@@ -211,8 +247,6 @@ namespace StarlightRiver.Content.Items.Geomancer
         protected override void Destroy()
         {
             Player player = Main.player[projectile.owner];
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0)
-                Projectile.NewProjectile(Main.player[projectile.owner].Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, projectile.owner);
         }
     }
 
@@ -225,6 +259,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Diamond && !released)
             {
+                if (modPlayer.timer == 1)
+                {
+                    modPlayer.DiamondStored = false;
+                    projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    modPlayer.timer = 1200;
+                }
                 projectile.scale = bigScale;
             }
             else

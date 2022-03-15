@@ -22,6 +22,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 {
     public class EmeraldHeart : ModItem
     {
+        int timer = 900;
+
         public override string Texture => AssetDirectory.GeomancerItem + Name;
 
         public override void SetStaticDefaults()
@@ -43,6 +45,44 @@ namespace StarlightRiver.Content.Items.Geomancer
             int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 5);
             player.HealEffect(5);
             player.statLife += healAmount;
+
+            Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            return false;
+        }
+
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+        {
+            timer--;
+            if (timer <= 0)
+                item.active = false;
+        }
+
+        public override Color? GetAlpha(Color lightColor) => new Color(200, 200, 200, 100);
+    }
+
+    public class SapphireStar : ModItem
+    {
+        public override string Texture => AssetDirectory.GeomancerItem + Name;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Sapphire Star");
+            Tooltip.SetDefault("You shouldn't see this");
+        }
+
+        public override void SetDefaults()
+        {
+            item.width = 24;
+            item.height = 24;
+            item.maxStack = 1;
+        }
+
+        public override bool ItemSpace(Player player) => true;
+        public override bool OnPickup(Player player)
+        {
+            int healAmount = (int)MathHelper.Min(player.statManaMax2 - player.statMana, 5);
+            player.ManaEffect(20);
+            player.statMana += healAmount;
 
             Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
             return false;
@@ -102,7 +142,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         private const int EXPLOSIONTIME = 2;
 
-        public int shieldLife = 100;
+        private bool initialized = false;
+
+        private Player owner => Main.player[projectile.owner];
+
+        private ShieldPlayer shieldPlayer => owner.GetModPlayer<ShieldPlayer>();
+
+        public int shieldLife => 100 + (shieldPlayer.Shield - shieldPlayer.MaxShield);
 
         public float shieldSpring = 0;
 
@@ -126,6 +172,9 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void AI()
         {
             Player player = Main.player[projectile.owner];
+
+            if (shieldLife < 0 && projectile.timeLeft > EXPLOSIONTIME)
+                projectile.timeLeft = EXPLOSIONTIME;
 
             Vector2 direction = Main.MouseWorld - player.Center;
             direction.Normalize();
@@ -152,20 +201,21 @@ namespace StarlightRiver.Content.Items.Geomancer
 
                     if (proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(projectile.Hitbox))
                     {
-                        var diff = proj.damage - shieldLife;
+                        var diff = (proj.damage / 2) - shieldLife;
 
                         if (diff <= 0)
                         {
                             shieldSpring = 1;
                             proj.penetrate -= 1;
                             proj.friendly = true;
-                            shieldLife -= proj.damage;
-                            CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage);
+                            player.GetModPlayer<ShieldPlayer>().Shield -= proj.damage / 2;
+                            CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage / 2);
                         }
                         else
                         {
-                            CombatText.NewText(projectile.Hitbox, Color.Yellow, shieldLife);
+                            CombatText.NewText(projectile.Hitbox, Color.Yellow, proj.damage / 2);
                             proj.damage -= (int)shieldLife;
+                            shieldPlayer.Shield = shieldPlayer.MaxShield - 100;
                             projectile.timeLeft = EXPLOSIONTIME;
                             return;
                         }
@@ -201,13 +251,17 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             hitDirection = Math.Sign(projectile.Center.X - Main.player[projectile.owner].Center.X);
+            Player player = Main.player[projectile.owner];
 
-            shieldLife -= target.damage;
+            player.GetModPlayer<ShieldPlayer>().Shield -= target.damage;
             shieldSpring = 1;
             CombatText.NewText(projectile.Hitbox, Color.Yellow, target.damage);
 
             if (shieldLife <= 0)
+            {
+                shieldPlayer.Shield = shieldPlayer.MaxShield - 100;
                 projectile.timeLeft = EXPLOSIONTIME;
+            }
         }
 
         public override void Kill(int timeLeft)
@@ -379,8 +433,20 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             NPC target = Main.npc[(int)projectile.ai[0]];
 
-            if (target.active && target.life > 0 && !lockedOn)
-                direction = Vector2.Normalize(target.Center - projectile.Center);
+            if (!lockedOn)
+            {
+                if (target.active && target.life > 0)
+                    direction = Vector2.Normalize(target.Center - projectile.Center);
+                else
+                {
+                    var temptarget = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly).OrderBy(x => x.Distance(projectile.Center)).FirstOrDefault();
+                    if (temptarget != default)
+                    {
+                        projectile.ai[0] = temptarget.whoAmI;
+                        target = temptarget;
+                    }
+                }
+            }
 
             if (!launched)
             {
