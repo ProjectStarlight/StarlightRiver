@@ -14,43 +14,6 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	internal static class SwordBookHelper
-    {
-		public static Dictionary<int, Color> AverageColor = new Dictionary<int, Color>();
-
-		public static void AddColor(int type)
-        {
-			Texture2D tex = Main.itemTexture[type];
-			int numPixels = 0;
-
-			int redTotal = 0;
-			int greenTotal = 0;
-			int blueTotal = 0;
-
-			Color[] data = new Color[tex.Width * tex.Height];
-			tex.GetData(data);
-
-			for (int i = 0; i < tex.Width; i += 2)
-			{
-				for (int j = 0; j < tex.Height; j += 2)
-				{
-					Color alpha = data[j * tex.Width + i];
-					if (alpha != Color.Transparent)
-                    {
-						numPixels++;
-
-						redTotal += alpha.R;
-						greenTotal += alpha.G;
-						blueTotal += alpha.B;
-                    }
-				}
-			}
-			if (numPixels == 0)
-				AverageColor.Add(type, Color.White);
-			else
-				AverageColor.Add(type, new Color(redTotal / numPixels, greenTotal / numPixels, blueTotal / numPixels));
-		}
-    }
 	class SwordBook : SmartAccessory
 	{
 		public int comboState;
@@ -88,9 +51,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (proj.modProjectile is SwordBookProjectile)
 					{
 						var modProj = proj.modProjectile as SwordBookProjectile;
-						if (!SwordBookHelper.AverageColor.ContainsKey(item.type))
-							SwordBookHelper.AddColor(item.type);
-						modProj.trailColor = SwordBookHelper.AverageColor[item.type];
+						modProj.trailColor = ItemColorUtility.GetColor(item.type);
 						modProj.texture = Main.itemTexture[item.type];
 						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
 						modProj.lifeSpan = item.useAnimation * 4;
