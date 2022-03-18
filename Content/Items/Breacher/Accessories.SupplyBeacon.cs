@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Supply Beacon");
-			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop buff either damage, regeneration, or defense \n10 second cooldown");
+			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to buff either damage, regeneration, or defense \n10 second cooldown");
 
 		}
 
