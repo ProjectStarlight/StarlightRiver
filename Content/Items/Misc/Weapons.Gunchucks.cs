@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 direction = newRotation.ToRotationVector2();
 				for (int i = 0; i < 5; i++)
                 {
-					Projectile.NewProjectile(projectile.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, projectile.damage, projectile.knockBack, Owner.whoAmI);
+					Projectile.NewProjectile(projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, projectile.damage, projectile.knockBack, Owner.whoAmI);
                 }
 				
 				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, projectile.Center);
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					var dustDirection = direction.RotatedByRandom(spread);
 
-					Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+					Dust.NewDustPerfect(projectile.Center + (direction * 25), ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
 			}
 
