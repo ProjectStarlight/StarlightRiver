@@ -71,10 +71,14 @@ namespace StarlightRiver.Content.Items.Dungeon
             else if (charge == MAXCHARGE)
             {
                 //Full charge attack sound here
+                Helper.PlayPitched("Magic/LightningExplode", 0.2f, 0f, player.Center);
             }
             else
             {
                 //staggered attack sound here
+                
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), player.Center);
+                //MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
             }
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
             Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
