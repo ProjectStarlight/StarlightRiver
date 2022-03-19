@@ -44,6 +44,7 @@ namespace StarlightRiver.Content.GUI
         UIList options = new UIList();
         InfusionMakerSlot inSlot = new InfusionMakerSlot();
         UIImageButton craftButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "BackButton"));
+        UIImageButton exitButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "ExitButton"));
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -70,7 +71,8 @@ namespace StarlightRiver.Content.GUI
         {
             setElement(inSlot, new Vector2(82, 220), new Vector2(32, 32));
             setElement(options, new Vector2(206, 16), new Vector2(180, 390));
-            setElement(craftButton, new Vector2(400, 16), new Vector2(32, 32));
+            setElement(craftButton, new Vector2(394, 36), new Vector2(32, 32));
+            setElement(exitButton, new Vector2(390, 0), new Vector2(32, 32));
         }
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -206,12 +208,12 @@ namespace StarlightRiver.Content.GUI
             Append(options);
             craftButton.OnClick += Craft;
             Append(craftButton);
+            exitButton.OnClick += (a, b) => visible = false;
+            Append(exitButton);                     
         }
 
         private void Craft(UIMouseEvent evt, UIElement listeningElement)
         {
-            //previewPlayer.LoadFromPath(ModLoader.ModPath + "/TestGif.gif");
-
             if (selected is null) return;
 
             Main.PlaySound(SoundID.DD2_DarkMageCastHeal);
