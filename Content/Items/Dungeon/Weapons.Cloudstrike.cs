@@ -70,6 +70,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             }
             else if (charge == MAXCHARGE)
             {
+                damage = (int)(damage * 1.5f);
                 //Full charge attack sound here
                 Helper.PlayPitched("Magic/LightningExplode", 0.2f, 0f, player.Center);
             }
@@ -244,6 +245,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 {
                     projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 20) + 45;
                     mousePos = Main.MouseWorld;
+                    projectile.penetrate = 4 + (int)(charge / 10);
                 }
 
                 if (charge < 10 && !(branch || miniature))
@@ -251,7 +253,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
                 oldRotation = (Main.MouseWorld - player.Center).ToRotation();
                 oldPlayerPos = player.Center;
-
             }
 
             if (Main.netMode != NetmodeID.Server && (projectile.timeLeft % 4 == 0 || projectile.timeLeft <= 25))
