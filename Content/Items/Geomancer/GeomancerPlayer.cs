@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
             {
-                if (Main.rand.Next((10 / player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) == 0)
+                if (Main.rand.Next(Math.Max(((10 / player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
                 {
                     Projectile.NewProjectile(
                         target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                         player.whoAmI,
                         target.GetGlobalNPC<GeoNPC>().amethystDebuff,
                         target.whoAmI);
-                    target.GetGlobalNPC<GeoNPC>().amethystDebuff += 50;
+                    target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
                 }
             }
         }
