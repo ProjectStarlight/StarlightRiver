@@ -22,8 +22,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunchucks");
-			Tooltip.SetDefault("Update later");
-
 		}
 
 		public override void SetDefaults()
