@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
@@ -16,6 +17,7 @@ namespace StarlightRiver.Content.GUI
 
         public static Ability ActiveAbility;
         public static bool ShouldReset = false;
+        public static Dictionary<Type, Vector2> abilityIconPositions = new Dictionary<Type, Vector2>(); //to easily communicate ability icon positions to other UI
 
         private void AddAbility(Ability ability, Vector2 off)
         {
@@ -25,6 +27,8 @@ namespace StarlightRiver.Content.GUI
             element.Width.Set(32, 0);
             element.Height.Set(32, 0);
             Append(element);
+
+            abilityIconPositions.Add(ability.GetType(), new Vector2(off.X, off.Y));
         }
 
         public override void Update(GameTime gameTime)

@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             item.width = 20;
             item.height = 14;
             item.rare = ItemRarityID.Green;
+
+            color = new Color(100, 200, 250);
         }
 
         public override void OnActivate()

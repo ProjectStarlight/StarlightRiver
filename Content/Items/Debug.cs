@@ -43,9 +43,7 @@ namespace StarlightRiver.Content.Items
 
         public override bool UseItem(Player player)
         {
-            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 0;
-            return true;
-
+            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
             InfusionMaker.visible = !InfusionMaker.visible;
             return true;
 
@@ -134,7 +132,6 @@ namespace StarlightRiver.Content.Items
 
             spriteBatch.Draw(Main.magicPixel, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
-
         }
 	}
 

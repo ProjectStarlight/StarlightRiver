@@ -24,6 +24,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             item.width = 20;
             item.height = 14;
             item.rare = ItemRarityID.Green;
+
+            color = new Color(200, 200, 220);
         }
 
         private const int maxTime = 4;

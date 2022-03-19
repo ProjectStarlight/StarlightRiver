@@ -19,13 +19,17 @@ namespace StarlightRiver.Content.GUI
 
         public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax != 0 && Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
+        public static int animationProgress = 20;
+        public static Color animationColor;
+
         private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
         private readonly UIElement infusionElement = new UIElement();
+        public static ParticleSystem linkParticles = new ParticleSystem("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
 
-        /// <summary>
-        /// Returns a copy of the internal slots array.
-        /// </summary>
-        public InfusionSlot[] GetInfusionSlots() => slots.ToArray();
+		/// <summary>
+		/// Returns a copy of the internal slots array.
+		/// </summary>
+		public InfusionSlot[] GetInfusionSlots() => slots.ToArray();
 
         internal const int InfusionSlots = 3;
 
@@ -35,16 +39,6 @@ namespace StarlightRiver.Content.GUI
             // The texture is centered at 100, 300 so its top-left is 68, 272
             // The top slot's top-left corner is at 20, 4 on the texture
             // So the top-left slot should be positioned at 88, 276 in screenspace. (Add top-left of texture and top-left corner of top slot)
-
-            // Hey, it's Ariam.
-            // I decided to make this into a UIElement. I'll leave the previous stuff commented out, as I don't know what a lot of it is trying to do.
-            // If I did anything wrong, feel free to correct it.
-            /* Editor's Notes:
-             * Made a UIElement out of the infusion thingy, as mentioned above.
-             * Added a kind of redundant static method for returning if conditions aren't true.
-             * Ignored stuff I didn't know about - Scalie originally made this document, so there should be a reason for it?
-             * I initially tried to change the slots, but eh. It isn't very worth it.
-             */
 
             infusionElement.Width.Set(64, 0);
             infusionElement.Height.Set(58, 0);
@@ -79,6 +73,13 @@ namespace StarlightRiver.Content.GUI
         internal static bool ReturnConditions()
             => Main.InReforgeMenu;
 
+        private static void UpdateLinkDelegate(Particle particle)
+        {
+            particle.Position += Vector2.Normalize(particle.StoredPosition - particle.Position);
+            particle.Alpha = (float)Math.Sin(particle.Timer / particle.Velocity.X * 3.14f);
+            particle.Timer--;
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (ReturnConditions())
@@ -86,14 +87,30 @@ namespace StarlightRiver.Content.GUI
 
             var mp = Main.LocalPlayer.GetHandler();
 
+            if (animationProgress < 40)
+                animationProgress++;
+
             if (mp.InfusionLimit > 0)
             {
                 Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/InfusionFrame");
                 Rectangle source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
-                spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels, infusionElement.Top.Pixels), source, Color.White);
+                spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), source, Color.White);
+
+                Texture2D textureGlow = GetTexture("StarlightRiver/Assets/GUI/InfusionFrameFlash");
+                Rectangle sourceGlow = new Rectangle(60 * (mp.InfusionLimit - 1), (int)(animationProgress / 4f) * 56, 60, 56);
+                spriteBatch.Draw(textureGlow, new Vector2(infusionElement.Left.Pixels + 6, infusionElement.Top.Pixels), sourceGlow, animationColor * (1 - animationProgress / 40f));
             }
 
             base.Draw(spriteBatch);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+
+            linkParticles.DrawParticles(spriteBatch);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+
             RemoveAllChildren();
             Initialize();
             Recalculate();
@@ -128,6 +145,24 @@ namespace StarlightRiver.Content.GUI
             //Draws the slot
             else if (equipped != null)
             {
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+
+                var glowTex = GetTexture("StarlightRiver/Assets/Abilities/HexGlow");
+                var sin = 0.75f + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.25f;
+                spriteBatch.Draw(glowTex, GetDimensions().Center(), null, equipped.color * sin, 0, glowTex.Size() / 2, 1.2f, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+
+                if (Main.rand.Next(5) == 0)
+                {
+                    var targetPos = Collection.abilityIconPositions.ContainsKey(equipped.AbilityType) ? Collection.abilityIconPositions[equipped.AbilityType] - Vector2.One * 8 : Vector2.Zero;
+                    var startPos = GetDimensions().Center() + new Vector2(-6, -6);
+                    var dist = Vector2.Distance(targetPos, startPos);
+                    Infusion.linkParticles.AddParticle(new Particle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos));
+                }
+
                 //Draws the item itself
                 equipped.Draw(spriteBatch, GetInnerDimensions().Center() + Vector2.UnitY, 1, false);
 
@@ -199,6 +234,9 @@ namespace StarlightRiver.Content.GUI
                 if (occupant == null) Main.mouseItem.TurnToAir();  //if nothing is equipped, equip the held item
                 else Main.mouseItem = occupant.item; //if something is equipped, swap that for the held item
 
+                Infusion.animationProgress = 0;
+                Infusion.animationColor = (item as InfusionItem).color;
+                Helpers.Helper.PlayPitched("Magic/Shadow2", 1, 0);
                 Main.PlaySound(SoundID.Grab);
             }
 
