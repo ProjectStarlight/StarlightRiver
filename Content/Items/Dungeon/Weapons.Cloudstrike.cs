@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 
                 if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
                 {
-                    Helper.PlayPitched("Magic/LightningChargeShort", 0.2f, MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
+                    Helper.PlayPitched("Magic/LightningChargeShort", (charge / 720f), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
                 }
 
             }
