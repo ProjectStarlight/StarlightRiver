@@ -229,6 +229,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             projectile.extraUpdates = 14;
             projectile.penetrate = -1;
             projectile.hide = true;
+            projectile.usesLocalNPCImmunity = true;
         }
 
         public override void SetStaticDefaults()
@@ -315,7 +316,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         }
         public override bool? CanHitNPC(NPC target)
         {
-            if (projectile.timeLeft < 25)
+            if (projectile.timeLeft < 25 || hitTargets.Contains(target))
                 return false;
             return base.CanHitNPC(target);
         }
@@ -329,6 +330,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             for (int j = 0; j < 6; j++)
                 Dust.NewDustPerfect(projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 3, 0, default, (float)Math.Pow(chargeSqrt, 0.3f) * 0.3f);
+
+            projectile.localNPCImmunity[target.whoAmI] = 2;
+            target.immune[projectile.owner] = 2;
             base.OnHitNPC(target, damage, knockback, crit);
         }
 
