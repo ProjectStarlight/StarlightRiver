@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             if (charge == 1)
             {
-                //Regular channel attack sound here
+                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 2)).ToString(), 0.2f, Main.rand.NextFloat(0.3f,0.5f), player.Center);
             }
             else if (charge == MAXCHARGE)
             {
@@ -103,13 +103,14 @@ namespace StarlightRiver.Content.Items.Dungeon
                 if (charge == MAXCHARGE)
                 {
                     //REACHING FULL CHARGE SOUND HERE
+                    Helper.PlayPitched("Magic/LightningChargeReady", 0.2f, 0f, player.Center);
                     for (int i = 0; i < 12; i++)
                         CreateStatic(charge, player, true);
                 }
                 
                 if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
                 {
-                    Helper.PlayPitched("Magic/LightningChargeShort", (charge / 720f), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
+                    Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 400f, 2), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
                 }
 
             }
