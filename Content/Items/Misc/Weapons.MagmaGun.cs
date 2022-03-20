@@ -24,8 +24,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public RenderTarget2D Target { get; protected set; }
 		public RenderTarget2D TmpTarget { get; protected set; }
 
-		public Color outlineColor => new Color(255, 210, 0);
-		public Color insideColor => new Color(255, 120, 20);
+		public Color outlineColor => new Color(255, 255, 100);
+		public Color insideColor2 => new Color(255, 70, 10);
+		public Color insideColor => new Color(255, 190, 30);
 
 		public void Load()
         {
@@ -132,7 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 			magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
 			magmaNoise.Parameters["offset"].SetValue(Main.screenPosition);
 			magmaNoise.Parameters["codedColor"].SetValue(insideColor.ToVector4());
-			magmaNoise.Parameters["newColor"].SetValue(outlineColor.ToVector4());
+			magmaNoise.Parameters["newColor"].SetValue(insideColor2.ToVector4());
 			magmaNoise.Parameters["distort"].SetValue(ModContent.GetTexture(AssetDirectory.Assets + "Noise/ShaderNoiseLooping"));
 
 			AddEffect(spriteBatch, graphicsDevice, Target, magmaNoise);
@@ -253,7 +254,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public float rotationConst;
 
-		public int embedTimer = 2;
+		public int embedTimer = 1;
 		public bool touchingTile = false;
 		public bool stoppedInTile = false;
 		public int timeLeft = 200;
@@ -271,6 +272,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Vector2 Position;
 
 		public Vector2 Velocity;
+		public Vector2 oldVel;
 		public Vector2 Size => new Vector2(width, height);
 		public Vector2 Center
 		{
@@ -328,6 +330,11 @@ namespace StarlightRiver.Content.Items.Misc
 				Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
 			}
 
+			if (timeLeft < 20)
+            {
+				Position -= oldVel * 0.1f;
+            }
+
 			if (!stoppedInTile)
 				Velocity.Y += 0.1f;
 
@@ -355,6 +362,7 @@ namespace StarlightRiver.Content.Items.Misc
 								if (embedTimer < 0)
 								{
 									stoppedInTile = true;
+									oldVel = Velocity;
 									Velocity = Vector2.Zero;
 								}
 							}
@@ -367,9 +375,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void Draw(SpriteBatch spriteBatch, Texture2D tex)
 		{
-			Color color = Color.Orange;
+			Color color = new Color(255, 70, 10);
 			color.A = 0;
-			spriteBatch.Draw(tex, Center - Main.screenPosition, null, color, 0f, tex.Size() / 2, scale * 0.33f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, Center - Main.screenPosition, null, color * 0.425f, 0f, tex.Size() / 2, scale * 0.34f, SpriteEffects.None, 0f);
 		}
 	}
 
