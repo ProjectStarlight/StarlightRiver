@@ -66,19 +66,19 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             if (charge == 1)
             {
-                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 2)).ToString(), 0.2f, Main.rand.NextFloat(0.3f,0.5f), player.Center);
+                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 4)).ToString(), 0.2f, Main.rand.NextFloat(0f,0.2f), player.Center);
             }
             else if (charge == MAXCHARGE)
             {
                 damage = (int)(damage * 1.5f);
                 //Full charge attack sound here
-                Helper.PlayPitched("Magic/LightningExplode", 0.2f, 0f, player.Center);
+                Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
             }
             else
             {
                 //staggered attack sound here
                 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), player.Center);
                 //MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
             }
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
@@ -103,14 +103,14 @@ namespace StarlightRiver.Content.Items.Dungeon
                 if (charge == MAXCHARGE)
                 {
                     //REACHING FULL CHARGE SOUND HERE
-                    Helper.PlayPitched("Magic/LightningChargeReady", 0.2f, 0f, player.Center);
+                    Helper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, player.Center);
                     for (int i = 0; i < 12; i++)
                         CreateStatic(charge, player, true);
                 }
                 
                 if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
                 {
-                    Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 400f, 2), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
+                    Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
                 }
 
             }
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
-            flat = (int)((MathHelper.Lerp(25, 100, chargeRatio) - 45) * player.magicDamage);
+            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * player.magicDamage);
         }
 
         public override void AddRecipes()
