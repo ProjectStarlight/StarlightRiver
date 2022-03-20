@@ -59,16 +59,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Main_OnPreDraw(GameTime obj)
 		{
-			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && CheckForBalls())
-				DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice);
-
 			if (Main.graphics.GraphicsDevice != null)
-            {
+			{
 				if (Main.screenWidth != oldScreenWidth || Main.screenHeight != oldScreenHeight)
-                {
+				{
 					UpdateWindowSize(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 				}
-            }
+			}
+
+			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && CheckForBalls())
+				DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice);
 		}
 
 
@@ -84,13 +84,35 @@ namespace StarlightRiver.Content.Items.Misc
 			borderNoise.CurrentTechnique.Passes[0].Apply();
 
 			foreach (Projectile proj in Main.projectile)
-            {
-				if (proj.modProjectile is MagmaGunProj modProj && proj.active)
-                {
+			{
+				/*if (proj.modProjectile is MagmaGunProj modProj && proj.active)
+				{
 					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + modProj.rotationConst);
 					spriteBatch.Draw(Main.projectileTexture[proj.type], (proj.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, proj.scale / 32f, SpriteEffects.None, 0);
+				}*/
+
+				if (proj.modProjectile is MagmaGunPhantomProj modProj && proj.active)
+                {
+					foreach (MagmaGlob glob in modProj.Globs)
+                    {
+						if (glob.active)
+                        {
+							borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + glob.rotationConst);
+							spriteBatch.Draw(Main.projectileTexture[proj.type], (glob.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, glob.scale / 32f, SpriteEffects.None, 0);
+						}
+                    }
+                }
+			}
+
+
+			foreach (Dust dust in Main.dust)
+			{
+				if (dust.active && dust.type == ModContent.DustType<MagmaGunDust>())
+				{
+					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + dust.rotation);
+					spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.MiscItem + "MagmaGunProj"), (dust.position - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, dust.scale / 64f, SpriteEffects.None, 0);
 				}
-            }
+			}
 
 			spriteBatch.End();
 
@@ -105,6 +127,15 @@ namespace StarlightRiver.Content.Items.Misc
 			metaballEdgeDetection.Parameters["codedColor"].SetValue(insideColor.ToVector4());
 
 			AddEffect(spriteBatch, graphicsDevice, Target, metaballEdgeDetection);
+
+			Effect magmaNoise = Filters.Scene["MagmaNoise"].GetShader().Shader;
+			magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
+			magmaNoise.Parameters["offset"].SetValue(Main.screenPosition);
+			magmaNoise.Parameters["codedColor"].SetValue(insideColor.ToVector4());
+			magmaNoise.Parameters["newColor"].SetValue(outlineColor.ToVector4());
+			magmaNoise.Parameters["distort"].SetValue(ModContent.GetTexture(AssetDirectory.Assets + "Noise/ShaderNoiseLooping"));
+
+			AddEffect(spriteBatch, graphicsDevice, Target, magmaNoise);
 		}
 
 		private void AddEffect(SpriteBatch sB, GraphicsDevice graphicsDevice, RenderTarget2D target, Effect effect)
@@ -134,11 +165,16 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (Projectile proj in Main.projectile)
 			{
-				if (proj.modProjectile is MagmaGunProj modProj && proj.active)
+				if (proj.modProjectile is MagmaGunPhantomProj modProj && proj.active)
 				{
 					return true;
 				}
 			}
+			foreach (Dust dust in Main.dust)
+            {
+				if (dust.active && dust.type == ModContent.DustType<MagmaGunDust>())
+					return true;
+            }
 			return false;
 		}
 
@@ -157,6 +193,8 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
+		private Projectile proj;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magma Gun");
@@ -170,99 +208,288 @@ namespace StarlightRiver.Content.Items.Misc
 			item.ranged = true;
 			item.width = 24;
 			item.height = 24;
-			item.useTime = 2;
+			item.useTime = 1;
 			item.useAnimation = 8;
 			item.useStyle = ItemUseStyleID.HoldingOut;
 			item.noMelee = true;
 			item.knockBack = 0;
 			item.rare = ItemRarityID.Blue;
-			item.shoot = ModContent.ProjectileType<MagmaGunProj>();
+			item.shoot = ModContent.ProjectileType<MagmaGunPhantomProj>();
 			item.shootSpeed = 12f;
 			item.autoReuse = true;
 		}
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.2f);
-			direction *= Main.rand.NextFloat(0.9f, 1.15f);
-			Projectile.NewProjectile(position + (Vector2.Normalize(new Vector2(speedX,speedY)) * 40), direction, type, damage, knockBack, player.whoAmI);
+			for (int i = 0; i < 2; i++)
+			{
+				if (proj != null && proj.active)
+				{
+					proj.damage = damage;
+					var mp = proj.modProjectile as MagmaGunPhantomProj;
+					Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.1f);
+					direction *= Main.rand.NextFloat(0.9f, 1.15f);
+					position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20;
 
-			return true;
+					mp.CreateGlob(position, direction);
+				}
+			}
+			return false;
 		}
 
-		public override Vector2? HoldoutOffset()
+        public override void UpdateInventory(Player player)
+        {
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
+            {
+				proj = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+            }
+        }
+
+        public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-15, 0);
 		}
 	}
-	public class MagmaGunProj : ModProjectile
+	public class MagmaGlob
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		private Player owner => Main.player[projectile.owner];
-
 		public float rotationConst;
 
-		private int embedTimer = 4;
-		private bool touchingTile = false;
-		private bool stoppedInTile = false;
+		public int embedTimer = 2;
+		public bool touchingTile = false;
+		public bool stoppedInTile = false;
+		public int timeLeft = 200;
 
-		private float endScale = 1;
-		private float fadeIn = 0f;
+		public bool stoppedInEnemy = false;
+		public Vector2 enemyOffset = Vector2.Zero;
+		public NPC enemy;
+		public bool friendly = true;
+
+		public float endScale = 1;
+		public float fadeIn = 0f;
+
+		public int width => 18;
+		public int height => 18;
+		public Vector2 Position;
+
+		public Vector2 Velocity;
+		public Vector2 Size => new Vector2(width, height);
+		public Vector2 Center
+		{
+			get
+			{
+				return Position + (Size / 2);
+			}
+			set
+            {
+				Position = value - (Size / 2);
+            }
+		}
+
+		public float scale;
+
+		public bool active = true;
+
+		public MagmaGlob(Vector2 velocity, Vector2 position)
+        {
+			Velocity = velocity;
+			Center = position;
+			endScale = Main.rand.NextFloat(0.7f, 2f) * 0.75f;
+			rotationConst = (float)Main.rand.NextDouble() * 6.28f;
+		}
+
+		public void Update()
+        {
+			timeLeft--;
+
+			if (fadeIn < 1)
+				fadeIn += 0.1f;
+			scale = Math.Min(endScale, endScale * (timeLeft / 20f)) * fadeIn;
+
+			Lighting.AddLight(Center, Color.Orange.ToVector3() * 0.4f * scale);
+			if (!stoppedInEnemy)
+				CheckIfTouchingTiles();
+			else
+            {
+				if (enemy != null && enemy.active)
+				{
+					Center = enemy.Center + enemyOffset;
+					enemy.AddBuff(BuffID.OnFire, 5);
+				}
+				else
+					active = false;
+            }
+
+			if (touchingTile)
+			{
+				embedTimer--;
+			}
+			if (stoppedInTile && Main.rand.NextBool(200))
+			{
+				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
+				Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+			}
+
+			if (!stoppedInTile)
+				Velocity.Y += 0.1f;
+
+			Center += Velocity;
+			if (timeLeft <= 0)
+				active = false;
+        }
+
+		public void CheckIfTouchingTiles()
+        {
+			bool breakOut = false;
+			for (int i = (int)Position.X; i < (int)(Position.X + Size.X) && !breakOut; i += 16)
+            {
+				for (int j = (int)Position.Y; j < (int)(Position.Y + Size.Y) && !breakOut; j += 16)
+				{
+					if (WorldGen.InWorld(i / 16, j / 16))
+					{
+						Tile tile = Main.tile[i / 16, j / 16];
+						if (tile.active() && Main.tileSolid[tile.type])
+						{
+							if (!stoppedInTile)
+							{
+								touchingTile = true;
+								Velocity = Vector2.Normalize(Velocity) * 9;
+								if (embedTimer < 0)
+								{
+									stoppedInTile = true;
+									Velocity = Vector2.Zero;
+								}
+							}
+							breakOut = true;
+						}
+					}
+				}
+			}
+        }
+
+		public void Draw(SpriteBatch spriteBatch, Texture2D tex)
+		{
+			Color color = Color.Orange;
+			color.A = 0;
+			spriteBatch.Draw(tex, Center - Main.screenPosition, null, color, 0f, tex.Size() / 2, scale * 0.33f, SpriteEffects.None, 0f);
+		}
+	}
+
+	public class MagmaGunPhantomProj : ModProjectile
+    {
+		public override string Texture => AssetDirectory.MiscItem + "MagmaGunProj";
+
+		public List<MagmaGlob> Globs = new List<MagmaGlob>();
+
+		private Player owner => Main.player[projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magma Glob");
 		}
+
 		public override void SetDefaults()
 		{
 			projectile.CloneDefaults(ProjectileID.Shuriken);
-			projectile.width = 18;
-			projectile.damage = 0;
-			projectile.height = 18;
+			projectile.width = 2;
+			projectile.height = 2;
 			projectile.ranged = true;
 			projectile.timeLeft = 200;
-			projectile.aiStyle = 14;
 			projectile.friendly = true;
-			endScale = Main.rand.NextFloat(0.7f, 2f);
 			projectile.penetrate = -1;
-			rotationConst = (float)Main.rand.NextDouble() * 6.28f;
 		}
 
         public override void AI()
         {
-			if (fadeIn < 1)
-				fadeIn += 0.1f;
-			projectile.scale = endScale * fadeIn;
+			projectile.timeLeft = 2;
+			projectile.Center = owner.Center;
 
-			Lighting.AddLight(projectile.Center, Color.Orange.ToVector3() * 0.4f * projectile.scale);
-            if (touchingTile)
+			foreach (MagmaGlob glob in Globs)
             {
-				embedTimer--;
+				glob.Update();
             }
+
+			foreach (MagmaGlob glob in Globs.ToArray())
+			{
+				if (!glob.active)
+					Globs.Remove(glob);
+			}
+
+			if (owner.HeldItem.type != ModContent.ItemType<MagmaGun>() && Globs.Count == 0)
+				projectile.active = false;
+		}
+
+		public void CreateGlob(Vector2 pos, Vector2 vel)
+        {
+			Globs.Add(new MagmaGlob(vel, pos));
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-			Color color = Color.Orange;
-			color.A = 0;
-			Texture2D tex = ModContent.GetTexture(Texture + "_Glow");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color, 0f, tex.Size() / 2, projectile.scale * 0.33f, SpriteEffects.None, 0f);
-			return false;
-        }
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-            if (!stoppedInTile)
+			foreach (MagmaGlob glob in Globs)
             {
-				touchingTile = true;
-				projectile.velocity = Vector2.Normalize(oldVelocity) * 9;
-				if (embedTimer < 0)
+				if (glob.active)
                 {
-					stoppedInTile = true;
-					projectile.velocity = Vector2.Zero;
-					projectile.aiStyle = -1;
+					glob.Draw(spriteBatch, ModContent.GetTexture(Texture + "_Glow"));
                 }
             }
 			return false;
         }
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return true;
+		}
+
+        public override bool? CanHitNPC(NPC target)
+        {
+			foreach (MagmaGlob glob in Globs)
+			{
+				if (glob.stoppedInEnemy)
+					continue;
+				if (glob.active)
+				{
+					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.Position, glob.Size))
+					{
+						if (!glob.stoppedInTile)
+						{
+							glob.stoppedInEnemy = true;
+							glob.enemy = target;
+							glob.enemyOffset = glob.Center - target.Center;
+						}
+						target.AddBuff(BuffID.OnFire, 30);
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
     }
+
+	public class MagmaGunDust : ModDust
+	{
+		public override bool Autoload(ref string name, ref string texture)
+		{
+			texture = AssetDirectory.Assets + "Invisible";
+			return true;
+		}
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.noLight = true;
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.position += dust.velocity;
+			dust.velocity.Y += 0.2f;
+			if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+				dust.velocity *= -0.5f;
+
+			dust.rotation = dust.velocity.ToRotation();
+			dust.scale *= 0.96f;
+			if (dust.scale < 0.2f)
+				dust.active = false;
+			return false;
+		}
+	}
 }
