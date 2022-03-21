@@ -8,6 +8,7 @@ using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
+using Terraria.Enums;
 using Terraria.ModLoader;
 using System;
 using System.Linq;
@@ -272,7 +273,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
 					position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20;
-
+					position += Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(1.57f * -player.direction)) * 5;
 					mp.CreateGlob(position, direction);
 				}
 			}
@@ -416,7 +417,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (WorldGen.InWorld(i / 16, j / 16))
 					{
 						Tile tile = Main.tile[i / 16, j / 16];
-						if (tile.active() && Main.tileSolid[tile.type])
+						if (tile.active() && Main.tileSolid[tile.type] && !TileID.Sets.Platforms[tile.type])
 						{
 							if (!stoppedInTile)
 							{
@@ -578,6 +579,22 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
+		public override bool? CanCutTiles()
+		{
+			return true;
+		}
+		public override void CutTiles()
+		{
+			DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
+			foreach (MagmaGlob glob in Globs)
+			{
+				if (glob.active)
+				{
+					Utils.PlotTileLine(glob.Center - new Vector2((glob.width / 2) * glob.scale, 0), glob.Center + new Vector2((glob.width / 2) * glob.scale, 0), glob.height * glob.scale, DelegateMethods.CutTiles);
+				}
+			}
+		}
+
 		/*public void DrawOverTiles(SpriteBatch spriteBatch)
         {
 			foreach (MagmaGlob glob in Globs)
@@ -588,7 +605,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}*/
-    }
+	}
 
 	public class MagmaGunDust : ModDust
 	{
