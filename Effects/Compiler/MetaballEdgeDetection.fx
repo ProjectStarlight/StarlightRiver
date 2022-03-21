@@ -27,10 +27,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     float2 pos = float2(input.TextureCoordinates.x * width, input.TextureCoordinates.y * height);
 
-    nearby[0] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(1, 0))).g;
-    nearby[1] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(0, 1))).g;
-    nearby[2] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(-1, 0))).g;
-    nearby[3] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(0, -1))).g;
+    nearby[0] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(0.5f, 0))).g;
+    nearby[1] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(0, 0.5f))).g;
+    nearby[2] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(-0.5f, 0))).g;
+    nearby[3] = tex2D(SpriteTextureSampler, scaleBack(pos + float2(0, -0.5f))).g;
 
     if (nearby[0] == 1.0 && color.g < 1.0f)
     {
