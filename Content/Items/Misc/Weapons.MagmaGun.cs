@@ -238,6 +238,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Projectile proj;
 
+		private int counter;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magma Gun");
@@ -264,6 +266,9 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
+			counter++;
+			if (counter % 5 == 0)
+				Main.PlaySound(19, (int)position.X, (int)position.Y, 1, 1, Main.rand.NextFloat(0.45f,0.55f));
 			for (int i = 0; i < 3; i++)
 			{
 				if (proj != null && proj.active)
@@ -363,6 +368,8 @@ namespace StarlightRiver.Content.Items.Misc
 				fadeIn += 0.1f;
 			scale = Math.Min(endScale, endScale * (timeLeft / 20f)) * fadeIn;
 
+			if (Main.rand.NextBool(2000))
+				Main.PlaySound(19, Center, 1);
 			if (Main.rand.NextBool(100))
             {
 				Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.MagmaSmoke>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15, 45)), Color.White, Main.rand.NextFloat(0.4f, 1f));
@@ -426,6 +433,8 @@ namespace StarlightRiver.Content.Items.Misc
 								Velocity = Vector2.Normalize(Velocity) * 9;
 								if (embedTimer < 0)
 								{
+									if (Main.rand.NextBool(40))
+										Main.PlaySound(19, Center, 1);
 									stoppedInTile = true;
 									oldVel = Velocity;
 									Velocity = Vector2.Zero;
