@@ -272,9 +272,10 @@ namespace StarlightRiver.Content.Items.Misc
 					var mp = proj.modProjectile as MagmaGunPhantomProj;
 					Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
-					position += Vector2.Normalize(new Vector2(speedX, speedY)) * 20;
-					position += Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(1.57f * -player.direction)) * 5;
-					mp.CreateGlob(position, direction);
+					Vector2 position2 = position;
+					position2 += Vector2.Normalize(new Vector2(speedX, speedY)) * 20;
+					position2 += Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(1.57f * -player.direction)) * 5;
+					mp.CreateGlob(position2, direction);
 				}
 			}
 			return false;
