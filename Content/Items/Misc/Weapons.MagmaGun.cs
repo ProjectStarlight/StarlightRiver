@@ -41,12 +41,12 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Main.graphics.GraphicsDevice != null)
 				UpdateWindowSize(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 			On.Terraria.Main.DrawNPCs += Main_DrawNPCs;
-			Main.OnPreDraw += Main_OnPreDraw;
+			On.Terraria.Main.CheckMonoliths += Main_CheckMonoliths;
 		}
 		public void Unload()
         {
 			On.Terraria.Main.DrawNPCs -= Main_DrawNPCs;
-			Main.OnPreDraw -= Main_OnPreDraw;
+			On.Terraria.Main.CheckMonoliths -= Main_CheckMonoliths;
 		}
 
 		public void UpdateWindowSize(GraphicsDevice graphicsDevice, int width, int height)
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 			orig(self, behindTiles);
 		}
 
-		private void Main_OnPreDraw(GameTime obj)
+		private void Main_CheckMonoliths(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
 			if (Main.graphics.GraphicsDevice != null)
 			{
@@ -75,6 +75,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && CheckForBalls())
 				DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice);
+
+			orig();
 		}
 
 
@@ -143,7 +145,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Effect magmaNoise = Filters.Scene["MagmaNoise"].GetShader().Shader;
 			magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
-			magmaNoise.Parameters["offset"].SetValue(Vector2.Zero);
+			magmaNoise.Parameters["offset"].SetValue(2 * Main.screenPosition / new Vector2(Main.screenWidth, Main.screenHeight));
 			magmaNoise.Parameters["codedColor"].SetValue(insideColor.ToVector4());
 			magmaNoise.Parameters["newColor"].SetValue(insideColor2.ToVector4());
 			magmaNoise.Parameters["distort"].SetValue(ModContent.GetTexture(AssetDirectory.Assets + "Noise/ShaderNoiseLooping"));
