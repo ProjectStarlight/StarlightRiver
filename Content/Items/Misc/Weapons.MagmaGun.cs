@@ -268,7 +268,10 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			counter++;
 			if (counter % 5 == 0)
-				Main.PlaySound(19, (int)position.X, (int)position.Y, 1, 1, Main.rand.NextFloat(0.45f,0.55f));
+			{
+				Main.PlaySound(19, (int)position.X, (int)position.Y, 1, 1, Main.rand.NextFloat(0.45f, 0.55f));
+				Main.PlaySound(2, (int)position.X, (int)position.Y, 13);
+			}
 			for (int i = 0; i < 3; i++)
 			{
 				if (proj != null && proj.active)
