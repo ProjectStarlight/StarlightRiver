@@ -432,6 +432,9 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!stoppedInTile)
 				Velocity.Y += 0.1f;
 
+			if (stoppedInTile || stoppedInEnemy)
+				Velocity = Vector2.Zero;
+
 			Center += Velocity;
 			if (timeLeft <= 0)
 				active = false;
