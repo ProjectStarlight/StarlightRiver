@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Color outlineColor => new Color(255, 255, 100);
 		public Color outlineColor2 => Color.White;
 
-		public Color tileOutlineColor => Color.OrangeRed;
+		public Color tileOutlineColor =>Color.Lerp(Color.OrangeRed, Color.Red, 0.5f);
 		public Color insideColor2 => new Color(255, 70, 10);
 		public Color insideColor => new Color(255, 190, 30);
 
