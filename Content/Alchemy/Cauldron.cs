@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Alchemy
 	public class CauldronItem : ModItem
 	{
 
-		public override string Texture => AssetDirectory.AlchemyTile + Name;
+		public override string Texture => AssetDirectory.Alchemy + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override bool Autoload(ref string name, ref string texture)
 		{
-			texture = AssetDirectory.AlchemyTile + name;
+			texture = AssetDirectory.Alchemy + name;
 			return base.Autoload(ref name, ref texture);
 		}
 
@@ -72,18 +72,18 @@ namespace StarlightRiver.Content.Alchemy
 
         public override bool NewRightClick(int i, int j)
         {
-			//TODO: could this work since dummies only exist at top left corner of tile but the coordinates are where click happened
-			Main.NewText("right click at: " + i + ", " + j);
-			if (DummyExists(i, j, DummyType))
+			int x = i - Main.tile[i, j].frameX / 16 % 3;
+			int y = j - Main.tile[i, j].frameY / 16 % 2;
+			if (DummyExists(x, y, DummyType))
             {
-				CauldronDummyAbstract cauldronDummy = (CauldronDummyAbstract)Dummy(i, j).modProjectile;
-				Main.NewText("dummy exists");
-				if (cauldronDummy.AttemptAddItem(Main.LocalPlayer.HeldItem))
+				CauldronDummyAbstract cauldronDummy = (CauldronDummyAbstract)Dummy(x, y).modProjectile;
+				if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<MixingStick>())
                 {
-					Main.NewText("added");
-					Main.LocalPlayer.HeldItem.TurnToAir();
-					return true;
-				}
+					cauldronDummy.AttemptStartCraft();
+				} else
+                {
+					cauldronDummy.dumpIngredients();
+                }
 			}
 
 			return false;

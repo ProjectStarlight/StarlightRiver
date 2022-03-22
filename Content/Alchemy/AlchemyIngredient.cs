@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Alchemy
         /// <summary>
         /// When instantiated by the cauldron dummy we may need to store exactly the item being used as an ingredient so we don't lose properties on the ingredient like modifiers etc
         /// </summary>
-        public Item storedIngredient;
+        public Item storedItem;
 
         /// <summary>
         /// Item type ID of the ingredient, use ItemType<ModItem>() to get mod item IDs and Terraria.ID.ItemID for vanilla items
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Alchemy
         /// <param name="ingredientItem"></param>
         public void putIngredient(Item ingredientItem)
         {
-            this.storedIngredient = ingredientItem;
+            this.storedItem = ingredientItem;
             timeSinceAdded = 0;
         }
 
@@ -61,6 +61,17 @@ namespace StarlightRiver.Content.Alchemy
             return false;
         }
 
+        /// <summary>
+        /// performs logic and visuals that occur AFTER ALL other ingredient visuals / logic are run while this is the most recent item added to the cauldron
+        /// executes even if mostRecentUpdate returns true
+        /// by default just adds cauldron lighting for the resulting bubble color
+        /// </summary>
+        /// <param name="wrapper"></param>
+        public virtual void mostRecentPostUpdate(AlchemyWrapper wrapper)
+        {
+            Lighting.AddLight(wrapper.cauldronRect.TopLeft() + new Vector2(wrapper.cauldronRect.Width / 2, 0), wrapper.bubbleColor.ToVector3());
+        }
+
 
         /// <summary>
         /// perform logic updates while this is added to the cauldron, executed by both client and server. runs even if mostRecentUpdate returned true.
@@ -73,8 +84,8 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// perform client-only updates while this is added to the cauldron runs after Update, skipped if mostRecentUpdate returned true
-        /// runs in order of the oldest ingredient to newest immediately after running Update for this ingredient
+        /// Perform client-only updates while this is added to the cauldron runs after Update, skipped if mostRecentUpdate returned true.
+        /// Executes in order of the oldest ingredient to newest immediately after running Update for this ingredient
         /// </summary>
         public virtual void visualUpdate(AlchemyWrapper wrapper)
         {
@@ -82,8 +93,6 @@ namespace StarlightRiver.Content.Alchemy
 
             if (timeSinceAdded == 0)
             {
-                
-                
                 for (int k = 0; k < 10; k++)
                     Dust.NewDust(wrapper.cauldronRect.TopLeft() + new Vector2(wrapper.cauldronRect.Width / 4, 0), wrapper.cauldronRect.Width / 2, 0, DustID.Water, 0, -6, 0, default, 1f);
                 
@@ -97,6 +106,37 @@ namespace StarlightRiver.Content.Alchemy
                 //lerp towards a white flash when freshly added
                 wrapper.bubbleColor = Color.Lerp(Color.White, wrapper.bubbleColor, timeSinceAdded / 15f);
             }
+        }
+
+        /// <summary>
+        /// spawns this item into the world randomized in the cauldron's rectangle subtracting the consumedCount from the stack or doing nothing if 0 after subtracting
+        /// </summary>
+        /// <param name="cauldronRect"></param>
+        /// <param name="consumedCount"></param>
+        public virtual void dump(Rectangle cauldronRect)
+        {
+            if (storedItem.stack > 0)
+            {
+                //TODO: rework this to handle exact clone dropping like keeping modifiers, maybe look into calling newItem to get an open Main.item index and then replace it with the clone and net send it
+                Item.NewItem(cauldronRect, storedItem.type, storedItem.stack);
+            }
+
+            storedItem = null;
+        }
+
+        /// <summary>
+        /// PRECONDITION: item type matches this ingredient's item type
+        /// Attempts to add the item stack to the ingredient stack
+        /// return false if this is an ingredient that should not stack and instead create another AlchemyIngredient instance
+        /// by default adds the stack counts together, resets timeSinceAdded to 0 and returns true
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public virtual bool addToStack(Item item)
+        {
+            timeSinceAdded = 0;
+            storedItem.stack += item.stack;
+            return true;
         }
 
     }

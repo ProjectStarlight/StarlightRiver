@@ -4,6 +4,7 @@ using Terraria;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Content.Alchemy
 {
@@ -14,11 +15,10 @@ namespace StarlightRiver.Content.Alchemy
     public class AlchemyRecipe
     {
 
-        protected List<Item> requiredIngredients = new List<Item>();
+        protected Dictionary<int, Item> requiredIngredientsMap = new Dictionary<int, Item>();
         protected List<int> requiredModifiers = new List<int>();
 
         protected List<Item> outputItemList = new List<Item>();
-        protected Dictionary<int, int> outputCountDict = new Dictionary<int, int>();
 
         /// <summary>
         /// adds this recipe to the recipe cache now that it is done
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Alchemy
             Item newIngredient = new Item();
             newIngredient.SetDefaults(requiredIngredientId);
             newIngredient.stack = inputCount;
-            requiredIngredients.Add(newIngredient);
+            requiredIngredientsMap.Add(requiredIngredientId, newIngredient);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Alchemy
         /// <param name="item"></param>
         public void addIngredientByItem(Item item)
         {
-            requiredIngredients.Add(item.Clone());
+            requiredIngredientsMap.Add(item.type, item.Clone());
         }
 
         public void addRequiredModifier(int requiredModifierTileId)
@@ -76,38 +76,103 @@ namespace StarlightRiver.Content.Alchemy
         /// by default does no logic and returns false.
         /// </summary>
         /// <returns></returns>
-        public virtual bool UpdateReady()
+        public virtual bool UpdateReady(AlchemyWrapper wrapper)
         {
             return false;
         }
 
+
         /// <summary>
-        /// Runs when player has initiated crafting this recipe with all ingredients added. return true when done crafting.
-        /// responsible for spawning in items and visuals.
+        /// runs when this recipe is the only possible remaining recipe but the current set of ingredients is NOT valid for atleast one craft.
+        /// return true to block any individual ingredient code from running.
         /// executes on client and server.
+        /// by default does not logic and returns false.
         /// </summary>
         /// <returns></returns>
-        public virtual bool UpdateCrafting()
+        public virtual bool updateAlmostReady(AlchemyWrapper wrapper)
         {
-            return true;
+            //TODO: maybe default to some kind of way to indicate to the player they are on the right track but missing quantity / certain items
+            return false;
+        }
+
+        /// <summary>
+        /// Runs when player has initiated crafting this recipe with all ingredients added. return true to skip individual ingredient code from running.
+        /// responsible for spawning in items and visuals.
+        /// executes on client and server. return true to stop individual ingredient code from running.
+        /// by default consumes ingredients and spawns output instantly
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool UpdateCrafting(AlchemyWrapper wrapper, List<AlchemyIngredient> currentingredients, CauldronDummyAbstract cauldronDummy)
+        {
+            foreach(Item eachOutputItem in outputItemList)
+            {
+                Item.NewItem(wrapper.cauldronRect, eachOutputItem.type, eachOutputItem.stack * wrapper.currentBatchSize);
+            }
+            foreach (AlchemyIngredient eachIngredient in currentingredients)
+            {
+                Item requiredItem;
+                requiredIngredientsMap.TryGetValue(eachIngredient.storedItem.type, out requiredItem);
+
+                eachIngredient.storedItem.stack -= requiredItem.stack * wrapper.currentBatchSize;
+            }
+            cauldronDummy.dumpIngredients();
+
+            return false;
         }
 
 
         /// <summary>
-        /// returns true if an ingredient is part of this recipe, false otherwise
+        /// returns true if an item is part of this recipe, false otherwise.
         /// by default only checks item Id, override for stricter checking (like weapon modifier, ensuring minimum amount at insertion time, fields on the item, etc). 
         /// ignores minimum amounts by default under the assumption that player can add the rest at a later step
         /// </summary>
         /// <returns></returns>
-        public virtual bool checkIngredient(Item item)
+        public virtual bool checkItem(Item item)
         {
-            foreach (Item eachRequiredIngredient in requiredIngredients)
+            return requiredIngredientsMap.ContainsKey(item.type);
+        }
+
+        /// <summary>
+        /// returns a number for the amount of times this ingredient can be batched in the recipe 0 if invalid/insufficient.
+        /// Used for ensuring the ingredient is valid and in proper stack size right before initializing the craft.
+        /// By default only checks id and stack. override if needs stricter checking (like weapon modifier, maximums, split item stacks etc.).
+        /// </summary>
+        /// <param name="ingredient"></param>
+        /// <returns></returns>
+        public virtual int checkIngredientBatch(AlchemyIngredient ingredient)
+        {
+            if(requiredIngredientsMap.ContainsKey(ingredient.storedItem.type))
             {
-                if (item.type == eachRequiredIngredient.type)
-                    return true;
+                Item requiredItem;
+                requiredIngredientsMap.TryGetValue(ingredient.storedItem.type, out requiredItem);
+
+                return ingredient.storedItem.stack / requiredItem.stack;
             }
 
-            return false;
+            return 0;
+        }
+
+        /// <summary>
+        /// Returns number of times this recipe can craft if all the conditions are correct for the this recipe, otherwise 0
+        /// </summary>
+        /// <param name="currentIngredients"></param>
+        /// <param name="currentModifiers"></param>
+        /// <returns></returns>
+        public virtual int getCraftBatchSize(List<AlchemyIngredient> currentIngredients, List<int> currentModifiers)
+        {
+            //if they don't match in count its not possible for it to be complete so we short circuit and avoid needing to iterate through lists multiple times
+            if (currentIngredients.Count != requiredIngredientsMap.Count)
+                return 0;
+            if (currentModifiers.Count != requiredModifiers.Count)
+                return 0;
+
+            int batchSize = int.MaxValue;
+            foreach (AlchemyIngredient eachCurrentIngredient in currentIngredients)
+            {
+                batchSize = Math.Min(batchSize, checkIngredientBatch(eachCurrentIngredient));
+            }
+
+            return batchSize;
         }
     }
 }
