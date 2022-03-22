@@ -550,6 +550,30 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
         {
+			foreach (NPC target in Main.npc)
+			{
+				if (target.townNPC)
+					continue;
+				foreach (MagmaGlob glob in Globs)
+				{
+					if (glob.stoppedInEnemy && glob.enemy != target)
+						continue;
+					if (glob.active)
+					{
+						if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.Position, glob.Size))
+						{
+
+							if (!glob.stoppedInTile && !glob.stoppedInEnemy)
+							{
+								glob.stoppedInEnemy = true;
+								glob.enemy = target;
+								glob.enemyOffset = glob.Center - target.Center;
+							}
+						}
+					}
+				}
+			}
+
 			projectile.timeLeft = 2;
 			projectile.Center = owner.Center;
 
@@ -602,6 +626,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.Position, glob.Size))
 					{
+
 						if (!glob.stoppedInTile && !glob.stoppedInEnemy)
 						{
 							glob.stoppedInEnemy = true;
