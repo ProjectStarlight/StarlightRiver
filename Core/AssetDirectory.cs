@@ -74,6 +74,8 @@ namespace StarlightRiver.Core
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
 
+        public const string Alchemy =           Assets + "Alchemy/";
+
         public const string TrophyTile =            Assets + "Tiles/Trophies/";
 
         public const string PaintingTile =          Assets + "Tiles/Paintings/";
