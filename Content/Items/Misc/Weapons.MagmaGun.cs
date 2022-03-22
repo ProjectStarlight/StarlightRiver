@@ -242,15 +242,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Magma Gun");
-			Tooltip.SetDefault("Launches hot globs of magma that stick to enemies and tiles");
+			DisplayName.SetDefault("Pyroclastic Flow");
+			Tooltip.SetDefault("Blasts a torrential stream of lava that sticks to tiles and enemies");
 
 		}
 
 		public override void SetDefaults()
 		{
 			item.damage = 30;
-			item.ranged = true;
+			item.magic = true;
+			item.mana = 1;
 			item.width = 24;
 			item.height = 24;
 			item.useTime = 1;
