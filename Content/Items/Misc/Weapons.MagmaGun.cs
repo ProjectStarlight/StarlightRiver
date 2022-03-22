@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Color outlineColor => new Color(255, 255, 100);
 		public Color outlineColor2 => Color.White;
 
-		public Color tileOutlineColor =>Color.Lerp(Color.OrangeRed, Color.Red, 0.5f);
+		public Color tileOutlineColor => Color.Lerp(Color.OrangeRed, Color.Red, 0.5f);
 		public Color insideColor2 => new Color(255, 70, 10);
 		public Color insideColor => new Color(255, 190, 30);
 
@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (proj != null && proj.active)
 				{
-					proj.damage = damage;
+					proj.damage = damage / 2;
 					var mp = proj.modProjectile as MagmaGunPhantomProj;
 					Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public int embedTimer = 1;
 		public bool touchingTile = false;
 		public bool stoppedInTile = false;
-		public int timeLeft = 200;
+		public int timeLeft = 700;
 
 		public bool stoppedInEnemy = false;
 		public Vector2 enemyOffset = Vector2.Zero;
@@ -593,19 +593,19 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 			foreach (MagmaGlob glob in Globs)
 			{
-				if (glob.stoppedInEnemy)
+				if (glob.stoppedInEnemy && glob.enemy != target)
 					continue;
 				if (glob.active)
 				{
 					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.Position, glob.Size))
 					{
-						if (!glob.stoppedInTile)
+						if (!glob.stoppedInTile && !glob.stoppedInEnemy)
 						{
 							glob.stoppedInEnemy = true;
 							glob.enemy = target;
 							glob.enemyOffset = glob.Center - target.Center;
 						}
-						target.AddBuff(BuffID.OnFire, 30);
+                        target.AddBuff(BuffID.OnFire, 30);
 						return true;
 					}
 				}
@@ -629,7 +629,24 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		/*public void DrawOverTiles(SpriteBatch spriteBatch)
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			foreach (MagmaGlob glob in Globs) //TODO: Merge with canhitNPC similar code into method to reduce boilerplate
+			{
+				if (glob.stoppedInEnemy)
+					continue;
+				if (glob.active)
+				{
+					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.Position, glob.Size))
+					{
+						damage *= 2;
+						break;
+					}
+				}
+			}
+		}
+
+        /*public void DrawOverTiles(SpriteBatch spriteBatch)
         {
 			foreach (MagmaGlob glob in Globs)
 			{
@@ -639,7 +656,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}*/
-	}
+    }
 
 	public class MagmaGunDust : ModDust
 	{
