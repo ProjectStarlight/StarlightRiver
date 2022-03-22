@@ -552,7 +552,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
 			foreach (NPC target in Main.npc)
 			{
-				if (target.townNPC)
+				if (target.townNPC || !target.active)
 					continue;
 				foreach (MagmaGlob glob in Globs)
 				{
