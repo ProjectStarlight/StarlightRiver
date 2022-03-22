@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.Alchemy
 {
@@ -34,15 +35,6 @@ namespace StarlightRiver.Content.Alchemy
                 AlchemyIngredient tempIngredient = (AlchemyIngredient)Activator.CreateInstance(type);
                 allIngredientMap.Add(tempIngredient.getItemId(), type);
             }
-
-            //todo: remove this later
-            AlchemyRecipe testRecipe = new AlchemyRecipe();
-            testRecipe.addIngredientById(ItemID.DirtBlock);
-            testRecipe.addIngredientById(ItemID.LivingFireBlock);
-            testRecipe.addIngredientById(ItemID.DirtWall);
-            testRecipe.addIngredientById(ItemID.IronBar);
-            testRecipe.addOutputById(ItemID.WoodenSword);
-            testRecipe.addRecipe();
         }
 
         public static void Unload()
@@ -65,7 +57,7 @@ namespace StarlightRiver.Content.Alchemy
             List<AlchemyRecipe> remainingPossibilities = new List<AlchemyRecipe>();
             foreach (AlchemyRecipe eachRecipe in previousPossibilities) 
             {
-                if (eachRecipe.checkIngredient(addedItem))
+                if (eachRecipe.checkItem(addedItem))
                     remainingPossibilities.Add(eachRecipe);
             }
 

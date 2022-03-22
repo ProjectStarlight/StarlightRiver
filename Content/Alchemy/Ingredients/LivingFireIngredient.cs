@@ -10,9 +10,11 @@ namespace StarlightRiver.Content.Alchemy.Ingredients
 {
     class LivingFireIngredient : AlchemyIngredient
     {
+
+        //TODO: this is a placeholder for Blood replace with that once added
         public LivingFireIngredient()
         {
-            ingredientColor = new Color(255, 20, 0);
+            ingredientColor = Color.Red;
         }
 
         public override int getItemId()
