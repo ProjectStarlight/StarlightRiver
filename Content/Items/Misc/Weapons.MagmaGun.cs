@@ -570,6 +570,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool? CanHitNPC(NPC target)
         {
+			if (target.townNPC)
+				return false;
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.stoppedInEnemy)
