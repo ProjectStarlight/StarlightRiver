@@ -267,6 +267,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			counter++;
+			foreach (Projectile projectile in Main.projectile)
+            {
+				if (projectile.owner == player.whoAmI && projectile.type == type && projectile.active)
+					proj = projectile;
+            }
 			if (counter % 5 == 0)
 			{
 				Main.PlaySound(19, (int)position.X, (int)position.Y, 1, 1, Main.rand.NextFloat(0.45f, 0.55f));
