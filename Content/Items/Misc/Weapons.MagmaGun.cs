@@ -407,7 +407,20 @@ namespace StarlightRiver.Content.Items.Misc
 			if (stoppedInTile && Main.rand.NextBool(200))
 			{
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-				Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+				int dustID = Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+				Main.dust[dustID].noGravity = false;
+			}
+			else if (stoppedInTile && Main.rand.NextBool(500))
+			{
+				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(20);
+				int dustID = Dust.NewDust(Position + dir, width, height, ModContent.DustType<MagmaGunDust>(), 0,0);
+				Main.dust[dustID].noGravity = true;
+			}
+			else if (Velocity == Vector2.Zero && Main.rand.NextBool(700))
+            {
+				Vector2 bubbleDir = -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
+				int d = Dust.NewDust(Position + (bubbleDir * 4), width, height, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
+				Main.dust[d].velocity = bubbleDir;
 			}
 
 			if (timeLeft < 20)
@@ -426,7 +439,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public void CheckIfTouchingTiles()
         {
 			bool breakOut = false;
-			for (int i = (int)Position.X; i < (int)(Position.X + Size.X) && !breakOut; i += 16)
+			for (int i = (int)Position.X; i < (int)(Position.X + Size.X) && !breakOut; i += 16) //Todo: Break this godawful nested statement hell into its own methods
             {
 				for (int j = (int)Position.Y; j < (int)(Position.Y + Size.Y) && !breakOut; j += 16)
 				{
@@ -636,20 +649,29 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 		public override void OnSpawn(Dust dust)
 		{
-			dust.noGravity = true;
 			dust.noLight = true;
 		}
 
 		public override bool Update(Dust dust)
 		{
 			dust.position += dust.velocity;
-			dust.velocity.Y += 0.2f;
-			if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
-				dust.velocity *= -0.5f;
+			if (dust.noGravity)
+			{
+				dust.velocity = new Vector2(0, -1f);
+			}
+			else
+			{
+				dust.velocity.Y += 0.2f;
+				if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+					dust.velocity *= -0.5f;
+			}
 
 			dust.rotation = dust.velocity.ToRotation();
 			dust.scale *= 0.96f;
-			if (dust.scale < 0.5f)
+			if (dust.noGravity)
+				dust.scale *= 0.96f;
+
+			if (dust.scale < 0.2f)
 				dust.active = false;
 			return false;
 		}
