@@ -164,6 +164,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 //add hit sound effect here
                 Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
                 Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 194;
+                Main.PlaySound(SoundID.Item96, projectile.Center);
                 stuck = true;
                 projectile.extraUpdates = 0;
                 projectile.velocity = Vector2.Zero;
@@ -205,14 +206,14 @@ namespace StarlightRiver.Content.Items.Moonstone
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(20), factor => (10 + factor * 25) * trailWidth, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor =>
             {
                 return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth;
             });
 
             trail.Positions = cache.ToArray();
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(20), factor => (80 + 0 + factor * 0) * trailWidth, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(6), factor => (80 + 0 + factor * 0) * trailWidth, factor =>
             {
                 return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * trailWidth;
             });
