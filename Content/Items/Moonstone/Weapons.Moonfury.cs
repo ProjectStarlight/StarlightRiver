@@ -60,7 +60,15 @@ namespace StarlightRiver.Content.Items.Moonstone
             cooldown--;
             base.HoldItem(player);
         }
-
+        public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        {
+            if(Main.rand.Next(15) == 0)
+            {
+                Dust.NewDustPerfect(hitbox.TopLeft() + new Vector2(Main.rand.NextFloat(hitbox.Width), Main.rand.NextFloat(hitbox.Height)),
+                ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 1.2f) * player.direction, -Main.rand.NextFloat(0.3f, 0.5f)), 0,
+                new Color(Main.rand.NextFloat(0.15f, 0.30f), Main.rand.NextFloat(0.2f, 0.30f), Main.rand.NextFloat(0.3f, 0.5f), 0f), Main.rand.NextFloat(0.15f, 0.40f));
+            }
+        }
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             if (cooldown > 0)
@@ -162,6 +170,16 @@ namespace StarlightRiver.Content.Items.Moonstone
             if (!stuck)
             {
                 //add hit sound effect here
+                for (int k = 0; k <= 8; k++)
+                {
+                    Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f), 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
+                    if (Main.rand.Next(3) == 0)
+                    {
+                        Dust.NewDustPerfect(projectile.TopLeft + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.height)),
+                        ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.2f, 0.4f)), 0,
+                        new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
+                    }
+                }
                 Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
                 Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 194;
                 Main.PlaySound(SoundID.Item96, projectile.Center);
