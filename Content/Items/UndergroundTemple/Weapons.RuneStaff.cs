@@ -20,6 +20,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Tooltip.SetDefault("Hold to summon up to 3 explosive runes\nReleasing will fire the runes towards your cursor\nContinuing to hold will detonate them for increased damage around you");
         }
 
+        public override bool CloneNewInstances => true;
+
         public override void SetDefaults()
         {
             item.magic = true;

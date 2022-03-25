@@ -155,11 +155,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricOreItem : QuickTileItem
     {
-        public VitricOreItem() : base("Vitric Ore Crystal Item", "", TileType<VitricOre>(), 1, AssetDirectory.Debug, true) { }
+        public VitricOreItem() : base("Vitric Ore Crystal Item", "", TileType<VitricOre>(), 1, AssetDirectory.VitricTile, false) { }
     }
 
     class VitricOreFloatItem : QuickTileItem
     {
-        public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", TileType<VitricOreFloat>(), 1, AssetDirectory.Debug, true) { }
+        public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", TileType<VitricOreFloat>(), 1, AssetDirectory.VitricTile, false) { }
     }
 }
