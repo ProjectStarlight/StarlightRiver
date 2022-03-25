@@ -55,7 +55,15 @@ namespace StarlightRiver.Content.Items.Misc
 
         private float gravity = 0.05f;
         public override void SetStaticDefaults() => DisplayName.SetDefault("Dice");
-
+        const int frameCount = 6;
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            int width = tex.Width / frameCount;
+            Rectangle sourceRect = new Rectangle(projectile.frame * width, 0, width, tex.Height);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, sourceRect, lightColor, projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+            return false;
+        }
         public override void SetDefaults()
         {
             projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
@@ -68,6 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
             ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
             ProjectileID.Sets.TrailingMode[projectile.type] = 0;
             projectile.extraUpdates = 1;
+            projectile.frame = Main.rand.Next(frameCount);
         }
         public override void AI()
         {
@@ -77,17 +86,17 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 initialized = true;
 
-                mPlayer.damageMult *= Main.rand.NextFloat(0.5f, 2); //correct these later
-                mPlayer.gravityMult *= Main.rand.NextFloat(0.5f, 2);
-                mPlayer.velocityMult *= Main.rand.NextFloat(0.5f, 2);
-                mPlayer.knockbackMult *= Main.rand.NextFloat(0.5f, 2);
+                mPlayer.damageMult *= Main.rand.NextFloat(0.1f, 2f); //correct these later
+                mPlayer.gravityMult *= Main.rand.NextFloat(0.5f, 1.5f);
+                mPlayer.velocityMult *= Main.rand.NextFloat(0.75f, 2);
+                mPlayer.knockbackMult *= Main.rand.NextFloat(0.5f, 5);
 
                 mPlayer.damageMult /= (float)Math.Sqrt(mPlayer.damageMult);
                 mPlayer.gravityMult /= (float)Math.Sqrt(mPlayer.gravityMult);
                 mPlayer.velocityMult /= (float)Math.Sqrt(mPlayer.velocityMult);
                 mPlayer.knockbackMult /= (float)Math.Sqrt(mPlayer.knockbackMult);
 
-                projectile.damage = (int)(projectile.damage* mPlayer.damageMult);
+                projectile.damage = (int)(projectile.damage * mPlayer.damageMult);
                 gravity *= mPlayer.gravityMult;
                 projectile.velocity *= mPlayer.velocityMult;
                 projectile.knockBack *= mPlayer.knockbackMult;
