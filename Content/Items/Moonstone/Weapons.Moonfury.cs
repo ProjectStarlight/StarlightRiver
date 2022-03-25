@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             Texture2D tex = ModContent.GetTexture(Texture + "_Additive");
             Color color = Color.White * (1 - (projectile.alpha / 255f));
-            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color, projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color * 0.5f, projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
         }
     }
     internal class MoonfuryRing : ModProjectile, IDrawPrimitive
