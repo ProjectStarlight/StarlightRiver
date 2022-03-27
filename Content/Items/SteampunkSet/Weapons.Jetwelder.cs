@@ -37,7 +37,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             item.noMelee = true;
             item.summon = true;
-            item.shoot = ModContent.ProjectileType<JetwelderGatler>();
+            item.shoot = ModContent.ProjectileType<JetwelderCrawler>();
+        }
+
+        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        {
+            switch (Main.rand.Next(2))
+            {
+                case 0:
+                    type = ModContent.ProjectileType<JetwelderCrawler>();
+                    break;
+                case 1:
+                    type = ModContent.ProjectileType<JetwelderGatler>();
+                    break;
+            }
+            return true;
         }
     }
 }

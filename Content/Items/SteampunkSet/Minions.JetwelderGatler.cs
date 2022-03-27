@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Lunazoa");
+            DisplayName.SetDefault("Gatler");
             ProjectileID.Sets.Homing[projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void AI()
         {
-            NPC testtarget = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
+            NPC testtarget = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false) */&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
 
             if (testtarget != default)
             {
@@ -136,6 +136,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 dir.Normalize();
                 bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
+                if (bulletCounter % 10 == 0)
+                    Gore.NewGore(projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, ModGore.GetGoreSlot(AssetDirectory.MiscItem + "CoachGunCasing"), 1f);
                 Projectile.NewProjectile(projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, projectile.damage, projectile.knockBack, player.whoAmI);
             }
         }
