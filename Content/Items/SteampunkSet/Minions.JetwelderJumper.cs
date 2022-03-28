@@ -128,10 +128,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             jumping = true;
             Vector2 dir = new Vector2(0, -1);
+
             if (target == default)
                 dir = dir.RotatedByRandom(0.4f);
             else
-                dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign(target.Center.X - projectile.Center.X) * 0.6f));
+            {
+                int offsetDirection = Math.Sign(target.Center.X - projectile.Center.X);
+                dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign((target.Center.X - (offsetDirection * 300)) - projectile.Center.X) * 0.6f));
+            }
             projectile.velocity = dir * Main.rand.Next(5, 10);
 
             projectile.spriteDirection = Math.Sign(dir.X);
