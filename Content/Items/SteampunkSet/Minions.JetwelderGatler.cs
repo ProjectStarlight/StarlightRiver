@@ -29,11 +29,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private int bulletCounter = 0;
 
+        private int gunFrame = 0;
+
+        private bool firing = false;
+
         private Player player => Main.player[projectile.owner];
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Gatler");
+            Main.projFrames[projectile.type] = 8;
             ProjectileID.Sets.Homing[projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
@@ -63,18 +68,38 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             }
             else
                 IdleMovement();
+
+            FindFrame();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.GetTexture(Texture);
             SpriteEffects spriteEffects = projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, spriteEffects, 0f);
+
+            int frameHeight = tex.Height / Main.projFrames[projectile.type];
+            Vector2 origin = new Vector2(projectile.spriteDirection == 1 ? 30 : tex.Width - 30, frameHeight / 2);
+
+            Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
+
+            Texture2D gunTex = ModContent.GetTexture(Texture + "_Gun");
+            Texture2D gunTexIdle = ModContent.GetTexture(Texture + "_GunIdle");
+            Rectangle gunFrame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
+            spriteBatch.Draw(firing ? gunTex : gunTexIdle, projectile.Center - Main.screenPosition, firing ? gunFrame : new Rectangle(0,0, gunTexIdle.Width, gunTexIdle.Height), lightColor, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
+
+            if (firing)
+            {
+                Texture2D flashTex = ModContent.GetTexture(Texture + "_Flash");
+                spriteBatch.Draw(flashTex, projectile.Center - Main.screenPosition, gunFrame, Color.White, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
+            }
+
             return false;
         }
 
         private void IdleMovement()
         {
+            firing = false;
             posToBe = Vector2.Zero;
 
             Vector2 direction = Vector2.Normalize(projectile.DirectionTo(player.Center)) * IDLESPEED;
@@ -120,23 +145,25 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (direction.Length() < 250 || Math.Abs(currentRotation - direction.ToRotation()) < 0.3f)
             {
                 FireBullets();
+                firing = true;
             }
+            else
+                firing = false;
             float speed = (float)Math.Min(SPEED, Math.Sqrt(direction.Length() * 0.1f));
             projectile.velocity = Vector2.Lerp(projectile.velocity, Vector2.Normalize(direction) * speed, 0.2f);
         }
 
         private void FireBullets()
         {
-            bulletCounter++;
-            if (bulletCounter % 5 == 0)
+            if ((gunFrame == 0 || gunFrame == 4) && projectile.frameCounter % 2 == 0)
             {
-                Vector2 bulletOffset = new Vector2(20, 9 * projectile.spriteDirection);
+                Vector2 bulletOffset = new Vector2(10, 9 * projectile.spriteDirection);
 
                 Vector2 dir = currentRotation.ToRotationVector2();
                 dir.Normalize();
                 bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
-                if (bulletCounter % 10 == 0)
+                if (gunFrame == 0)
                     Gore.NewGore(projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, ModGore.GetGoreSlot(AssetDirectory.MiscItem + "CoachGunCasing"), 1f);
                 Projectile.NewProjectile(projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, projectile.damage, projectile.knockBack, player.whoAmI);
             }
@@ -181,6 +208,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 }
             }
             return ret;
+        }
+
+        private void FindFrame()
+        {
+            projectile.frameCounter++;
+            if (projectile.frameCounter % 3 == 0)
+                projectile.frame++;
+
+            if (projectile.frameCounter % 2 == 0)
+                gunFrame++;
+            projectile.frame %= Main.projFrames[projectile.type];
+            gunFrame %= Main.projFrames[projectile.type];
+            if (!firing)
+                gunFrame = 0;
         }
     }
 }
