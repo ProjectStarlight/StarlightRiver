@@ -74,9 +74,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         private float gatlerScale;
         private float finalScale;
 
+        private int projType = -1;
+
         private float rotation;
 
         private float scaleCounter = 0f;
+
+        private static float PiOverFour = (float)Math.PI / 4f; //sick of casting
 
         public override void SetStaticDefaults()
         {
@@ -101,29 +105,25 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             DrawRobot(spriteBatch,
                       ModContent.GetTexture(Texture + "_Crawler"),
                       ModContent.GetTexture(Texture + "_Crawler_Gray"),
-                      -0.785f,
-                      rotation >= 4.71f,
+                      -2 * PiOverFour,
                       5,
                       crawlerScale);
             DrawRobot(spriteBatch,
                       ModContent.GetTexture(Texture + "_Jumper"),
                       ModContent.GetTexture(Texture + "_Jumper_Gray"),
-                      0.785f,
-                      rotation >= 0 && rotation < 1.57f,
+                      0 * PiOverFour,
                       10,
                       jumperScale);
             DrawRobot(spriteBatch,
                       ModContent.GetTexture(Texture + "_Gatler"),
                       ModContent.GetTexture(Texture + "_Gatler_Gray"),
-                      2.356f,
-                      rotation >= 1.57f && rotation < 3.14f,
+                      2 * PiOverFour,
                       15,
                       gatlerScale);
             DrawRobot(spriteBatch,
                       ModContent.GetTexture(Texture + "_Final"),
                       ModContent.GetTexture(Texture + "_Final_Gray"),
-                      3.926f,
-                      rotation >= 3.14f && rotation < 4.71f,
+                      4 * PiOverFour, //Yes I know this is PI but it's consistant this way
                       20,
                       finalScale);
 
@@ -155,40 +155,42 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 
                 rotation = MathHelper.WrapAngle(direction.ToRotation());
-                if (rotation < 0)
-                    rotation += 6.28f;
 
                 if (Main.mouseLeft)
                     projectile.active = false;
 
-                if (rotation >= 4.71f && modPlayer.scrap >= 5)
+                if (rotation >= PiOverFour * -3  && rotation < PiOverFour * -1 && modPlayer.scrap >= 5)
                 {
                     if (crawlerScale < 1)
                         crawlerScale += 0.1f;
+                    projType = ModContent.ProjectileType<JetwelderCrawler>(); 
                 }
                 else if (crawlerScale > 0)
                     crawlerScale -= 0.1f;
 
-                if (rotation >= 0 && rotation < 1.57f && modPlayer.scrap >= 10)
+                if (rotation >= PiOverFour * -1 && rotation < PiOverFour * 1 && modPlayer.scrap >= 10)
                 {
                     if (jumperScale < 1)
                         jumperScale += 0.1f;
+                    projType = ModContent.ProjectileType<JetwelderJumper>();
                 }
                 else if (jumperScale > 0)
                     jumperScale -= 0.1f;
 
-                if (rotation >= 1.57f && rotation < 3.14f && modPlayer.scrap >= 15)
+                if (rotation >= PiOverFour * 1 && rotation < PiOverFour * 3 && modPlayer.scrap >= 15)
                 {
                     if (gatlerScale < 1)
                         gatlerScale += 0.1f;
+                    projType = ModContent.ProjectileType<JetwelderGatler>();
                 }
                 else if (gatlerScale > 0)
                     gatlerScale -= 0.1f;
 
-                if (rotation >= 3.14f && rotation < 4.71f && modPlayer.scrap >= 20)
+                if (rotation >= PiOverFour * 3 || rotation < PiOverFour * -3 && modPlayer.scrap >= 20)
                 {
                     if (finalScale < 1)
                         finalScale += 0.1f;
+                    projType = ModContent.ProjectileType<JetwelderGatler>();
                 }
                 else if (finalScale > 0)
                     finalScale -= 0.1f;
@@ -197,36 +199,32 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             else
             {
                 projectile.active = false;
-                int type = -1;
 
-                if (rotation >= 4.71f && modPlayer.scrap >= 5)
+                if (projType == ModContent.ProjectileType<JetwelderGatler>() && modPlayer.scrap >= 5)
                 {
-                    type = ModContent.ProjectileType<JetwelderCrawler>();
                     modPlayer.scrap -= 5;
                 }
-                if (rotation >= 0 && rotation < 1.57f && modPlayer.scrap >= 10)
+                if (projType == ModContent.ProjectileType<JetwelderJumper>() && modPlayer.scrap >= 10)
                 {
-                    type = ModContent.ProjectileType<JetwelderCrawler>();
                     modPlayer.scrap -= 10;
                 }
-                if (rotation >= 1.57f && rotation < 3.14f && modPlayer.scrap >= 15)
+                if (projType == ModContent.ProjectileType<JetwelderGatler>() && modPlayer.scrap >= 15)
                 {
-                    type = ModContent.ProjectileType<JetwelderGatler>();
                     modPlayer.scrap -= 15;
                 }
-                if (rotation >= 3.14f && rotation < 4.71f && modPlayer.scrap >= 20)
+                /*if (projType == ModContent.ProjectileType<JetwelderFinal>() && modPlayer.scrap >= 15)
                 {
-                    type = ModContent.ProjectileType<JetwelderGatler>();
-                    modPlayer.scrap -= 20;
-                }
+                    modPlayer.scrap -= 15;
+                }*/
 
+                modPlayer.scrap = 20;
                 Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = player.Center;
-                if (type == ModContent.ProjectileType<JetwelderCrawler>())
-                    position = FindFirstTile(player.Center, type);
+                if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
+                    position = FindFirstTile(player.Center, projType);
 
-                if (type != -1)
-                    Projectile.NewProjectile(position, Vector2.Zero, type, projectile.damage, projectile.knockBack, player.whoAmI);
+                if (projType != -1)
+                    Projectile.NewProjectile(position, Vector2.Zero, projType, projectile.damage, projectile.knockBack, player.whoAmI);
             }
         }
 
@@ -250,7 +248,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             return position - new Vector2(0, (proj.height / 2));
         }
 
-        private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, bool enlarge, int minScrap, float growCounter)
+        private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, int minScrap, float growCounter)
         {
             Vector2 dir = angle.ToRotationVector2() * 60;
             Vector2 pos = (player.Center + dir) - Main.screenPosition;
@@ -258,7 +256,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             float lerper = MathHelper.Clamp(EaseFunction.EaseCubicOut.Ease(growCounter), 0, 1);
             float colorMult = MathHelper.Lerp(0.66f, 1f, lerper);
-            float scale = MathHelper.Lerp(0.75f, 1.5f, lerper);
+            float scale = MathHelper.Lerp(0.75f, 1.33f, lerper);
             scale *= EaseFunction.EaseCubicOut.Ease(scaleCounter);
             spriteBatch.Draw(tex, pos, null, Color.White * colorMult, 0, tex.Size() / 2, scale, SpriteEffects.None, 0f);
         }

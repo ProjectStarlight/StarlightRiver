@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 {
     public class JetwelderCrawler : ModProjectile
     {
-        public override string Texture => AssetDirectory.SteampunkItem + Name;
+        public override string Texture => AssetDirectory.SteampunkItem + "JetwelderCrawler";
 
 		private readonly int STARTTIMELEFT = 1200;
 
@@ -43,13 +43,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override bool Autoload(ref string name)
 		{
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore1");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore2");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore3");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore4");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore5");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore6");
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore7");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore1");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore2");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore3");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore4");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore5");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore6");
+			StarlightRiver.Instance.AddGore(Texture + "_Gore7");
 			return base.Autoload(ref name);
 		}
 
