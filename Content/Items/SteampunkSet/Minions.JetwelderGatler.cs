@@ -15,6 +15,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
     {
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 
+        public override bool Autoload(ref string name)
+        {
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore1");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore2");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore3");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore4");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore5");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore6");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore7");
+            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderGatler" + "_Gore8");
+            return base.Autoload(ref name);
+        }
+
         private readonly int ATTACKRANGE = 500;
         private readonly int MINATTACKRANGE = 150;
         private readonly float SPEED = 15f;
@@ -151,6 +164,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 firing = false;
             float speed = (float)Math.Min(SPEED, Math.Sqrt(direction.Length() * 0.1f));
             projectile.velocity = Vector2.Lerp(projectile.velocity, Vector2.Normalize(direction) * speed, 0.2f);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 1; i < 9; i++)
+            {
+                Gore.NewGore(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextVector2Circular(5, 5), ModGore.GetGoreSlot(Texture + "_Gore" + i.ToString()), 1f);
+            }
         }
 
         private void FireBullets()

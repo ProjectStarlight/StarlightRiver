@@ -41,6 +41,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private int attackCounter = 0;
 		private int SPEED => 3;
 
+		public override bool Autoload(ref string name)
+		{
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore1");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore2");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore3");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore4");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore5");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore6");
+			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCrawler" + "_Gore7");
+			return base.Autoload(ref name);
+		}
+
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crawler");
@@ -111,6 +123,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Crawl();
 			}
         }
+
+		public override void Kill(int timeLeft)
+		{
+			for (int i = 1; i < 8; i++)
+			{
+				Gore.NewGore(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextVector2Circular(5, 5), ModGore.GetGoreSlot(Texture + "_Gore" + i.ToString()), 1f);
+			}
+		}
 
 		private void Crawl()
 		{

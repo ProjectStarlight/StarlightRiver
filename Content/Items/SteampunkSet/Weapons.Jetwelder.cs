@@ -38,6 +38,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             item.noMelee = true;
             item.summon = true;
             item.shoot = ModContent.ProjectileType<JetwelderFlame>();
+            item.autoReuse = false;
         }
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
@@ -45,34 +46,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             JetwelderPlayer modPlayer = player.GetModPlayer<JetwelderPlayer>();
             if (player.altFunctionUse == 2)
             {
-
-                switch (modPlayer.scrap / 5)
-                {
-                    case 1:
-                        type = ModContent.ProjectileType<JetwelderCrawler>();
-                        modPlayer.scrap -= 5;
-                        break;
-                    case 2:
-                        type = ModContent.ProjectileType<JetwelderCrawler>();
-                        modPlayer.scrap -= 10;
-                        break;
-                    case 3:
-                        type = ModContent.ProjectileType<JetwelderGatler>();
-                        modPlayer.scrap -= 15;
-                        break;
-                    case 4:
-                        type = ModContent.ProjectileType<JetwelderGatler>();
-                        modPlayer.scrap -= 20;
-                        break;
-                    default:
-                        type = ModContent.ProjectileType<JetwelderGatler>();
-                        modPlayer.scrap = 0;
-                        break;
-
-                }
-                if (type == ModContent.ProjectileType<JetwelderCrawler>())
-                    position = FindFirstTile(position, type);
-                Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
+                if (Main.mouseLeft)
+                    return false;
+                type = ModContent.ProjectileType<JetwelderSelector>();
             }
             return true;
         }
@@ -82,9 +58,176 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             return new Vector2(0, 0);
         }
 
-        public override bool AltFunctionUse(Player player)
+        public override bool AltFunctionUse(Player player) => true;
+    }
+
+    public class JetwelderSelector : ModProjectile
+    {
+        public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+        private Player player => Main.player[projectile.owner];
+
+        private Vector2 direction = Vector2.Zero;
+
+        private float crawlerScale;
+        private float jumperScale;
+        private float gatlerScale;
+        private float finalScale;
+
+        private float rotation;
+
+        private float scaleCounter = 0f;
+
+        public override void SetStaticDefaults()
         {
-            return player.GetModPlayer<JetwelderPlayer>().scrap >= 5;
+            DisplayName.SetDefault("Jetwelder");
+
+        }
+        public override void SetDefaults()
+        {
+            projectile.hostile = false;
+            projectile.width = 2;
+            projectile.height = 2;
+            projectile.aiStyle = -1;
+            projectile.friendly = false;
+            projectile.penetrate = -1;
+            projectile.tileCollide = false;
+            projectile.timeLeft = 999999;
+            projectile.ignoreWater = true;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            DrawRobot(spriteBatch,
+                      ModContent.GetTexture(Texture + "_Crawler"),
+                      ModContent.GetTexture(Texture + "_Crawler_Gray"),
+                      -0.785f,
+                      rotation >= 4.71f,
+                      5,
+                      crawlerScale);
+            DrawRobot(spriteBatch,
+                      ModContent.GetTexture(Texture + "_Jumper"),
+                      ModContent.GetTexture(Texture + "_Jumper_Gray"),
+                      0.785f,
+                      rotation >= 0 && rotation < 1.57f,
+                      10,
+                      jumperScale);
+            DrawRobot(spriteBatch,
+                      ModContent.GetTexture(Texture + "_Gatler"),
+                      ModContent.GetTexture(Texture + "_Gatler_Gray"),
+                      2.356f,
+                      rotation >= 1.57f && rotation < 3.14f,
+                      15,
+                      gatlerScale);
+            DrawRobot(spriteBatch,
+                      ModContent.GetTexture(Texture + "_Final"),
+                      ModContent.GetTexture(Texture + "_Final_Gray"),
+                      3.926f,
+                      rotation >= 3.14f && rotation < 4.71f,
+                      20,
+                      finalScale);
+
+            return false;
+        }
+
+        public override void AI()
+        {
+            JetwelderPlayer modPlayer = player.GetModPlayer<JetwelderPlayer>();
+            projectile.velocity = Vector2.Zero;
+            projectile.Center = player.Center;
+            if (Main.mouseRight)
+            {
+                if (scaleCounter < 1)
+                    scaleCounter += 0.05f;
+
+                projectile.timeLeft = 2;
+
+                direction = player.DirectionTo(Main.MouseWorld);
+                direction.Normalize();
+
+                player.ChangeDir(Math.Sign(direction.X));
+
+                player.itemTime = player.itemAnimation = 2;
+                player.itemRotation = direction.ToRotation();
+                if (player.direction != 1)
+                    player.itemRotation -= 3.14f;
+
+                player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
+
+                rotation = MathHelper.WrapAngle(direction.ToRotation());
+                if (rotation < 0)
+                    rotation += 6.28f;
+
+                if (Main.mouseLeft)
+                    projectile.active = false;
+
+                if (rotation >= 4.71f && modPlayer.scrap >= 5)
+                {
+                    if (crawlerScale < 1)
+                        crawlerScale += 0.1f;
+                }
+                else if (crawlerScale > 0)
+                    crawlerScale -= 0.1f;
+
+                if (rotation >= 0 && rotation < 1.57f && modPlayer.scrap >= 10)
+                {
+                    if (jumperScale < 1)
+                        jumperScale += 0.1f;
+                }
+                else if (jumperScale > 0)
+                    jumperScale -= 0.1f;
+
+                if (rotation >= 1.57f && rotation < 3.14f && modPlayer.scrap >= 15)
+                {
+                    if (gatlerScale < 1)
+                        gatlerScale += 0.1f;
+                }
+                else if (gatlerScale > 0)
+                    gatlerScale -= 0.1f;
+
+                if (rotation >= 3.14f && rotation < 4.71f && modPlayer.scrap >= 20)
+                {
+                    if (finalScale < 1)
+                        finalScale += 0.1f;
+                }
+                else if (finalScale > 0)
+                    finalScale -= 0.1f;
+
+            }
+            else
+            {
+                projectile.active = false;
+                int type = -1;
+
+                if (rotation >= 4.71f && modPlayer.scrap >= 5)
+                {
+                    type = ModContent.ProjectileType<JetwelderCrawler>();
+                    modPlayer.scrap -= 5;
+                }
+                if (rotation >= 0 && rotation < 1.57f && modPlayer.scrap >= 10)
+                {
+                    type = ModContent.ProjectileType<JetwelderCrawler>();
+                    modPlayer.scrap -= 10;
+                }
+                if (rotation >= 1.57f && rotation < 3.14f && modPlayer.scrap >= 15)
+                {
+                    type = ModContent.ProjectileType<JetwelderGatler>();
+                    modPlayer.scrap -= 15;
+                }
+                if (rotation >= 3.14f && rotation < 4.71f && modPlayer.scrap >= 20)
+                {
+                    type = ModContent.ProjectileType<JetwelderGatler>();
+                    modPlayer.scrap -= 20;
+                }
+
+                Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
+                Vector2 position = player.Center;
+                if (type == ModContent.ProjectileType<JetwelderCrawler>())
+                    position = FindFirstTile(player.Center, type);
+
+                if (type != -1)
+                    Projectile.NewProjectile(position, Vector2.Zero, type, projectile.damage, projectile.knockBack, player.whoAmI);
+            }
         }
 
         private static Vector2 FindFirstTile(Vector2 position, int type)
@@ -95,7 +238,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 tries++;
                 int posX = (int)position.X / 16;
                 int posY = (int)position.Y / 16;
-                if (Framing.GetTileSafely(posX,posY).active() && Main.tileSolid[Framing.GetTileSafely(posX, posY).type])
+                if (Framing.GetTileSafely(posX, posY).active() && Main.tileSolid[Framing.GetTileSafely(posX, posY).type])
                 {
                     break;
                 }
@@ -106,6 +249,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             proj.SetDefaults(type);
             return position - new Vector2(0, (proj.height / 2));
         }
+
+        private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, bool enlarge, int minScrap, float growCounter)
+        {
+            Vector2 dir = angle.ToRotationVector2() * 60;
+            Vector2 pos = (player.Center + dir) - Main.screenPosition;
+            Texture2D tex = (player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap) ? regTex : grayTex;
+
+            float lerper = MathHelper.Clamp(EaseFunction.EaseCubicOut.Ease(growCounter), 0, 1);
+            float colorMult = MathHelper.Lerp(0.66f, 1f, lerper);
+            float scale = MathHelper.Lerp(0.75f, 1.5f, lerper);
+            scale *= EaseFunction.EaseCubicOut.Ease(scaleCounter);
+            spriteBatch.Draw(tex, pos, null, Color.White * colorMult, 0, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+        }
+
     }
     public class JetwelderFlame : ModProjectile
     {
