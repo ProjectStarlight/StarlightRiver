@@ -6,9 +6,11 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using Terraria.Enums;
 
 using System;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -187,7 +189,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 else if (gatlerScale > 0)
                     gatlerScale -= 0.1f;
 
-                if (rotation >= PiOverFour * 3 || rotation < PiOverFour * -3 && modPlayer.scrap >= 20)
+                if ((rotation >= PiOverFour * 3 || rotation < PiOverFour * -3) && modPlayer.scrap >= 20)
                 {
                     if (finalScale < 1)
                         finalScale += 0.1f;
@@ -201,7 +203,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             {
                 projectile.active = false;
 
-                if (projType == ModContent.ProjectileType<JetwelderGatler>() && modPlayer.scrap >= 5)
+                if (projType == ModContent.ProjectileType<JetwelderCrawler>() && modPlayer.scrap >= 5)
                 {
                     modPlayer.scrap -= 5;
                 }
@@ -248,12 +250,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             Projectile proj = new Projectile();
             proj.SetDefaults(type);
-            return position - new Vector2(0, (proj.height / 2));
+            return position - new Vector2(0, proj.height);
         }
 
         private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, int minScrap, float growCounter)
         {
-            Vector2 dir = angle.ToRotationVector2() * 60;
+            Vector2 dir = angle.ToRotationVector2() * 80;
             Vector2 pos = (player.Center + dir) - Main.screenPosition;
             Texture2D tex = (player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap) ? regTex : grayTex;
 
@@ -324,6 +326,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 Lighting.AddLight(projectile.Center + (direction * i), Color.Cyan.ToVector3() * 0.6f);
         }
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            knockback = 0;
+        }
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.GetTexture(Texture);
@@ -429,6 +435,54 @@ namespace StarlightRiver.Content.Items.SteampunkSet
     public class JetwelderPlayer : ModPlayer
     {
         public int scrap;
+
+        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+        {
+            if (player.HeldItem.type == ModContent.ItemType<Jetwelder>())
+            {
+                layers.Insert(layers.FindIndex(x => x.Name == "MiscEffectsFront" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "JetwelderBar",
+                       delegate (PlayerDrawInfo info)
+                       {
+                           DrawBar(info);
+                       }));
+            }
+            base.ModifyDrawLayers(layers);
+        }
+
+        private static void DrawBar(PlayerDrawInfo info)
+        {
+            Player player = info.drawPlayer;
+            Texture2D barTex = ModContent.GetTexture(AssetDirectory.SteampunkItem + "JetwelderBar");
+            Texture2D glowTex = ModContent.GetTexture(AssetDirectory.SteampunkItem + "JetwelderBar_Glow");
+
+            Vector2 drawPos = (player.MountedCenter - Main.screenPosition) - new Vector2(0, 40 - player.gfxOffY);
+
+            DrawData value = new DrawData(
+                        barTex,
+                        new Vector2((int)drawPos.X, (int)drawPos.Y),
+                        null,
+                        Lighting.GetColor((int)(drawPos.X + Main.screenPosition.X) / 16, (int)(drawPos.Y + Main.screenPosition.Y) / 16),
+                        0f,
+                        barTex.Size() / 2,
+                        1,
+                        SpriteEffects.None,
+                        0
+                    );
+            Main.playerDrawData.Add(value);
+
+            DrawData value2 = new DrawData(
+                        glowTex,
+                        new Vector2((int)drawPos.X, (int)drawPos.Y) - new Vector2(0,1),
+                        new Rectangle(0,0, (int)(glowTex.Width * (player.GetModPlayer<JetwelderPlayer>().scrap / 20f)), glowTex.Height),
+                        Color.White,
+                        0f,
+                        glowTex.Size() / 2,
+                        1,
+                        SpriteEffects.None,
+                        0
+                    );
+            Main.playerDrawData.Add(value2);
+        }
     }
 
     internal class JetwelderCasingGore : ModGore

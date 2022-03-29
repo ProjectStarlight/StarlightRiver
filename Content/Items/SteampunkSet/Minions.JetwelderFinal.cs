@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
                 Vector2 shootRot = Vector2.Normalize(projectile.DirectionTo(trueTarget.Center));
 
-                Vector2 bulletOffset = new Vector2(10, 9 * projectile.spriteDirection);
+                Vector2 bulletOffset = new Vector2(16, 9 * projectile.spriteDirection);
 
                 Vector2 dir = shootRot;
                 dir.Normalize();
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             {
                 tries++;
                 float angle = Main.rand.NextFloat(-3.14f, 0f);
-                if (angle > -2.355f && angle < -0.785)
+                if (angle < -2.641f || angle > -0.5)
                     continue;
                 for (int i = 0; i < ATTACKRANGE; i += 8)
                 {
@@ -272,6 +272,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             projectile.aiStyle = -1;
         }
 
+        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        {
+            Texture2D tex = Main.projectileTexture[projectile.type];
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+            return false;
+        }
+
         public override void AI()
         {
             NPC target = Main.npc[(int)projectile.ai[0]];
@@ -287,19 +294,27 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 projectile.velocity = Vector2.Lerp(projectile.velocity, dir * 13, 0.05f);
             }
             projectile.rotation = projectile.velocity.ToRotation();
+
+            if (projectile.timeLeft < 298)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    Dust dust = Dust.NewDustPerfect((projectile.Center - new Vector2(4, 4)) - (projectile.velocity * Main.rand.NextFloat(2)), ModContent.DustType<JetwelderFinalDust>(), Vector2.Normalize(-projectile.velocity).RotatedByRandom(0.3f) * Main.rand.NextFloat(1.5f));
+                    dust.scale = 0.3f * projectile.scale;
+                    dust.rotation = Main.rand.NextFloatDirection();
+                }
+            }
         }
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (projectile.velocity.Y < 0)
-                return false;
             return base.CanHitNPC(target);
         }
         public override void Kill(int timeLeft)
         {
             for (int i = 0; i < 4; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<JetwelderDust>());
                 dust.velocity = Main.rand.NextVector2Circular(2, 2);
                 dust.scale = Main.rand.NextFloat(1f, 1.5f);
                 dust.alpha = Main.rand.Next(80) + 40;
@@ -317,7 +332,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             for (int i = 0; i < 2; i++)
             {
                 Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
-                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(20)), 0, 0, ModContent.DustType<CoachGunDustFive>());
+                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(20)), 0, 0, ModContent.DustType<JetwelderDustTwo>());
                 dust.velocity = vel * Main.rand.Next(2);
                 dust.scale = Main.rand.NextFloat(0.3f, 0.7f);
                 dust.alpha = 70 + Main.rand.Next(60);
