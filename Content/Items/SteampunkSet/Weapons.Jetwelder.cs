@@ -320,14 +320,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Jetwelder");
-            Main.projFrames[projectile.type] = 1;
-
+            Main.projFrames[projectile.type] = 6;
         }
         public override void SetDefaults()
         {
             projectile.hostile = false;
-            projectile.width = 256;
-            projectile.height = 64;
+            projectile.width = 114;
+            projectile.height = 36;
             projectile.aiStyle = -1;
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -361,20 +360,39 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
             }
             projectile.rotation = direction.ToRotation();
-            projectile.Center = player.Center + new Vector2(0, player.gfxOffY) + new Vector2(30, -15 * player.direction).RotatedBy(projectile.rotation);
+            projectile.Center = player.Center + new Vector2(0, player.gfxOffY) + new Vector2(30, -18 * player.direction).RotatedBy(projectile.rotation);
 
             for (int i = 0; i < projectile.width * projectile.scale; i++)
-                Lighting.AddLight(projectile.Center + (direction * i), Color.Cyan.ToVector3() * 0.6f);
+                Lighting.AddLight(projectile.Center + (direction * i), Color.LightBlue.ToVector3() * 0.6f);
+
+            projectile.frameCounter++;
+            if (projectile.frameCounter % 2 == 0)
+                projectile.frame++;
+            projectile.frame %= Main.projFrames[projectile.type];
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
+            if (Main.rand.NextBool(4))
+                target.AddBuff(BuffID.OnFire, 150);
             knockback = 0;
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.GetTexture(Texture);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, projectile.rotation, new Vector2(0, tex.Height / 2), projectile.scale, SpriteEffects.None, 0f);
+
+            int frameHeight = tex.Height / Main.projFrames[projectile.type];
+            Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
+
+
+            SpriteEffects effects = player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipVertically;
+            Texture2D bloomTex = ModContent.GetTexture(Texture + "_Glow");
+            Color bloomColor = Color.White;
+            bloomColor.A = 0;
+            spriteBatch.Draw(bloomTex, projectile.Center - Main.screenPosition, frame, bloomColor, projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[projectile.type])), projectile.scale, effects, 0f);
+
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[projectile.type])), projectile.scale, effects, 0f);
+
             return false;
         }
 
