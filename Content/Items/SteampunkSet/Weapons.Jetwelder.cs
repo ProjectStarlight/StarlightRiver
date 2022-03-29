@@ -8,6 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.UI.Chat;
 
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
     public class Jetwelder : ModItem
     {
         public override string Texture => AssetDirectory.SteampunkItem + Name;
+
+        private bool clickingRight = false;
 
         public override void SetStaticDefaults()
         {
@@ -44,16 +47,34 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             item.autoReuse = false;
         }
 
+        public override bool CanUseItem(Player player)
+        {
+            if (clickingRight && player.altFunctionUse == 2)
+                return false;
+            return base.CanUseItem(player);
+        }
+
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             JetwelderPlayer modPlayer = player.GetModPlayer<JetwelderPlayer>();
             if (player.altFunctionUse == 2)
             {
-                if (Main.mouseLeft)
-                    return false;
+                clickingRight = true;
                 type = ModContent.ProjectileType<JetwelderSelector>();
             }
             return true;
+        }
+
+        public override void UpdateInventory(Player player)
+        {
+            if (!Main.mouseRight)
+                clickingRight = false;
+        }
+
+        public override void HoldItem(Player player)
+        {
+            if (!Main.mouseRight)
+                clickingRight = false;
         }
 
         public override Vector2? HoldoutOffset()
@@ -255,15 +276,35 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private void DrawRobot(SpriteBatch spriteBatch, Texture2D regTex, Texture2D grayTex, float angle, int minScrap, float growCounter)
         {
+            bool gray = player.GetModPlayer<JetwelderPlayer>().scrap < minScrap;
+
             Vector2 dir = angle.ToRotationVector2() * 80;
             Vector2 pos = (player.Center + dir) - Main.screenPosition;
-            Texture2D tex = (player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap) ? regTex : grayTex;
+            Texture2D tex = gray ? grayTex : regTex;
 
             float lerper = MathHelper.Clamp(EaseFunction.EaseCubicOut.Ease(growCounter), 0, 1);
             float colorMult = MathHelper.Lerp(0.66f, 1f, lerper);
             float scale = MathHelper.Lerp(0.75f, 1.33f, lerper);
             scale *= EaseFunction.EaseCubicOut.Ease(scaleCounter);
             spriteBatch.Draw(tex, pos, null, Color.White * colorMult, 0, tex.Size() / 2, scale, SpriteEffects.None, 0f);
+
+            Texture2D barTex = ModContent.GetTexture(Texture + "_Bar");
+            Vector2 barPos = pos - new Vector2(0, (30 * scale) + 10); 
+            int numScrapFive = minScrap / 5;
+            Rectangle frame = new Rectangle(
+                0,
+                gray ? barTex.Height / 2 : 0,
+                barTex.Width,
+                barTex.Height / 2);
+
+            for (int i = (int)barPos.X - (int)(barTex.Width * 0.5f * numScrapFive); i < (int)barPos.X + (int)(barTex.Width * 0.5f * numScrapFive); i+= barTex.Width)
+            {
+                spriteBatch.Draw(barTex, new Vector2(i + (barTex.Width / 2), barPos.Y), frame, Color.White * (gray ? 0.33f : 1), 0f, barTex.Size() / new Vector2(2,4), EaseFunction.EaseCubicOut.Ease(scaleCounter), SpriteEffects.None, 0f);
+            }
+            /*Vector2 origin = new Vector2(6, 13);
+            if (minScrap > 9)
+                origin.X = 8;
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontItemStack, minScrap.ToString(), pos - new Vector2(0, 40 * scale), player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap ? Color.White : Color.Red, 0f, origin, Vector2.One * EaseFunction.EaseCubicOut.Ease(scaleCounter));*/
         }
 
     }
