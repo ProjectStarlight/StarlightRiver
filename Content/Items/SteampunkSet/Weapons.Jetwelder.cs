@@ -250,7 +250,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     position.Y -= 10;
 
                 if (projType != -1)
+                {
+                    for (int j = 0; j < 18; j++)
+                    {
+                        Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
+                        Dust.NewDustPerfect((position + (direction * 6)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+                    }
                     Projectile.NewProjectile(position, Vector2.Zero, projType, projectile.damage, projectile.knockBack, player.whoAmI);
+                }
             }
         }
 

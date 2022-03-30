@@ -116,6 +116,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     fired = false;
                     fireCounter = 0;
                     jumping = false;
+                    for (int i = 0; i < 8; i++)
+                    {
+                        Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
+                        dustVel.X *= 10;
+                        if (Math.Abs(dustVel.X) < 6)
+                            dustVel.X += Math.Sign(dustVel.X) * 4;
+                        Dust.NewDustPerfect(projectile.Bottom, ModContent.DustType<JetwelderJumperDust>(), dustVel, 0, new Color(236, 214, 146) * 0.3f, Main.rand.NextFloat(0.25f, 0.5f));
+                    }
                 }
                 projectile.frame = 0;
                 projectile.frameCounter = 0;
