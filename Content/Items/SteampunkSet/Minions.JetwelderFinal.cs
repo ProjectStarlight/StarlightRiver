@@ -22,10 +22,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             return base.Autoload(ref name);
         }
 
-        private readonly int ATTACKRANGE = 500;
+        private readonly int ATTACKRANGE = 400;
         private readonly int MINATTACKRANGE = 150;
-        private readonly float SPEED = 7f;
-        private readonly float IDLESPEED = 5f;
+        private readonly float SPEED = 5f;
+        private readonly float IDLESPEED = 3f;
 
         private float idleHoverOffset;
         private int idleYOffset;
@@ -35,12 +35,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private Vector2 posToBe = Vector2.Zero;
 
-        private float rotationGoal;
-        private float currentRotation;
-
         private int shootCounter = 0;
 
         private bool firing = false;
+
+        private float backRotation = 0f;
+        private float frontRotation = 0f;
+        private Vector2 backOffset = new Vector2(12, -15);
+
+        private float backOffsetY = 0f;
+        private float frontOffsetY = 0f;
+        private Vector2 frontOffset = new Vector2(-6, -15);
 
 
         private Player player => Main.player[projectile.owner];
@@ -72,13 +77,15 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void AI()
         {
-            NPC testtarget = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+            backOffsetY *= 0.92f;
+            frontOffsetY *= 0.92f;
+            NPC testtarget = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false)*/ && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
 
             if (testtarget != default)
             {
                 target = testtarget;
 
-                NPC testtarget2 = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+                NPC testtarget2 = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false)*/&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
                 if (testtarget2 != default)
                     target2 = testtarget2;
 
@@ -93,14 +100,25 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D glowTex = ModContent.GetTexture(Texture + "_Glow");
             SpriteEffects spriteEffects = projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             int frameHeight = tex.Height / Main.projFrames[projectile.type];
-            Vector2 origin = new Vector2(projectile.spriteDirection == 1 ? 30 : tex.Width - 30, frameHeight / 2);
+            Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
 
             Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
 
+            Texture2D backTex = ModContent.GetTexture(Texture + "_Back");
+            Texture2D frontTex = ModContent.GetTexture(Texture + "_Front");
+
+            Vector2 backOffsetReal = new Vector2(backOffset.X * projectile.spriteDirection, backOffset.Y + backOffsetY).RotatedBy(projectile.rotation);
+
+            Vector2 frontOffsetReal = new Vector2(frontOffset.X * projectile.spriteDirection, frontOffset.Y + frontOffsetY).RotatedBy(projectile.rotation);
+
+            spriteBatch.Draw(backTex, (projectile.Center + backOffsetReal) - Main.screenPosition, null, lightColor, backRotation, backTex.Size() / 2, projectile.scale, spriteEffects, 0f);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
+            spriteBatch.Draw(glowTex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation, origin, projectile.scale, spriteEffects, 0f);
+            spriteBatch.Draw(frontTex, (projectile.Center + frontOffsetReal) - Main.screenPosition, null, lightColor, frontRotation, frontTex.Size() / 2, projectile.scale, spriteEffects, 0f);
             return false;
         }
 
@@ -116,6 +134,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             projectile.spriteDirection = Math.Sign(projectile.velocity.X);
             projectile.rotation = 0 + (float)(Math.Sqrt(projectile.velocity.Length()) * 0.2f * projectile.spriteDirection);
+            backRotation = projectile.rotation;
+            frontRotation = projectile.rotation;
         }
 
         private void AttackMovement()
@@ -134,27 +154,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             Vector2 towardsTarget = target.Center - projectile.Center;
 
-            rotationGoal = towardsTarget.ToRotation();
-            float rotDifference = ((((rotationGoal - currentRotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
-            currentRotation += Math.Sign(rotDifference) * 0.1f;
+            projectile.spriteDirection = Math.Sign(towardsTarget.X);
 
-            projectile.rotation = currentRotation;
+            projectile.rotation = 0 + (float)(Math.Sqrt(projectile.velocity.Length()) * 0.2f * projectile.spriteDirection);
 
-            if (Math.Abs(rotDifference) < 0.15f)
+            backRotation = MathHelper.Clamp((float)Math.Sqrt(Math.Abs(towardsTarget.X)) * Math.Sign(towardsTarget.X) * 0.04f, -0.5f,0.5f);
+            if (target2 != default)
             {
-                projectile.rotation = rotationGoal;
-            }
-
-            if (projectile.rotation.ToRotationVector2().X < 0)
-            {
-                projectile.spriteDirection = -1;
-                projectile.rotation += 3.14f;
+                Vector2 towardsTarget2 = target2.Center - projectile.Center;
+                frontRotation = MathHelper.Clamp((float)Math.Sqrt(Math.Abs(towardsTarget2.X)) * Math.Sign(towardsTarget2.X) * 0.04f, -0.5f, 0.5f);
             }
             else
-                projectile.spriteDirection = 1;
+                frontRotation = backRotation;
 
-
-            if (direction.Length() < 250 || Math.Abs(currentRotation - direction.ToRotation()) < 0.3f)
+            if (direction.Length() < 250)
             {
                 FireRockets();
                 firing = true;
@@ -180,23 +193,27 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             firing = true;
             shootCounter++;
-            if (shootCounter % 7 == 0)
+
+            if (shootCounter % 8 == 0)
             {
                 NPC trueTarget = target;
-                if (shootCounter % 14 == 0 && target2 != default)
+
+                if (shootCounter % 16 == 0) //front
                 {
-                    trueTarget = target2;
+                    if (target2 != default)
+                        trueTarget = target2;
+                    Vector2 bulletOffset = new Vector2(frontOffset.X,  frontOffset.Y - 5);
+                    bulletOffset = bulletOffset.RotatedBy(frontRotation);
+                    frontOffsetY = 16;
+                    Projectile.NewProjectile(projectile.Center + bulletOffset, Vector2.UnitY.RotatedByRandom(0.5f).RotatedBy(frontRotation) * -15, ModContent.ProjectileType<JetwelderFinalMissle>(), projectile.damage, projectile.knockBack, player.whoAmI, trueTarget.whoAmI);
                 }
-
-                Vector2 shootRot = Vector2.Normalize(projectile.DirectionTo(trueTarget.Center));
-
-                Vector2 bulletOffset = new Vector2(16, 9 * projectile.spriteDirection);
-
-                Vector2 dir = shootRot;
-                dir.Normalize();
-                bulletOffset = bulletOffset.RotatedBy(shootRot.ToRotation());
-
-                Projectile.NewProjectile(projectile.Center + bulletOffset, dir.RotatedByRandom(0.65f) * 15, ModContent.ProjectileType<JetwelderFinalMissle>(), projectile.damage, projectile.knockBack, player.whoAmI, trueTarget.whoAmI);
+                else //back
+                {
+                    Vector2 bulletOffset = new Vector2(backOffset.X, backOffset.Y - 5);
+                    bulletOffset = bulletOffset.RotatedBy(backRotation);
+                    backOffsetY = 16;
+                    Projectile.NewProjectile(projectile.Center + bulletOffset, Vector2.UnitY.RotatedByRandom(0.5f).RotatedBy(backRotation) * -15, ModContent.ProjectileType<JetwelderFinalMissle>(), projectile.damage, projectile.knockBack, player.whoAmI, trueTarget.whoAmI);
+                }
             }
         }
 
@@ -230,7 +247,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     Vector2 toLookAt = tempTarget.Center + (angle.ToRotationVector2() * i);
                     if (i > ATTACKRANGE - 16 || (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).active() && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
                     {
-                        ret = (angle.ToRotationVector2() * i * 0.85f);
+                        ret = (angle.ToRotationVector2() * i * 0.75f);
 
                         if (i > MINATTACKRANGE)
                             tries = 100;
@@ -243,7 +260,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private void FindFrame()
         {
-            
+            projectile.frameCounter++;
+            if (projectile.frameCounter % 3 == 0)
+                projectile.frame++;
+
+            projectile.frame %= Main.projFrames[projectile.type];
         }
     }
     public class JetwelderFinalMissle : ModProjectile
@@ -257,6 +278,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Rocket");
+            Main.projFrames[projectile.type] = 2;
         }
 
         public override void SetDefaults()
@@ -274,8 +296,15 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, SpriteEffects.None, 0f);
+            Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D glowTex = ModContent.GetTexture(Texture + "_Glow");
+
+            int frameHeight = tex.Height / Main.projFrames[projectile.type];
+            Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
+
+            Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
+            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, origin, projectile.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glowTex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation, origin, projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
@@ -293,7 +322,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 Vector2 dir = Vector2.Normalize(projectile.DirectionTo(target.Center));
                 projectile.velocity = Vector2.Lerp(projectile.velocity, dir * 13, 0.05f);
             }
-            projectile.rotation = projectile.velocity.ToRotation();
+            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+
+            projectile.frameCounter++;
+            if (projectile.frameCounter % 5 == 0)
+                projectile.frame++;
+
+            projectile.frame %= Main.projFrames[projectile.type];
 
             if (projectile.timeLeft < 298)
             {

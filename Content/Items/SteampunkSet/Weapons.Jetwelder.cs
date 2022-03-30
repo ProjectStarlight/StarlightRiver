@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
     public class JetwelderSelector : ModProjectile
     {
-        public override string Texture => AssetDirectory.SteampunkItem + Name;
+        public override string Texture => AssetDirectory.SteampunkItem + "JetwelderSelector";
 
         private Player player => Main.player[projectile.owner];
 
@@ -106,10 +106,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private static float PiOverFour = (float)Math.PI / 4f; //sick of casting
 
+        public override bool Autoload(ref string name)
+        {
+            StarlightRiver.Instance.AddGore(Texture + "_Gore1");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore2");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore3");
+            return base.Autoload(ref name);
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Jetwelder");
-
         }
         public override void SetDefaults()
         {
@@ -251,10 +258,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
                 if (projType != -1)
                 {
-                    for (int j = 0; j < 18; j++)
+                    int j;
+                    for (j = 0; j < 18; j++)
                     {
                         Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
                         Dust.NewDustPerfect((position + (direction * 6)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+                    }
+                    for (j = 0; j < 3; j++)
+                    {
+                        for (int k = 1; k < 4; k++)
+                        {
+                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), ModGore.GetGoreSlot(Texture + "_Gore" + k.ToString()), 1f);
+                        }
                     }
                     Projectile.NewProjectile(position, Vector2.Zero, projType, projectile.damage, projectile.knockBack, player.whoAmI);
                 }

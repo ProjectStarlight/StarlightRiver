@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Dusts
                 dust.alpha += 12;
             }
 
-            Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.1f);
+            Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
 
             dust.position += dust.velocity;
 
