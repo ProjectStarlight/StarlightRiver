@@ -72,13 +72,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void AI()
         {
-            NPC testtarget = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false) */&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+            NPC testtarget = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
 
             if (testtarget != default)
             {
                 target = testtarget;
 
-                NPC testtarget2 = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false) */&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+                NPC testtarget2 = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
                 if (testtarget2 != default)
                     target2 = testtarget2;
 
@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             NPC target = Main.npc[(int)projectile.ai[0]];
             if (target.life <= 0 || !target.active)
             {
-                target = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false) */&& Vector2.Distance(n.Center, projectile.Center) < 400).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+                target = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 400).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
                 if (target != default)
                     projectile.ai[0] = target.whoAmI;
             }

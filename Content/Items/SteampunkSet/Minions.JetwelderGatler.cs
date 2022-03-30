@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void AI()
         {
-            NPC testtarget = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false) */&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+            NPC testtarget = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
 
             if (testtarget != default)
             {
