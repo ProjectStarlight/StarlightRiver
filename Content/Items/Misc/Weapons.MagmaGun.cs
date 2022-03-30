@@ -60,7 +60,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Main_DrawNPCs(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
-			DrawTarget(Main.spriteBatch);
+			if (behindTiles)
+				DrawTarget(Main.spriteBatch);
 			orig(self, behindTiles);
 		}
 

@@ -39,5 +39,67 @@ namespace StarlightRiver.Configs
         [Tooltip("Enables/Disables fancy lighting on large textures. \nDisable this if you have performance issues.")]
         [DefaultValue(true)]
         public bool HighQualityLighting = true;
+
+        [Label("Background Reflections")]
+        [Tooltip("Configures what is rendered for background reflections. \nDisable this if you have performance issues.")]
+        public ReflectionSubConfig ReflectionConfig = new ReflectionSubConfig();
+    }
+
+    public class ReflectionSubConfig
+    {
+        [Label("Background Reflections")]
+        [Tooltip("This will Enable/Disable the background reflections system entirely. \nIf this is off, the other settings in this block are ignored. \nDisable this if you have performance issues.")]
+        [DefaultValue(true)]
+        public bool ReflectionsOn = true;
+
+        [Label("Reflect Players")]
+        [Tooltip("This will Enable/Disable reflecting players.\n low performance impact.")]
+        [DefaultValue(true)]
+        public bool PlayerReflectionsOn = true;
+
+        [Label("Reflect NPCs")]
+        [Tooltip("This will Enable/Disable reflecting NPCs.\n low performance impact.")]
+        [DefaultValue(true)]
+        public bool NpcReflectionsOn = true;
+
+        [Label("Reflect Projectiles")]
+        [Tooltip("This will Enable/Disable reflecting Projectiles.\n high performance impact.")]
+        [DefaultValue(true)]
+        public bool ProjReflectionsOn = true;
+
+        [Label("Reflect Particles")]
+        [Tooltip("This will Enable/Disable reflecting Particles, gores and dusts.\n high performance impact.")]
+        [DefaultValue(true)]
+        public bool DustReflectionsOn = true;
+
+        public override bool Equals(object obj)
+        {
+            if (obj is ReflectionSubConfig other)
+            {
+                return other.ReflectionsOn == this.ReflectionsOn
+                        && other.PlayerReflectionsOn == this.PlayerReflectionsOn
+                        && other.NpcReflectionsOn == this.NpcReflectionsOn
+                        && other.ProjReflectionsOn == this.ProjReflectionsOn
+                        && other.DustReflectionsOn == this.DustReflectionsOn;
+            }
+
+            return base.Equals(obj);
+        }
+
+
+        /// <summary>
+        /// Incase someone disables all the individual reflection components without disabling the entire system, we still want the extra optimization of disabling the entire system
+        /// so this checks each indiviudal reflection component and returns true if any are reflecting while the system is on
+        /// </summary>
+        /// <returns></returns>
+        public bool isReflectingAnything()
+        {
+            return ReflectionsOn && (PlayerReflectionsOn || NpcReflectionsOn || ProjReflectionsOn || DustReflectionsOn);
+        }
+
+        public override int GetHashCode()
+        {
+            return new { ReflectionsOn, PlayerReflectionsOn, NpcReflectionsOn, ProjReflectionsOn, DustReflectionsOn }.GetHashCode();
+        }
     }
 }
