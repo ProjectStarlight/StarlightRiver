@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Bomber");
-            Main.projFrames[projectile.type] = 1;
+            Main.projFrames[projectile.type] = 2;
             ProjectileID.Sets.Homing[projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
@@ -79,13 +79,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             backOffsetY *= 0.92f;
             frontOffsetY *= 0.92f;
-            NPC testtarget = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false)*/ && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+            NPC testtarget = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
 
             if (testtarget != default)
             {
                 target = testtarget;
 
-                NPC testtarget2 = Main.npc.Where(n => n.active /* && n.CanBeChasedBy(projectile, false)*/&& Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+                NPC testtarget2 = Main.npc.Where(n => n.active  && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800 && findPosToBe(n).Length() >= 60 && n.Distance(target.Center) > 60).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
                 if (testtarget2 != default)
                     target2 = testtarget2;
 
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         private void FindFrame()
         {
             projectile.frameCounter++;
-            if (projectile.frameCounter % 3 == 0)
+            if (projectile.frameCounter % 5 == 0)
                 projectile.frame++;
 
             projectile.frame %= Main.projFrames[projectile.type];
