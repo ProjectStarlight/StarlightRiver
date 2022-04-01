@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Coach Gun");
 			Tooltip.SetDefault("M2 to throw out a lit bundle of dynamite\n" +
-				"Explodes in 5 seconds, dealing DoT and weakening enemies\n" +
+				"Explodes in 2.5 seconds, dealing DoT and weakening enemies\n" +
 				"Shoot it to detonate it early\n" +
 				"'My business, my rules'");
 
