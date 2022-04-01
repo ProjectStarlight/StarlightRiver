@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Dungeon
     {
         public const int MAXCHARGE = 120;
 
-        private int charge = 1; //How much charge the weapon has (out of MAXCHARGE)
+        private int charge; //How much charge the weapon has (out of MAXCHARGE)
 
         private float chargeRatio => charge / (float)MAXCHARGE;
 
