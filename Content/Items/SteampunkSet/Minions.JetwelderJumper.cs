@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 if (fireCounter == 20)
                     fired = true;
             }
-            if (projectile.velocity.Y < 10)
+            if (projectile.velocity.Y < 15)
                 projectile.velocity.Y += 0.2f;
 
             if (jumping)
