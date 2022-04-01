@@ -19,6 +19,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool Autoload(ref string name)
         {
+            StarlightRiver.Instance.AddGore(Texture + "_Gore1");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore2");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore3");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore4");
+            StarlightRiver.Instance.AddGore(Texture + "_Gore5");
             return base.Autoload(ref name);
         }
 
@@ -183,9 +188,35 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void Kill(int timeLeft)
         {
-            for (int i = 1; i < 9; i++)
+            for (int i = 1; i < 6; i++)
             {
                 Gore.NewGore(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextVector2Circular(5, 5), ModGore.GetGoreSlot(Texture + "_Gore" + i.ToString()), 1f);
+            }
+
+            for (int i = 0; i < 6; i++)
+            {
+                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<JetwelderDust>());
+                dust.velocity = Main.rand.NextVector2Circular(4, 4);
+                dust.scale = Main.rand.NextFloat(1f, 1.5f);
+                dust.alpha = Main.rand.Next(80) + 40;
+                dust.rotation = Main.rand.NextFloat(6.28f);
+
+                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                Projectile.NewProjectileDirect(projectile.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<CoachGunEmber>(), 0, 0, player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
+                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<JetwelderDustTwo>());
+                dust.velocity = vel * Main.rand.Next(7);
+                dust.scale = Main.rand.NextFloat(0.3f, 0.7f);
+                dust.alpha = 70 + Main.rand.Next(60);
+                dust.rotation = Main.rand.NextFloat(6.28f);
             }
         }
 

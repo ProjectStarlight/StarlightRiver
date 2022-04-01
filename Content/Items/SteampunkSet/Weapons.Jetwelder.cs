@@ -248,8 +248,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     modPlayer.scrap -= 15;
                 }
 
-                modPlayer.scrap = 20;
-                Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
+                // modPlayer.scrap = 20;
+                //Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = player.Center;
                 if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
                     position = FindFirstTile(player.Center, projType);
@@ -487,7 +487,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (player.GetModPlayer<JetwelderPlayer>().scrap < 20)
                 player.GetModPlayer<JetwelderPlayer>().scrap++;
 
-            Main.NewText(player.GetModPlayer<JetwelderPlayer>().scrap.ToString());
+            //Main.NewText(player.GetModPlayer<JetwelderPlayer>().scrap.ToString());
             return false;
         }
 

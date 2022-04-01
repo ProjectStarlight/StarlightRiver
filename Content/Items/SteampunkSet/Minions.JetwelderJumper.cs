@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Jumper");
-            Main.projFrames[projectile.type] = 5;
+            Main.projFrames[projectile.type] = 14;
             ProjectileID.Sets.Homing[projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
@@ -87,13 +87,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (projectile.frameCounter % 4 == 0 && !jumping && (fireCounter == 20 || fireCounter == 0 || testtarget == default))
             {
                 projectile.frame++;
-                if (projectile.frame == 4)
+                if (projectile.frame == 11)
                 {
                     Jump(testtarget);
                 }
             }
+
             if (testtarget != default && !jumping && !fired)
             {
+                if (projectile.frameCounter % 4 == 0 && projectile.frame < 5)
+                    projectile.frame++;
                 fireCounter++;
                 if (fireCounter == 10)
                     FireMissle(testtarget);
@@ -104,12 +107,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 projectile.velocity.Y += 0.3f;
 
             if (jumping)
+            {
                 projectile.velocity.X = xVel;
+                if (Math.Abs(projectile.velocity.Y) < 0.5f)
+                    projectile.frame = 12;
+                else if (projectile.velocity.Y >= 0.5f)
+                    projectile.frame = 13;
+                else
+                    projectile.frame = 11;
+            }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (oldVelocity.Y != projectile.velocity.Y && oldVelocity.Y > 0 && projectile.frame == 4)
+            if (oldVelocity.Y != projectile.velocity.Y && oldVelocity.Y > 0 && projectile.frame > 10)
             {
                 if (jumping)
                 {
