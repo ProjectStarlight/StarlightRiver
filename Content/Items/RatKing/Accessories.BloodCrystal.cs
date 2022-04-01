@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Crystal");
-			Tooltip.SetDefault("hard to describe egshels update this lol");
+			Tooltip.SetDefault("Debuffs you inflict are inflicted onto you \nAll debuffs you inflict stack and last longer");
 		}
 
 
