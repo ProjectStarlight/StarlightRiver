@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     fired = true;
             }
             if (projectile.velocity.Y < 10)
-                projectile.velocity.Y += 0.3f;
+                projectile.velocity.Y += 0.2f;
 
             if (jumping)
             {
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 int offsetDirection = Math.Sign(target.Center.X - projectile.Center.X);
                 dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign((target.Center.X - (offsetDirection * 300)) - projectile.Center.X) * 0.6f));
             }
-            projectile.velocity = dir * Main.rand.Next(5, 10);
+            projectile.velocity = dir * Main.rand.Next(6, 11);
             xVel = projectile.velocity.X;
 
             projectile.spriteDirection = Math.Sign(dir.X);
