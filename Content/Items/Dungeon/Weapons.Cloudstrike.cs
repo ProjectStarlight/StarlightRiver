@@ -20,11 +20,8 @@ namespace StarlightRiver.Content.Items.Dungeon
     {
         public const int MAXCHARGE = 120;
 
-        private int charge; //How much charge the weapon has (out of MAXCHARGE)
+        private float chargeRatio(Player player) => player.GetModPlayer<CloudstrikePlayer>().charge / (float)MAXCHARGE;
 
-        private float chargeRatio => charge / (float)MAXCHARGE;
-
-        private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
 
         public override void SetStaticDefaults()
@@ -54,7 +51,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         }
         public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
         {
-            mult = (float)Math.Sqrt(chargeRatio);
+            mult = (float)Math.Sqrt(chargeRatio(player));
         }
 
         public override Vector2? HoldoutOffset()
@@ -64,11 +61,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (charge == 1)
+            if (Math.Max(player.GetModPlayer<CloudstrikePlayer>().charge, 1) == 1)
             {
-                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 4)).ToString(), 0.2f, Main.rand.NextFloat(0f,0.2f), player.Center);
+                Helper.PlayPitched("Magic/LightningShortest" + (1 + (player.GetModPlayer<CloudstrikePlayer>().charge % 4)).ToString(), 0.2f, Main.rand.NextFloat(0f,0.2f), player.Center);
             }
-            else if (charge == MAXCHARGE)
+            else if (player.GetModPlayer<CloudstrikePlayer>().charge == MAXCHARGE)
             {
                 damage = (int)(damage * 1.5f);
                 //Full charge attack sound here
@@ -78,51 +75,51 @@ namespace StarlightRiver.Content.Items.Dungeon
             {
                 //staggered attack sound here
                 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - (player.GetModPlayer<CloudstrikePlayer>().charge * 0.01f), 0f, 1.0f), player.Center);
                 //MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
             }
             Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
             Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
-            Projectile.NewProjectile(pos, new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, charge);
+            Projectile.NewProjectile(pos, new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, player.whoAmI, player.GetModPlayer<CloudstrikePlayer>().charge);
 
-            player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(charge) * 2);
+            player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(player.GetModPlayer<CloudstrikePlayer>().charge) * 2);
 
             //Dust.NewDustPerfect(pos, DustID.Electric, dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5));
-            if (charge > 60)
-                player.velocity -= dir * (float)Math.Sqrt(charge - 60);
-            charge = 1;
+            if (player.GetModPlayer<CloudstrikePlayer>().charge > 60)
+                player.velocity -= dir * (float)Math.Sqrt(player.GetModPlayer<CloudstrikePlayer>().charge - 60);
+            player.GetModPlayer<CloudstrikePlayer>().charge = 1;
             return false;
         }
 
         public override void HoldItem(Player player)
         {
-            counter++;
-            if (charge < MAXCHARGE && !player.channel)
+            player.GetModPlayer<CloudstrikePlayer>().counter++;
+            if (player.GetModPlayer<CloudstrikePlayer>().charge < MAXCHARGE && !player.channel)
             {
-                charge++;
-                if (charge == MAXCHARGE)
+                player.GetModPlayer<CloudstrikePlayer>().charge++;
+                if (player.GetModPlayer<CloudstrikePlayer>().charge == MAXCHARGE)
                 {
                     //REACHING FULL CHARGE SOUND HERE
                     Helper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, player.Center);
                     for (int i = 0; i < 12; i++)
-                        CreateStatic(charge, player, true);
+                        CreateStatic(player.GetModPlayer<CloudstrikePlayer>().charge, player, true);
                 }
                 
-                if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
+                if (player.GetModPlayer<CloudstrikePlayer>().counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
                 {
-                    Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(charge / 200f, 2), MathHelper.Clamp(0.1f + (charge / 120f), 0, 1), player.Center);
+                    Helper.PlayPitched("Magic/LightningChargeShort", (float)Math.Pow(player.GetModPlayer<CloudstrikePlayer>().charge / 200f, 2), MathHelper.Clamp(0.1f + (player.GetModPlayer<CloudstrikePlayer>().charge / 120f), 0, 1), player.Center);
                 }
 
             }
 
-            if (charge == MAXCHARGE && counter % 10 == 0) //change the 10 to the number of ticks you want the sound to loop on
+            if (player.GetModPlayer<CloudstrikePlayer>().charge == MAXCHARGE && player.GetModPlayer<CloudstrikePlayer>().counter % 10 == 0) //change the 10 to the number of ticks you want the sound to loop on
             {
                 //CHARGED IDLE SOUND HERE
             }
 
-            if (Main.rand.NextBool((int)(50 / (float)Math.Sqrt(charge))) && !player.channel)
+            if (Main.rand.NextBool((int)(50 / (float)Math.Sqrt(Math.Max(player.GetModPlayer<CloudstrikePlayer>().charge, 1)))) && !player.channel)
             {
-                CreateStatic(charge, player);
+                CreateStatic(player.GetModPlayer<CloudstrikePlayer>().charge, player);
             }
             base.HoldItem(player);
         }
@@ -148,7 +145,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override void ModifyWeaponDamage(Player player, ref float add, ref float mult, ref float flat)
         {
-            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * player.magicDamage);
+            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio(player)) - 45) * player.magicDamage);
         }
 
         public override void AddRecipes()
@@ -665,5 +662,12 @@ namespace StarlightRiver.Content.Items.Dungeon
                 dust.active = false;
             return false;
         }
+    }
+
+    public class CloudstrikePlayer : ModPlayer //nessecary due to a TML bug
+    {
+        public int charge = 1;
+
+        public int counter = 0;
     }
 }
