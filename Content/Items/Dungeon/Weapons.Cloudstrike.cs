@@ -20,12 +20,14 @@ namespace StarlightRiver.Content.Items.Dungeon
     {
         public const int MAXCHARGE = 120;
 
-        private int charge; //How much charge the weapon has (out of MAXCHARGE)
+        private int charge = 1; //How much charge the weapon has (out of MAXCHARGE)
 
         private float chargeRatio => charge / (float)MAXCHARGE;
 
         private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
+
+        public override bool CloneNewInstances => true;
 
         public override void SetStaticDefaults()
         {
@@ -51,6 +53,20 @@ namespace StarlightRiver.Content.Items.Dungeon
             item.autoReuse = true;
             item.channel = true;
             item.noMelee = true;
+        }
+
+        public override ModItem Clone(Item item)
+        {
+
+            var clone = base.Clone(item);
+
+            if (Main.mouseItem.type == ModContent.ItemType<Cloudstrike>())
+                item.modItem.HoldItem(Main.player[Main.myPlayer]);
+
+            (clone as Cloudstrike).charge = (item.modItem as Cloudstrike).charge;
+            (clone as Cloudstrike).counter = (item.modItem as Cloudstrike).counter;
+
+            return clone;
         }
         public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
         {
