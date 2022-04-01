@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public int ticker;
 
-        private int ammoToUse;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Double Cross");
@@ -281,6 +280,8 @@ namespace StarlightRiver.Content.Items.Misc
             obj = DualCrossGlobalItem.GetAmmo(ticker % 2, weapon, player, ref canShoot);
             obj2 = DualCrossGlobalItem.GetAmmo((ticker + 1) % 2, weapon, player, ref canShoot);
 
+            damage += obj.damage;
+
             if (!canShoot)
                 return;
 
@@ -297,8 +298,6 @@ namespace StarlightRiver.Content.Items.Misc
 
             float speed1 = GetSpeed(player, obj, weapon, speed) * (proj.extraUpdates + 1);
             float speed2 = GetSpeed(player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
-
-
             speed = ((speed1 + speed2) / 2) / (proj.extraUpdates + 1);
 
             bool flag2 = false;
