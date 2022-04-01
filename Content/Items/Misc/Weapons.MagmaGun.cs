@@ -433,7 +433,19 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!stoppedInTile)
 				Velocity.Y += 0.1f;
 
-			if (stoppedInTile || stoppedInEnemy)
+			if (stoppedInTile)
+			{
+				Velocity = Vector2.Zero;
+				int i = 0;
+				int j = 0;
+				if (!TouchingTiles(ref i, ref j))
+				{
+					embedTimer = 1;
+					stoppedInTile = false;
+					touchingTile = false;
+				}
+			}
+			if (stoppedInEnemy)
 				Velocity = Vector2.Zero;
 
 			Center += Velocity;
@@ -443,65 +455,71 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void CheckIfTouchingTiles()
         {
-			bool breakOut = false;
-			for (int i = (int)Position.X; i < (int)(Position.X + Size.X) && !breakOut; i += 16) //Todo: Break this godawful nested statement hell into its own methods
+			int i = 0;
+			int j = 0;
+			if (TouchingTiles(ref i, ref j) && !stoppedInTile)
             {
-				for (int j = (int)Position.Y; j < (int)(Position.Y + Size.Y) && !breakOut; j += 16)
+				touchingTile = true;
+				Velocity = Vector2.Normalize(Velocity) * 9;
+				if (embedTimer < 0)
+				{
+					if (Main.rand.NextBool(40))
+						Main.PlaySound(19, Center, 1);
+					stoppedInTile = true;
+					oldVel = Velocity;
+					Velocity = Vector2.Zero;
+					int k = 0;
+					int d = 0;
+					if (Main.rand.NextBool())
+					{
+						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
+						d = Dust.NewDust(Position + (bubbleDir * 4), width, height, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
+						Main.dust[d].velocity = bubbleDir;
+					}
+					else
+					{
+						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.2f) * 6;
+						Vector2 pos = Position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
+						pos += (bubbleDir * 4);
+
+						if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
+						{
+							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
+							if (!Main.tileSolid[tile2.type] || !tile2.active())
+							{
+								Gore.NewGoreDirect(pos, bubbleDir, ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+							}
+						}
+					}
+
+					for (k = 0; k < 4; k++)
+					{
+						Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
+						Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
+					}
+
+				}
+			}
+        }
+
+		private bool TouchingTiles(ref int i, ref int j)
+        {
+			for(i = (int)Position.X; i < (int)(Position.X + Size.X); i += 16) //Todo: Break this godawful nested statement hell into its own methods
+            {
+				for (j = (int)Position.Y; j < (int)(Position.Y + Size.Y); j += 16)
 				{
 					if (WorldGen.InWorld(i / 16, j / 16))
 					{
 						Tile tile = Main.tile[i / 16, j / 16];
 						if (tile.active() && Main.tileSolid[tile.type] && !TileID.Sets.Platforms[tile.type])
 						{
-							if (!stoppedInTile)
-							{
-								touchingTile = true;
-								Velocity = Vector2.Normalize(Velocity) * 9;
-								if (embedTimer < 0)
-								{
-									if (Main.rand.NextBool(40))
-										Main.PlaySound(19, Center, 1);
-									stoppedInTile = true;
-									oldVel = Velocity;
-									Velocity = Vector2.Zero;
-									int k = 0;
-									int d = 0;
-									if (Main.rand.NextBool())
-									{
-										Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
-										d = Dust.NewDust(Position + (bubbleDir * 4), width, height, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
-										Main.dust[d].velocity = bubbleDir;
-									}
-									else
-									{
-										Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.2f) * 6;
-										Vector2 pos = Position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
-										pos += (bubbleDir * 4);
-
-										if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
-										{
-											Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
-											if (!Main.tileSolid[tile2.type] || !tile2.active())
-											{
-												Gore.NewGoreDirect(pos, bubbleDir, ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
-											}
-										}
-									}
-
-									for (k = 0; k < 4; k++)
-                                    {
-										Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-										Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
-									}
-
-								}
-							}
-							breakOut = true;
+							return true;
 						}
 					}
 				}
 			}
-        }
+			return false;
+		}
 
 		public void Draw(SpriteBatch spriteBatch, Texture2D tex)
 		{
