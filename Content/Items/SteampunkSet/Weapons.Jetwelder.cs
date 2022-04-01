@@ -243,9 +243,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 {
                     modPlayer.scrap -= 15;
                 }
-                if (projType == ModContent.ProjectileType<JetwelderFinal>() && modPlayer.scrap >= 15)
+                if (projType == ModContent.ProjectileType<JetwelderFinal>() && modPlayer.scrap >= 20)
                 {
-                    modPlayer.scrap -= 15;
+                    modPlayer.scrap -= 20;
                 }
 
                 // modPlayer.scrap = 20;
