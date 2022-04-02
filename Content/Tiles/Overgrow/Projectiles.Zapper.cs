@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             }
 
             foreach (Player player in Main.player.Where(player => player.active))
-                if (Collision.CheckAABBvAABBCollision(projectile.position, dims, player.position, player.Hitbox.Size()) && !player.ActiveAbility<Wisp>())
+                if (Collision.CheckAABBvAABBCollision(projectile.position, dims, player.position, player.Hitbox.Size()) && !player.ActiveAbility<Whip>())
                 {
                     player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was zapped to death."), 50, 0);
                     player.velocity.X = player.velocity.Length() <= 8 ? (-Vector2.Normalize(player.velocity) * 8).X : player.velocity.X * -1;

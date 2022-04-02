@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Pickups
 
         public override bool CanPickup(Player player)
         {
-            return !player.GetHandler().Unlocked<Wisp>();
+            return !player.GetHandler().Unlocked<Whip>();
         }
 
         public override void SetStaticDefaults()
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Pickups
         public override void PickupEffects(Player player)
         {
             AbilityHandler mp = player.GetHandler();
-            mp.Unlock<Wisp>();
+            mp.Unlock<Whip>();
 
             player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
             player.AddBuff(BuffID.Featherfall, 580);

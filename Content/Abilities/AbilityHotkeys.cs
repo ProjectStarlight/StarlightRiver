@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Abilities
         internal void LoadDefaults()
         {
             Bind<Dash>("Forbidden Winds", "LeftShift");
-            Bind<Wisp>("Faeflame", "F");
+            Bind<Whip>("Faeflame", "F");
             Bind<Pure>("Purity Crown", "N");
             Bind<Smash>("Gaia's Fist", "Z");
         }

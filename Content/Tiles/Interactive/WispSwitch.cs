@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override void Update()
         {
-            if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.ActiveAbility<Wisp>()) && timer == 0)
+            if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.ActiveAbility<Whip>()) && timer == 0)
                 timer = 300;
             if (timer > 0)
             {
