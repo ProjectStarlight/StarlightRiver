@@ -28,9 +28,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public List<Vector2> crystalLocations = new List<Vector2>();
         public Rectangle arena;
 
-        const int arenaWidth = 1280;
-        const int arenaHeight = 884;
-
         public int twistTimer;
         public int maxTwistTimer;
         public int lastTwistState;
@@ -45,7 +42,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private int favoriteCrystal = 0;
         private bool altAttack = false;
         private int randSeed = 1923712512;
-
+        private UnifiedRandom bossRand = new UnifiedRandom(1923712512);
+        
         private List<VitricBossSwoosh> swooshes;
         private BodyHandler body;
 
@@ -59,14 +57,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         internal ref float Phase => ref npc.ai[1];
         internal ref float AttackPhase => ref npc.ai[2];
         internal ref float AttackTimer => ref npc.ai[3];
-
-
-        private bool justRecievedPacket = false; //true for the frame this recieves a packet update to handle any syncronizing
-        private float prevTickGlobalTimer; //since globalTimer can jump around from from to frame from recieving packets, we want to make sure we catch logic for every number in the cutscenes if it fastforwarded from a packet (reversed is ignored so we don't double up on sounds/shake)
-        private float prevPhase = 0;
-        private float prevAttackPhase = 0;
-
-        private UnifiedRandom bossRand = new UnifiedRandom(1923712512);
 
         public override string Texture => AssetDirectory.VitricBoss + Name;
 
@@ -139,11 +129,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (Phase == (int)AIStates.Dying && GlobalTimer >= 659)
             {
-                if (Main.netMode != NetmodeID.MultiplayerClient)
-                {
-                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp))
-                        npc.active = false; //reset arena      
-                }
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) npc.active = false; //reset arena                
                 return true;
             }
 
@@ -157,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     player.immune = true;
                 }
 
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp))
+                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBackdropLeft || n.modNPC is VitricBossPlatformUp)) 
                     npc.ai[1] = 4;
 
                 ChangePhase(AIStates.Dying, true);
@@ -176,8 +162,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            //spriteBatch.Draw(Main.magicPixel, new Rectangle(arena.X - (int)Main.screenPosition.X, arena.Y - (int)Main.screenPosition.Y, arena.Width, arena.Height),Color.White);
-
             swooshes.ForEach(n => n.Draw(spriteBatch));
 
             spriteBatch.End();
@@ -270,11 +254,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return false;
         }
 
+        
+
         public override void NPCLoot()
         {
+            StarlightWorld.Flag(WorldFlags.VitricBossDowned);
 
-            for (int k = 0; k < Main.rand.Next(30, 40); k++)
+            foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
             {
+                player.GetModPlayer<MedalPlayer>().ProbeMedal("Ceiros");
+            }
+
+            body.SpawnGores2();
+
+            for(int k = 0; k < Main.rand.Next(30, 40); k++)
+			{
                 var rot = Main.rand.NextFloat(6.28f);
                 Helper.NewItemPerfect(npc.Center + Vector2.UnitX.RotatedBy(rot) * 120, Vector2.UnitX.RotatedBy(rot) * Main.rand.NextFloat(5, 20), ItemType<VitricOre>());
             }
@@ -289,6 +283,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (Main.expertMode)
                 npc.DropItemInstanced(npc.Center, Vector2.One, ItemType<VitricBossBag>());
+
             else
             {
                 int weapon = Main.rand.Next(4);
@@ -304,23 +299,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Item.NewItem(npc.Center, ItemType<MagmaCore>(), Main.rand.Next(1, 2));
                 Item.NewItem(npc.Center, ItemType<Items.Misc.StaminaUp>());
 
-                if (Main.rand.Next(10) == 0)
+                if(Main.rand.Next(10) == 0)
                     Item.NewItem(npc.Center, ItemType<Items.BarrierDye.VitricBossBarrierDye>());
             }
         }
 
-        public override void HitEffect(int hitDirection, double damage)
-        {
-        }
-
-
-        //these pain things are npc owner only may need to be reworked
-        //for now just gonna make them sp only
         public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
         {
-            if (Main.netMode != NetmodeID.SinglePlayer)
-                return;
-
             if (pain > 0)
                 painDirection += CompareAngle((npc.Center - player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -334,9 +319,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
         {
-            if (Main.netMode != NetmodeID.SinglePlayer)
-                return;
-
             if (pain > 0)
                 painDirection += CompareAngle((npc.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
             else
@@ -372,7 +354,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         private int GetTwistDirection(float angle)
-        {
+		{
             int direction = 0;
 
             if (angle > 1.57f && angle < 1.57f * 3)
@@ -439,14 +421,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
-            if (arena == new Rectangle())
-                arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
-
-
-            //find crystals
-            if (crystals.Count < 4)
-                findCrystals();
-
             //Ticks the timer
             GlobalTimer++;
             AttackTimer++;
@@ -469,25 +443,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             //Main AI
             Lighting.AddLight(npc.Center, new Vector3(1, 0.8f, 0.4f)); //glow
 
-            if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && !n.dead && arena.Contains(n.Center.ToPoint()))) //if no valid players are detected
+            if (Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && arena != new Rectangle() && !Main.player.Any(n => n.active && n.statLife > 0 && n.Hitbox.Intersects(arena))) //if no valid players are detected
             {
                 GlobalTimer = 0;
                 Phase = (int)AIStates.Leaving; //begone thot!
                 crystals.ForEach(n => n.ai[2] = 4);
                 crystals.ForEach(n => n.ai[1] = 0);
-                npc.netUpdate = true;
-            }
-
-            if (!BootlegHealthbar.visible && Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && Phase != (int)AIStates.SpawnEffects && Phase != (int)AIStates.SpawnAnimation && Main.netMode != NetmodeID.Server && arena.Contains(Main.LocalPlayer.Center.ToPoint()))
-            {
-                //in case the player joined late or something for the hp bar
-                BootlegHealthbar.SetTracked(npc, ", Shattered Sentinel", GetTexture(AssetDirectory.VitricBoss + "GUI/HealthBar"));
-                BootlegHealthbar.visible = true;
             }
 
             float sin = (float)Math.Sin(Main.GameUpdateCount * 0.1f); //health bar glow color timer
-
-            int healthGateAmount = npc.lifeMax / 7;
 
             switch (Phase)
             {
@@ -496,10 +460,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     BuildCrystalLocations();
 
+                    const int arenaWidth = 1280;
+                    const int arenaHeight = 884;
+                    arena = new Rectangle((int)npc.Center.X + 8 - arenaWidth / 2, (int)npc.Center.Y - 832 - arenaHeight / 2, arenaWidth, arenaHeight);
+
                     foreach (Player player in Main.player.Where(n => n.active && arena.Contains(n.Center.ToPoint())))
                     {
                         player.GetModPlayer<MedalPlayer>().QualifyForMedal("Ceiros", 1);
                     }
+
                     ChangePhase(AIStates.SpawnAnimation, true);
                     RebuildRandom();
 
@@ -513,30 +482,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.FirstPhase:
-
+                 
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0.2f) * Math.Min(1, GlobalTimer / 60f) * 0.7f;
 
                     if (shieldShaderTimer > 0)
                         shieldShaderTimer--;
 
-
-                    if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
+                    int healthGateAmount = npc.lifeMax / 7;
+                    if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount && !npc.dontTakeDamage)
                     {
-                        if (!npc.dontTakeDamage)
-                        {
-                            //first frame entering no take damage health gate so we do effects
-                            shieldShaderTimer = 120;
-                            npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
-                            Main.PlaySound(SoundID.ForceRoar, npc.Center);
-                        }
-
+                        shieldShaderTimer = 120;
                         npc.dontTakeDamage = true; //boss is immune at phase gate
+                        npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
+                        Main.PlaySound(SoundID.ForceRoar, npc.Center);
+
+                        RebuildRandom();
                     }
 
                     if (AttackTimer == 1) //switching out attacks
                     {
                         if (npc.dontTakeDamage) //nuke attack once the boss turns immortal for a chance to break a crystal
-                            AttackPhase = 0;
+                            AttackPhase = 0; 
                         else //otherwise proceed with attacking pattern
                         {
                             AttackPhase++;
@@ -563,22 +529,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Anger: //the short anger phase attack when the boss loses a crystal
 
-                    //health gate the anger phase still incase the player has absurd endgame damage
-                    if (npc.life <= npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
-                    {
-                        if (!npc.dontTakeDamage)
-                        {
-                            //first frame entering no take damage health gate so we do effects
-                            shieldShaderTimer = 120;
-                            npc.life = npc.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
-                            Main.PlaySound(SoundID.ForceRoar, npc.Center);
-                        }
-
-                        npc.dontTakeDamage = true; //boss is immune at phase gate
-                    }
-                    else
-                        npc.dontTakeDamage = false;
-
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
 
                     AngerAttack();
@@ -587,8 +537,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 case (int)AIStates.FirstToSecond:
 
                     BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
-
-                    npc.dontTakeDamage = true;
 
                     PhaseTransitionAnimation();
                     DoRotation();
@@ -604,7 +552,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Vignette.visible = true;
 
                     if (GlobalTimer == 60)
+                    {
                         npc.dontTakeDamage = false; //damagable again
+                        npc.friendly = false;                    
+                    }
 
                     if (AttackTimer == 1) //switching out attacks
                     {
@@ -633,9 +584,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     break;
 
                 case (int)AIStates.Leaving:
-                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
-                    npc.dontTakeDamage = true;
+                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     npc.position.Y += 7;
 
@@ -656,48 +606,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             body?.UpdateBody(); //update the physics on the body, last, so it can override framing
-
-            if (Main.netMode == NetmodeID.Server)
-            {
-                //instantly switch targets if no longer valid
-                Player target = Main.player[npc.target];
-                if (!target.active || target.dead || !arena.Contains(target.Center.ToPoint()))
-                {
-                    RandomizeTarget();
-                    npc.netUpdate = true;
-                }
-            }
-
-            if (Main.netMode == NetmodeID.Server && (Phase != prevPhase || AttackPhase != prevAttackPhase))
-            {
-                prevPhase = Phase;
-                prevAttackPhase = AttackPhase;
-                npc.netUpdate = true;
-            }
-
-            prevTickGlobalTimer = GlobalTimer; //potentially just shifted so we store the previous value in case of fastforwarding
-            justRecievedPacket = false; //at end of frame set to no longer just recieved
         }
 
-        public void findCrystals()
-        {
-            //finds the crystals for ceiros for mp if they haven't been found yet
-            crystals.Clear(); // clear incase it was an edge case where fewer than all 4 were found on a frame since the npc spawn information hadn't arrived yet
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == ModContent.NPCType<VitricBossCrystal>() && !crystals.Contains(npc))
-                    crystals.Add(npc);
-            }
-        }
-
-        public override void ResetEffects()
-        {
+		public override void ResetEffects()
+		{
             rotationLocked = false;
         }
 
-        private void DoRotation()
-        {
+		private void DoRotation()
+		{
             if (GlobalTimer % 30 == 0)
             {
                 if (rotationLocked)
@@ -728,41 +645,80 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         #region Networking
         public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
+            if (!npc.active)
+                return;
+
             writer.Write(favoriteCrystal);
             writer.Write(altAttack);
-            writer.Write(lockedRotation);
+            writer.Write(randSeed);
 
-            writer.WritePackedVector2(startPos);
-            writer.WritePackedVector2(endPos);
-            writer.WritePackedVector2(homePos);
+            writer.Write(arena.X);
+            writer.Write(arena.Y);
+            writer.Write(arena.Width);
+            writer.Write(arena.Height);
 
-            writer.Write(npc.dontTakeDamage);
-            writer.Write(npc.defense);
+            writer.Write(startPos.X);
+            writer.Write(startPos.Y);
 
-            writer.Write(npc.target);
+            writer.Write(endPos.X);
+            writer.Write(endPos.Y);
+
+            writer.Write(homePos.X);
+            writer.Write(homePos.Y);
+
+            if (crystals.Count >= 4)
+            {
+                for (int k = 0; k < 4; k++)
+                    writer.Write(crystals[k].whoAmI);
+            }
         }
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
-            justRecievedPacket = true;
+            if (!npc.active)
+                return;
 
             favoriteCrystal = reader.ReadInt32();
             altAttack = reader.ReadBoolean();
-            lockedRotation = reader.ReadSingle();
+            randSeed = reader.ReadInt32();
+            bossRand = new UnifiedRandom(randSeed);
 
-            startPos = reader.ReadPackedVector2();
-            endPos = reader.ReadPackedVector2();
-            homePos = reader.ReadPackedVector2();
+            arena = new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 
-            npc.dontTakeDamage = reader.ReadBoolean();
-            npc.defense = reader.ReadInt32();
+            startPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            endPos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+            homePos = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
-            npc.target = reader.ReadInt32();
+            if (reader.BaseStream.Position >= reader.BaseStream.Length)
+                return;
 
-            if (homePos != Vector2.Zero)
-                arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
+            for (int k = 0; k < 4; k++)
+            {
+                if (crystals.Count > k)
+                    crystals[k] = Main.npc[reader.ReadInt32()];
+                else
+                {
+                    NPC npc = new NPC();
+                    npc.SetDefaults(NPCType<VitricBossCrystal>());
 
+                    Vector2 target = new Vector2(npc.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
+                    npc.Center = target;
+                    npc.ai[0] = 2;
+
+                    (npc.modNPC as VitricBossCrystal).Parent = this;
+                    (npc.modNPC as VitricBossCrystal).StartPos = target;
+                    (npc.modNPC as VitricBossCrystal).TargetPos = npc.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
+
+                    int index = reader.ReadInt32();
+                    Main.npc[index] = npc;
+
+                    crystals.Add(Main.npc[index]);
+                }
+            }
         }
         #endregion Networking
+
+        private int IconFrame = 0;
+        private int IconFrameCounter = 0;
     }
 }

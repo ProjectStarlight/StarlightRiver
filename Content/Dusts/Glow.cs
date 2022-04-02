@@ -61,4 +61,13 @@ namespace StarlightRiver.Content.Dusts
             return false;
         }
     }
+
+    public class GlowFastDecelerate : Glow
+	{
+        public override bool Update(Dust dust)
+        {
+            dust.velocity *= 0.95f;
+            return base.Update(dust);
+        }
+    }
 }

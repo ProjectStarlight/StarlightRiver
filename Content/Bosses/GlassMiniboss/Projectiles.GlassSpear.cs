@@ -80,8 +80,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());
-
-            GlassMiniboss.SpawnShards(1, projectile.Center);
         }
     }
 }
