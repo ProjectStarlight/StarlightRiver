@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.GUI
         public override void Click(UIMouseEvent evt)
         {
             onClick.Invoke();
-            Main.PlaySound(Terraria.ID.SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
         }
     }
 }

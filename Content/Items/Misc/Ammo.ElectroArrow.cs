@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (projectile.timeLeft == 180)
             {
                 savedPos = projectile.Center;
-                Main.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, projectile.Center);
             }
 
             if (Main.GameUpdateCount % 3 == 0) //rebuild electricity nodes

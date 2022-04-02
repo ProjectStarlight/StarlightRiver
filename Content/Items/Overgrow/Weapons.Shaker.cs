@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Items.Overgrow
                     {
                         Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                     }
-                    Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
                 }
 
                 projectile.velocity = Vector2.Zero;
@@ -176,8 +176,8 @@ namespace StarlightRiver.Content.Items.Overgrow
                     {
                         Dust.NewDustPerfect(projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Timer / 10f);
                     }
-                    Main.PlaySound(SoundID.Item70, projectile.Center);
-                    Main.PlaySound(SoundID.NPCHit42, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
                 }
             }
 

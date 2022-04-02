@@ -10,7 +10,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.World.Generation;
+using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 

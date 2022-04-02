@@ -23,7 +23,7 @@ namespace StarlightRiver
     {
         public AbilityHotkeys AbilityKeys { get; private set; }
 
-        private List<ILoadable> loadCache;
+        private List<IOrderedLoadable> loadCache;
 
         private List<IRecipeGroup> recipeGroupCache;
 
@@ -146,14 +146,14 @@ namespace StarlightRiver
         {
             //CopyFile();
 
-            loadCache = new List<ILoadable>();
+            loadCache = new List<IOrderedLoadable>();
 
             foreach (Type type in Code.GetTypes())
             {
-                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IOrderedLoadable)))
                 {
                     var instance = Activator.CreateInstance(type);
-                    loadCache.Add(instance as ILoadable);
+                    loadCache.Add(instance as IOrderedLoadable);
                 }
 
                 loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);

@@ -177,7 +177,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void FailFX(Point16 pos)
         {
-            Main.PlaySound(SoundID.DD2_LightningBugZap, pos.ToVector2() * 16);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, pos.ToVector2() * 16);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDust(pos.ToVector2() * 16, 16, 16, DustType<Dusts.Glow>(), 0, 0, 0, Color.Red, 0.2f);

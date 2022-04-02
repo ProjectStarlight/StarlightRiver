@@ -179,7 +179,7 @@ namespace StarlightRiver.Content.GUI
 
             if(craftTime == 60)
             {
-                Main.PlaySound(SoundID.DD2_BetsyFireballImpact);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact);
                 for (int k = 0; k < 100; k++)
                 {
                     var p = new Particle(Vector2.Zero, Vector2.Zero, Main.rand.NextFloat(6.28f), 0, Color.White, 40, basePos + new Vector2(96, 236));
@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.GUI
         {
             if (selected is null) return;
 
-            Main.PlaySound(SoundID.DD2_DarkMageCastHeal);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal);
             crafting = true;
         }
 
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.GUI
                 Task.Factory.StartNew(n => LoadGif(token), token);
             }
 
-            Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
+            Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
         }
 
         private void LoadGif(CancellationToken token)
@@ -323,14 +323,14 @@ namespace StarlightRiver.Content.GUI
             {
                 item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
-                Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.5f);
+                Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.5f);
                 (Parent as InfusionMaker).PopulateList();
             }
             else if (Main.mouseItem.IsAir && !item.IsAir)
             {
                 Main.mouseItem = item.Clone();
                 item.TurnToAir();
-                Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.1f);
+                Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.1f);
             }
         }
 

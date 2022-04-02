@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (projectile.ai[0] % 100 == 0)
             {
                 NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y, NPCType<Auroraling>());
-                Main.PlaySound(SoundID.Item86, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item86, projectile.Center);
             }
         }
 

@@ -109,8 +109,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool CanEquipAccessory(Player player, int slot)
         {
-            Main.PlaySound(SoundID.NPCHit55);
-            Main.PlaySound(SoundID.Item123);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
 
             for (int k = 0; k <= 50; k++)
                 CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
@@ -146,15 +146,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 boomTimer++;
 
             if (boomTimer == 1)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
+                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
-                var tex = Main.itemTexture[item.type];
+                var tex = Main.PopupTexture[item.type];
 
                 item.TurnToAir();
 ;
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
+                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {

@@ -121,7 +121,7 @@ namespace StarlightRiver.Core
                             if (dustType != -1)
                                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                         }
-                        Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
                         projectile.ai[0]++;
                     }
                     if (dustType != -1)
@@ -142,7 +142,7 @@ namespace StarlightRiver.Core
                 {
                     released = true;
                     projectile.friendly = true;
-                    Main.PlaySound(SoundID.Item1, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, projectile.Center);
                 }
                 if (projectile.ai[0] > chargeTime)
                 {
@@ -179,8 +179,8 @@ namespace StarlightRiver.Core
                         player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
                     }
                     projectile.friendly = false;
-                    Main.PlaySound(SoundID.Item70, projectile.Center);
-                    Main.PlaySound(SoundID.NPCHit42, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
                 }
             }
             else

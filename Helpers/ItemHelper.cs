@@ -142,15 +142,15 @@ namespace StarlightRiver.Helpers
             return item;
         }
 
-        public static Texture2D GetItemTexture(Item item)
+        public static Texture2D GetPopupTexture(Item item)
         {
-            if (item.type < Main.maxItemTypes) return Main.itemTexture[item.type];
+            if (item.type < Main.maxItemTypes) return Main.PopupTexture[item.type];
             else return GetTexture(item.modItem.Texture);
         }
 
-        public static Texture2D GetItemTexture(int type)
+        public static Texture2D GetPopupTexture(int type)
         {
-            if (type < Main.maxItemTypes) return Main.itemTexture[type];
+            if (type < Main.maxItemTypes) return Main.PopupTexture[type];
             else
             {
                 Item item = new Item();

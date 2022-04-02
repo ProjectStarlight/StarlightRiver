@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
             mp.Stamina++;
             projectile.localAI[0] = 300;
-            Main.PlaySound(SoundID.Item112, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, projectile.Center);
             CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
 
             for (float k = 0; k <= 6.28; k += 0.1f)

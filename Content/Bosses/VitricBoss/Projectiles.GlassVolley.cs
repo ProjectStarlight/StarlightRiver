@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                             Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
 
-                        Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
                     }
                 }
             }

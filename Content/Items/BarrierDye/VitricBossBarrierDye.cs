@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public override void LoseBarrierEffects(Player player)
 		{
-			Main.PlaySound(Terraria.ID.SoundID.Item107, player.Center);
+			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item107, player.Center);
 
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6f), 0, default, 2);

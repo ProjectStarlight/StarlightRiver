@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Vector2 maxSpeed = new Vector2(maxCageBounceSpeed);
                         player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(npc.whoAmI), Main.expertMode ? 90 : 65, 0); //do big damag
                         player.velocity = Vector2.Clamp( player.velocity + Vector2.Normalize(player.Center - npc.Center) * -3, -maxSpeed, maxSpeed); //knock into boss
-                        Main.PlaySound(SoundID.DD2_LightningAuraZap); //bzzt!
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap); //bzzt!
                     }
                 }
             }
@@ -432,7 +432,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 6 spikes
                             {
-                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+                                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
                                 var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
@@ -446,7 +446,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
                             {
-                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+                                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
@@ -561,7 +561,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             if (timer >= 80 && timer < 120 && timer % 5 == 0) //burst of 8 spikes
                             {
-                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+                                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
                                 var sin = (float)Math.Sin((timer - 80) / 40f * 6.28f) * 0.25f;
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -13;
@@ -577,7 +577,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         {
                             if (timer >= 80 && timer < 120 && timer % 10 == 0) //burst of 4 spikes
                             {
-                                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
+                                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact);
 
                                 var vel = Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -8;
                                 var spewPos = npc.Center + new Vector2(0, 30) + Vector2.One.RotatedBy(vel.ToRotation() - MathHelper.PiOver4) * 40;
@@ -621,7 +621,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (timer == 130)
                 {
-                    Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
 
                     for (int k = 0; k < 10; k++)
                     {
@@ -728,7 +728,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (Main.expertMode && AttackTimer % 45 == 0)
                 {
                     RandomizeTarget();
-                    Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, npc.Center);
 
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                         Projectile.NewProjectile(npc.Center, Vector2.Normalize(npc.Center - Main.player[npc.target].Center) * -2, ProjectileType<GlassVolleyShard>(), 12, 1);
@@ -757,7 +757,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     player.GetModPlayer<StarlightPlayer>().Shake += 20;
                 }
 
-                Main.PlaySound(SoundID.NPCDeath43, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath43, npc.Center);
 
                 if (altAttack && Main.netMode != NetmodeID.MultiplayerClient)
                 {
@@ -903,7 +903,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (AttackTimer > 120 && AttackTimer % 70 == 60)
-                    Main.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, npc.Center);
             }
 
             if(AttackTimer == 495)

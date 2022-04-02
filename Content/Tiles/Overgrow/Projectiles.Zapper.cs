@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 }
                 for (float k = 0; k <= 3.14f; k += 0.1f)
                     Dust.NewDustPerfect(joints[(int)dims.Y / 20], DustType<Content.Dusts.GoldWithMovement>(), new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(2), 0, default, 0.6f);
-                Main.PlaySound(SoundID.NPCHit53.WithVolume(0.2f), joints[(int)dims.Y / 20]);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit53.WithVolume(0.2f), joints[(int)dims.Y / 20]);
             }
         }
 

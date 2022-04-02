@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         private void Explode()
         {
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
             npc.active = false;
 
             for (int k = 0; k < 20; k++)

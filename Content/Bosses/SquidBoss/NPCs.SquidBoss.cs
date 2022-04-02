@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             else
             {
-                Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
 
                 for (int k = 0; k < 10; k++)
                     Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Content/Gores/SquidGore"));
@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
                         }
 
-                        Main.PlaySound(SoundID.Splash, tentacles[k].Center, 0);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, tentacles[k].Center, 0);
                     }
                 }
 
@@ -381,7 +381,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).ai[0]++;
                     npc.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
-                    if (GlobalTimer % 10 == 0) Main.PlaySound(SoundID.Splash, npc.Center);
+                    if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
                 }
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (GlobalTimer < 300) //water rising
                 {
                     Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).ai[0]++;
-                    if (GlobalTimer % 10 == 0) Main.PlaySound(SoundID.Splash, npc.Center);
+                    if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
                     arenaBlocker.position.Y -= 1f;
                 }
 
@@ -497,7 +497,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     npc.dontTakeDamage = false;
                     foreach (Player player in Main.player.Where(n => n.active)) player.GetModPlayer<StarlightPlayer>().Shake += 40;
-                    Main.PlaySound(SoundID.Roar, npc.Center, 0);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, npc.Center, 0);
                 }
 
                 if (GlobalTimer > 240) //following unless using ink attack
@@ -543,7 +543,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         tentacles[k].Kill();
                 }
 
-                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
+                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, npc.Center);
 
                 if (GlobalTimer >= 200)
                 {

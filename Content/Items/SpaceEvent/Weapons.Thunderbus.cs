@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (targets.Count == 0) //whiff
             {
-                Main.PlaySound(SoundID.DD2_BallistaTowerShot, player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot, player.Center);
 
                 for (int k = 0; k < 20; k++)
                 {

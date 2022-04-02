@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                         ResetAttack();
 
                         CombatText.NewText(npc.Hitbox, Color.Red, 20000, true);
-                        Main.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream, npc.Center);
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 30;
 
                         for (int k = 0; k < 100; k++)

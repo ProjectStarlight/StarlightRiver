@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
                     player.jumpAgainSail = true;
                 }
 
-                Main.PlaySound(SoundID.Shatter, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
                 for (int k = 0; k <= 30; k++)
                 {
                     int dus = Dust.NewDust(projectile.position, 48, 32, Terraria.ModLoader.ModContent.DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);

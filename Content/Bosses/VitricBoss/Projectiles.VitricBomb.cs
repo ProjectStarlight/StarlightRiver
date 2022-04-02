@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Item.NewItem(projectile.Center, ItemID.Heart);
 
                 projectile.netUpdate = true;
-                Main.PlaySound(SoundID.Shatter, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
             }
 
             return false;
@@ -114,8 +114,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void Kill(int timeLeft)
         {
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
-            Main.PlaySound(SoundID.DD2_KoboldExplosion, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, projectile.Center);
             Helper.PlayPitched("Magic/FireHit", 0.5f, 0, projectile.Center);
 
             for (int k = 0; k < 80; k++)

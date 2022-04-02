@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 }
 
                 if (heat == 98)
-                    Main.PlaySound(SoundID.DD2_BetsyFireballShot, player.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, player.Center);
                 
             }
         }

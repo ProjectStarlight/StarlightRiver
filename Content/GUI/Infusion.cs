@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.GUI
 
             if (!Unlocked)
             {
-                Main.PlaySound(SoundID.Unlock);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Unlock);
                 return;
             }
 
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     Main.LocalPlayer.inventory[slot] = occupant.item;
                     handler.SetInfusion(null, TargetSlot);
-                    Main.PlaySound(SoundID.Grab);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     return;
                 }
             }
@@ -237,7 +237,7 @@ namespace StarlightRiver.Content.GUI
                 Infusion.animationProgress = 0;
                 Infusion.animationColor = (item as InfusionItem).color;
                 Helpers.Helper.PlayPitched("Magic/Shadow2", 1, 0);
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
             //if the player isnt holding anything but something is equipped, unequip it
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.GUI
                 handler.SetInfusion(null, TargetSlot);
 
                 Main.mouseItem = occupant.item;
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
         }
     }

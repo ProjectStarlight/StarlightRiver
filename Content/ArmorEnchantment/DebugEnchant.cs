@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-            var tex = Main.itemTexture[item.type];
+            var tex = Main.PopupTexture[item.type];
 
             for (int k = 0; k < 3; k++)
             {

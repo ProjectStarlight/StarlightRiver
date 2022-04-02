@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		}
 	}
 
-	class BloodCrystalComparer : ILoadable
+	class BloodCrystalComparer : IOrderedLoadable
     {
 		public float Priority => 1.4f;
 

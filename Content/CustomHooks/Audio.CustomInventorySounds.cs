@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.CustomHooks
 			AudioConfig config = GetInstance<AudioConfig>();
 
 			if (config.InvSounds == CustomSounds.None)
-				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
+				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 
 			float pitch = -0.6f;
 
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return (item.modItem as ICustomInventorySound).InventorySound(pitch);
 
 			else if (config.InvSounds == CustomSounds.Specific)
-				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
+				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 
 			else if (item.potion || item.healMana != 0 || (item.buffType != -1 && (item.Name.Contains("potion") || item.Name.Contains("Potion")))) //should probably figure a better check for this somehow? 1.4 content tags maybe?
 				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.5f + pitch * 0.5f);
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			else
-				return Main.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
+				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 		}
 	}
 }

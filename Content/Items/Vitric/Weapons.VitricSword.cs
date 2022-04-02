@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             if (!Broken)
             {
-                Main.PlaySound(SoundID.Item107);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107);
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center) * -32, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
                 Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.PlaySound(SoundID.Item27);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
         }
 
         private float f = 1;
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if ((player.Center - projectile.Center).Length() <= 32 && projectile.timeLeft < 110)
             {
                 projectile.timeLeft = 0;
-                Main.PlaySound(SoundID.Item101);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item101);
             }
         }
     }

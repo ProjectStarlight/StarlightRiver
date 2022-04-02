@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
                 mp.Stamina++;
                 projectile.ai[0] = 300;
 
-                Main.PlaySound(SoundID.Shatter, projectile.Center);
-                Main.PlaySound(SoundID.Item112, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, projectile.Center);
                 CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
                 for (float k = 0; k <= 6.28; k += 0.1f)
                     Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);

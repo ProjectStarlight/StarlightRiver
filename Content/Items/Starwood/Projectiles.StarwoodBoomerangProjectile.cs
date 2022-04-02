@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     if (projOwner.controlUseItem || projectile.ai[1] >= maxChargeTime - 5)
                     {
                         if (projectile.ai[1] == 0)
-                            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ImpactHeal"), projectile.Center);
+                            Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ImpactHeal"), projectile.Center);
 
                         chargeMult = projectile.ai[1] / (maxChargeTime + 3);
                         projectile.ai[1]++;
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Items.Starwood
                         else if (projectile.ai[1] == maxChargeTime - 5){//sfx
                             Helpers.DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
                             Lighting.AddLight(projectile.Center, lightColor * 2);
-                            Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/MagicAttack"), projectile.Center);
+                            Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/MagicAttack"), projectile.Center);
                             for (int k = 0; k < 50; k++)
                                 Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.5f) * ScaleMult), 0, default, 1.5f); }
                     }
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
             if (projectile.ai[0] != 1)
                 if (projectile.timeLeft % 8 == 0) {
-                    Main.PlaySound(SoundID.Item7, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item7, projectile.Center);
                     Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.5f).RotatedByRandom(0.5f), Scale: Main.rand.NextFloat(0.8f, 1.5f)); }
         }
 

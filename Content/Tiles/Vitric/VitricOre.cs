@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
                 } 
                 else
-                    Main.PlaySound(SoundID.Shatter, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
                 }
                 else
-                    Main.PlaySound(SoundID.Shatter, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {

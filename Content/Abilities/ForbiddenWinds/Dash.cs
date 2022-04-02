@@ -89,8 +89,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
             SetVelocity();
 
-            Main.PlaySound(SoundID.Item45, Player.Center);
-            Main.PlaySound(SoundID.Item104, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104, Player.Center);
             EffectTimer = 45;
         }
 
@@ -180,8 +180,8 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 dus.customData = Player;
             }
 
-            Main.PlaySound(SoundID.Item45, Player.Center);
-            Main.PlaySound(SoundID.Item25, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item25, Player.Center);
         }
 
         public override void OnExit()

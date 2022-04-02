@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Vector2 muzzleOffset = MathHelper.ToRadians(i).ToRotationVector2() * 35f;
                 if (Collision.CanHit(position, 0, 0, position + muzzleOffset, 0, 0))
                     position += muzzleOffset;
-                Main.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 8, 1);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)position.X, (int)position.Y, 8, 1);
                 muzzleOffset.Normalize();
                 Projectile.NewProjectile(position.X, position.Y, muzzleOffset.X * 16f, 0, item.shoot, damage, knockBack, player.whoAmI);
             }
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void SpikeUp()
         {
-            Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 24, 0.75f, 0.5f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 24, 0.75f, 0.5f);
             projectile.ai[0] = 10;
             projectile.localAI[1] = 20;
             projectile.netUpdate = true;

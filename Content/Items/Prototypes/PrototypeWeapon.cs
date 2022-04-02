@@ -79,7 +79,7 @@ namespace StarlightRiver.Items.Prototypes
         public void BreakItem(Vector2 spawnpos)
         {
             Main.NewText("Your " + item.Name + " broke...", new Color(255, 200, 100));
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, spawnpos);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, spawnpos);
             for (int k = 0; k <= 40; k++)
             {
                 Dust.NewDustPerfect(spawnpos, DustType<Content.Dusts.Stone>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));

@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
 			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
 
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), projectile.Center);
+			Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)

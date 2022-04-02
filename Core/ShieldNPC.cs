@@ -38,7 +38,7 @@ namespace StarlightRiver.Core
 				}
 				else
 				{
-					Main.PlaySound(Terraria.ID.SoundID.NPCDeath57, npc.Center);
+					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, npc.Center);
 
 					CombatText.NewText(npc.Hitbox, Color.Cyan, Shield);
 

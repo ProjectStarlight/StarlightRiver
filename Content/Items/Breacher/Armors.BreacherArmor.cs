@@ -782,7 +782,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
     }
 
-    public class BreacherArmorHelper : ILoadable
+    public class BreacherArmorHelper : IOrderedLoadable
     {
         public static RenderTarget2D npcTarget;
 

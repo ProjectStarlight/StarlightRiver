@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-                var tex = Main.itemTexture[entity.containedItem.type];
+                var tex = Main.PopupTexture[entity.containedItem.type];
                 var target = new Rectangle((i + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X + 4, (j + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y + 6, 20, 20);
 
                 spriteBatch.Draw(tex, target, null, Color.White);
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                         Helpers.Helper.NewItemSpecific(player.Center, containedItem);
                         Kill(Position.X, Position.Y);
 
-                        Main.PlaySound(SoundID.Shatter, player.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, player.Center);
 
                         for (int n = 0; n < 30; n++)
                         {

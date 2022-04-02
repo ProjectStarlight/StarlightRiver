@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             player.HealEffect(5);
             player.statLife += healAmount;
 
-            Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
             return false;
         }
 
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             player.ManaEffect(20);
             player.statMana += healAmount;
 
-            Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
             return false;
         }
 

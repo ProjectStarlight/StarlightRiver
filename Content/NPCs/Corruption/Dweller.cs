@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					{
 						npc.noGravity = false;
 
-						Main.PlaySound(SoundID.Grass, npc.Center);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, npc.Center);
 					}
 
 					if(Timer > 60)

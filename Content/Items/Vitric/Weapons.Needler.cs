@@ -339,11 +339,11 @@ namespace StarlightRiver.Content.Items.Vitric
             {
 				needles++;
 				needleTimer = 60;
-				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireCast"), npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireCast"), npc.Center);
 			}
 			if (needleTimer == 1)
 			{
-				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/FireHit"), npc.Center);
 				if (needlePlayer == Main.myPlayer)
                 {
 					Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);

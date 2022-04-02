@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (BuffPower > 0)
             {
                 var slot2 = SoundID.DD2_BetsyFireballImpact;
-                Main.PlaySound(slot2.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot2.Style, 1, -3.5f);
+                Terraria.Audio.SoundEngine.PlaySound(slot2.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot2.Style, 1, -3.5f);
                 damage = (int)(damage * (1 + BuffPower / 50f));
                 knockback *= 3;
 
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 for (int k = 0; k < 20; k++)
                     Dust.NewDust(projectile.position, 16, 16, ModContent.DustType<Dusts.GlassNoGravity>());
 
-                Main.PlaySound(SoundID.Shatter);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
             }
         }
 

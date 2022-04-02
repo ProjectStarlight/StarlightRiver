@@ -210,8 +210,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				if (!landed)
 				{
-					Main.PlaySound(SoundID.Item70, projectile.Center);
-					Main.PlaySound(SoundID.NPCHit42, projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
 					landed = true;
 					projectile.timeLeft = 700;
 					owner.GetModPlayer<StarlightPlayer>().Shake += 12;

@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				if (charge < 1)
 				{
 					if ((charge + chargeRate) >= 1)
-						Main.PlaySound(SoundID.MaxMana, (int)projectile.Center.X, (int)projectile.Center.Y, 1, 1, -0.25f);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, (int)projectile.Center.X, (int)projectile.Center.Y, 1, 1, -0.25f);
 
 					charge += chargeRate;
 				}
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Starwood
             }
 
             if (projectile.timeLeft % 25 == 0)//delay between star sounds
-                Main.PlaySound(SoundID.Item9, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, projectile.Center);
 
             Lighting.AddLight(projectile.Center, lightColor);
             projectile.velocity.X *= 0.995f;
@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void Kill(int timeLeft)
         {
             Helpers.DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 1.2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f, rotationAmount: projectile.rotation);
-            Main.PlaySound(SoundID.Item10, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, projectile.Center);
 
             for (int k = 0; k < 35; k++)
             {

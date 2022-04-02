@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.GUI
                 item.position = Main.LocalPlayer.Center;
                 Main.LocalPlayer.QuickSpawnClonedItem(item);
 
-                Main.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
             }
         }
 
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.GUI
         private void Exit(UIMouseEvent evt, UIElement listeningElement)
         {
             Visible = false;
-            Main.PlaySound(SoundID.MenuClose);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
 
@@ -230,14 +230,14 @@ namespace StarlightRiver.Content.GUI
             {
                 Main.mouseItem = Item.Clone();
                 Item.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
             if (Item.IsAir && player.HeldItem.type == Item.type) //if the cursor is the same type as the item already in the slot, add to the slot
             {
                 Item.stack += player.HeldItem.stack;
                 player.HeldItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
             if (player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && Item.IsAir) //if the slot is empty and the cursor has an item, put it in the slot
@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.GUI
                 Item = player.HeldItem.Clone();
                 player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
             if(player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && !Item.IsAir) //swap or stack
@@ -256,14 +256,14 @@ namespace StarlightRiver.Content.GUI
                     {
                         Main.mouseItem.stack = Item.stack + player.HeldItem.stack - Item.maxStack;
                         Item.stack = Item.maxStack;                    
-                        Main.PlaySound(SoundID.Grab);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     }
                     else
                     {
                         Item.stack += player.HeldItem.stack;
                         player.HeldItem.TurnToAir();
                         Main.mouseItem.TurnToAir();
-                        Main.PlaySound(SoundID.Grab);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     }
                 }
 				else //swap
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.GUI
                     var temp = Item;
                     Item = player.HeldItem;
                     Main.mouseItem = temp;
-                    Main.PlaySound(SoundID.Grab);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                 }
 			}
 

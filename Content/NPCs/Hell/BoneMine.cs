@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.NPCs.Hell
 
         public override bool CheckDead()
         {
-            Main.PlaySound(SoundID.Item14, npc.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14, npc.Center);
             //Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), npc.damage, 3, 255, 128); TODO: New explosion
             return true;
         }
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Hell
             else
             {
                 npc.ai[2]++;
-                if (npc.ai[2] % 10 == 0) Main.PlaySound(SoundID.MaxMana, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, 0.5f); //warning beep
+                if (npc.ai[2] % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, 0.5f); //warning beep
                 if (npc.ai[2] >= 45) npc.Kill(); //detonate
             }
         }

@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Slime
                     projectile.velocity.Y = -oldVelocity.Y;
                 }
                 projectile.velocity = projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * 0.50f;
-                Main.PlaySound(SoundID.Item10, projectile.position);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, projectile.position);
             }
             return false;
         }

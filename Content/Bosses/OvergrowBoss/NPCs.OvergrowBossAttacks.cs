@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
 
             if (AttackTimer >= 60 && AttackTimer <= 120 && AttackTimer % 30 == 0) //3 rounds of projectiles
             {
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ProjectileLaunch1"), npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ProjectileLaunch1"), npc.Center);
                 for (float k = -0.6f; k <= 0.6f; k += 0.3f) //5 projectiles in even spread
                 {
                     Vector2 trajectory = Vector2.Normalize(targetPoint - handpos).RotatedBy(k + (AttackTimer == 90 ? 0.15f : 0)) * 1.6f; //towards the target, alternates on the second round
@@ -176,8 +176,8 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 }
 
                 //audio
-                Main.PlaySound(SoundID.Item70, flail.npc.Center);
-                Main.PlaySound(SoundID.NPCHit42, flail.npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, flail.npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, flail.npc.Center);
 
                 //screenshake
                 int distance = (int)Vector2.Distance(Main.LocalPlayer.Center, flail.npc.Center);
@@ -309,8 +309,8 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                 }
 
                 //audio
-                Main.PlaySound(SoundID.Item70, flail.npc.Center);
-                Main.PlaySound(SoundID.NPCHit42, flail.npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, flail.npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, flail.npc.Center);
 
                 //screenshake
                 int distance = (int)Vector2.Distance(Main.LocalPlayer.Center, flail.npc.Center);

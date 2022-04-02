@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Balanced
             int proj = Projectile.NewProjectile(player.Center + aim * 18, aim * 0.1f, type, damage, knockBack, player.whoAmI);
             Main.projectile[proj].localAI[1] = combostate;
 
-            if (combostate < 2) Main.PlaySound(SoundID.Item65, player.Center); else Main.PlaySound(SoundID.Item64, player.Center);
+            if (combostate < 2) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item65, player.Center); else Terraria.Audio.SoundEngine.PlaySound(SoundID.Item64, player.Center);
             combostate++;
             if (combostate > 2) combostate = 0; return false;
         }

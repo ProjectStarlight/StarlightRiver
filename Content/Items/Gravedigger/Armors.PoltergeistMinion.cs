@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					if (Main.myPlayer == owner.whoAmI)
 						Projectile.NewProjectile(projectile.Center, Vector2.UnitX.RotatedBy(rot) * item.shootSpeed, item.shoot, item.damage / 2, item.knockBack, projectile.owner);
 
-					Main.PlaySound(item.UseSound, projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(item.UseSound, projectile.Center);
 					targetRotation = rot + (Item.staff[item.type] ? 1.57f / 2 : 0);
 				}
 			}
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (item != null && !item.IsAir)
 			{
 				
-				var tex = Main.itemTexture[item.type];
+				var tex = Main.PopupTexture[item.type];
 				//var frames = Main.itemFrame[item.type];
 
 				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * opacity, projectile.rotation, tex.Size() / 2, 1, 0, 0);

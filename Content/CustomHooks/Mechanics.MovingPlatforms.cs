@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.CustomHooks
                         proj.position += n.velocity;
 
                         if (!proj.tileCollide) //this is kinda hacky but... oh well 
-                            Main.PlaySound(SoundID.Dig, proj.Center);
+                            Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, proj.Center);
 
                         proj.tileCollide = true;
 

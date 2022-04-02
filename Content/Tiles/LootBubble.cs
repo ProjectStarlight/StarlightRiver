@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles
 
         public virtual void PickupEffects(Vector2 origin)
         {
-            //Main.PlaySound( , origin);
+            //Terraria.Audio.SoundEngine.PlaySound( , origin);
 
             for (int k = 0; k < 50; k++)
                 Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles
         public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
         {
             int n = (int)(time % GoldLootPool.Count);
-            Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].Type);
+            Texture2D tex2 = Helper.GetPopupTexture(GoldLootPool[n].Type);
             Rectangle itemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
             spriteBatch.Draw(tex2, itemTarget, Color.White);
 

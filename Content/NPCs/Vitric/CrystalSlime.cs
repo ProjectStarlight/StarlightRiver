@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 player.immune = true;
                 player.immuneTime = 10;
 
-                Main.PlaySound(SoundID.Shatter, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, npc.Center);
 
                 for (int k = 0; k <= 20; k++)
                     Dust.NewDust(npc.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);

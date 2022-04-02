@@ -48,8 +48,8 @@ namespace StarlightRiver.Packets
                 if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
 
-                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, (int)crystal.Center.X, (int)crystal.Center.Y);
-                Main.PlaySound(SoundID.Item70.SoundId, (int)crystal.Center.X, (int)crystal.Center.Y, SoundID.Item70.Style, 2, -0.5f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, (int)crystal.Center.X, (int)crystal.Center.Y);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70.SoundId, (int)crystal.Center.X, (int)crystal.Center.Y, SoundID.Item70.Style, 2, -0.5f);
 
                 for (int k = 0; k < 20; k++)
                 {

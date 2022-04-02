@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 d.fadeIn = 7;
             }
             if (start)
-                Main.PlaySound(SoundID.Item15, position);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15, position);
         }
 
         public override void OnExit()

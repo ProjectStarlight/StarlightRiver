@@ -26,7 +26,7 @@ namespace StarlightRiver.Core
 
 		private static void AddColor(int type)
 		{
-			Texture2D tex = Main.itemTexture[type];
+			Texture2D tex = Main.PopupTexture[type];
 
 			int numPixels = 0;
 			int redTotal = 0;

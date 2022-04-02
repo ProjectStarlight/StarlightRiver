@@ -199,7 +199,7 @@ public class PalestonePlayer : ModPlayer
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.PlaySound(SoundID.Item27);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
         }
 
         public override bool CanDamage()

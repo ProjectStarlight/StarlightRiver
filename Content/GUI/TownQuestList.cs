@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             TownQuestList parent = Parent.Parent.Parent as TownQuestList;
             parent.activeQuest = quest;
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             if (Quest == null || Quest.Unlocked) return;
             foreach (Loot loot in Quest.Requirements) if (!Helper.HasItem(Main.LocalPlayer, loot.Type, loot.Count)) return;
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.GUI
 
             StarlightWorld.TownUpgrades[Quest._npcName] = !StarlightWorld.TownUpgrades[Quest._npcName];
 
-            Main.PlaySound(SoundID.Item82);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82);
         }
     }
 
@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.GUI
             Item item = new Item();
             item.SetDefaults(typ);
 
-            if (type <= ItemID.Count) icon = Main.itemTexture[type];
+            if (type <= ItemID.Count) icon = Main.PopupTexture[type];
             else icon = GetTexture(item.modItem.Texture);
 
             name = item.Name;

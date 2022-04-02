@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             npc.life = 1;
             npc.ai[0] = 2;
 
-            Main.PlaySound(Terraria.ID.SoundID.NPCDeath1, npc.Center);
+            Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath1, npc.Center);
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDust(npc.position + new Vector2(0, 30), npc.width, 16, 131, 0, 0, 0, default, 0.5f);

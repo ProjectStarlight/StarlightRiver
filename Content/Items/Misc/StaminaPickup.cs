@@ -27,13 +27,13 @@ namespace StarlightRiver.Content.Items.Misc
             for (int k = 0; k <= 20; k++)
                 Dust.NewDust(player.Center, 1, 1, DustType<Dusts.Stamina>(), 0, 0, 0, default, 1.2f);
             CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
-            Main.PlaySound(SoundID.Item112, player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, player.Center);
             return false;
         }
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            spriteBatch.Draw(Main.itemTexture[item.type], item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
+            spriteBatch.Draw(Main.PopupTexture[item.type], item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
                 rotation, Vector2.One * 11, 0.9f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, 0, 0);
         }
     }

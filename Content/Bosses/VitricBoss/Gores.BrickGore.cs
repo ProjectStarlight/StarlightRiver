@@ -9,7 +9,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	class BrickGode : ILoadable
+	class BrickGode : IOrderedLoadable
 	{
 		public float Priority => 1;
 

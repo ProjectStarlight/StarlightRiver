@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Utility
 {
-	class LaserPointerLoader : ILoadable
+	class LaserPointerLoader : IOrderedLoadable
 	{
 		public float Priority => 1;
 

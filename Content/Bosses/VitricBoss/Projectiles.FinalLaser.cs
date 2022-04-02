@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, projectile.Center);
 
                 //if (LaserTimer == 150)
-                //Main.PlaySound(SoundID.DD2_BetsyFlameBreath);
+                //Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
                 if (LaserTimer > 150) //laser is actually active
                 {

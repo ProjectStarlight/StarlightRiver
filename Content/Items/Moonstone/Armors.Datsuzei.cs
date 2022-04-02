@@ -16,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-    public class Datsuzei : InworldItem, ILoadable
+    public class Datsuzei : InworldItem, IOrderedLoadable
     {
         public static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
         public int comboState = 0;

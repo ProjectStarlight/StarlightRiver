@@ -256,7 +256,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             float off = 128 * projectile.timeLeft / 15 - 64 * (float)Math.Pow(projectile.timeLeft, 2) / 225;
             if (projectile.timeLeft == 30)
             {
-                Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
 
                 for (int k = 0; k < Main.rand.Next(6); k++)
                 {

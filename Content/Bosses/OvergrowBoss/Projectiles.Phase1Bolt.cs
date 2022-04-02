@@ -29,7 +29,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss.OvergrowBossProjectile
 
         public override void Kill(int timeLeft)
         {
-            //Main.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/ProjectileImpact1").WithVolume(0.5f), projectile.Center);
+            //Terraria.Audio.SoundEngine.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/ProjectileImpact1").WithVolume(0.5f), projectile.Center);
             for (int k = 0; k < 20; k++)
             {
                 Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));

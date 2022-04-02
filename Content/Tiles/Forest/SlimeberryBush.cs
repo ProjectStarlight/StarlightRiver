@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                     npc.velocity += new Vector2(npc.direction * Main.rand.NextFloat(2, 4), -6);
                     npc.netUpdate = true;
 
-                    Main.PlaySound(SoundID.NPCDeath1.SoundId, (int)npc.Center.X, (int)npc.Center.Y, SoundID.NPCDeath1.Style, 0.5f, Main.rand.NextFloat(0.5f, 1));
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1.SoundId, (int)npc.Center.X, (int)npc.Center.Y, SoundID.NPCDeath1.Style, 0.5f, Main.rand.NextFloat(0.5f, 1));
                 }
             }
             else

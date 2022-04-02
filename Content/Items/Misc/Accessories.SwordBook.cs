@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						var modProj = proj.modProjectile as SwordBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
-						modProj.texture = Main.itemTexture[item.type];
+						modProj.texture = Main.PopupTexture[item.type];
 						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
 						modProj.lifeSpan = item.useAnimation * 4;
 						modProj.baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Misc
 						pitch = 1;
 
 					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
-					Main.PlaySound(item.UseSound, player.Center);
+					Terraria.Audio.SoundEngine.PlaySound(item.UseSound, player.Center);
 
 					comboState++;
 					comboState %= 4;

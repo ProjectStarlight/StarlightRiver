@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             //note: if this is effected by player's dash, move dusts to where this is called, or add a check
             for (int y = 0; y < 12; y++)
                 Dust.NewDustPerfect(new Vector2(npc.Center.X - npc.width / 2 * -npc.direction, Main.rand.Next((int)npc.position.Y, (int)npc.position.Y + npc.height)), 53, new Vector2(Main.rand.Next(0, 20) * 0.08f * -npc.direction, Main.rand.Next(-10, 10) * 0.04f), 0, default, 1.2f);
-            Main.PlaySound(SoundID.NPCHit42, npc.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, npc.Center);
             npc.velocity.X -= 4 * npc.direction;
             npc.velocity.Y -= 4;
         }

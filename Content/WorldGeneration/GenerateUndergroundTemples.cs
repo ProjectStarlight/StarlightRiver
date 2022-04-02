@@ -2,7 +2,7 @@
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.World.Generation;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core
 {

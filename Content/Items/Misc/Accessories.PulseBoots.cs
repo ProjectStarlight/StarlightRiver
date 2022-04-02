@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 doubleJumped = true;
                 player.velocity.Y = -8; //base upward jump
-                Main.PlaySound(SoundID.Item61, player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item61, player.Center);
 
                 for (float k = 0; k < 6.28f; k += 0.1f)
                 {
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Dust.NewDustPerfect(player.Center + new Vector2(0, 32), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.09f, 0, default, 1.2f);
                     Dust.NewDustPerfect(player.Center + new Vector2(0, 48), DustType<Content.Dusts.Stamina>(), new Vector2(x, y).RotatedBy(rot) * 0.11f, 0, default, 0.8f);
                 }
-                Main.PlaySound(SoundID.DD2_BetsyFireballShot);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot);
 
                 if (player.controlLeft && player.controlRight || !player.controlLeft && !player.controlRight)
                 {

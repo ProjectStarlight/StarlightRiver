@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Abilities.Purify
 
         public override void OnActivate()
         {
-            Main.PlaySound(SoundID.Item37);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item37);
         }
 
         public override void UpdateActive()

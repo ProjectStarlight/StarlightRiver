@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 if (charge < 1) charge += 1f / (item.useAnimation * 2f);
                 else
                 {
-                    if (!charged) Main.PlaySound(SoundID.MaxMana);
+                    if (!charged) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana);
                     charged = true;
                     charge = 1;
                 }
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
                 if (Main.GameUpdateCount % 8 == 0) //I think this should work? maximum deviation should be +- 1 hit, and pickTile shoooould sync? I hope? idk this is mostly built on optimism and laziness. TODO: be less lazy
                 {
-                    Main.PlaySound(SoundID.Item1.SoundId, (int)player.Center.X, (int)player.Center.Y, SoundID.Item1.Style, 1, -0.5f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1.SoundId, (int)player.Center.X, (int)player.Center.Y, SoundID.Item1.Style, 1, -0.5f);
 
                     int center = (int)player.Center.X / 16;
                     int centerY = (int)player.Center.Y / 16;

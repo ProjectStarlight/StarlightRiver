@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.RandomExperiment
 {
-	class MoreMagicalMirror : GlobalItem, ILoadable
+	class MoreMagicalMirror : GlobalItem, IOrderedLoadable
 	{
 		private static Texture2D savedScreen = null;
 		private static int transitionTime = 0;

@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Ability.ActivationCostBonus += 0.3f;
 
             base.OnActivate();
-            Main.PlaySound(SoundID.Item96, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Player.Center);
 
             Ability.Time = 10;
         }

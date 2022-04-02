@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 if (charge < 1) charge += 1f / (item.useTime * 2f);
                 else
                 {
-                    if (!charged) Main.PlaySound(SoundID.MaxMana);
+                    if (!charged) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana);
                     charged = true;
                     charge = 1;
                 }
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 {
                     Vector2 pos = new Vector2(Player.tileTargetX + 0.5f, Player.tileTargetY + 0.5f) * 16;
                     Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<AuroraPickVFX>(), 0, 0, player.whoAmI);
-                    Main.PlaySound(SoundID.DD2_WitherBeastAuraPulse.SoundId, (int)pos.X, (int)pos.Y, SoundID.DD2_WitherBeastAuraPulse.Style, 1.5f, 2f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse.SoundId, (int)pos.X, (int)pos.Y, SoundID.DD2_WitherBeastAuraPulse.Style, 1.5f, 2f);
                 }
 
                 if (charge <= 0)

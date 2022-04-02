@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void Kill(int timeLeft)
         {
-            Main.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 27);
+            Terraria.Audio.SoundEngine.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 27);
 
             for (int i = 0; i < 10; i++)
             {

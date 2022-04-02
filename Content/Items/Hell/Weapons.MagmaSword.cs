@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Hell
                 }
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
             }
-            Main.PlaySound(SoundID.Drown, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, projectile.Center);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;

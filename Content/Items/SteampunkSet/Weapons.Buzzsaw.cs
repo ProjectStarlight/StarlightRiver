@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (Charge >= MAXCHARGE)
             {
                 if (flickerTime == 0)
-                    Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
                 flickerTime++;
             }
 
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 projectile.frame = ((counter / 5) % 2) + 2;
 
                 if (counter % 30 == 1)
-                    Main.PlaySound(2, projectile.Center, 22); //Chainsaw sound
+                    Terraria.Audio.SoundEngine.PlaySound(2, projectile.Center, 22); //Chainsaw sound
 
                 ReleaseSteam(player);
             }

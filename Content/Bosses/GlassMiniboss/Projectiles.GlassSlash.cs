@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             if (projectile.timeLeft == 20)
-                Main.PlaySound(
+                Terraria.Audio.SoundEngine.PlaySound(
                     StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").SoundId,
                     -1, -1,
                     StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").Style,

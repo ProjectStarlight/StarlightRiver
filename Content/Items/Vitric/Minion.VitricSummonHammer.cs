@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
                 Main.dust[index].fadeIn = 0.75f;
             }
 
-            Main.PlaySound(SoundID.Shatter, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
             return true;
         }
 

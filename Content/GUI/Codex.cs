@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void MouseDown(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             if (!(Parent is CodexBack)) return;
             CodexBack parent = Parent as CodexBack;
@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void MouseDown(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             if (!(Parent.Parent.Parent.Parent is CodexBack) || Entry.Locked) return; //way too many parents >.<
             CodexBack parent = Parent.Parent.Parent.Parent as CodexBack;

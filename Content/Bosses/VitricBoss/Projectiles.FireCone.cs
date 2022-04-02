@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot - MathHelper.PiOver4) * -80, DustType<LavaSpew>(), -Vector2.UnitX.RotatedBy(rot), 0, default, Main.rand.NextFloat(0.8f, 1.2f));
                 }
 
-                Main.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballShot, projectile.Center);
             }
 
 			if (Main.expertMode && Main.netMode != NetmodeID.MultiplayerClient)

@@ -63,7 +63,7 @@ namespace StarlightRiver.Tiles.Temple
                 WorldGen.KillTile(ParentX, ParentY);
                 NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 4, TileChangeType.None);
 
-                Main.PlaySound(SoundID.Shatter, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
             }
         }
 

@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
                     var tex = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
-                    float scale1 = Main.itemTexture[item.type].Size().Length() / tex.Size().Length();
+                    float scale1 = Main.PopupTexture[item.type].Size().Length() / tex.Size().Length();
                     var color = new Color(180, 240, 255);
 
                     spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.rottime, tex.Size() / 2, 2 * scale1, 0, 0);

@@ -441,8 +441,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
 				}
 				Projectile.NewProjectile(npc.Center + new Vector2(0, npc.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
-				Main.PlaySound(SoundID.Item70, npc.Center);
-				Main.PlaySound(SoundID.NPCHit42, npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, npc.Center);
 			}
 		}
 	}

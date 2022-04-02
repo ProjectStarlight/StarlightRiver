@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
                     int i = Projectile.NewProjectile(player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), item.damage, item.knockBack, player.whoAmI, 0, charge);
                     Main.projectile[i].frame = index;
 
-                    Main.PlaySound(SoundID.Item8, player.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item8, player.Center);
                 }
                 charge++;
             }
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
                 projectile.tileCollide = true;
                 projectile.netUpdate = true;
 
-                Main.PlaySound(SoundID.Item82, player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82, player.Center);
             }
 
             projectile.ai[1]++;
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         public override void Kill(int timeLeft)
         {
             Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileType<RuneStaffExplosion>(), projectile.ai[0] == 0 ? 120 : 20, 2, projectile.owner);
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

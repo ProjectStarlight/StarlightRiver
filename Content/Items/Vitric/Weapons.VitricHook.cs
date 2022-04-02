@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                     for(int k = 0; k < 30; k++)
                         Dust.NewDustPerfect(player.Center, DustType<Dusts.GlassNoGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(1f, 2f));
-                    Main.PlaySound(SoundID.Shatter);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
                 }
             }
 

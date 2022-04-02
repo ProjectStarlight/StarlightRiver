@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                     d2.customData = Main.rand.NextFloat(0.25f, 0.5f);
                 }
 
-                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact.SoundId, i * 16, j * 16, SoundID.DD2_WitherBeastCrystalImpact.Style, 0.2f, -0.8f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact.SoundId, i * 16, j * 16, SoundID.DD2_WitherBeastCrystalImpact.Style, 0.2f, -0.8f);
 
                 if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
                 {

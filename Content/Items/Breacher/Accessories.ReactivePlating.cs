@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 
 	}
-	public class ReactivePlatingHelper : ILoadable
+	public class ReactivePlatingHelper : IOrderedLoadable
 	{
 
 		public float Priority => 1.05f; 

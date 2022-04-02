@@ -2,7 +2,7 @@
 using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
-using Terraria.World.Generation;
+using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Structures
 {

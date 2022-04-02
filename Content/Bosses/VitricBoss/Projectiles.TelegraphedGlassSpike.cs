@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
                 Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.Glow>(), 0, 0, 0, color, 0.3f);
             }
-            Main.PlaySound(SoundID.Shatter, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)

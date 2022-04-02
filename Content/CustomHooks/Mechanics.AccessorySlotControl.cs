@@ -98,8 +98,8 @@ namespace StarlightRiver.Content.CustomHooks
         {
             Item item = inv[slot];
             Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;
-            Texture2D itemTexture = ModContent.GetTexture(item.modItem.Texture);
-            Rectangle source = (itemTexture.Frame(1, 1, 0, 0));
+            Texture2D PopupTexture = ModContent.GetTexture(item.modItem.Texture);
+            Rectangle source = (PopupTexture.Frame(1, 1, 0, 0));
             Color currentColor = color;
             float scaleFactor2 = 1f;
             ItemSlot.GetItemLight(ref currentColor, ref scaleFactor2, item, false);
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.CustomHooks
             Vector2 origin = source.Size() * (scaleFactor2 / 2f - 0.5f);
             if (ItemLoader.PreDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2))
             {
-                sb.Draw(itemTexture, drawPos, source, Color.White, 0f, origin, scaleFactor * scaleFactor2, SpriteEffects.None, 0f);
+                sb.Draw(PopupTexture, drawPos, source, Color.White, 0f, origin, scaleFactor * scaleFactor2, SpriteEffects.None, 0f);
             }
             ItemLoader.PostDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2);
         }

@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 }
                 Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
                 Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 194;
-                Main.PlaySound(SoundID.Item96, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, projectile.Center);
                 stuck = true;
                 projectile.extraUpdates = 0;
                 projectile.velocity = Vector2.Zero;

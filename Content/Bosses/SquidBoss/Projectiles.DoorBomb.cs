@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 d.rotation = Main.rand.NextFloat(6.28f);
             }
 
-            Main.PlaySound(SoundID.Item9, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, projectile.Center);
         }
     }
 }

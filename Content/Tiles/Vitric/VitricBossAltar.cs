@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 if (Main.netMode != NetmodeID.Server)
                 {
-                    Main.PlaySound(SoundID.Shatter);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
                     for (int k = 0; k < 100; k++) Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>(), 0, 0, 0, default, 1.2f);
 
                     if (Main.myPlayer == player.whoAmI)

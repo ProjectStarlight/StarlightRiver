@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
                     if (Charge == 119)
                     {
-                        Main.PlaySound(SoundID.MaxMana, player.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
 
                         for (int k = 0; k < 100; k++)
                             Dust.NewDustPerfect(player.Center, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
                             player.PickTile(i, j, item.pick);
                         }
 
-                    if (Charge % 10 == 0) Main.PlaySound(SoundID.Item63, player.Center);
+                    if (Charge % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item63, player.Center);
 
                     if (Charge <= 0) Whirling = false;
                 }

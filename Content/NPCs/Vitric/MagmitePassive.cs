@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 for (int k = 0; k < 30; k++)
                     Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
 
-                Main.PlaySound(SoundID.DD2_GoblinHurt, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, npc.Center);
             }
         }
 

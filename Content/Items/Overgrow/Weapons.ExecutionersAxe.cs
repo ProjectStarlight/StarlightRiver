@@ -143,7 +143,7 @@ namespace StarlightRiver.Items.Overgrow
                     {
                         for (int k = 0; k <= 100; k++)
                             Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
-                        Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
                         projectile.ai[0]++;
                     }
                     Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
@@ -194,8 +194,8 @@ namespace StarlightRiver.Items.Overgrow
 
                     }
                     projectile.damage = (int)projectile.damage / 3;
-                    Main.PlaySound(SoundID.Item70, projectile.Center);
-                    Main.PlaySound(SoundID.NPCHit42, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
                 }
             }
             else

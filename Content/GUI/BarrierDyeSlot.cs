@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.GUI
             {
                 Main.mouseItem = Item.Clone();
                 mp.barrierDyeItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                 mp.rechargeAnimation = 0;
             }
 
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.GUI
                 mp.barrierDyeItem = player.HeldItem.Clone();
                 player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                 mp.rechargeAnimation = 0;
             }
 
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.GUI
                 var temp = Item;
                 mp.barrierDyeItem = player.HeldItem;
                 Main.mouseItem = temp;
-                Main.PlaySound(SoundID.Grab);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                 mp.rechargeAnimation = 0;
             }
         }

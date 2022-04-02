@@ -102,7 +102,7 @@ namespace StarlightRiver.Core
 				projectile.tileCollide = false;
 				projectile.rotation = projectile.AngleFrom(Owner.MountedCenter);
 				if (++Timer % 20 == 0)
-					Main.PlaySound(new LegacySoundStyle(SoundID.Item, 19).WithPitchVariance(0.1f).WithVolume(0.5f), projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 19).WithPitchVariance(0.1f).WithVolume(0.5f), projectile.Center);
 
 				ChargeTime = MathHelper.Clamp(Timer / 60, MaxChargeTime / 6, MaxChargeTime);
 
@@ -129,7 +129,7 @@ namespace StarlightRiver.Core
 				projectile.tileCollide = true;
 				if(++Timer == 1 && Owner.whoAmI == Main.myPlayer)
 				{
-					Main.PlaySound(SoundID.Item19, projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item19, projectile.Center);
 					projectile.Center = Owner.MountedCenter;
 					projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * launchspeed;
 					OnLaunch(Owner);
@@ -206,7 +206,7 @@ namespace StarlightRiver.Core
 				strucktile = true;
 				FallingTileCollide(oldVelocity);
 			}
-			Main.PlaySound(SoundID.Dig, projectile.Center);
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, projectile.Center);
 			Collision.HitTiles(projectile.position, projectile.velocity, projectile.width, projectile.height);
 			projectile.velocity = new Vector2((projectile.velocity.X != projectile.oldVelocity.X) ?
 				-projectile.oldVelocity.X / 5 : projectile.velocity.X,

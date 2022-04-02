@@ -14,7 +14,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Abilities
 {
-	public class AbilityHandler : ModPlayer, ILoadable
+	public class AbilityHandler : ModPlayer, IOrderedLoadable
     {
         // The player's active ability.
         public Ability ActiveAbility

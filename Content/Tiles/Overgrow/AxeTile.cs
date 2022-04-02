@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 }
             }
 
-            if (projectile.ai[0] % 100 == 75) Main.PlaySound(SoundID.Item71.SoundId, (int)Center.X, (int)Center.Y, 71, 1, -0.8f);
+            if (projectile.ai[0] % 100 == 75) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item71.SoundId, (int)Center.X, (int)Center.Y, 71, 1, -0.8f);
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)

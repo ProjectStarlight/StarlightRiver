@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossBarrier : ModTile, ILoadable
+	internal class VitricBossBarrier : ModTile, IOrderedLoadable
     {
         public float Priority => 0f;
 

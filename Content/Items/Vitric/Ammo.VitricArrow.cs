@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Vitric
             }
 
             if (dustcount > 5)
-                Main.PlaySound(SoundID.Item27);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

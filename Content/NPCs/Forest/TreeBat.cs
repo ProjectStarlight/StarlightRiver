@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                                     savedPos = npc.Center;
                                     targetPos = player.Center;
 
-                                    Main.PlaySound(SoundID.NPCDeath4, npc.Center);
+                                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath4, npc.Center);
                                     return;
                                 }
                             }

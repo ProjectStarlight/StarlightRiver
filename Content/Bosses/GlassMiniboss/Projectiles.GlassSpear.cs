@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void Kill(int timeLeft)
         {
-            Main.PlaySound(SoundID.Shatter, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>());

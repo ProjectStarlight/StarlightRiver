@@ -83,9 +83,9 @@ namespace StarlightRiver.Content.Items.Vitric
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
             }
 
-            Main.PlaySound(SoundID.Shatter, projectile.Center);
-            Main.PlaySound(SoundID.DD2_GoblinHurt, projectile.Center);
-            //Main.PlaySound(SoundID.Drown, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, projectile.Center);
+            //Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, projectile.Center);
         }
     }
 

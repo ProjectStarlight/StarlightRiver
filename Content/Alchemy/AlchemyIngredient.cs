@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Alchemy
                 for (int k = 0; k < 10; k++)
                     Dust.NewDust(wrapper.cauldronRect.TopLeft() + new Vector2(wrapper.cauldronRect.Width / 4, 0), wrapper.cauldronRect.Width / 2, 0, DustID.Water, 0, -6, 0, default, 1f);
                 
-                Main.PlaySound(SoundID.Splash, wrapper.cauldronRect.Center.ToVector2());
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, wrapper.cauldronRect.Center.ToVector2());
             }
             wrapper.bubbleColor = Color.Lerp(wrapper.bubbleColor, ingredientColor, 0.7f);
 

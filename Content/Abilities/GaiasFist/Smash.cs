@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Abilities.GaiasFist
                     Player.velocity.Y = 0;
                     Timer++;
                     if (Timer == ChargeTime)
-                        Main.PlaySound(SoundID.MaxMana, Player.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
                 }
                 else Deactivate();
 
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Abilities.GaiasFist
                 else Player.velocity.Y = 35;
 
                 if (Timer % 10 == 0)
-                    Main.PlaySound(SoundID.DD2_BookStaffCast.WithVolume(0.25f + (Timer - 60) / 30f), Player.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BookStaffCast.WithVolume(0.25f + (Timer - 60) / 30f), Player.Center);
 
                 if (Timer > ChargeTime + 2 && Player.position.Y - Player.oldPosition.Y == 0)
                 {
@@ -89,9 +89,9 @@ namespace StarlightRiver.Content.Abilities.GaiasFist
                 Dust.NewDust(Player.Center - new Vector2(Player.height / 2, -32), Player.height, Player.height, DustType<Grass>(), (float)Math.Cos(k) * power * 0.75f, (float)Math.Sin(k) * power * 0.75f, 0, default, 0.5f + power / 7f);
             }
 
-            Main.PlaySound(SoundID.Item70, Player.Center);
-            Main.PlaySound(SoundID.DD2_BetsysWrathImpact, Player.Center);
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Player.Center);
 
             Player.GetModPlayer<StarlightPlayer>().Shake = power;
         }

@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
                 }
 
                 if (globalTimer == 50)
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
                 }
 
                 //format like this when things line up
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Main.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
                 }
 
                 if (globalTimer == 150)

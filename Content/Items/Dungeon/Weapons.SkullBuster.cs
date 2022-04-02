@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				shotCounter = 0;
 				reloadCounter = 120;
-				Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), player.Center);
+				Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), player.Center);
 				item.noUseGraphic = true;
 				Projectile.NewProjectile(player.Center,Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, player.whoAmI);
 			}
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
+			Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
 			if (shotCounter < 1)
 			{
 				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, player.whoAmI);

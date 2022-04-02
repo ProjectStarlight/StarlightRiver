@@ -5,11 +5,11 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Backgrounds
 {
-	public class BGLoader : ILoadable
+	public class BGLoader : IOrderedLoadable
 	{
-        float ILoadable.Priority => 1;
+        float IOrderedLoadable.Priority => 1;
 
-		void ILoadable.Load()
+		void IOrderedLoadable.Load()
 		{
             if (Main.dedServ)
                 return;
@@ -22,7 +22,7 @@ namespace StarlightRiver.Backgrounds
             StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
         }
 
-        void ILoadable.Unload() { }
+        void IOrderedLoadable.Unload() { }
 	}
 
 	public class BlankBG : ModUgBgStyle

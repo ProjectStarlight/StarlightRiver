@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             for (int k = 0; k < 100; k++)
                 Dust.NewDust(npc.position, npc.width, npc.height, DustID.Stone);
 
-            Main.PlaySound(SoundID.NPCHit42.SoundId, (int)npc.Center.X, (int)npc.Center.Y, 42, 1, -0.8f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42.SoundId, (int)npc.Center.X, (int)npc.Center.Y, 42, 1, -0.8f);
         }
     }
 }

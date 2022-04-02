@@ -255,10 +255,10 @@ namespace StarlightRiver.Content.GUI
 
                 if (!item.IsAir)
                 {
-                    Texture2D itemTexture = item.type > ItemID.Count ? GetTexture(item.modItem.Texture) : GetTexture("Terraria/Item_" + item.type);
-                    float scale = itemTexture.Frame().Size().Length() < 52 ? 1 : 52f / itemTexture.Frame().Size().Length();
+                    Texture2D PopupTexture = item.type > ItemID.Count ? GetTexture(item.modItem.Texture) : GetTexture("Terraria/Item_" + item.type);
+                    float scale = PopupTexture.Frame().Size().Length() < 52 ? 1 : 52f / PopupTexture.Frame().Size().Length();
 
-                    spriteBatch.Draw(itemTexture, GetDimensions().Center(), itemTexture.Frame(), Color.White, 0, itemTexture.Frame().Size() / 2, scale, 0, 0);
+                    spriteBatch.Draw(PopupTexture, GetDimensions().Center(), PopupTexture.Frame(), Color.White, 0, PopupTexture.Frame().Size() / 2, scale, 0, 0);
 
                     var pos = GetDimensions().Center() + Vector2.UnitY * 45 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5);
                     slotParticles.AddParticle(new Particle(pos, Vector2.UnitY * -Main.rand.NextFloat(0.4f, 0.6f), 0, Main.rand.NextFloat(0.6f, 1.2f), ItemRarity.GetColor(item.rare) * 0.8f, 1, Vector2.Zero));
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.GUI
                 item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
 
-                Main.PlaySound(SoundID.DD2_DarkMageHealImpact);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact);
 
                 for (int k = 0; k < 50; k++)
                     slotParticles.AddParticle(new Particle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(item.rare), 1, Vector2.One));
@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.GUI
                 Main.mouseItem = item.Clone();
                 item.TurnToAir();
 
-                Main.PlaySound(SoundID.MenuTick);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 

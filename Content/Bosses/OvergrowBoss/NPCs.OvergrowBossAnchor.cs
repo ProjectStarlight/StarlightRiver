@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.OvergrowBoss
                     if (Main.rand.Next(2) == 0) Dust.NewDustPerfect(pos, DustType<Dusts.Stone>(), Vector2.One.RotatedByRandom(6.28f));
                 }
                 if (npc.ai[0] % 3 == 0) Gore.NewGore(pos, new Vector2(0, 1), mod.GetGoreSlot("Gores/ChainGore"));
-                if (npc.ai[0] % 8 == 0) Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ChainHit").WithPitchVariance(0.4f), pos);
+                if (npc.ai[0] % 8 == 0) Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ChainHit").WithPitchVariance(0.4f), pos);
             }
             if (npc.ai[0] == 1)
             {

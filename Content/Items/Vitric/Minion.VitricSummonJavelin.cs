@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                     offset.X = 1;
                     projectile.velocity = (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * 10f * projectile.spriteDirection;
-                    Main.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 75, 0.75f, -0.50f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 75, 0.75f, -0.50f);
 
                 }
             }
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     Dust.NewDustPerfect(projectile.Center + offset + randomoffsetreboiled, dusttype, new Vector2(velo.X * projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
                 }
 
-            Main.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
             return true;
         }
 

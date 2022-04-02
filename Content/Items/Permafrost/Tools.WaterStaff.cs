@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 {
                     tile.bTileHeader3 |= 0b00100000;
 
-                    Main.PlaySound(SoundID.Splash);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
                     for (int k = 0; k < 5; k++)
                         Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
                 }
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
                     tile.bTileHeader3 &= 0b00011111;
 
-                    Main.PlaySound(SoundID.Splash);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
                     for (int k = 0; k < 10; k++)
                         Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
                 }

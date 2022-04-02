@@ -40,7 +40,7 @@ namespace StarlightRiver.Tiles.Mushroom
                 for (int k = 16; k < 96; k++)
                     Dust.NewDustPerfect(projectile.position + new Vector2(k, Main.rand.Next(36)), DustType<Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
 
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/JellyBounce"), player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/JellyBounce"), player.Center);
             }
         }
 

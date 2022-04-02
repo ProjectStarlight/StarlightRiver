@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Pickups
                 player.legPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
 
                 Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), player.Center);
-                Main.PlaySound(SoundID.PlayerHit, player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.PlayerHit, player.Center);
             }
 
             if(timer >= 15)

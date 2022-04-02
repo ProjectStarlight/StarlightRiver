@@ -135,7 +135,7 @@ namespace StarlightRiver.Helpers
                 if (mp.CodexState != 0)
                 {
                     UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-                    Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/CodexUnlock"));
+                    Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/CodexUnlock"));
                 }
             }
         }
@@ -436,7 +436,7 @@ namespace StarlightRiver.Helpers
             if (position == default)
                 position = Vector2.One * -1;
 
-            return Main.PlaySound(style.SoundId, (int)position.X, (int)position.Y, style.Style, volume, pitch);
+            return Terraria.Audio.SoundEngine.PlaySound(style.SoundId, (int)position.X, (int)position.Y, style.Style, volume, pitch);
         }
 
         public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
@@ -447,7 +447,7 @@ namespace StarlightRiver.Helpers
             if (position == default)
                 position = Vector2.One * -1;
 
-            return Main.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
+            return Terraria.Audio.SoundEngine.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
         }
 
         public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30, int w = 1, int h = 1)

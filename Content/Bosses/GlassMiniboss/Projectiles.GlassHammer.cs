@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 if (projectile.timeLeft == 1)
                 {
-                    Main.PlaySound(SoundID.Shatter, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
 
                     for (int k = 0; k < 30; k++)
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Dust.NewDustPerfect(projectile.Center + Vector2.UnitY * -8, DustType<Dusts.Glow>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-2, 0), 0, new Color(255, 160, 80), 0.4f);
                 }
 
-                Main.PlaySound(SoundID.Item70, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
             }
 
             if (projectile.ai[0] >= 50)

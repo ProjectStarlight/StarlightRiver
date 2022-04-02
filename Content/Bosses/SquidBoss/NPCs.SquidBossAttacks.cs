@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         Dust.NewDustPerfect(tentacles[k].Center + new Vector2(0, -n * 25 + Main.rand.NextFloat(5)), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
                     }
-                    Main.PlaySound(SoundID.Drown, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, npc.Center);
                 }
 
                 if (AttackTimer > k * 100 + 30 && AttackTimer < k * 100 + 90) //shooting up, first 30 frames are for tell
@@ -78,8 +78,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 40 : 57))
                     {
-                        Main.PlaySound(SoundID.Splash, npc.Center);
-                        Main.PlaySound(SoundID.Item81, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, npc.Center);
 
                         SplashDust(k);
                     }
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             for (float k = 0; k <= 3.14f; k += 3.14f / 5f)
             {
                 if (AttackTimer % 3 == 0) Projectile.NewProjectile(npc.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                if (AttackTimer % 10 == 0) Main.PlaySound(SoundID.Item95, npc.Center);
+                if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, npc.Center);
                 if (AttackTimer == 60) ResetAttack();
             }
         }
@@ -131,15 +131,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.npc.netUpdate = true;
                 }
 
-                Main.PlaySound(SoundID.Drown, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, npc.Center);
             }
 
             if (AttackTimer > 60 && AttackTimer < 120) //rising
             {
                 if (AttackTimer == 61)
                 {
-                    Main.PlaySound(SoundID.Splash, npc.Center);
-                    Main.PlaySound(SoundID.Item81, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, npc.Center);
                 }
 
                 for (int k = 0; k < 4; k++)
@@ -197,8 +197,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     if (AttackTimer % 60 == 0)
                     {
-                        Main.PlaySound(SoundID.Splash, npc.Center);
-                        Main.PlaySound(SoundID.Item81, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, npc.Center);
                     }
 
                     tentacles[k].position.X -= 4.25f;
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (AttackTimer % 100 == 0)
             {
-                Main.PlaySound(SoundID.Item9, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, npc.Center);
 
                 if (Main.expertMode) //spawn more + closer together on expert
                 {
@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer > 60 && AttackTimer < 60 + laserTime) //lasering
             {
-                if (AttackTimer % 10 == 0) Main.PlaySound(SoundID.NPCHit53, npc.Center);
+                if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit53, npc.Center);
                 npc.Center = Vector2.Lerp(savedPoint, spawnPoint + new Vector2(800, -500), (AttackTimer - 60) / laserTime);
             }
 
@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 150) //spawn projectiles
             {
-                Main.PlaySound(SoundID.NPCDeath24, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, npc.Center);
 
                 for (float k = 0; k <= 3.14f; k += 3.14f / 4f)
                     Projectile.NewProjectile(npc.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
@@ -373,7 +373,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 60)
             {
-                Main.PlaySound(SoundID.Item9, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, npc.Center);
                 Projectile.NewProjectile(npc.Center + new Vector2(0, 120), Vector2.Zero, ModContent.ProjectileType<SquidEgg>(), 10, 0.2f);
             }
 
@@ -410,7 +410,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 150) //spawn projectiles
             {
-                Main.PlaySound(SoundID.NPCDeath24, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, npc.Center);
 
                 for (float k = 0; k <= 3.14f; k += 3.14f / 6f)
                     Projectile.NewProjectile(npc.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
@@ -459,15 +459,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     for (int n = 0; n < 50; n++)
                         Dust.NewDustPerfect(Vector2.Lerp(Main.player[npc.target].Center, tentacle.SavedPoint, n / 50f), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
 
-                    Main.PlaySound(SoundID.Drown, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, npc.Center);
                 }
 
                 if (AttackTimer > k * 80 + 30 && AttackTimer < k * 80 + 90) //shooting up, first 30 frames are for tell
                 {
                     if (AttackTimer == k * 80 + 40)
                     {
-                        Main.PlaySound(SoundID.Splash, npc.Center);
-                        Main.PlaySound(SoundID.Item81, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, npc.Center);
                     }
 
                     int time = (int)AttackTimer - (k * 80 + 30);
@@ -500,15 +500,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     for (int n = 0; n < 50; n++)
                         Dust.NewDustPerfect(Vector2.Lerp(Main.player[npc.target].Center, tentacle.SavedPoint, n / 50f), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
 
-                    Main.PlaySound(SoundID.Drown, npc.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, npc.Center);
                 }
 
                 if (AttackTimer > 420 && AttackTimer < 460) //shooting out
                 {
                     if (AttackTimer == 401)
                     {
-                        Main.PlaySound(SoundID.Splash, npc.Center);
-                        Main.PlaySound(SoundID.Item81, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, npc.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, npc.Center);
                     }
 
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.SavedPoint, tentacle.MovePoint, (AttackTimer - 420) / 40f);
@@ -575,7 +575,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
                 {
                     if (AttackTimer % 3 == 0) Projectile.NewProjectile(npc.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                    if (AttackTimer % 10 == 0) Main.PlaySound(SoundID.Item95, npc.Center);
+                    if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, npc.Center);
                 }
             }
 
@@ -591,7 +591,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(4), 0, default, 2);
                 Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(40), 0, default, Main.rand.NextFloat());
             }
-            Main.PlaySound(SoundID.Splash, tentacles[k].Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, tentacles[k].Center);
         }
 
         private void SplashDust(int k)

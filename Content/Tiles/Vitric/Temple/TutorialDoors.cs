@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                 if (AbilityHelper.CheckDash(player, projectile.Hitbox))
                 {
                     player.GetModPlayer<StarlightPlayer>().inTutorial = false;
-                    Main.PlaySound(SoundID.Shatter, player.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, player.Center);
 
                     for (int k = 0; k < 50; k++)
                         Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.GlassGravity>());

@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
 			}
 
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
             Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 5;
 		}
 

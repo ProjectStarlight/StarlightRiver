@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             projectile.timeLeft = 600;
             projectile.tileCollide = false;
 
-            Main.PlaySound(SoundID.DD2_WitherBeastHurt, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastHurt, projectile.Center);
         }
 
         private void Explode(bool VFX)
@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             if (!VFX) return;
 
-            Main.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath, projectile.Center);
 
             for (int k = 0; k < 16; k++)
             {
