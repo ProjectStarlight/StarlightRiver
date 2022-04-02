@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
 			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
-			player.GetModPlayer<StarlightPlayer>().Shake += 4;
+			player.GetModPlayer<StarlightPlayer>().Shake += 6;
 			direction = new Vector2(speedX, speedY);
 			position += new Vector2(speedX, speedY) * 0.9f;
 			return true;
