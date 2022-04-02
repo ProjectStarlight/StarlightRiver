@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	public abstract class TileLoader : ILoadable, IPostLoadable
+	public abstract class TileLoader : IOrderedLoadable, IPostLoadable
     {
         public Mod mod => StarlightRiver.Instance;
 

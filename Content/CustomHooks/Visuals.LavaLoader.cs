@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Lavas
 {
-	class LavaLoader : ILoadable
+	class LavaLoader : IOrderedLoadable
     {
         public static List<LavaStyle> lavas = new List<LavaStyle>();
         public static LavaStyle activeStyle;

@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class CursedAccessoryLoader : ILoadable
+	class CursedAccessoryLoader : IOrderedLoadable
     {
         public float Priority => 1f;
         public void Load()

@@ -7,7 +7,7 @@ using Terraria;
 
 namespace StarlightRiver.Core
 {
-	public abstract class PlayerTicker : ILoadable
+	public abstract class PlayerTicker : IOrderedLoadable
 	{
 		public float Priority => 1;
 

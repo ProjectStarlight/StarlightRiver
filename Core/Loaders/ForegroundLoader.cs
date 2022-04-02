@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ForegroundLoader : ILoadable
+	class ForegroundLoader : IOrderedLoadable
 	{
         public static List<Foreground> Foregrounds = new List<Foreground>();
 

@@ -1,6 +1,6 @@
 ﻿namespace StarlightRiver.Core
 {
-	interface ILoadable
+	interface IOrderedLoadable
     {
         void Load();
         void Unload();

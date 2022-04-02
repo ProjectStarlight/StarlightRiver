@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
-	public class Dash : CooldownAbility, ILoadable
+	public class Dash : CooldownAbility, IOrderedLoadable
     {
         public const int DEFAULTTIME = 15;
 

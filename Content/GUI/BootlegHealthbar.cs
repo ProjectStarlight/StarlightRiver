@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-    public class BootlegHealthbar : SmartUIState, ILoadable
+    public class BootlegHealthbar : SmartUIState, IOrderedLoadable
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         public override bool Visible => visible;

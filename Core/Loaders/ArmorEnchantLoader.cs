@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ArmorEnchantLoader : ILoadable
+	class ArmorEnchantLoader : IOrderedLoadable
     {
         public static List<ArmorEnchantment> Enchantments = new List<ArmorEnchantment>();
 

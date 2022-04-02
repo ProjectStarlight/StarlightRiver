@@ -15,7 +15,7 @@ using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	public abstract class WaterAddon : ILoadable
+	public abstract class WaterAddon : IOrderedLoadable
 	{
 		public float Priority => 1f;
 

@@ -8,7 +8,7 @@ using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Core.Loaders
 {
-    class TileDrawOverLoader : ILoadable
+    class TileDrawOverLoader : IOrderedLoadable
     {
         public float Priority { get => 1.1f; }
 

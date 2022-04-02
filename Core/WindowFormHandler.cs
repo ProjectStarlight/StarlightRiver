@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StarlightRiver.Core.Loaders
 {
-    class WindowFormHandler : ILoadable
+    class WindowFormHandler : IOrderedLoadable
     {
         //We need this handler since if the file that holds the reference to windowForm is opened at all on a different platform it will attempt to load it and crash even if it never passes over the problem code
         //so we use this file to decide if we load window forms or not

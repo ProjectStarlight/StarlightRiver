@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StarlightRiver.Core.Loaders
 {
-    public class AlchemySystemLoader : ILoadable
+    public class AlchemySystemLoader : IOrderedLoadable
     {
 
         public float Priority => 2.0f;

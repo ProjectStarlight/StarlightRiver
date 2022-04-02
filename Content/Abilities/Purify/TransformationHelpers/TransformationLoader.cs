@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.Purify.TransformationHelpers
 {
-	class TransformationLoader : ILoadable
+	class TransformationLoader : IOrderedLoadable
     {
         public static List<PurifyTransformation> transformations;
 

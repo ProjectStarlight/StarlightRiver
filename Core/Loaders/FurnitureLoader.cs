@@ -10,7 +10,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Core
 {
-	public abstract class FurnitureLoader : ILoadable
+	public abstract class FurnitureLoader : IOrderedLoadable
     {
         private readonly string name = "Nameless";
         private readonly string path = "StarlightRiver/Tiles/Placeholders/";

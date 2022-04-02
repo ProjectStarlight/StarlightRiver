@@ -10,7 +10,7 @@ using static Terraria.ModLoader.Core.TmodFile;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ShaderLoader : ILoadable
+	class ShaderLoader : IOrderedLoadable
     {
         public float Priority { get => 0.9f; }
 

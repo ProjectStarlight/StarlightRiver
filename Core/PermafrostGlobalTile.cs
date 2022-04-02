@@ -14,7 +14,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class PermafrostGlobalTile : ModWorld, ILoadable
+	class PermafrostGlobalTile : ModWorld, IOrderedLoadable
 	{
 		public static RenderTarget2D auroraTarget;
 		public static RenderTarget2D auroraBackTarget;
