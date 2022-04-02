@@ -1,4 +1,4 @@
 displayName = Starlight River
 author = we need a funny name for the dev team
 version = 0.01
-dllReferences = StructureHelper_v1.1.2, NetEasy_v0.1.7, NetSerializer, ProjectStarlight.Interchange
+dllReferences = StructureHelper_v1.1.2, NetEasy_v0.1.8, NetSerializer, ProjectStarlight.Interchange

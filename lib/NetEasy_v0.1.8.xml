@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NetEasy</name>
+    </assembly>
+    <members>
+        <member name="T:NetEasy.AggregateModule">
+            <summary>Provides a way to send a cache of modules in one <see cref="T:Terraria.ModLoader.ModPacket"/>. Useful for avoiding lots of net updates. Call <see cref="M:NetEasy.Module.Send(System.Nullable{NetEasy.Node},System.Nullable{NetEasy.Node},System.Boolean)"/> to release the cache as one <see cref="T:Terraria.ModLoader.ModPacket"/></summary>
+        </member>
+        <member name="P:NetEasy.AggregateModule.Modules">
+            <summary>All the modules to send.</summary>
+        </member>
+        <member name="M:NetEasy.AggregateModule.Receive">
+            <inheritdoc/>
+        </member>
+        <member name="T:NetEasy.Module">
+            <summary>
+            Provides methods to send, write, and receive <see cref="T:Terraria.ModLoader.ModPacket"/> objects in a modular fashion. <para/>
+            All types deriving from this class, and all members inside them, must have the <see cref="T:System.SerializableAttribute"/>.
+            Use the <see cref="T:System.NonSerializedAttribute"/> on fields to ignore them.
+            </summary>
+            <exception cref="T:NetEasy.ModuleLoadException">Thrown when a module or its observed members do not have the <see cref="T:System.SerializableAttribute"/>.</exception>
+        </member>
+        <member name="P:NetEasy.Module.mod">
+            <summary>The mod responsible for this <see cref="T:NetEasy.Module"/>.</summary>
+        </member>
+        <member name="P:NetEasy.Module.Sender">
+            <summary>The sender of the net message.</summary>
+        </member>
+        <member name="M:NetEasy.Module.#ctor">
+            <summary>Initializes a new instance of the <see cref="T:NetEasy.Module"/> class.</summary>
+        </member>
+        <member name="M:NetEasy.Module.Send(System.Nullable{NetEasy.Node},System.Nullable{NetEasy.Node},System.Boolean)">
+            <summary>
+            Sends this module as a <see cref="T:Terraria.ModLoader.ModPacket"/>. 
+            Does not send fields marked with <see cref="T:System.NonSerializedAttribute"/>.
+            </summary>
+            <param name="ignore">If not null, the packet will <b>not</b> be sent to the specified node.</param>
+            <param name="recipient">If not null, the packet will <b>only</b> be sent to the specified node.</param>
+            <param name="runLocally">If true, the <see cref="M:NetEasy.Module.Receive"/> method will also be called for the sender.</param>
+        </member>
+        <member name="M:NetEasy.Module.Receive">
+            <summary>Called after receiving the module. Use this to perform behavior after <see cref="M:NetEasy.Module.Send(System.Nullable{NetEasy.Node},System.Nullable{NetEasy.Node},System.Boolean)"/> is called.</summary>
+        </member>
+        <member name="M:NetEasy.Module.PreSend(System.Nullable{NetEasy.Node},System.Nullable{NetEasy.Node})">
+            <summary>Called before sending the module. Return <see langword="false"/> to cancel the send and prevent handling. Defaults to <see langword="true"/>.</summary>
+        </member>
+        <member name="T:NetEasy.ModuleLoadException">
+            <summary>Thrown during loading an invalid <see cref="T:NetEasy.Module"/>.</summary>
+        </member>
+        <member name="M:NetEasy.ModuleLoadException.#ctor">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.ModuleLoadException.#ctor(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.ModuleLoadException.#ctor(System.String,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.ModuleLoadException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc/>
+        </member>
+        <member name="T:NetEasy.NetEasy">
+            <summary>Use the static methods in this class to communicate with NetEasy.</summary>
+        </member>
+        <member name="M:NetEasy.NetEasy.Load(Terraria.ModLoader.Mod)">
+            <summary>Loads your <see cref="T:Terraria.ModLoader.Mod"/> for NetEasy. Call this in <see cref="M:Terraria.ModLoader.Mod.Load"/>.</summary>
+        </member>
+        <member name="M:NetEasy.NetEasy.HandleNetEasyPacket(System.IO.BinaryReader,System.Int32)">
+            <summary>Handles packets sent from your mod. Call this in <see cref="M:Terraria.ModLoader.Mod.HandlePacket(System.IO.BinaryReader,System.Int32)"/>.</summary>
+        </member>
+        <member name="M:NetEasy.NetEasy.Unload">
+            <inheritdoc/>
+        </member>
+        <member name="T:NetEasy.Node">
+            <summary>Represents the sender or recipient of a net message.</summary>
+        </member>
+        <member name="P:NetEasy.Node.ClientIndex">
+            <summary>For a client, the client index; for the server, <see langword="null"/>.</summary>
+        </member>
+        <member name="P:NetEasy.Node.WhoAmI">
+            <summary>For a client, the client index; for the server, <c>256</c>.</summary>
+        </member>
+        <member name="M:NetEasy.Node.#ctor(System.Byte)">
+            <summary>
+            Creates a new <see cref="T:NetEasy.Node"/> object representing the specified client.
+            </summary>
+            <param name="clientIndex">The client's index.</param>
+        </member>
+        <member name="M:NetEasy.Node.#ctor(System.Int32)">
+            <summary>
+            Creates a new <see cref="T:NetEasy.Node"/> object representing the specified client OR server.
+            </summary>
+            <param name="whoAmI">The sender's whoAmI.</param>
+        </member>
+        <member name="M:NetEasy.Node.FromServer">
+            <summary>Creates a new <see cref="T:NetEasy.Node"/> object representing the server.</summary>
+        </member>
+        <member name="M:NetEasy.Node.FromClient(System.Byte)">
+            <summary>Creates a new <see cref="T:NetEasy.Node"/> object representing the specified client.</summary>
+        </member>
+        <member name="M:NetEasy.Node.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.Node.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.Node.op_Equality(NetEasy.Node,NetEasy.Node)">
+            <inheritdoc/>
+        </member>
+        <member name="M:NetEasy.Node.op_Inequality(NetEasy.Node,NetEasy.Node)">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>
