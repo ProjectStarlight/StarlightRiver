@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -131,6 +132,35 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         bool collisionHappened = false;
 
+        public override bool Autoload(ref string name)
+        {
+            ReflectionTarget.DrawReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
+            return base.Autoload(ref name);
+        }
+
+        public void drawVitricAltarReflectionNormalMap(SpriteBatch spriteBatch)
+        {
+            Projectile proj = null;
+            for (int i = 0; i < Main.maxProjectiles; i++)
+            {
+                if (Main.projectile[i].active && Main.projectile[i].type == ModContent.ProjectileType<VitricBossAltarDummy>())
+                {
+                    proj = Main.projectile[i];
+                }
+            }
+
+            if (proj == null)
+                return;
+
+            Point16 parentPos = new Point16((int)proj.position.X / 16, (int)proj.position.Y / 16);
+            Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
+
+            if (parent.frameX < 90)
+            {
+                Texture2D reflectionMap = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap");
+                spriteBatch.Draw(reflectionMap, proj.position - Main.screenPosition, Color.White);
+            }
+        }
         public override void SafeSetDefaults()
         {
             projectile.hide = true;
@@ -216,6 +246,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                  )))
                 {
                     npc.active = false;
+                    npc.netUpdate = true;
                 }
 
                 Vector2 center = projectile.Center + new Vector2(0, 60);
@@ -310,7 +341,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 spriteBatch.Draw(texSkull, projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, projectile.Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
             }
 
-            else if (parent.frameX < 90)
+            else if (parent.frameX < 90 && ReflectionTarget.canUseTarget)
             {
                 Texture2D glow = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarGlow");
                 spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, projectile.Center), 0, Vector2.Zero, 1, 0, 0);

@@ -87,7 +87,7 @@ namespace StarlightRiver
                 }
             }
 
-            chestItems.Clear();
+            //chestItems.Clear();//this causes causes a crash when generating subsequent worlds since the dict would then be empty
         }
 
         private void PlaceDisplayCaseOn(Chest chest)

@@ -51,6 +51,20 @@ namespace StarlightRiver.Core
 
                         if (!Framing.GetTileSafely(x + dims.X, y - 2).active() && Framing.GetTileSafely(x + dims.X, y + 1).active())
                         {
+                            Point16 pos = new Point16(x, y - dims.Y + off);
+
+                            bool valid = true;
+                            for (int i = pos.X; i < pos.X + dims.X; i++) {
+                                for (int j = pos.Y; j < pos.Y + dims.Y; j++)
+                                {
+                                    if (Main.tile[i, j].active() && (Main.tile[i, j].type == TileID.SnowBlock || Main.tile[i, j].type == TileID.Sand))
+                                        valid = false;
+                                }
+                            }
+
+                            if (!valid)
+                                continue;
+
                             StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), mod, selection);
                             lastForestVariant = selection;
                         }

@@ -109,6 +109,8 @@ namespace StarlightRiver.Core
 
             trueInvisible = false;
 
+            player.fullRotation = 0;
+
             shouldSendHitPacket = false;
 
             if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)
@@ -312,8 +314,8 @@ namespace StarlightRiver.Core
 
 		public override void PlayerConnect(Player player)
         {
-            AbilityProgress packet = new AbilityProgress(this.player.whoAmI, this.player.GetHandler());
-            packet.Send();
+            AbilityProgress packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
+            packet.Send(runLocally: false);
         }
 
         public override float UseTimeMultiplier(Item item) => itemSpeed;

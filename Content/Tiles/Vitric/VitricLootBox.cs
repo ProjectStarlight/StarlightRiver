@@ -42,6 +42,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
     }
     class VitricLootBoxItem : QuickTileItem
     {
-        public VitricLootBoxItem() : base("Vitric Loot Box Item", "", TileType<VitricLootBox>(), 1, AssetDirectory.Debug, true) { }
+        public VitricLootBoxItem() : base("Vitric Loot Box Item", "", TileType<VitricLootBox>(), 1, AssetDirectory.VitricTile, false) { }
     }
 }

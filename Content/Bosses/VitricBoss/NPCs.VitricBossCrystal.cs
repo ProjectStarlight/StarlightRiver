@@ -13,6 +13,7 @@ using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Packets;
 using Terraria.ID;
 using System.IO;
+using StarlightRiver.Content.NPCs.BaseTypes;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -170,9 +171,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     if (Abilities.AbilityHelper.CheckDash(player, npc.Hitbox))
                     {
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                        if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
+                            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
-                        Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact);
+                        Main.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, (int)npc.Center.X, (int)npc.Center.Y);
                         Main.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)npc.Center.X, (int)npc.Center.Y, Terraria.ID.SoundID.Item70.Style, 2, -0.5f);
 
                         player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
@@ -190,12 +192,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         for (int k = 0; k < 5; k++) 
                             Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
 
+                        
                         if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient && Main.myPlayer == player.whoAmI)
 						{
-                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI);
-                            packet.Send();
+                            var packet = new CeirosCrystal(Main.myPlayer, npc.whoAmI, Parent.npc.whoAmI, player.velocity);
+                            packet.Send(runLocally: false);
                             return;
 						}
+                        
 
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
@@ -320,6 +324,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
 
                     if (npc.Center.Y > TargetPos.Y)
+                    {
                         foreach (Vector2 point in Parent.crystalLocations) //Better than cycling througn Main.npc, still probably a better way to do this
                         {
                             Rectangle hitbox = new Rectangle((int)point.X - 110, (int)point.Y + 48, 220, 16); //grabs the platform hitbox
@@ -329,6 +334,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 Impact();
                             }
                         }
+                    }
 
                     Tile tile = Framing.GetTileSafely((int)npc.Center.X / 16, (int)(npc.Center.Y + 24) / 16);
 
@@ -375,8 +381,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(npc.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));
-
-            npc.netUpdate = true;
         }
 
         private void ResetTimers()

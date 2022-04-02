@@ -22,10 +22,23 @@ namespace StarlightRiver.Content.Items.BaseTypes
         private int boomTimer = 0;
 
         private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
-        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+        public static ParticleSystem CursedSystem;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
-        public static ParticleSystem ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+
+        public static ParticleSystem ShardsSystem;
+
+        public static void Load()
+        {
+            CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+            ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+        }
+
+        public static void Unload()
+        {
+            CursedSystem = null;
+            ShardsSystem = null;
+        }
 
         protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
         {
@@ -201,5 +214,5 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
-	}
+    }
 }

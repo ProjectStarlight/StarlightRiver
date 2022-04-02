@@ -57,8 +57,6 @@ namespace StarlightRiver.Tiles.Temple
 
     public class DashBarrierItem : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
-
-        public DashBarrierItem() : base("Dash Barrier", "Debug item", TileType<DashBarrier>(), -12) { }
+        public DashBarrierItem() : base("Dash Barrier", "Debug item", TileType<DashBarrier>(), -12, AssetDirectory.UndergroundTempleTile) { }
     }
 }

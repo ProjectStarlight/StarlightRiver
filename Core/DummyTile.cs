@@ -24,7 +24,8 @@ namespace StarlightRiver.Core
 
         public void Unload()
         {
-            dummies.Clear();
+            if (dummies != null && dummies.Count > 0)
+                dummies.Clear();
             dummies = null;
         }
 

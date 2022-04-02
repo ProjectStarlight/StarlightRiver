@@ -6,16 +6,16 @@ using System.ComponentModel;
 
 namespace StarlightRiver.Configs
 {
+    public enum OverlayState
+    {
+        AlwaysOn = 0,
+        WhileNotFull = 1,
+        WhileUsing = 2,
+        Never = 3
+    }
+
     public class GUIConfig : ModConfig
     {
-        public enum OverlayState
-        {
-            AlwaysOn = 0,
-            WhileNotFull = 1,
-            WhileUsing = 2,
-            Never = 3
-        }
-
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         [Label("Overhead Stamina Display")]

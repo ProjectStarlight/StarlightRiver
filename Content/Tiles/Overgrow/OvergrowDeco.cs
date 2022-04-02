@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class Rock2x2Item : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public Rock2x2Item() : base("2x2 rock placer", "It places... Rocks", TileType<Rock2x2>(), 7) { }
     }

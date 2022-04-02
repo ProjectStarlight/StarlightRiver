@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     public class VitricGiantCrystalItem : WalkableCrystalItem
     {
-        public VitricGiantCrystalItem() : base("Giant Giant crystal", "VitricGiantCrystal", AssetDirectory.VitricTile) { }
+        public VitricGiantCrystalItem() : base("Vitric Giant crystal", "VitricGiantCrystal", AssetDirectory.VitricTile) { }
     }
 
     internal abstract class VitricCrystal : WalkableCrystal

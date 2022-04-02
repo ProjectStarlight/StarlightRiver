@@ -93,8 +93,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                if (Main.myPlayer == player.whoAmI)
+                {
+                    WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
+                    NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                } 
+                else
+                    Main.PlaySound(SoundID.Shatter, projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {
@@ -123,8 +128,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (AbilityHelper.CheckDash(player, projectile.Hitbox))
             {
-                WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                if (Main.myPlayer == player.whoAmI)
+                {
+                    WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
+                    NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                }
+                else
+                    Main.PlaySound(SoundID.Shatter, projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {
@@ -145,11 +155,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricOreItem : QuickTileItem
     {
-        public VitricOreItem() : base("Vitric Ore Crystal Item", "", TileType<VitricOre>(), 1, AssetDirectory.Debug, true) { }
+        public VitricOreItem() : base("Vitric Ore Crystal Item", "", TileType<VitricOre>(), 1, AssetDirectory.VitricTile, false) { }
     }
 
     class VitricOreFloatItem : QuickTileItem
     {
-        public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", TileType<VitricOreFloat>(), 1, AssetDirectory.Debug, true) { }
+        public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", TileType<VitricOreFloat>(), 1, AssetDirectory.VitricTile, false) { }
     }
 }
