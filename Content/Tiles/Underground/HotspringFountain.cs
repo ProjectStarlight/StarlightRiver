@@ -93,9 +93,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 					var tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					var tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
-					if (tile1.collisionType == 0 && tile1.liquidType() == 0 && tile1.liquid > 0)
+					if (tile1.collisionType == 0 && tile1.LiquidType == LiquidID.Water && tile1 .LiquidAmount > 0)
 					{
-						if (tile2.liquid == 0)
+						if (tile2 .LiquidAmount == 0)
 						{
 							Lighting.AddLight(new Vector2(checkX1 * 16, checkY1 * 16), new Vector3(150, 220, 230) * 0.002f);
 
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			int checkY = (int)(Projectile.Center.Y / 16 + y1);
 			var tile = Framing.GetTileSafely(checkX, checkY);
 
-			if (tile.liquidType() == 0 && tile.liquid > 0)
+			if (tile.LiquidType == LiquidID.Water && tile .LiquidAmount > 0)
 			{
 				var d = Dust.NewDustPerfect(Projectile.Center + new Vector2(x1, y1) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(150, 255, 255) * 0.3f, 1);
 				d.customData = Main.rand.NextFloat(0.6f, 0.9f);

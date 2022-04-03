@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     myPick.heat++;
 
                 tile.lava(false);
-                tile.liquid = 0;
+                tile .LiquidAmount = 0;
                 tile.liquidType(0);
                 tile.skipLiquid(true);
                 NetMessage.SendTileRange(0, x, y, 1, 1);

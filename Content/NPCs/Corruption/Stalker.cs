@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 			return spawnInfo.Player.ZoneCorrupt && 
 				tile.WallType == WallID.EbonstoneUnsafe && 
-				tile.liquid == 0 &&
+				tile .LiquidAmount == 0 &&
 				Lighting.Brightness(spawnInfo.spawnTileX, spawnInfo.spawnTileY) <= 0.1f &&
 				!Main.npc.Any(n => n.type == NPCType<Stalker>() && Vector2.Distance(n.Center, spawnPoint) < 320) ? 1 : 0;
 		}

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
@@ -110,13 +111,13 @@ namespace StarlightRiver.Helpers
         {
             Tile tile = Main.tile[i, j];
             int height = tile.TileFrameY == 36 ? 18 : 16;
-            if (tile.slope() == 0 && !tile.halfBrick())
+            if (tile.Slope == SlopeType.Solid && !tile.IsHalfBlock)
                 spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height), Color.Magenta * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            else if (tile.halfBrick())
+            else if (tile.IsHalfBlock)
                 spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2(0, 10), new Rectangle(tile.TileFrameX, tile.TileFrameY + 10, 16, 6), Color.Red * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             else
             {
-                byte b3 = tile.slope();
+                byte b3 = (byte)tile.Slope;
                 int num34;
                 for (int num226 = 0; num226 < 8; num226 = num34 + 1)
                 {

@@ -20,7 +20,7 @@ namespace StarlightRiver.Structures
                 TileID.Stone,
                 TileID.Grass,
                 TileID.CorruptGrass,
-                TileID.FleshGrass,
+                TileID.CrimsonGrass,
                 TileID.HardenedSand,
                 TileID.Sandstone,
                 TileID.SnowBlock,
@@ -151,7 +151,7 @@ namespace StarlightRiver.Structures
                                             {
                                                 WorldGen.PlaceTile((int)spawn.X + x, (int)spawn.Y + y, TileID.Stone, true, true);
                                             }
-                                            else if (spawnTileType == TileID.Grass || spawnTileType == TileID.CorruptGrass || spawnTileType == TileID.FleshGrass)//blocks to dirt
+                                            else if (spawnTileType == TileID.Grass || spawnTileType == TileID.CorruptGrass || spawnTileType == TileID.CrimsonGrass)//blocks to dirt
                                             {
                                                 WorldGen.PlaceTile((int)spawn.X + x, (int)spawn.Y + y, TileID.Dirt, true, true);
                                             }
@@ -186,7 +186,7 @@ namespace StarlightRiver.Structures
                                         {
                                             WorldGen.PlaceTile((int)spawn.X + x, (int)spawn.Y + y, TileID.Stone, true, true);
                                         }
-                                        else if (spawnTileType == TileID.Grass || spawnTileType == TileID.CorruptGrass || spawnTileType == TileID.FleshGrass)//blocks to dirt
+                                        else if (spawnTileType == TileID.Grass || spawnTileType == TileID.CorruptGrass || spawnTileType == TileID.CrimsonGrass)//blocks to dirt
                                         {
                                             WorldGen.PlaceTile((int)spawn.X + x, (int)spawn.Y + y, TileID.Dirt, true, true);
                                         }

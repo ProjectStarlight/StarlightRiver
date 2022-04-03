@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.NPCs.Hell
             Player Player = spawnInfo.Player;
             Vector2 spawnPos = new Vector2(spawnInfo.spawnTileX * 16, spawnInfo.spawnTileY * 16);
 
-            return Player.position.Y >= Main.maxTilesY - 200 && Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY].liquid != 0 &&
+            return Player.position.Y >= Main.maxTilesY - 200 && Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY] .LiquidAmount != 0 &&
                 !Main.npc.Any(NPC => NPC.active && NPC.type == NPCType<BoneMine>() && Vector2.Distance(NPC.Center, spawnPos) <= 128)
                 ? 1
                 : (float)0;

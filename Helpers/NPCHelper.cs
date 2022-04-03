@@ -42,7 +42,7 @@ namespace StarlightRiver.Helpers
                 Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - 1);
                 if (NPC.ai[slot] == 1 && NPC.collideX)
                 {
-                    if (tileType.halfBrick() || (Main.tileSolid[tileType.type] && (NPC.position.Y % 16 + 8) == 0))
+                    if (tileType.IsHalfBlock || (Main.tileSolid[tileType.type] && (NPC.position.Y % 16 + 8) == 0))
                     {
                         NPC.position.Y -= 8;//note: these just zip the NPC up the block and it looks bad, need to figure out how vanilla glides them up
                         NPC.velocity.X = NPC.oldVelocity.X;
@@ -53,7 +53,7 @@ namespace StarlightRiver.Helpers
                         NPC.velocity.X = NPC.oldVelocity.X;
                     }
                 }
-                else if (NPC.ai[slot] == 2 && (NPC.position.Y % 16) == 0 && Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height) / 16) - 1).halfBrick())
+                else if (NPC.ai[slot] == 2 && (NPC.position.Y % 16) == 0 && Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height) / 16) - 1).IsHalfBlock)
                 {//note: I dislike this extra check, but couldn't find a way to avoid it
                     if (NPC.collideX)
                     {

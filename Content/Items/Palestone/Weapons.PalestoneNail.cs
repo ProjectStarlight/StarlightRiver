@@ -358,8 +358,8 @@ namespace StarlightRiver.Content.Items.Palestone
 							Tile frontTile = Framing.GetTileSafely(xpos + Projectile.direction, yposFront);// - y - 1);
 							Tile midTile = Framing.GetTileSafely(xpos, yposMid);// - y - 1);
 
-							bool frontIsSlab = frontTile.halfBrick();
-							bool midIsSlab = midTile.halfBrick();
+							bool frontIsSlab = frontTile.IsHalfBlock;
+							bool midIsSlab = midTile.IsHalfBlock;
 
 							if ((frontIsSlab && !midIsSlab) || (!frontIsSlab && midIsSlab))
 								Projectile.position.Y -= 8;

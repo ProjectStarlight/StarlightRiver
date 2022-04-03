@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Vanity
                 int offset = zz * z;
                 Tile tile = Framing.GetTileSafely(Playerpos.X + offset, Playerpos.Y + i);
                 if (InWorld(Playerpos.X + offset, Playerpos.Y + i))
-                    if (tile.HasTile && Main.tileSolid[tile.type] || tile.liquid >= 32)
+                    if (tile.HasTile && Main.tileSolid[tile.type] || tile .LiquidAmount >= 32)
                     {
                         if (touchpoint == default)
                         {

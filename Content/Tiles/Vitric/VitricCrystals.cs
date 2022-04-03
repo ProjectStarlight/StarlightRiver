@@ -93,24 +93,24 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 Tile sideTile = Main.tile[i - 1, j];
                 Tile sideUpTile = Main.tile[i - 1, j - 1];
 
-                //if (sideTile.liquidType() == Tile.Liquid_Lava)
+                //if (sideTile.LiquidType == LiquidID.Lava)
                 //    Terraria.Utils.DrawBorderString(spriteBatch, val.ToString(), ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), Color.White, 0.75f);
 
-                if (sideTile.liquidType() == Tile.Liquid_Lava)
-                    spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, (255f - sideTile.liquid) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile.liquid / 255f), SpriteEffects.None, 0);
-                else if (sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type)
+                if (sideTile.LiquidType == LiquidID.Lava)
+                    spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile .LiquidAmount / 255f), SpriteEffects.None, 0);
+                else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type)
                     spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
                 else
                 {
                     sideTile = Main.tile[i + 1, j];
                     sideUpTile = Main.tile[i + 1, j - 1];
 
-                    //if (sideTile.liquidType() == Tile.Liquid_Lava)
+                    //if (sideTile.LiquidType == LiquidID.Lava)
                     //    Terraria.Utils.DrawBorderString(spriteBatch, val.ToString(), ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), Color.White, 0.75f);
 
-                    if (sideTile.liquidType() == Tile.Liquid_Lava)
-                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, (255f - sideTile.liquid) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile.liquid / 255f), SpriteEffects.FlipHorizontally, 0);
-                    else if (sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type)
+                    if (sideTile.LiquidType == LiquidID.Lava)
+                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, (255f - sideTile.liquid) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile .LiquidAmount / 255f), SpriteEffects.FlipHorizontally, 0);
+                    else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type)
                         spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
                 }
             }
@@ -224,11 +224,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
     //                        //Main.NewText(val / 255f);
     //                        Tile sideTile = Main.tile[i + k - 1, j + h];
     //                        Tile sideUpTile = Main.tile[i + k - 1, j + h - 1];
-    //                        if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
+    //                        if ((sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type) || (sideTile.LiquidType == LiquidID.Lava && sideTile .LiquidAmount > 200))
     //                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + k, j + h) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
     //                        sideTile = Main.tile[i + k + 1, j + h];
     //                        sideUpTile = Main.tile[i + k + 1, j + h - 1];
-    //                        if ((sideUpTile.liquidType() == Tile.Liquid_Lava && sideTile.type != Type) || (sideTile.liquidType() == Tile.Liquid_Lava && sideTile.liquid > 200))
+    //                        if ((sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type) || (sideTile.LiquidType == LiquidID.Lava && sideTile .LiquidAmount > 200))
     //                            spriteBatch.Draw(lavaFadeTex, ((new Vector2(i + k - 2, j + h) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
     //                    }
     //                }
@@ -287,11 +287,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     //                        Tile t1 = Main.tile[i + k - 1, j + h];
     //                        Tile t0 = Main.tile[i + k - 1, j + h - 1];
-    //                        if ((t0.liquidType() == Tile.Liquid_Lava && t1.type != Type) || (t1.liquidType() == Tile.Liquid_Lava && t1.liquid > 200))
+    //                        if ((t0.LiquidType == LiquidID.Lava && t1.type != Type) || (t1.LiquidType == LiquidID.Lava && t1 .LiquidAmount > 200))
     //                            spriteBatch.Draw(tex1, ((new Vector2(i + k, j + h) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 355f, 1), SpriteEffects.None, 0);
     //                        t1 = Main.tile[i + k + 1, j + h];
     //                        t0 = Main.tile[i + k + 1, j + h - 1];
-    //                        if ((t0.liquidType() == Tile.Liquid_Lava && t1.type != Type) || (t1.liquidType() == Tile.Liquid_Lava && t1.liquid > 200))
+    //                        if ((t0.LiquidType == LiquidID.Lava && t1.type != Type) || (t1.LiquidType == LiquidID.Lava && t1 .LiquidAmount > 200))
     //                            spriteBatch.Draw(tex1, ((new Vector2(i + k - 2, j + h) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(tex1.Width, 0), null, col, 0, new Vector2(tex1.Width, 0), new Vector2(val / 355f, 1), SpriteEffects.FlipHorizontally, 0);
     //                    }
     //                }

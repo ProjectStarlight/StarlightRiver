@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
                 }
                 else if (Main.tile[i + x, j + y].type == TileID.Grass)
                 {
-                    WorldGen.PlaceTile(i + x, j + y, TileID.FleshGrass, true, true);
+                    WorldGen.PlaceTile(i + x, j + y, TileID.CrimsonGrass, true, true);
                 }
                 else if (Main.tile[i + x, j + y].type == TileID.Sand)
                 {
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
                 }
             }
 
-            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0)//vines (Maybe add the corruption thorns too?)
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j].Slope == SlopeType.Solid)//vines (Maybe add the corruption thorns too?)
             {
                 if (Main.rand.Next(5) == 0)
                 {
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
                 }
             }
 
-            if (!Main.tile[i, j - 1].HasTile && Main.tile[i, j].slope() == 0)//grass
+            if (!Main.tile[i, j - 1].HasTile && Main.tile[i, j].Slope == SlopeType.Solid)//grass
             {
                 if (Main.rand.Next(5) == 0)
                 {

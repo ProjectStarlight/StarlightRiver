@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if ((tile.collisionType == 1 && tile.type != TileID.Grass) || tile.liquid > 0)
+                    if ((tile.collisionType == 1 && tile.type != TileID.Grass) || tile .LiquidAmount > 0)
                         break;
                     else if (tile.HasTile && tile.type == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
@@ -83,9 +83,9 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if (tile.HasTile && tile.type != TileID.Sand || tile.liquid > 0)
+                    if (tile.HasTile && tile.type != TileID.Sand || tile .LiquidAmount > 0)
                         break;
-                    else if (tile.HasTile && tile.slope() == 0 && !tile.halfBrick() && tile.type == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.type == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         var newTile = Framing.GetTileSafely(x, y - 1);
                         newTile.ClearEverything();

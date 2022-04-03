@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassOvergrow>(), true);
 
             if (Main.rand.Next(10) == 0)
-                if (!Main.tile[i, j + 1].HasTile && (Main.tile[i, j].slope() == 0 || Main.tile[i, j].topSlope()))
+                if (!Main.tile[i, j + 1].HasTile && (Main.tile[i, j].Slope == SlopeType.Solid || Main.tile[i, j].TopSlope))
                     WorldGen.PlaceTile(i, j + 1, TileType<VineOvergrow>(), true);
         }
     }

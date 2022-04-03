@@ -33,29 +33,29 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                 float yOffsetLeft = 0;
                 float yOffsetRight = 0;
 
-                switch (Main.tile[i, j].slope())
+                switch (Main.tile[i, j].Slope)
                 {
-                    case 1:// '\' slope
+                    case SlopeType.SlopeDownLeft:// '\' slope
                         Tile tileLeft0 = Main.tile[i - 1, j];
                         Tile tileRight0 = Main.tile[i + 1, j + 1];
 
                         emptyLeft = !((tileLeft0.HasTile && tileLeft0.type == Type && !Main.tile[i - 1, j - 1].HasTile) || 
-                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
+                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !tileRight0.HasTile || tileRight0.type != Type || tileRight0.slope() == 2 || Main.tile[i + 1, j].HasTile;
+                        emptyRight = !tileRight0.HasTile || tileRight0.type != Type || tileRight0.Slope == SlopeType.SlopeDownRight || Main.tile[i + 1, j].HasTile;
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
                         yOffsetLeft = 1f;
                         break;
 
-                    case 2:// '/' slope
+                    case SlopeType.SlopeDownRight:// '/' slope
                         Tile tileLeft1 = Main.tile[i - 1, j + 1];
                         Tile tileRight1 = Main.tile[i + 1, j];
 
-                        emptyLeft = !tileLeft1.HasTile || tileLeft1.type != Type || tileLeft1.slope() == 1 || Main.tile[i - 1, j].HasTile;
+                        emptyLeft = !tileLeft1.HasTile || tileLeft1.type != Type || tileLeft1.Slope == SlopeType.SlopeDownLeft || Main.tile[i - 1, j].HasTile;
 
                         emptyRight = !((tileRight1.HasTile && tileRight1.type == Type && !Main.tile[i + 1, j - 1].HasTile) || 
-                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
+                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
                         yOffsetRight = 1f;
@@ -65,11 +65,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft2 = Main.tile[i - 1, j];
                         Tile tileRight2 = Main.tile[i + 1, j];
 
-                        emptyLeft = !((tileLeft2.HasTile && tileLeft2.type == Type && tileLeft2.slope() != 1 &&!Main.tile[i - 1, j - 1].HasTile) ||
-                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
+                        emptyLeft = !((tileLeft2.HasTile && tileLeft2.type == Type && tileLeft2.Slope != SlopeType.SlopeDownLeft &&!Main.tile[i - 1, j - 1].HasTile) ||
+                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !((tileRight2.HasTile && tileRight2.type == Type && tileRight2.slope() != 2 && !Main.tile[i + 1, j - 1].HasTile) || 
-                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
+                        emptyRight = !((tileRight2.HasTile && tileRight2.type == Type && tileRight2.Slope != SlopeType.SlopeDownRight && !Main.tile[i + 1, j - 1].HasTile) || 
+                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
                         break;

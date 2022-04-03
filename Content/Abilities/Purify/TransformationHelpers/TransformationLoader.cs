@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Abilities.Purify.TransformationHelpers
                 {
                     TileID.Grass,
                     TileID.CorruptGrass,
-                    TileID.FleshGrass,
+                    TileID.CrimsonGrass,
                     TileID.HallowedGrass
                 },
                 TileType<GrassPure>()

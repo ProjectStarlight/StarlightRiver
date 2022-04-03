@@ -70,7 +70,7 @@ namespace StarlightRiver.Core
                         for (int x = k - size / 2; x < k + size / 2; x++)
                             for (int y = j - size / 2; y < j + size / 2; y++)
                             {
-                                if (Main.tile[x, y].HasTile && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].slope() == 0) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
+                                if (Main.tile[x, y].HasTile && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].Slope == SlopeType.Solid) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
                                 {
                                     WorldGen.PlaceTile(x, y - 1, TileType<Tiles.Herbology.ForestIvyWild>()); //this line throws a stack overflow on worldgen SOMEHOW?!?! ONLY WHEN IT ROLLS FOR SLIME BUSHES VERSUS BERRIES?!?!?! WHAT
                                     break;

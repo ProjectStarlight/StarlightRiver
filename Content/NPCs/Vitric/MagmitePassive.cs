@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if(ActionState == -1)
 			{
-                if (tile.liquid > 0)
+                if (tile .LiquidAmount > 0)
                     NPC.velocity.Y = -4;
                 else
                 {
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if (ActionState == 0)
             {
-                if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
+                if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
                 {
                     ActionState = 1;
                     NPC.velocity *= 0;

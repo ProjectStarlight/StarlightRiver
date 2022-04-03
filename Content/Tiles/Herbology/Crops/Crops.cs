@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 new List<int>() { 
                     TileType<Soil>(), TileType<Trellis>(), TileType<GardenPot>(),
                     TileID.Dirt, TileID.Sand, TileID.Mud, TileID.Grass,
-                    TileID.HallowedGrass, TileID.CorruptGrass, TileID.FleshGrass, TileID.JungleGrass 
+                    TileID.HallowedGrass, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.JungleGrass 
                 };
 
             if (ExtraGroundTypes != null)
@@ -197,9 +197,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
         {
             Tile thisTile = Main.tile[i, j];
             Tile aboveTile = Main.tile[i, j - 1];
-            //Main.NewText(aboveTile.liquid <= 128 ? (((thisTile.liquid - (aboveTile.liquid * 2)) / 255f) * 80) + 10 : 0);
-            if (aboveTile.liquid < 127)//the growth chance gets higher as the water level does, but it quickly drops off if the second block has any water
-                return (int)((((thisTile.liquid - (aboveTile.liquid * 2)) / 255f) * 60) + 8); //68 max //last number is (min chance), second to last number is (max chance) minus (min chance)
+            //Main.NewText(aboveTile .LiquidAmount <= 128 ? (((thisTile .LiquidAmount - (aboveTile .LiquidAmount * 2)) / 255f) * 80) + 10 : 0);
+            if (aboveTile .LiquidAmount < 127)//the growth chance gets higher as the water level does, but it quickly drops off if the second block has any water
+                return (int)((((thisTile .LiquidAmount - (aboveTile .LiquidAmount * 2)) / 255f) * 60) + 8); //68 max //last number is (min chance), second to last number is (max chance) minus (min chance)
 
             return 0;
         }

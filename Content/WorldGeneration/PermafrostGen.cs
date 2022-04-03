@@ -273,7 +273,7 @@ namespace StarlightRiver.Core
                     for (int y = pos.Y - off; y < pos.Y + off; y++)
                     {
                         WorldGen.KillTile(x, y);
-                        Framing.GetTileSafely(x, y).liquid = 0;
+                        Framing.GetTileSafely(x, y) .LiquidAmount = 0;
 
                         if (!digOnly)
                             Framing.GetTileSafely(x, y).wall = WallID.SnowWallUnsafe;
@@ -457,7 +457,7 @@ namespace StarlightRiver.Core
                     Tile tile = Framing.GetTileSafely(x, y);
                     if (!tile.HasTile)
                     {
-                        tile.liquid = 255;
+                        tile .LiquidAmount = 255;
                         tile.liquidType(0);
                     }
                 }

@@ -12,6 +12,7 @@ using Mono.Cecil.Cil;
 using Terraria.GameContent.UI;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -84,7 +85,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			var tile = Framing.GetTileSafely(x, y);
 
-			if (tile.liquidType() != 0)
+			if (tile.LiquidType != LiquidID.Water)
 				return arg;
 
 			if (activeAddon is null) //putting this in the same check as above dosent seem to short circuit properly? 

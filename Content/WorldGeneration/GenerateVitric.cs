@@ -166,7 +166,7 @@ namespace StarlightRiver.Core
                         Tile left = Framing.GetTileSafely(i - 1, j);
                         Tile right = Framing.GetTileSafely(i + 1, j);
                         Tile me = Framing.GetTileSafely(i, j);
-                        bool sloped = (me.leftSlope() || me.rightSlope()) && me.topSlope() && !me.bottomSlope(); //top and bottom are mutually exclusive but you never know
+                        bool sloped = (me.LeftSlope || me.RightSlope) && me.TopSlope && !me.BottomSlope; //top and bottom are mutually exclusive but you never know
                         if (left.HasTile || right.HasTile)
                             if (sloped && genRand.NextBool(3))
                                 Framing.GetTileSafely(i, j).halfBrick(true);
@@ -337,7 +337,7 @@ namespace StarlightRiver.Core
                             PlaceTile(x + 1, y, TileType<VitricSpike>(), false, true);
 
                         t.liquidType(1);
-                        t.liquid = 200;
+                        t .LiquidAmount = 200;
                         t.active(false);
 
                         if (y == targetY)
@@ -799,8 +799,8 @@ namespace StarlightRiver.Core
 				{
                     Tile tile = Framing.GetTileSafely(x, y);
 
-                    if (tile.liquidType() == 0)
-                        tile.liquid = 0;
+                    if (tile.LiquidType == LiquidID.Water)
+                        tile .LiquidAmount = 0;
 
                     if (tile.type == TileID.Obsidian)
                         tile.active(false);
@@ -852,7 +852,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if ((Main.tile[i, j].HasTile && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].liquid > 0) count++;
+                    if ((Main.tile[i, j].HasTile && Main.tile[i, j].collisionType == 1) || Main.tile[i, j] .LiquidAmount > 0) count++;
             return count;
         }
 
@@ -861,7 +861,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if ((Main.tile[i, j].HasTile) || Main.tile[i, j].liquid > 0) count++;
+                    if ((Main.tile[i, j].HasTile) || Main.tile[i, j] .LiquidAmount > 0) count++;
             return count;
         }
     }
