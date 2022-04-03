@@ -13,13 +13,9 @@ namespace StarlightRiver.Content.Buffs
 {
 	class HotspringHeal : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "HotspringHeal";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Refreshing Dip");
             Description.SetDefault("The hot springs restore your body and mind");

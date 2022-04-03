@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Buffs
     {
         public Overcharge() : base("Overcahrged", "Greatly reduced armor, shocking nearby enemies!", true) { }
 
+        public override string Texture => AssetDirectory.Buffs + "Overcharge";
+
         public override void Update(Player Player, ref int buffIndex)
         {
             Player.statDefense /= 4;
@@ -32,7 +34,7 @@ namespace StarlightRiver.Content.Buffs
                     NPC NPC = Main.npc[k];
                     if (NPC.active && Vector2.Distance(NPC.Center, Player.Center) < 100)
                     {
-                        var proj = Projectile.NewProjectileDirect(NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
                         proj.friendly = false;
                         proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
                         DrawHelper.DrawElectricity(Player.Center, NPC.Center, DustType<Content.Dusts.Electric>());
@@ -61,7 +63,7 @@ namespace StarlightRiver.Content.Buffs
                     NPC target = Main.npc[k];
                     if (target.active && Vector2.Distance(target.Center, NPC.Center) < 200)
                     {
-                        var proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
                         proj.friendly = false;
                         proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
                         DrawHelper.DrawElectricity(NPC.Center, target.Center, DustType<Content.Dusts.Electric>());
@@ -100,7 +102,7 @@ namespace StarlightRiver.Content.Buffs
 
             if (Projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
-                Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
                 DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
             }
             Projectile.timeLeft = 0;

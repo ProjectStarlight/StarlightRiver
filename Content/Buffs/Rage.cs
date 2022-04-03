@@ -7,12 +7,12 @@ namespace StarlightRiver.Content.Buffs
 	{
 		public Rage() : base("Rage", "Increased damage and greatly increased knockback", false) { }
 
-		public override bool Autoload(ref string name, ref string texture)
+		public override string Texture => AssetDirectory.Buffs + "Rage";
+
+		public override void Load()
 		{
 			StarlightNPC.ModifyHitPlayerEvent += BuffDamage;
 			StarlightNPC.ResetEffectsEvent += ResetRageBuff;
-
-			return base.Autoload(ref name, ref texture);
 		}
 
 		private void BuffDamage(NPC NPC, Player target, ref int damage, ref bool crit)
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Buffs
 		
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.allDamageMult += 0.1f;
+			Player.GetDamage(Terraria.ModLoader.DamageClass.Generic) += 0.1f;
 		}
 	}
 }

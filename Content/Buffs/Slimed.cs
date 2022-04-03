@@ -1,10 +1,14 @@
 ﻿using Terraria;
+using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Buffs
 {
 	public class Slimed : SmartBuff
     {
         public Slimed() : base("Slimed", "eww", true) { }
+
+        public override string Texture => AssetDirectory.Buffs + "Slimed";
+
         public override void Update(Player Player, ref int buffIndex)
         {
             Player.lifeRegen -= 5;

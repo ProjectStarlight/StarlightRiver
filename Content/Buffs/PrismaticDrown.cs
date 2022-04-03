@@ -6,13 +6,9 @@ namespace StarlightRiver.Content.Buffs
 {
 	class PrismaticDrown : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "PrismaticDrown";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Prismatic Drown");
             Description.SetDefault("You are drowning in prismatic waters!");

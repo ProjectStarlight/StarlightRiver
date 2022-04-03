@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.DataStructures;
 
@@ -7,6 +8,8 @@ namespace StarlightRiver.Content.Buffs
 	public class Claustrophobia : SmartBuff
     {
         public Claustrophobia() : base("Claustrophobia", "Stuck in wisp form!", true) { }
+
+        public override string Texture => AssetDirectory.Buffs + "Claustrophobia";
 
         private int timer;
 

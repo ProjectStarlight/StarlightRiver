@@ -6,13 +6,9 @@ namespace StarlightRiver.Content.Buffs
 {
 	public class IvySnare : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "IvySnare";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Snared");
             Description.SetDefault("You've been caught!");

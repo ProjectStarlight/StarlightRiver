@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Food;
+using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
 
@@ -7,6 +8,8 @@ namespace StarlightRiver.Content.Buffs
 	public class FoodBuff : SmartBuff
     {
         public FoodBuff() : base("Nourished", "Nourised by rich food, granting:\n", false) { }
+
+        public override string Texture => AssetDirectory.Buffs + "FoodBuff";
 
         public override void ModifyBuffTip(ref string tip, ref int rare)
         {
@@ -26,5 +29,10 @@ namespace StarlightRiver.Content.Buffs
             }
         }
     }
-    public class Full : SmartBuff { public Full() : base("Stuffed", "Cannot consume any more rich food", true) { } }
+    public class Full : SmartBuff 
+    { 
+        public Full() : base("Stuffed", "Cannot consume any more rich food", true) { }
+
+        public override string Texture => AssetDirectory.Buffs + "Full";
+    }
 }

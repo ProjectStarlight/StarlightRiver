@@ -7,14 +7,10 @@ namespace StarlightRiver.Content.Buffs
 {
 	public class FerrofluidDraftBuff : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "FerrofluidDraftBuff";
 
-        public override void SetDefaults()
-        {
+		public override void SetStaticDefaults()
+		{
             DisplayName.SetDefault("Ferrofluid Draft");
             Description.SetDefault("Nearby Items gravitate towards you");
         }

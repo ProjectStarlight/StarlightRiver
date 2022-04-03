@@ -6,13 +6,9 @@ namespace StarlightRiver.Content.Buffs
 {
 	public class Ivy : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "Ivy";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ivy");
             Description.SetDefault("It's rooted in you!");
