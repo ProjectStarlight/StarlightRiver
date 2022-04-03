@@ -79,7 +79,7 @@ namespace StarlightRiver.Core
         public virtual bool SpawnConditions(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.frameX == 0 && tile.frameY == 0;
+            return tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public sealed override void NearbyEffects(int i, int j, bool closer)

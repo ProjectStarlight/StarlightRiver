@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.CustomHooks
                 spriteBatch.Draw(Request<Texture2D>(NPC.ModNPC.Texture).Value, NPC.position - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2((float)Math.Sin(NPC.ai[0]) * 4f, 0), drawColor);
                 for (int k = 0; k >= 0; k++)
                 {
-                    if (Main.tile[(int)NPC.position.X / 16, (int)NPC.position.Y / 16 + k + 2].active()) break;
+                    if (Main.tile[(int)NPC.position.X / 16, (int)NPC.position.Y / 16 + k + 2].HasTile) break;
                     spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowItem + "ShakerChain").Value,
                         NPC.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(NPC.ai[0] + k) * 4, 18 + k * 16), drawColor);
                 }

@@ -21,7 +21,7 @@ namespace StarlightRiver.Structures
                 {
                     for (int y = 0; y < Main.maxTilesY; y++) // find the highest grass block
                     {
-                        if (Main.tile[x, y].type == TileID.Grass && Math.Abs(x - Main.maxTilesX / 2) >= Main.maxTilesX / 6 && Main.tile[x + 4, y].active() && Main.tile[x + 8, y].active())// valid placement
+                        if (Main.tile[x, y].type == TileID.Grass && Math.Abs(x - Main.maxTilesX / 2) >= Main.maxTilesX / 6 && Main.tile[x + 4, y].HasTile && Main.tile[x + 8, y].HasTile)// valid placement
                         {
                             int variant = Main.rand.Next(5);
 

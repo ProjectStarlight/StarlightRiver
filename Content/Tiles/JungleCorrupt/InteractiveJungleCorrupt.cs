@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
         {
             int x = Main.rand.Next(-1, 1);
             int y = Main.rand.Next(-1, 1);
-            if (!Main.tile[i + x, j + y].active())
+            if (!Main.tile[i + x, j + y].HasTile)
             {
                 if (Main.rand.Next(1) == 0)
                 {

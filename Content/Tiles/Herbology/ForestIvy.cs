@@ -52,12 +52,12 @@ namespace StarlightRiver.Tiles.Herbology
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             Tile tile = Main.tile[i, j];
-            tile.frameY = (short)(i % 3 * 18);
+            tile.TileFrameY = (short)(i % 3 * 18);
 
             Vector2 drawPos = (new Vector2(i, j) + Helper.TileAdj) * 16 + new Vector2(4, 20) - Main.screenPosition;
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Herbology/ForestIvyWild").Value;
 
-            spriteBatch.Draw(tex, drawPos, new Rectangle(tile.frameX, tile.frameY, 16, 16), drawColor,
+            spriteBatch.Draw(tex, drawPos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), drawColor,
                 (float)Math.Sin(StarlightWorld.rottime + i % 6.28f) * 0.2f, new Vector2(8, 16), 1, SpriteEffects.FlipHorizontally, 0);
         }
 

@@ -49,33 +49,33 @@ namespace StarlightRiver.Content.Items
 
                 if (Player.controlDown)
                     if (Player.controlSmart)
-                        selectedTile.frameY--;
+                        selectedTile.TileFrameY--;
                     else
-                        selectedTile.frameX--;
+                        selectedTile.TileFrameX--;
                 if (Player.controlUp)
                     if (Player.controlSmart)
-                        selectedTile.frameY++;
+                        selectedTile.TileFrameY++;
                     else
-                        selectedTile.frameX++;
+                        selectedTile.TileFrameX++;
 
-                Main.NewText("Frame X: " + selectedTile.frameX + " | Frame Y: " + selectedTile.frameY);
+                Main.NewText("Frame X: " + selectedTile.TileFrameX + " | Frame Y: " + selectedTile.TileFrameY);
                 return false;
             }
             else
             {
                 if (Player.controlDown)
                     if (Player.controlSmart)
-                        selectedTile.frameY--;
+                        selectedTile.TileFrameY--;
                     else
-                        selectedTile.frameX--;
+                        selectedTile.TileFrameX--;
                 if (Player.controlUp)
                     if (Player.controlSmart)
-                        selectedTile.frameY++;
+                        selectedTile.TileFrameY++;
                     else
-                        selectedTile.frameX++;
+                        selectedTile.TileFrameX++;
 
-                Main.NewText("Frame X: " + selectedTile.frameX + " | Frame Y: " + selectedTile.frameY + " | Slope: " + selectedTile.slope());
-                //Main.NewText("Frame X: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].frameX + " Frame Y: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].frameY);
+                Main.NewText("Frame X: " + selectedTile.TileFrameX + " | Frame Y: " + selectedTile.TileFrameY + " | Slope: " + selectedTile.slope());
+                //Main.NewText("Frame X: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].TileFrameX + " Frame Y: " + Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)].TileFrameY);
 
                 //for(int g = -2; g < 3; g++)
                 //{
@@ -94,8 +94,8 @@ namespace StarlightRiver.Content.Items
                 //			//Main.NewText("Placed : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Name + " : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Mod);
 
                 //			targetTile.type = Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Type;
-                //			targetTile.frameX = baseTile.frameX;
-                //			targetTile.frameY = baseTile.frameY;
+                //			targetTile.TileFrameX = baseTile.TileFrameX;
+                //			targetTile.TileFrameY = baseTile.TileFrameY;
                 //			targetTile.inActive(baseTile.inActive());
                 //			targetTile.slope(baseTile.slope());
                 //			targetTile.active(true);

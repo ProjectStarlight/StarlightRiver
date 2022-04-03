@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
             var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
-            var frame = new Rectangle(tile.frameX, tile.frameY, 16, 16);
+            var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
             var color = Color.White * (0.4f + (float)Math.Sin(Main.GameUpdateCount / 40f) * 0.25f);
 
             spriteBatch.Draw(tex, pos, frame, color);
@@ -51,15 +51,15 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         {
             var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 
-            if (CanOpen(Main.LocalPlayer) && tile.frameX < 32)
+            if (CanOpen(Main.LocalPlayer) && tile.TileFrameX < 32)
             {
                 for(int x = 0; x < 2; x++)
                     for(int y = 0; y < 4; y++)
                     {
-                        int realX = x + i - tile.frameX / 18;
-                        int realY = y + j - tile.frameY / 18;
+                        int realX = x + i - tile.TileFrameX / 18;
+                        int realY = y + j - tile.TileFrameY / 18;
 
-                        Framing.GetTileSafely(realX, realY).frameX += 36;
+                        Framing.GetTileSafely(realX, realY).TileFrameX += 36;
                     }
 
                 Loot[] smallLoot = new Loot[5];

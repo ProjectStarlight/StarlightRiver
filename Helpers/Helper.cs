@@ -222,7 +222,7 @@ namespace StarlightRiver.Helpers
                     if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
 
                         var tile = Framing.GetTileSafely(thisPoint);
-                    if(tile.collisionType == 1 && !tile.inActive())
+                    if(tile.collisionType == 1 && tile.HasTile)
                     {
                         var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
                         if (rect.Contains(point.ToPoint())) return true;
@@ -385,10 +385,10 @@ namespace StarlightRiver.Helpers
         public static bool IsEdgeTile(int x, int y)
         {
             return
-                !Framing.GetTileSafely(x - 1, y).active() ||
-                !Framing.GetTileSafely(x + 1, y).active() ||
-                !Framing.GetTileSafely(x, y - 1).active() ||
-                !Framing.GetTileSafely(x, y + 1).active();
+                !Framing.GetTileSafely(x - 1, y).HasTile ||
+                !Framing.GetTileSafely(x + 1, y).HasTile ||
+                !Framing.GetTileSafely(x, y - 1).HasTile ||
+                !Framing.GetTileSafely(x, y + 1).HasTile;
         }
 
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();

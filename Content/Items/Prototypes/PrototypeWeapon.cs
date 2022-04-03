@@ -52,7 +52,7 @@ namespace StarlightRiver.Items.Prototypes
             return true;
         } //allows on-use effects without breaking the prototype behavior
 
-        public sealed override bool UseItem(Player Player) //reduces durability on use if the breaking method of the prototype is limited uses
+        public sealed override bool? UseItem(Player Player) //reduces durability on use if the breaking method of the prototype is limited uses
         {
             if (Breaktype == BreakType.MaxUses) Durability--;
             if (Durability == 0) BreakItem(Player.Center); //destroys the Item on it's last use

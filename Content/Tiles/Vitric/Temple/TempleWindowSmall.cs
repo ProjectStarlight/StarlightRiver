@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             var tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameX != 0 || tile.frameY != 0) 
+            if (tile.TileFrameX != 0 || tile.TileFrameY != 0) 
                 return false;
 
             var frameTex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmallFrame").Value;

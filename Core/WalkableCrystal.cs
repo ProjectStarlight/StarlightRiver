@@ -33,7 +33,7 @@ namespace StarlightRiver.Core
 
         public override int DummyType => Mod.ProjectileType(DummyName);
 
-        public override bool SpawnConditions(int i, int j) => Main.tile[i, j].frameX > 0;
+        public override bool SpawnConditions(int i, int j) => Main.tile[i, j].TileFrameX > 0;
 
         protected WalkableCrystal(int maxWidth, int maxHeight, string dummyType, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1, int soundStyleVar = 1)
         {
@@ -94,7 +94,7 @@ namespace StarlightRiver.Core
 
         public override bool Drop(int i, int j)
         {
-            if (Main.tile[i, j].frameX > 0)
+            if (Main.tile[i, j].TileFrameX > 0)
                 Item.NewItem(i * 16, j * 16, 16 * MaxWidth, 16 * MaxHeight, ItemType);
             return false;
         }
@@ -129,10 +129,10 @@ namespace StarlightRiver.Core
         {
             Tile t = Parent;
             
-            if (t != null && t.frameX > 0 && variantCount > 0)
+            if (t != null && t.TileFrameX > 0 && variantCount > 0)
             {
                 Texture2D tex = Main.tileTexture[t.type];
-                Rectangle frame = tex.Frame(variantCount, 1, t.frameX - 1);
+                Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
                 Vector2 pos = ((Projectile.position - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
                 LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);
             }

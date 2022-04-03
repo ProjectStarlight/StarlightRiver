@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
             var y = Main.rand.Next(-4, 4);
             //Main.NewText("tick");
 
-            if (Main.tile[i + x, j + y].active() && Main.hardMode)//spread
+            if (Main.tile[i + x, j + y].HasTile && Main.hardMode)//spread
             {
                 if (Main.tile[i + x, j + y].type == TileID.JungleGrass)
                 {
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
                 }
             }
 
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)//vines (Maybe add the corruption thorns too?)
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0)//vines (Maybe add the corruption thorns too?)
             {
                 if (Main.rand.Next(5) == 0)
                 {
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
                 }
             }
 
-            if (!Main.tile[i, j - 1].active() && Main.tile[i, j].slope() == 0)//grass
+            if (!Main.tile[i, j - 1].HasTile && Main.tile[i, j].slope() == 0)//grass
             {
                 if (Main.rand.Next(5) == 0)
                 {
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
 
         /*public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)
+            if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0)
             {
                 Dust.NewDustPerfect(new Vector2(i, j) * 16, Mod.DustType("Holy2"), new Vector2(0, 0.6f));
             }

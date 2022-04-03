@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					ManageCaches();
 
 
-				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].active())
+				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].HasTile)
 				{
 					ableToLand = true;
 				}

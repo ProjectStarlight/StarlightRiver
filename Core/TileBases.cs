@@ -85,12 +85,12 @@ namespace StarlightRiver.Core
                 Vector2.Zero : new Vector2(Main.offScreenRange, Main.offScreenRange);
 
             Texture2D texture = Main.canDrawColorTile(i, j) ?
-                Main.tileAltTexture[Type, tile.color()] : Main.tileTexture[Type];
+                Main.tileAltTexture[Type, tile.TileColor] : Main.tileTexture[Type];
 
-            int animate = tile.frameY >= animationFrameHeight ?
+            int animate = tile.TileFrameY >= animationFrameHeight ?
                 Main.tileFrame[Type] * animationFrameHeight : 0;
 
-            Main.spriteBatch.Draw(texture, new Vector2(i * 16, j * 16) - Main.screenPosition + zero, new Rectangle(tile.frameX, tile.frameY + animate, 16, 16), Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(texture, new Vector2(i * 16, j * 16) - Main.screenPosition + zero, new Rectangle(tile.TileFrameX, tile.TileFrameY + animate, 16, 16), Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
             return false;
         }
 
@@ -111,19 +111,19 @@ namespace StarlightRiver.Core
 
         public override void HitWire(int i, int j)
         {
-            int x = i - (Main.tile[i, j].frameX / 18) % Width;
-            int y = j - (Main.tile[i, j].frameY / 18) % Height;
+            int x = i - (Main.tile[i, j].TileFrameX / 18) % Width;
+            int y = j - (Main.tile[i, j].TileFrameY / 18) % Height;
 
             for (int l = x; l < x + Width; l++)
                 for (int m = y; m < y + Height; m++)
                 {
                     if (Main.tile[l, m] == null)
                         Main.tile[l, m] = new Tile();
-                    if (Main.tile[l, m].active() && Main.tile[l, m].type == Type)
-                        if (Main.tile[l, m].frameY < (short)animationFrameHeight)
-                            Main.tile[l, m].frameY += (short)animationFrameHeight;
+                    if (Main.tile[l, m].HasTile && Main.tile[l, m].type == Type)
+                        if (Main.tile[l, m].TileFrameY < (short)animationFrameHeight)
+                            Main.tile[l, m].TileFrameY += (short)animationFrameHeight;
                         else
-                            Main.tile[l, m].frameY -= (short)animationFrameHeight;
+                            Main.tile[l, m].TileFrameY -= (short)animationFrameHeight;
                 }
 
             if (Wiring.running)
@@ -136,7 +136,7 @@ namespace StarlightRiver.Core
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (Main.tile[i, j].frameY >= animationFrameHeight)
+            if (Main.tile[i, j].TileFrameY >= animationFrameHeight)
                 FountainActive(i, j, closer);
         }
 
@@ -296,7 +296,7 @@ namespace StarlightRiver.Core
         }
         protected void Grow(int i, int j, int chance)
         {
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j - MaxVineLength].type != Type && Main.rand.Next(chance) == 0)
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j - MaxVineLength].type != Type && Main.rand.Next(chance) == 0)
                 WorldGen.PlaceTile(i, j + 1, Type, true);
         }
 
@@ -304,7 +304,7 @@ namespace StarlightRiver.Core
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (!Main.tile[i, j - 1].active() && !AnchorTileTypes.Contains(Main.tile[i, j - 1].type))
+            if (!Main.tile[i, j - 1].HasTile && !AnchorTileTypes.Contains(Main.tile[i, j - 1].type))
                 WorldGen.KillTile(i, j);
                 //WorldGen.SquareTileFrame(i, j, true);
             return true;

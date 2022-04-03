@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.frameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) NPC.NewNPC(i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.TileFrameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) NPC.NewNPC(i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
         }
     }
 

@@ -49,7 +49,7 @@ namespace StarlightRiver.Core
                         if (selection == 6) off = 12;
                         if (selection == 5) off = 4;
 
-                        if (!Framing.GetTileSafely(x + dims.X, y - 2).active() && Framing.GetTileSafely(x + dims.X, y + 1).active())
+                        if (!Framing.GetTileSafely(x + dims.X, y - 2).HasTile && Framing.GetTileSafely(x + dims.X, y + 1).HasTile)
                         {
                             Point16 pos = new Point16(x, y - dims.Y + off);
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Core
                             for (int i = pos.X; i < pos.X + dims.X; i++) {
                                 for (int j = pos.Y; j < pos.Y + dims.Y; j++)
                                 {
-                                    if (Main.tile[i, j].active() && (Main.tile[i, j].type == TileID.SnowBlock || Main.tile[i, j].type == TileID.Sand))
+                                    if (Main.tile[i, j].HasTile && (Main.tile[i, j].type == TileID.SnowBlock || Main.tile[i, j].type == TileID.Sand))
                                         valid = false;
                                 }
                             }

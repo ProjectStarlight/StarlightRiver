@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     for (int y = 0; y < Main.maxTilesY; y++)
                     {
-                        if (Framing.GetTileSafely(x, y).active())
+                        if (Framing.GetTileSafely(x, y).HasTile)
                         {
                             target = new Point16(x, y - 20);
                             break;

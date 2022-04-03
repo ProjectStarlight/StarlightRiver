@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Items.Misc
                     }
 
                     WorldGen.KillTile(i, j, false, false, false);
-                    if (!Main.tile[i, j].active() && Main.netMode != NetmodeID.SinglePlayer)
+                    if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                     {
                         NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
                     }
@@ -334,7 +334,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private static bool CanKillTile(int i, int j)
         {
-            if (Main.tile[i, j] != null && Main.tile[i, j].active())
+            if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
             {
                 if (Main.tileDungeon[(int)Main.tile[i, j].type] || Main.tile[i, j].type == 88 || Main.tile[i, j].type == 21 || Main.tile[i, j].type == 26 || Main.tile[i, j].type == 107 || Main.tile[i, j].type == 108 || Main.tile[i, j].type == 111 || Main.tile[i, j].type == 226 || Main.tile[i, j].type == 237 || Main.tile[i, j].type == 221 || Main.tile[i, j].type == 222 || Main.tile[i, j].type == 223 || Main.tile[i, j].type == 211 || Main.tile[i, j].type == 404)
                 {

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Pickups
         public override bool CanPickup(Player Player)
         {
             AbilityHandler ah = Player.GetHandler();
-            return !ah.Shards.Has(Parent.frameX);
+            return !ah.Shards.Has(Parent.TileFrameX);
         }
 
         public override void Visuals()
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Pickups
         {
             AbilityHandler ah = Player.GetHandler();
 
-            ah.Shards.Add(Parent.frameX);
+            ah.Shards.Add(Parent.TileFrameX);
 
             if (ah.ShardCount % 3 == 0)
             {
@@ -72,10 +72,10 @@ namespace StarlightRiver.Content.Pickups
 
             Tile tile = Framing.GetTileSafely(i, j);
 
-            tile.frameX += 1;
-            if (tile.frameX > 2)
-                tile.frameX = 0;
-            Main.NewText("pickup set to stamina shard number " + tile.frameX, Color.Orange);//debug?
+            tile.TileFrameX += 1;
+            if (tile.TileFrameX > 2)
+                tile.TileFrameX = 0;
+            Main.NewText("pickup set to stamina shard number " + tile.TileFrameX, Color.Orange);//debug?
         }
     }
 

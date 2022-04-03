@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Demon
 
 			Vector2 pos = frontPosition + ((rot + Main.rand.NextFloat(-0.3f, 0.3f)).ToRotationVector2() * Main.rand.Next(40));
 			DarkDrinkerSlash mp = Projectile.NewProjectileDirect(pos, Vector2.Zero, type, damage, knockBack, Player.whoAmI).ModProjectile as DarkDrinkerSlash;
-			mp.frameX = Main.rand.Next(4);
+			mp.TileFrameX = Main.rand.Next(4);
 			mp.Projectile.rotation = rot + Main.rand.NextFloat(-0.4f, 0.4f);
 			return false;
 		}

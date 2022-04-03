@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Tile tile = Main.tile[i, j];
 
-            if (tile.frameX == 0 && tile.frameY == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 float sin2 = (float)Math.Sin(StarlightWorld.rottime + 0.2f * 0.2f);
                 float cos = (float)Math.Cos(StarlightWorld.rottime + 0.2f);

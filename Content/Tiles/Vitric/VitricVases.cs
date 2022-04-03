@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Tile tile = Main.tile[i, j];
 
-            int frameNum = Main.tile[i, j].frameX / 18;
+            int frameNum = Main.tile[i, j].TileFrameX / 18;
             int multiTilePos = i - frameNum;
             bool direction = (Math.Sin(multiTilePos * 1.33333f) * 2.111f) % 1f > 0.5f;
 
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             int offsetX = (int)(Math.Sin(multiTilePos * 11.33333337f) * 6);
 
             Vector2 zero = new Vector2(Main.offScreenRange);
-            Main.spriteBatch.Draw(Main.tileTexture[Type], (new Vector2((i * 16) + offsetX, j * 16) - Main.screenPosition) + zero, new Rectangle(tile.frameX + frameOffsetX, tile.frameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, spriteDir, 0f);
+            Main.spriteBatch.Draw(Main.tileTexture[Type], (new Vector2((i * 16) + offsetX, j * 16) - Main.screenPosition) + zero, new Rectangle(tile.TileFrameX + frameOffsetX, tile.TileFrameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, spriteDir, 0f);
             return false;
         }
     }

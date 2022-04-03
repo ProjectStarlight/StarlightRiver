@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			if (Main.rand.Next(4) == 0 && Main.npc.Count(n => n.active && n.type == NPCType<MagmitePassive>()) < 5)
 			{
-				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.active() && n.liquidType() == 1 && n.liquid > 0, 10, 2, 2);
+				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.HasTile && n.liquidType() == 1 && n.liquid > 0, 10, 2, 2);
 				if (coords != Point16.Zero)
 					NPC.NewNPC(coords.X * 16, coords.Y * 16, NPCType<MagmitePassive>(), 0, -1);
 			}

@@ -65,7 +65,7 @@ namespace StarlightRiver
                 // Within this block this chest is valid to put an Item in.
                 if (chest != null && Framing.GetTileSafely(chest.x, chest.y) is Tile tile && tile.HasTile)
                 {
-                    if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.frameX))
+                    if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.TileFrameX))
                     {
                         PlaceDisplayCaseOn(chest);
 
@@ -160,7 +160,7 @@ namespace StarlightRiver
 
                     foreach (int frame in frames)
                     {
-                        if (tile.frameX == frame)
+                        if (tile.TileFrameX == frame)
                         {
                             return true;
                         }

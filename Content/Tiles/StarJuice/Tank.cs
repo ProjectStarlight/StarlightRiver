@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
         {
             Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
-            int index = GetInstance<TankEntity>().Find(i - tile.frameX / 18 * 16, j - tile.frameY / 18 * 16);
+            int index = GetInstance<TankEntity>().Find(i - tile.TileFrameX / 18 * 16, j - tile.TileFrameY / 18 * 16);
             if (index == -1) return true;
             TankEntity entity = (TankEntity)TileEntity.ByID[index];
 
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
             if (index == -1) return true;
             TankEntity entity = (TankEntity)TileEntity.ByID[index];
 
-            if (tile.frameX == 0 && tile.frameY == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + new Vector2(8, -28) - Main.screenPosition;
                 int charge = (int)(entity.charge / 5000f * 32f);
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.type == TileType<Tank>() && tile.HasTile && tile.frameX == 0 && tile.frameY == 0;
+            return tile.type == TileType<Tank>() && tile.HasTile && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
 
         public override void Update()
         {
-            if (!Main.tile[Position.X, Position.Y].active()) Kill(Position.X, Position.Y);
+            if (!Main.tile[Position.X, Position.Y].HasTile) Kill(Position.X, Position.Y);
 
             Vector2 pos = Position.ToVector2() * 16 + new Vector2(24, -12);
             Lighting.AddLight(pos, new Vector3(1.2f, 1.6f, 2) * (charge / (float)maxCharge) * 0.5f);

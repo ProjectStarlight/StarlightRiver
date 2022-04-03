@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.position += dust.velocity;
             dust.velocity.Y += 0.15f;
-            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
             {
                 dust.alpha += 10;
                 dust.velocity *= -0.1f;

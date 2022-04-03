@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
+            if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
                 if (!(Main.projectile.Any(proj => proj.ModProjectile is Zapper && (proj.ModProjectile as Zapper).parent == Main.tile[i, j] && proj.active)))
                 {

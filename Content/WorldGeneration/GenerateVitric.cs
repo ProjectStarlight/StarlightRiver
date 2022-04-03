@@ -167,7 +167,7 @@ namespace StarlightRiver.Core
                         Tile right = Framing.GetTileSafely(i + 1, j);
                         Tile me = Framing.GetTileSafely(i, j);
                         bool sloped = (me.leftSlope() || me.rightSlope()) && me.topSlope() && !me.bottomSlope(); //top and bottom are mutually exclusive but you never know
-                        if (left.active() || right.active())
+                        if (left.HasTile || right.HasTile)
                             if (sloped && genRand.NextBool(3))
                                 Framing.GetTileSafely(i, j).halfBrick(true);
                     }
@@ -294,7 +294,7 @@ namespace StarlightRiver.Core
                         break;
                     int xRand = xDif < 20 ? xDif : VitricBiome.Width - xDif;
                     Tile t = Main.tile[x, y];
-                    if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.active() && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
+                    if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.HasTile && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
                     {
                         PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
                         t.slope(0);
@@ -315,7 +315,7 @@ namespace StarlightRiver.Core
 
                     int xRand = xDif < 20 ? xDif : VitricBiome.Width - xDif;
                     
-                    if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.active() && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
+                    if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.HasTile && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
                     {
                         if(t.type != TileType<VitricSpike>())
                             PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
@@ -379,12 +379,12 @@ namespace StarlightRiver.Core
                     Tile t = Main.tile[p.X + offsetX, p.Y];
                     if (!hasLeftIsland)
                     {
-                        if (!t.active() || !ValidGround.Any(v => v == t.type))
+                        if (!t.HasTile || !ValidGround.Any(v => v == t.type))
                             hasLeftIsland = true;
                     }
                     else
                     {
-                        if (t.active() && ValidGround.Any(v => v == t.type) && --hitCount == 0)
+                        if (t.HasTile && ValidGround.Any(v => v == t.type) && --hitCount == 0)
                             break;
                     }
                     p.Y += 1 * dir;
@@ -427,7 +427,7 @@ namespace StarlightRiver.Core
                 while (x > VitricBiome.Center.X - 71 && x < VitricBiome.Center.X + 70)
                     x = VitricBiome.X + VitricSlopeOffset + genRand.Next(VitricBiome.Width - (VitricSlopeOffset * 2));
                 int y = VitricBiome.Y + genRand.Next(VitricBiome.Height);
-                while (Main.tile[x, y].active())
+                while (Main.tile[x, y].HasTile)
                     y = VitricBiome.Y + genRand.Next(VitricBiome.Height);
                 if (RuinedPillarPositions.Any(v => Vector2.Distance(v.ToVector2(), new Vector2(x, y)) < 40) || !GenPillar(x, y))
                 {
@@ -464,12 +464,12 @@ namespace StarlightRiver.Core
                 {
                     if (i >= VitricBiome.Center.X - 52 && i <= VitricBiome.Center.X - 51) continue;
 
-                    if (Main.tile[i, j].active() && !Main.tile[i, j + 1].active() && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].type)) //Generates vines, random size between 4-23
+                    if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].type)) //Generates vines, random size between 4-23
                     {
                         int targSize = genRand.Next(4, 23);
                         for (int k = 1; k < targSize; ++k)
                         {
-                            if (Main.tile[i, j + k].active()) break;
+                            if (Main.tile[i, j + k].HasTile) break;
                             PlaceTile(i, j + k, TileType<VitricVine>());
                         }
                     }
@@ -565,7 +565,7 @@ namespace StarlightRiver.Core
                         {
                             for (int y = -1; y < 1; ++y)
                             {
-                                if (!Main.tile[j - x, k - y].active())
+                                if (!Main.tile[j - x, k - y].HasTile)
                                 {
                                     Main.tile[j, k].type = (ushort)TileType<VitricMoss>();
                                     endCheck = true;
@@ -665,7 +665,7 @@ namespace StarlightRiver.Core
                 {
                     int cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
                     int cY = y - 5;
-                    while (Main.tile[cX, cY].active())
+                    while (Main.tile[cX, cY].HasTile)
                         cY--;
                     cY = Math.Max(
                         FindType(cX, cY, -1, ValidGround),
@@ -719,8 +719,8 @@ namespace StarlightRiver.Core
         private static bool FloorCrystal(int x, int y)
         {
             int cY = y - 16;
-            while (Main.tile[x, cY].active()) cY--;
-            while (!Main.tile[x, cY + 1].active()) cY++;
+            while (Main.tile[x, cY].HasTile) cY--;
+            while (!Main.tile[x, cY + 1].HasTile) cY++;
 
             if (ScanRectangleStrict(x, y - 17, 10, 17) <= 0 && ScanRectangle(x, y, 17, 1) == 17)
             {
@@ -820,7 +820,7 @@ namespace StarlightRiver.Core
             {
                 if (y >= maxDepth)
                     break;
-                if (Main.tile[x, y].active() && types.Any(i => i == Main.tile[x, y].type))
+                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].type))
                     return y; //Returns first valid tile under intitial Y pos, -1 if max depth is reached
                 y++;
             }
@@ -840,7 +840,7 @@ namespace StarlightRiver.Core
             {
                 if (y <= minDepth)
                     break;
-                if (Main.tile[x, y].active() && types.Any(i => i == Main.tile[x, y].type))
+                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].type))
                     return y; //Returns first valid tile under intitial Y pos, -1 if max depth is reached
                 y--;
             }
@@ -852,7 +852,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if ((Main.tile[i, j].active() && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].liquid > 0) count++;
+                    if ((Main.tile[i, j].HasTile && Main.tile[i, j].collisionType == 1) || Main.tile[i, j].liquid > 0) count++;
             return count;
         }
 
@@ -861,7 +861,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if ((Main.tile[i, j].active()) || Main.tile[i, j].liquid > 0) count++;
+                    if ((Main.tile[i, j].HasTile) || Main.tile[i, j].liquid > 0) count++;
             return count;
         }
     }

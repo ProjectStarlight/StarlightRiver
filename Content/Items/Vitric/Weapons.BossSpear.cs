@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.Vitric
             return true;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             //Player.velocity += Vector2.Normalize(Player.Center - Main.MouseWorld) * 10;
             if (Player.GetModPlayer<ControlsPlayer>().mouseRight)

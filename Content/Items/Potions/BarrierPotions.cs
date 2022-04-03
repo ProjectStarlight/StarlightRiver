@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override bool CanUseItem(Player Player) => !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
 
-		public override bool UseItem(Player Player)
+		public override bool? UseItem(Player Player)
 		{
 			Player.GetModPlayer<ShieldPlayer>().Shield += amount;
 			Player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);

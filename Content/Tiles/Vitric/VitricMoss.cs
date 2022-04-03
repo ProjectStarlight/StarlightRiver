@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 }
             }
 
-            if (!Main.tile[i, j + 1].active() && Main.rand.Next(10) == 0)
+            if (!Main.tile[i, j + 1].HasTile && Main.rand.Next(10) == 0)
                 WorldGen.PlaceTile(i, j + 1, TileType<VitricVine>());
         }
 
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile t = Main.tile[i, j];
             Color col = Lighting.GetColor(i, j);
             Color realCol = new Color(((col.R / 255f) * 1.4f) + 0.1f, ((col.G / 255f) * 1.4f) + 0.1f, ((col.B / 255f) * 1.4f) + 0.1f);
-            spriteBatch.Draw(moss, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(t.frameX, t.frameY, 16, 16), realCol, 0f, new Vector2(), 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(moss, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16), realCol, 0f, new Vector2(), 1f, SpriteEffects.None, 0f);
         }
     }
 }

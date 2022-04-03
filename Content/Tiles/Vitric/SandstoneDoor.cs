@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
+            if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
                 Texture2D tex = Main.tileTexture[Type];
                 Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;

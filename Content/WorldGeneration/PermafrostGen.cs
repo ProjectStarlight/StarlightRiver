@@ -127,7 +127,7 @@ namespace StarlightRiver.Core
                     Tile floor = Framing.GetTileSafely(x, y);
                     Tile above = Framing.GetTileSafely(x, y - 1);
 
-                    if (floor.type == TileType<PermafrostIce>() && !above.active())
+                    if (floor.type == TileType<PermafrostIce>() && !above.HasTile)
                     {
                         floor.type = (ushort)TileType<PermafrostSnow>();
 
@@ -343,7 +343,7 @@ namespace StarlightRiver.Core
                         Tile above = Framing.GetTileSafely(x, y - 1);
                         Tile under = Framing.GetTileSafely(x, y + 1);
 
-                        if (floor.type == TileType<PermafrostIce>() && !above.active())
+                        if (floor.type == TileType<PermafrostIce>() && !above.HasTile)
                         {
                             var up = Math.Abs(genNoise.GetPerlin(x * 20, 100) * 6);
 
@@ -355,7 +355,7 @@ namespace StarlightRiver.Core
                                 }
                         }
 
-                        if (floor.type == TileType<PermafrostIce>() && !under.active())
+                        if (floor.type == TileType<PermafrostIce>() && !under.HasTile)
                         {
                             var up = Math.Abs(genNoise.GetPerlin(x * 20, 230) * 6);
 
@@ -403,8 +403,8 @@ namespace StarlightRiver.Core
                     {
                         tile.active(true);
                         tile.type = (ushort)TileType<SpikeImmuneOrb>();
-                        tile.frameX = 0;
-                        tile.frameY = 0;
+                        tile.TileFrameX = 0;
+                        tile.TileFrameY = 0;
                     }
 
                     orbCD = 4;
@@ -608,8 +608,8 @@ namespace StarlightRiver.Core
                     Tile tile = Framing.GetTileSafely(x, y);
                     tile.active(true);
                     tile.type = (ushort)TileType<AuroraIce>();
-                    tile.frameX = (short)((frameStartX + xRel) * 18);
-                    tile.frameY = (short)((frameStartY + yRel) * 18);
+                    tile.TileFrameX = (short)((frameStartX + xRel) * 18);
+                    tile.TileFrameY = (short)((frameStartY + yRel) * 18);
 
                     int r = radius - 1;
                     if (xRel == 0 && yRel == 0) tile.slope(2);

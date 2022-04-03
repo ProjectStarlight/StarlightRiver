@@ -33,15 +33,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
-			if (tile.frameX == 0 && tile.frameY == 0)
+			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
 				var dummy = Dummy(i, j);
 
 				if (dummy is null)
 					return;
 
-				if (((CombatShrineDummy)dummy.ModProjectile).State == 0 && tile.frameX > 36)
-					tile.frameX -= 3 * 18;
+				if (((CombatShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
+					tile.TileFrameX -= 3 * 18;
 			}
 		}
 
@@ -49,8 +49,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 
-			int x = i - tile.frameX / 16;
-			int y = j - tile.frameY / 16;
+			int x = i - tile.TileFrameX / 16;
+			int y = j - tile.TileFrameY / 16;
 
 			var dummy = Dummy(x, y);
 
@@ -59,10 +59,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 				for (int x1 = 0; x1 < 3; x1++)
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.frameX / 18;
-						int realY = y1 + j - tile.frameY / 18;
+						int realX = x1 + i - tile.TileFrameX / 18;
+						int realY = y1 + j - tile.TileFrameY / 18;
 
-						Framing.GetTileSafely(realX, realY).frameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
 
 				(dummy.ModProjectile as CombatShrineDummy).State = 1;
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			if(State == 0 && Parent.frameX > 3 * 18)
+			if(State == 0 && Parent.TileFrameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
 					for (int y = 0; y < 6; y++)
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).frameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
 					}
 			}
 

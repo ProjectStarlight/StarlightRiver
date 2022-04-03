@@ -72,8 +72,8 @@ namespace StarlightRiver.Content.Alchemy
 
         public override bool NewRightClick(int i, int j)
         {
-			int x = i - Main.tile[i, j].frameX / 16 % 3;
-			int y = j - Main.tile[i, j].frameY / 16 % 2;
+			int x = i - Main.tile[i, j].TileFrameX / 16 % 3;
+			int y = j - Main.tile[i, j].TileFrameY / 16 % 2;
 			if (DummyExists(x, y, DummyType))
             {
 				CauldronDummyAbstract cauldronDummy = (CauldronDummyAbstract)Dummy(x, y).ModProjectile;

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             Tile tile = Main.tile[i, j];
 
-            if (tile.frameY == 0 && (tile.frameX == 0 || tile.frameX == 34)) return true;
+            if (tile.TileFrameY == 0 && (tile.TileFrameX == 0 || tile.TileFrameX == 34)) return true;
             else return false;
         }
 
@@ -33,20 +33,20 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameY == 0 && tile.frameX == 0) { r = 0.8f; g = 0.7f; b = 0.4f; }
+            if (tile.TileFrameY == 0 && tile.TileFrameX == 0) { r = 0.8f; g = 0.7f; b = 0.4f; }
             else { r = 0; g = 0; b = 0; }
         }
 
         public override void RandomUpdate(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameY == 0 && tile.frameX == 34)
+            if (tile.TileFrameY == 0 && tile.TileFrameX == 34)
             {
                 if (Main.rand.Next(8) == 0)
                 {
                     for (int x = i; x <= i + 1; x++)
                         for (int y = j; y <= j + 1; y++)
-                            Main.tile[x, y].frameX -= 34;
+                            Main.tile[x, y].TileFrameX -= 34;
                 }
             }
         }
@@ -62,10 +62,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void Collision(Player Player)
         {
             Tile tile = Main.tile[ParentX - 1, ParentY - 1];
-            if (tile.frameX == 0 && tile.frameY == 0 && AbilityHelper.CheckWisp(Player, Projectile.Hitbox))
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0 && AbilityHelper.CheckWisp(Player, Projectile.Hitbox))
             {
                 for (int k = 0; k < 40; k++) Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.2f, 1.4f));
-                tile.frameX = 34;
+                tile.TileFrameX = 34;
             }
         }
 
@@ -74,12 +74,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Tile tile = Main.tile[ParentX - 1, ParentY - 1];
 
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "BulbFruit").Value; //Draws the bulb itself
-            Rectangle frame = new Rectangle((tile.frameX == 0 && tile.frameY == 0) ? 0 : 32, 0, 32, 32);
+            Rectangle frame = new Rectangle((tile.TileFrameX == 0 && tile.TileFrameY == 0) ? 0 : 32, 0, 32, 32);
             float offset = (float)Math.Sin(StarlightWorld.rottime) * 3;
 
             spriteBatch.Draw(tex2, Projectile.Center + new Vector2(offset, 0) - Main.screenPosition, frame, Lighting.GetColor(ParentX, ParentY), 0, Vector2.One * 16, 1, 0, 0);
 
-            if (tile.frameX == 0 && tile.frameY == 0) //Draws the glowing indicator
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0) //Draws the glowing indicator
             {
                 Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "BulbFruitGlow").Value;
 
@@ -90,13 +90,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             for (int k = 2; k <= 30; k++) //Draws the vine
             {
-                if (Main.tile[ParentX, ParentY - k].active()) break;
+                if (Main.tile[ParentX, ParentY - k].HasTile) break;
                 Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "VineOvergrowFlow").Value;
                 float sway = (float)Math.Sin(StarlightWorld.rottime + k * 0.2f) * 3;
 
                 spriteBatch.Draw(tex, Projectile.Center + new Vector2(sway - 8, k * -16) - Main.screenPosition, new Rectangle(16 * k % 3, 0, 16, 16), Lighting.GetColor(ParentX, ParentY - k));
 
-                if (Main.rand.Next(5) == 0 && tile.frameX == 0 && tile.frameY == 0) Dust.NewDust(Projectile.Center - new Vector2(10, k * 16 - 8), 16, 16, DustType<Content.Dusts.GoldWithMovement>(), 0, -3, 0, default, 0.3f);
+                if (Main.rand.Next(5) == 0 && tile.TileFrameX == 0 && tile.TileFrameY == 0) Dust.NewDust(Projectile.Center - new Vector2(10, k * 16 - 8), 16, 16, DustType<Content.Dusts.GoldWithMovement>(), 0, -3, 0, default, 0.3f);
             }
         }
     }

@@ -485,7 +485,7 @@ namespace StarlightRiver.Content.Items.Misc
 						if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
 						{
 							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
-							if (!Main.tileSolid[tile2.type] || !tile2.active())
+							if (!Main.tileSolid[tile2.type] || !tile2.HasTile)
 							{
 								Gore.NewGoreDirect(pos, bubbleDir, Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
 							}
@@ -727,7 +727,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 			{
 				dust.velocity.Y += 0.2f;
-				if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+				if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
 					dust.velocity *= -0.5f;
 			}
 

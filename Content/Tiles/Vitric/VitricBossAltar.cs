@@ -47,14 +47,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override bool SpawnConditions(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return tile.frameX % 90 == 0 && tile.frameY == 0;
+            return tile.TileFrameX % 90 == 0 && tile.TileFrameY == 0;
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (Main.rand.Next(200) == 0 && tile.frameX < 90 && tile.frameX > 16)
+            if (Main.rand.Next(200) == 0 && tile.TileFrameX < 90 && tile.TileFrameX > 16)
             {
                 Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
                 if (Main.rand.NextBool())
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameX >= 90)
+            if (tile.TileFrameX >= 90)
             {
                 Player Player = Main.LocalPlayer;
                 Player.showItemIcon2 = ItemType<Items.Vitric.GlassIdol>();
@@ -84,10 +84,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player Player = Main.LocalPlayer;
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (Player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || Player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (Player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || Player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
-                int x = i - (tile.frameX - 90) / 18;
-                int y = j - tile.frameY / 18;
+                int x = i - (tile.TileFrameX - 90) / 18;
+                int y = j - tile.TileFrameY / 18;
                 SpawnBoss(x, y);
                 return true;
             }
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Point16 parentPos = new Point16((int)proj.position.X / 16, (int)proj.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
-            if (parent.frameX < 90)
+            if (parent.TileFrameX < 90)
             {
                 Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value;
                 spriteBatch.Draw(reflectionMap, proj.position - Main.screenPosition, Color.White);
@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
-            if (parent.frameX == 0 && Abilities.AbilityHelper.CheckDash(Player, Projectile.Hitbox) && !collisionHappened)
+            if (parent.TileFrameX == 0 && Abilities.AbilityHelper.CheckDash(Player, Projectile.Hitbox) && !collisionHappened)
             {
                 collisionHappened = true;
 
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     {
                         for (int x = parentPos.X; x < parentPos.X + 5; x++)
                             for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
-                                Framing.GetTileSafely(x, y).frameX += 90;
+                                Framing.GetTileSafely(x, y).TileFrameX += 90;
 
                         NetMessage.SendTileRange(Player.whoAmI, parentPos.X, parentPos.Y, 5, 7, TileChangeType.None);
                     }
@@ -268,13 +268,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 }
             }
 
-            if (parent.frameX == 0)
+            if (parent.TileFrameX == 0)
                 return;
 
             if (boss is null || !boss.active || boss.type != ModContent.NPCType<VitricBoss>())
                 boss = null;
 
-            if (parent.frameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
+            if (parent.TileFrameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
                 if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
@@ -335,13 +335,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
-            if (parent.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
+            if (parent.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
             {
                 Texture2D texSkull = Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
                 spriteBatch.Draw(texSkull, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
             }
 
-            else if (parent.frameX < 90 && ReflectionTarget.canUseTarget)
+            else if (parent.TileFrameX < 90 && ReflectionTarget.canUseTarget)
             {
                 Texture2D glow = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarGlow").Value;
                 spriteBatch.Draw(glow, Projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Projectile.Center), 0, Vector2.Zero, 1, 0, 0);

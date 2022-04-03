@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override bool AltFunctionUse(Player Player) => true;
 
-		public override bool UseItem(Player Player)
+		public override bool? UseItem(Player Player)
         {
             if (WorldGen.InWorld(Player.tileTargetX, Player.tileTargetY))
             {

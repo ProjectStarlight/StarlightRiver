@@ -32,11 +32,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (Main.player.Any(n => Vector2.Distance(n.Center, new Vector2(i, j) * 16) <= 100) && tile.frameX == 0)
+            if (Main.player.Any(n => Vector2.Distance(n.Center, new Vector2(i, j) * 16) <= 100) && tile.TileFrameX == 0)
             {
-                tile.frameX += 20;
+                tile.TileFrameX += 20;
             }
-            if (tile.frameX == 20)
+            if (tile.TileFrameX == 20)
             {
                 Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 1, 0.5f));
             }
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameX == 20)
+            if (tile.TileFrameX == 20)
             {
                 Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustType<Content.Dusts.GoldWithMovement>(), 0, -1);
                 Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/MarkerGem").Value;

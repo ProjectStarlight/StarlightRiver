@@ -35,30 +35,30 @@ namespace StarlightRiver.Content.Tiles.Forest
             TileObjectData data = TileObjectData.GetTileData(tile); 
             int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); 
 
-            if (tile.frameX == 0 && tile.frameY % 36 == 0)
-                if (Main.rand.Next(1) == 0 && tile.frameX == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0)
+                if (Main.rand.Next(1) == 0 && tile.TileFrameX == 0)
                     for (int x = 0; x < data.Width; x++)
                         for (int y = 0; y < data.Height; y++)
                         {
                             Tile targetTile = Main.tile[i + x, j + y]; 
-                            targetTile.frameX += (short)fullFrameWidth; 
+                            targetTile.TileFrameX += (short)fullFrameWidth; 
                         }
         }
 
         public override bool NewRightClick(int i, int j)
         {
-            if (Main.tile[i, j].frameX > 35) 
+            if (Main.tile[i, j].TileFrameX > 35) 
             {
                 Tile tile = Main.tile[i, j]; //Selects current tile
 
                 int newX = i; 
                 int newY = j;
-                if (tile.frameX % 36 == 18) newX = i - 1;
-                if (tile.frameY % 36 == 18) newY = j - 1;
+                if (tile.TileFrameX % 36 == 18) newX = i - 1;
+                if (tile.TileFrameY % 36 == 18) newY = j - 1;
 
                 for (int k = 0; k < 2; k++)
                     for (int l = 0; l < 2; ++l)
-                        Main.tile[newX + k, newY + l].frameX -= 36; //Changes frames to berry-less
+                        Main.tile[newX + k, newY + l].TileFrameX -= 36; //Changes frames to berry-less
 
                 int rand = Main.rand.Next(3, 5);
                 for (int k = 0; k < rand; k++)
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void MouseOver(int i, int j)
         {
-            if (Main.tile[i, j].frameX >= 32)
+            if (Main.tile[i, j].TileFrameX >= 32)
             {
                 Player Player = Main.LocalPlayer;
                 Player.showItemIcon2 = ItemType<Slimeberry>();

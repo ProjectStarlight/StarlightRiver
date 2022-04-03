@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
-            Vector2 endpoint = new Vector2(tile.frameX, tile.frameY); //I utilize the tile's frame to store the endpoint here to not have to use a TE
+            Vector2 endpoint = new Vector2(tile.TileFrameX, tile.TileFrameY); //I utilize the tile's frame to store the endpoint here to not have to use a TE
 
             if (endpoint != Vector2.Zero) DrawSpline(spriteBatch, i, j, endpoint * 16 + Vector2.One * 8, 1);
             else DrawSpline(spriteBatch, i, j, (Main.MouseWorld / 16).ToPoint16().ToVector2() * 16 + Vector2.One * 8, 0.2f);
@@ -112,12 +112,12 @@ namespace StarlightRiver.Content.Tiles.Decoration
             Item.useStyle = ItemUseStyleID.SwingThrow;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             if (target != null)
             {
-                target.frameX = (short)(Main.MouseWorld.X / 16);
-                target.frameY = (short)(Main.MouseWorld.Y / 16);
+                target.TileFrameX = (short)(Main.MouseWorld.X / 16);
+                target.TileFrameY = (short)(Main.MouseWorld.Y / 16);
                 target = null;
             }
             else

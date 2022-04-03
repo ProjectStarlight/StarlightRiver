@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Misc
                     {
                         Tile tile = Main.tile[i, j];
                         Tile tile2 = Main.tile[i + 1, j + 1];
-                        if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.active())
+                        if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.HasTile)
                         {
                             Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                             Vector2 offset = Main.rand.NextVector2Circular(8, 8);
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Tile tile = Main.tile[i, j];
 
                     Tile tile2 = Main.tile[i + 1, j + 1];
-                    if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.active())
+                    if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.HasTile)
                     {
                         Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                         for (int t = 0; t < 10; t++)
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Misc
                     if (tile.type == 85 && tile.HasTile)
                     {
                         tile.active(false);
-                        if (!Main.tile[i, j].active() && Main.netMode != NetmodeID.SinglePlayer)
+                        if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                         {
                             NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
                         }

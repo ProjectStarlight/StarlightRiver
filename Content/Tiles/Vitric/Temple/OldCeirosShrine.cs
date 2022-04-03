@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override bool SpawnConditions(int i, int j)
 		{
             var tile = Framing.GetTileSafely(i, j);
-            return tile.frameX < 16 && tile.frameY == 0;
+            return tile.TileFrameX < 16 && tile.TileFrameY == 0;
 		}
 
 		public override bool NewRightClick(int i, int j)
@@ -47,10 +47,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             {
                 var tile = Framing.GetTileSafely(i, j);
 
-                if (tile.frameX < 16 && tile.frameY == 0)
+                if (tile.TileFrameX < 16 && tile.TileFrameY == 0)
                 {
-                    tile.frameX++;
-                    tile.frameX %= 4;
+                    tile.TileFrameX++;
+                    tile.TileFrameX %= 4;
                 }
 
                 return true;
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
             var tile = Framing.GetTileSafely(i, j);
 
-            if(tile.frameX < 16 && tile.frameY == 0)
+            if(tile.TileFrameX < 16 && tile.TileFrameY == 0)
 			{
                 var tileTex = Main.tileTexture[tile.type];
                 spriteBatch.Draw(tileTex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.frameX).Value;
+            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.TileFrameX).Value;
             var sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
             var pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 

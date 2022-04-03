@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             Tile tile = Main.tile[i, j];
 
-            if (tile.frameX == 0 && tile.frameY == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 var outlineTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow").Value;
                 var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 3);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             Tile tile = Framing.GetTileSafely(i, j);
             return (tile.type == ModContent.TileType<DisplayCase>() || tile.type == ModContent.TileType<DisplayCaseFriendly>())
-                && tile.HasTile && tile.frameX == 0 && tile.frameY == 0;
+                && tile.HasTile && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

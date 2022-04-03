@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override bool SpawnConditions(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return tile.frameX == 0 && tile.frameY == 0;
+            return tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
     }
 

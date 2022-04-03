@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < direction.Length(); i += 4)
 			{
 				Vector2 toLookAt = point1 + (Vector2.Normalize(direction) * i);
-				if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).active() && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
+				if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
 				{
 					return false;
 				}

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
             var tex = Request<Texture2D>(AssetDirectory.VitricTile + "ForgeInnerDoorGlow").Value;
             var tile = Framing.GetTileSafely(i, j);
-            var source = new Rectangle(tile.frameX, tile.frameY, 16, 16);
+            var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
             spriteBatch.Draw(tex, pos, source, Color.White * (0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f));
         }

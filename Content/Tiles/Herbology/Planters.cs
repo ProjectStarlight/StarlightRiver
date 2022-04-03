@@ -100,13 +100,13 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void PlaceInWorld(int i, int j, Item Item)
         {
-            Main.tile[i, j].frameX = 0;
+            Main.tile[i, j].TileFrameX = 0;
         }
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.tile[i, j + 1].active() == false)
-                switch (Main.tile[i, j].frameX / 18)
+            if (Main.tile[i, j + 1].HasTile == false)
+                switch (Main.tile[i, j].TileFrameX / 18)
                 {
                     case 0: break;
                     case 1: WorldGen.PlaceTile(i, j + 1, Mod.TileType("ForestIvy"), true); break;
@@ -116,8 +116,8 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public override bool NewRightClick(int i, int j)
         {
             Player Player = Main.LocalPlayer;
-            if (Player.HeldItem.type == Mod.ItemType("IvySeeds") && Main.tile[i, j].frameX == 0) //plants ivy
-                Main.tile[i, j].frameX = 18;
+            if (Player.HeldItem.type == Mod.ItemType("IvySeeds") && Main.tile[i, j].TileFrameX == 0) //plants ivy
+                Main.tile[i, j].TileFrameX = 18;
             return true;
         }
     }

@@ -205,10 +205,10 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
-            int spawnX = i - tile.frameX / 18;
+            int spawnX = i - tile.TileFrameX / 18;
             int spawnY = j + 2;
-            spawnX += tile.frameX >= 72 ? 5 : 2;
-            if (tile.frameY % 38 != 0)
+            spawnX += tile.TileFrameX >= 72 ? 5 : 2;
+            if (tile.TileFrameY % 38 != 0)
             {
                 spawnY--;
             }
@@ -271,15 +271,15 @@ namespace StarlightRiver.Core
 
             int newX = i;
             int newY = j;
-            if (tile.frameX % 36 == 18) 
+            if (tile.TileFrameX % 36 == 18) 
                 newX = i - 1;
-            if (tile.frameY % 36 == 18) 
+            if (tile.TileFrameY % 36 == 18) 
                 newY = j - 1;
 
             for (int k = 0; k < 2; k++)
                 for (int l = 0; l < 2; ++l)
                 {
-                    Main.tile[newX + k, newY + l].frameX += (short)(Main.tile[newX + k, newY + l].frameX >= 36 ? -36 : 36);
+                    Main.tile[newX + k, newY + l].TileFrameX += (short)(Main.tile[newX + k, newY + l].TileFrameX >= 36 ? -36 : 36);
                     Wiring.SkipWire(newX + k, newY + l);
                 }
         }
@@ -287,7 +287,7 @@ namespace StarlightRiver.Core
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX < 36) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+            if (tile.TileFrameX < 36) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -309,13 +309,13 @@ namespace StarlightRiver.Core
         public override void HitWire(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            tile.frameX += (short)(tile.frameX >= 18 ? -18 : 18);
+            tile.TileFrameX += (short)(tile.TileFrameX >= 18 ? -18 : 18);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX < 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+            if (tile.TileFrameX < 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -363,8 +363,8 @@ namespace StarlightRiver.Core
         {
             Tile tile = Framing.GetTileSafely(i, j); //Initial tile
 
-            int newX = i - tile.frameX % 54 / 18; //Adjustments
-            int newY = j - tile.frameY % 54 / 18;
+            int newX = i - tile.TileFrameX % 54 / 18; //Adjustments
+            int newY = j - tile.TileFrameY % 54 / 18;
 
             tile = Framing.GetTileSafely(newX, newY); //Top-left tile
 
@@ -372,7 +372,7 @@ namespace StarlightRiver.Core
             {
                 for (int l = 0; l < 3; ++l)
                 {
-                    Main.tile[newX + k, newY + l].frameX += (short)(Main.tile[newX + k, newY + l].frameX >= 54 ? -54 : 54);
+                    Main.tile[newX + k, newY + l].TileFrameX += (short)(Main.tile[newX + k, newY + l].TileFrameX >= 54 ? -54 : 54);
                     Wiring.SkipWire(newX + k, newY + l);
                 }
             }
@@ -381,7 +381,7 @@ namespace StarlightRiver.Core
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX < 54) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+            if (tile.TileFrameX < 54) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -635,14 +635,14 @@ namespace StarlightRiver.Core
         public override bool NewRightClick(int i, int j)
         {
             Player Player = Main.LocalPlayer;
-            if (Main.tile[Player.tileTargetX, Player.tileTargetY].frameY == 0)
+            if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY == 0)
             {
                 Main.CancelClothesWindow(true);
                 Main.mouseRightRelease = false;
-                int left = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameX / 18);
+                int left = (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameX / 18);
                 left %= 3;
                 left = Player.tileTargetX - left;
-                int top = Player.tileTargetY - (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameY / 18);
+                int top = Player.tileTargetY - (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY / 18);
                 if (Player.sign > -1)
                 {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
@@ -728,8 +728,8 @@ namespace StarlightRiver.Core
             Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
             int left = Player.tileTargetX;
             int top = Player.tileTargetY;
-            left -= (int)(tile.frameX % 54 / 18);
-            if (tile.frameY % 36 != 0)
+            left -= (int)(tile.TileFrameX % 54 / 18);
+            if (tile.TileFrameY % 36 != 0)
             {
                 top--;
             }
@@ -770,8 +770,8 @@ namespace StarlightRiver.Core
             Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
             int left = Player.tileTargetX;
             int top = Player.tileTargetY;
-            left -= (int)(tile.frameX % 54 / 18);
-            if (tile.frameY % 36 != 0)
+            left -= (int)(tile.TileFrameX % 54 / 18);
+            if (tile.TileFrameY % 36 != 0)
             {
                 top--;
             }
@@ -799,7 +799,7 @@ namespace StarlightRiver.Core
             }
             Player.noThrow = 2;
             Player.showItemIcon = true;
-            if (Main.tile[Player.tileTargetX, Player.tileTargetY].frameY > 0)
+            if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY > 0)
             {
                 Player.showItemIcon2 = ItemID.FamiliarShirt;
             }
@@ -825,13 +825,13 @@ namespace StarlightRiver.Core
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            int newY = j - tile.frameY % 54 / 18;
+            int newY = j - tile.TileFrameY % 54 / 18;
 
             tile = Framing.GetTileSafely(i, newY);
 
             for (int l = 0; l < 3; ++l)
             {
-                Main.tile[i, newY + l].frameX += (short)(Main.tile[i, newY + l].frameX >= 18 ? -18 : 18);
+                Main.tile[i, newY + l].TileFrameX += (short)(Main.tile[i, newY + l].TileFrameX >= 18 ? -18 : 18);
                 Wiring.SkipWire(i, newY + l);
             }
         }
@@ -839,7 +839,7 @@ namespace StarlightRiver.Core
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX < 18 && tile.frameY == 0) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+            if (tile.TileFrameX < 18 && tile.TileFrameY == 0) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 
@@ -862,26 +862,26 @@ namespace StarlightRiver.Core
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            int newY = j - tile.frameY % 36 / 18;
-            //Main.NewText("O: " + tile.frameY % 36 / 18);
+            int newY = j - tile.TileFrameY % 36 / 18;
+            //Main.NewText("O: " + tile.TileFrameY % 36 / 18);
 
             tile = Framing.GetTileSafely(i, newY);
 
-            //Main.NewText("G: " + tile.frameX);
+            //Main.NewText("G: " + tile.TileFrameX);
 
             for (int l = 0; l < 2; l++)
             {
-                Main.tile[i, newY + l].frameX += (short)(Main.tile[i, newY + l].frameX >= 18 ? -18 : 18);
+                Main.tile[i, newY + l].TileFrameX += (short)(Main.tile[i, newY + l].TileFrameX >= 18 ? -18 : 18);
                 //Wiring.SkipWire(i, newY + l);
             }
 
-            //Main.NewText("G: " + tile.frameX);
+            //Main.NewText("G: " + tile.TileFrameX);
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (tile.frameX < 18 && tile.frameY == 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+            if (tile.TileFrameX < 18 && tile.TileFrameY == 18) (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
         }
     }
 

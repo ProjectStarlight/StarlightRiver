@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             //Main.windSpeed += 0.8f;
             //float scale = System.Math.Min(0.03f + (Main.windSpeed * 0.07f), 0.12f);

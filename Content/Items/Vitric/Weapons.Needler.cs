@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return new Vector2(-10, 0);
 		}
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
 			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Player.position);
 			return true;

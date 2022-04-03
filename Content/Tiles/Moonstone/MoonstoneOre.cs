@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
         {
             //Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
 
-            if (!Main.tile[i, j - 1].active())
+            if (!Main.tile[i, j - 1].HasTile)
             {
                 Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Main.GameUpdateCount * 0.02f) + 4) / 4);
                 float heightScale = ((float)Math.Sin(Main.GameUpdateCount * 0.025f) / 8) + 1;
@@ -39,10 +39,10 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft0 = Main.tile[i - 1, j];
                         Tile tileRight0 = Main.tile[i + 1, j + 1];
 
-                        emptyLeft = !((tileLeft0.active() && tileLeft0.type == Type && !Main.tile[i - 1, j - 1].active()) || 
-                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].active()));
+                        emptyLeft = !((tileLeft0.HasTile && tileLeft0.type == Type && !Main.tile[i - 1, j - 1].HasTile) || 
+                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !tileRight0.active() || tileRight0.type != Type || tileRight0.slope() == 2 || Main.tile[i + 1, j].active();
+                        emptyRight = !tileRight0.HasTile || tileRight0.type != Type || tileRight0.slope() == 2 || Main.tile[i + 1, j].HasTile;
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
                         yOffsetLeft = 1f;
@@ -52,10 +52,10 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft1 = Main.tile[i - 1, j + 1];
                         Tile tileRight1 = Main.tile[i + 1, j];
 
-                        emptyLeft = !tileLeft1.active() || tileLeft1.type != Type || tileLeft1.slope() == 1 || Main.tile[i - 1, j].active();
+                        emptyLeft = !tileLeft1.HasTile || tileLeft1.type != Type || tileLeft1.slope() == 1 || Main.tile[i - 1, j].HasTile;
 
-                        emptyRight = !((tileRight1.active() && tileRight1.type == Type && !Main.tile[i + 1, j - 1].active()) || 
-                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].active()));
+                        emptyRight = !((tileRight1.HasTile && tileRight1.type == Type && !Main.tile[i + 1, j - 1].HasTile) || 
+                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
                         yOffsetRight = 1f;
@@ -65,11 +65,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft2 = Main.tile[i - 1, j];
                         Tile tileRight2 = Main.tile[i + 1, j];
 
-                        emptyLeft = !((tileLeft2.active() && tileLeft2.type == Type && tileLeft2.slope() != 1 &&!Main.tile[i - 1, j - 1].active()) ||
-                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].active()));
+                        emptyLeft = !((tileLeft2.HasTile && tileLeft2.type == Type && tileLeft2.slope() != 1 &&!Main.tile[i - 1, j - 1].HasTile) ||
+                            (Main.tile[i - 1, j - 1].slope() == 1 && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !((tileRight2.active() && tileRight2.type == Type && tileRight2.slope() != 2 && !Main.tile[i + 1, j - 1].active()) || 
-                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].active()));
+                        emptyRight = !((tileRight2.HasTile && tileRight2.type == Type && tileRight2.slope() != 2 && !Main.tile[i + 1, j - 1].HasTile) || 
+                            (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
                         break;
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
             Lighting.AddLight(pos, new Vector3(0.1f, 0.32f, 0.5f) * 0.35f);
             //Dust.NewDustDirect(pos, 16, 16, ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), 0, 0, 0, Color.White, 0.05f);
             if(Main.rand.Next(50) == 0)
-                if(!Main.tile[i, j - 1].active())
+                if(!Main.tile[i, j - 1].HasTile)
                     Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-16, -8)), 
                         ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
         }

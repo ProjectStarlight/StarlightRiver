@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                     var tileUnder = Framing.GetTileSafely(realX, realY + 1);
                     var tileWayUnder = Framing.GetTileSafely(realX, realY + 4);
 
-                    if (tile.type == TileID.Trees && !tileUnder.active() && !tileWayUnder.active())
+                    if (tile.type == TileID.Trees && !tileUnder.HasTile && !tileWayUnder.HasTile)
 					{
                         if (Main.npc.Any(n => n.type == NPC.type && n.position == new Vector2(realX * 16 + 8, realY * 16 + 24)))
                             continue;

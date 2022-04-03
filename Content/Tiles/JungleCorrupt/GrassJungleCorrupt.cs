@@ -29,33 +29,33 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
             int x = Main.rand.Next(-4, 4);
             int y = Main.rand.Next(-4, 4);
 
-            if (Main.tile[i + x, j + y].active() && Main.hardMode)//spread, using the clentaminator method
+            if (Main.tile[i + x, j + y].HasTile && Main.hardMode)//spread, using the clentaminator method
             {
                 WorldGen.Convert(i + x, j + y, 1, 1);
             }
 
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//vines 
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//vines 
             {
                 WorldGen.PlaceTile(i, j + 1, TileType<VineJungleCorrupt>(), true);
             }
 
-            if (!Main.tile[i, j - 1].active() && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//grass
+            if (!Main.tile[i, j - 1].HasTile && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//grass
             {
                 if (Main.rand.Next(2) == 0)
                 {
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassJungleCorrupt>(), true);
-                    Main.tile[i, j - 1].frameY = (short)(Main.rand.Next(9) * 18);
+                    Main.tile[i, j - 1].TileFrameY = (short)(Main.rand.Next(9) * 18);
                 }
             }
 
-            if (!Main.tile[i, j - 1].active() && !Main.tile[i, j - 2].active() && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//double grass
+            if (!Main.tile[i, j - 1].HasTile && !Main.tile[i, j - 2].HasTile && Main.tile[i, j].slope() == 0 && !Main.tile[i, j].halfBrick())//double grass
             {
                 if (Main.rand.Next(4) == 0)
                 {
                     WorldGen.PlaceTile(i, j - 2, TileType<TallgrassJungleCorrupt2>(), true);
                     int rand = Main.rand.Next(6);
-                    Main.tile[i, j - 1].frameY = (short)(rand * 36);
-                    Main.tile[i, j - 2].frameY = (short)(18 + rand * 36);
+                    Main.tile[i, j - 1].TileFrameY = (short)(rand * 36);
+                    Main.tile[i, j - 2].TileFrameY = (short)(18 + rand * 36);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
         }
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)
+            if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0)
             {
                 Dust.NewDustPerfect(new Vector2(i, j) * 16, Mod.DustType("Corrupt2"), new Vector2(0, 0.6f));
             }

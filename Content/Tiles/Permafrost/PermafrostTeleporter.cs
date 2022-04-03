@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         public override bool NewRightClick(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            int offX = tile.frameX / 18;
-            int offY = tile.frameY / 18;
+            int offX = tile.TileFrameX / 18;
+            int offY = tile.TileFrameY / 18;
 
             var entity = TileEntity.ByPosition[new Point16(i - offX, j - offY)] as PermafrostTeleporterEntity;
             entity.controlling = Main.LocalPlayer;

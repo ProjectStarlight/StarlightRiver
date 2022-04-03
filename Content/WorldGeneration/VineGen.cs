@@ -22,8 +22,8 @@ namespace StarlightRiver.Core
                     if (y != 0 && target != new Point16(0, 0))
                     {
                         WorldGen.PlaceTile(x, y - 1, TileType<VineBanner>(), true, true);
-                        Main.tile[x, y - 1].frameX = target.X;
-                        Main.tile[x, y - 1].frameY = target.Y;
+                        Main.tile[x, y - 1].TileFrameX = target.X;
+                        Main.tile[x, y - 1].TileFrameY = target.Y;
                     }
                 }
             }
@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
             bool grass = false;
             for (int y = 0; y < Main.worldSurface; y++)
             {
-                if (tree == 0 && Main.tile[x, y].type == TileID.Trees && !Main.tile[x, y - 1].active() && Main.tile[x, y + 1].active()
+                if (tree == 0 && Main.tile[x, y].type == TileID.Trees && !Main.tile[x, y - 1].HasTile && Main.tile[x, y + 1].HasTile
                     && Main.tile[x + 1, y].type != TileID.Trees && Main.tile[x - 1, y].type != TileID.Trees) tree = y;
 
                 if (Main.tile[x, y].type == TileID.JungleGrass) grass = true;
@@ -49,7 +49,7 @@ namespace StarlightRiver.Core
             {
                 for (int y = j - 10; y < j + 10; y++)
                 {
-                    if (Main.tile[x, y].type == TileID.Trees && !Main.tile[x, y - 1].active() && Main.tile[x, y + 1].active() &&
+                    if (Main.tile[x, y].type == TileID.Trees && !Main.tile[x, y - 1].HasTile && Main.tile[x, y + 1].HasTile &&
                         Main.tile[x + 1, y].type != TileID.Trees && Main.tile[x - 1, y].type != TileID.Trees) return new Point16(x, y);
                 }
             }

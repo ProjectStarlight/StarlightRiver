@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.useTurn = true;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             if (Main.rand.Next(10) == 0)
                 for (int k = 0; k < Main.maxNPCs; k++)

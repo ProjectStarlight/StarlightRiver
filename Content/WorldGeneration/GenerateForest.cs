@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 
                             for (int w = -2; w < 2; ++w) //Scans are for valid placement (fixed some really bizzare placement issues)
                             {
-                                if (Main.tile[k, y].type != TileID.Grass || !Main.tile[k, y].active())
+                                if (Main.tile[k, y].type != TileID.Grass || !Main.tile[k, y].HasTile)
                                 {
                                     canPlace = false;
                                     break;
@@ -70,7 +70,7 @@ namespace StarlightRiver.Core
                         for (int x = k - size / 2; x < k + size / 2; x++)
                             for (int y = j - size / 2; y < j + size / 2; y++)
                             {
-                                if (Main.tile[x, y].active() && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].slope() == 0) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
+                                if (Main.tile[x, y].HasTile && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].slope() == 0) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
                                 {
                                     WorldGen.PlaceTile(x, y - 1, TileType<Tiles.Herbology.ForestIvyWild>()); //this line throws a stack overflow on worldgen SOMEHOW?!?! ONLY WHEN IT ROLLS FOR SLIME BUSHES VERSUS BERRIES?!?!?! WHAT
                                     break;
@@ -134,9 +134,9 @@ namespace StarlightRiver.Core
 
                     WorldGen.SlopeTile(x, y2);
 
-                    if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].active()) //Slopes only if exposed to air
+                    if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
                         WorldGen.SlopeTile(x, y2, 2);
-                    if (y2 == y - xSqr && xRel > width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].active()) //Slopes only if exposed to air
+                    if (y2 == y - xSqr && xRel > width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
                         WorldGen.SlopeTile(x, y2, 1);
                 }
             }

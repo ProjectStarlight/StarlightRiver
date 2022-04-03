@@ -22,7 +22,7 @@ namespace StarlightRiver.Helpers
             for (int y = 0; y < jumpheight; y++)//idea: this should have diminishing results for output jump height
             {
                 Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - y - 1);
-                if ((Main.tileSolid[tileType.type] || Main.tileSolidTop[tileType.type]) && tileType.active()) //how tall the wall is
+                if ((Main.tileSolid[tileType.type] || Main.tileSolidTop[tileType.type]) && tileType.HasTile) //how tall the wall is
                 {
                     NPC.ai[slot] = (y + 1);
                 }

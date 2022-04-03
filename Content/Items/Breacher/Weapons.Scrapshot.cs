@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             //even though this is a "gun" we are using useItem so that it runs on all clients. need to deconstruct the useammo and damage modifiers ourselves here
 

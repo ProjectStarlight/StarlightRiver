@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 
 		public void Unload() { }
 
-		public override bool UseItem(Item Item, Player Player)
+		public override bool? UseItem(Item Item, Player Player)
 		{
 			if (Item.type == ItemID.MagicMirror)
 			{

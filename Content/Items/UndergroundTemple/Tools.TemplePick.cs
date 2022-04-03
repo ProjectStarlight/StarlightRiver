@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Item.melee = true;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             if (Player.altFunctionUse == 2)
             {

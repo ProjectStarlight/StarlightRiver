@@ -28,13 +28,13 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
             {
                 for (int y = j - 4; y <= j + 4; y++)
                 {
-                    if (Main.tile[x, y].active())
+                    if (Main.tile[x, y].HasTile)
                     {
                         return;
                     }
                 }
             }
-            if (!Main.tile[i, j].active())
+            if (!Main.tile[i, j].HasTile)
             {
                 if (Main.rand.Next(30) == 0)
                 {

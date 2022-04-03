@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 tries++;
                 int posX = (int)position.X / 16;
                 int posY = (int)position.Y / 16;
-                if (Framing.GetTileSafely(posX, posY).active() && Main.tileSolid[Framing.GetTileSafely(posX, posY).type])
+                if (Framing.GetTileSafely(posX, posY).HasTile && Main.tileSolid[Framing.GetTileSafely(posX, posY).type])
                 {
                     break;
                 }

@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
             var x = Main.rand.Next(-4, 4);
             var y = Main.rand.Next(-4, 4);
 
-            if (Main.tile[i + x, j + y].active() && Main.hardMode)//spread
+            if (Main.tile[i + x, j + y].HasTile && Main.hardMode)//spread
             {
                 if (Main.tile[i + x, j + y].type == TileID.JungleGrass)
                 {
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
                 }
             }
 
-            if (!Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)//vines (Maybe add the corruption thorns too?)
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j].slope() == 0)//vines (Maybe add the corruption thorns too?)
             {
                 if (Main.rand.Next(5) == 0)
                 {
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
                 }
             }
 
-            if (!Main.tile[i, j - 1].active() && Main.tile[i, j].slope() == 0)//grass
+            if (!Main.tile[i, j - 1].HasTile && Main.tile[i, j].slope() == 0)//grass
             {
                 if (Main.rand.Next(5) == 0)
                 {

@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             for (int i = 0; i < direction.Length(); i += 8)
             {
                 Vector2 toLookAt = point1 + (Vector2.Normalize(direction) * i);
-                if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).active() && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
+                if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
                 {
                     return false;
                 }
@@ -276,7 +276,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 for (int i = 0; i < ATTACKRANGE; i += 8)
                 {
                     Vector2 toLookAt = tempTarget.Center + (angle.ToRotationVector2() * i);
-                    if (i > ATTACKRANGE - 16 || (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).active() && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
+                    if (i > ATTACKRANGE - 16 || (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
                     {
                         ret = (angle.ToRotationVector2() * i * 0.75f);
 

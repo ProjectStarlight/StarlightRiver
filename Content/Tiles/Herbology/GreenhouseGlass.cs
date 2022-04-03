@@ -32,13 +32,13 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public override void RandomUpdate(int i, int j)
         {
             for (int k = 0; k < 10; k++)//k = max range up, this checks the area above it
-                if (Main.tileSolid[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].active() && !Main.tileSolidTop[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].type != Type && Main.tile[i, j - 1 - k].type != TileID.Glass)//maybe check for just blocks that stop light?
+                if (Main.tileSolid[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].HasTile && !Main.tileSolidTop[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].type != Type && Main.tile[i, j - 1 - k].type != TileID.Glass)//maybe check for just blocks that stop light?
                     break;//breaks if Solid if all of the above checks are true: Solid, active, No solidTop, not This type of block, and not glass
                 else if (k == 9)
                     for (int m = 0; m < 10; m++)//k = max range down, if the area above it clear this looks for the first plant below it
-                        if (Main.tileSolid[Main.tile[i, j + 1 + m].type] && Main.tile[i, j + 1 + m].active() && !Main.tileSolidTop[Main.tile[i, j + 1 + m].type])
+                        if (Main.tileSolid[Main.tile[i, j + 1 + m].type] && Main.tile[i, j + 1 + m].HasTile && !Main.tileSolidTop[Main.tile[i, j + 1 + m].type])
                             break;//breaks if Solid is true, Active is true, and solidTop is false
-                        else if (Main.tile[i, j + 1 + m].active() && Main.tileFrameImportant[Main.tile[i, j + 1 + m].type] && !Main.tileSolid[Main.tile[i, j + 1 + m].type])//chooses if frameimportant, non-solid, and active
+                        else if (Main.tile[i, j + 1 + m].HasTile && Main.tileFrameImportant[Main.tile[i, j + 1 + m].type] && !Main.tileSolid[Main.tile[i, j + 1 + m].type])//chooses if frameimportant, non-solid, and active
                         {
                             TileLoader.GetTile(Main.tile[i, j + 1 + m].type)?.RandomUpdate(i, j + 1 + m);//runs randomUpdate on selected block
                             //TODO: I believe this doesn't work on vanilla plants since they dont use randomUpdate, figure out a way to fix this or make a case for vanilla plants

@@ -34,10 +34,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
         {
             if (WorldGen.InWorld(i, j - 1))
             {
-                if (Framing.GetTileSafely(i, j - 1).type == Type) Framing.GetTileSafely(i, j).frameY = 18;
-                else Framing.GetTileSafely(i, j).frameY = 0;
+                if (Framing.GetTileSafely(i, j - 1).type == Type) Framing.GetTileSafely(i, j).TileFrameY = 18;
+                else Framing.GetTileSafely(i, j).TileFrameY = 0;
             }
-            Framing.GetTileSafely(i, j).frameX = (short)(i % 3 * 18);
+            Framing.GetTileSafely(i, j).TileFrameX = (short)(i % 3 * 18);
 
             return true;
         }
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
         {
             if (WorldGen.InWorld(i, j - 1))
             {
-                if (!Framing.GetTileSafely(i, j - 1).active())
+                if (!Framing.GetTileSafely(i, j - 1).HasTile)
                 {
                     int maxHeight = 3 + (int)(1 + Math.Sin(i) * 2);
 
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameX == 0 && tile.frameY == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/SnowGrassGlow").Value;
 

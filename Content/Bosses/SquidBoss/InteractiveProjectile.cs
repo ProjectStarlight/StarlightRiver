@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             SafeKill(timeLeft);
 
-            if (ValidPoints.Count(n => Main.tile[n.X, n.Y].active()) == ValidPoints.Count) GoodEffects();
+            if (ValidPoints.Count(n => Main.tile[n.X, n.Y].HasTile) == ValidPoints.Count) GoodEffects();
             else BadEffects();
 
             foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public sealed override void PostAI() //need to do this early to make sure all blocks get cucked
         {
-            foreach (Point16 point in ValidPoints.Where(n => Main.tile[n.X, n.Y].inActive()))
+            foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
                 Main.tile[point.X, point.Y].inActive(false);
 
             if (Projectile.timeLeft < 10)
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Projectile.timeLeft > 10)
                 foreach (Point16 point in ValidPoints)
-                    if (!Main.tile[point.X, point.Y].active()) spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
+                    if (!Main.tile[point.X, point.Y].HasTile) spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
             Projectile.ai[0] += 0.2f;
         }
 

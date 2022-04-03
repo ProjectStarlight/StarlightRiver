@@ -26,7 +26,7 @@ namespace StarlightRiver.Gores
             {
                 int tileX = (int)(gore.position.X / 16f);
                 int tileY = (int)(gore.position.Y / 16f) - 1;
-                if (WorldGen.InWorld(tileX, tileY, 0) && !Main.tile[tileX, tileY].active())
+                if (WorldGen.InWorld(tileX, tileY, 0) && !Main.tile[tileX, tileY].HasTile)
                 {
                     gore.active = false;
                 }

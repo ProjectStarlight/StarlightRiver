@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool CanUseItem(Player Player) => charge > 40;
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             if (Player.whoAmI == Main.myPlayer)
             {

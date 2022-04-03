@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             for (int k = 0; 1 == 1; k++)
             {
                 dims.Y++;
-                if (Main.tileSolid[Main.tile[((int)Projectile.position.X + 4) / 16, (int)(Projectile.position.Y + k) / 16].type] && Main.tile[(int)Projectile.position.X / 16, (int)(Projectile.position.Y + k) / 16].active()) break;
+                if (Main.tileSolid[Main.tile[((int)Projectile.position.X + 4) / 16, (int)(Projectile.position.Y + k) / 16].type] && Main.tile[(int)Projectile.position.X / 16, (int)(Projectile.position.Y + k) / 16].HasTile) break;
             }
 
             foreach (Player Player in Main.player.Where(Player => Player.active))
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 }
 
             Projectile.timeLeft = 2;
-            if (!parent.active())
+            if (!parent.HasTile)
                 Projectile.timeLeft = 0;
 
             //Dust

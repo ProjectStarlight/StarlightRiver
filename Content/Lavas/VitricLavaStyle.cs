@@ -47,13 +47,13 @@ namespace StarlightRiver.Content.Lavas
         {
             float opacity = 0;
 
-            if (!left.active() && left.liquid > 0)
+            if (!left.HasTile && left.liquid > 0)
                 opacity = GetOpacity(x - 1, y);
 
-            else if (!right.active() && right.liquid > 0)
+            else if (!right.HasTile && right.liquid > 0)
                 opacity = GetOpacity(x + 1, y);
 
-            else if (!up.active() && up.liquid > 0)
+            else if (!up.HasTile && up.liquid > 0)
                 opacity = GetOpacity(x, y - 1);
 
             Main.spriteBatch.Draw(Main.magicPixel, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * opacity);

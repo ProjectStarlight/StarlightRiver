@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             if (Math.Abs(Player.position.X - (i * 16)) < 30 && Player.position.Y > (j * 16) && Player.position.Y - (j * 16) < 600)
             {
-                if (Main.rand.NextBool(30) && tile.frameY == 0)
+                if (Main.rand.NextBool(30) && tile.TileFrameY == 0)
                 {
                     tile.active(false);
                     Main.tile[i, j + 1].active(false);

@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             Tile tile = Framing.GetTileSafely(i, j);
             float time = Main.GameUpdateCount / 200f * 6.28f;
 
-            if (tile.frameX == 0)
+            if (tile.TileFrameX == 0)
             {
                 float off = i + j;
                 float sin2 = (float)Math.Sin(time + off * 0.01f * 0.2f);
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void Collision(Player Player)
         {
-            if (Parent.frameX == 0)
+            if (Parent.TileFrameX == 0)
             {
                 Player.AddBuff(BuffType<Buffs.SpikeImmuneBuff>(), 90);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack.SoundId, (int)Player.Center.X, (int)Player.Center.Y, SoundID.DD2_DarkMageHealImpact.Style, 0.5f, 1);
@@ -67,14 +67,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 for (int k = 0; k < 40; k++)
                     Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(25), 0, Color.White, 0.5f);
 
-                Parent.frameX = 16;
+                Parent.TileFrameX = 16;
             }
         }
 
         public override void Update()
         {
             if (!Main.dayTime && Main.time == 0)
-                Parent.frameX = 0;
+                Parent.TileFrameX = 0;
         }
     }
 }

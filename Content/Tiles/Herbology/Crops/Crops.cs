@@ -108,18 +108,18 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public override bool Drop(int i, int j)
         {
             Tile thisTile = Main.tile[i, j];
-            if (thisTile.frameY == ((Height - 1) * 18))
-                Item.NewItem(i * 16, j * 16, 0, 0, drop, (thisTile.frameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
+            if (thisTile.TileFrameY == ((Height - 1) * 18))
+                Item.NewItem(i * 16, j * 16, 0, 0, drop, (thisTile.TileFrameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
             return false;
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (Main.tile[i, j].frameY == 36)
+            if (Main.tile[i, j].TileFrameY == 36)
             {
                 Texture2D tex;
                 if (Main.canDrawColorTile(i, j))
-                    tex = Main.tileAltTexture[Type, Main.tile[i, j].color()];
+                    tex = Main.tileAltTexture[Type, Main.tile[i, j].TileColor];
                 else
                     tex = Main.tileTexture[Type];
 
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeed) * 0.07f), 0.12f);
                 spriteBatch.Draw(tex, 
                     (new Vector2(i + 11.5f, j + 10) * 16) + new Vector2(tex.Width / 2, FrameHeight + 3) - Main.screenPosition, 
-                    new Rectangle(0, Main.tile[i, j].frameX + 1, 32, 48), Lighting.GetColor(i, j), 
+                    new Rectangle(0, Main.tile[i, j].TileFrameX + 1, 32, 48), Lighting.GetColor(i, j), 
                     ((float)Math.Sin(Main.GameUpdateCount / 30f + (i * 0.8333f) + (j * 2.3333f)) + (float)Math.Sin(Main.GameUpdateCount / 23.3333)) * scale, //0.07f, 
                     new Vector2(16, 48), 1f, effect, default);
             }
@@ -136,10 +136,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void MouseOver(int i, int j)
         {
-            int tile = Main.tile[i, j].frameY / 18;
+            int tile = Main.tile[i, j].TileFrameY / 18;
             int off = Math.Abs(tile - (Height - 1));
 
-            if (Main.tile[i, j + off].frameX >= LastFrame)
+            if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
                 Main.LocalPlayer.noThrow = 2;
                 Main.LocalPlayer.showItemIcon = true;
@@ -154,15 +154,15 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.tile[i, j].frameY == 0)
+            if (Main.tile[i, j].TileFrameY == 0)
             {
                 int bottomY = j + (Height - 1);
                 Tile bottomTile = Main.tile[i, bottomY];
-                if (bottomTile.type == Type && bottomTile.frameY == ((Height - 1) * 18) && bottomTile.frameX < LastFrame)
+                if (bottomTile.type == Type && bottomTile.TileFrameY == ((Height - 1) * 18) && bottomTile.TileFrameX < LastFrame)
                 {
                     if (Main.rand.Next(1, 101) <= GrowthPercentChance(i, bottomY))
                     {
-                        bottomTile.frameX += (short)(16 * Height);
+                        bottomTile.TileFrameX += (short)(16 * Height);
                         NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
                     }
                 }
@@ -176,12 +176,12 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override bool NewRightClick(int i, int j)
         {
-            int tile = Main.tile[i, j].frameY / 18;
+            int tile = Main.tile[i, j].TileFrameY / 18;
             int off = Math.Abs(tile - 2);
 
-            if (Main.tile[i, j + off].frameX >= LastFrame)
+            if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
-                Main.tile[i, j + off].frameX -= (short)FrameHeight;
+                Main.tile[i, j + off].TileFrameX -= (short)FrameHeight;
                 Item.NewItem(new Vector2(i, j) * 16, drop, Main.rand.Next(1, 3));
                 return true;
             }

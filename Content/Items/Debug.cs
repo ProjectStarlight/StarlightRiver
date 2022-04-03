@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             Player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
             InfusionMaker.visible = !InfusionMaker.visible;
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items
             Item.accessory = true;
         }
 
-        public override bool UseItem(Player Player)
+        public override bool? UseItem(Player Player)
         {
             foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
                 NPC.StrikeNPC(99999, 0, 0, false, false, false);

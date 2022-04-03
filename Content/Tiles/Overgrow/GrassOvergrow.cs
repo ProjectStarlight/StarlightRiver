@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
             Tile tile = Main.tile[i, j];
-            if (tile.frameX >= 10 && tile.frameX < 70 && tile.frameY == 0)
+            if (tile.TileFrameX >= 10 && tile.TileFrameX < 70 && tile.TileFrameY == 0)
             {
                 Main.specX[nextSpecialDrawIndex] = i;
                 Main.specY[nextSpecialDrawIndex] = j;
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 if (Player.Hitbox.Intersects(new Rectangle(i * 16, j * 16 - 1, 8, 1))) crunch.Y += 2;
             }
 
-            if (tile.frameX >= 10 && tile.frameX < 70 && tile.frameY == 0)
+            if (tile.TileFrameX >= 10 && tile.TileFrameX < 70 && tile.TileFrameY == 0)
             {
                 spriteBatch.Draw(tex, new Vector2(i, j) * 16 + crunch - Main.screenPosition, source, color);
                 spriteBatch.Draw(tex, new Vector2(i + 0.5f, j) * 16 + crunch * 0.5f - Main.screenPosition, source, color);
@@ -74,12 +74,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
         public override void RandomUpdate(int i, int j)
         {
-            if (!Main.tile[i, j - 1].active())
+            if (!Main.tile[i, j - 1].HasTile)
                 if (Main.rand.NextBool())
                     WorldGen.PlaceTile(i, j - 1, TileType<TallgrassOvergrow>(), true);
 
             if (Main.rand.Next(10) == 0)
-                if (!Main.tile[i, j + 1].active() && (Main.tile[i, j].slope() == 0 || Main.tile[i, j].topSlope()))
+                if (!Main.tile[i, j + 1].HasTile && (Main.tile[i, j].slope() == 0 || Main.tile[i, j].topSlope()))
                     WorldGen.PlaceTile(i, j + 1, TileType<VineOvergrow>(), true);
         }
     }

@@ -47,7 +47,7 @@ namespace StarlightRiver.Tiles.Mushroom
             var tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/LumishroomGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
-            spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * (float)(0.8f + Math.Sin(StarlightWorld.rottime + i) * 0.5f));
+            spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White * (float)(0.8f + Math.Sin(StarlightWorld.rottime + i) * 0.5f));
         }
     }
 

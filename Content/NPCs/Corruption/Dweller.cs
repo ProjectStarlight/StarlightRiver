@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				}
 			}
 
-			if(!root.active()) //should automatically activate if the tile under it is killed
+			if(!root.HasTile) //should automatically activate if the tile under it is killed
 			{
 				State = (int)States.Transforming;
 				Timer = 0;

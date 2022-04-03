@@ -46,11 +46,11 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
+            if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
                 Tile tile = Main.tile[i, j];
-                int left = i - tile.frameX / 18;
-                int top = j - tile.frameY / 18;
+                int left = i - tile.TileFrameX / 18;
+                int top = j - tile.TileFrameY / 18;
                 int index = GetInstance<WispSwitchEntity>().Find(left, top);
 
                 if (index == -1)
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.HasTile && tile.type == TileType<WispSwitch>() && tile.frameX == 0 && tile.frameY == 0;
+            return tile.HasTile && tile.type == TileType<WispSwitch>() && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

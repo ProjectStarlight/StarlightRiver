@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.tile[i, j + 1].active() == false)
+            if (Main.tile[i, j + 1].HasTile == false)
                 WorldGen.PlaceTile(i, j + 1, Mod.TileType(Type.ToString()), true);
         }
     }
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.tile[i, j - 1].active() == false)
+            if (Main.tile[i, j - 1].HasTile == false)
                 WorldGen.PlaceTile(i, j - 1, Mod.TileType(Type.ToString()));
         }
     }

@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
             var tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameY >= 6 * 16)
+            if (tile.TileFrameY >= 6 * 16)
                 WorldGen.PlaceTile(i, j, TileID.Grass);
         }
 

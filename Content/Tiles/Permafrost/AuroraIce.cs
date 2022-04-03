@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (!fail && tile.frameY < 4 * 18)
+            if (!fail && tile.TileFrameY < 4 * 18)
             {
                 for (int k = 0; k < 3; k++)
                 {
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
                 if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
                 {
-                    tile.frameY += 4 * 18;
+                    tile.TileFrameY += 4 * 18;
                     fail = true;
                 }
                 else
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                     {
                         Tile tile2 = Framing.GetTileSafely(i + x, j + y);
 
-                        if (tile2.active() && tile2.type == Type && tile2.frameY < 4 * 18)
+                        if (tile2.HasTile && tile2.type == Type && tile2.TileFrameY < 4 * 18)
                         {
                             WorldGen.KillTile(i + x, j + y);
                         }
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameY >= 4 * 18 || checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
+            if (tile.TileFrameY >= 4 * 18 || checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
             {
                 float offBack = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
 
@@ -104,10 +104,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
                 Color final = new Color(light.R + (int)(colorBack.R * 0.1f), light.G + (int)(colorBack.G * 0.1f), light.B + (int)(colorBack.B * 0.1f));
 
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY % (4 * 18), 16, 16), final);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY % (4 * 18), 16, 16), final);
             }
 
-            if (tile.frameY >= 4 * 18) return;
+            if (tile.TileFrameY >= 4 * 18) return;
 
             int off = i + j;
             float time = Main.GameUpdateCount / 600f * 6.28f;
@@ -118,11 +118,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             if (color.R < 80) color.R = 80;
             if (color.G < 80) color.G = 80;
 
-            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.3f);
+            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color * 0.3f);
 
-            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
-            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
-            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
 
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.35f);
 

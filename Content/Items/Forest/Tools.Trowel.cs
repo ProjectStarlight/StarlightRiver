@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 				Tile nextTile = Framing.GetTileSafely(nextX, nextY);
 
-				if (!nextTile.active())
+				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
 
 				else if (nextTile.type != tile.type)
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Forest
 			return default;
 		}
 
-		public override bool UseItem(Player Player)
+		public override bool? UseItem(Player Player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 			Item Item = null;

@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             Tile tile = Main.tile[i, j];
 
-            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
+            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
 
             if (index == -1)
                 return true;
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 		{
             Tile tile = Main.tile[i, j];
 
-            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
+            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
 
             if (index == -1)
                 return;
