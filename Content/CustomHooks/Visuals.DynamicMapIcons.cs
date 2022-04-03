@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                     {
-                        Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
+                        Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.MouseTextColorReal);
                     }
                 }
             }
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                 {
-                    Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
+                    Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.MouseTextColorReal);
                 }
             }
             return NPC;

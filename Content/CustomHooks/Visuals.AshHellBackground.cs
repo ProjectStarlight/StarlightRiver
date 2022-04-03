@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.CustomHooks
                     {
                         case 1:
                             {
-                                int num4 = (int)(Main.GlobalTime * 8f) % 4;
+                                int num4 = (int)(Main.timeForVisualEffects * 8f) % 4;
                                 rectangle = new Rectangle((num4 >> 1) * (tex.Width >> 1), num4 % 2 * (tex.Height >> 1), tex.Width >> 1, tex.Height >> 1);
                                 vector2 *= 0.5f;
                                 zero.Y += 75f;
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.CustomHooks
                         if (i == 0)
                         {
                             int num7 = (int)(vector4.Y + rectangle.Height * num3);
-                            Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle((int)vector4.X, num7, (int)(rectangle.Width * num3), Math.Max(0, Main.screenHeight - num7)), new Color(11, 3, 7));
+                            Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.BlackTile.Value, new Rectangle((int)vector4.X, num7, (int)(rectangle.Width * num3), Math.Max(0, Main.screenHeight - num7)), new Color(11, 3, 7));
                         }
                     }
                 }

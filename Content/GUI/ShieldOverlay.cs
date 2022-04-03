@@ -39,13 +39,13 @@ namespace StarlightRiver.Content.GUI
 				Main.player[Main.myPlayer].statLifeMax2.ToString()
 				});
 
-				Vector2 vector = Main.fontMouseText.MeasureString(text);
+				Vector2 vector = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 
 				var shieldText = $"  {sp.Shield}/{sp.MaxShield}";
-				float textWidth = Main.fontMouseText.MeasureString(shieldText).X / 2;
+				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
 				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
-				spriteBatch.DrawString(Main.fontMouseText, shieldText, pos2, Main.mouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
+				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.mouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
 			}
 
 			if (sp.Shield > 0)

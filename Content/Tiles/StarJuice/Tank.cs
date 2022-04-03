@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
                 {
                     string counter = entity.charge + "/" + entity.maxCharge;
                     float scale = 0.7f;
-                    spriteBatch.DrawString(Main.fontMouseText, counter, pos + new Vector2(16 - Main.fontMouseText.MeasureString(counter).X * scale / 2, -24),
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, counter, pos + new Vector2(16 - Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(counter).X * scale / 2, -24),
                         Main.mouseTextColorReal * 0.75f, 0, Vector2.Zero, scale, 0, 0);
                 }
             }

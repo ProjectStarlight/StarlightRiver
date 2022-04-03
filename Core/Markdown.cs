@@ -15,12 +15,12 @@ namespace StarlightRiver.Core
             List<string> mods;
 
             SplitMessage(WrapMarkdownText(message, wrapWidth), out messages, out mods);
-            return (1 + messages.Count(n => n == "\n")) * Main.fontMouseText.MeasureString("A").Y * scale;
+            return (1 + messages.Count(n => n == "\n")) * Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
         }
 
         public static float GetWidth(string message, float scale)
         {
-            return Main.fontMouseText.MeasureString(NeuterString(message)).X * scale;
+            return Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(NeuterString(message)).X * scale;
         }
 
         public static void DrawMessage(SpriteBatch sb, Vector2 pos, string message, float scale, int wrapWidth = 0)
@@ -33,14 +33,14 @@ namespace StarlightRiver.Core
             {
                 if (messages[k] == "\n") //special case for linebreak because im layzeee
                 {
-                    yOff += Main.fontMouseText.MeasureString("A").Y * scale;
+                    yOff += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
                     xOff = 0;
                     continue;
                 }
 
                 DrawSubstring(sb, pos + new Vector2(xOff, yOff), scale, messages[k], mods[k]);
 
-                var measure = Main.fontMouseText.MeasureString(messages[k]) * scale;
+                var measure = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(messages[k]) * scale;
                 xOff += measure.X;
             }
         }
@@ -215,7 +215,7 @@ namespace StarlightRiver.Core
                             singleCharWidthCache = 0;
                         }
 
-                        float w = Main.fontMouseText.MeasureString(words[0]).X;
+                        float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[0]).X;
                         singleCharWidthCache += w;
 
                         if (totalWidth + singleCharWidthCache + w > width && !singleCharBroken)
@@ -241,7 +241,7 @@ namespace StarlightRiver.Core
 
                     for (int n = 0; n < words.Length; n++)
                     {
-                        float w = Main.fontMouseText.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
+                        float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
                         if (totalWidth + w > width)
                         {
                             totalWidth = w;

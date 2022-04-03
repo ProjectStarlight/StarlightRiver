@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             if ((inv[slot].ModItem is CursedAccessory || inv[slot].ModItem is Blocker) && context == 10)
             {
-                ItemLoader.CanEquipAccessory(Main.mouseItem, slot);
+                ItemLoader.CanEquipAccessory(Main.mouseItem, slot, true);
                 return;
             }
 

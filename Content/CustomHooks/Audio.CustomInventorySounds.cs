@@ -95,16 +95,16 @@ namespace StarlightRiver.Content.CustomHooks
 
 			else if (Item.damage > 0) //weapons and ammo
 			{
-				if (Item.melee) //melee weapons
+				if (Item.DamageType.Type == Terraria.ModLoader.DamageClass.Melee.Type) //melee weapons
 					return Helper.PlayPitched("Pickups/PickupMelee", 1, 0.5f + pitch);
 
 				else if (Item.useAmmo == ItemID.MusketBall) //guns
 					return Helper.PlayPitched("Pickups/PickupGun", 1, 0 + pitch);
 
-				else if (Item.ranged) //other ranged weapons
+				else if (Item.DamageType.Type == Terraria.ModLoader.DamageClass.Ranged.Type) //other ranged weapons
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.9f + pitch * 0.5f);
 
-				else if (Item.magic || Item.summon) //magic and summoning weapons
+				else if (Item.DamageType.Type == Terraria.ModLoader.DamageClass.Magic.Type || Item.DamageType.Type == Terraria.ModLoader.DamageClass.Summon.Type) //magic and summoning weapons
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 
 				else if (Item.ammo == ItemID.WoodenArrow) //arrows

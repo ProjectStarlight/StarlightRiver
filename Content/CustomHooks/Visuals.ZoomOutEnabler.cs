@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.CustomHooks
 			//This is... a thing
 			IL.Terraria.Lighting.AddLight_int_int_float_float_float += ResizeLighting;
 
-			IL.Terraria.Lighting.LightTiles += ResizeLighting;
+			IL.Terraria.Lighting.LightTiles += ResizeLighting; //PORTTODO: Dear god.
 			IL.Terraria.Lighting.PreRenderPhase += ResizeLighting;
 			IL.Terraria.Lighting.PreRenderPhase += ResizeOcclusion;
 			IL.Terraria.Lighting.Brightness += ResizeLighting;

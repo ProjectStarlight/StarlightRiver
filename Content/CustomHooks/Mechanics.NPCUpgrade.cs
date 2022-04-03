@@ -79,7 +79,8 @@ namespace StarlightRiver.Content.CustomHooks
 
         private string EmitSwapTextMenuDelegate(string input, NPC NPC, int x, int y)
         {
-            bool hovering = Main.mouseX >= x && Main.mouseX <= x + Main.inventoryBackTexture.Width * Main.inventoryScale && Main.mouseY >= y && Main.mouseY <= y + Main.inventoryBackTexture.Height * Main.inventoryScale;
+            var tex = Terraria.GameContent.TextureAssets.InventoryBack.Value;
+            bool hovering = Main.mouseX >= x && Main.mouseX <= x + tex.Width * Main.inventoryScale && Main.mouseY >= y && Main.mouseY <= y + tex.Height * Main.inventoryScale;
 
             if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
                 return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title;

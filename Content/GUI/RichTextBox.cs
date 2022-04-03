@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.GUI
             if (!Main.screenTarget.IsDisposed && icon != null)
                 spriteBatch.Draw(icon, new Rectangle(-46 + Main.screenWidth / 2 - 260, 206, 88, 88), iconFrame, Color.White, 0, Vector2.Zero, 0, 0);
 
-            float width = Main.fontMouseText.MeasureString(title).X;
+            float width = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(title).X;
             DrawBox(spriteBatch, new Rectangle(Main.screenWidth / 2 - (int)(width / 2) - 20, 160, (int)width + 40, 36));
             Utils.DrawBorderString(spriteBatch, title, new Vector2(Main.screenWidth / 2, 182), Color.White, 1, 0.5f, 0.5f);
 

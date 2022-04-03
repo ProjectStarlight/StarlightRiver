@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            IL.Terraria.Lighting.PreRenderPhase += VitricLighting;
+            IL.Terraria.Lighting.PreRenderPhase += VitricLighting; //PORTTODO: Figure out how the new lighting system works for this one. Yikes.
             On.Terraria.Main.Update += UpdateLightingVars; //TODO: Change to an event in modworld update hook eventually?
         }
 
@@ -89,16 +89,13 @@ namespace StarlightRiver.Content.CustomHooks
 
             var tile = Framing.GetTileSafely(i, j);
 
-            if (tile is null)
-                return;
-
             // If the tile is in the vitric biome and doesn't block light, emit light.
             if (StarlightWorld.VitricBiome.Contains(i, j))
             {
-                bool tileBlock = tile.HasTile && Main.tileBlockLight[tile.type] && !(tile.Slope != SlopeType.Solid || tile.IsHalfBlock);
+                bool tileBlock = tile.HasTile && Main.tileBlockLight[tile.TileType] && !(tile.Slope != SlopeType.Solid || tile.IsHalfBlock);
                 bool wallBlock = Main.wallLight[tile.WallType];
                 bool lava = tile.LiquidType == LiquidID.Lava;
-                bool lit = Main.tileLighted[tile.type];
+                bool lit = Main.tileLighted[tile.TileType];
 
                 if (vitricLava && lava)
                     (r, g, b) = (1, 0, 0);

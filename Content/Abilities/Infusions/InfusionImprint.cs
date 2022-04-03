@@ -189,7 +189,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             var wrapped = (">  " + text + ": " + progress + "/" + maxProgress);
             Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.mouseTextColorReal) : Main.mouseTextColorReal);
-            pos.X += Main.fontMouseText.MeasureString(wrapped).X + 8;
+            pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
             pos.Y += 2;
 
             var tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;

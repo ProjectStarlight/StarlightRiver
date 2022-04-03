@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     if (!(self.inventory[k].ModItem is SoulboundItem) || k == 0)
                     {
-                        int index = Item.NewItem(self.position, Item.type, Item.stack, false, Item.prefix, false, false);
+                        int index = Item.NewItem(self.GetItemSource_Misc(self.whoAmI), self.position, Item.type, Item.stack, false, Item.prefix, false, false);
                         Main.item[index] = Item.Clone();
                         Main.item[index].position = self.position;
                         Item.TurnToAir();

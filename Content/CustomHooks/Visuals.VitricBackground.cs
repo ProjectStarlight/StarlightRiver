@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Player != null && StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
             {
-                Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
+                Vector2 basepoint = (StarlightWorld.VitricBiome != default) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);

@@ -144,11 +144,11 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Item.createTile != -1 || Item.createWall != -1 || forbiddenItemIds.Contains(Item.type))
             {
-                Point16 targetPoint = Main.SmartCursorEnabled ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
+                Point16 targetPoint = Main.SmartCursorIsUsed ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
 
                 Tile tile = Framing.GetTileSafely(targetPoint.X, targetPoint.Y);
 
-                if (tile?.wall == WallType<AuroraBrickWall>())
+                if (tile.WallType == WallType<AuroraBrickWall>())
                 {
                     for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
                     {
@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.CustomHooks
 	{
         public static List<Rectangle> ProtectedRegions = new List<Rectangle>();
 
-        public override void LoadData(TagCompound tag)
+        public override void LoadWorldData(TagCompound tag)
 		{
             ProtectedRegions.Clear();
 
@@ -221,24 +221,19 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		public override void SaveData(TagCompound tag)
-		{
-            var tag = new TagCompound()
-            {
-                ["RegionCount"] = ProtectedRegions.Count
-            };
+        public override void SaveWorldData(TagCompound tag)
+        {
+            tag["RegionCount"] = ProtectedRegions.Count;
 
-            for(int k = 0; k < ProtectedRegions.Count; k++)
-			{
+            for (int k = 0; k < ProtectedRegions.Count; k++)
+            {
                 var region = ProtectedRegions[k];
                 tag.Add("x" + k, region.X);
                 tag.Add("y" + k, region.Y);
                 tag.Add("w" + k, region.Width);
                 tag.Add("h" + k, region.Height);
             }
-
-            return tag;
-		}
+        }
 
         public override void NetSend(BinaryWriter writer)
         {

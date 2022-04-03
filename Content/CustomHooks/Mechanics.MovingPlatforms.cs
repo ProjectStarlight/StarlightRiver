@@ -3,6 +3,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -22,17 +23,17 @@ namespace StarlightRiver.Content.CustomHooks
             IL.Terraria.Projectile.VanillaAI += GrapplePlatforms;
         }
 
-        public override void Unload()
+		public override void Unload()
         {
             IL.Terraria.Projectile.VanillaAI -= GrapplePlatforms;
         }
 
-        private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough)
+        private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough, bool ignorePlats)
         {
 
             if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
             {
-                orig(self, fallThrough);
+                orig(self, fallThrough, ignorePlats);
                 return;
             }
 
@@ -65,7 +66,7 @@ namespace StarlightRiver.Content.CustomHooks
                     }
                 }
 
-                orig(self, fallThrough);
+                orig(self, fallThrough, ignorePlats);
                 return;
             }
 
@@ -117,7 +118,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (mp.controller != null && mp.controller.NPC.active)
                 self.velocity.Y = 0;
 
-            orig(self, fallThrough);
+            orig(self, fallThrough, ignorePlats);
         }
 
         private void GrapplePlatforms(ILContext il)

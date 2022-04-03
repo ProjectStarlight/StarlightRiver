@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 Texture2D crosshair = ModContent.Request<Texture2D>(cursorTexture).Value;
 
-                Color crosshairColor = Color.Lerp(Color.White, Main.cursorColor, (float)(Math.Sin(Main.GlobalTime * 10) + 1) / 2);
+                Color crosshairColor = Color.Lerp(Color.White, Main.cursorColor, (float)(Math.Sin(Main.timeForVisualEffects * 10) + 1) / 2);
 
                 Vector2 sizeOfDonut = Vector2.One * 32;
 

@@ -88,9 +88,9 @@ namespace StarlightRiver.Content.CustomHooks
         private bool EmitGrassConvertDelegate(int type, int x, int y)
         {
             Tile tile = Main.tile[x, y];
-            if (tile.type == TileID.JungleGrass || tile.type == TileType<Tiles.JungleBloody.GrassJungleBloody>() || tile.type == TileType<Tiles.JungleCorrupt.GrassJungleCorrupt>() || tile.type == TileType<Tiles.JungleHoly.GrassJungleHoly>())
+            if (tile.TileType == TileID.JungleGrass || tile.TileType == TileType<Tiles.JungleBloody.GrassJungleBloody>() || tile.TileType == TileType<Tiles.JungleCorrupt.GrassJungleCorrupt>() || tile.TileType == TileType<Tiles.JungleHoly.GrassJungleHoly>())
             {
-                tile.type = (ushort)type;
+                tile.TileType = (ushort)type;
                 return true;
             }
             return false;

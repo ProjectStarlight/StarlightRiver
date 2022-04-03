@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.CustomHooks
             Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ChungusMeterFill").Value;
             spriteBatch.Draw(tex, pos + new Vector2(-122, 6), Color.White);
             spriteBatch.Draw(tex2, pos + new Vector2(-108, 10), new Rectangle(0, 0, (int)(tex2.Width * chungosity), tex2.Height), Color.White);
-            spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X - 108 + (int)(tex2.Width * chungosity), (int)pos.Y + 10, 2, 10), Color.White);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)pos.X - 108 + (int)(tex2.Width * chungosity), (int)pos.Y + 10, 2, 10), Color.White);
 
             Rectangle rect = new Rectangle((int)pos.X - 122, (int)pos.Y + 6, tex.Width, tex.Height);
 
@@ -53,9 +53,9 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
-        private void AddWorldData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex)
+        private void AddWorldData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex, bool canBePlayed)
         {
-            orig(self, data, snapPointIndex);
+            orig(self, data, snapPointIndex, canBePlayed);
 
             string path = data.Path.Replace(".wld", ".twld");
 

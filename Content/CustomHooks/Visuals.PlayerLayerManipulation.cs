@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            IL.Terraria.Main.DrawPlayer_DrawAllLayers += ManipulateLayers;
+            IL.Terraria.Main.DrawPlayer_DrawAllLayers += ManipulateLayers; //PORTTODO: Figure out where all of this moved
         }
 
         public override void Unload()

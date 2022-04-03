@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.Main.DrawInterface_Resources_Life += ShiftText;
+			IL.Terraria.Main.DrawInterface_Resources_Life += ShiftText; //PORTTODO: Figure out where this moved to in vanilla
 		}
 
 		private void ShiftText(ILContext il)
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (sp.Shield <= 0 && sp.MaxShield <= 0)
 				return arg;
 
-			return arg - (int)(Main.fontMouseText.MeasureString($"  {sp.Shield}/{sp.MaxShield}").X / 2) - 6;
+			return arg - (int)(Terraria.GameContent.FontAssets.MouseText.Value.MeasureString($"  {sp.Shield}/{sp.MaxShield}").X / 2) - 6;
 		}
 	}
 }

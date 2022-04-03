@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -92,11 +93,12 @@ namespace StarlightRiver.Content.CustomHooks
                     string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
 
                     var vanillaText = ChatManager.ParseMessage(vanillaString, Color.White).ToArray();
-                    Vector2 vanillaTextPosition = ChatManager.GetStringSize(Main.fontMouseText, vanillaText, Vector2.One);
+                    Vector2 vanillaTextPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, vanillaText, Vector2.One);
+                    
 
 
                     var text = ChatManager.ParseMessage(textString, Color.White).ToArray();
-                    Vector2 textPosition = ChatManager.GetStringSize(Main.fontMouseText, text, Vector2.One);
+                    Vector2 textPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, text, Vector2.One);
                     //textPosition.X += vanillaTextPosition.X / 2;
                    //textPosition.Y += vanillaTextPosition.Y;
 
@@ -107,7 +109,7 @@ namespace StarlightRiver.Content.CustomHooks
                         pos.X = (float)(Main.screenWidth - textPosition.X);
 
                     int hoveredSnippet;
-                    ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Main.fontMouseText, text, pos, 0f, Vector2.Zero, Vector2.One, out hoveredSnippet);
+                    ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, text, pos, 0f, Vector2.Zero, Vector2.One, out hoveredSnippet);
                 }
             }
         }
@@ -141,7 +143,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     string text = mp.Shield + "/" + mp.MaxShield;
 
-                    Vector2 textPosition = Main.fontMouseText.MeasureString(text);
+                    Vector2 textPosition = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 
                     float verticalOffset = 0f;
 
@@ -181,7 +183,7 @@ namespace StarlightRiver.Content.CustomHooks
                         textPosition.Y = height - textPosition.Y;
 
                     textPosition *= 1f / uiscale;
-                    Vector2 textSize = Main.fontMouseText.MeasureString(text);
+                    Vector2 textSize = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
                     textPosition += textSize * (1f - uiscale) / 4f;
 
                     textPosition.Y += 20;
