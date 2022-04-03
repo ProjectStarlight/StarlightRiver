@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.GUI
             Texture2D panel = Request<Texture2D>("StarlightRiver/Assets/GUI/TownQuestPanel").Value;
 
             spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
-            if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Main.fontDeathText, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+            if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Terraria.GameContent.FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
             Recalculate();
             base.Draw(spriteBatch);
@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.GUI
             Item Item = new Item();
             Item.SetDefaults(typ);
 
-            if (type <= ItemID.Count) icon = Main.PopupTexture[type];
+            if (type <= ItemID.Count) icon = Terraria.GameContent.TextureAssets.Item[type].Value;
             else icon = Request<Texture2D>(Item.ModItem.Texture).Value;
 
             name = Item.Name;

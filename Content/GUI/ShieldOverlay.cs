@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.GUI
 				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
 				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
-				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.mouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
+				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
 			}
 
 			if (sp.Shield > 0)
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.GUI
 
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
-					var pos = new Vector2(Main.screenWidth - 300 + k * 26, 32f + (Main.heartTexture.Height - Main.heartTexture.Height) / 2f);
+					var pos = new Vector2(Main.screenWidth - 300 + k * 26, 32f);
 					if (k >= 10)
 						pos += new Vector2(-260, 26);
 

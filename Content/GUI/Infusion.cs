@@ -174,8 +174,8 @@ namespace StarlightRiver.Content.GUI
                         ToolTip.AppendLine(equipped.Item.ToolTip.GetLine(k));
 
                     //Draws the name and tooltip at the mouse
-                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.Item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
-                    Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
+                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.Item.rare).MultiplyRGB(Main.MouseTextColorReal), 0.39f);
+                    Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.MouseTextColorReal, 0.39f);
                 }
             }
 

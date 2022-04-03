@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.GUI
             if (Selections[1] != null)
             {
                 Visible = false;
-                Main.LocalPlayer.QuickSpawnItem(BigItem);
-                Main.LocalPlayer.QuickSpawnItem(Selections[0], Selections[0].stack);
-                Main.LocalPlayer.QuickSpawnItem(Selections[1], Selections[1].stack);
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), BigItem); //PORTTODO: Pass coords to this so source can be assigned correctly
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), Selections[0], Selections[0].stack);
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), Selections[1], Selections[1].stack);
             }
             base.Update(gameTime);
         }
@@ -72,13 +72,13 @@ namespace StarlightRiver.Content.GUI
 
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value;
 
-            Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) -  1.5f * Main.fontItemStack.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
+            Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) -  1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
 
             string str = "You get:";
             string str2 = "Pick two:";
 
-            Utils.DrawBorderString(spriteBatch, str, GetDimensions().Center() + new Vector2(0, -40) - Main.fontItemStack.MeasureString(str) / 2, Color.White, 0.8f);
-            Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, 40) - Main.fontItemStack.MeasureString(str2) / 2, Color.White, 0.8f);
+            Utils.DrawBorderString(spriteBatch, str, GetDimensions().Center() + new Vector2(0, -40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str) / 2, Color.White, 0.8f);
+            Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, 40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str2) / 2, Color.White, 0.8f);
 
             spriteBatch.Draw(tex, GetDimensions().Center(), tex.Frame(), Color.White * 0.75f, 0, tex.Size() / 2, 1, 0, 0);
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.GUI
                 spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, scale, 0, 0);
 
                 if (BigItem.stack > 1)
-                    spriteBatch.DrawString(Main.fontItemStack, BigItem.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White);
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, BigItem.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White);
             }
 
             Rectangle rect = new Rectangle(Main.screenWidth / 2 - 28, Main.screenHeight / 2 - 28, 56, 56);

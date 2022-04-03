@@ -26,8 +26,8 @@ namespace StarlightRiver.Content.GUI
         private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
-        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep").Value);
-        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit").Value);
+        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep"));
+        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit"));
         private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow").Value);
         private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop").Value);
 
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
 
             base.Draw(spriteBatch);
             Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
@@ -99,8 +99,8 @@ namespace StarlightRiver.Content.GUI
                 int cooldown = 0;
                 List<(string, Color)> lines = new List<(string, Color)>();
 
-                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
-                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
 
                 foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
                 {
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.GUI
 
                     for (int k = 0; k < strings.Count(); k++)
                     {
-                        string text = "~" + Helper.WrapString(strings[k], 100, Main.fontItemStack, 0.65f);
+                        string text = "~" + Helper.WrapString(strings[k], 100, Terraria.GameContent.FontAssets.ItemStack.Value, 0.65f);
                         string[] substrings = text.Split('\n');
 
                         for (int n = 0; n < substrings.Length; n++)
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     var line = lines[k];
                     Utils.DrawBorderString(spriteBatch, line.Item1, Basepos + new Vector2(186, 54 + drawY), line.Item2, 0.65f);
-                    drawY += (int)(Main.fontItemStack.MeasureString(line.Item1).Y * 0.65f) + 2;
+                    drawY += (int)(Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
                 }
 
                 Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     var tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
 
-                    spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
+                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
                     spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
                 }
             }
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.GUI
                 CookIngredient(Item, SideSlot1);
                 CookIngredient(Item, SeasonSlot);
                 Item.position = Main.LocalPlayer.Center;
-                Main.LocalPlayer.QuickSpawnClonedItem(Item);
+                Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetItemSource_Misc(0), Item);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
             }

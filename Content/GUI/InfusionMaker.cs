@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.GUI
 
         UIList options = new UIList();
         InfusionMakerSlot inSlot = new InfusionMakerSlot();
-        UIImageButton craftButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "BackButton").Value);
-        UIImageButton exitButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "ExitButton").Value);
+        UIImageButton craftButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "BackButton"));
+        UIImageButton exitButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "ExitButton"));
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.GUI
                     pos.Y += objective.DrawText(spriteBatch, pos);
                 }
 
-                spriteBatch.DrawString(Main.fontItemStack, Helpers.Helper.WrapString(selected.output.Item.ToolTip.GetLine(0), 130, Main.fontItemStack, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, Helpers.Helper.WrapString(selected.output.Item.ToolTip.GetLine(0), 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
                 if (previewFade < 1 && !crafting)
                     previewFade += 0.05f;
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.GUI
 
             if(previewGif is null && selected != null)
 			{
-                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
 
                 for (int k = 0; k < 5; k++)
                 {
@@ -199,7 +199,7 @@ namespace StarlightRiver.Content.GUI
                 options.Add(imprint);
             }
 
-            options._Items.Sort((a, b) => (a as InfusionRecipieEntry).output.Visible ? 0 : 1);
+            options._items.Sort((a, b) => (a as InfusionRecipieEntry).output.Visible ? 0 : 1);
         }
 
         public override void OnInitialize()
@@ -257,13 +257,13 @@ namespace StarlightRiver.Content.GUI
                     var tex = Request<Texture2D>(output.Texture).Value;
                     output.Draw(spriteBatch, pos + new Vector2(14, 13), 1, false);
                     var color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
-                    spriteBatch.DrawString(Main.fontItemStack, output.Item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, output.Item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
                 }
                 else
 				{
                     var tex = Request<Texture2D>(output.FrameTexture).Value;
                     spriteBatch.Draw(tex, pos, Color.Gray);
-                    spriteBatch.DrawString(Main.fontItemStack, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
                 }
             }
         }
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.GUI
                 Task.Factory.StartNew(n => LoadGif(token), token);
             }
 
-            Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.5f, 2.5f);
         }
 
         private void LoadGif(CancellationToken token)
@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.GUI
             byte[] file = GetFileBytes(output.PreviewVideo + ".gif");
             Stream stream = new MemoryStream(file);
 
-            var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2);
+            var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2); //PORTTODO: Update interchange ref
 
             if (token.IsCancellationRequested)
                 return;
@@ -323,14 +323,14 @@ namespace StarlightRiver.Content.GUI
             {
                 Item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
-                Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.5f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.75f, 0.5f);
                 (Parent as InfusionMaker).PopulateList();
             }
             else if (Main.mouseItem.IsAir && !Item.IsAir)
             {
                 Main.mouseItem = Item.Clone();
                 Item.TurnToAir();
-                Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.1f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.75f, 0.1f);
             }
         }
 

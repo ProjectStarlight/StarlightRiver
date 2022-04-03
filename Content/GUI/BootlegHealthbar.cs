@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-    public class BootlegHealthbar : SmartUIState, IOrderedLoadable
+    public class BootlegHealthbar : SmartUIState, IOrderedLoadable //PORTTODO: Integrate this into the vanilla health bar somehow
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
         public override bool Visible => visible;
@@ -173,15 +173,7 @@ namespace StarlightRiver.Content.GUI
 
             Utils.DrawBorderString(spriteBatch, NPC.FullName + BootlegHealthbar.Text + ": " + NPC.life + "/" + NPC.lifeMax, pos + new Vector2(BootlegHealthbar.Texture.Width / 2, -20), Color.White, 1, 0.5f, 0);
 
-            spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);
-
-            
-
-            if (NPC.GetBossHeadTextureIndex() > 0)
-            {
-                var tex = Main.npcHeadBossTexture[NPC.GetBossHeadTextureIndex()];
-                spriteBatch.Draw(tex, pos + new Vector2(0, 10), Color.White);
-            }
+            spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);           
 
             if (NPC.dontTakeDamage || NPC.immortal)
                 spriteBatch.Draw(Request<Texture2D>(AssetDirectory.GUI + "BossbarChains").Value, pos, Color.White);

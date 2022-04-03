@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
-			var ItemTex = Main.PopupTexture[Item.type];
+			var ItemTex = Terraria.GameContent.TextureAssets.Item[Item.type].Value;
 			var pos = GetDimensions().Center();
 
 			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare), 0, tex.Size() / 2, 1, 0, 0);

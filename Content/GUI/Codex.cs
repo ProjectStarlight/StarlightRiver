@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.GUI
         private readonly CodexBack Back = new CodexBack();
         private readonly UIImage DragButton = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/DragButton").Value);
         private readonly UIImage ExitButton = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/ExitButton").Value);
-        private readonly UIImageButton BookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked").Value);
+        private readonly UIImageButton BookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked"));
         private readonly UIElement EntryBack = new UIElement();
         internal UIList ClickableEntries = new UIList();
         private readonly UIScrollbar EntryScroll = new UIScrollbar();
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.GUI
                 }
                 if (BookButton.IsMouseHovering)
                 {
-                    Utils.DrawBorderString(spriteBatch, Player.CodexState == 0 ? "Found in the desert..." : "Starlight Codex", Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal, 0.95f);
+                    Utils.DrawBorderString(spriteBatch, Player.CodexState == 0 ? "Found in the desert..." : "Starlight Codex", Main.MouseScreen + Vector2.One * 16, Main.MouseTextColorReal, 0.95f);
                     Main.LocalPlayer.mouseInterface = true;
                 }
             }
@@ -106,17 +106,17 @@ namespace StarlightRiver.Content.GUI
             switch (Player.CodexState)
             {
                 case 0: //locked
-                    BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked").Value);
+                    BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked"));
                     break;
 
                 case 1: //tier 1
-                    if (BookButton.IsMouseHovering) BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Open").Value);
-                    else BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed").Value);
+                    if (BookButton.IsMouseHovering) BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Open"));
+                    else BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed"));
                     break;
 
                 case 2: //tier 2
-                    if (BookButton.IsMouseHovering) BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Open").Value);
-                    else BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Closed").Value);
+                    if (BookButton.IsMouseHovering) BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Open"));
+                    else BookButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Closed"));
                     break;
             }
 
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.GUI
             if (ContainsPoint(Main.MouseScreen))
                 Main.LocalPlayer.mouseInterface = true;
 
-            spriteBatch.Draw(Main.magicPixel, GetDimensions().ToRectangle(), Main.magicPixel.Frame(), Color.White * 0.1f);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, GetDimensions().ToRectangle(), Terraria.GameContent.TextureAssets.MagicPixel.Value.Frame(), Color.White * 0.1f);
             Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 50);
             Texture2D backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack").Value;
             if (ActiveEntry?.RequiresUpgradedBook == true) backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack2").Value; //use a purple back for rift entries
@@ -181,9 +181,9 @@ namespace StarlightRiver.Content.GUI
             ActiveEntry?.Draw(pos + new Vector2(50, 16), spriteBatch); //draws the text of the active entry
             base.Draw(spriteBatch);
 
-            foreach (EntryButton button in (Parent as Codex).ClickableEntries._Items)
+            foreach (EntryButton button in (Parent as Codex).ClickableEntries._items)
                 if (button.IsMouseHovering && button.Entry.Locked && button.Entry.Hint != null)
-                    Utils.DrawBorderString(spriteBatch, Helper.WrapString(button.Entry.Hint, 300, Main.fontDeathText, 0.8f), Main.MouseScreen + Vector2.One * 16, Main.mouseTextColorReal, 0.8f);
+                    Utils.DrawBorderString(spriteBatch, Helper.WrapString(button.Entry.Hint, 300, Terraria.GameContent.FontAssets.DeathText.Value, 0.8f), Main.MouseScreen + Vector2.One * 16, Main.MouseTextColorReal, 0.8f);
         }
 
         internal void ChangeCategory(CodexEntry.Categories category) //swaps out all of the entry buttons based on the category
@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.GUI
 
             Texture2D backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CategoryButton").Value;
             spriteBatch.Draw(backTex, pos, backColor * 0.8f);
-            Vector2 textSize = Main.fontDeathText.MeasureString(Text) * 0.6f;
+            Vector2 textSize = Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(Text) * 0.6f;
             Utils.DrawBorderString(spriteBatch, Text, GetDimensions().ToRectangle().Center(), parent.ActiveCategory == Category ? Color.Yellow : Color.White, 0.6f, 0.5f, 0.5f);
         }
 

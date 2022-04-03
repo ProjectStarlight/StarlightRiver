@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Dusts
 	public class Air : ModDust
     {
         public override string Texture => AssetDirectory.Dust + Name;
+
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
