@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.HasTile && n.LiquidType == LiquidID.Lava && n .LiquidAmount > 0, 10, 2, 2);
 				if (coords != Point16.Zero)
-					NPC.NewNPC(coords.X * 16, coords.Y * 16, NPCType<MagmitePassive>(), 0, -1);
+					NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), coords.X * 16, coords.Y * 16, NPCType<MagmitePassive>(), 0, -1);
 			}
 		}
 	}

@@ -21,8 +21,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void Load()
         {
-            Mod.AddGore("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore", new MagmiteGore());
-            return true;
+            GoreLoader.AddGoreFromTexture<MagmiteGore>(StarlightRiver.Instance, "StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
         }
 
         public override void SetStaticDefaults()
@@ -72,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             GlobalTimer++;
 
             if (Main.rand.Next(10) == 0)
-                Gore.NewGoreDirect(NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+                Gore.NewGoreDirect(NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
             if(ActionState == -1)
 			{
@@ -90,7 +89,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if (ActionState == 0)
             {
-                if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
+                if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && 
+                    tile.BlockType == BlockType.Solid &&
+                    (!tileUp.HasTile || (!Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType])) &&
+                    (!tileClose.HasTile || (!Main.tileSolid[tileClose.TileType] && !Main.tileSolidTop[tileClose.TileType]))) //climb up small cliffs
                 {
                     ActionState = 1;
                     NPC.velocity *= 0;
@@ -98,7 +100,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     return;
                 }
 
-                else if(NPC.velocity.X == 0 && tile.collisionType != 0 && tileUp.collisionType == 0)
+                else if(NPC.velocity.X == 0 && tile.HasTile && (!tileUp.HasTile || (!Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType])))
 				{
                     NPC.velocity.Y -= 2;
                 }
@@ -127,10 +129,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 NPC.direction = NPC.velocity.X > 0 ? 1 : -1;
                 NPC.spriteDirection = NPC.velocity.X > 0 ? 1 : -1;
 
-                if(tileFar.collisionType == 1 && NPC.velocity.Y == 0) //jump up big cliffs
+                if(tileFar.BlockType == BlockType.Solid && NPC.velocity.Y == 0) //jump up big cliffs
                     NPC.velocity.Y -= 8;
 
-                if(tileUnder.collisionType == 0 && NPC.velocity.Y == 0) //hop off edges
+                if((!tileUnder.HasTile || (!Main.tileSolid[tileUnder.TileType] && !Main.tileSolidTop[tileUnder.TileType])) && NPC.velocity.Y == 0) //hop off edges
                     NPC.velocity.Y -= 4;
 
                 if (NPC.velocity.Y != 0)
@@ -168,15 +170,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k < 30; k++)
-                    Gore.NewGoreDirect(NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+                    Gore.NewGoreDirect(NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, NPC.Center);
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            var pos = NPC.Center - Main.screenPosition + new Vector2(0, -8);
+            var pos = NPC.Center - screenPos + new Vector2(0, -8);
 
             if (ActionState == 1)
             {

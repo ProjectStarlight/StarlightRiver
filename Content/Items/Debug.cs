@@ -124,13 +124,13 @@ namespace StarlightRiver.Content.Items
             var targetO2 = new Rectangle(48, 158 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
             var targetO3 = new Rectangle(48, 158 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
 
-            spriteBatch.Draw(Main.magicPixel, targetO, Color.Black);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO, Color.Black);
             spriteBatch.Draw(Main.screenTarget, target, Color.White);
 
-            spriteBatch.Draw(Main.magicPixel, targetO2, Color.Black);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO2, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, target2, Color.White);
 
-            spriteBatch.Draw(Main.magicPixel, targetO3, Color.Black);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
 	}

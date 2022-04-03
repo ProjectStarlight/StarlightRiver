@@ -46,8 +46,8 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            int TitleLength = (int)(Main.fontDeathText.MeasureString(Title).X * 0.65f * textScale) / 2;
-            int MessageLength = (int)(Main.fontDeathText.MeasureString(Message).X * 0.4f * textScale) / 2;
+            int TitleLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(Title).X * 0.65f * textScale) / 2;
+            int MessageLength = (int)(Terraria.GameContent.FontAssets.DeathText.Value.MeasureString(Message).X * 0.4f * textScale) / 2;
             int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;
             int startY = (int)(Main.screenHeight * Main.UIScale) / 5;
             int startX = (int)(Main.screenWidth * Main.UIScale) / 2;
@@ -63,13 +63,13 @@ namespace StarlightRiver.Content.GUI
 
             if (reverse)
             {
-                spriteBatch.DrawString(Main.fontDeathText, Title, new Vector2(startX - TitleLength, startY + (int)(30 * textScale)), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
-                spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + 10), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + (int)(30 * textScale)), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + 10), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
             }
             else
             {
-                spriteBatch.DrawString(Main.fontDeathText, Title, new Vector2(startX - TitleLength, startY + 10), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
-                spriteBatch.DrawString(Main.fontDeathText, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + 10), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
             }
 
             spriteBatch.Draw(Texture, new Rectangle(startX - (int)(Longest * 1.2f), startY + (int)(75 * textScale), (int)(Longest * 2.4f), 6), new Rectangle(94, 0, 8, 6), color);

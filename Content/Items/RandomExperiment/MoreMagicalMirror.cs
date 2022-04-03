@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 					Rectangle target2 = new Rectangle(Main.screenWidth / 2, Main.screenHeight / 2, 100, 160);
 					Rectangle source1 = new Rectangle(Main.screenWidth / 2 - 50, Main.screenHeight / 2 - 80, 100, 160);
 
-					Main.spriteBatch.Draw(Main.magicPixel, target2, source1, Color.Black, 0, new Vector2(50, 80), 0, 0);
+					Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target2, source1, Color.Black, 0, new Vector2(50, 80), 0, 0);
 					Main.spriteBatch.Draw(savedScreen, target1, source1, Color.White, (timer - 60) * 0.05f, new Vector2(50, 80), 0, 0);
 				}
 
@@ -81,12 +81,12 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 				Main.spriteBatch.Begin();
 
 				Rectangle target0 = new Rectangle(0, 0, Main.screenWidth, Main.screenHeight);
-				Main.spriteBatch.Draw(Main.magicPixel, target0, null, Color.Black);
+				Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target0, null, Color.Black);
 
 				if (timer <= 80)
 				{
 					Main.spriteBatch.Draw(savedScreen, target0, null, Color.White);
-					Main.spriteBatch.Draw(Main.magicPixel, target0, null, new Color(160, 220, 255) * 0.25f * (Math.Min(1, timer / 30f)));
+					Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target0, null, new Color(160, 220, 255) * 0.25f * (Math.Min(1, timer / 30f)));
 
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(default, BlendState.Additive);
@@ -110,20 +110,20 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 				{
 					Rectangle target1 = new Rectangle(0, (int)(Main.screenHeight * ((timer - 80) / 30f) * 0.5f), Main.screenWidth, (int)(Main.screenHeight * (1 - (timer - 80) / 30f)));
 					Main.spriteBatch.Draw(savedScreen, target1, null, Color.White);
-					Main.spriteBatch.Draw(Main.magicPixel, target1, null, new Color(160, 220, 255) * 0.25f);
+					Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target1, null, new Color(160, 220, 255) * 0.25f);
 				}
 
 				if (timer > 110 && timer <= 130)
 				{
 					Rectangle target2 = new Rectangle(0, (int)(Main.screenHeight * (1 - (timer - 110) / 20f) * 0.5f), Main.screenWidth, (int)(Main.screenHeight * ((timer - 110) / 20f)));
 					Main.spriteBatch.Draw(Main.screenTarget, target2, null, Color.White);
-					Main.spriteBatch.Draw(Main.magicPixel, target2, null, new Color(160, 220, 255) * 0.25f);
+					Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target2, null, new Color(160, 220, 255) * 0.25f);
 				}
 
 				if(timer > 130)
 				{
 					Main.spriteBatch.Draw(Main.screenTarget, target0, null, Color.White);
-					Main.spriteBatch.Draw(Main.magicPixel, target0, null, new Color(160, 220, 255) * 0.25f * (1 - (timer - 130) / 30f));
+					Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target0, null, new Color(160, 220, 255) * 0.25f * (1 - (timer - 130) / 30f));
 				}
 
 				Main.spriteBatch.End();

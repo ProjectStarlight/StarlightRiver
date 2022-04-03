@@ -89,10 +89,10 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             var pos = new Vector2(x, y);
 
-            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.mouseTextColorReal));
+            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.MouseTextColorReal));
             pos.Y += 28;
 
-            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.mouseTextColorReal);
+            Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.MouseTextColorReal);
             pos.Y += 28;
 
             foreach (var objective in objectives)
@@ -179,16 +179,16 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public float DrawText(SpriteBatch sb, Vector2 pos)
 		{
-            var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Main.fontItemStack, 0.8f);
-            sb.DrawString(Main.fontItemStack, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+            var wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+            sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
-            return Main.fontItemStack.MeasureString(wrapped).Y * 0.8f;
+            return Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(wrapped).Y * 0.8f;
         }
 
         public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
         {
             var wrapped = (">  " + text + ": " + progress + "/" + maxProgress);
-            Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.mouseTextColorReal) : Main.mouseTextColorReal);
+            Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.MouseTextColorReal) : Main.MouseTextColorReal);
             pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
             pos.Y += 2;
 
@@ -204,7 +204,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             sb.Draw(tex, pos, Color.White);
 
             if(fill > 4)
-                sb.Draw(Main.magicPixel, new Rectangle((int)pos.X + 14 + fill, (int)pos.Y + 4, 2, 10), Color.White);
+                sb.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)pos.X + 14 + fill, (int)pos.Y + 4, 2, 10), Color.White);
 
             return pos.Y;
         }

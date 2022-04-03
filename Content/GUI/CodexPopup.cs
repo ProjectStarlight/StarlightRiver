@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.GUI
             if (Timer > 350) alpha = ((360 - Timer) / 10f);
 
             Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 25), (int)(stringWidth + 140), 40);
-            var bgTex = Main.magicPixel;
+            var bgTex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
             var edgeTex = Request<Texture2D>(AssetDirectory.GUI + "CodexPopupEdge").Value;
 
             spriteBatch.Draw(bgTex, target, null, new Color(20, 20, 35) * alpha * 0.5f);

@@ -41,8 +41,7 @@ namespace StarlightRiver.NPCs.Town
             NPC.lifeMax = 250;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath1;
-            NPC.knockBackResist = 0.5f;
-            animationType = NPCID.Guide;
+            NPC.knockBackResist = 0.5f;          
         }
 
         public override string TownNPCName()

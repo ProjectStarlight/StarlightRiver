@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             /*Vector2 origin = new Vector2(6, 13);
             if (minScrap > 9)
                 origin.X = 8;
-            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Main.fontItemStack, minScrap.ToString(), pos - new Vector2(0, 40 * scale), Player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap ? Color.White : Color.Red, 0f, origin, Vector2.One * EaseFunction.EaseCubicOut.Ease(scaleCounter));*/
+            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value, minScrap.ToString(), pos - new Vector2(0, 40 * scale), Player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap ? Color.White : Color.Red, 0f, origin, Vector2.One * EaseFunction.EaseCubicOut.Ease(scaleCounter));*/
         }
 
     }

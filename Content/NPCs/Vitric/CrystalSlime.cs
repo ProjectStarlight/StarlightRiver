@@ -111,18 +111,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
             return 0;
         }
 
-        public override void NPCLoot()
-        {
-            if (Main.rand.NextFloat() < 0.50f) Item.NewItem(NPC.getRect(), ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(4, 5)); Item.NewItem(NPC.getRect(), ItemID.Gel, Main.rand.Next(5, 6));
-        }
-
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if (Shield == 1)
             {
                 Color color = Helper.IndicatorColor;
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - Main.screenPosition + new Vector2(-3, -6), color);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - screenPos + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - screenPos + new Vector2(-3, -6), color);
             }
         }
     }

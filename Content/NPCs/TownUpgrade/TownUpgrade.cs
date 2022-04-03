@@ -9,7 +9,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
 {
 	public abstract class TownUpgrade
     {
-        public readonly string _buttonName;
+        public readonly string _buttonName; //TODO: Why did I name these like privates?
         public readonly string _NPCName;
         public readonly string _questName;
         public readonly string _questTip;
@@ -24,9 +24,7 @@ namespace StarlightRiver.NPCs.TownUpgrade
             _questTip = questTip;
             _title = title;
 
-            icon = TextureExists("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon") ?
-                Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value :
-                Terraria.Main.sunTexture;
+            icon = Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value;
         }
 
         public bool Unlocked => StarlightWorld.TownUpgrades.TryGetValue(_NPCName, out bool unlocked) && unlocked;

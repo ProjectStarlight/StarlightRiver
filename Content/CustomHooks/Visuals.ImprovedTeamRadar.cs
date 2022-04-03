@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     textPosition.Y += 20;
 
-                    Utils.DrawBorderString(sb, text, textPosition, new Color(100, 200, 255).MultiplyRGB(Main.mouseTextColorReal));
+                    Utils.DrawBorderString(sb, text, textPosition, new Color(100, 200, 255).MultiplyRGB(Main.MouseTextColorReal));
                 }
             }
         }

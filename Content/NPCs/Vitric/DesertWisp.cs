@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 NPC.velocity = Vector2.Normalize(NPC.velocity) * 1.71f;
         }
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
             if (NPC.oldPos[119] == Vector2.Zero || trail is null)
                 return;
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix world = Matrix.CreateTranslation(-screenPos.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
@@ -118,6 +118,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             trail?.Render(effect);
         }
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
+		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
     }
 }

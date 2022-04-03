@@ -27,10 +27,10 @@ namespace StarlightRiver.Content.Foregrounds
             var targetBottom = new Rectangle(targetRect.X, targetRect.Y + targetRect.Height, targetRect.Width, Main.screenHeight - (targetRect.Y + targetRect.Height));
 
             spriteBatch.Draw(tex, targetRect, null, Color.White * opacity * opacityMult, 0, Vector2.Zero, 0, 0);
-            spriteBatch.Draw(Main.magicPixel, targetLeft, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetRight, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetTop, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetBottom, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetLeft, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetRight, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetTop, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetBottom, Color.Black * opacity * opacityMult);
         }
 
         public override void Reset()

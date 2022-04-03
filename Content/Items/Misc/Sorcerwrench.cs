@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private static void DrawPixel(SpriteBatch spriteBatch, Color color, Vector2 worldPos)
         {
-            spriteBatch.Draw(Main.magicPixel, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
         }
 
         private static bool PastIncrement(int val, int end, int increment, bool includeEqual = true)

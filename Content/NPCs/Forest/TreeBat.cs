@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
                         if (Vector2.DistanceSquared(Player.Center, NPC.Center) < Math.Pow(200, 2))
                         {
-                            if (Player.ItemAnimation > 0 || (Player.velocity - Player.oldVelocity).Length() > 10 || Player.UsingAnyAbility()) //use an Item, accelerate too much, or use an ability are all enough to get them to aggro
+                            if ((Player.velocity - Player.oldVelocity).Length() > 10 || Player.UsingAnyAbility()) //accelerate too much, or use an ability are all enough to get them to aggro
                             {
                                 if (Main.hardMode) //you're too much for them at this point
                                 {
@@ -148,16 +148,16 @@ namespace StarlightRiver.Content.NPCs.Forest
             GlobalTimer = 0;
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, NPC.frame, drawColor, NPC.rotation, new Vector2(13, 10), NPC.scale, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.rotation, new Vector2(13, 10), NPC.scale, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, new Vector2(13, 10), NPC.scale, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, new Vector2(13, 10), NPC.scale, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            if (!spawnInfo.Player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
+            if (!spawnInfo.player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
                 return 0;
 
             for (int x = -30; x < 30; x++)
@@ -170,23 +170,17 @@ namespace StarlightRiver.Content.NPCs.Forest
                     var tileUnder = Framing.GetTileSafely(realX, realY + 1);
                     var tileWayUnder = Framing.GetTileSafely(realX, realY + 4);
 
-                    if (tile.type == TileID.Trees && !tileUnder.HasTile && !tileWayUnder.HasTile)
+                    if (tile.TileType == TileID.Trees && !tileUnder.HasTile && !tileWayUnder.HasTile)
 					{
                         if (Main.npc.Any(n => n.type == NPC.type && n.position == new Vector2(realX * 16 + 8, realY * 16 + 24)))
                             continue;
 
-                        NPC.NewNPC(realX * 16 + 8, realY * 16 + 28, NPC.type);
+                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), realX * 16 + 8, realY * 16 + 28, NPC.type);
                         return 0;
 					}
 				}
 
             return 0;
-        }
-
-        public override void NPCLoot()
-        {
-            if(Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.Hitbox, ItemType<ForestBerries>(), Main.rand.Next(3));
         }
     }
 }

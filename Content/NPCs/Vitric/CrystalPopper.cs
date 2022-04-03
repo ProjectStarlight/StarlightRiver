@@ -20,9 +20,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void Load()
         {
             for (int k = 0; k <= 4; k++)
-                Mod.AddGore(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
-
-            
+                GoreLoader.AddGoreFromTexture<>(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);    //PORTTODO: Gore stuff again       
         }
 
         public override void SetStaticDefaults()
@@ -57,7 +55,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.aiStyle = -1;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath4;
-            NPC.NPCSlots = 1;
 
             NPC.direction = Main.rand.Next(2) == 0 ? 1 : -1;
             NPC.spriteDirection = NPC.direction;
@@ -103,7 +100,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                         {
                             for (int k = -1; k <= 1; k++)
-                                Projectile.NewProjectile(NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+                                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
                         }
 
                         NPC.velocity = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center) * -5.5f;
@@ -131,7 +128,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 4; k++)
-                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k));
+                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k).Type);
             }
 
             if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)
@@ -141,12 +138,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-            return tile.HasTile && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.Player.GetModPlayer<BiomeHandler>().ZoneGlass ? 95f : 0f;
-        }
-
-        public override void NPCLoot()
-        {
-            Item.NewItem(NPC.getRect(), Mod.ItemType("VitricSandItem"), Main.rand.Next(10, 12));
+            return tile.HasTile && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 95f : 0f;
         }
 
         public override void FindFrame(int frameHeight)

@@ -80,17 +80,17 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			var tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
 			var spawnPoint = new Vector2(spawnInfo.spawnTileX, spawnInfo.spawnTileY) * 16;
 
-			return spawnInfo.Player.ZoneCorrupt && 
+			return spawnInfo.player.ZoneCorrupt && 
 				tile.WallType == WallID.EbonstoneUnsafe && 
 				tile .LiquidAmount == 0 &&
 				Lighting.Brightness(spawnInfo.spawnTileX, spawnInfo.spawnTileY) <= 0.1f &&
 				!Main.npc.Any(n => n.type == NPCType<Stalker>() && Vector2.Distance(n.Center, spawnPoint) < 320) ? 1 : 0;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			var tex = Request<Texture2D>(Texture).Value;
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
 
 			return false;
 		}

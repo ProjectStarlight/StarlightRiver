@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -78,8 +79,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         float realAngle => angleTimer / 59f * angle;
 
 
-        public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
-        {
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
             if (controller != null && controller.NPC.active || angleTimer > 0)
             {
                 drawInfo.drawPlayer.fullRotationOrigin = drawInfo.drawPlayer.Size / 2;

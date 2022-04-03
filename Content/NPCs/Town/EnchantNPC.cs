@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.NPCs.Town
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = NPC.Center + new Vector2(0, -300);
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 120;
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = true;
-            Main.LocalPlayer.talkNPC = -1;
+            Main.LocalPlayer.SetTalkNPC(-1);
             enchanting = true;
 
             UILoader.GetUIState<RichTextBox>().Visible = false;
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.NPCs.Town
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) //Temporary solution untill this can be drawn by the structure
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Temporary solution untill this can be drawn by the structure
         {
             spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.GUI + "EnchantOver").Value, NPC.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
 

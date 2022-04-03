@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.aiStyle = -1;
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath4;
-            NPC.NPCSlots = 1;
         }
 
         public override void AI()
@@ -112,7 +111,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                             {
                                 Tile tile = Framing.GetTileSafely((int)(NPC.Center.X / 16) + x, (int)(NPC.Center.Y / 16) + y);
 
-                                if (tile.collisionType != 0 && Main.tileSolid[tile.type])
+                                if (Main.tileSolid[tile.TileType])
                                 {
                                     Explode();
                                     return;
@@ -204,12 +203,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.Player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
-        }
-
-        public override void NPCLoot()
-        {
-
+            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
         }
     }
 }

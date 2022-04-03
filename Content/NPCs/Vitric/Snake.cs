@@ -23,9 +23,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void Load()
 		{
             for(int k = 0; k <= 5; k++)
-			    Mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);
-
-            
+			    GoreLoader.AddGoreFromTexture(Mod, AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);          
 		}
 
 		public override void SetStaticDefaults()
@@ -42,7 +40,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.lifeMax = 80;
             NPC.aiStyle = -1;
             NPC.knockBackResist = 0;
-            NPC.NPCSlots = 1;
 
             NPC.HitSound = SoundID.NPCHit1;
             NPC.DeathSound = SoundID.NPCDeath1;
@@ -136,7 +133,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         NPC.frame.Y = NPC.height * (7 - (int)(((ActionTimer - 30) / 20f) * 5));
 
                     if (ActionTimer == 20 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
-                        Projectile.NewProjectile(NPC.Center, Vector2.Normalize(target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
                     if (ActionTimer == 140)
                         ChangeState(2, 2);
@@ -180,8 +177,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 // ---[][]---
                 if (
                     Vector2.Distance(randPos.ToVector2() * 16, target.Center) > 100 &&
-                    Framing.GetTileSafely(randPos).collisionType == 1 &&
-                    Framing.GetTileSafely(randPos + new Point16(1, 0)).collisionType == 1 &&
+                    Framing.GetTileSafely(randPos).BlockType == BlockType.Solid &&
+                    Framing.GetTileSafely(randPos + new Point16(1, 0)).BlockType == BlockType.Solid &&
                     !Framing.GetTileSafely(randPos + new Point16(0, -1)).HasTile && Framing.GetTileSafely(randPos + new Point16(0, -1)) .LiquidAmount == 0 &&
                     !Framing.GetTileSafely(randPos + new Point16(1, -1)).HasTile && Framing.GetTileSafely(randPos + new Point16(1, -1)) .LiquidAmount == 0
                     )
@@ -197,7 +194,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.Player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
+            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
         }
 
         public override void HitEffect(int hitDirection, double damage)
@@ -205,14 +202,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 5; k++)
-                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k));
+                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k).Type);
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition + Vector2.UnitY * 2, NPC.frame, drawColor, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - Main.screenPosition + Vector2.UnitY * 2, NPC.frame, Color.White, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, drawColor, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos + Vector2.UnitY * 2, NPC.frame, Color.White, NPC.rotation, new Vector2(33, 32), 1, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
     }
@@ -255,10 +252,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
             }
         }
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-            var tex = Main.projectileTexture[Projectile.type];
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
+            var tex = Request<Texture2D>(Texture).Value;
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)

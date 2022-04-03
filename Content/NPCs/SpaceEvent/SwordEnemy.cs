@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             NPC.frame.Width = 192;
             NPC.frame.Height = 164;
@@ -157,10 +157,10 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
             var effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
             if(Phase == 0)
-                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White, NPC.rotation, tex.Size() / 2, NPC.scale, effects, 0);
+                spriteBatch.Draw(tex, NPC.Center - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2, NPC.scale, effects, 0);
 
             if (Phase == 1)
-                spriteBatch.Draw(texSlash, NPC.Center - Main.screenPosition, NPC.frame, Color.White, 0, new Vector2(192 / 2, 164 / 2), 1, effects, 0);
+                spriteBatch.Draw(texSlash, NPC.Center - screenPos, NPC.frame, Color.White, 0, new Vector2(192 / 2, 164 / 2), 1, effects, 0);
 
             return false;
         }

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 {
 	class Dweller : ModNPC
 	{
-		Tile root = null;
+		Tile? root = null;
 
 		public ref float State => ref NPC.ai[0];
 		public ref float Timer => ref NPC.ai[1];
@@ -57,13 +57,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				{
 					var tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
 
-					if(tile is null) //failsafe
-					{
-						NPC.active = false;
-						return;
-					}
-
-					if (tile.HasTile && tile.collisionType == 1)
+					if (tile.HasTile && tile.BlockType == BlockType.Solid)
 					{
 						root = tile;
 						Height = k * 16;
@@ -73,7 +67,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				}
 			}
 
-			if(!root.HasTile) //should automatically activate if the tile under it is killed
+			if(!root.Value.HasTile) //should automatically activate if the tile under it is killed
 			{
 				State = (int)States.Transforming;
 				Timer = 0;
@@ -153,7 +147,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Random rand = new Random(NPC.GetHashCode());
 
@@ -180,7 +174,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 						Rectangle source = new Rectangle(rand.Next(2) * 22, rand.Next(6) * 22, 20, 16);
 						Color color = Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16);
 
-						spriteBatch.Draw(barkTex, pos - Main.screenPosition, source, color);
+						spriteBatch.Draw(barkTex, pos - screenPos, source, color);
 
 						if(rand.Next(6) == 0 && k > 48 && k < Height - 48)
 						{
@@ -191,13 +185,13 @@ namespace StarlightRiver.Content.NPCs.Corruption
 							Rectangle branchSource = new Rectangle(right ? branchTex.Width / 2 : 0, rand.Next(3) * branchTex.Height / 3, 42, 42);
 							Color branchColor = Lighting.GetColor((int)branchPos.X / 16, (int)branchPos.Y / 16);
 
-							spriteBatch.Draw(branchTex, branchPos - Main.screenPosition, branchSource, branchColor);
+							spriteBatch.Draw(branchTex, branchPos - screenPos, branchSource, branchColor);
 						}
 
 						if(k == Height - 16)
 						{
 							bool rightRoot = rand.Next(2) == 0;
-							spriteBatch.Draw(barkTex, pos - Main.screenPosition + Vector2.UnitX * (rightRoot ? 14 : -14), new Rectangle(rightRoot ? 22 : 44, 6 * 22 + rand.Next(3) * 22, 22, 22), color);
+							spriteBatch.Draw(barkTex, pos - screenPos + Vector2.UnitX * (rightRoot ? 14 : -14), new Rectangle(rightRoot ? 22 : 44, 6 * 22 + rand.Next(3) * 22, 22, 22), color);
 						}
 					}
 
@@ -209,7 +203,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					if (State == (int)States.Transforming)
 						topperSource.Y = (int)(Timer < 30 ? Timer / 30 * 5 : Timer % 10 < 5 ? 3 : 4) * 84;
 
-					spriteBatch.Draw(topperTex, topperPos - Main.screenPosition, topperSource, drawColor, 0, new Vector2(41, 41), 1, 0, 0);
+					spriteBatch.Draw(topperTex, topperPos - screenPos, topperSource, drawColor, 0, new Vector2(41, 41), 1, 0, 0);
 
 					break;
 

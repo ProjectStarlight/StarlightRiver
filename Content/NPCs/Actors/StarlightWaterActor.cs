@@ -26,7 +26,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 		public override void Load()
 		{
 			StarlightPlayer.ResetEffectsEvent += ResetInventoryGlow;
-			return true;
 		}
 
 		private void ResetInventoryGlow(StarlightPlayer Player)
@@ -102,7 +101,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			}
 			else
 			{
-				if (targetItem.isBeingGrabbed)
+				if (targetItem.beingGrabbed)
 				{
 					targetItem.GetGlobalItem<TransformableItem>().transformTime = 0;
 					targetItem = null;
@@ -145,7 +144,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 		public int windDown;
 
 		public override bool InstancePerEntity => true;
-		public override bool CloneNewInstances => true;
 
 		public override void SetDefaults(Item Item) //TOOD: Probably move this later or make it modular? pee pee poo poo
 		{ 
@@ -208,7 +206,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if(Item.type == ItemID.FallenStar && Item.wet)
 			{
 				Item.active = false;
-				NPC.NewNPC((int)Item.Center.X, (int)Item.Center.Y + 16, ModContent.NPCType<StarlightWaterActor>());
+				NPC.NewNPC(null, (int)Item.Center.X, (int)Item.Center.Y + 16, ModContent.NPCType<StarlightWaterActor>());
 
 				for(int k = 0; k < 40; k++)
 				{

@@ -30,14 +30,14 @@ namespace StarlightRiver.Content.Lavas
         {
             var tile = Framing.GetTileSafely(x, y - 1);
 
-            if (Main.rand.Next(45) == 0 && tile .LiquidAmount == 0 && tile.collisionType != 1)
+            if (Main.rand.Next(45) == 0 && tile.LiquidAmount == 0 && tile.BlockType != Terraria.ID.BlockType.Solid)
                 Dust.NewDustPerfect(new Vector2(x, y + 1) * 16, ModContent.DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
 
             if (tile .LiquidAmount > 0)
             {
 
 
-                Main.spriteBatch.Draw(Main.magicPixel, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * GetOpacity(x, y));
+                Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * GetOpacity(x, y));
             }
 
             return true;
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Lavas
             else if (!up.HasTile && up .LiquidAmount > 0)
                 opacity = GetOpacity(x, y - 1);
 
-            Main.spriteBatch.Draw(Main.magicPixel, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * opacity);
+            Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * opacity);
         }
 
         private float GetOpacity(int x, int y)

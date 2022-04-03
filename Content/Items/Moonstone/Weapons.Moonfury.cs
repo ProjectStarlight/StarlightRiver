@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             trail?.Render(effect);
 
-            effect.Parameters["sampleTexture2"].SetValue(Main.magicPixel);
+            effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
 
             trail2?.Render(effect);
         }

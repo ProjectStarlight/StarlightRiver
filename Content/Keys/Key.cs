@@ -36,7 +36,7 @@ namespace StarlightRiver.Keys
             Texture2D tex = Request<Texture2D>(Texture).Value;
             spriteBatch.Draw(tex, Position + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5) - Main.screenPosition, tex.Frame(), Lighting.GetColor((int)Position.X / 16, (int)Position.Y / 16));
 
-            if (Hitbox.Contains(Main.MouseWorld.ToPoint())) Utils.DrawBorderString(spriteBatch, Name, Main.MouseScreen + new Vector2(12, 20), Main.mouseTextColorReal);
+            if (Hitbox.Contains(Main.MouseWorld.ToPoint())) Utils.DrawBorderString(spriteBatch, Name, Main.MouseScreen + new Vector2(12, 20), Main.MouseTextColorReal);
         }
 
         public virtual void OnPickup()
@@ -59,7 +59,7 @@ namespace StarlightRiver.Keys
                 else KeyInventory.keys.Add(new KeyIcon(this, false));
                 OnPickup();
 
-                Terraria.Audio.SoundEngine.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/KeyGet"));
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyGet"));
             }
         }
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Keys
                 KeyIcon icon = KeyInventory.keys.FirstOrDefault(n => n.parent == key);
                 KeyInventory.keys.Remove(icon);
 
-                Terraria.Audio.SoundEngine.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/KeyUse"));
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyUse"));
                 return true;
             }
             else

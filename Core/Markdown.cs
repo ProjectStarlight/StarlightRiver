@@ -48,7 +48,7 @@ namespace StarlightRiver.Core
         private static void DrawSubstring(SpriteBatch sb, Vector2 pos, float scale, string message, string Mod)
         {
             ParseModifier(Mod, out Color color, out Vector2 offset, out Vector3 modScale);
-            //sb.DrawString(Main.fontItemStack, message, pos + offset, color, 0, Vector2.Zero, scale, 0, 0);
+            //sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, message, pos + offset, color, 0, Vector2.Zero, scale, 0, 0);
             Utils.DrawBorderString(sb, message, pos + offset, color, scale * modScale.X, modScale.Y, modScale.Z);
         }
 

@@ -7,13 +7,17 @@ namespace StarlightRiver.Content.Lavas
     {
         public string texturePath;
 
-        public sealed override bool Autoload(ref string name, ref string texture, ref string blockTexture)
-        {
+		public override string Texture => texturePath;
+
+		public override void Load()
+		{
+            string name = "";
+            string texture = "";
+            string blockTexture = "";
             var value = SafeAutoload(ref name, ref texture, ref blockTexture);
 
             LavaLoader.lavas?.Add(this);
             texturePath = texture;
-            return value;
         }
 
         public virtual bool SafeAutoload(ref string name, ref string texture, ref string blockTexture) => true;
@@ -24,7 +28,7 @@ namespace StarlightRiver.Content.Lavas
 
         public string blockTexture;
 
-        public sealed override bool ChooseWaterStyle() => false;
+        public sealed override bool ChooseWaterStyle() => false; //PORTTODO: Figure out modbiome integration for this
 
         public virtual bool ChooseLavaStyle() => false;
     }
