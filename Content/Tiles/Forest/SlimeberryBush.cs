@@ -71,9 +71,9 @@ namespace StarlightRiver.Content.Tiles.Forest
             if (Main.tile[i, j].TileFrameX >= 32)
             {
                 Player Player = Main.LocalPlayer;
-                Player.showItemIcon2 = ItemType<Slimeberry>();
+                Player.cursorItemIconID = ItemType<Slimeberry>();
                 Player.noThrow = 2;
-                Player.showItemIcon = true;
+                Player.cursorItemIconEnabled = true;
             }
         }
 

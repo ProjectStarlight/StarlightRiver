@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Tiles.Hell
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = ItemType<Items.Hell.HellKey>();
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = ItemType<Items.Hell.HellKey>();
         }
 
     }

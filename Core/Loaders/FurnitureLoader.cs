@@ -230,8 +230,8 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = Mod.ItemType(this.name);
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = Mod.ItemType(this.name);
         }
     }
 
@@ -464,8 +464,8 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = Mod.ItemType(this.name);
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = Mod.ItemType(this.name);
         }
     }
 
@@ -513,8 +513,8 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = Mod.ItemType(name.Replace("Closed", ""));
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = Mod.ItemType(name.Replace("Closed", ""));
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Closed", "")));
@@ -581,8 +581,8 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = Mod.ItemType(name.Replace("Open", ""));
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = Mod.ItemType(name.Replace("Open", ""));
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Open", "")));
@@ -734,33 +734,33 @@ namespace StarlightRiver.Core
                 top--;
             }
             int chestIndex = Chest.FindChest(left, top);
-            Player.showItemIcon2 = -1;
+            Player.cursorItemIconID = -1;
             if (chestIndex < 0)
             {
-                Player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
+                Player.cursorItemIconEnabledText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[chestIndex].name != "")
                 {
-                    Player.showItemIconText = Main.chest[chestIndex].name;
+                    Player.cursorItemIconEnabledText = Main.chest[chestIndex].name;
                 }
                 else
                 {
-                    Player.showItemIconText = chest;
+                    Player.cursorItemIconEnabledText = chest;
                 }
-                if (Player.showItemIconText == chest)
+                if (Player.cursorItemIconEnabledText == chest)
                 {
-                    Player.showItemIcon2 = Mod.ItemType(this.name);
-                    Player.showItemIconText = "";
+                    Player.cursorItemIconID = Mod.ItemType(this.name);
+                    Player.cursorItemIconEnabledText = "";
                 }
             }
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            if (Player.showItemIconText == "")
+            Player.cursorItemIconEnabled = true;
+            if (Player.cursorItemIconEnabledText == "")
             {
-                Player.showItemIcon = false;
-                Player.showItemIcon2 = 0;
+                Player.cursorItemIconEnabled = false;
+                Player.cursorItemIconID = 0;
             }
         }
 
@@ -776,32 +776,32 @@ namespace StarlightRiver.Core
                 top--;
             }
             int num138 = Chest.FindChest(left, top);
-            Player.showItemIcon2 = -1;
+            Player.cursorItemIconID = -1;
             if (num138 < 0)
             {
-                Player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
+                Player.cursorItemIconEnabledText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[num138].name != "")
                 {
-                    Player.showItemIconText = Main.chest[num138].name;
+                    Player.cursorItemIconEnabledText = Main.chest[num138].name;
                 }
                 else
                 {
-                    Player.showItemIconText = chest;
+                    Player.cursorItemIconEnabledText = chest;
                 }
-                if (Player.showItemIconText == chest)
+                if (Player.cursorItemIconEnabledText == chest)
                 {
-                    Player.showItemIcon2 = Mod.ItemType(this.name);
-                    Player.showItemIconText = "";
+                    Player.cursorItemIconID = Mod.ItemType(this.name);
+                    Player.cursorItemIconEnabledText = "";
                 }
             }
             Player.noThrow = 2;
-            Player.showItemIcon = true;
+            Player.cursorItemIconEnabled = true;
             if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY > 0)
             {
-                Player.showItemIcon2 = ItemID.FamiliarShirt;
+                Player.cursorItemIconID = ItemID.FamiliarShirt;
             }
         }
     }

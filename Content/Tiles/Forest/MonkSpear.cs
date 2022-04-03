@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override string Texture => AssetDirectory.ForestTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             QuickBlock.QuickSetFurniture(this, 4, 6, DustID.Dirt, SoundID.Dig, false, new Color(100, 80, 40), false, false, "Monk's Spade");
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-            Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Misc.MonkSpade>());
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Misc.MonkSpade>());
 		}
 	}
 
@@ -77,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             Projectile.ai[0] += 0.005f;
         }
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
             var tex = Request<Texture2D>(AssetDirectory.ForestTile + "MonkSpearOver").Value;
 
@@ -85,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             {
                 int x = (int)((Projectile.position.X + 8) / 16) + k;
                 int y = (int)((Projectile.position.Y + 6 * 16 + 8) / 16);
-                spriteBatch.Draw(tex, Projectile.position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
+                Main.spriteBatch.Draw(tex, Projectile.position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
             }
 		}
 

@@ -142,8 +142,8 @@ namespace StarlightRiver.Content.Tiles.Herbology
             if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
                 Main.LocalPlayer.noThrow = 2;
-                Main.LocalPlayer.showItemIcon = true;
-                Main.LocalPlayer.showItemIcon2 = drop;
+                Main.LocalPlayer.cursorItemIconEnabled = true;
+                Main.LocalPlayer.cursorItemIconID = drop;
             }
         }
 

@@ -14,12 +14,12 @@ namespace StarlightRiver.Content.Tiles.Forest
     {
         public override string Texture => AssetDirectory.ForestTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.wallHouse[Type] = false;
             WallID.Sets.Conversion.Grass[Type] = true;
-            dustType = DustID.Grass;
-            soundType = SoundID.Grass;
+            DustType = DustID.Grass;
+            SoundType = SoundID.Grass;
             AddMapEntry(new Color(50, 140, 90));
         }
 

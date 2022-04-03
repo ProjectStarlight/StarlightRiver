@@ -19,9 +19,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public override void MouseOver(int i, int j)
 		{
 			Player Player = Main.LocalPlayer;
-			Player.showItemIcon2 = ModContent.ItemType<GearTilePlacer>();
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
 			Player.noThrow = 2;
-			Player.showItemIcon = true;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override bool NewRightClick(int i, int j)

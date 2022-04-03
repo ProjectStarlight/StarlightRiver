@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
     {
         public override string Texture => AssetDirectory.CookingTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileMerge[Type][TileID.Sand] = true;
             Main.tileMerge[TileID.Sand][Type] = true;

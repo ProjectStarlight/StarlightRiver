@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Fire, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
         }
 
         public override bool CanOpen(Player Player) => Helper.HasItem(Player, ItemID.ShadowKey, 1);
@@ -26,9 +26,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         public override void MouseOver(int i, int j)
         {
             Player Player = Main.LocalPlayer;
-            Player.showItemIcon2 = ItemID.ShadowKey;
+            Player.cursorItemIconID = ItemID.ShadowKey;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
+            Player.cursorItemIconEnabled = true;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

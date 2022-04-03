@@ -105,8 +105,8 @@ namespace StarlightRiver.Core
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
-            Player.showItemIcon = true;
-            Player.showItemIcon2 = ItemType;
+            Player.cursorItemIconEnabled = true;
+            Player.cursorItemIconID = ItemType;
         }
 
         public override void HitWire(int i, int j)

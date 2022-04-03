@@ -69,9 +69,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (tile.TileFrameX >= 90)
             {
                 Player Player = Main.LocalPlayer;
-                Player.showItemIcon2 = ItemType<Items.Vitric.GlassIdol>();
+                Player.cursorItemIconID = ItemType<Items.Vitric.GlassIdol>();
                 Player.noThrow = 2;
-                Player.showItemIcon = true;
+                Player.cursorItemIconEnabled = true;
             }
         }
 

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Forest
     {
         public override string Texture => AssetDirectory.ForestTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
             int[] valid = new int[] { TileID.Grass };
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                         }
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             if (Main.tile[i, j].TileFrameX > 35) //Only runs if it has berries
             {
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                     for (int l = 0; l < 2; ++l)
                         Main.tile[newX + k, newY + l].TileFrameX -= 36; //Changes frames to berry-less
 
-                Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
+                Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
             }
             return true;
         }
@@ -66,18 +66,18 @@ namespace StarlightRiver.Content.Tiles.Forest
             if (Framing.GetTileSafely(i, j).TileFrameX >= 32)
             {
                 Player Player = Main.LocalPlayer;
-                Player.showItemIcon2 = ItemType<ForestBerries>();
+                Player.cursorItemIconID = ItemType<ForestBerries>();
                 Player.noThrow = 2;
-                Player.showItemIcon = true;
+                Player.cursorItemIconEnabled = true;
             }
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<ForestBerryBushItem>()); //drop a bush Item
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i * 16, j * 16), ItemType<ForestBerryBushItem>()); //drop a bush Item
 
             if (frameX > 35)
-                Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
+                Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
         }
     }
 
