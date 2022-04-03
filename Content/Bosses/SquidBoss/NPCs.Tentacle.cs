@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             FirstPhase = 1
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool CheckActive() => false;
 

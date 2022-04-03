@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			{
 				for (int k = 0; k < Main.maxItems; k++)
 				{
-					var Item = Main.Item[k];
+					var Item = Main.item[k];
 
 					if (Helpers.Helper.CheckCircularCollision(NPC.Center, ItemRange, Item.Hitbox) && Item.GetGlobalItem<TransformableItem>().transformType != 0 && Item.wet)
 						targetItem = Item;

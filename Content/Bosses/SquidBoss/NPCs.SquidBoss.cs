@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override bool CheckDead()
         {
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, (int)NPC.Center.X, (int)NPC.Center.Y, 1, 1, -0.8f);
 
                 for (int k = 0; k < 10; k++)
-                    Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.GetGoreSlot("Content/Gores/SquidGore"));
+                    Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.Find<ModGore>("Content/Gores/SquidGore").Type);
                 return true;
             }
         }
@@ -86,14 +86,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.damage = 1;
             NPC.noGravity = true;
             NPC.aiStyle = -1;
-            NPC.NPCSlots = 99f;
-            music = Mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SquidBoss");
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/SquidBoss");
             NPC.noTileCollide = true;
             NPC.knockBackResist = 0;
             NPC.dontTakeDamage = true;
         }
 
-        public override void NPCLoot()
+		public override void BossLoot(ref string name, ref int potionType)
         {
             for (int k = 0; k < Main.maxPlayers; k++)
             {
@@ -277,7 +276,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = NPC.Center + new Vector2(0, -600);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 600;
 
-                int i = NPC.NewNPC((int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
+                int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
                 arenaBlocker = Main.npc[i];
 
                 for (int k = 0; k < Main.maxPlayers; k++)
@@ -310,7 +309,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             default: x = 0; y = 0; xb = 0; break;
                         }
 
-                        int i = NPC.NewNPC((int)NPC.Center.X + x, (int)NPC.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
+                        int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
                         (Main.npc[i].ModNPC as Tentacle).Parent = this;
                         (Main.npc[i].ModNPC as Tentacle).MovePoint = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - y);
                         (Main.npc[i].ModNPC as Tentacle).OffBody = xb;

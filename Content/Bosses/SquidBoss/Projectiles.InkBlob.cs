@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.rotation += Main.rand.NextFloat(0.2f);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 
             Lighting.AddLight(Projectile.Center, color.ToVector3());
             return false;
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float cos = 1 + (float)Math.Cos(Projectile.ai[1] + k * 0.1f);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (1 - k / (float)Projectile.oldPos.Length);
 
-                spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1, default, default);
+                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1, default, default);
             }
 
             return false;

@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (NPC.position.Y + 18 >= actor.WaterLevel) NPC.ai[1] = 1;
 
-                if (NPC.ai[1] == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].active() || actor.WaterLevel - 18 > NPC.position.Y)) NPC.position.Y = actor.WaterLevel - 18;
+                if (NPC.ai[1] == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevel - 18 > NPC.position.Y)) NPC.position.Y = actor.WaterLevel - 18;
             }
         }
     }
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     class IcePlatformSmall : MovingPlatform, IUnderwater
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     class GoldPlatform : MovingPlatform, IUnderwater
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public void DrawUnderWater(SpriteBatch spriteBatch)
         {

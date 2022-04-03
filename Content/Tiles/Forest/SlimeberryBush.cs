@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		public override void NPCLoot()
 		{
             int i = Item.NewItem(NPC.Center, ItemID.Gel);
-            Main.Item[i].color = NPC.color;
+            Main.item[i].color = NPC.color;
 
             for (int k = 0; k < 20; k++)
                 Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);

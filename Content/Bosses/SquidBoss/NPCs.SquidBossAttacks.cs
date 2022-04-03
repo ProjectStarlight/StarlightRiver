@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             for (float k = 0; k <= 3.14f; k += 3.14f / 5f)
             {
-                if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                 if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
                 if (AttackTimer == 60) ResetAttack();
             }
@@ -229,12 +229,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Main.expertMode) //spawn more + closer together on expert
                 {
                     for (int k = 0; k < 14; k++)
-                        Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
                 }
                 else
                 {
                     for (int k = 0; k < 10; k++)
-                        Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
                 }
             }
 
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer == 60)
             {
                 savedPoint = NPC.Center; //leftmost point of laser
-                Projectile.NewProjectile(NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
             }
 
             int laserTime = Main.expertMode ? 450 : 600; //faster in expert
@@ -336,7 +336,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
 
                 for (float k = 0; k <= 3.14f; k += 3.14f / 4f)
-                    Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
             if (AttackTimer > 120 && AttackTimer < 220) NPC.velocity.Y += 0.16f; //un-jump
@@ -374,7 +374,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer == 60)
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
-                Projectile.NewProjectile(NPC.Center + new Vector2(0, 120), Vector2.Zero, ModContent.ProjectileType<SquidEgg>(), 10, 0.2f);
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 120), Vector2.Zero, ModContent.ProjectileType<SquidEgg>(), 10, 0.2f);
             }
 
             if (AttackTimer > 120 && AttackTimer < 180) NPC.Center = Vector2.SmoothStep(platforms[0].Center + new Vector2(0, -150), savedPoint, (AttackTimer - 120) / 60);
@@ -413,7 +413,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
 
                 for (float k = 0; k <= 3.14f; k += 3.14f / 6f)
-                    Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
             if (AttackTimer > 120 && AttackTimer < 220) NPC.velocity.Y += 0.16f; //un-jump
@@ -574,7 +574,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
                 {
-                    if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                     if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
                 }
             }

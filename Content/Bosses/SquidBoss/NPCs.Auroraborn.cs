@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class Auroraborn : ModNPC
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override void SetDefaults()
         {
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.rotation = NPC.velocity.ToRotation() + 1.57f;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AurorabornGlow").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AurorabornGlow2").Value;
@@ -54,9 +54,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(NPC.ai[0] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, NPC.frame, drawColor * 1.2f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, NPC.frame, color * 0.8f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, NPC.frame, color, NPC.rotation, NPC.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos, NPC.frame, drawColor * 1.2f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, color * 0.8f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(tex2, NPC.Center - screenPos, NPC.frame, color, NPC.rotation, NPC.Size / 2, 1, 0, 0);
             Lighting.AddLight(NPC.Center, color.ToVector3() * 0.5f);
         }
     }

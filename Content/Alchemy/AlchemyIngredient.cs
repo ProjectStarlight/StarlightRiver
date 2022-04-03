@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Alchemy
         {
             if (storedItem.stack > 0)
             {
-                //TODO: rework this to handle exact clone dropping like keeping modifiers, maybe look into calling newItem to get an open Main.Item index and then replace it with the clone and net send it
+                //TODO: rework this to handle exact clone dropping like keeping modifiers, maybe look into calling newItem to get an open Main.item index and then replace it with the clone and net send it
                 Item.NewItem(cauldronRect, storedItem.type, storedItem.stack);
             }
 

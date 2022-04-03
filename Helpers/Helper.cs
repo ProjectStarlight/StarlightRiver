@@ -143,7 +143,7 @@ namespace StarlightRiver.Helpers
         public static void SpawnGem(int ID, Vector2 position)
         {
             int Item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
-            (Main.Item[Item].ModItem as Content.Items.Misc.StarlightGem).gemID = ID;
+            (Main.item[Item].ModItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
         public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)

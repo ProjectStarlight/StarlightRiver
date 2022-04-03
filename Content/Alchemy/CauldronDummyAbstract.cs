@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Alchemy
         {
             if (!isCrafting && inputCooldown <= 0)
             {
-                foreach (Item eachWorldItem in Main.Item)
+                foreach (Item eachWorldItem in Main.item)
                 {
                     if (eachWorldItem.active && Projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
                     {

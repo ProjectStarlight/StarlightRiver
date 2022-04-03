@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public override bool PreDraw(ref Color drawColor) => false;
 
         public override void SetDefaults()
         {
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Vector2 pos = Projectile.position + new Vector2(0, -16 * k);
                 height += 16;
 
-                if (Main.tile[(int)pos.X / 16 + 2, (int)pos.Y / 16 - 4].active() || Main.tile[(int)pos.X / 16 - 2, (int)pos.Y / 16 - 4].active()) break;
+                if (Main.tile[(int)pos.X / 16 + 2, (int)pos.Y / 16 - 4].HasTile || Main.tile[(int)pos.X / 16 - 2, (int)pos.Y / 16 - 4].HasTile) break;
             }
 
             Rectangle rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height, Projectile.width, height);
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 Vector2 pos = Projectile.position + new Vector2(0, -16 * k);
 
-                if (Main.tile[(int)pos.X / 16 + 2, (int)pos.Y / 16 + 1].active() || Main.tile[(int)pos.X / 16 - 2, (int)pos.Y / 16 + 1].active())
+                if (Main.tile[(int)pos.X / 16 + 2, (int)pos.Y / 16 + 1].HasTile || Main.tile[(int)pos.X / 16 - 2, (int)pos.Y / 16 + 1].HasTile)
                 {
                     for (int n = 0; n < 20; n++)
                     {

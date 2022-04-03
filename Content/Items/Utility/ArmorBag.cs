@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Utility
                             continue;
 
                         var index = Item.NewItem(Player.Center, storedArmor[k].type);
-                        Main.Item[index] = storedArmor[k].Clone();
+                        Main.item[index] = storedArmor[k].Clone();
                         storedArmor[k].TurnToAir();
                     }
                     return;

@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			{
 				
 				var tex = Main.PopupTexture[Item.type];
-				//var frames = Main.ItemFrame[Item.type];
+				//var frames = Main.itemFrame[Item.type];
 
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
 			}

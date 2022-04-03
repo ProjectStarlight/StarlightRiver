@@ -27,13 +27,13 @@ namespace StarlightRiver.Helpers
         public static void NewItemSpecific(Vector2 position, Item Item)
         {
             int targetIndex = 400;
-            Main.Item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+            Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
 
-            if (Main.netMode != NetmodeID.MultiplayerClient) //Main.Item index finder from vanilla
+            if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
             {
                 for (int j = 0; j < 400; j++)
                 {
-                    if (!Main.Item[j].active && Main.ItemLockoutTime[j] == 0)
+                    if (!Main.item[j].active && Main.itemLockoutTime[j] == 0)
                     {
                         targetIndex = j;
                         break;
@@ -46,16 +46,16 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.Item[k].spawnTime - Main.ItemLockoutTime[k] > num2)
+                    if (Main.item[k].spawnTime - Main.itemLockoutTime[k] > num2)
                     {
-                        num2 = Main.Item[k].spawnTime - Main.ItemLockoutTime[k];
+                        num2 = Main.item[k].spawnTime - Main.itemLockoutTime[k];
                         targetIndex = k;
                     }
                 }
             }
 
-            Main.Item[targetIndex] = Item;
-            Main.Item[targetIndex].position = position;
+            Main.item[targetIndex] = Item;
+            Main.item[targetIndex].position = position;
 
             if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverShiny[Item.type]) //vanilla Item highlight system
             {
@@ -75,15 +75,15 @@ namespace StarlightRiver.Helpers
         public static Item NewItemPerfect(Vector2 position, Vector2 velocity, int type, int stack = 1, bool noBroadcast = false, int prefixGiven = 0, bool noGrabDelay = false, bool reverseLookup = false)
         {
             int targetIndex = 400;
-            Main.Item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
+            Main.item[400] = new Item(); //Vanilla seems to make sure to set the dummy here, so I will too.
 
-            if (Main.netMode != NetmodeID.MultiplayerClient) //Main.Item index finder from vanilla
+            if (Main.netMode != NetmodeID.MultiplayerClient) //Main.item index finder from vanilla
             {
                 if (reverseLookup)
                 {
                     for (int i = 399; i >= 0; i--)
                     {
-                        if (!Main.Item[i].active && Main.ItemLockoutTime[i] == 0)
+                        if (!Main.item[i].active && Main.itemLockoutTime[i] == 0)
                         {
                             targetIndex = i;
                             break;
@@ -94,7 +94,7 @@ namespace StarlightRiver.Helpers
                 {
                     for (int j = 0; j < 400; j++)
                     {
-                        if (!Main.Item[j].active && Main.ItemLockoutTime[j] == 0)
+                        if (!Main.item[j].active && Main.itemLockoutTime[j] == 0)
                         {
                             targetIndex = j;
                             break;
@@ -107,15 +107,15 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.Item[k].spawnTime - Main.ItemLockoutTime[k] > num2)
+                    if (Main.item[k].spawnTime - Main.itemLockoutTime[k] > num2)
                     {
-                        num2 = Main.Item[k].spawnTime - Main.ItemLockoutTime[k];
+                        num2 = Main.item[k].spawnTime - Main.itemLockoutTime[k];
                         targetIndex = k;
                     }
                 }
             }
-            Main.ItemLockoutTime[targetIndex] = 0; //normal stuff
-            Item Item = Main.Item[targetIndex];
+            Main.itemLockoutTime[targetIndex] = 0; //normal stuff
+            Item Item = Main.item[targetIndex];
             Item.SetDefaults(type, false);
             Item.Prefix(prefixGiven);
             Item.position = position;
