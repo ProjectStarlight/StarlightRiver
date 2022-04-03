@@ -67,8 +67,8 @@ namespace StarlightRiver.Content.GUI
                 var staminaMax = Math.Round(mp.StaminaMax, 1);
                 string text = $"Stamina: {stamina}/{staminaMax}";
                 Vector2 pos = Main.MouseScreen + Vector2.One * 16;
-                pos.X = Math.Min(Main.screenWidth - Main.fontMouseText.MeasureString(text).X - 6, pos.X);
-                Utils.DrawBorderString(spriteBatch, text, pos, Main.mouseTextColorReal);
+                pos.X = Math.Min(Main.screenWidth - Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text).X - 6, pos.X);
+                Utils.DrawBorderString(spriteBatch, text, pos, Main.MouseTextColorReal);
             }
 
             Recalculate();
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.GUI
                 //slotTex = Request<Texture2D>(specialVesselTextures[k]).Value;
 
                 if (k >= mp.StaminaMax - specialVesselTextures.Count)
-                    slotTex = Request<Texture2D>(specialVesselTextures[(int).Valuemp.StaminaMax - k - 1]);
+                    slotTex = Request<Texture2D>(specialVesselTextures[(int)mp.StaminaMax - k - 1]).Value;
 
                 spriteBatch.Draw(slotTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 

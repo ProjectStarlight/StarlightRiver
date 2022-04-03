@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Codex.Entries

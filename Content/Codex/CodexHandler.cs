@@ -15,11 +15,8 @@ namespace StarlightRiver.Codex
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                [nameof(CodexState)] = CodexState,
-                [nameof(Entries)] = Entries
-            };
+            tag[nameof(CodexState)] = CodexState;
+            tag[nameof(Entries)] = Entries;
         }
 
         public override void LoadData(TagCompound tag)

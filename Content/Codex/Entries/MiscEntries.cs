@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Core;
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -41,7 +42,7 @@ namespace StarlightRiver.Codex.Entries
                 "Generic Infusions typically provide a general boost that applied to all of the Player's abilities, or have small enough effects that they do not warrant the ability-type restriction of Ability Infusions. While you can equip as many Generic Infusions as you have slots, you cannot equip duplicates. NEWBLOCK " +
                 "Ability Infusions are specific to one of your abilities, and greatly augment them or change how they function alltogether. While powerful, these infusions are generally harder to come by than Generic Infusions. You cannot equip two Ability Infusions for the same ability, and you cannot equip duplicates.";
             Hint = "Find a mysterious altar...";
-            Image = Request<Texture2D>(ModContent.GetInstance<Astral>().Value.Texture);
+            Image = Request<Texture2D>(ModContent.GetInstance<Astral>().Texture).Value;
             Icon = Image;
         }
     }

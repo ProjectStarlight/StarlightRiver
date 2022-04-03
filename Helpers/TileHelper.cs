@@ -47,11 +47,11 @@ namespace StarlightRiver.Helpers
                 for (int y = 0; y < data.Height; y++) //generate each row
                 {
                     Tile tile = Framing.GetTileSafely(position.X + x, position.Y + y); //get the targeted tile
-                    tile.type = (ushort)type; //set the type of the tile to our multitile
+                    tile.TileType = (ushort)type; //set the type of the tile to our multitile
 
                     tile.TileFrameX = (short)((x + data.Width * xVariants) * (data.CoordinateWidth + data.CoordinatePadding)); //set the X frame appropriately
                     tile.TileFrameY = (short)((y + data.Height * yVariants) * (data.CoordinateHeights[y] + data.CoordinatePadding)); //set the Y frame appropriately
-                    tile.; //activate the tile
+                    tile.HasTile = true; //activate the tile
                 }
             }
         }
