@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class CoachGunDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -73,11 +69,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class CoachGunDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDustTwo";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
 
         public override void OnSpawn(Dust dust)
         {
@@ -140,12 +132,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class CoachGunDustThree : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDustThree";
-            return true;
-        }
-
+        public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -197,11 +184,7 @@ namespace StarlightRiver.Content.Dusts
 
     class CoachGunDustFour : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -250,11 +233,7 @@ namespace StarlightRiver.Content.Dusts
 
     class CoachGunSparks : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override void OnSpawn(Dust dust)
         {
@@ -290,11 +269,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class CoachGunDustFive : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -355,11 +330,7 @@ namespace StarlightRiver.Content.Dusts
     }
     public class CoachSmoke : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

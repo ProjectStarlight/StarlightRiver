@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StatusTrackingNPC.buffCompareEffects += CollarEffects;
-			return base.Autoload(ref name);
+			
 		}
 
 		private void CollarEffects(Player Player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)

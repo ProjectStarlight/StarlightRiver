@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class NeedlerDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -64,11 +60,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class NeedlerDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {
@@ -123,11 +115,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class NeedlerDustThree : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {
@@ -180,11 +168,7 @@ namespace StarlightRiver.Content.Dusts
 
     class NeedlerDustFour : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -232,11 +216,7 @@ namespace StarlightRiver.Content.Dusts
     }
     class NeedlerDustFive : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

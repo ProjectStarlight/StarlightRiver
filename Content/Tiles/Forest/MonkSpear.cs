@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 	{
         public override int DummyType => ProjectileType<MonkSpearDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.ForestTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+		public override string Texture => AssetDirectory.ForestTile + Name;
 
         public override void SetDefaults()
         {

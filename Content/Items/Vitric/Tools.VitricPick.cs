@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             On.Terraria.Player.PickTile += GenerateHeat;
 
-            return base.Autoload(ref name);
+            
         }
 
         public override void SetStaticDefaults()

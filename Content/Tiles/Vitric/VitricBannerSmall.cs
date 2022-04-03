@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class VitricBannerSmall : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override int DummyType => ProjectileType<VitricBannerSmallDummy>();
 

@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
 {
 	public class GrassJungleBloody : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleBloodyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.JungleBloodyTile + Name;
 
         public override void SetDefaults()
         {

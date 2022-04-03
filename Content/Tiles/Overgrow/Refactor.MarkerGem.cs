@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class MarkerGem : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "MarkerGem";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "MarkerGem";
 
         public override void SetDefaults()
         {

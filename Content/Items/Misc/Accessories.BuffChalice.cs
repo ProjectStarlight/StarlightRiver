@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;
-			return base.Autoload(ref name);
+			
 		}
 
 		private void ChaliceEffects(Player Player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
@@ -32,11 +32,8 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 		class PlexusChaliceBuff : ModBuff
 		{
-			public override bool Autoload(ref string name, ref string texture)
-			{
-				texture = AssetDirectory.PotionsItem + name;
-				return base.Autoload(ref name, ref texture);
-			}
+
+            public override string Texture => AssetDirectory.PotionsItem + Name;
 
 			public override void SetDefaults()
 			{

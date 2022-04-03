@@ -16,11 +16,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 {
 	internal class WispSwitch : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.InteractiveTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.InteractiveTile + Name;
 
         public override void SetDefaults()
         {

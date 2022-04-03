@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override int DummyType => ProjectileType<SpikeImmuneOrbDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/SpikeImmuneOrb";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/SpikeImmuneOrb";
 
         public override void SetDefaults()
         {

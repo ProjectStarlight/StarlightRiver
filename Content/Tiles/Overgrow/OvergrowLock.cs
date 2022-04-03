@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class OvergrowLock : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "OvergrowLock";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "OvergrowLock";
 
         public override void SetDefaults()
         {

@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
 {
 	internal sealed class Siphon : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.StarjuiceTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.StarjuiceTile + Name;
 
         public override void SetDefaults()
         {

@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
 	public class TallgrassJungleCorrupt : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleCorruptTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.JungleCorruptTile + Name;
 
         public override void SetDefaults()
         {
@@ -40,11 +36,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 
     public class TallgrassJungleCorrupt2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleCorruptTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.JungleCorruptTile + Name;
 
         public override void SetDefaults()
         {

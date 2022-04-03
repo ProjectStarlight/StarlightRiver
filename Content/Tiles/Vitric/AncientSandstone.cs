@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal class AncientSandstonePlatform : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -46,11 +42,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class AncientSandstoneWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults() => (this).QuickSetWall(DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(71, 46, 41));
     }
@@ -62,11 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class AncientSandstonePillarWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults() => (this).QuickSetWall(DustID.Copper, SoundID.Dig, ItemType<AncientSandstonePillarWallItem>(), false, new Color(75, 48, 44));
     }

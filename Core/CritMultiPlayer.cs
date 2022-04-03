@@ -13,7 +13,7 @@ namespace StarlightRiver.Core
 		public override void Load()
 		{
 			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;
-			return base.Autoload(ref name);
+			
 		}
 
 		private void AddCritToProjectiles(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

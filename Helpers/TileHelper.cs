@@ -51,7 +51,7 @@ namespace StarlightRiver.Helpers
 
                     tile.TileFrameX = (short)((x + data.Width * xVariants) * (data.CoordinateWidth + data.CoordinatePadding)); //set the X frame appropriately
                     tile.TileFrameY = (short)((y + data.Height * yVariants) * (data.CoordinateHeights[y] + data.CoordinatePadding)); //set the Y frame appropriately
-                    tile.active(true); //activate the tile
+                    tile.; //activate the tile
                 }
             }
         }

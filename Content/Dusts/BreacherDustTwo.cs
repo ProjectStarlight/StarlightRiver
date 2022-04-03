@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	class BreacherDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Aurora";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Aurora";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

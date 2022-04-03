@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	class AuroraIce : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
 
         public override void SetDefaults()
         {

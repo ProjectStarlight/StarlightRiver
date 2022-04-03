@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	class WindowSmall : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "WindowSmall";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "WindowSmall";
 
         public override int DummyType => ProjectileType<WindowSmallDummy>();
 

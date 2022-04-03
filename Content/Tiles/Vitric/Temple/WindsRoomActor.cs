@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override int DummyType => ProjectileType<WindsRoomActorDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
     }

@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Pickups
         public virtual int PickupType => 0;
 
         private int spawnAttemptTimer = 0;
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

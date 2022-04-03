@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightRiver.Instance.AddGore(AssetDirectory.MiscItem + "CoachGunCasing");
-			return base.Autoload(ref name);
+			
 		}
 
 		private int cooldown = 0;

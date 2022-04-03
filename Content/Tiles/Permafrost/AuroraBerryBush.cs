@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 {
 	internal class AuroraBerryBush : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PermafrostTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PermafrostTile + Name;
 
         public override void SetStaticDefaults()
         {

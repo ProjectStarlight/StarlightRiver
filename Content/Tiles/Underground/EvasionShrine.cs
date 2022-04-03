@@ -18,11 +18,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public override int DummyType => ModContent.ProjectileType<EvasionShrineDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
-			return true;
-		}
+		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
 
 		public override void SetDefaults()
 		{

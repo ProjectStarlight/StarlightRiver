@@ -29,11 +29,7 @@ namespace StarlightRiver.Content.Items.Beach
 
 	class SeaglassRingTile : ModTile
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Assets + "Items/Beach/" + name;
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
 		public override void SetDefaults()
 		{

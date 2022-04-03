@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.VFX
     {
         public override int DummyType => ProjectileType<CaveVFXDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Invisible";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults() => QuickBlock.QuickSet(this, 200, 0, SoundID.Tink, new Color(255, 255, 255), 0);
     }

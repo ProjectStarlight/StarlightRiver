@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Paintings
 {
 	class AuroraclePainting : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PaintingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PaintingTile + Name;
 
         public override void SetDefaults() =>
             this.QuickSetPainting(4, 4, 7, new Color(30, 30, 120), "Painting");

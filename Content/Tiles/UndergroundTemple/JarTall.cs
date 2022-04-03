@@ -13,11 +13,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<JarDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
 

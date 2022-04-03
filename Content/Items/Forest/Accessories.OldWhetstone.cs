@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Forest
         public override void Load()
         {
             StarlightItem.ModifyWeaponDamageEvent += AddDamage;
-            return base.Autoload(ref name);
+            
         }
 
 		private void AddDamage(Item Item, Player Player, ref float add, ref float mult, ref float flat)

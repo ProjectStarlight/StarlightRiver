@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 {
 	internal class Soil : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {
@@ -34,11 +30,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
     internal class Trellis : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {
@@ -61,11 +53,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
     public class Planter : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {
@@ -124,11 +112,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
     public class GardenPot : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults() => this.QuickSetFurniture(6, 2, DustID.t_LivingWood, SoundID.Dig, false, new Color(151, 107, 75), true, false, "Garden Pot");
 

@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 	internal class Oven : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.CraftingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.CraftingTile + Name;
 
         public override void SetDefaults() => this.QuickSetFurniture(3, 2, DustID.Stone, SoundID.Dig, false, new Color(113, 113, 113), false, false, "Oven");
 
@@ -29,11 +25,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     internal class HerbStation : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.CraftingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.CraftingTile + Name;
 
         public override void SetDefaults() => this.QuickSetFurniture(3, 2, DustID.t_LivingWood, SoundID.Dig, false, new Color(151, 107, 75), false, false, "Herbologist's Bench");
 
@@ -42,11 +34,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     internal class CookStation : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.CraftingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.CraftingTile + Name;
 
         public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
 

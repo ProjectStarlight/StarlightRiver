@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	class DiscGate : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/DiscGate";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/DiscGate";
 
         public override void SetDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(100, 255, 255), ItemType<DiscGateItem>());
 
@@ -40,11 +36,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void SetDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(100, 255, 255), ItemType<DiscGateItem>());
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Invisible";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         {

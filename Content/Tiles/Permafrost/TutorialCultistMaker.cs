@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
     class TutorialCultistMaker : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/TutorialCultistMaker";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/TutorialCultistMaker";
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 3, 1, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(100, 200, 200));
 

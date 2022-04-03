@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         private int Frame = 0;
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.InteractiveTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.InteractiveTile + Name;
 
         public override void SetDefaults()
         {

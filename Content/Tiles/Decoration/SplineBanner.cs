@@ -23,11 +23,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
         public virtual void PostDrawSpline(SpriteBatch spriteBatch, int index, Vector2 pos, Vector2 drawpos, Color color, float colorMultiplier) { }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Void
 {
 	public class VoidWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VoidTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VoidTile + Name;
 
         public override void SetDefaults()
         {

@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 {
 	public class LeafWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.ForestTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.ForestTile + Name;
 
         public override void SetDefaults()
         {

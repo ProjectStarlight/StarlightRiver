@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
             StarlightItem.OnPickupEvent += TrackPickup;
 
-            return base.Autoload(ref name);
+            
 		}
 
 		private bool TrackPickup(Item Item, Player Player)

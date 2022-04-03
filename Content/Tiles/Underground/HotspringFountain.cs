@@ -18,11 +18,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public override int DummyType => ModContent.ProjectileType<HotspringFountainDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Assets + "Tiles/Underground/HotspringFountain";
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/HotspringFountain";
 
 		public override void SetDefaults()
 		{

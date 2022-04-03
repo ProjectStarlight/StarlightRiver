@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void Load()
         {
             StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
-            return base.Autoload(ref name);
+            
         }
 
         private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)

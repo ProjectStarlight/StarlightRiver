@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 {
 	public class GreenhouseGlass : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {
@@ -70,11 +66,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
     public class GreenhouseWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {

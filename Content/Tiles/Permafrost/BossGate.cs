@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override int DummyType => ProjectileType<BossGateDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Invisible";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
         public override void SetDefaults()
         {

@@ -11,9 +11,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 {
 	public class MoonstoneOre : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture) {
-            texture = AssetDirectory.MoonstoneTile + name;
-            return base.Autoload(ref name, ref texture); }
+        public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
         public override void SetDefaults() =>
             this.QuickSet(50, DustType<Dusts.Electric>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOre>(), true, true, "Moonstone Ore");

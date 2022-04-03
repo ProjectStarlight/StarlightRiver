@@ -17,11 +17,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 {
     internal class Infuser : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.CraftingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.CraftingTile + Name;
 
         public override void SetDefaults() => this.QuickSetFurniture(4, 4, DustID.Stone, SoundID.Dig, false, new Color(113, 113, 113), false, false, "Infuser");
 

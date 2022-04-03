@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class BulbFruit : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override int DummyType => ProjectileType<BulbFruitDummy>();
 

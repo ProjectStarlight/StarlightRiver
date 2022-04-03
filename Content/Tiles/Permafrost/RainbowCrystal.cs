@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	class RainbowCrystal : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/RainbowCrystal";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/RainbowCrystal";
 
         //public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
         //{

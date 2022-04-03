@@ -55,7 +55,7 @@ namespace StarlightRiver.Core
 			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
 			StarlightPlayer.PreDrawEvent += PreDrawBarrierFX;
 
-			return base.Autoload(ref name);
+			
 		}
 
 		private void PostDrawBarrierFX(Player Player, SpriteBatch spriteBatch)

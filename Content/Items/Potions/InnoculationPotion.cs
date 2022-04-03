@@ -29,11 +29,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	class InoculationPotionBuff : ModBuff
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 
 		public override void SetDefaults()
 		{

@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	class WispAltarL : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "WispAltarL";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "WispAltarL";
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
     }
@@ -27,11 +23,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarR : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "WispAltarR";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
     }

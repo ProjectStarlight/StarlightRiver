@@ -8,12 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
     class BreacherDustThree : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + "RoarLine";
-            return true;
-        }
-
+        public override string Texture => AssetDirectory.Dust + "RoarLine";
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             var curveOut = Curve(dust.fadeIn / 20f);

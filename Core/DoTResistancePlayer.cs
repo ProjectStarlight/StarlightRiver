@@ -16,7 +16,7 @@ namespace StarlightRiver.Core
 			IDetour d = new Hook(typeof(PlayerHooks).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
 			d.Apply();
 
-			return base.Autoload(ref name);
+			
 		}
 
 		public static void ReduceDoT(Action<Player> orig, Player Player)

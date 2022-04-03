@@ -12,11 +12,7 @@ namespace StarlightRiver.Tiles.Misc
 {
     public class RatTent : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.MiscTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.MiscTile + Name;
 
         public override void SetDefaults() 
         {

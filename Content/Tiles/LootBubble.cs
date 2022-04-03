@@ -21,11 +21,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override int DummyType => ProjectileType<LootBubbleDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public virtual void PickupEffects(Vector2 origin)
         {

@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.JungleHoly
 {
 	public class TallgrassJungleHoly : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleHolyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.JungleHolyTile + Name;
 
         public override void SetDefaults()
         {

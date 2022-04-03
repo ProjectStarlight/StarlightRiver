@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class ZapperTile : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public override void SetDefaults() { QuickBlock.QuickSetFurniture(this, 5, 2, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 80)); }
 

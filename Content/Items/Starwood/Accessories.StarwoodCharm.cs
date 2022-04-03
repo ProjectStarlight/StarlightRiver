@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
             StarlightPlayer.OnHitNPCEvent += SpawnManaOnCrit;
             StarlightProjectile.ModifyHitNPCEvent += SpawnManaOnProjCrit;
-			return base.Autoload(ref name);
+			
 		}
 
 		private void SpawnManaOnProjCrit(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

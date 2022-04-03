@@ -46,11 +46,7 @@ namespace StarlightRiver.Content.Alchemy
 	{
 		public override int DummyType => ProjectileType<CauldronDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Alchemy + name;
-			return base.Autoload(ref name, ref texture);
-		}
+        public override string Texture => AssetDirectory.Alchemy + Name;
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{

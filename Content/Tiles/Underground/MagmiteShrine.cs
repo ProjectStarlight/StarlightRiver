@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 {
     class MagmiteShrine : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Underground/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Underground/" + Name;
 
         public override void SetDefaults()
         {

@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class GrassOvergrow : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public override void SetDefaults()
         {

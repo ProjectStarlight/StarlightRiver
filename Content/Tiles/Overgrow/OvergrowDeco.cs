@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	class Rock2x2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "Rock2x2";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "Rock2x2";
 
         public override void SetDefaults()
         {

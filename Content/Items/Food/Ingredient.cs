@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void Load()
         {
-            return base.Autoload(ref name);
+            
         }
 
         public override void AddRecipes() //this is dumb, too bad!

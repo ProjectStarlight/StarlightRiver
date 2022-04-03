@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
-            return base.Autoload(ref name);
+            
         }
 
         private const int DESTRUCTIONTIME = 100;
@@ -430,11 +430,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
     public class SorcerwrenchDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -475,11 +471,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
     public class SorcerwrenchSparkle : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Aurora";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Aurora";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

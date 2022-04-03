@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
         public override void Load()
         {
-            return base.Autoload(ref name);
+            
         }
 
         public override void SafeSetStaticDefaults()

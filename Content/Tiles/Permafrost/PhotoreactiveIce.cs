@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	class PhotoreactiveIce : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/PhotoreactiveIce";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/PhotoreactiveIce";
 
         public override void SetDefaults()
         {

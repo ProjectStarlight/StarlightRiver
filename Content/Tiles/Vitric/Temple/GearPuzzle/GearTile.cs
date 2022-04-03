@@ -20,11 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	{
 		public override int DummyType => ModContent.ProjectileType<GearTileDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Invisible;
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{

@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	class AxeTile : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "BrickOvergrow";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "BrickOvergrow";
 
         public override int DummyType => ProjectileType<AxeTileDummy>();
 

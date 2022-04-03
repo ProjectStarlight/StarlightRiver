@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void Load()
 		{
 			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "RebarProj");
-			return base.Autoload(ref name);
+			
 		}
 		public override void SetStaticDefaults()
 		{

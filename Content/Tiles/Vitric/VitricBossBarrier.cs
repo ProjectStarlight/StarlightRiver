@@ -24,11 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             On.Terraria.Main.Update -= UpdateCollision;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         private void UpdateCollision(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
         {

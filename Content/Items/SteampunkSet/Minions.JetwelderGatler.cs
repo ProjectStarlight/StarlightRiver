@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             StarlightRiver.Instance.AddGore(Texture + "_Gore7");
             StarlightRiver.Instance.AddGore(Texture + "_Gore8");
             StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCasing", new JetwelderCasingGore());
-            return base.Autoload(ref name);
+            
         }
 
         private readonly int ATTACKRANGE = 500;

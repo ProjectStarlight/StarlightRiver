@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	internal class IceSpike : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/IceSpike";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/IceSpike";
 
         public override bool Dangersense(int i, int j, Player Player) => true;
 

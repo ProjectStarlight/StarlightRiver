@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             for (int k = 0; k <= 4; k++)
                 Mod.AddGore(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
 
-            return base.Autoload(ref name);
+            
         }
 
         public override void SetStaticDefaults()

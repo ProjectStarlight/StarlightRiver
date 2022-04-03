@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	public class VitricRoundCactus : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -38,11 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     public class VitricSmallCactus : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {

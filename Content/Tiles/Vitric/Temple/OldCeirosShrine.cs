@@ -16,11 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
         public override int DummyType => ProjectileType<OldCeirosShrineDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+		public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {

@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 {
 	internal class StonePure : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PureTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PureTile + Name;
 
         public override void SetDefaults()
         {
@@ -29,11 +25,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 
     internal class GrassPure : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PureTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PureTile + Name;
 
         public override void SetDefaults()
         {
@@ -50,11 +42,7 @@ namespace StarlightRiver.Content.Tiles.Purified
     }
     internal class SandPure : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PureTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PureTile + Name;
 
         public override void SetDefaults()
         {

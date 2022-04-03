@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
     class GlowLine : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + "RoarLine";
-            return true;
-        }
+        public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

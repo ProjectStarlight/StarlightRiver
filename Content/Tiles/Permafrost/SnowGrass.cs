@@ -15,11 +15,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 {
 	class SnowGrass : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/SnowGrass";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/SnowGrass";
 
         public override void SetDefaults()
         {

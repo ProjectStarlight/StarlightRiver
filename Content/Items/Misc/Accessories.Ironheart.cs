@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             StarlightPlayer.OnHitNPCEvent += OnHit;
             StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
-            return base.Autoload(ref name);
+            
         }
 
 		private void OnHitProjectile(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -37,11 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 
     public class IronheartBuff : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.MiscItem + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetDefaults()
         {

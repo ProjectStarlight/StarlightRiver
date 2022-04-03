@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.WorldGen.PlaceWire3 += DontPlaceWire3;
             On.Terraria.WorldGen.PlaceWire4 += DontPlaceWire4;
             On.Terraria.WorldGen.PlaceActuator += DontPlaceActuator;
-            return base.Autoload(ref name);
+            
 		}
 
         /// <summary>

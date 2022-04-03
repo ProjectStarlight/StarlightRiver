@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override int DummyType => ProjectileType<RedBannerShortDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-            texture = "StarlightRiver/Assets/Tiles/Vitric/RedBanner";
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/RedBanner";
 
 		public override void SetDefaults()
         {

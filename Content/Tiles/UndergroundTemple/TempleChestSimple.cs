@@ -10,11 +10,7 @@ namespace StarlightRiver.Tiles.Temple
 {
 	class TempleChestSimple : LootChest
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
         internal override List<Loot> GoldLootPool
         {

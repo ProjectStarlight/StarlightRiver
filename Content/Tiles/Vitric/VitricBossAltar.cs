@@ -22,11 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override int DummyType => ProjectileType<VitricBossAltarDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -135,7 +131,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void Load()
         {
             ReflectionTarget.DrawReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
-            return base.Autoload(ref name);
+            
         }
 
         public void drawVitricAltarReflectionNormalMap(SpriteBatch spriteBatch)

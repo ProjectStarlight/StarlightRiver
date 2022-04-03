@@ -13,11 +13,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<DashBarrierDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
         public override void SetDefaults()
         {

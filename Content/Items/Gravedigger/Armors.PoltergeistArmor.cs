@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             On.Terraria.Player.KeyDoubleTap += HauntItem;
             On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
             StarlightItem.CanUseItemEvent += ControlItemUse;
-            return base.Autoload(ref name);
+            
         }
 
 		public override void SetStaticDefaults()

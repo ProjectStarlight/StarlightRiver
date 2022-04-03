@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             for(int k = 0; k <= 5; k++)
 			    Mod.AddGore(AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);
 
-            return base.Autoload(ref name);
+            
 		}
 
 		public override void SetStaticDefaults()

@@ -596,11 +596,7 @@ namespace StarlightRiver.Content.Items.Dungeon
     }
     class CloudstrikeCircleDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
 
         public override void OnSpawn(Dust dust)
         {
@@ -638,11 +634,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
     class CloudstrikeGlowLine : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + "RoarLine";
-            return true;
-        }
+        public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

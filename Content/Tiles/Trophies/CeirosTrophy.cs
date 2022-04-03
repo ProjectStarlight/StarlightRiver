@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Trophies
 {
 	class CeirosTrophy : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.TrophyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.TrophyTile + Name;
 
         public override void SetDefaults()
         {

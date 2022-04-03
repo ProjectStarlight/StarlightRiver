@@ -707,11 +707,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class MagmaGunDust : ModDust
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Assets + "Invisible";
-			return true;
-		}
+		public override string Texture => AssetDirectory.Assets + "Invisible";
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noLight = true;

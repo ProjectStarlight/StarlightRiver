@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Air : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -52,11 +48,7 @@ namespace StarlightRiver.Content.Dusts
     {
         private int timer = 0;
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {
@@ -102,11 +94,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {
@@ -140,12 +128,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirSetColorNoGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
-
+        public override string Texture => AssetDirectory.Dust + "Air";
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -179,11 +162,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirDash : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {
@@ -224,11 +203,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class Void : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Void";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {

@@ -118,22 +118,14 @@ namespace StarlightRiver.Content.Items.Potions
 	{
 		public NoShieldPot() : base("Barrier Sickness", "Cannot consume more barrier potions", true ) { }
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return true;
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 	}
 
 	public class ShieldDegenReduction : SmartBuff
 	{
 		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier sticks to you better", false) { }
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return true;
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 
 		public override void Update(Player Player, ref int buffIndex)
 		{

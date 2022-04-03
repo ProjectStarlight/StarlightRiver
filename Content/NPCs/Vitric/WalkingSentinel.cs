@@ -41,11 +41,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
     {
         public override int DummyType => ProjectileType<WalkingSentinelDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/NPCs/Vitric/WalkingSentinelTile";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/WalkingSentinelTile";
 
         public override void SetDefaults()
         {

@@ -374,11 +374,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	}
 	public class SupplyBeaconDefenseDust : ModDust
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.BreacherItem + name;
-			return true;
-		}
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void OnSpawn(Dust dust)
         {

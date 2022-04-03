@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Tiles.Hell
 {
 	class HellChest : LootChest
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Hell/HellChest";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Hell/HellChest";
 
         internal override List<Loot> GoldLootPool
         {

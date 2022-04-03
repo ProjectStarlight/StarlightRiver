@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.AshHell
 {
 	class MagicAsh : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.AshHellTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.AshHellTile + Name;
 
         public override void SetDefaults()
         {

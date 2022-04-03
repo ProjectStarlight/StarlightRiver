@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class VineOvergrow : ModVine
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public VineOvergrow() : base(new string[] { "GrassOvergrow" }, DustType<Dusts.Leaf>(), new Color(202, 157, 49), 5, 6) { }
 

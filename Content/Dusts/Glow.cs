@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Glow : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
 
         public override void OnSpawn(Dust dust)
         {

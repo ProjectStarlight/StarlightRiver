@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 {
 	class DisplayCase : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
         public override void SetDefaults()
         {

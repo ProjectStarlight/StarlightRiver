@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             StarlightItem.PickAmmoEvent += PickShardsWhenLoaded;
             On.Terraria.Player.KeyDoubleTap += LoadShots;
-			return base.Autoload(ref name);
+			
 		}
 
 		public override void SetStaticDefaults()

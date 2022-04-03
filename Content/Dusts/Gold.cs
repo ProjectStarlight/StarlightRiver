@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class GoldNoMovement : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Gold";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Gold";
 
         public override void OnSpawn(Dust dust)
         {
@@ -61,11 +57,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class GoldPlayerRotation : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Gold";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Gold";
 
         private int timer = 0;
 

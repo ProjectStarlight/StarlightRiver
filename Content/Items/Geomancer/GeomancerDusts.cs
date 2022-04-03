@@ -22,11 +22,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 {
     class GeoRainbowDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override void OnSpawn(Dust dust)
         {

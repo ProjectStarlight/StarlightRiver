@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class VitricDecor1x1 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -28,11 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor1x2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -45,11 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor2x1 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
@@ -62,11 +50,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor2x2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {

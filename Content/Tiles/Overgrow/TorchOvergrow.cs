@@ -11,11 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class TorchOvergrow : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "TorchOvergrow";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "TorchOvergrow";
 
         public override void SetDefaults()
         {
@@ -37,11 +33,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     internal class BlueTorchOvergrow : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "BlueTorchOvergrow";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "BlueTorchOvergrow";
 
         public override void SetDefaults()
         {

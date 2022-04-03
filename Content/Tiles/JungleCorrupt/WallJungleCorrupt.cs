@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 {
 	public class WallJungleCorrupt : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.JungleCorruptTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.JungleCorruptTile + Name;
 
         public override void SetDefaults()
         {

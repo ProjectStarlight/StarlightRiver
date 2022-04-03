@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class GasVent : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "GasVent";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "GasVent";
 
         public override void SetDefaults()
         {

@@ -24,11 +24,7 @@ namespace StarlightRiver.Tiles.Herbology
 
     public class ForestIvyWild : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.HerbologyTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.HerbologyTile + Name;
 
         public override void SetDefaults()
         {

@@ -6,11 +6,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 {
 	class WallStonePure : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PureTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PureTile + Name;
 
         public override void SetDefaults()
         {
@@ -19,11 +15,7 @@ namespace StarlightRiver.Content.Tiles.Purified
     }
     class WallGrassPure : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PureTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PureTile + Name;
 
         public override void SetDefaults()
         {

@@ -19,11 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	{
 		public override int DummyType => ModContent.ProjectileType<ReflectorDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Debug;
-			return true;
-		}
+		public override string Texture => AssetDirectory.Debug;
 
 		public override void SetDefaults()
 		{

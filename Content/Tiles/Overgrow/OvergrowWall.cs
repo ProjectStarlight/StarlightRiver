@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	public class WallOvergrowGrass : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + "WallOvergrowGrass";
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + "WallOvergrowGrass";
 
         public override void SetDefaults() =>
             QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37));
@@ -37,11 +33,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class WallOvergrowBrick : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public override void SetDefaults() =>
             QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55));
@@ -49,11 +41,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class WallOvergrowInvisible : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {

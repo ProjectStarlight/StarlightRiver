@@ -15,11 +15,7 @@ namespace StarlightRiver.Tiles.Mushroom
 {
 	class Lumishroom : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Mushroom/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/" + Name;
 
         public override void SetDefaults()
         {

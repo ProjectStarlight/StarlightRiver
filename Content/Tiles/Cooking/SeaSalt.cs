@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
 {
 	class SeaSalt : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.CookingTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.CookingTile + Name;
 
         public override void SetDefaults()
         {

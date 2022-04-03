@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Slime
 		public override void Load()
 		{
             StarlightNPC.NPCLootEvent += DropSlimeStaff;
-			return base.Autoload(ref name);
+			
 		}
 
 		public override void SetStaticDefaults()

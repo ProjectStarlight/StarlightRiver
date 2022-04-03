@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             StarlightRiver.Instance.AddGore(Texture + "_Gore3");
             StarlightRiver.Instance.AddGore(Texture + "_Gore4");
             StarlightRiver.Instance.AddGore(Texture + "_Gore5");
-            return base.Autoload(ref name);
+            
         }
 
         private readonly int ATTACKRANGE = 400;

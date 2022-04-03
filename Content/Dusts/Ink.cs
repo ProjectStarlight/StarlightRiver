@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Ink : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Stamina";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Stamina";
 
         public override void OnSpawn(Dust dust)
         {

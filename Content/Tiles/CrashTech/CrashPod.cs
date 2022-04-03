@@ -14,11 +14,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 {
 	class CrashPod : LootChest
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
         public override void SetDefaults()
         {

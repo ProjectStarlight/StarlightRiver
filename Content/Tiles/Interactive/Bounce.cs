@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         public override int DummyType => ProjectileType<BouncerDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.InteractiveTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.InteractiveTile + Name;
 
         public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 

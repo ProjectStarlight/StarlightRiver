@@ -12,11 +12,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override int DummyType => ProjectileType<HatchDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public override void SetDefaults()
         {
@@ -56,11 +52,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override int DummyType => ProjectileType<BigHatchDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.OvergrowTile + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
 
         public override void SetDefaults()
         {

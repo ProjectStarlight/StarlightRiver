@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             StarlightRiver.Instance.AddGore(Texture + "_Gore1");
             StarlightRiver.Instance.AddGore(Texture + "_Gore2");
             StarlightRiver.Instance.AddGore(Texture + "_Gore3");
-            return base.Autoload(ref name);
+            
         }
 
         public override void SetStaticDefaults()

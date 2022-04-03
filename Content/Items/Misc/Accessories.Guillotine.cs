@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyCrit;
             StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyCritProj;
-            return base.Autoload(ref name);
+            
         }
 
         public override void SafeSetDefaults()

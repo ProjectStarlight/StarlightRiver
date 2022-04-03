@@ -41,10 +41,6 @@ namespace StarlightRiver.Content.Waters
 
     public class WaterfallVitric : ModWaterfallStyle
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Waters/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Waters/" + Name;
     }
 }

@@ -13,11 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override int DummyType => ProjectileType<TutorialDoor1Dummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
@@ -56,11 +52,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override int DummyType => ProjectileType<TutorialDoor2Dummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 

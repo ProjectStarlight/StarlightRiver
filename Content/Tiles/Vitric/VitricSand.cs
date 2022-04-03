@@ -28,11 +28,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class VitricSandWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture) 
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override void SetDefaults()
         {
