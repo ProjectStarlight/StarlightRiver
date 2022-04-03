@@ -12,6 +12,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class JungleCorruptFountainItem : QuickTileItem
     {
-        public JungleCorruptFountainItem() : base("Corrupt Jungle Fountain", "Debug item", "JungleCorruptFountain", texturePath: AssetDirectory.JungleCorruptTile) { }
+        public JungleCorruptFountainItem() : base("Corrupt Jungle Fountain", "Debug Item", "JungleCorruptFountain", texturePath: AssetDirectory.JungleCorruptTile) { }
     }
 }

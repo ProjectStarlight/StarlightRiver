@@ -9,7 +9,7 @@ namespace StarlightRiver.Core
 	{
 		public float DoTResist = 0;
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			MonoModHooks.RequestNativeAccess();
 
@@ -19,10 +19,10 @@ namespace StarlightRiver.Core
 			return base.Autoload(ref name);
 		}
 
-		public static void ReduceDoT(Action<Player> orig, Player player)
+		public static void ReduceDoT(Action<Player> orig, Player Player)
 		{
-			orig(player);
-			player.lifeRegen = (int)(player.lifeRegen * (1.0f - player.GetModPlayer<DoTResistancePlayer>().DoTResist) );
+			orig(Player);
+			Player.lifeRegen = (int)(Player.lifeRegen * (1.0f - Player.GetModPlayer<DoTResistancePlayer>().DoTResist) );
 		}
 
 		public override void ResetEffects()

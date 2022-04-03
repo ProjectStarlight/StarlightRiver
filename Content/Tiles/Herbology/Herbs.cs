@@ -34,17 +34,17 @@ namespace StarlightRiver.Content.Tiles.Herbology
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.AnchorAlternateTiles = new int[]
             {
-                mod.TileType(Type.ToString()),
+                Mod.TileType(Type.ToString()),
                 TileType<Planter>()
             };
             TileObjectData.addTile(Type);
-            drop = mod.ItemType(ItemDrop);
+            drop = Mod.ItemType(ItemDrop);
         }
 
         public override void RandomUpdate(int i, int j)
         {
             if (Main.tile[i, j + 1].active() == false)
-                WorldGen.PlaceTile(i, j + 1, mod.TileType(Type.ToString()), true);
+                WorldGen.PlaceTile(i, j + 1, Mod.TileType(Type.ToString()), true);
         }
     }
 
@@ -75,16 +75,16 @@ namespace StarlightRiver.Content.Tiles.Herbology
             };
             TileObjectData.newTile.AnchorAlternateTiles = new int[]
             {
-                mod.TileType(Type.ToString())
+                Mod.TileType(Type.ToString())
             };
             TileObjectData.addTile(Type);
-            drop = mod.ItemType(ItemDrop);
+            drop = Mod.ItemType(ItemDrop);
         }
 
         public override void RandomUpdate(int i, int j)
         {
             if (Main.tile[i, j - 1].active() == false)
-                WorldGen.PlaceTile(i, j - 1, mod.TileType(Type.ToString()));
+                WorldGen.PlaceTile(i, j - 1, Mod.TileType(Type.ToString()));
         }
     }
 }

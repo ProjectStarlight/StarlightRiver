@@ -108,7 +108,7 @@ namespace StarlightRiver.Core.Loaders
             for (int i = 0; i < Main.projectile.Length; i++)
             {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.modProjectile is IDrawOverTiles iface)
+                if (proj.active && proj.ModProjectile is IDrawOverTiles iface)
                 {
                     iface.DrawOverTiles(spriteBatch);
                 }

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory
             this.name = name;
         }
 
-        public override bool CanRoll(Item item) => item.accessory;
+        public override bool CanRoll(Item Item) => Item.accessory;
 
         public override PrefixCategory Category => PrefixCategory.Accessory;
 
@@ -24,9 +24,9 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
         public override void ModifyValue(ref float valueMult) => valueMult *= 1 + 0.05f * power;
 
-        public override void Update(Item item, Player player)
+        public override void Update(Item Item, Player Player)
         {
-            player.GetModPlayer<DoTResistancePlayer>().DoTResist += power;
+            Player.GetModPlayer<DoTResistancePlayer>().DoTResist += power;
         }
     }
 

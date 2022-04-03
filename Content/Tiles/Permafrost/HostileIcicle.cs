@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             return true;
         }
 
-        public override bool Dangersense(int i, int j, Player player) => true;
+        public override bool Dangersense(int i, int j, Player Player) => true;
 
         public override void SetDefaults()
         {
@@ -38,9 +38,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Main.tile[i, j];
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            if (Math.Abs(player.position.X - (i * 16)) < 30 && player.position.Y > (j * 16) && player.position.Y - (j * 16) < 600)
+            if (Math.Abs(Player.position.X - (i * 16)) < 30 && Player.position.Y > (j * 16) && Player.position.Y - (j * 16) < 600)
             {
                 if (Main.rand.NextBool(30) && tile.frameY == 0)
                 {
@@ -60,47 +60,47 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 8;
-            projectile.height = 3;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 180;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-            projectile.damage = 5;
+            Projectile.hostile = true;
+            Projectile.width = 8;
+            Projectile.height = 3;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 180;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.damage = 5;
         }
 
         public override void AI()
         {
-            if (projectile.ai[0] < 45)
+            if (Projectile.ai[0] < 45)
             {
-                projectile.ai[0]++;
+                Projectile.ai[0]++;
 
-                if (projectile.ai[0] < 12)
-                    Dust.NewDust(projectile.position, projectile.width, 3, 80, Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(1, 2));
+                if (Projectile.ai[0] < 12)
+                    Dust.NewDust(Projectile.position, Projectile.width, 3, 80, Main.rand.NextFloat(-2, 2), Main.rand.NextFloat(1, 2));
 
-                if (projectile.ai[0] == 44)
-                    projectile.velocity.Y = 4;
+                if (Projectile.ai[0] == 44)
+                    Projectile.velocity.Y = 4;
 
-                projectile.rotation += Main.rand.NextFloat(-0.05f, 0.05f);
-                projectile.rotation = MathHelper.Clamp(projectile.rotation, -.35f, .35f);
+                Projectile.rotation += Main.rand.NextFloat(-0.05f, 0.05f);
+                Projectile.rotation = MathHelper.Clamp(Projectile.rotation, -.35f, .35f);
             }
             else
             {
-                projectile.rotation = 0;
-                projectile.height = 16;
-                projectile.velocity.Y += 0.2f;
-                projectile.tileCollide = true;
+                Projectile.rotation = 0;
+                Projectile.height = 16;
+                Projectile.velocity.Y += 0.2f;
+                Projectile.tileCollide = true;
             }
         }
 
         public override void Kill(int timeLeft)
         {
-            Terraria.Audio.SoundEngine.PlaySound(2, (int)projectile.position.X, (int)projectile.position.Y, 27);
+            Terraria.Audio.SoundEngine.PlaySound(2, (int)Projectile.position.X, (int)Projectile.position.Y, 27);
 
             for (int i = 0; i < 10; i++)
             {
-                Dust.NewDust(projectile.position, projectile.width, projectile.height, 80);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, 80);
             }
         }
     }

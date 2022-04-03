@@ -15,12 +15,12 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void SafeSetDefaults()
 		{
-			item.rare = ItemRarityID.Blue;
+			Item.rare = ItemRarityID.Blue;
 		}
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			var mp = player.GetModPlayer<ShieldPlayer>();
+			var mp = Player.GetModPlayer<ShieldPlayer>();
 
 			mp.RechargeDelay -= 30;
 			mp.MaxShield += 10;

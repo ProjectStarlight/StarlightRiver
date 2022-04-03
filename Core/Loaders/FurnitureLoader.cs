@@ -34,37 +34,37 @@ namespace StarlightRiver.Core
 
         public void Load()
         {
-            var mod = StarlightRiver.Instance;
+            var Mod = StarlightRiver.Instance;
 
-            Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), mod, 14);
-            Add("Bed", new GenericBed(color, dust, name + "Bed"), mod, 15);
-            Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), mod, 20);
-            Add("Candelabra", new GenericCandelabra(glowColor, dust, name + "Candelabra"), mod, 5);
-            Add("Candle", new GenericCandle(glowColor, dust, name + "Candle"), mod, 4);
-            Add("Chair", new GenericChair(color, dust, name + "Chair"), mod, 4);
-            Add("Chandelier", new GenericChandelier(glowColor, dust, name + "Chandelier"), mod, 4);
-            Add("Clock", new GenericClock(color, dust, name + "Clock"), mod, 10);
-            Add("Dresser", new GenericDresser(color, dust, name + "Dresser"), mod, 16);
-            Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), mod, 3);
-            Add("Lantern", new GenericLantern(glowColor, dust, name + "Lantern"), mod, 6);
-            Add("Piano", new Generic3x2(color, dust, name + "Piano"), mod, 15);
-            Add("Sink", new GenericSink(color, dust, name + "Sink"), mod, 6);
-            Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), mod, 5);
-            Add("Table", new GenericSolidWithTop(color, dust, name + "Table"), mod, 8);
-            Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), mod, 10);
+            Add("Bathtub", new GenericBathtub(color, dust, name + "Bathtub"), Mod, 14);
+            Add("Bed", new GenericBed(color, dust, name + "Bed"), Mod, 15);
+            Add("Bookcase", new GenericBookcase(color, dust, name + "Bookcase"), Mod, 20);
+            Add("Candelabra", new GenericCandelabra(glowColor, dust, name + "Candelabra"), Mod, 5);
+            Add("Candle", new GenericCandle(glowColor, dust, name + "Candle"), Mod, 4);
+            Add("Chair", new GenericChair(color, dust, name + "Chair"), Mod, 4);
+            Add("Chandelier", new GenericChandelier(glowColor, dust, name + "Chandelier"), Mod, 4);
+            Add("Clock", new GenericClock(color, dust, name + "Clock"), Mod, 10);
+            Add("Dresser", new GenericDresser(color, dust, name + "Dresser"), Mod, 16);
+            Add("Lamp", new GenericLamp(glowColor, dust, name + "Lamp"), Mod, 3);
+            Add("Lantern", new GenericLantern(glowColor, dust, name + "Lantern"), Mod, 6);
+            Add("Piano", new Generic3x2(color, dust, name + "Piano"), Mod, 15);
+            Add("Sink", new GenericSink(color, dust, name + "Sink"), Mod, 6);
+            Add("Sofa", new Generic3x2(color, dust, name + "Sofa"), Mod, 5);
+            Add("Table", new GenericSolidWithTop(color, dust, name + "Table"), Mod, 8);
+            Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), Mod, 10);
 
             //special stuff for the door
-            mod.AddTile(name + "DoorClosed", new GenericDoorClosed(color, dust, name + "DoorClosed"), path + name + "DoorClosed");
-            mod.AddTile(name + "DoorOpen", new GenericDoorOpen(color, dust, name + "DoorOpen"), path + name + "DoorOpen");
-            mod.AddItem(name + "Door", new GenericFurnitureItem(name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
+            Mod.AddTile(name + "DoorClosed", new GenericDoorClosed(color, dust, name + "DoorClosed"), path + name + "DoorClosed");
+            Mod.AddTile(name + "DoorOpen", new GenericDoorOpen(color, dust, name + "DoorOpen"), path + name + "DoorOpen");
+            Mod.AddItem(name + "Door", new GenericFurnitureItem(name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
         }
 
         public void Unload() { }
 
-        private void Add(string typename, ModTile tile, Mod mod, int craftingQuantity)
+        private void Add(string typename, ModTile tile, Mod Mod, int craftingQuantity)
         {
-            mod.AddTile(name + typename, tile, path + name + typename);
-            mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item", craftingQuantity, material));
+            Mod.AddTile(name + typename, tile, path + name + typename);
+            Mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item", craftingQuantity, material));
         }
     }
 
@@ -89,15 +89,15 @@ namespace StarlightRiver.Core
 
         public override void SafeSetDefaults()
         {
-            item.maxStack = 99;
-            item.value = 30;
+            Item.maxStack = 99;
+            Item.value = 30;
         }
 
         public override void AddRecipes()
         {
             if (craftingMaterial != ItemID.None)
             {
-                ModRecipe recipe = new ModRecipe(mod);
+                ModRecipe recipe = new ModRecipe(Mod);
                 recipe.AddIngredient(craftingMaterial, craftingQuantity);
 
                 if (name.Contains("Candle") || name.Contains("Lamp") || name.Contains("Lantern") || name.Contains("Candelabra"))
@@ -162,7 +162,7 @@ namespace StarlightRiver.Core
             num = fail ? 1 : 3;
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name));
     }
 
     //Bathtub
@@ -203,7 +203,7 @@ namespace StarlightRiver.Core
 
         public override bool NewRightClick(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
             int spawnX = i - tile.frameX / 18;
             int spawnY = j + 2;
@@ -212,15 +212,15 @@ namespace StarlightRiver.Core
             {
                 spawnY--;
             }
-            player.FindSpawn();
-            if (player.SpawnX == spawnX && player.SpawnY == spawnY)
+            Player.FindSpawn();
+            if (Player.SpawnX == spawnX && Player.SpawnY == spawnY)
             {
-                player.RemoveSpawn();
+                Player.RemoveSpawn();
                 Main.NewText("Spawn point removed!", 255, 240, 20, false);
             }
             else if (Player.CheckSpawn(spawnX, spawnY))
             {
-                player.ChangeSpawn(spawnX, spawnY);
+                Player.ChangeSpawn(spawnX, spawnY);
                 Main.NewText("Spawn point set!", 255, 240, 20, false);
             }
             return true;
@@ -228,10 +228,10 @@ namespace StarlightRiver.Core
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = mod.ItemType(this.name);
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = Mod.ItemType(this.name);
         }
     }
 
@@ -462,10 +462,10 @@ namespace StarlightRiver.Core
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = mod.ItemType(this.name);
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = Mod.ItemType(this.name);
         }
     }
 
@@ -504,20 +504,20 @@ namespace StarlightRiver.Core
 
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.ClosedDoor };
-            openDoorID = mod.TileType(name.Replace("Closed", "Open"));
+            openDoorID = Mod.TileType(name.Replace("Closed", "Open"));
         }
 
         public override bool HasSmartInteract() => true;
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = mod.ItemType(name.Replace("Closed", ""));
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = Mod.ItemType(name.Replace("Closed", ""));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Closed", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Closed", "")));
     }
 
     //Open Door
@@ -572,20 +572,20 @@ namespace StarlightRiver.Core
 
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.OpenDoor };
-            closeDoorID = mod.TileType(name.Replace("Open", "Closed"));
+            closeDoorID = Mod.TileType(name.Replace("Open", "Closed"));
         }
 
         public override bool HasSmartInteract() => true;
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = mod.ItemType(name.Replace("Open", ""));
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = Mod.ItemType(name.Replace("Open", ""));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, mod.ItemType(name.Replace("Open", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Open", "")));
     }
 
     //Piano, Sofa
@@ -621,7 +621,7 @@ namespace StarlightRiver.Core
             disableSmartCursor = true;
             adjTiles = new int[] { TileID.Dressers };
             dresser = name.Substring(0, name.Length - 7) + " Dresser";
-            dresserDrop = mod.ItemType(name);
+            dresserDrop = Mod.ItemType(name);
         }
 
         public override bool HasSmartInteract() => true;
@@ -634,7 +634,7 @@ namespace StarlightRiver.Core
 
         public override bool NewRightClick(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             if (Main.tile[Player.tileTargetX, Player.tileTargetY].frameY == 0)
             {
                 Main.CancelClothesWindow(true);
@@ -643,10 +643,10 @@ namespace StarlightRiver.Core
                 left %= 3;
                 left = Player.tileTargetX - left;
                 int top = Player.tileTargetY - (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].frameY / 18);
-                if (player.sign > -1)
+                if (Player.sign > -1)
                 {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
-                    player.sign = -1;
+                    Player.sign = -1;
                     Main.editSign = false;
                     Main.npcChatText = string.Empty;
                 }
@@ -656,16 +656,16 @@ namespace StarlightRiver.Core
                     Main.editChest = false;
                     Main.npcChatText = string.Empty;
                 }
-                if (player.editedChestName)
+                if (Player.editedChestName)
                 {
-                    NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
-                    player.editedChestName = false;
+                    NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[Player.chest].name), Player.chest, 1f, 0f, 0f, 0, 0, 0);
+                    Player.editedChestName = false;
                 }
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    if (left == player.chestX && top == player.chestY && player.chest != -1)
+                    if (left == Player.chestX && top == Player.chestY && Player.chest != -1)
                     {
-                        player.chest = -1;
+                        Player.chest = -1;
                         Recipe.FindRecipes();
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
                     }
@@ -677,34 +677,34 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    player.flyingPigChest = -1;
+                    Player.flyingPigChest = -1;
                     int num213 = Chest.FindChest(left, top);
                     if (num213 != -1)
                     {
                         Main.stackSplit = 600;
-                        if (num213 == player.chest)
+                        if (num213 == Player.chest)
                         {
-                            player.chest = -1;
+                            Player.chest = -1;
                             Recipe.FindRecipes();
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
                         }
-                        else if (num213 != player.chest && player.chest == -1)
+                        else if (num213 != Player.chest && Player.chest == -1)
                         {
-                            player.chest = num213;
+                            Player.chest = num213;
                             Main.playerInventory = true;
                             Main.recBigList = false;
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
-                            player.chestX = left;
-                            player.chestY = top;
+                            Player.chestX = left;
+                            Player.chestY = top;
                         }
                         else
                         {
-                            player.chest = num213;
+                            Player.chest = num213;
                             Main.playerInventory = true;
                             Main.recBigList = false;
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
-                            player.chestX = left;
-                            player.chestY = top;
+                            Player.chestX = left;
+                            Player.chestY = top;
                         }
                         Recipe.FindRecipes();
                     }
@@ -713,7 +713,7 @@ namespace StarlightRiver.Core
             else
             {
                 Main.playerInventory = false;
-                player.chest = -1;
+                Player.chest = -1;
                 Recipe.FindRecipes();
                 Main.dresserX = Player.tileTargetX;
                 Main.dresserY = Player.tileTargetY;
@@ -724,7 +724,7 @@ namespace StarlightRiver.Core
 
         public override void MouseOverFar(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
             int left = Player.tileTargetX;
             int top = Player.tileTargetY;
@@ -734,39 +734,39 @@ namespace StarlightRiver.Core
                 top--;
             }
             int chestIndex = Chest.FindChest(left, top);
-            player.showItemIcon2 = -1;
+            Player.showItemIcon2 = -1;
             if (chestIndex < 0)
             {
-                player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
+                Player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[chestIndex].name != "")
                 {
-                    player.showItemIconText = Main.chest[chestIndex].name;
+                    Player.showItemIconText = Main.chest[chestIndex].name;
                 }
                 else
                 {
-                    player.showItemIconText = chest;
+                    Player.showItemIconText = chest;
                 }
-                if (player.showItemIconText == chest)
+                if (Player.showItemIconText == chest)
                 {
-                    player.showItemIcon2 = mod.ItemType(this.name);
-                    player.showItemIconText = "";
+                    Player.showItemIcon2 = Mod.ItemType(this.name);
+                    Player.showItemIconText = "";
                 }
             }
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            if (player.showItemIconText == "")
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            if (Player.showItemIconText == "")
             {
-                player.showItemIcon = false;
-                player.showItemIcon2 = 0;
+                Player.showItemIcon = false;
+                Player.showItemIcon2 = 0;
             }
         }
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
             int left = Player.tileTargetX;
             int top = Player.tileTargetY;
@@ -776,32 +776,32 @@ namespace StarlightRiver.Core
                 top--;
             }
             int num138 = Chest.FindChest(left, top);
-            player.showItemIcon2 = -1;
+            Player.showItemIcon2 = -1;
             if (num138 < 0)
             {
-                player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
+                Player.showItemIconText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[num138].name != "")
                 {
-                    player.showItemIconText = Main.chest[num138].name;
+                    Player.showItemIconText = Main.chest[num138].name;
                 }
                 else
                 {
-                    player.showItemIconText = chest;
+                    Player.showItemIconText = chest;
                 }
-                if (player.showItemIconText == chest)
+                if (Player.showItemIconText == chest)
                 {
-                    player.showItemIcon2 = mod.ItemType(this.name);
-                    player.showItemIconText = "";
+                    Player.showItemIcon2 = Mod.ItemType(this.name);
+                    Player.showItemIconText = "";
                 }
             }
-            player.noThrow = 2;
-            player.showItemIcon = true;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
             if (Main.tile[Player.tileTargetX, Player.tileTargetY].frameY > 0)
             {
-                player.showItemIcon2 = ItemID.FamiliarShirt;
+                Player.showItemIcon2 = ItemID.FamiliarShirt;
             }
         }
     }

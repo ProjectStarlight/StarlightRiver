@@ -44,9 +44,9 @@ namespace StarlightRiver.Content.CustomHooks
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {
-                NPC npc = Main.npc[k];
-                if (npc.active && npc.modNPC is ArenaActor)
-                    (npc.modNPC as ArenaActor).DrawWater(Main.spriteBatch);
+                NPC NPC = Main.npc[k];
+                if (NPC.active && NPC.ModNPC is ArenaActor)
+                    (NPC.ModNPC as ArenaActor).DrawWater(Main.spriteBatch);
             }
 
             Main.spriteBatch.End();

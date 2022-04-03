@@ -20,8 +20,8 @@ namespace StarlightRiver.Packets
         protected override void Receive()
         {
 
-            Player player = Main.player[fromWho];
-            AbilityHandler handler = player.GetHandler();
+            Player Player = Main.player[fromWho];
+            AbilityHandler handler = Player.GetHandler();
 
             Type abType = Type.GetType(abTypeName);
 

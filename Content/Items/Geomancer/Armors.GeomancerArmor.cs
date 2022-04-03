@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         internal static Item dummyItem = new Item();
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
             return true;
@@ -41,27 +41,27 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetDefaults()
         {
-            item.width = 28;
-            item.height = 28;
-            item.value = 8000;
-            item.defense = 5;
-            item.rare = 3;
+            Item.width = 28;
+            Item.height = 28;
+            Item.value = 8000;
+            Item.defense = 5;
+            Item.rare = 3;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
 		{
-            if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
-                player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
+            if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+                Player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
         }
 
         private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
         {
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
 
             if (dummyItem.IsAir)
                 dummyItem.SetDefaults(ModContent.ItemType<GeomancerItemDummy>());
 
-            if (IsGeomancerArmor(Main.HoverItem) && IsArmorSet(player) && player.controlUp)
+            if (IsGeomancerArmor(Main.HoverItem) && IsArmorSet(Player) && Player.controlUp)
             {
                 Main.HoverItem = dummyItem.Clone();
                 Main.hoverItemName = dummyItem.Name;
@@ -70,16 +70,16 @@ namespace StarlightRiver.Content.Items.Geomancer
             orig(self, rare, diff, X, Y);
         }
 
-        public bool IsGeomancerArmor(Item item)
+        public bool IsGeomancerArmor(Item Item)
         {
-            return item.type == ModContent.ItemType<GeomancerHood>() ||
-                item.type == ModContent.ItemType<GeomancerRobe>() ||
-                item.type == ModContent.ItemType<GeomancerPants>();
+            return Item.type == ModContent.ItemType<GeomancerHood>() ||
+                Item.type == ModContent.ItemType<GeomancerRobe>() ||
+                Item.type == ModContent.ItemType<GeomancerPants>();
         }
 
-        public bool IsArmorSet(Player player)
+        public bool IsArmorSet(Player Player)
         {
-            return player.armor[0].type == ModContent.ItemType<GeomancerHood>() && player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && player.armor[2].type == ModContent.ItemType<GeomancerPants>();
+            return Player.armor[0].type == ModContent.ItemType<GeomancerHood>() && Player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && Player.armor[2].type == ModContent.ItemType<GeomancerPants>();
         }
 
     }
@@ -97,28 +97,28 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetDefaults()
         {
-            item.width = 34;
-            item.height = 20;
-            item.value = 6000;
-            item.defense = 6;
-            item.rare = 3;
+            Item.width = 34;
+            Item.height = 20;
+            Item.value = 6000;
+            Item.defense = 6;
+            Item.rare = 3;
         }
 
-        /*public override void UpdateEquip(Player player)
+        /*public override void UpdateEquip(Player Player)
         {
-            player.rangedDamage += 0.1f;
+            Player.rangedDamage += 0.1f;
         }*/
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<GeomancerHood>() && legs.type == ModContent.ItemType<GeomancerPants>();
 
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            player.setBonus = "Kills ands critical strikes have a chance to drop magic gems\n" +
+            Player.setBonus = "Kills ands critical strikes have a chance to drop magic gems\n" +
             "Each gem activates a different effect when picked up\n" +
             "Obtaining another gem stores the previous effect\n" +
             "Collecting all breifly activates every effect at once";
 
-            player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
+            Player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
         }
     }
 
@@ -135,16 +135,16 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 20;
-            item.value = 4000;
-            item.defense = 5;
-            item.rare = 3;
+            Item.width = 30;
+            Item.height = 20;
+            Item.value = 4000;
+            Item.defense = 5;
+            Item.rare = 3;
         }
 
-        /*public override void UpdateEquip(Player player)
+        /*public override void UpdateEquip(Player Player)
         {
-            player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, player.velocity.Length() / 16f * 0.2f);
+            Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, Player.velocity.Length() / 16f * 0.2f);
         }*/
     }
     public class GeomancerItemDummy : ModItem
@@ -164,8 +164,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 20;
+            Item.width = 30;
+            Item.height = 20;
         }
     }
 }

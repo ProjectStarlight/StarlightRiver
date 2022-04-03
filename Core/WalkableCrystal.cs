@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
         public readonly string DummyName;
 
 
-        public override int DummyType => mod.ProjectileType(DummyName);
+        public override int DummyType => Mod.ProjectileType(DummyName);
 
         public override bool SpawnConditions(int i, int j) => Main.tile[i, j].frameX > 0;
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Core
             TileObjectData.addTile(Type);
 
             if (!string.IsNullOrEmpty(ItemName))
-                ItemType = mod.ItemType(ItemName);
+                ItemType = Mod.ItemType(ItemName);
 
             SafeSetDefaults();
         }
@@ -117,7 +117,7 @@ namespace StarlightRiver.Core
 
         public override void SafeSetDefaults()
         {
-            projectile.hide = true;
+            Projectile.hide = true;
         }
 
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
@@ -133,7 +133,7 @@ namespace StarlightRiver.Core
             {
                 Texture2D tex = Main.tileTexture[t.type];
                 Rectangle frame = tex.Frame(variantCount, 1, t.frameX - 1);
-                Vector2 pos = ((projectile.position - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
+                Vector2 pos = ((Projectile.position - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
                 LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);
             }
         }

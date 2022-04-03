@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Dusts
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 5, 50);
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/ShrinkingDust")), "ShrinkingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/ShrinkingDust").Value), "ShrinkingDustPass");
         }
 
         public override bool Update(Dust dust)

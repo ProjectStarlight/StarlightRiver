@@ -46,32 +46,32 @@ namespace StarlightRiver.Content.CustomHooks
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            NPC npc = Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor);
+            NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
-            if(npc != null && npc.active)
+            if(NPC != null && NPC.active)
             {
-                (npc.modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+                (NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
                 int boss = -1;
 
                 for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
                 {
-                    var npc2 = Main.npc[k];
+                    var NPC2 = Main.npc[k];
 
-                    if (npc2.active && npc2.modNPC is IUnderwater)
+                    if (NPC2.active && NPC2.ModNPC is IUnderwater)
                     {
-                        if (npc2.type == ModContent.NPCType<SquidBoss>())
+                        if (NPC2.type == ModContent.NPCType<SquidBoss>())
                             boss = k;
                         else
-                            (npc2.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                            (NPC2.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
                     }
                 }
 
-                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.modProjectile is IUnderwater)) //draw all projectiles
-                    (proj.modProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.ModProjectile is IUnderwater)) //draw all Projectiles
+                    (proj.ModProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch);
 
-                if (boss != -1 && Main.npc[boss].modNPC is IUnderwater)
-                   (Main.npc[boss].modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch); //draw boss ontop if extant
+                if (boss != -1 && Main.npc[boss].ModNPC is IUnderwater)
+                   (Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch); //draw boss ontop if extant
 
                 var effect = Filters.Scene["Waves"].GetShader().Shader;
 

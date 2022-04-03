@@ -146,17 +146,17 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             }
 		}
 
-		public void UpdatePlayerFrame(Player player)
+		public void UpdatePlayerFrame(Player Player)
 		{
-            if(player.GetHandler().ActiveAbility is Dash)
+            if(Player.GetHandler().ActiveAbility is Dash)
 			{
-                var dash = player.GetHandler().ActiveAbility as Dash;
+                var dash = Player.GetHandler().ActiveAbility as Dash;
 
-                player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
-                player.UpdateRotation(dash.Time / 15f * 6.28f);
+                Player.bodyFrame = new Rectangle(0, 56 * 3, 40, 56);
+                Player.UpdateRotation(dash.Time / 15f * 6.28f);
 
-                if(dash.Time == 15 || player.dead)
-                    player.UpdateRotation(0);
+                if(dash.Time == 15 || Player.dead)
+                    Player.UpdateRotation(0);
             }
 		}
 
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
             effect.Parameters["repeats"].SetValue(1f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
             trail?.Render(effect);
 

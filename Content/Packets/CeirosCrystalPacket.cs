@@ -19,7 +19,7 @@ namespace StarlightRiver.Packets
         private readonly int fromWho;
         private readonly int whosBreaking;
         private readonly int whosTheBoss;
-        private readonly Vector2 newPlayerVelocity; //we send velocity instead of multiplying since we don't want a race condition with a player update packet to end up wildly changing player velocity
+        private readonly Vector2 newPlayerVelocity; //we send velocity instead of multiplying since we don't want a race condition with a Player update packet to end up wildly changing Player velocity
 
         public CeirosCrystal(int fromWho, int whosBreaking, int whosTheBoss, Vector2 newPlayerVelocity)
         {
@@ -31,19 +31,19 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            //other clients only need to perform visuals and the player movement, npc updates will come from different packets
+            //other clients only need to perform visuals and the Player movement, NPC updates will come from different packets
 
             NPC crystal = Main.npc[whosBreaking];
-            VitricBoss Parent = Main.npc[whosTheBoss].modNPC as VitricBoss;
-            Player player = Main.player[fromWho];
+            VitricBoss Parent = Main.npc[whosTheBoss].ModNPC as VitricBoss;
+            Player Player = Main.player[fromWho];
 
-            //turn off the ability of the player who collided and deactivate it
-            player.GetModPlayer<AbilityHandler>().ActiveAbility?.Deactivate();
-            player.velocity = newPlayerVelocity;
+            //turn off the ability of the Player who collided and deactivate it
+            Player.GetModPlayer<AbilityHandler>().ActiveAbility?.Deactivate();
+            Player.velocity = newPlayerVelocity;
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                //visuals and sounds for other players
+                //visuals and sounds for other Players
 
                 if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
@@ -58,31 +58,31 @@ namespace StarlightRiver.Packets
                 }
 
                 for (int k = 0; k < 40; k++)
-                    Dust.NewDustPerfect(Parent.npc.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
+                    Dust.NewDustPerfect(Parent.NPC.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
 
                 for (int k = 0; k < 5; k++)
-                    Gore.NewGore(Parent.npc.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, mod.GetGoreSlot("Gores/ShieldGore"));
+                    Gore.NewGore(Parent.NPC.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, Mod.GetGoreSlot("Gores/ShieldGore"));
 
             }
             else if (Main.netMode == NetmodeID.Server)
             {
                 //logic for phase updates
-                var crystalMod = crystal.modNPC as VitricBossCrystal;
+                var crystalMod = crystal.ModNPC as VitricBossCrystal;
 
                 crystalMod.state = 1; //It's all broken and on the floor!
                 crystalMod.phase = 0; //go back to doing nothing
                 crystalMod.timer = 0; //reset timer
 
-                Parent.npc.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
+                Parent.NPC.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
                 Parent.ResetAttack();
 
                 crystal.netUpdate = true;
 
-                foreach (NPC npc in (Parent.npc.modNPC as VitricBoss).crystals) //reset all our crystals to idle mode
+                foreach (NPC NPC in (Parent.NPC.ModNPC as VitricBoss).crystals) //reset all our crystals to idle mode
                 {
                     crystalMod.phase = 0;
-                    npc.friendly = false; //damaging again
-                    npc.netUpdate = true;
+                    NPC.friendly = false; //damaging again
+                    NPC.netUpdate = true;
                 }
 
                 Send(-1, fromWho, false);

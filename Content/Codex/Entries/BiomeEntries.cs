@@ -13,8 +13,8 @@ namespace StarlightRiver.Codex.Entries
             Body = Helper.WrapString("",
                 500, Main.fontDeathText, 0.8f);
             Hint = "Found beneath the underground desert...";
-            Image = GetTexture("StarlightRiver/Assets/Codex/BiomeImageVitric");
-            Icon = GetTexture("StarlightRiver/Assets/Codex/BiomeIconVitric");
+            Image = Request<Texture2D>("StarlightRiver/Assets/Codex/BiomeImageVitric").Value;
+            Icon = Request<Texture2D>("StarlightRiver/Assets/Codex/BiomeIconVitric").Value;
         }
     }
 }

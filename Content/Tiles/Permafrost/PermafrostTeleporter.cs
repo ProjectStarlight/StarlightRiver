@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound()
             {
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             target = tag.Get<Vector2>("target");
         }
@@ -99,6 +99,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public PermafrostTeleporterItem() : base("PermafrostTeleporter", "Debug item", TileType<PermafrostTeleporter>(), 1) { }
+        public PermafrostTeleporterItem() : base("PermafrostTeleporter", "Debug Item", TileType<PermafrostTeleporter>(), 1) { }
     }
 }

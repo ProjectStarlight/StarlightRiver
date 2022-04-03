@@ -10,18 +10,18 @@ namespace StarlightRiver.Content.Buffs
 
         private int timer;
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            if (player.whoAmI == Main.myPlayer && timer++ % 15 == 0)
+            if (Player.whoAmI == Main.myPlayer && timer++ % 15 == 0)
             {
-                var dps = player.statLifeMax2 / 10;
+                var dps = Player.statLifeMax2 / 10;
                 var dmg = dps / 4;
-                player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " couldn't maintain their form."), dmg, 0);
-                player.immune = false;
+                Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " couldn't maintain their form."), dmg, 0);
+                Player.immune = false;
             }
 
-            player.lifeRegen = Math.Min(player.lifeRegen, 0);
-            player.lifeRegenTime = 0;
+            Player.lifeRegen = Math.Min(Player.lifeRegen, 0);
+            Player.lifeRegenTime = 0;
         }
     }
 }

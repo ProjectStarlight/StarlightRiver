@@ -23,33 +23,33 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            item.damage = 15;
-            item.melee = true;
-            item.width = 38;
-            item.height = 38;
-            item.useTime = 14;
-            item.useAnimation = 14;
-            item.pick = 75;
-            item.axe = 20;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 5f;
-            item.value = Item.sellPrice(0, 0, 30, 0);
-            item.rare = ItemRarityID.Blue;
-            item.autoReuse = true;
-            item.UseSound = SoundID.Item18;
-            item.useTurn = true;
+            Item.damage = 15;
+            Item.melee = true;
+            Item.width = 38;
+            Item.height = 38;
+            Item.useTime = 14;
+            Item.useAnimation = 14;
+            Item.pick = 75;
+            Item.axe = 20;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 5f;
+            Item.value = Item.sellPrice(0, 0, 30, 0);
+            Item.rare = ItemRarityID.Blue;
+            Item.autoReuse = true;
+            Item.UseSound = SoundID.Item18;
+            Item.useTurn = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
             if (Main.rand.Next(10) == 0)
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
                     NPC target = Main.npc[k];
-                    if (target.active && Vector2.Distance(target.Center, player.Center) < 100)
+                    if (target.active && Vector2.Distance(target.Center, Player.Center) < 100)
                     {
                         Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<ReaverLightningNode>(), 20, 0, 0, 2, 100);
-                        DrawHelper.DrawElectricity(player.Center, target.Center, DustType<Dusts.Electric>());
+                        DrawHelper.DrawElectricity(Player.Center, target.Center, DustType<Dusts.Electric>());
                     }
                 }
             return true;
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -71,10 +71,10 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            projectile.width = 8;
-            projectile.height = 8;
-            projectile.timeLeft = 1;
-            projectile.friendly = true;
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.timeLeft = 1;
+            Projectile.friendly = true;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -84,19 +84,19 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             //1: jump radius
 
             List<NPC> possibleTargets = new List<NPC>();
-            foreach (NPC npc in Main.npc.Where(npc => npc.active && !npc.immortal && Vector2.Distance(npc.Center, projectile.Center) < projectile.ai[1] && npc != target))
+            foreach (NPC NPC in Main.npc.Where(NPC => NPC.active && !NPC.immortal && Vector2.Distance(NPC.Center, Projectile.Center) < Projectile.ai[1] && NPC != target))
             {
-                possibleTargets.Add(npc); //This grabs all possible targets, which includes all NPCs in the appropriate raidus which are alive and vulnerable, excluding the hit NPC
+                possibleTargets.Add(NPC); //This grabs all possible targets, which includes all NPCs in the appropriate raidus which are alive and vulnerable, excluding the hit NPC
             }
             if (possibleTargets.Count == 0) return; //kill if no targets are available
             NPC chosenTarget = possibleTargets[Main.rand.Next(possibleTargets.Count)];
 
-            if (projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
+            if (Projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
-                Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<ReaverLightningNode>(), damage, knockback, projectile.owner, projectile.ai[0] - 1, projectile.ai[1]);
+                Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<ReaverLightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
                 DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Dusts.Electric>());
             }
-            projectile.timeLeft = 0;
+            Projectile.timeLeft = 0;
         }
     }
 }

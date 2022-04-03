@@ -15,10 +15,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         bool attackVariant = false;
 
-        internal ref float GlobalTimer => ref npc.ai[0];
-        internal ref float Phase => ref npc.ai[1];
-        internal ref float AttackPhase => ref npc.ai[2];
-        internal ref float AttackTimer => ref npc.ai[3];
+        internal ref float GlobalTimer => ref NPC.ai[0];
+        internal ref float Phase => ref NPC.ai[1];
+        internal ref float AttackPhase => ref NPC.ai[2];
+        internal ref float AttackTimer => ref NPC.ai[3];
 
         private float spinAngle = 0;
         private float glowStrength = 0.25f;
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         //Animation tracking utils
         private int Frame
         {
-            set => npc.frame.Y = value * 128;
+            set => NPC.frame.Y = value * 128;
         }
 
         //Phase tracking utils
@@ -48,21 +48,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            npc.width = 110;
-            npc.height = 92;
-            npc.lifeMax = 1500;
-            npc.damage = 20;
-            npc.aiStyle = -1;
-            npc.noGravity = true;
-            npc.knockBackResist = 0;
-            npc.boss = true;
-            npc.defense = 14;
-            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
+            NPC.width = 110;
+            NPC.height = 92;
+            NPC.lifeMax = 1500;
+            NPC.damage = 20;
+            NPC.aiStyle = -1;
+            NPC.noGravity = true;
+            NPC.knockBackResist = 0;
+            NPC.boss = true;
+            NPC.defense = 14;
+            music = Mod.GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
         {
-            npc.lifeMax = (int)(2000 * bossLifeScale);
+            NPC.lifeMax = (int)(2000 * bossLifeScale);
         }
 
         public override bool CheckDead()
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         SetPhase(PhaseEnum.FirstPhase);
                         ResetAttack();
-                        npc.noGravity = false;
+                        NPC.noGravity = false;
                     }
 
                     break;
@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             AttackPhase = 0;
 
                         attackVariant = Main.rand.NextBool();
-                        npc.netUpdate = true;
+                        NPC.netUpdate = true;
                     }
 
                     switch (AttackPhase)
@@ -142,32 +142,32 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            npc.frame.Width = 110;
-            npc.frame.Height = 92;
+            NPC.frame.Width = 110;
+            NPC.frame.Height = 92;
 
             Vector2 offset = new Vector2(0, 16);
 
             if (spinAngle != 0)
             {
-                float sin = (float)Math.Sin(spinAngle + 1.57f * npc.direction);
-                int off = Math.Abs((int)(npc.frame.Width * sin));
+                float sin = (float)Math.Sin(spinAngle + 1.57f * NPC.direction);
+                int off = Math.Abs((int)(NPC.frame.Width * sin));
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                spriteBatch.Draw(GetTexture(Texture), 
-                    new Rectangle((int)(npc.position.X - Main.screenPosition.X - off / 2 + npc.width / 2), 
-                    (int)(npc.position.Y - Main.screenPosition.Y - 64), off, npc.frame.Height),
-                    npc.frame, drawColor, 0, Vector2.Zero, effect, 0);
+                spriteBatch.Draw(Request<Texture2D>(Texture).Value, 
+                    new Rectangle((int)(NPC.position.X - Main.screenPosition.X - off / 2 + NPC.width / 2), 
+                    (int)(NPC.position.Y - Main.screenPosition.Y - 64), off, NPC.frame.Height),
+                    NPC.frame, drawColor, 0, Vector2.Zero, effect, 0);
             }
 
             else
             {
-                spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition - offset, npc.frame, drawColor, 0, npc.frame.Size() / 2, npc.scale, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                spriteBatch.Draw(GetTexture(Texture + "Glow"), npc.Center - Main.screenPosition - offset, npc.frame, Color.White * glowStrength, 0, npc.frame.Size() / 2, npc.scale, npc.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition - offset, NPC.frame, drawColor, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - Main.screenPosition - offset, NPC.frame, Color.White * glowStrength, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
 
             if (glowStrength > 0.2f)
-                Lighting.AddLight(npc.Center, new Vector3(1, 0.75f, 0.2f) * (glowStrength - 0.2f));
+                Lighting.AddLight(NPC.Center, new Vector3(1, 0.75f, 0.2f) * (glowStrength - 0.2f));
 
             return false;
         }

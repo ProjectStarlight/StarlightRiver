@@ -18,15 +18,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void MouseOver(int i, int j)
 		{
-			Player player = Main.LocalPlayer;
-			player.showItemIcon2 = ModContent.ItemType<GearTilePlacer>();
-			player.noThrow = 2;
-			player.showItemIcon = true;
+			Player Player = Main.LocalPlayer;
+			Player.showItemIcon2 = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.showItemIcon = true;
 		}
 
 		public override bool NewRightClick(int i, int j)
 		{
-			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
+			var dummy = (Dummy(i, j).ModProjectile as GearTileDummy);
 
 			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
 
@@ -56,23 +56,23 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
-			Lighting.AddLight(projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
+			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D pegTex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearPeg");
-			spriteBatch.Draw(pegTex, projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
+			spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
 			Texture2D tex;
 
 			switch (Size)
 			{
-				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
-				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
-				case 2: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
-				case 3: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
-				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+				case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+				case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+				case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
+				case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
+				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
 			}
 
 			if (gearAnimation > 0) //switching between sizes animation
@@ -81,33 +81,33 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 				switch (oldSize)
 				{
-					case 0: texOld = ModContent.GetTexture(AssetDirectory.Invisible); break;
-					case 1: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
-					case 2: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
-					case 3: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
-					default: texOld = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+					case 0: texOld = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+					case 1: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+					case 2: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
+					case 3: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
+					default: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
 				}
 
 				if (gearAnimation > 20)
 				{
 					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
-					spriteBatch.Draw(texOld, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
+					spriteBatch.Draw(texOld, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
 				}
 				else
 				{
 					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
-					spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
+					spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
 				}
 
 				return;
 			}
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 
 	class GearTilePlacer : QuickTileItem
 	{
-		public GearTilePlacer() : base("Gear puzzle", "Debug item", ModContent.TileType<DynamicGear>(), 8, AssetDirectory.VitricTile) { }
+		public GearTilePlacer() : base("Gear puzzle", "Debug Item", ModContent.TileType<DynamicGear>(), 8, AssetDirectory.VitricTile) { }
 	}
 }

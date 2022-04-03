@@ -19,11 +19,11 @@ namespace StarlightRiver.RiftCrafting
             Result = resultType;
         }
 
-        public bool CheckRecipe(List<Item> items)
+        public bool CheckRecipe(List<Item> Items)
         {
             foreach (RiftIngredient ingredient in Ingredients)
             {
-                if (items.Count(item => item.type == ingredient.type) < ingredient.count) return false;
+                if (Items.Count(Item => Item.type == ingredient.type) < ingredient.count) return false;
             }
             return true;
         }

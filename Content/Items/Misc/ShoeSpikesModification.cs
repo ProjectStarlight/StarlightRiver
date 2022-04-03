@@ -10,28 +10,28 @@ namespace StarlightRiver.Content.Items.Misc
     {
         private static List<int> ShoeSpikeAccessories = new List<int>();
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
         {
-            if (ItemIsDerivativeOfShoeSpikes(item))
+            if (ItemIsDerivativeOfShoeSpikes(Item))
             {
-                TooltipLine tooltipLine = new TooltipLine(mod, "StarlightRiver:ShoeSpikesInfo", "Massively increased acceleration when touching the ground");
+                TooltipLine tooltipLine = new TooltipLine(Mod, "StarlightRiver:ShoeSpikesInfo", "Massively increased acceleration when touching the ground");
 
                 tooltips.Add(tooltipLine);
             }
         }
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual)
+        public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
         {
-            if (ItemIsDerivativeOfShoeSpikes(item) && player.velocity.Y == 0)
+            if (ItemIsDerivativeOfShoeSpikes(Item) && Player.velocity.Y == 0)
             {
-                player.runAcceleration *= 3;
-                player.runSlowdown *= 3;
+                Player.runAcceleration *= 3;
+                Player.runSlowdown *= 3;
             }
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
 
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
@@ -42,12 +42,12 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddRecipe();
         }
 
-        private bool ItemIsDerivativeOfShoeSpikes(Item item)
+        private bool ItemIsDerivativeOfShoeSpikes(Item Item)
         {
-            if (item.type == ItemID.ShoeSpikes || item.type == ItemID.ClimbingClaws || item.type == ItemID.MasterNinjaGear)
+            if (Item.type == ItemID.ShoeSpikes || Item.type == ItemID.ClimbingClaws || Item.type == ItemID.MasterNinjaGear)
                 return true;
 
-            return ShoeSpikeAccessories.Contains(item.type);
+            return ShoeSpikeAccessories.Contains(Item.type);
         }
 
 		public void PostLoad()

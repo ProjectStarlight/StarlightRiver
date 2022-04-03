@@ -38,12 +38,12 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void Update()
         {
-            projectile.ai[0]++;
+            Projectile.ai[0]++;
 
             for (int k = 0; k < 10; k++)
             {
-                float radius = 60 + (float)Math.Sin(projectile.ai[0] / 20f) * 40;
-                float angleOff = projectile.ai[0] / 40f;
+                float radius = 60 + (float)Math.Sin(Projectile.ai[0] / 20f) * 40;
+                float angleOff = Projectile.ai[0] / 40f;
 
                 float angle = k / 10f * 6.28f + angleOff;
 
@@ -55,23 +55,23 @@ namespace StarlightRiver.Content.Tiles.Misc
 
                 int alpha = (int)(255 * (0.5f + radius / 120f * 0.5f));
 
-                Dust.NewDustPerfect(projectile.Center + off, DustType<Aurora>(), Vector2.Zero, alpha, color, 1);
+                Dust.NewDustPerfect(Projectile.Center + off, DustType<Aurora>(), Vector2.Zero, alpha, color, 1);
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            var tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
-            var texDisc = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraDisc");
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+            var texDisc = Request<Texture2D>("StarlightRiver/Assets/Items/Permafrost/AuroraDisc").Value;
 
             float sin = 1 + (float)Math.Sin(-StarlightWorld.rottime);
             float cos = 1 + (float)Math.Cos(-StarlightWorld.rottime);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.1f;
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * 0.75f, 0, tex.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(texDisc, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16), 0, texDisc.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.75f, 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(texDisc, Projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16), 0, texDisc.Size() / 2, 1, 0, 0);
 
-            Lighting.AddLight(projectile.Center, color.ToVector3() * 0.5f);
+            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
         }
     }
 
@@ -79,6 +79,6 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public DebugDisc() : base("Debug Disc Placer", "Debug item", TileType<AuroraDiscTile>(), 1) { }
+        public DebugDisc() : base("Debug Disc Placer", "Debug Item", TileType<AuroraDiscTile>(), 1) { }
     }
 }

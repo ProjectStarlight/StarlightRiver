@@ -70,11 +70,11 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Player player)
+            if (dust.customData is Player Player)
             {
-                Abilities.AbilityHandler mp = player.GetModPlayer<Abilities.AbilityHandler>();
+                Abilities.AbilityHandler mp = Player.GetModPlayer<Abilities.AbilityHandler>();
 
-                dust.position = player.Center + dust.velocity;
+                dust.position = Player.Center + dust.velocity;
 
                 if (mp.GetAbility<Smash>(out var smash))
                 {

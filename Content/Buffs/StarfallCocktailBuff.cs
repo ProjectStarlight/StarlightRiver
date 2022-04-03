@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Buffs
     {
         public StarfallCocktailBuff() : base("Starcaller", "Attract fallen stars!", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
             if (!Main.dayTime && Main.rand.Next(1000) == 0)
             {

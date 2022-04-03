@@ -19,17 +19,17 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void SetDefaults()
         {
-            item.width = 28;
-            item.height = 28;
-            item.value = 8000;
-            item.defense = 2;
+            Item.width = 28;
+            Item.height = 28;
+            Item.value = 8000;
+            Item.defense = 2;
         }
 
-        public override void UpdateEquip(Player player) => player.rangedCrit += 2;
+        public override void UpdateEquip(Player Player) => Player.rangedCrit += 2;
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -50,27 +50,27 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void SetDefaults()
         {
-            item.width = 34;
-            item.height = 20;
-            item.value = 6000;
-            item.defense = 4;
+            Item.width = 34;
+            Item.height = 20;
+            Item.value = 6000;
+            Item.defense = 4;
         }
 
-        public override void UpdateEquip(Player player) => player.rangedCrit += 2;
+        public override void UpdateEquip(Player Player) => Player.rangedCrit += 2;
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<ForestIvyHead>() && legs.type == ModContent.ItemType<ForestIvyLegs>();
 
         // TODO: Forest ivy armor setbonus
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            player.setBonus = "After 5 seconds of not taking damage, your next attack will ensnare and cause bleeding.";
-            /*StarlightPlayer starlightPlayer = player.GetModPlayer<StarlightPlayer>();
+            Player.setBonus = "After 5 seconds of not taking damage, your next attack will ensnare and cause bleeding.";
+            /*StarlightPlayer starlightPlayer = Player.GetModPlayer<StarlightPlayer>();
             starlightPlayer.ivyArmorComplete = true;*/
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 12);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -91,17 +91,17 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 20;
-            item.value = 4000;
-            item.defense = 2;
+            Item.width = 30;
+            Item.height = 20;
+            Item.value = 4000;
+            Item.defense = 2;
         }
 
-        public override void UpdateEquip(Player player) => player.moveSpeed += 0.2f;
+        public override void UpdateEquip(Player Player) => Player.moveSpeed += 0.2f;
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);

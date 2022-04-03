@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.GUI
         private int tempTime = 0;
         private int tempTimeMax = 0;
 
-        private Texture2D Texture { get => GetTexture(texturePath); }
+        private Texture2D Texture { get => Request<Texture2D>(texturePath).Value; }
 
         public void SetTexture(string path) => texturePath = path;
 
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Keys/Glow"), new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value, new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);

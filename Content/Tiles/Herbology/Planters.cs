@@ -24,8 +24,8 @@ namespace StarlightRiver.Content.Tiles.Herbology
             Main.tileSolid[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            Main.tileMerge[Type][mod.GetTile("Trellis").Type] = true;
-            drop = mod.ItemType("Soil");
+            Main.tileMerge[Type][Mod.GetTile("Trellis").Type] = true;
+            drop = Mod.ItemType("Soil");
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Rich Soil");
             AddMapEntry(new Color(56, 33, 33), name);
@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Tiles.Herbology
             Main.tileSolid[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            Main.tileMerge[Type][mod.GetTile("Soil").Type] = true;
-            drop = mod.ItemType("Soil");
+            Main.tileMerge[Type][Mod.GetTile("Soil").Type] = true;
+            drop = Mod.ItemType("Soil");
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Rich Soil");
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
         {
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Herbology/Post"), new Vector2((i + 12) * 16, (j + 9) * 16) - Main.screenPosition, Lighting.GetColor(i, j));
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Herbology/Post").Value, new Vector2((i + 12) * 16, (j + 9) * 16) - Main.screenPosition, Lighting.GetColor(i, j));
         }
     }
 
@@ -95,10 +95,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 32, mod.ItemType("Planter"));
+            Item.NewItem(i * 16, j * 16, 16, 32, Mod.ItemType("Planter"));
         }
 
-        public override void PlaceInWorld(int i, int j, Item item)
+        public override void PlaceInWorld(int i, int j, Item Item)
         {
             Main.tile[i, j].frameX = 0;
         }
@@ -109,14 +109,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 switch (Main.tile[i, j].frameX / 18)
                 {
                     case 0: break;
-                    case 1: WorldGen.PlaceTile(i, j + 1, mod.TileType("ForestIvy"), true); break;
+                    case 1: WorldGen.PlaceTile(i, j + 1, Mod.TileType("ForestIvy"), true); break;
                 }
         }
 
         public override bool NewRightClick(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            if (player.HeldItem.type == mod.ItemType("IvySeeds") && Main.tile[i, j].frameX == 0) //plants ivy
+            Player Player = Main.LocalPlayer;
+            if (Player.HeldItem.type == Mod.ItemType("IvySeeds") && Main.tile[i, j].frameX == 0) //plants ivy
                 Main.tile[i, j].frameX = 18;
             return true;
         }
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.Wood, 20);
             recipe.AddIngredient(RecipeGroupID.IronBar, 5);
             recipe.AddTile(TileID.WorkBenches);

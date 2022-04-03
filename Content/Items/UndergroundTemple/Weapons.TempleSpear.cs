@@ -20,21 +20,21 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SetDefaults()
         {
-            item.melee = true;
-            item.width = 32;
-            item.height = 32;
-            item.damage = 11;
-            item.crit = 10;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.useTime = 30;
-            item.useAnimation = 30;
-            item.noUseGraphic = true;
-            item.noMelee = true;
-            item.knockBack = 2;
-            item.rare = ItemRarityID.Blue;
-            item.shoot = ProjectileType<TempleSpearProjectile>();
-            item.shootSpeed = 1;
-            item.UseSound = SoundID.Item15;
+            Item.melee = true;
+            Item.width = 32;
+            Item.height = 32;
+            Item.damage = 11;
+            Item.crit = 10;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
+            Item.noUseGraphic = true;
+            Item.noMelee = true;
+            Item.knockBack = 2;
+            Item.rare = ItemRarityID.Blue;
+            Item.shoot = ProjectileType<TempleSpearProjectile>();
+            Item.shootSpeed = 1;
+            Item.UseSound = SoundID.Item15;
         }
     }
 
@@ -47,15 +47,15 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         public override void PostAI()
         {
             //Dust effects
-            Dust d = Dust.NewDustPerfect(projectile.Center, 264, projectile.velocity.RotatedBy(-0.5f));
+            Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity.RotatedBy(-0.5f));
             d.noGravity = true;
-            d.color = new Color(255, 255, 200) * (projectile.timeLeft / (30f * Main.player[projectile.owner].meleeSpeed));
-            d.scale = projectile.timeLeft / (30f * Main.player[projectile.owner].meleeSpeed);
+            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed));
+            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed);
 
-            d = Dust.NewDustPerfect(projectile.Center, 264, projectile.velocity.RotatedBy(0.5f));
+            d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity.RotatedBy(0.5f));
             d.noGravity = true;
-            d.color = new Color(255, 255, 200) * (projectile.timeLeft / (30f * Main.player[projectile.owner].meleeSpeed));
-            d.scale = projectile.timeLeft / (30f * Main.player[projectile.owner].meleeSpeed);
+            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed));
+            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -72,18 +72,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.timeLeft = 3600;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.timeLeft = 3600;
         }
 
         public override void AI()
         {
-            projectile.velocity *= 0.99f;
-            Lighting.AddLight(projectile.Center, new Vector3(1, 1, 1) * projectile.timeLeft / 3600f);
-            Dust d = Dust.NewDustPerfect(projectile.Center, 264);
+            Projectile.velocity *= 0.99f;
+            Lighting.AddLight(Projectile.Center, new Vector3(1, 1, 1) * Projectile.timeLeft / 3600f);
+            Dust d = Dust.NewDustPerfect(Projectile.Center, 264);
             d.noGravity = true;
-            d.color = new Color(255, 255, 200) * (projectile.timeLeft / 3600f);
+            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / 3600f);
         }
     }
 

@@ -6,9 +6,9 @@ namespace StarlightRiver.Content.Buffs
     {
         public MossRegen() : base("Mending Moss", "Regenerating life quickly!", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.lifeRegen += 10;
+            Player.lifeRegen += 10;
         }
     }
 }

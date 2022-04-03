@@ -19,22 +19,22 @@ namespace StarlightRiver.Core
 
         public override bool CloneNewInstances => true;
 
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
-            npc.lifeRegen -= DoT * 2;
+            NPC.lifeRegen -= DoT * 2;
             DoT = 0;
         }
 
-		public override bool PreNPCLoot(NPC npc)
+		public override bool PreNPCLoot(NPC NPC)
 		{
             return !dontDropItems;
 		}
 
-		public override bool PreAI(NPC npc)
+		public override bool PreAI(NPC NPC)
         {
             Age++;
 
-            return base.PreAI(npc);
+            return base.PreAI(NPC);
         }
 
     }

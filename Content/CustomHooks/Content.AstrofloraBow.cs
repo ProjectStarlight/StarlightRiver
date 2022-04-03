@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.Astroflora.AstrofloraBow>())
                 {
-                    Texture2D crosshair = ModContent.GetTexture(cursorTexture);
+                    Texture2D crosshair = ModContent.Request<Texture2D>(cursorTexture).Value;
 
-                    Color color = (Main.LocalPlayer.HeldItem.modItem as Items.Astroflora.AstrofloraBow).CursorShouldBeRed ? Color.Red : Main.cursorColor;
+                    Color color = (Main.LocalPlayer.HeldItem.ModItem as Items.Astroflora.AstrofloraBow).CursorShouldBeRed ? Color.Red : Main.cursorColor;
 
                     Main.spriteBatch.Draw(crosshair, Main.MouseScreen - (crosshair.Size() / 2), null, color, 0, Vector2.Zero, Main.cursorScale, SpriteEffects.None, 0);
 
@@ -46,9 +46,9 @@ namespace StarlightRiver.Content.CustomHooks
                 effect.Parameters["lowerRadiusLimit"].SetValue(0.375f);
                 effect.Parameters["color"].SetValue(new Color(31, 250, 131).ToVector4());
 
-                Texture2D invisible = ModContent.GetTexture(AssetDirectory.Invisible);
+                Texture2D invisible = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value;
 
-                Texture2D crosshair = ModContent.GetTexture(cursorTexture);
+                Texture2D crosshair = ModContent.Request<Texture2D>(cursorTexture).Value;
 
                 Color crosshairColor = Color.Lerp(Color.White, Main.cursorColor, (float)(Math.Sin(Main.GlobalTime * 10) + 1) / 2);
 
@@ -58,18 +58,18 @@ namespace StarlightRiver.Content.CustomHooks
 
                 for (int i = 0; i < Main.maxNPCs; i++)
                 {
-                    NPC npc = Main.npc[i];
+                    NPC NPC = Main.npc[i];
 
-                    if (!npc.active)
+                    if (!NPC.active)
                     {
                         continue;
                     }
 
-                    AstrofloraLocksGlobalNPC globalNPC = npc.GetGlobalNPC<AstrofloraLocksGlobalNPC>();
+                    AstrofloraLocksGlobalNPC globalNPC = NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>();
 
                     if (globalNPC.Locked)
                     {
-                        drawInfo.Add(new ValueTuple<NPC, float>(npc, globalNPC.remainingLockDuration / (float)AstrofloraLocksGlobalNPC.MaxLockDuration));
+                        drawInfo.Add(new ValueTuple<NPC, float>(NPC, globalNPC.remainingLockDuration / (float)AstrofloraLocksGlobalNPC.MaxLockDuration));
                     }
                 }
 
@@ -78,9 +78,9 @@ namespace StarlightRiver.Content.CustomHooks
 
                 foreach ((NPC, float) info in drawInfo)
                 {
-                    NPC npc = info.Item1;
+                    NPC NPC = info.Item1;
 
-                    Vector2 aboveNpcTop = npc.Center - new Vector2(sizeOfDonut.X / 2, (npc.height / 2) + sizeOfDonut.Y) - Main.screenPosition;
+                    Vector2 aboveNpcTop = NPC.Center - new Vector2(sizeOfDonut.X / 2, (NPC.height / 2) + sizeOfDonut.Y) - Main.screenPosition;
 
                     Rectangle destinationRectangle = new Rectangle((int)aboveNpcTop.X, (int)aboveNpcTop.Y, (int)sizeOfDonut.X, (int)sizeOfDonut.Y);
 

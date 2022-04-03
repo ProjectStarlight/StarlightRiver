@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             return true;
         }
 
-        public override bool Dangersense(int i, int j, Player player) => true;
+        public override bool Dangersense(int i, int j, Player Player) => true;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
@@ -31,10 +31,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             TileID.Sets.DrawsWalls[Type] = true;
         }
 
-        public override void FloorVisuals(Player player)
+        public override void FloorVisuals(Player Player)
         {
-            if (!player.HasBuff(BuffType<SpikeImmuneBuff>()))
-                player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got distracted by pretty colors..."), 15, 0);
+            if (!Player.HasBuff(BuffType<SpikeImmuneBuff>()))
+                Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got distracted by pretty colors..."), 15, 0);
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             Color color = new Color(100 * (1 + sin) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
             spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.35f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/IceSpikeGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.1f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/IceSpikeGlow").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * 0.1f);
             Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.2f);
         }
     }

@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 	class HauntedSword : ModItem
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-        public override bool Autoload(ref string name) => false; //TODO: implement
+        public override void Load() => false; //TODO: implement
 
         //private int charge = 0;//unused
 
@@ -15,18 +15,18 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.damage = 20;
-            item.summon = true;
-            item.width = 40;
-            item.height = 20;
-            item.useTime = 25;
-            item.useAnimation = 25;
-            item.useStyle = ItemUseStyleID.HoldingUp;
-            item.noMelee = true;
-            item.knockBack = 2;
-            item.rare = ItemRarityID.Green;
-            item.channel = true;
-            item.noUseGraphic = true;
+            Item.damage = 20;
+            Item.summon = true;
+            Item.width = 40;
+            Item.height = 20;
+            Item.useTime = 25;
+            Item.useAnimation = 25;
+            Item.useStyle = ItemUseStyleID.HoldingUp;
+            Item.noMelee = true;
+            Item.knockBack = 2;
+            Item.rare = ItemRarityID.Green;
+            Item.channel = true;
+            Item.noUseGraphic = true;
         }
     }
 }

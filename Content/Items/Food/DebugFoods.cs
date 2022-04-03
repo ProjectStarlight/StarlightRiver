@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Food
         public DebugGreen() : base("+5% melee damage", 600, IngredientType.Main) { }
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Green;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Green;
     }
 
     internal class DebugOrange : Ingredient
@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Food
         public DebugOrange() : base("+5% melee damage", 600, IngredientType.Main) { }
 		public override string Texture => AssetDirectory.FoodItem + Name;
 
-		public override void SafeSetDefaults() => item.rare = ItemRarityID.Orange;
+		public override void SafeSetDefaults() => Item.rare = ItemRarityID.Orange;
     }
 
     internal class DebugRed : Ingredient
@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Food
         public DebugRed() : base("+5% melee damage", 600, IngredientType.Main) { }
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.LightRed;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.LightRed;
     }
 
     internal class DebugPink : Ingredient
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Food
         public DebugPink() : base("+5% melee damage", 600, IngredientType.Main) { }
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Pink;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Pink;
     }
 
     internal class DebugPurple : Ingredient
@@ -40,6 +40,6 @@ namespace StarlightRiver.Content.Items.Food
         public DebugPurple() : base("+5% melee damage", 600, IngredientType.Main) { }
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.LightPurple;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.LightPurple;
     }
 }

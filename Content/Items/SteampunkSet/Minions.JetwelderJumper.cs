@@ -31,9 +31,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private int fireCounter = 0;
 
-		private Player player => Main.player[projectile.owner];
+		private Player Player => Main.player[Projectile.owner];
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StarlightRiver.Instance.AddGore(Texture + "_Gore1");
 			StarlightRiver.Instance.AddGore(Texture + "_Gore2");
@@ -49,45 +49,45 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Jumper");
-            Main.projFrames[projectile.type] = 14;
-            ProjectileID.Sets.Homing[projectile.type] = true;
-            ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
-            ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
+            Main.projFrames[Projectile.type] = 14;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
+            ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
 
         public override void SetDefaults()
         {
-            projectile.aiStyle = -1;
-            projectile.width = 38;
-            projectile.height = 50;
-            projectile.friendly = false;
-            projectile.tileCollide = true;
-            projectile.hostile = false;
-            projectile.minion = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = STARTTIMELEFT;
-            projectile.ignoreWater = true;
+            Projectile.aiStyle = -1;
+            Projectile.width = 38;
+            Projectile.height = 50;
+            Projectile.friendly = false;
+            Projectile.tileCollide = true;
+            Projectile.hostile = false;
+            Projectile.minion = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = STARTTIMELEFT;
+            Projectile.ignoreWater = true;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Texture);
-            int frameHeight = tex.Height / Main.projFrames[projectile.type];
-            Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            int frameHeight = tex.Height / Main.projFrames[Projectile.type];
+            Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
-            SpriteEffects effects = projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, tex.Size() / new Vector2(2, 2 * Main.projFrames[projectile.type]), projectile.scale, effects, 0f);
+            SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, tex.Size() / new Vector2(2, 2 * Main.projFrames[Projectile.type]), Projectile.scale, effects, 0f);
             return false;
         }
 
         public override void AI()
         {
-            NPC testtarget = Main.npc.Where(n => n.active && n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
-                projectile.frameCounter++;
-            if (projectile.frameCounter % 4 == 0 && !jumping && (fireCounter == 20 || fireCounter == 0 || testtarget == default))
+            NPC testtarget = Main.npc.Where(n => n.active && n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+                Projectile.frameCounter++;
+            if (Projectile.frameCounter % 4 == 0 && !jumping && (fireCounter == 20 || fireCounter == 0 || testtarget == default))
             {
-                projectile.frame++;
-                if (projectile.frame == 11)
+                Projectile.frame++;
+                if (Projectile.frame == 11)
                 {
                     Jump(testtarget);
                 }
@@ -95,32 +95,32 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             if (testtarget != default && !jumping && !fired)
             {
-                if (projectile.frameCounter % 4 == 0 && projectile.frame < 5)
-                    projectile.frame++;
+                if (Projectile.frameCounter % 4 == 0 && Projectile.frame < 5)
+                    Projectile.frame++;
                 fireCounter++;
                 if (fireCounter == 10)
                     FireMissle(testtarget);
                 if (fireCounter == 20)
                     fired = true;
             }
-            if (projectile.velocity.Y < 15)
-                projectile.velocity.Y += 0.2f;
+            if (Projectile.velocity.Y < 15)
+                Projectile.velocity.Y += 0.2f;
 
             if (jumping)
             {
-                projectile.velocity.X = xVel;
-                if (Math.Abs(projectile.velocity.Y) < 0.5f)
-                    projectile.frame = 12;
-                else if (projectile.velocity.Y >= 0.5f)
-                    projectile.frame = 13;
+                Projectile.velocity.X = xVel;
+                if (Math.Abs(Projectile.velocity.Y) < 0.5f)
+                    Projectile.frame = 12;
+                else if (Projectile.velocity.Y >= 0.5f)
+                    Projectile.frame = 13;
                 else
-                    projectile.frame = 11;
+                    Projectile.frame = 11;
             }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (oldVelocity.Y != projectile.velocity.Y && oldVelocity.Y > 0 && projectile.frame > 10)
+            if (oldVelocity.Y != Projectile.velocity.Y && oldVelocity.Y > 0 && Projectile.frame > 10)
             {
                 if (jumping)
                 {
@@ -133,12 +133,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                         dustVel.X *= 10;
                         if (Math.Abs(dustVel.X) < 6)
                             dustVel.X += Math.Sign(dustVel.X) * 4;
-                        Dust.NewDustPerfect(projectile.Bottom, ModContent.DustType<JetwelderJumperDust>(), dustVel, 0, new Color(236, 214, 146) * 0.3f, Main.rand.NextFloat(0.25f, 0.5f));
+                        Dust.NewDustPerfect(Projectile.Bottom, ModContent.DustType<JetwelderJumperDust>(), dustVel, 0, new Color(236, 214, 146) * 0.3f, Main.rand.NextFloat(0.25f, 0.5f));
                     }
                 }
-                projectile.frame = 0;
-                projectile.frameCounter = 0;
-                projectile.velocity.X = 0;
+                Projectile.frame = 0;
+                Projectile.frameCounter = 0;
+                Projectile.velocity.X = 0;
             }
             return false;
         }
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextVector2Circular(5, 5), ModGore.GetGoreSlot(Texture + "_Gore" + i.ToString()), 1f);
+                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()), 1f);
             }
         }
 
@@ -160,21 +160,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 dir = dir.RotatedByRandom(0.4f);
             else
             {
-                int offsetDirection = Math.Sign(target.Center.X - projectile.Center.X);
-                dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign((target.Center.X - (offsetDirection * 300)) - projectile.Center.X) * 0.6f));
+                int offsetDirection = Math.Sign(target.Center.X - Projectile.Center.X);
+                dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign((target.Center.X - (offsetDirection * 300)) - Projectile.Center.X) * 0.6f));
             }
-            projectile.velocity = dir * Main.rand.Next(6, 11);
-            xVel = projectile.velocity.X;
+            Projectile.velocity = dir * Main.rand.Next(6, 11);
+            xVel = Projectile.velocity.X;
 
-            projectile.spriteDirection = Math.Sign(dir.X);
+            Projectile.spriteDirection = Math.Sign(dir.X);
         }
 
         private void FireMissle(NPC target)
         {
             if (target != default)
             {
-                Vector2 vel = ArcVelocityHelper.GetArcVel(projectile.Center, target.Center, 0.25f, 300, 600);
-                Projectile.NewProjectile(projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), projectile.damage * 2, projectile.knockBack, player.whoAmI, target.whoAmI);
+                Vector2 vel = ArcVelocityHelper.GetArcVel(Projectile.Center, target.Center, 0.25f, 300, 600);
+                Projectile.NewProjectile(Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Player.whoAmI, target.whoAmI);
             }
         }
     }
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 
-        private Player player => Main.player[projectile.owner];
+        private Player Player => Main.player[Projectile.owner];
 
         private List<Vector2> cache;
         private Trail trail;
@@ -192,35 +192,35 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Grenade");
-            Main.projFrames[projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 12;       
-            projectile.height = 12;  
-            projectile.friendly = true;     
-            projectile.ranged = true;      
-            projectile.tileCollide = true;   
-            projectile.penetrate = 1;      
-            projectile.timeLeft = 300;   
-            projectile.ignoreWater = true;
-            projectile.aiStyle = -1;
+            Projectile.width = 12;       
+            Projectile.height = 12;  
+            Projectile.friendly = true;     
+            Projectile.ranged = true;      
+            Projectile.tileCollide = true;   
+            Projectile.penetrate = 1;      
+            Projectile.timeLeft = 300;   
+            Projectile.ignoreWater = true;
+            Projectile.aiStyle = -1;
         }
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.25f;
-            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+            Projectile.velocity.Y += 0.25f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
-            projectile.frameCounter++;
-            if (projectile.frameCounter % 5 == 0)
-                projectile.frame++;
+            Projectile.frameCounter++;
+            if (Projectile.frameCounter % 5 == 0)
+                Projectile.frame++;
 
-            projectile.frame %= Main.projFrames[projectile.type];
+            Projectile.frame %= Main.projFrames[Projectile.type];
 
-            if (projectile.frame == 0)
-                Lighting.AddLight(projectile.Center, Color.Red.ToVector3() * 0.7f);
+            if (Projectile.frame == 0)
+                Lighting.AddLight(Projectile.Center, Color.Red.ToVector3() * 0.7f);
 
             ManageCaches();
             ManageTrail();
@@ -229,20 +229,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             DrawTrail(spriteBatch);
-            Texture2D tex = ModContent.GetTexture(Texture);
-            Texture2D glowTex = ModContent.GetTexture(Texture + "_Glow");
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
-            int frameHeight = tex.Height / Main.projFrames[projectile.type];
+            int frameHeight = tex.Height / Main.projFrames[Projectile.type];
             Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
 
-            Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, tex.Width, frameHeight);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, lightColor, projectile.rotation, origin, projectile.scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(glowTex, projectile.Center - Main.screenPosition, frame, Color.White, projectile.rotation, origin, projectile.scale, SpriteEffects.None, 0f);
+            Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
         public override bool? CanHitNPC(NPC target)
         {
-            if (projectile.velocity.Y < 0)
+            if (Projectile.velocity.Y < 0)
                 return false;
             return base.CanHitNPC(target);
         }
@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             /*for (int i = 0; i < 10; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
                 dust.velocity = Main.rand.NextVector2Circular(7, 7);
                 dust.scale = Main.rand.NextFloat(1f, 1.5f);
                 dust.alpha = 70 + Main.rand.Next(60);
@@ -260,25 +260,25 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             for (int i = 0; i < 6; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<JetwelderDust>());
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<JetwelderDust>());
                 dust.velocity = Main.rand.NextVector2Circular(4, 4);
                 dust.scale = Main.rand.NextFloat(1f, 1.5f);
                 dust.alpha = Main.rand.Next(80) + 40;
                 dust.rotation = Main.rand.NextFloat(6.28f);
 
-                Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
             }
 
             for (int i = 0; i < 3; i++)
             {
-                Projectile.NewProjectileDirect(projectile.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<CoachGunEmber>(), 0, 0, player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+                Projectile.NewProjectileDirect(Projectile.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
             }
 
-            Projectile.NewProjectileDirect(projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), projectile.damage, 0, player.whoAmI, victim == default ? -1 : victim.whoAmI);
+            Projectile.NewProjectileDirect(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Player.whoAmI, victim == default ? -1 : victim.whoAmI);
             for (int i = 0; i < 10; i++)
             {
                 Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
-                Dust dust = Dust.NewDustDirect(projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<JetwelderDustTwo>());
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<JetwelderDustTwo>());
                 dust.velocity = vel * Main.rand.Next(7);
                 dust.scale = Main.rand.NextFloat(0.3f, 0.7f);
                 dust.alpha = 70 + Main.rand.Next(60);
@@ -298,11 +298,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 cache = new List<Vector2>();
                 for (int i = 0; i < 10; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > 10)
             {
@@ -320,7 +320,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         private void DrawTrail(SpriteBatch spriteBatch)
@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/MotionTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
 
             trail?.Render(effect);
 
@@ -349,19 +349,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         //private Trail trail;
         //private Trail trail2;
 
-        private float Progress => 1 - (projectile.timeLeft / 5f);
+        private float Progress => 1 - (Projectile.timeLeft / 5f);
 
         private float Radius => 75 * (float)Math.Sqrt(Math.Sqrt(Progress));
 
         public override void SetDefaults()
         {
-            projectile.width = 80;
-            projectile.height = 80;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.tileCollide = false;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 5;
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.ranged = true;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 5;
         }
 
         public override void SetStaticDefaults()
@@ -377,10 +377,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            Vector2 line = targetHitbox.Center.ToVector2() - projectile.Center;
+            Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
             line.Normalize();
             line *= Radius;
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + line))
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
             {
                 return true;
             }
@@ -389,7 +389,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (target.whoAmI == projectile.ai[0])
+            if (target.whoAmI == Projectile.ai[0])
                 return false;
             return base.CanHitNPC(target);
         }

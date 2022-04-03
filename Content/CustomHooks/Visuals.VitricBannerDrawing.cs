@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Main.gameMenu)
             {
-                VerletChain.toDraw.Clear(); // we clear because the toDraw list is static and we need to manually clear when we're not in a world so we don't get ghost freezeframes when rejoining a multiplayer world (singleplayer could be cleared on world load potentially)
+                VerletChain.toDraw.Clear(); // we clear because the toDraw list is static and we need to manually clear when we're not in a world so we don't get ghost freezeframes when rejoining a multiPlayer world (singlePlayer could be cleared on world load potentially)
                 return;
             }
                 

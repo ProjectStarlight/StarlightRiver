@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Balanced
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemType<OreEbony>(), 4);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Balanced
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemType<OreIvory>(), 3);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);

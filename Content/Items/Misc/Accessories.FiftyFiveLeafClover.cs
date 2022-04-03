@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public FiftyFiveLeafClover() : base("Fifty Five Leaf Clover", "Critical strike chance increases up to 20% over 10 seconds\nEffect resets upon taking damage") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.PreHurtEvent += PreHurtAccessory;
             StarlightPlayer.ResetEffectsEvent += ResetEffectsAccessory;
@@ -21,28 +21,28 @@ namespace StarlightRiver.Content.Items.Misc
             return true;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            StarlightPlayer starlightPlayer = player.GetModPlayer<StarlightPlayer>();
+            StarlightPlayer starlightPlayer = Player.GetModPlayer<StarlightPlayer>();
 
             starlightPlayer.FiftyFiveLeafClover = (int)MathHelper.Clamp(starlightPlayer.FiftyFiveLeafClover + 1, 0, 600);
 
             float progress = starlightPlayer.FiftyFiveLeafClover / 600f;
 
-            player.BoostAllDamage(0, (int)(progress * 20));
+            Player.BoostAllDamage(0, (int)(progress * 20));
         }
 
         private void ResetEffectsAccessory(StarlightPlayer starlightPlayer)
         {
-            if (!Equipped(starlightPlayer.player))
+            if (!Equipped(starlightPlayer.Player))
             {
                 starlightPlayer.FiftyFiveLeafClover = 0;
             }
         }
 
-        private bool PreHurtAccessory(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        private bool PreHurtAccessory(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            player.GetModPlayer<StarlightPlayer>().FiftyFiveLeafClover = 0;
+            Player.GetModPlayer<StarlightPlayer>().FiftyFiveLeafClover = 0;
 
             return true;
         }

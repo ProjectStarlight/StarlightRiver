@@ -23,9 +23,9 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Green;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
 
             color = new Color(255, 100, 220);
         }
@@ -38,15 +38,15 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
             Ability.Boost = 0.35f;
             base.OnActivate();
 
-            // Controls how fast the player can get before they get diminishing returns, in a 1:1 ratio to their max run speed.
+            // Controls how fast the Player can get before they get diminishing returns, in a 1:1 ratio to their max run speed.
             // v = 3 means they can be 3x faster than their normal max speed, etc
             const float v = 3f;
 
-            // Calculate how fast the player is going compared to their max run speed.
+            // Calculate how fast the Player is going compared to their max run speed.
             // Allow div by zero here. With floats, it'll just return Infinity, which is fine.
             float velocityPercent = Player.velocity.Length() / (Player.maxRunSpeed * v);
 
-            // Add to player velocity, allowing cumulative velocity.
+            // Add to Player velocity, allowing cumulative velocity.
             // The amount of speed gained reduces in proportion to the velocityPercent. This is to prevent infinite velocity gain.
             Player.velocity += Ability.Vel / Math.Max(1, velocityPercent);
 
@@ -102,11 +102,6 @@ namespace StarlightRiver.Abilities.AbilityContent.ForbiddenWinds
         public override int TransformTo => ModContent.ItemType<Pulse>();
 
         public override bool Visible => Main.LocalPlayer.controlHook;
-
-        public override bool Autoload(ref string name)
-        {
-            return base.Autoload(ref name);
-        }
 
         public override void SafeSetStaticDefaults()
         {

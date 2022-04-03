@@ -12,17 +12,17 @@ namespace StarlightRiver.Content.NPCs.Overgrow
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Executioner Skeleton");
-            Main.npcFrameCount[npc.type] = 1;
+            Main.npcFrameCount[NPC.type] = 1;
         }
 
         public override void SetDefaults()
         {
-            npc.height = 16;
-            npc.width = 16;
-            npc.lifeMax = 500;
-            npc.damage = 60;
-            npc.aiStyle = -1;
-            npc.noGravity = false;
+            NPC.height = 16;
+            NPC.width = 16;
+            NPC.lifeMax = 500;
+            NPC.damage = 60;
+            NPC.aiStyle = -1;
+            NPC.noGravity = false;
         }
 
         public override void AI()
@@ -31,12 +31,12 @@ namespace StarlightRiver.Content.NPCs.Overgrow
              * 0: state
              * 1: timer
              */
-            Player target = Main.player[npc.target];
-            switch (npc.ai[0])
+            Player target = Main.player[NPC.target];
+            switch (NPC.ai[0])
             {
                 case 0:
-                    npc.TargetClosest();
-                    if (Vector2.Distance(npc.Center, target.Center) <= 1200)
+                    NPC.TargetClosest();
+                    if (Vector2.Distance(NPC.Center, target.Center) <= 1200)
                     {
                     }
                     break;

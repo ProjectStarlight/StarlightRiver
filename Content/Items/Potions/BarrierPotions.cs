@@ -32,26 +32,26 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetDefaults()
 		{
-			item.width = 32;
-			item.height = 32;
-			item.consumable = true;
-			item.maxStack = 30;
-			item.UseSound = SoundID.Item3;
-			item.useStyle = ItemUseStyleID.EatingUsing;
-			item.useTime = 15;
-			item.useAnimation = 15;
+			Item.width = 32;
+			Item.height = 32;
+			Item.consumable = true;
+			Item.maxStack = 30;
+			Item.UseSound = SoundID.Item3;
+			Item.useStyle = ItemUseStyleID.EatingUsing;
+			Item.useTime = 15;
+			Item.useAnimation = 15;
 		}
 
-		public override bool CanUseItem(Player player) => !player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !player.HasBuff(BuffID.PotionSickness);
+		public override bool CanUseItem(Player Player) => !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
 
-		public override bool UseItem(Player player)
+		public override bool UseItem(Player Player)
 		{
-			player.GetModPlayer<ShieldPlayer>().Shield += amount;
-			player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
-			player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
-			player.AddBuff(BuffID.PotionSickness, 1200);
+			Player.GetModPlayer<ShieldPlayer>().Shield += amount;
+			Player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
+			Player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
+			Player.AddBuff(BuffID.PotionSickness, 1200);
 
-			CombatText.NewText(player.Hitbox, new Color(150, 255, 255), amount);
+			CombatText.NewText(Player.Hitbox, new Color(150, 255, 255), amount);
 
 			return true;
 		}
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			var recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 2);
 			recipe.AddIngredient(ItemID.Glass, 5);
 			recipe.AddIngredient(ItemID.BottledWater);
@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			var recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ModContent.ItemType<LesserBarrierPotion>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 2);
 			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			var recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ModContent.ItemType<RegularBarrierPotion>(), 5);
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Potions
 			recipe.AddTile(TileID.Bottles);
 			recipe.AddRecipe();
 
-			recipe = new ModRecipe(mod);
+			recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ItemID.BottledWater, 5);
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 10);
 			recipe.AddIngredient(ItemID.SoulofLight);
@@ -135,9 +135,9 @@ namespace StarlightRiver.Content.Items.Potions
 			return true;
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
-			player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate -= 50;
+			Player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate -= 50;
 		}
 	}
 }

@@ -87,8 +87,8 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
-            Player player = Main.LocalPlayer;
-            dust.rotation = Vector2.Distance(dust.position, player.Center) * 0.1f;
+            Player Player = Main.LocalPlayer;
+            dust.rotation = Vector2.Distance(dust.position, Player.Center) * 0.1f;
 
             if (dust.customData is int) { dust.customData = (int)dust.customData - 1; }
             dust.position += dust.velocity;
@@ -103,11 +103,11 @@ namespace StarlightRiver.Content.Dusts
                     rot = 0;
                 }
 
-                Vector2 offset = (player.Center - dust.position);
-                dust.position.X = player.Center.X + (float)Math.Cos(rot) * offset.Length();
-                dust.position.Y = player.Center.Y + (float)Math.Sin(rot) * offset.Length();
+                Vector2 offset = (Player.Center - dust.position);
+                dust.position.X = Player.Center.X + (float)Math.Cos(rot) * offset.Length();
+                dust.position.Y = Player.Center.Y + (float)Math.Sin(rot) * offset.Length();
 
-                dust.velocity = Vector2.Normalize(dust.position - player.Center) * -3.9f;
+                dust.velocity = Vector2.Normalize(dust.position - Player.Center) * -3.9f;
 
                 dust.scale *= 0.97f;
                 timer--;

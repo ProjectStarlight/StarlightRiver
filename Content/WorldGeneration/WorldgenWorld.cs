@@ -7,7 +7,7 @@ using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {

@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             Gore.NewGore(pos, new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(-1, 1)), Main.rand.Next(51, 54));
 
-            //item pool
+            //Item pool
             switch (Main.rand.Next(5))
             {
                 case 0:

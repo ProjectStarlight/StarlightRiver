@@ -22,10 +22,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         private const int WALK_RADIUS = 16;
 
-        private ref float Timer => ref npc.ai[0];
-        private ref float WalkTimer => ref npc.ai[1];
-        private ref float Landed => ref npc.ai[2];
-        private ref float State => ref npc.ai[3];
+        private ref float Timer => ref NPC.ai[0];
+        private ref float WalkTimer => ref NPC.ai[1];
+        private ref float Landed => ref NPC.ai[2];
+        private ref float State => ref NPC.ai[3];
 
         public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/KettleCreature";
 
@@ -36,16 +36,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetDefaults()
         {
-            npc.width = 32;
-            npc.height = 32;
-            npc.knockBackResist = 0.8f;
-            npc.lifeMax = 100;
-            npc.noGravity = true;
-            npc.noTileCollide = false;
-            npc.damage = 15;
-            npc.aiStyle = -1;
-            //npc.HitSound = SoundID.NPCHit1;
-            //npc.DeathSound = SoundID.NPCDeath4;
+            NPC.width = 32;
+            NPC.height = 32;
+            NPC.knockBackResist = 0.8f;
+            NPC.lifeMax = 100;
+            NPC.noGravity = true;
+            NPC.noTileCollide = false;
+            NPC.damage = 15;
+            NPC.aiStyle = -1;
+            //NPC.HitSound = SoundID.NPCHit1;
+            //NPC.DeathSound = SoundID.NPCDeath4;
         }
 
         public override void AI()
@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
             {
                 if (!Floating)
                 {
-                    npc.velocity *= 0;
-                    npc.Center = Vector2.Lerp(leftLeg.foot, rightLeg.foot, 0.5f) + new Vector2(0, -70);
+                    NPC.velocity *= 0;
+                    NPC.Center = Vector2.Lerp(leftLeg.foot, rightLeg.foot, 0.5f) + new Vector2(0, -70);
 
                     if (leftLeg.savedPoint == default && rightLeg.savedPoint == default && Landed == 0) //landing case
                     {
@@ -75,14 +75,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     }
 
                     WalkTimer += 0.14f;
-                    FootOffGround.foot = FootOffGround.savedPoint + (Vector2.UnitX * -WALK_RADIUS * npc.direction).RotatedBy(WalkTimer * npc.direction);
+                    FootOffGround.foot = FootOffGround.savedPoint + (Vector2.UnitX * -WALK_RADIUS * NPC.direction).RotatedBy(WalkTimer * NPC.direction);
 
                     if (WalkTimer > 4.68f)
                     {
-                        npc.velocity.Y -= 4;
-                        npc.velocity.X += 4 * npc.direction;
-                        leftLeg.MoveWholeLimb(npc.velocity);
-                        rightLeg.MoveWholeLimb(npc.velocity);
+                        NPC.velocity.Y -= 4;
+                        NPC.velocity.X += 4 * NPC.direction;
+                        leftLeg.MoveWholeLimb(NPC.velocity);
+                        rightLeg.MoveWholeLimb(NPC.velocity);
                         WalkTimer = 0;
                     }
 
@@ -96,21 +96,21 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         }
 
                         WalkTimer = 0;
-                        FootOnGround.savedPoint = FootOnGround.foot + Vector2.UnitX * WALK_RADIUS * npc.direction;
+                        FootOnGround.savedPoint = FootOnGround.foot + Vector2.UnitX * WALK_RADIUS * NPC.direction;
                         FootOnGround.foot.Y -= 16;
                         FootOnGround = FootOffGround;
 
-                        npc.TargetClosest(true);
-                        npc.direction = Main.player[npc.target].Center.X > npc.Center.X ? -1 : 1;
+                        NPC.TargetClosest(true);
+                        NPC.direction = Main.player[NPC.target].Center.X > NPC.Center.X ? -1 : 1;
                     }
                 }
 
                 else
                 {
-                    leftLeg.MoveWholeLimb(npc.velocity);
-                    rightLeg.MoveWholeLimb(npc.velocity);
-                    npc.velocity.Y += 0.43f;
-                    npc.velocity.X *= 0.95f;
+                    leftLeg.MoveWholeLimb(NPC.velocity);
+                    rightLeg.MoveWholeLimb(NPC.velocity);
+                    NPC.velocity.Y += 0.43f;
+                    NPC.velocity.X *= 0.95f;
 
                     if (Landed == 1)
                     {
@@ -131,12 +131,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 
 
-                    Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(angle) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
+                    Projectile.NewProjectile(NPC.Center, Vector2.UnitY.RotatedBy(angle) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
                 }
 
                 for (int k = 0; k < 2; k++)
                     if (Timer == 30 + k * 5)
-                        Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedByRandom(1) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
 
                 if (Timer == 60)
                 {
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         private Vector2 attachOff;
 
         private KettleCreature parent;
-        private NPC parentNPC => parent.npc;
+        private NPC parentNPC => parent.NPC;
 
         private const int LIMB_LENGTH = 32;
 
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public KettleLimb(KettleCreature parent, Vector2 attachOff)
         {
             this.parent = parent;
-            attachPoint = parent.npc.Center + attachOff;
+            attachPoint = parent.NPC.Center + attachOff;
             foot = attachPoint + new Vector2(0, 64);
             joint = attachPoint + new Vector2(0, 32);
             this.attachOff = attachOff;
@@ -195,8 +195,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public void Draw(SpriteBatch sb)
         {
-            var limbTex = GetTexture("StarlightRiver/Assets/NPCs/Vitric/KettleCreatureLimb");
-            var jointTex = GetTexture("StarlightRiver/Assets/NPCs/Vitric/KettleCreatureJoint");
+            var limbTex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/KettleCreatureLimb").Value;
+            var jointTex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/KettleCreatureJoint").Value;
 
             sb.Draw(jointTex, joint - Main.screenPosition, null, Color.White, 0, jointTex.Size() / 2, 1, 0, 0);
             sb.Draw(jointTex, attachPoint - Main.screenPosition, null, Color.White, 0, jointTex.Size() / 2, 1, 0, 0);
@@ -221,19 +221,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.hostile = true;
-            projectile.timeLeft = 120;
-            projectile.tileCollide = true;
-            projectile.penetrate = -1;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.hostile = true;
+            Projectile.timeLeft = 120;
+            Projectile.tileCollide = true;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.3f;
+            Projectile.velocity.Y += 0.3f;
 
-            Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), DustType<Dusts.Glow>(), Vector2.UnitY * -1, 0, new Color(255, 150, 50), 0.5f);
+            Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), DustType<Dusts.Glow>(), Vector2.UnitY * -1, 0, new Color(255, 150, 50), 0.5f);
 
             ManageCaches();
             ManageTrail();
@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void Kill(int timeLeft)
 		{
             for(int k = 0; k < 20; k++)
-                Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(32), DustType<Dusts.Glow>(), Vector2.UnitY * -1.5f, 0, new Color(255, 100, 50), 0.6f);
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(32), DustType<Dusts.Glow>(), Vector2.UnitY * -1.5f, 0, new Color(255, 100, 50), 0.6f);
         }
 
 		private void ManageCaches()
@@ -253,11 +253,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 for (int i = 0; i < 30; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > 30)
             {
@@ -274,14 +274,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 if (factor.X > 0.99f)
                     return Color.Transparent;
 
-                if (projectile.timeLeft < 20)
-                    alpha = projectile.timeLeft / 20f;
+                if (Projectile.timeLeft < 20)
+                    alpha = Projectile.timeLeft / 20f;
 
                 return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * factor.X * alpha;
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -295,16 +295,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            var tex = GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 150, 50), 0, tex.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 150, 50), 0, tex.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.8f, 0, 0);
         }
     }
 }

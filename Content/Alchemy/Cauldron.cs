@@ -28,17 +28,17 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void SetDefaults()
 		{
-			item.width = 26;
-			item.height = 22;
-			item.maxStack = 99;
-			item.useTurn = true;
-			item.autoReuse = true;
-			item.useAnimation = 15;
-			item.useTime = 15;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.consumable = true;
-			item.value = 500;
-			item.createTile = ModContent.TileType<CauldronTile>();
+			Item.width = 26;
+			Item.height = 22;
+			Item.maxStack = 99;
+			Item.useTurn = true;
+			Item.autoReuse = true;
+			Item.useAnimation = 15;
+			Item.useTime = 15;
+			Item.useStyle = ItemUseStyleID.SwingThrow;
+			Item.consumable = true;
+			Item.value = 500;
+			Item.createTile = ModContent.TileType<CauldronTile>();
 		}
 	}
 
@@ -54,11 +54,11 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			int item = Item.NewItem(new Vector2(i, j) * 16, ItemType<CauldronItem>(), 1);
+			int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<CauldronItem>(), 1);
 
-			// Sync the drop for multiplayer
-			if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+			// Sync the drop for multiPlayer
+			if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
 		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Alchemy
 			int y = j - Main.tile[i, j].frameY / 16 % 2;
 			if (DummyExists(x, y, DummyType))
             {
-				CauldronDummyAbstract cauldronDummy = (CauldronDummyAbstract)Dummy(x, y).modProjectile;
+				CauldronDummyAbstract cauldronDummy = (CauldronDummyAbstract)Dummy(x, y).ModProjectile;
 				if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<MixingStick>())
                 {
 					cauldronDummy.AttemptStartCraft();

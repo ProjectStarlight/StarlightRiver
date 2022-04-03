@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public WindowSmallItem() : base("Smol Window", "Debug item", TileType<WindowSmall>(), 1) { }
+        public WindowSmallItem() : base("Smol Window", "Debug Item", TileType<WindowSmall>(), 1) { }
     }
 
     class WindowSmallDummy : Dummy, IDrawAdditive
@@ -40,14 +40,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "Window3");
-            Texture2D tex2 = GetTexture(AssetDirectory.OvergrowTile + "WindowSmall");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window3").Value;
+            Texture2D tex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowSmall").Value;
 
-            Rectangle target = new Rectangle((int)(projectile.position.X - Main.screenPosition.X), (int)(projectile.position.Y - Main.screenPosition.Y), 4 * 16, 6 * 16);
+            Rectangle target = new Rectangle((int)(Projectile.position.X - Main.screenPosition.X), (int)(Projectile.position.Y - Main.screenPosition.Y), 4 * 16, 6 * 16);
 
-            float offX = (Main.screenPosition.X + Main.screenWidth / 2 - projectile.Center.X) * -0.14f;
-            float offY = (Main.screenPosition.Y + Main.screenHeight / 2 - projectile.Center.Y) * -0.14f;
-            Rectangle source = new Rectangle((int)(projectile.position.X % tex.Width) + (int)offX, (int)(projectile.position.Y % tex.Height) + (int)offY, 4 * 16, 6 * 16);
+            float offX = (Main.screenPosition.X + Main.screenWidth / 2 - Projectile.Center.X) * -0.14f;
+            float offY = (Main.screenPosition.Y + Main.screenHeight / 2 - Projectile.Center.Y) * -0.14f;
+            Rectangle source = new Rectangle((int)(Projectile.position.X % tex.Width) + (int)offX, (int)(Projectile.position.Y % tex.Height) + (int)offY, 4 * 16, 6 * 16);
 
             spriteBatch.Draw(tex, target, source, Color.White);
             spriteBatch.Draw(tex2, target, tex2.Frame(), lightColor);
@@ -55,24 +55,24 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void Update()
         {
-            projectile.ai[0] += 0.02f;
-            Lighting.AddLight(projectile.Center + new Vector2(0, 32), new Vector3(1, 1f, 0.6f));
+            Projectile.ai[0] += 0.02f;
+            Lighting.AddLight(Projectile.Center + new Vector2(0, 32), new Vector3(1, 1f, 0.6f));
 
             if (Main.rand.Next(20) == 0)
             {
                 Vector2 off = Vector2.UnitY.RotatedByRandom(0.8f);
-                Dust.NewDustPerfect(projectile.Center + off * 20, DustType<Dusts.GoldSlowFade>(), off * 0.15f, 0, default, 0.35f);
+                Dust.NewDustPerfect(Projectile.Center + off * 20, DustType<Dusts.GoldSlowFade>(), off * 0.15f, 0, default, 0.35f);
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "PitGlow");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "PitGlow").Value;
 
-            float off = (float)Math.Sin(projectile.ai[0]) * 0.05f;
+            float off = (float)Math.Sin(Projectile.ai[0]) * 0.05f;
 
             for (int k = -1; k < 2; k++)
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, 100), tex.Frame(), new Color(1, 0.9f, 0.6f) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex.Width / 2, 0), 0.7f, 0, 0);
+                spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 100), tex.Frame(), new Color(1, 0.9f, 0.6f) * (0.4f + off), (float)Math.PI + k * (0.9f + off), new Vector2(tex.Width / 2, 0), 0.7f, 0, 0);
         }
     }
 }

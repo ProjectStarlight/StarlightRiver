@@ -21,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Core
 {
 	//Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
         private static WorldFlags flags;
 
@@ -177,10 +177,10 @@ namespace StarlightRiver.Core
             knownRecipies = new List<string>();
 
             //Autoload NPC upgrades
-            Mod mod = StarlightRiver.Instance;
-            if (mod.Code != null)
+            Mod Mod = StarlightRiver.Instance;
+            if (Mod.Code != null)
             {
-                foreach (Type type in mod.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(TownUpgrade))))
+                foreach (Type type in Mod.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(TownUpgrade))))
                 {
                     TownUpgrades.Add(type.Name.Replace("Upgrade", ""), false);
                 }
@@ -189,38 +189,36 @@ namespace StarlightRiver.Core
             PureTiles = new List<Vector2>();
         }
 
-        public override TagCompound Save()
+        public override void SaveWorldData(TagCompound tag)
         {
-            TagCompound tag = new TagCompound();
             foreach (var pair in TownUpgrades)
                 tag.Add(pair.Key, pair.Value);
 
             // TODO why the hell is this throwing Collection was modified?
-            return new TagCompound
-            {
-                ["VitricBiomePos"] = VitricBiome.TopLeft(),
-                ["VitricBiomeSize"] = VitricBiome.Size(),
 
-                ["SquidNPCProgress"] = SquidNPCProgress,
-                ["SquidBossArenaPos"] = SquidBossArena.TopLeft(),
-                ["SquidBossArenaSize"] = SquidBossArena.Size(),
-                ["PermafrostCenter"] = permafrostCenter,
+            tag["VitricBiomePos"] = VitricBiome.TopLeft();
+            tag["VitricBiomeSize"] = VitricBiome.Size();
 
-                [nameof(flags)] = (int)flags,
+            tag["SquidNPCProgress"] = SquidNPCProgress;
+            tag["SquidBossArenaPos"] = SquidBossArena.TopLeft();
+            tag["SquidBossArenaSize"] = SquidBossArena.Size();
+            tag["PermafrostCenter"] = permafrostCenter;
 
-                [nameof(TownUpgrades)] = tag,
+            tag[nameof(flags)] = (int)flags;
 
-                [nameof(PureTiles)] = PureTiles,
+            tag[nameof(TownUpgrades)] = tag;
 
-                [nameof(RiftLocation)] = RiftLocation,
+            tag[nameof(PureTiles)] = PureTiles;
 
-                ["Chungus"] = Chungus,
+            tag[nameof(RiftLocation)] = RiftLocation;
 
-                ["Recipies"] = knownRecipies
-            };
+            tag["Chungus"] = Chungus;
+
+            tag["Recipies"] = knownRecipies;
+
         }
 
-        private static bool CheckForSquidArena(Player player)
+        private static bool CheckForSquidArena(Player Player)
 		{
             if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
             {
@@ -229,7 +227,7 @@ namespace StarlightRiver.Core
                 if (tile != null)
                 {
                     return
-                        tile.wall == WallType<AuroraBrickWall>() &&
+                        tile.WallType == WallType<AuroraBrickWall>() &&
                         !Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
                 }
             }
@@ -240,16 +238,16 @@ namespace StarlightRiver.Core
         public static void CreateCutaways()
 		{
             //TODO: Create new overlay for this when the structure is done
-            /*var templeCutaway = new Cutaway(GetTexture("StarlightRiver/Assets/Backgrounds/TempleCutaway"), new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
+            /*var templeCutaway = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Backgrounds/TempleCutaway").Value, new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
             templeCutaway.inside = n => n.GetModPlayer<BiomeHandler>().ZoneGlassTemple;
             CutawayHandler.NewCutaway(templeCutaway);*/
 
-            cathedralOverlay = new Cutaway(GetTexture("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver"), SquidBossArena.TopLeft() * 16);
+            cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver").Value, SquidBossArena.TopLeft() * 16);
             cathedralOverlay.inside = CheckForSquidArena;
             CutawayHandler.NewCutaway(cathedralOverlay);
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
             VitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;

@@ -26,37 +26,37 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			item.width = 16;
-			item.height = 16;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.useTime = 16;
-			item.useAnimation = 16;
-			item.shootSpeed = 1f;
-			item.knockBack = 4f;
-			item.UseSound = SoundID.Item116;
-			item.shoot = ModContent.ProjectileType<GunchuckProj>();
-			item.value = Item.sellPrice(gold: 4);
-			item.noMelee = true;
-			item.noUseGraphic = true;
-			item.channel = true;
-			item.autoReuse = true;
-			item.ranged = true;
-			item.damage = 16;
-			item.useAmmo = AmmoID.Bullet;
-			item.rare = ItemRarityID.Green;
+			Item.width = 16;
+			Item.height = 16;
+			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useTime = 16;
+			Item.useAnimation = 16;
+			Item.shootSpeed = 1f;
+			Item.knockBack = 4f;
+			Item.UseSound = SoundID.Item116;
+			Item.shoot = ModContent.ProjectileType<GunchuckProj>();
+			Item.value = Item.sellPrice(gold: 4);
+			Item.noMelee = true;
+			Item.noUseGraphic = true;
+			Item.channel = true;
+			Item.autoReuse = true;
+			Item.ranged = true;
+			Item.damage = 16;
+			Item.useAmmo = AmmoID.Bullet;
+			Item.rare = ItemRarityID.Green;
 		}
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			combo++;
 			float distanceMult = Main.rand.NextFloat(0.8f, 1.2f);
 			float curvatureMult = 0.7f;
 
 			Vector2 direction = Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f))) * 7;
-			Projectile proj = Projectile.NewProjectileDirect(position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockBack, player.whoAmI);
-			if (proj.modProjectile is GunchuckProj modProj)
+			Projectile proj = Projectile.NewProjectileDirect(position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockBack, Player.whoAmI);
+			if (proj.ModProjectile is GunchuckProj modProj)
 			{
 				modProj.Flip = combo % 2 == 0;
-				modProj.SwingTime = (int)(item.useTime * 2f);
+				modProj.SwingTime = (int)(Item.useTime * 2f);
 				modProj.SwingDistance = 20 * distanceMult;
 				modProj.Curvature = 0.33f * curvatureMult;
 				modProj.Ammo = type;
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			ModRecipe recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ItemID.Chain, 10);
 			recipe.AddIngredient(ItemID.Boomstick, 2);
 			recipe.AddTile(TileID.Anvils);
@@ -80,34 +80,34 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.AddRecipe();
 		}
 
-		public override float UseTimeMultiplier(Player player) => base.UseTimeMultiplier(player) * player.meleeSpeed; //Scale with melee speed buffs, like whips
+		public override float UseTimeMultiplier(Player Player) => base.UseTimeMultiplier(Player) * Player.meleeSpeed; //Scale with melee speed buffs, like whips
 	}
 
 	public class GunchuckProj : ModProjectile
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public const float THROW_RANGE = 120; //Peak distance from player when thrown out, in pixels
+		public const float THROW_RANGE = 120; //Peak distance from Player when thrown out, in pixels
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sanguine Flayer");
-			ProjectileID.Sets.TrailCacheLength[projectile.type] = 8;
-			ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
 		public override void SetDefaults()
 		{
-			projectile.friendly = true;
-			projectile.Size = new Vector2(85, 85);
-			projectile.tileCollide = false;
-			projectile.ownerHitCheck = true;
-			projectile.ignoreWater = true;
-			projectile.penetrate = -1;
-			projectile.usesLocalNPCImmunity = true;
+			Projectile.friendly = true;
+			Projectile.Size = new Vector2(85, 85);
+			Projectile.tileCollide = false;
+			Projectile.ownerHitCheck = true;
+			Projectile.ignoreWater = true;
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
 		}
 
-		private Player Owner => Main.player[projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public int SwingTime;
 		public float SwingDistance;
@@ -121,18 +121,18 @@ namespace StarlightRiver.Content.Items.Misc
 		private bool shot = false;
 		private float newRotation = 0f;
 
-		public ref float Timer => ref projectile.ai[0];
-		public ref float AiState => ref projectile.ai[1];
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float AiState => ref Projectile.ai[1];
 
 		public override void AI()
 		{
-			if (projectile.timeLeft > 2) //Initialize chain control points on first tick, in case of projectile hooking in on first tick
+			if (Projectile.timeLeft > 2) //Initialize chain control points on first tick, in case of Projectile hooking in on first tick
 			{
-				_chainMidA = projectile.Center;
-				_chainMidB = projectile.Center;
+				_chainMidA = Projectile.Center;
+				_chainMidB = Projectile.Center;
 			}
 
-			projectile.timeLeft = 2;
+			Projectile.timeLeft = 2;
 
 			ThrowOutAI();
 
@@ -140,9 +140,9 @@ namespace StarlightRiver.Content.Items.Misc
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
 			if (progress > FireTime && !shot)
             {
-				Texture2D projTexture = Main.projectileTexture[projectile.type];
+				Texture2D projTexture = Main.projectileTexture[Projectile.type];
 
-				Vector2 projBottom = projectile.Center - new Vector2(projTexture.Width / 2, 0).RotatedBy(projectile.rotation + MathHelper.PiOver2) * 0.75f;
+				Vector2 projBottom = Projectile.Center - new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;
 
 				float angleMaxDeviation = MathHelper.Pi * 0.85f;
 				float angleOffset = Owner.direction * (Flip ? -1 : 1) * MathHelper.Lerp(angleMaxDeviation, -angleMaxDeviation / 4, progress);
@@ -161,21 +161,21 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 direction = newRotation.ToRotationVector2();
 				for (int i = 0; i < 5; i++)
                 {
-					Projectile.NewProjectile(projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, projectile.damage, projectile.knockBack, Owner.whoAmI);
+					Projectile.NewProjectile(Projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
                 }
 				
-				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, projectile.Center);
+				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
 
 				float spread = 0.4f;
 				for (int k = 0; k < 15; k++)
 				{
 					var dustDirection = direction.RotatedByRandom(spread);
 
-					Dust.NewDustPerfect(projectile.Center + (direction * 25), ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+					Dust.NewDustPerfect(Projectile.Center + (direction * 25), ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
 			}
 
-			Owner.itemRotation = MathHelper.WrapAngle(Owner.AngleTo(Main.MouseWorld) - (Owner.direction < 0 ? MathHelper.Pi : 0));
+			Owner.ItemRotation = MathHelper.WrapAngle(Owner.AngleTo(Main.MouseWorld) - (Owner.direction < 0 ? MathHelper.Pi : 0));
 		}
 
 		private Vector2 GetSwingPosition(float progress)
@@ -184,34 +184,34 @@ namespace StarlightRiver.Content.Items.Misc
 			float distance = MathHelper.Clamp(SwingDistance, THROW_RANGE * 0.1f, THROW_RANGE) * MathHelper.Lerp((float)Math.Sin(progress * MathHelper.Pi), 1, 0.04f);
 
 			float angleMaxDeviation = MathHelper.Pi / 1.2f;
-			float angleOffset = Owner.direction * (Flip ? -1 : 1) * MathHelper.Lerp(-angleMaxDeviation, angleMaxDeviation, progress); //Moves clockwise if player is facing right, counterclockwise if facing left
-			return projectile.velocity.RotatedBy(angleOffset) * distance;
+			float angleOffset = Owner.direction * (Flip ? -1 : 1) * MathHelper.Lerp(-angleMaxDeviation, angleMaxDeviation, progress); //Moves clockwise if Player is facing right, counterclockwise if facing left
+			return Projectile.velocity.RotatedBy(angleOffset) * distance;
 		}
 
 		private void ThrowOutAI()
 		{
-			projectile.rotation = projectile.AngleFrom(Owner.Center);
+			Projectile.rotation = Projectile.AngleFrom(Owner.Center);
 			Vector2 position = Owner.MountedCenter;
-			float progress = ++Timer / SwingTime; //How far the projectile is through its swing
+			float progress = ++Timer / SwingTime; //How far the Projectile is through its swing
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
 
 
-			projectile.Center = position + GetSwingPosition(progress);
-			projectile.direction = projectile.spriteDirection = -Owner.direction * (Flip ? -1 : 1);
+			Projectile.Center = position + GetSwingPosition(progress);
+			Projectile.direction = Projectile.spriteDirection = -Owner.direction * (Flip ? -1 : 1);
 
 			if (Timer >= SwingTime)
-				projectile.Kill();
+				Projectile.Kill();
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			if (projectile.timeLeft > 2)
+			if (Projectile.timeLeft > 2)
 				return false;
 
-			Texture2D projTexture = Main.projectileTexture[projectile.type];
+			Texture2D projTexture = Main.projectileTexture[Projectile.type];
 
 			//End control point for the chain
-			Vector2 projBottom = projectile.Center + new Vector2(projTexture.Width / 2, 0).RotatedBy(projectile.rotation + MathHelper.PiOver2) * 0.75f;
+			Vector2 projBottom = Projectile.Center + new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;
 			DrawChainCurve(spriteBatch, projBottom, out Vector2[] chainPositions);
 
 			//Adjust rotation to face from the last point in the bezier curve
@@ -219,11 +219,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 			//Draw from bottom center of texture
 			Vector2 origin = new Vector2(0, projTexture.Height / 2);
-			SpriteEffects flip = (projectile.spriteDirection < 0) ? SpriteEffects.FlipVertically : SpriteEffects.None;
+			SpriteEffects flip = (Projectile.spriteDirection < 0) ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
-			lightColor = Lighting.GetColor((int)(projectile.Center.X / 16f), (int)(projectile.Center.Y / 16f));
+			lightColor = Lighting.GetColor((int)(Projectile.Center.X / 16f), (int)(Projectile.Center.Y / 16f));
 
-			spriteBatch.Draw(projTexture, projBottom - Main.screenPosition, null, lightColor, newRotation, origin, projectile.scale, flip, 0);
+			spriteBatch.Draw(projTexture, projBottom - Main.screenPosition, null, lightColor, newRotation, origin, Projectile.scale, flip, 0);
 
 
 			CurrentBase = projBottom + (newRotation - 1.57f).ToRotationVector2() * (projTexture.Height / 2);
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private Vector2 _chainMidB;
 		private void DrawChainCurve(SpriteBatch spriteBatch, Vector2 projBottom, out Vector2[] chainPositions)
 		{
-			Texture2D chainTex = ModContent.GetTexture(Texture + "_Chain");
+			Texture2D chainTex = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
 
 			float progress = Timer / SwingTime;
 
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Items.Misc
 			int numPoints = 10; //Should make dynamic based on curve length, but I'm not sure how to smoothly do that while using a bezier curve
 			chainPositions = curve.GetPoints(numPoints).ToArray();
 
-			//Draw each chain segment, skipping the very first one, as it draws partially behind the player
+			//Draw each chain segment, skipping the very first one, as it draws partially behind the Player
 			for (int i = 1; i < numPoints; i++)
 			{
 				Vector2 position = chainPositions[i];
@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			BezierCurve curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, projectile.Center });
+			BezierCurve curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, Projectile.Center });
 
 			int numPoints = 32;
 			Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();

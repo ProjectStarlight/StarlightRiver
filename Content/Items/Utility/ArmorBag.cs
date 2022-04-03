@@ -26,10 +26,10 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 32;
-            item.rare = ItemRarityID.Blue;
-            item.value = 50000;
+            Item.width = 32;
+            Item.height = 32;
+            Item.rare = ItemRarityID.Blue;
+            Item.value = 50000;
         }
 
         public override ModItem Clone()
@@ -47,32 +47,32 @@ namespace StarlightRiver.Content.Items.Utility
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    var item = new Item();
-                    item.TurnToAir();
-                    newBag.storedArmor[k] = item;
+                    var Item = new Item();
+                    Item.TurnToAir();
+                    newBag.storedArmor[k] = Item;
                 }
             }
 
             return newBag;
         }
 
-        public override void RightClick(Player player)
+        public override void RightClick(Player Player)
         {
-            item.stack++;
+            Item.stack++;
 
             Item mouseItem = Main.mouseItem;
 
             if (mouseItem.IsAir)
             {
-                if(player.controlSmart)
+                if(Player.controlSmart)
                 {
                     for(int k = 0; k < 3; k++)
                     {
                         if (storedArmor[k].IsAir)
                             continue;
 
-                        var index = Item.NewItem(player.Center, storedArmor[k].type);
-                        Main.item[index] = storedArmor[k].Clone();
+                        var index = Item.NewItem(Player.Center, storedArmor[k].type);
+                        Main.Item[index] = storedArmor[k].Clone();
                         storedArmor[k].TurnToAir();
                     }
                     return;
@@ -80,8 +80,8 @@ namespace StarlightRiver.Content.Items.Utility
 
                 for (int k = 0; k < 3; k++)
                 {
-                    var temp = player.armor[k];
-                    player.armor[k] = storedArmor[k];
+                    var temp = Player.armor[k];
+                    Player.armor[k] = storedArmor[k];
                     storedArmor[k] = temp;
                 }
                 return;
@@ -114,28 +114,28 @@ namespace StarlightRiver.Content.Items.Utility
             if (storedArmor[0] is null || storedArmor[1] is null || storedArmor[2] is null)
                 return;
 
-            TooltipLine armorLineHead = new TooltipLine(mod, "HelmetSlot",
+            TooltipLine armorLineHead = new TooltipLine(Mod, "HelmetSlot",
                 (storedArmor[0].IsAir) ? "No helmet" : storedArmor[0].Name)
             {
                 overrideColor = (storedArmor[0].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[0].rare)
             };
             tooltips.Add(armorLineHead);
 
-            TooltipLine armorLineChest = new TooltipLine(mod, "ChestSlot",
+            TooltipLine armorLineChest = new TooltipLine(Mod, "ChestSlot",
                 (storedArmor[1].IsAir) ? "No chestplate" : storedArmor[1].Name)
             {
                 overrideColor = (storedArmor[1].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[1].rare)
             };
             tooltips.Add(armorLineChest);
 
-            TooltipLine armorLineLegs = new TooltipLine(mod, "LegsSlot",
+            TooltipLine armorLineLegs = new TooltipLine(Mod, "LegsSlot",
                 (storedArmor[2].IsAir) ? "No leggings" : storedArmor[2].Name)
             {
                 overrideColor = (storedArmor[2].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[2].rare)
             };
             tooltips.Add(armorLineLegs);
 
-            TooltipLine line = new TooltipLine(mod, "Starlight", 
+            TooltipLine line = new TooltipLine(Mod, "Starlight", 
                 "Right click to equip stored armor\n" +
                 "Right click with armor to add it to the bag\n" +
                 "Shift-Right click to empty the bag");
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Utility
             tooltips.Add(line);
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound()
             {
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Utility
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             storedArmor[0] = tag.Get<Item>("Head");
             storedArmor[1] = tag.Get<Item>("Chest");

@@ -11,12 +11,12 @@ namespace StarlightRiver.Content.Buffs
         private readonly bool Debuff;
         private readonly bool Summon;
 
-        public bool Inflicted(Player player) => player.active && player.HasBuff(Type);
+        public bool Inflicted(Player Player) => Player.active && Player.HasBuff(Type);
 
-        public bool Inflicted(NPC npc)
+        public bool Inflicted(NPC NPC)
         {
-            if(ModContent.GetModBuff(Type) != null && npc.buffImmune.Length > Type)
-                return npc.active && npc.HasBuff(Type);
+            if(ModContent.GetModBuff(Type) != null && NPC.buffImmune.Length > Type)
+                return NPC.active && NPC.HasBuff(Type);
 
             return false;
         }

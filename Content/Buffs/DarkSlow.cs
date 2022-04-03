@@ -6,9 +6,9 @@ namespace StarlightRiver.Content.Buffs
     {
         public DarkSlow() : base("Grasping Darkness", "Slowed by shadowy tendrils!", true) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.velocity.X *= 0.2f;
+            Player.velocity.X *= 0.2f;
         }
     }
 }

@@ -26,17 +26,17 @@ namespace StarlightRiver.Items.Herbology.Materials
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.rare = ItemRarityID.Green;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createTile = mod.TileType("Deathstalk");
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.rare = ItemRarityID.Green;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createTile = Mod.TileType("Deathstalk");
         }
     }
 }

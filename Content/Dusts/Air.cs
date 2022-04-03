@@ -70,24 +70,24 @@ namespace StarlightRiver.Content.Dusts
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            if (dust.customData is Player player)
+            if (dust.customData is Player Player)
             {
-                return dust.color * (1 - Vector2.Distance(dust.position, player.Center) / 50f);
+                return dust.color * (1 - Vector2.Distance(dust.position, Player.Center) / 50f);
             }
             return dust.color;
         }
 
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Player player)
+            if (dust.customData is Player Player)
             {
-                dust.rotation = Vector2.Distance(dust.position, player.Center) * 0.1f;
+                dust.rotation = Vector2.Distance(dust.position, Player.Center) * 0.1f;
                 dust.position += dust.velocity;
 
-                dust.velocity = Vector2.Normalize(dust.position - player.Center) * -4;
+                dust.velocity = Vector2.Normalize(dust.position - Player.Center) * -4;
                 dust.scale *= 0.95f;
                 timer--;
-                if (timer == 0 || Vector2.Distance(dust.position, player.Center) < 1)
+                if (timer == 0 || Vector2.Distance(dust.position, Player.Center) < 1)
                 {
                     dust.active = false;
                 }
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Dusts
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.position -= Vector2.One * 32;
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)

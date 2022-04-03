@@ -19,9 +19,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private List<Vector2> cacheThick;
         private Trail trailThick;
 
-        public NPC Parent => Main.npc[(int)projectile.ai[0]];
+        public NPC Parent => Main.npc[(int)Projectile.ai[0]];
 
-        public float TimeFade => 1 - (projectile.timeLeft / 20f);
+        public float TimeFade => 1 - (Projectile.timeLeft / 20f);
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -29,18 +29,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            projectile.width = 200;
-            projectile.height = 80;
-            projectile.hostile = true;
-            projectile.timeLeft = 20;
-            projectile.tileCollide = false;
-            projectile.aiStyle = -1;
-            projectile.penetrate = -1;
+            Projectile.width = 200;
+            Projectile.height = 80;
+            Projectile.hostile = true;
+            Projectile.timeLeft = 20;
+            Projectile.tileCollide = false;
+            Projectile.aiStyle = -1;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
         {
-            if (projectile.timeLeft == 20)
+            if (Projectile.timeLeft == 20)
                 Terraria.Audio.SoundEngine.PlaySound(
                     StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").SoundId,
                     -1, -1,
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     );
 
             if (Parent != null) 
-                projectile.Center = Parent.Center + Vector2.UnitX * (projectile.ai[1] == -1 ? 120 : -120);
+                Projectile.Center = Parent.Center + Vector2.UnitX * (Projectile.ai[1] == -1 ? 120 : -120);
 
             ManageCaches(ref cache, 1.3f);
             ManageTrail(ref trail, cache, 15);
@@ -74,8 +74,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 float progress = (TimeFade * 2) * 6.28f - 3.14f;
                 float progress2 = (TimeFade * 2 + 1 / 20f) * 6.28f - 3.14f;
-                cache.Add(projectile.Center + new Vector2((float)Math.Cos(progress) * projectile.width / 2f * radius * projectile.ai[1] * -1, (float)Math.Sin(progress) * projectile.height / 2f * radius));
-                cache.Add(projectile.Center + Parent.velocity * 0.5f + new Vector2((float)Math.Cos(progress2) * projectile.width / 2f * radius * projectile.ai[1] * -1, (float)Math.Sin(progress2) * projectile.height / 2f * radius));
+                cache.Add(Projectile.Center + new Vector2((float)Math.Cos(progress) * Projectile.width / 2f * radius * Projectile.ai[1] * -1, (float)Math.Sin(progress) * Projectile.height / 2f * radius));
+                cache.Add(Projectile.Center + Parent.velocity * 0.5f + new Vector2((float)Math.Cos(progress2) * Projectile.width / 2f * radius * Projectile.ai[1] * -1, (float)Math.Sin(progress2) * Projectile.height / 2f * radius));
             }
 
             while (cache.Count > 20)
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = Vector2.Lerp(projectile.Center, Parent.Center, 0.15f) + projectile.velocity;
+            trail.NextPosition = Vector2.Lerp(Projectile.Center, Parent.Center, 0.15f) + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             effect.Parameters["time"].SetValue(Main.GameUpdateCount);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
             trail?.Render(effect);
             trailThick?.Render(effect);

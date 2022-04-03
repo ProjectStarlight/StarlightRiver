@@ -28,17 +28,17 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 5, 0, 0);
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 5, 0, 0);
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			player.GetModPlayer<ShieldPlayer>().MaxShield += 10;
-			player.GetModPlayer<ShieldPlayer>().ShieldResistance += 0.05f;
+			Player.GetModPlayer<ShieldPlayer>().MaxShield += 10;
+			Player.GetModPlayer<ShieldPlayer>().ShieldResistance += 0.05f;
 
 		}
 	}

@@ -18,16 +18,16 @@ namespace StarlightRiver.Content.Items.Palestone
 
         public override void SetDefaults()
         {
-            item.width = 22;
-            item.height = 22;
-            item.value = Item.sellPrice(0, 0, 2, 0);
-            item.defense = 1;
+            Item.width = 22;
+            Item.height = 22;
+            Item.value = Item.sellPrice(0, 0, 2, 0);
+            Item.defense = 1;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.tileSpeed += 5;
-            player.wallSpeed += 5;
+            Player.tileSpeed += 5;
+            Player.wallSpeed += 5;
         }
     }
 
@@ -44,29 +44,29 @@ namespace StarlightRiver.Content.Items.Palestone
 
         public override void SetDefaults()
         {
-            item.width = 40;
-            item.height = 22;
-            item.value = Item.sellPrice(0, 0, 1, 50);
-            item.defense = 2;
+            Item.width = 40;
+            Item.height = 22;
+            Item.value = Item.sellPrice(0, 0, 1, 50);
+            Item.defense = 2;
         }
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.meleeSpeed += 1;
+            Player.meleeSpeed += 1;
         }
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
             return head.type == ItemType<PalestoneHead>() && body.type == ItemType<PalestoneChest>() && legs.type == ItemType<PalestoneLegs>();
         }
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            player.setBonus = "10% increased mining and building speed";
-            player.pickSpeed += 10;
-            player.tileSpeed += 10;
-            player.wallSpeed += 10;
-            //PalestonePlayer palestonePlayer = player.GetModPlayer<PalestonePlayer>();
+            Player.setBonus = "10% increased mining and building speed";
+            Player.pickSpeed += 10;
+            Player.tileSpeed += 10;
+            Player.wallSpeed += 10;
+            //PalestonePlayer palestonePlayer = Player.GetModPlayer<PalestonePlayer>();
             //foreach (int i in palestonePlayer.tablets)
             //    if (i > 0)
-            //        player.endurance += 0.1f;
+            //        Player.endurance += 0.1f;
         }
     }
 
@@ -83,15 +83,15 @@ namespace StarlightRiver.Content.Items.Palestone
 
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 20;
-            item.value = Item.sellPrice(0, 0, 1, 25);
-            item.defense = 1;
+            Item.width = 30;
+            Item.height = 20;
+            Item.value = Item.sellPrice(0, 0, 1, 25);
+            Item.defense = 1;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.moveSpeed += 0.05f;
+            Player.moveSpeed += 0.05f;
         }
     }
 
@@ -100,9 +100,9 @@ public class PalestonePlayer : ModPlayer
 {
     public float counter = 0;
     public int[] tablets = new int[3];
-    public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+    public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
     {
-        if (item.melee && target.life <= 0)
+        if (Item.melee && target.life <= 0)
             for (int i = 0; i < tablets.Length; i++)
                 if (tablets[i] == 0)
                 {
@@ -139,14 +139,14 @@ public class PalestonePlayer : ModPlayer
         PlayerLayer frontLayer = new PlayerLayer("PalestoneLayer", "Armor Glowmask", frontTarget); //Instantiate a new instance of PlayerLayer to insert into the list
         layers.Insert(layers.IndexOf(layers.Last()), frontLayer); //Insert the layer at the appropriate index. 
 
-        float getTabletRotation(int currentTablet) => currentTablet / (tablets.FirstOrDefault(x => x == 0) + 1) * 6.28f + (float)player.GetModPlayer<StarlightPlayer>().Timer % 120 / 120 * 6.28f;
+        float getTabletRotation(int currentTablet) => currentTablet / (tablets.FirstOrDefault(x => x == 0) + 1) * 6.28f + (float)Player.GetModPlayer<StarlightPlayer>().Timer % 120 / 120 * 6.28f;
         Vector2 getTabletPosition(int currentTablet)
         {
             float dist = 50;
             float rot = getTabletRotation(currentTablet);
 
-            float posX = player.Center.X + (float)(Math.Cos(rot) * dist);
-            float posY = player.Center.Y + (float)(Math.Sin(rot) * dist) / 2;
+            float posX = Player.Center.X + (float)(Math.Cos(rot) * dist);
+            float posY = Player.Center.Y + (float)(Math.Sin(rot) * dist) / 2;
             return new Vector2(posX, posY);
         }
         void DrawGlowmasks(PlayerDrawInfo info, bool back)
@@ -157,7 +157,7 @@ public class PalestonePlayer : ModPlayer
                 if ((back && rot % 6.28f < 3.14f || !back && rot % 6.28f >= 3.14f) && tablets[k] > 0)
                 {
                     Vector2 pos = getTabletPosition(k);
-                    Texture2D texture = GetTexture("StarlightRiver/Assets/Items/Palestone/Tablet");
+                    Texture2D texture = Request<Texture2D>("StarlightRiver/Assets/Items/Palestone/Tablet").Value;
                     Main.playerDrawData.Add(new DrawData(
                         texture,
                         pos,  //position
@@ -183,13 +183,13 @@ public class PalestonePlayer : ModPlayer
         public static int MaxTablets = 3;
         public override void SetDefaults()
         {
-            projectile.width = 12;
-            projectile.height = 18;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 30;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
+            Projectile.width = 12;
+            Projectile.height = 18;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 30;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
 
         public override void SetStaticDefaults()
@@ -209,12 +209,12 @@ public class PalestonePlayer : ModPlayer
 
         public override void ReceiveExtraAI(System.IO.BinaryReader reader)
         {
-            projectile.localAI[0] = (float)reader.ReadDouble();
+            Projectile.localAI[0] = (float)reader.ReadDouble();
         }
 
         public override void SendExtraAI(System.IO.BinaryWriter writer)
         {
-            writer.Write((double)projectile.localAI[0]);
+            writer.Write((double)Projectile.localAI[0]);
         }
 
         public PalestoneArmorProjectile()
@@ -224,10 +224,10 @@ public class PalestonePlayer : ModPlayer
 
         public override void AI()
         {
-            NPC target = Main.npc[(int)projectile.ai[1]];
-            Player owner = projectile.Owner();
-            bool conditions = (owner != null && owner.active) && owner.Distance(projectile.Center) < 300;//Grow or no?
-            bool slamming = projectile.ai[0] > MaxCharge;
+            NPC target = Main.npc[(int)Projectile.ai[1]];
+            Player owner = Projectile.Owner();
+            bool conditions = (owner != null && owner.active) && owner.Distance(Projectile.Center) < 300;//Grow or no?
+            bool slamming = Projectile.ai[0] > MaxCharge;
 
 
             if (slamming)
@@ -236,21 +236,21 @@ public class PalestonePlayer : ModPlayer
                 return;
             }
 
-            if (Helper.IsTargetValid(target) && projectile.ai[0] >= 0)
+            if (Helper.IsTargetValid(target) && Projectile.ai[0] >= 0)
             {
                 LastLocation = target.position + new Vector2(target.width / 2, -96);
-                projectile.ai[0] += conditions ? 1 : -1;
+                Projectile.ai[0] += conditions ? 1 : -1;
             }
             else
             {
-                projectile.Kill();
+                Projectile.Kill();
             }
 
-            projectile.Center = LastLocation;
+            Projectile.Center = LastLocation;
 
             void Slam()
             {
-                projectile.ai[0] += 1;
+                Projectile.ai[0] += 1;
                 //target.
             }
 

@@ -20,12 +20,12 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void SetDefaults()
         {
-            npc.dontTakeDamage = true;
-            npc.lifeMax = 1;
-            npc.width = 56;
-            npc.height = 56;
-            npc.aiStyle = -1;
-            npc.noGravity = true;
+            NPC.dontTakeDamage = true;
+            NPC.lifeMax = 1;
+            NPC.width = 56;
+            NPC.height = 56;
+            NPC.aiStyle = -1;
+            NPC.noGravity = true;
         }
 
         public override bool CheckActive()
@@ -35,12 +35,12 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void AI()
         {
-            if (Main.npc.Any(n => n.active && n.type == NPCType<OvergrowBossFlail>() && n.ai[0] == 1 && n.Hitbox.Intersects(npc.Hitbox) && (n.modNPC as OvergrowBossFlail).holder == null))
+            if (Main.npc.Any(n => n.active && n.type == NPCType<OvergrowBossFlail>() && n.ai[0] == 1 && n.Hitbox.Intersects(NPC.Hitbox) && (n.ModNPC as OvergrowBossFlail).holder == null))
             {
                 for (int k = 0; k < 100; k++)
-                    Dust.NewDustPerfect(npc.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), default, default, 6.4f);
+                    Dust.NewDustPerfect(NPC.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), default, default, 6.4f);
 
-                npc.Kill();
+                NPC.Kill();
             }
         }
 
@@ -53,7 +53,7 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
             {
                 float sin = (float)Math.Sin(StarlightWorld.rottime + k * (6.28f / 6));
 
-                DrawData data = new DrawData(TextureManager.Load("Images/Misc/Perlin"), npc.Center - Main.screenPosition, new Rectangle?(new Rectangle(0, 0, 150, 100)), new Color(255, 255, 200) * 0.6f, npc.rotation, new Vector2(75f, 50f), 2 + sin * 0.18f, 0, 0);
+                DrawData data = new DrawData(TextureManager.Load("Images/Misc/Perlin"), NPC.Center - Main.screenPosition, new Rectangle?(new Rectangle(0, 0, 150, 100)), new Color(255, 255, 200) * 0.6f, NPC.rotation, new Vector2(75f, 50f), 2 + sin * 0.18f, 0, 0);
 
                 GameShaders.Misc["ForceField"].UseColor(new Vector3(1.1f - (sin * 0.4f)));
                 GameShaders.Misc["ForceField"].Apply(new DrawData?(data));

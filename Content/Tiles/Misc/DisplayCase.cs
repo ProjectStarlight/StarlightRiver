@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             if (tile.frameX == 0 && tile.frameY == 0)
             {
-                var outlineTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow");
+                var outlineTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow").Value;
                 var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 3);
                 var outlineColor = Helpers.Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
 
@@ -52,11 +52,11 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-                var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+                var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
                 var pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition - Vector2.One * 16;
                 spriteBatch.Draw(tex2, pos, new Color(255, 255, 200) * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)) );
 
-                var texShine = ModContent.GetTexture("StarlightRiver/Assets/Keys/Shine");
+                var texShine = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
                 pos += Vector2.One * 32;
 
                 spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 -GetProgress(0)), Main.GameUpdateCount / 250f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(0), 0, 0);
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             Tile tile = Framing.GetTileSafely(i, j);
             return (tile.type == ModContent.TileType<DisplayCase>() || tile.type == ModContent.TileType<DisplayCaseFriendly>())
-                && tile.active() && tile.frameX == 0 && tile.frameY == 0;
+                && tile.HasTile && tile.frameX == 0 && tile.frameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -127,14 +127,14 @@ namespace StarlightRiver.Content.Tiles.Misc
             {
                 for (int k = 0; k < Main.maxPlayers; k++)
                 {
-                    var player = Main.player[k];
-                    if (AbilityHelper.CheckDash(player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
+                    var Player = Main.player[k];
+                    if (AbilityHelper.CheckDash(Player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
                     {
                         WorldGen.KillTile(Position.X, Position.Y);
-                        Helpers.Helper.NewItemSpecific(player.Center, containedItem);
+                        Helpers.Helper.NewItemSpecific(Player.Center, containedItem);
                         Kill(Position.X, Position.Y);
 
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, player.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);
 
                         for (int n = 0; n < 30; n++)
                         {
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Tiles.Misc
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound
             {
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Tiles.Misc
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             containedItem = tag.Get<Item>("Item");
         }

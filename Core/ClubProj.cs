@@ -39,14 +39,14 @@ namespace StarlightRiver.Core
         public virtual void SafeSetDefaults() { }
         public sealed override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.melee = true;
-            projectile.width = projectile.height = 48;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.melee = true;
+            Projectile.width = Projectile.height = 48;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.alpha = 255;
             SafeSetDefaults();
         }
 
@@ -59,9 +59,9 @@ namespace StarlightRiver.Core
         public sealed override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Color color = lightColor;
-            Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), new Rectangle(0, 0, Size, Size), color, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(Main.projectileTexture[Projectile.type], ((Main.player[Projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur(), new Rectangle(0, 0, Size, Size), color, (float)radians + 3.9f, new Vector2(0, Size), Projectile.scale, SpriteEffects.None, 0);
             SafeDraw(spriteBatch, lightColor);
-            if (projectile.ai[0] >= chargeTime && !released && flickerTime < 16)
+            if (Projectile.ai[0] >= chargeTime && !released && flickerTime < 16)
             {
                 flickerTime++;
                 color = Color.White;
@@ -69,7 +69,7 @@ namespace StarlightRiver.Core
                 float alpha = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
                 if (alpha < 0)
                     alpha = 0;
-                Main.spriteBatch.Draw(Main.projectileTexture[projectile.type], ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)), new Rectangle(0, Size, Size, Size), color * alpha, (float)radians + 3.9f, new Vector2(0, Size), projectile.scale, SpriteEffects.None, 1);
+                Main.spriteBatch.Draw(Main.projectileTexture[Projectile.type], ((Main.player[Projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY)), new Rectangle(0, Size, Size, Size), color * alpha, (float)radians + 3.9f, new Vector2(0, Size), Projectile.scale, SpriteEffects.None, 1);
             }
             return false;
         }
@@ -82,28 +82,28 @@ namespace StarlightRiver.Core
         public sealed override bool PreAI()
         {
             SafeAI();
-            projectile.scale = projectile.ai[0] < 10 ? (projectile.ai[0] / 10f) : 1;
-            Player player = Main.player[projectile.owner];
-            int degrees = (int)(((player.itemAnimation) * -0.7) + 55) * player.direction;
-            if (player.direction == 1)
+            Projectile.scale = Projectile.ai[0] < 10 ? (Projectile.ai[0] / 10f) : 1;
+            Player Player = Main.player[Projectile.owner];
+            int degrees = (int)(((Player.ItemAnimation) * -0.7) + 55) * Player.direction;
+            if (Player.direction == 1)
             {
                 degrees += 180;
             }
             radians = degrees * (Math.PI / 180);
-            if (player.channel && !released)
+            if (Player.channel && !released)
             {
-                if (projectile.ai[0] == 0)
+                if (Projectile.ai[0] == 0)
                 {
-                    player.itemTime = 180;
-                    player.itemAnimation = 180;
+                    Player.ItemTime = 180;
+                    Player.ItemAnimation = 180;
                 }
-                if (projectile.ai[0] < chargeTime)
+                if (Projectile.ai[0] < chargeTime)
                 {
-                    projectile.ai[0]++;
+                    Projectile.ai[0]++;
                     float rot = Main.rand.NextFloat(6.28f);
                     if (dustType != -1)
-                        Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, dustType, -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
-                    if (projectile.ai[0] < chargeTime / 1.5f || projectile.ai[0] % 2 == 0)
+                        Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 35, dustType, -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, Projectile.ai[0] / 100f);
+                    if (Projectile.ai[0] < chargeTime / 1.5f || Projectile.ai[0] % 2 == 0)
                     {
                         angularMomentum = -1;
                     }
@@ -114,26 +114,26 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    if (projectile.ai[0] == chargeTime)
+                    if (Projectile.ai[0] == chargeTime)
                     {
                         for (int k = 0; k <= 100; k++)
                         {
                             if (dustType != -1)
-                                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
+                                Dust.NewDustPerfect(Projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
                         }
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
-                        projectile.ai[0]++;
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+                        Projectile.ai[0]++;
                     }
                     if (dustType != -1)
-                        Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f));
+                        Dust.NewDustPerfect(Projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f));
                     angularMomentum = 0;
                 }
-                projectile.damage = (int)((minDamage + (int)((projectile.ai[0] / chargeTime) * (maxDamage - minDamage))) * player.meleeDamage);
-                projectile.knockBack = minKnockback + (int)((projectile.ai[0] / chargeTime) * (maxKnockback - minKnockback));
+                Projectile.damage = (int)((minDamage + (int)((Projectile.ai[0] / chargeTime) * (maxDamage - minDamage))) * Player.meleeDamage);
+                Projectile.knockBack = minKnockback + (int)((Projectile.ai[0] / chargeTime) * (maxKnockback - minKnockback));
             }
             else
             {
-                projectile.scale = 1;
+                Projectile.scale = 1;
                 if (angularMomentum < MaxSpeed)
                 {
                     angularMomentum += Acceleration;
@@ -141,46 +141,46 @@ namespace StarlightRiver.Core
                 if (!released)
                 {
                     released = true;
-                    projectile.friendly = true;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, projectile.Center);
+                    Projectile.friendly = true;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
                 }
-                if (projectile.ai[0] > chargeTime)
+                if (Projectile.ai[0] > chargeTime)
                 {
-                    //  Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f));
+                    //  Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Gold2>(), Vector2.One.RotatedByRandom(6.28f));
                 }
             }
 
-            projectile.position.Y = player.Center.Y - (int)(Math.Sin(radians * 0.96) * Size) - (projectile.height / 2);
-            projectile.position.X = player.Center.X - (int)(Math.Cos(radians * 0.96) * Size) - (projectile.width / 2);
+            Projectile.position.Y = Player.Center.Y - (int)(Math.Sin(radians * 0.96) * Size) - (Projectile.height / 2);
+            Projectile.position.X = Player.Center.X - (int)(Math.Cos(radians * 0.96) * Size) - (Projectile.width / 2);
             if (lingerTimer == 0)
             {
-                player.itemTime++;
-                player.itemAnimation++;
-                if (player.itemTime > angularMomentum + 1)
+                Player.ItemTime++;
+                Player.ItemAnimation++;
+                if (Player.ItemTime > angularMomentum + 1)
                 {
-                    player.itemTime -= (int)angularMomentum;
-                    player.itemAnimation -= (int)angularMomentum;
+                    Player.ItemTime -= (int)angularMomentum;
+                    Player.ItemAnimation -= (int)angularMomentum;
                 }
                 else
                 {
-                    player.itemTime = 2;
-                    player.itemAnimation = 2;
+                    Player.ItemTime = 2;
+                    Player.ItemAnimation = 2;
                 }
-                if (player.itemTime == 2 || (Main.tile[(int)projectile.Center.X / 16, (int)((projectile.Center.Y + 24) / 16)].collisionType == 1 && released))
+                if (Player.ItemTime == 2 || (Main.tile[(int)Projectile.Center.X / 16, (int)((Projectile.Center.Y + 24) / 16)].collisionType == 1 && released))
                 {
                     lingerTimer = 30;
-                    if (projectile.ai[0] >= chargeTime)
+                    if (Projectile.ai[0] >= chargeTime)
                     {
-                        this.Smash(projectile.Center);
+                        this.Smash(Projectile.Center);
 
                     }
-                    if (Main.tile[(int)projectile.Center.X / 16, (int)((projectile.Center.Y + 24) / 16)].collisionType == 1)
+                    if (Main.tile[(int)Projectile.Center.X / 16, (int)((Projectile.Center.Y + 24) / 16)].collisionType == 1)
                     {
-                        player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
+                        Player.GetModPlayer<StarlightPlayer>().Shake += (int)(Projectile.ai[0] * 0.2f);
                     }
-                    projectile.friendly = false;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
+                    Projectile.friendly = false;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
                 }
             }
             else
@@ -188,12 +188,12 @@ namespace StarlightRiver.Core
                 lingerTimer--;
                 if (lingerTimer == 1)
                 {
-                    projectile.active = false;
-                    player.itemTime = 2;
-                    player.itemAnimation = 2;
+                    Projectile.active = false;
+                    Player.ItemTime = 2;
+                    Player.ItemAnimation = 2;
                 }
-                player.itemTime++;
-                player.itemAnimation++;
+                Player.ItemTime++;
+                Player.ItemAnimation++;
             }
             return true;
         }

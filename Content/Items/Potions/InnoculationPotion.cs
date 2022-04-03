@@ -16,14 +16,14 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetDefaults()
 		{
-			item.width = 18;
-			item.height = 30;
-			item.maxStack = 30;
-			item.useStyle = Terraria.ID.ItemUseStyleID.EatingUsing;
-			item.consumable = true;
-			item.buffType = ModContent.BuffType<InoculationPotionBuff>();
-			item.buffTime = 180 * 60;
-			item.UseSound = Terraria.ID.SoundID.Item3;
+			Item.width = 18;
+			Item.height = 30;
+			Item.maxStack = 30;
+			Item.useStyle = Terraria.ID.ItemUseStyleID.EatingUsing;
+			Item.consumable = true;
+			Item.buffType = ModContent.BuffType<InoculationPotionBuff>();
+			Item.buffTime = 180 * 60;
+			Item.UseSound = Terraria.ID.SoundID.Item3;
 		}
 	}
 
@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.Items.Potions
 			Description.SetDefault("+30% to DoT Resistance");
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
-			player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 		}
 	}
 }

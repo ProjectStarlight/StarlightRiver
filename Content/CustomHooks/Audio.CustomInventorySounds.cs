@@ -30,9 +30,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 				c.Index -= 5; //back up 5 instructions to just under where the soundID is pushed
 
-				c.Emit(OpCodes.Ldarg_0); //load item array
+				c.Emit(OpCodes.Ldarg_0); //load Item array
 				c.Emit(OpCodes.Ldarg_2); //load index
-				c.Emit(OpCodes.Ldelem_Ref); //push item ref
+				c.Emit(OpCodes.Ldelem_Ref); //push Item ref
 
 				c.EmitDelegate<Func<int, Item, SoundEffectInstance>>(PlayNewSound); //play the custom sound if applicable
 				c.Emit(OpCodes.Br, branchTarget); //move past sound call
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		private SoundEffectInstance PlayNewSound(int originalSoundID, Item item)
+		private SoundEffectInstance PlayNewSound(int originalSoundID, Item Item)
 		{
 			AudioConfig config = GetInstance<AudioConfig>();
 
@@ -53,9 +53,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 			float pitch = -0.6f;
 
-			if (item.IsAir)
+			if (Item.IsAir)
 			{
-				item = Main.mouseItem;
+				Item = Main.mouseItem;
 				pitch += 0.6f;
 			}
 
@@ -63,54 +63,54 @@ namespace StarlightRiver.Content.CustomHooks
 				pitch += 0.3f;
 
 			//this is gross. The alternative is moving this into a GlobalItem instead. Thus its here.
-			if (item.modItem is ICustomInventorySound)
-				return (item.modItem as ICustomInventorySound).InventorySound(pitch);
+			if (Item.ModItem is ICustomInventorySound)
+				return (Item.ModItem as ICustomInventorySound).InventorySound(pitch);
 
 			else if (config.InvSounds == CustomSounds.Specific)
 				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 
-			else if (item.potion || item.healMana != 0 || (item.buffType != -1 && (item.Name.Contains("potion") || item.Name.Contains("Potion")))) //should probably figure a better check for this somehow? 1.4 content tags maybe?
+			else if (Item.potion || Item.healMana != 0 || (Item.buffType != -1 && (Item.Name.Contains("potion") || Item.Name.Contains("Potion")))) //should probably figure a better check for this somehow? 1.4 content tags maybe?
 				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.5f + pitch * 0.5f);
 
-			else if (item.type == ItemID.CopperCoin || item.type == ItemID.SilverCoin || item.type == ItemID.GoldCoin || item.type == ItemID.PlatinumCoin) //coins are early since they're ammo and have damage and place tiles. 
+			else if (Item.type == ItemID.CopperCoin || Item.type == ItemID.SilverCoin || Item.type == ItemID.GoldCoin || Item.type == ItemID.PlatinumCoin) //coins are early since they're ammo and have damage and place tiles. 
 				return Helper.PlayPitched(SoundID.Coins, 1, 0.3f + pitch);
 
-			else if (item.dye > 0) //dyes
+			else if (Item.dye > 0) //dyes
 				return Helper.PlayPitched("Pickups/PickupPotion", 1, 0.9f + pitch * 0.25f);
 
-			else if (item.createTile != -1) //placables
+			else if (Item.createTile != -1) //placables
 				return Helper.PlayPitched("Pickups/PickupGeneric", 1, 1 + pitch);
 
-			else if (item.defense > 0) //armor and shields
+			else if (Item.defense > 0) //armor and shields
 				return Helper.PlayPitched("Pickups/PickupArmor", 1, 0.5f + pitch);
 
-			else if (item.vanity) //vanity
+			else if (Item.vanity) //vanity
 				return Helper.PlayPitched("Pickups/PickupVanity", 1, 0.5f + pitch);
 
-			else if (item.accessory) //non-vanity non-shield accessories
+			else if (Item.accessory) //non-vanity non-shield accessories
 				return Helper.PlayPitched("Pickups/PickupAccessory", 1, 0.1f + pitch);
 
-			else if (item.pick > 0 || item.axe > 0 || item.hammer > 0) //tools
+			else if (Item.pick > 0 || Item.axe > 0 || Item.hammer > 0) //tools
 				return Helper.PlayPitched("Pickups/PickupTool", 1, 0.5f + pitch);
 
-			else if (item.damage > 0) //weapons and ammo
+			else if (Item.damage > 0) //weapons and ammo
 			{
-				if (item.melee) //melee weapons
+				if (Item.melee) //melee weapons
 					return Helper.PlayPitched("Pickups/PickupMelee", 1, 0.5f + pitch);
 
-				else if (item.useAmmo == ItemID.MusketBall) //guns
+				else if (Item.useAmmo == ItemID.MusketBall) //guns
 					return Helper.PlayPitched("Pickups/PickupGun", 1, 0 + pitch);
 
-				else if (item.ranged) //other ranged weapons
+				else if (Item.ranged) //other ranged weapons
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.9f + pitch * 0.5f);
 
-				else if (item.magic || item.summon) //magic and summoning weapons
+				else if (Item.magic || Item.summon) //magic and summoning weapons
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 
-				else if (item.ammo == ItemID.WoodenArrow) //arrows
+				else if (Item.ammo == ItemID.WoodenArrow) //arrows
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 
-				else if (item.ammo > 0) //other ammo
+				else if (Item.ammo > 0) //other ammo
 					return Helper.PlayPitched("Pickups/PickupGeneric", 1, 0.5f + pitch);
 
 				else //edge cases

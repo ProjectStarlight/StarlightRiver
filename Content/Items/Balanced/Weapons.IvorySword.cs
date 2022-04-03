@@ -16,30 +16,30 @@ namespace StarlightRiver.Content.Items.Balanced
 
         public override void SetDefaults()
         {
-            item.width = 44;
-            item.height = 44;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.useAnimation = 16;
-            item.useTime = 16;
-            item.knockBack = 2f;
-            item.damage = 46;
-            item.shoot = ProjectileType<IvorySwordProjectile>();
-            item.rare = ItemRarityID.LightRed;
-            item.autoReuse = false;
-            item.noMelee = true;
-            item.melee = true;
-            item.noUseGraphic = true;
+            Item.width = 44;
+            Item.height = 44;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useAnimation = 16;
+            Item.useTime = 16;
+            Item.knockBack = 2f;
+            Item.damage = 46;
+            Item.shoot = ProjectileType<IvorySwordProjectile>();
+            Item.rare = ItemRarityID.LightRed;
+            Item.autoReuse = false;
+            Item.noMelee = true;
+            Item.melee = true;
+            Item.noUseGraphic = true;
         }
 
         public override bool CloneNewInstances => true;
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            Vector2 aim = Vector2.Normalize(Main.MouseWorld - player.Center);
-            int proj = Projectile.NewProjectile(player.Center + aim * 18, aim * 0.1f, type, damage, knockBack, player.whoAmI);
+            Vector2 aim = Vector2.Normalize(Main.MouseWorld - Player.Center);
+            int proj = Projectile.NewProjectile(Player.Center + aim * 18, aim * 0.1f, type, damage, knockBack, Player.whoAmI);
             Main.projectile[proj].localAI[1] = combostate;
 
-            if (combostate < 2) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item65, player.Center); else Terraria.Audio.SoundEngine.PlaySound(SoundID.Item64, player.Center);
+            if (combostate < 2) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item65, Player.Center); else Terraria.Audio.SoundEngine.PlaySound(SoundID.Item64, Player.Center);
             combostate++;
             if (combostate > 2) combostate = 0; return false;
         }
@@ -57,48 +57,48 @@ namespace StarlightRiver.Content.Items.Balanced
 
         public override void SetDefaults()
         {
-            projectile.friendly = true;
-            projectile.width = 200;
-            projectile.height = 189;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 14;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
+            Projectile.friendly = true;
+            Projectile.width = 200;
+            Projectile.height = 189;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 14;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("White Slash");
-            Main.projFrames[projectile.type] = 21;
+            Main.projFrames[Projectile.type] = 21;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            if (projectile.localAI[1] == 2) Main.player[projectile.owner].velocity *= 0.3f;
+            if (Projectile.localAI[1] == 2) Main.player[Projectile.owner].velocity *= 0.3f;
         }
 
         public override void AI()
         {
-            projectile.position += Main.player[projectile.owner].velocity;
-            projectile.rotation = projectile.velocity.ToRotation();
+            Projectile.position += Main.player[Projectile.owner].velocity;
+            Projectile.rotation = Projectile.velocity.ToRotation();
 
-            if (projectile.localAI[0] == 1) projectile.damage = 0;
+            if (Projectile.localAI[0] == 1) Projectile.damage = 0;
 
-            if (projectile.timeLeft <= 8) projectile.localAI[0] = 1;
+            if (Projectile.timeLeft <= 8) Projectile.localAI[0] = 1;
 
-            if (projectile.timeLeft == 14) projectile.frame = 7 * (int)projectile.localAI[1];
+            if (Projectile.timeLeft == 14) Projectile.frame = 7 * (int)Projectile.localAI[1];
 
-            if (++projectile.frameCounter >= 2)
+            if (++Projectile.frameCounter >= 2)
             {
-                projectile.frameCounter = 0;
-                if (++projectile.frame >= 7 + 7 * (int)projectile.localAI[1])
-                    projectile.frame = 7 * (int)projectile.localAI[1];
+                Projectile.frameCounter = 0;
+                if (++Projectile.frame >= 7 + 7 * (int)Projectile.localAI[1])
+                    Projectile.frame = 7 * (int)Projectile.localAI[1];
             }
 
-            if (projectile.localAI[1] == 2 && projectile.localAI[0] == 0)
+            if (Projectile.localAI[1] == 2 && Projectile.localAI[0] == 0)
             {
-                Main.player[projectile.owner].velocity = Vector2.Normalize(Main.player[projectile.owner].Center - projectile.Center) * -6f;
-                projectile.knockBack = 25f;
+                Main.player[Projectile.owner].velocity = Vector2.Normalize(Main.player[Projectile.owner].Center - Projectile.Center) * -6f;
+                Projectile.knockBack = 25f;
             }
         }
     }

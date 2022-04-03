@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + "SwordBook";
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += OverrideSwordEffects;
 			return true;
@@ -30,43 +30,43 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeSetDefaults()
 		{
-			item.rare = Terraria.ID.ItemRarityID.Orange;
+			Item.rare = Terraria.ID.ItemRarityID.Orange;
 		}
 
-		private bool OverrideSwordEffects(Item item, Player player)
+		private bool OverrideSwordEffects(Item Item, Player Player)
 		{
-			if (Equipped(player))
+			if (Equipped(Player))
 			{
-				if (item.melee && item.pick <= 0 && item.axe <= 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.SwingThrow && !item.noMelee)
+				if (Item.melee && Item.pick <= 0 && Item.axe <= 0 && Item.hammer <= 0 && Item.shoot <= 0 && Item.useStyle == Terraria.ID.ItemUseStyleID.SwingThrow && !Item.noMelee)
 				{
-					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == player.whoAmI))
+					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == Player.whoAmI))
 						return false;
 
-					int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI);
+					int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
 					var proj = Main.projectile[i];
 
-					proj.timeLeft = item.useAnimation * 4;
-					proj.scale = item.scale;
+					proj.timeLeft = Item.useAnimation * 4;
+					proj.scale = Item.scale;
 
-					if (proj.modProjectile is SwordBookProjectile)
+					if (proj.ModProjectile is SwordBookProjectile)
 					{
-						var modProj = proj.modProjectile as SwordBookProjectile;
-						modProj.trailColor = ItemColorUtility.GetColor(item.type);
-						modProj.texture = Main.PopupTexture[item.type];
-						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
-						modProj.lifeSpan = item.useAnimation * 4;
-						modProj.baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
+						var modProj = proj.ModProjectile as SwordBookProjectile;
+						modProj.trailColor = ItemColorUtility.GetColor(Item.type);
+						modProj.texture = Main.PopupTexture[Item.type];
+						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * Item.scale;
+						modProj.lifeSpan = Item.useAnimation * 4;
+						modProj.baseAngle = (Main.MouseWorld - Player.Center).ToRotation() + (float)Math.PI / 4f;
 						modProj.comboState = comboState;
 					}
 
-					float pitch = 1 - item.useAnimation / 60f;
+					float pitch = 1 - Item.useAnimation / 60f;
 					pitch += comboState * 0.1f;
 
 					if (pitch >= 1)
 						pitch = 1;
 
-					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
-					Terraria.Audio.SoundEngine.PlaySound(item.UseSound, player.Center);
+					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Player.Center);
+					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound, Player.Center);
 
 					comboState++;
 					comboState %= 4;
@@ -93,13 +93,13 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public float Progress => 1 - projectile.timeLeft / (float)lifeSpan;
+		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
 		public int Direction => (Math.Abs(baseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
-		public Player Owner => Main.player[projectile.owner];
+		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
 			return true;
@@ -107,37 +107,37 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			projectile.friendly = true;
-			projectile.melee = true;
-			projectile.tileCollide = false;
-			projectile.penetrate = -1;
-			projectile.extraUpdates = 3;
+			Projectile.friendly = true;
+			Projectile.melee = true;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.extraUpdates = 3;
 		}
 
-		private void DoSwingAnimation(Player player)
+		private void DoSwingAnimation(Player Player)
 		{
-			var instance = Main.projectile.FirstOrDefault(n => n.modProjectile is SwordBookProjectile && n.owner == player.whoAmI);
+			var instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is SwordBookProjectile && n.owner == Player.whoAmI);
 
 			if (instance != null && instance.active)
 			{
-				var mp = instance.modProjectile as SwordBookProjectile;
+				var mp = instance.ModProjectile as SwordBookProjectile;
 
 				switch (mp.comboState)
 				{
 					case 0:
-						player.bodyFrame = player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
+						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
 						break;
 
 					case 1:
-						player.bodyFrame = player.bodyFrame = new Rectangle(0, 56 * (int)(4 - mp.Progress * 4), 40, 56);
+						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(4 - mp.Progress * 4), 40, 56);
 						break;
 
 					case 2:
-						player.bodyFrame = player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
+						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(3 + mp.Progress), 40, 56);
 						break;
 
 					case 3:
-						player.bodyFrame = player.bodyFrame = new Rectangle(0, 56 * (int)(mp.Progress * 4), 40, 56);
+						Player.bodyFrame = Player.bodyFrame = new Rectangle(0, 56 * (int)(mp.Progress * 4), 40, 56);
 						break;
 				}
 			}
@@ -145,21 +145,21 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			projectile.Center = Owner.Center;
+			Projectile.Center = Owner.Center;
 			Owner.direction = Direction;
-			Owner.heldProj = projectile.whoAmI;
+			Owner.heldProj = Projectile.whoAmI;
 
 			switch (comboState)
 			{
 				case 0:
-					projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
+					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
 					holdOut = (float)Math.Sin(Progress * 3.14f) * 16;
 
 					break;
 
 				case 1:
 					flipSprite = true;
-					projectile.rotation = baseAngle - (SwingEase(Progress) * 4f - 2f) * Direction;
+					Projectile.rotation = baseAngle - (SwingEase(Progress) * 4f - 2f) * Direction;
 					holdOut = (float)Math.Sin(Progress * 3.14f) * 24;
 
 					break;
@@ -168,11 +168,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (Progress == 0)
 					{
-						projectile.timeLeft -= 20;
+						Projectile.timeLeft -= 20;
 						lifeSpan -= 20;
 					}
 
-					projectile.rotation = baseAngle + (SwingEase(Progress) * 1f - 0.5f) * Direction;
+					Projectile.rotation = baseAngle + (SwingEase(Progress) * 1f - 0.5f) * Direction;
 					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * 32;
 
 					break;
@@ -181,17 +181,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (Progress == 0)
 					{
-						projectile.damage += (int)(projectile.damage * 1.5f);
-						projectile.scale += 0.25f;
+						Projectile.damage += (int)(Projectile.damage * 1.5f);
+						Projectile.scale += 0.25f;
 						length += length * 0.25f;
-						projectile.timeLeft += 40;
+						Projectile.timeLeft += 40;
 						lifeSpan += 40;
 					}
 
-					projectile.rotation = baseAngle + Direction + (Helpers.Helper.BezierEase(Progress) * 6.28f * Direction);
+					Projectile.rotation = baseAngle + Direction + (Helpers.Helper.BezierEase(Progress) * 6.28f * Direction);
 					holdOut = Progress * 32;
 
-					var rot = projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+					var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
 					if (Main.rand.Next(6) == 0)
 					{
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			var rot = projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+			var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
 			var start = Owner.Center;
 			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
@@ -236,17 +236,17 @@ namespace StarlightRiver.Content.Items.Misc
 			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 			Owner.GetModPlayer<StarlightPlayer>().Shake += 3;
 
-			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * projectile.knockBack * 2 * target.knockBackResist;
+			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{		
 			var origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
 			var effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			var rot = projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
-			var pos = projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * (flipSprite ? Direction * -1 : Direction);
+			var rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
+			var pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * (flipSprite ? Direction * -1 : Direction);
 
-			spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, projectile.scale, effects, 0);
+			spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, Projectile.scale, effects, 0);
 			return false;
 		}
 
@@ -258,11 +258,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 50; i++)
 				{
-					cache.Add(Vector2.UnitX.RotatedBy(projectile.rotation - Math.PI / 4f) * length * 0.75f);
+					cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length * 0.75f);
 				}
 			}
 
-			cache.Add(Vector2.UnitX.RotatedBy(projectile.rotation - Math.PI / 4f) * length * 0.75f);
+			cache.Add(Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length * 0.75f);
 
 			while (cache.Count > 50)
 			{
@@ -301,8 +301,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
 
 			trail?.Render(effect);
 		}

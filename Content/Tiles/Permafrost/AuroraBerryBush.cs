@@ -71,16 +71,16 @@ namespace StarlightRiver.Content.Tiles.Forest
         {
             if (Framing.GetTileSafely(i, j).frameX >= 32)
             {
-                Player player = Main.LocalPlayer;
-                player.showItemIcon2 = ItemType<AuroraBerry>();
-                player.noThrow = 2;
-                player.showItemIcon = true;
+                Player Player = Main.LocalPlayer;
+                Player.showItemIcon2 = ItemType<AuroraBerry>();
+                Player.noThrow = 2;
+                Player.showItemIcon = true;
             }
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<AuroraBerry>()); //drop a bush item
+            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<AuroraBerry>()); //drop a bush Item
 
             //if (frameX > 35)
             //    Item.NewItem(new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
@@ -93,23 +93,23 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            //item.consumable = true;
-            item.maxStack = 99;
-            item.useTime = 15;
-            item.useAnimation = 15;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            //item.useStyle = ItemUseStyleID.EatingUsing;
-            //item.healLife = 5;
-            //item.potion = true;
-            //item.UseSound = SoundID.Item2;
-            item.createTile = TileType<AuroraBerryBush>();
+            Item.width = 16;
+            Item.height = 16;
+            //Item.consumable = true;
+            Item.maxStack = 99;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            //Item.useStyle = ItemUseStyleID.EatingUsing;
+            //Item.healLife = 5;
+            //Item.potion = true;
+            //Item.UseSound = SoundID.Item2;
+            Item.createTile = TileType<AuroraBerryBush>();
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
-            //player.AddBuff(BuffID.PotionSickness, 15);
+            //Player.AddBuff(BuffID.PotionSickness, 15);
             return true;
         }
     }

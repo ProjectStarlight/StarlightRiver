@@ -57,15 +57,15 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public SpikeImmuneOrbDummy() : base(TileType<SpikeImmuneOrb>(), 16, 16) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
             if (Parent.frameX == 0)
             {
-                player.AddBuff(BuffType<Buffs.SpikeImmuneBuff>(), 90);
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack.SoundId, (int)player.Center.X, (int)player.Center.Y, SoundID.DD2_DarkMageHealImpact.Style, 0.5f, 1);
+                Player.AddBuff(BuffType<Buffs.SpikeImmuneBuff>(), 90);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageAttack.SoundId, (int)Player.Center.X, (int)Player.Center.Y, SoundID.DD2_DarkMageHealImpact.Style, 0.5f, 1);
 
                 for (int k = 0; k < 40; k++)
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(25), 0, Color.White, 0.5f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(25), 0, Color.White, 0.5f);
 
                 Parent.frameX = 16;
             }

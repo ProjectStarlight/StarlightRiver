@@ -13,33 +13,33 @@ namespace StarlightRiver.Content.Items
         }
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 30;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 20;
-            item.useTime = 20;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.value = 0;
-            //item.createTile = ModContent.TileType<Tiles.GemTiles.AmethystSolid>();
-            //item.createTile = ModContent.TileType<Tiles.Projector>();
+            Item.width = 30;
+            Item.height = 30;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 20;
+            Item.useTime = 20;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.value = 0;
+            //Item.createTile = ModContent.TileType<Tiles.GemTiles.AmethystSolid>();
+            //Item.createTile = ModContent.TileType<Tiles.Projector>();
         }
-        public override bool AltFunctionUse(Player player)
+        public override bool AltFunctionUse(Player Player)
         {
             return true;
         }
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
             Tile selectedTile = Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)];
-            if (player.altFunctionUse == 2)
+            if (Player.altFunctionUse == 2)
             {
-                //if (player.controlDown)
-                //    if (player.controlSmart)
+                //if (Player.controlDown)
+                //    if (Player.controlSmart)
                 //        ShipWorld.shipViewRotation -= 0.05f;
                 //    else
                 //        ShipWorld.shipViewRotation -= 0.005f;
-                //if (player.controlUp)
-                //    if (player.controlSmart)
+                //if (Player.controlUp)
+                //    if (Player.controlSmart)
                 //        ShipWorld.shipViewRotation += 0.05f;
                 //    else
                 //        ShipWorld.shipViewRotation += 0.005f;
@@ -47,13 +47,13 @@ namespace StarlightRiver.Content.Items
                 //Main.NewText("rotation amount " + ZeroG.shipViewRotationAmount);
                 //return false;//this makes it update every tick instead of every swing
 
-                if (player.controlDown)
-                    if (player.controlSmart)
+                if (Player.controlDown)
+                    if (Player.controlSmart)
                         selectedTile.frameY--;
                     else
                         selectedTile.frameX--;
-                if (player.controlUp)
-                    if (player.controlSmart)
+                if (Player.controlUp)
+                    if (Player.controlSmart)
                         selectedTile.frameY++;
                     else
                         selectedTile.frameX++;
@@ -63,13 +63,13 @@ namespace StarlightRiver.Content.Items
             }
             else
             {
-                if (player.controlDown)
-                    if (player.controlSmart)
+                if (Player.controlDown)
+                    if (Player.controlSmart)
                         selectedTile.frameY--;
                     else
                         selectedTile.frameX--;
-                if (player.controlUp)
-                    if (player.controlSmart)
+                if (Player.controlUp)
+                    if (Player.controlSmart)
                         selectedTile.frameY++;
                     else
                         selectedTile.frameX++;
@@ -90,10 +90,10 @@ namespace StarlightRiver.Content.Items
 
                 //		if (ModContent.GetModTile(baseTile.type) != null)
                 //		{
-                //			//Main.NewText("Origin : " + ModContent.GetModTile(baseTile.type).Name + " : " + ModContent.GetModTile(baseTile.type).mod);
-                //			//Main.NewText("Placed : " + mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Name + " : " + mod.GetTile(ModContent.GetModTile(baseTile.type).Name).mod);
+                //			//Main.NewText("Origin : " + ModContent.GetModTile(baseTile.type).Name + " : " + ModContent.GetModTile(baseTile.type).Mod);
+                //			//Main.NewText("Placed : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Name + " : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Mod);
 
-                //			targetTile.type = mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Type;
+                //			targetTile.type = Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Type;
                 //			targetTile.frameX = baseTile.frameX;
                 //			targetTile.frameY = baseTile.frameY;
                 //			targetTile.inActive(baseTile.inActive());
@@ -114,20 +114,20 @@ namespace StarlightRiver.Content.Items
 
 				//checks tile frame
 				Tile selectedTile = Main.tile[(int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16)];
-				//int npcs = 0;
+				//int NPCs = 0;
 				//for (int i = 0; i < Main.maxNPCs; i++)
 				//{
 				//	if (Main.npc[i].active)
 				//	{
 				//		Main.NewText(Main.npc[i].position);
-				//		npcs++;
+				//		NPCs++;
 				//	}
 				//}
-				//Main.NewText("npcs: " + npcs);
-				//Main.NewText("player pos: " + player.position);
+				//Main.NewText("NPCs: " + NPCs);
+				//Main.NewText("Player pos: " + Player.position);
 				debug */
             }
-            return base.CanUseItem(player);
+            return base.CanUseItem(Player);
         }
     }
 }

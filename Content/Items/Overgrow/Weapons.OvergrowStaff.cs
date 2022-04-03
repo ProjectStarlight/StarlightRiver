@@ -16,18 +16,18 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.damage = 20;
-            item.magic = true;
-            item.width = 40;
-            item.height = 20;
-            item.useTime = 30;
-            item.useAnimation = 30;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noMelee = true;
-            item.knockBack = 4;
-            item.rare = ItemRarityID.Green;
-            //item.shoot = ProjectileType<EntangleThorn>(); TODO: Reimplement better
-            item.shootSpeed = 5;
+            Item.damage = 20;
+            Item.magic = true;
+            Item.width = 40;
+            Item.height = 20;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.noMelee = true;
+            Item.knockBack = 4;
+            Item.rare = ItemRarityID.Green;
+            //Item.shoot = ProjectileType<EntangleThorn>(); TODO: Reimplement better
+            Item.shootSpeed = 5;
         }
     }
 }

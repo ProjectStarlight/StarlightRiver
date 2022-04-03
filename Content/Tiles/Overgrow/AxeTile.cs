@@ -27,10 +27,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public AxeTileDummy() : base(TileType<AxeTile>(), 16, 16) { }
 
-        float Angle => (float)((Math.PI * (6 / 8f)) + Math.Sin(projectile.ai[0] / 200f * (Math.PI * 2) + Math.PI / 4) * 1.5f);
-        Vector2 Center => projectile.Center + new Vector2(1, -1).RotatedBy(Angle) * 90;
+        float Angle => (float)((Math.PI * (6 / 8f)) + Math.Sin(Projectile.ai[0] / 200f * (Math.PI * 2) + Math.PI / 4) * 1.5f);
+        Vector2 Center => Projectile.Center + new Vector2(1, -1).RotatedBy(Angle) * 90;
 
-        public override void SafeSetDefaults() => projectile.hide = true;
+        public override void SafeSetDefaults() => Projectile.hide = true;
 
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
         {
@@ -39,28 +39,28 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void Update()
         {
-            projectile.ai[0]++;
+            Projectile.ai[0]++;
 
             Rectangle hitbox = new Rectangle((int)Center.X - 32, (int)Center.Y - 32, 64, 64);
 
             for (int k = 0; k < Main.maxPlayers; k++)
             {
-                Player player = Main.player[k];
-                if (player.active && !player.immune && player.Hitbox.Intersects(hitbox))
+                Player Player = Main.player[k];
+                if (Player.active && !Player.immune && Player.Hitbox.Intersects(hitbox))
                 {
-                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " got axed..."), 80, 0, false, false, true);
-                    player.AddBuff(BuffID.Bleeding, 1800);
-                    player.velocity.X += projectile.ai[0] % 200 < 100 ? 12 : -12;
+                    Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got axed..."), 80, 0, false, false, true);
+                    Player.AddBuff(BuffID.Bleeding, 1800);
+                    Player.velocity.X += Projectile.ai[0] % 200 < 100 ? 12 : -12;
                 }
             }
 
-            if (projectile.ai[0] % 100 == 75) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item71.SoundId, (int)Center.X, (int)Center.Y, 71, 1, -0.8f);
+            if (Projectile.ai[0] % 100 == 75) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item71.SoundId, (int)Center.X, (int)Center.Y, 71, 1, -0.8f);
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.OvergrowItem + "ExecutionersAxe");
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Center.X / 16, (int)Center.Y / 16), Angle, new Vector2(0, tex.Height), 1.5f, 0, 0);
+            Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowItem + "ExecutionersAxe").Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Center.X / 16, (int)Center.Y / 16), Angle, new Vector2(0, tex.Height), 1.5f, 0, 0);
         }
     }
 
@@ -68,6 +68,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public AxeTileItem() : base("Axe Trap", "Debug item", TileType<AxeTile>(), 1) { }
+        public AxeTileItem() : base("Axe Trap", "Debug Item", TileType<AxeTile>(), 1) { }
     }
 }

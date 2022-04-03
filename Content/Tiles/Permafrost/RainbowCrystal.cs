@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
                 spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, color);
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/RainbowCrystalGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, color * 2);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/RainbowCrystalGlow").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, color * 2);
                 Lighting.AddLight(new Vector2(i + 1, j + 1.5f) * 16, color.ToVector3() * 0.5f);
             }
         }

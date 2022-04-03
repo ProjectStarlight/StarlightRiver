@@ -50,13 +50,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void Update()
         {
-            Rectangle box = projectile.Hitbox;
+            Rectangle box = Projectile.Hitbox;
             box.Inflate(10, 10);
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {
-                var npc = Main.npc[k];
-                if (npc.active && npc.type == NPCType<Boulder>() && npc.Hitbox.Intersects(box))
+                var NPC = Main.npc[k];
+                if (NPC.active && NPC.type == NPCType<Boulder>() && NPC.Hitbox.Intersects(box))
                 {
                     WorldGen.KillTile(ParentX - 5, ParentY - 5);
                     Helper.PlaceMultitile(new Point16(ParentX - 5, ParentY + 1), TileType<WindsCrystalDestroyed>());

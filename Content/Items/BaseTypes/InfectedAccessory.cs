@@ -13,46 +13,46 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	internal abstract class InfectedAccessory : SmartAccessory
     {
         public InfectedAccessory() : base("Unnamed Infected Accessory", "you forgot to set a display name/tooltip dingus!") { }
-        public override bool CanEquipAccessory(Player player, int slot)
+        public override bool CanEquipAccessory(Player Player, int slot)
         {
             //Main.NewText("Slot: " + slot, 255, 255, 0);//debug?
             if (slot == 3) return false;
-            if (!player.armor[slot - 1].IsAir) return false;
-            if (slot > 7 + player.extraAccessorySlots) return false;
+            if (!Player.armor[slot - 1].IsAir) return false;
+            if (slot > 7 + Player.extraAccessorySlots) return false;
 
             Item blocker = new Item
             {
                 type = ItemType<Blocker>()
             };
             blocker.SetDefaults(ItemType<Blocker>());
-            (blocker.modItem as Blocker).Parent = item;
-            player.armor[slot - 1] = blocker;
+            (blocker.ModItem as Blocker).Parent = Item;
+            Player.armor[slot - 1] = blocker;
             return true;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            TooltipLine line = new TooltipLine(mod, "StarlightRiverInfectedWarning", "Infected! Requires 2 accessory slots")
+            TooltipLine line = new TooltipLine(Mod, "StarlightRiverInfectedWarning", "Infected! Requires 2 accessory slots")
             {
                 overrideColor = new Color(100, 160, 120)
             };
             tooltips.Add(line);
         }
 
-        public virtual bool SafePreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public virtual bool SafePreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             return true;
         }
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            if (Main.LocalPlayer.armor.Any(n => n == item))
+            if (Main.LocalPlayer.armor.Any(n => n == Item))
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/InfectedGoop");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/InfectedGoop").Value;
                 spriteBatch.Draw(tex, position + new Vector2(-10, -35), tex.Frame(), Color.White);
             }
 
-            return SafePreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            return SafePreDrawInInventory(spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
         }
     }
 
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void SetDefaults()
         {
-            item.accessory = true;
+            Item.accessory = true;
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -71,12 +71,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
             tooltips.Clear();
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            if (!player.armor.Any(n => n.type == Parent.type)) item.TurnToAir();
+            if (!Player.armor.Any(n => n.type == Parent.type)) Item.TurnToAir();
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound
             {
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             Parent = tag.Get<Item>(nameof(Parent));
         }

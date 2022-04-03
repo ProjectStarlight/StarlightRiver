@@ -20,18 +20,18 @@ namespace StarlightRiver.Content.Items.StarJuice
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useAnimation = 10;
-            item.useTime = 10;
-            item.rare = ItemRarityID.Orange;
-            item.shoot = ProjectileType<BountyKnifeProjectile>();
-            item.shootSpeed = 2;
-            item.damage = 1;
+            Item.width = 16;
+            Item.height = 16;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useAnimation = 10;
+            Item.useTime = 10;
+            Item.rare = ItemRarityID.Orange;
+            Item.shoot = ProjectileType<BountyKnifeProjectile>();
+            Item.shootSpeed = 2;
+            Item.damage = 1;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             if (charge == maxCharge)
             {
@@ -48,14 +48,14 @@ namespace StarlightRiver.Content.Items.StarJuice
 
         public override void SetDefaults()
         {
-            projectile.width = 8;
-            projectile.height = 8;
-            projectile.friendly = true;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 1000;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.extraUpdates = 5;
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.friendly = true;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 1000;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.extraUpdates = 5;
         }
 
         public override void SetStaticDefaults()
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.StarJuice
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Starlight>(), Vector2.Zero);
+            Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.Starlight>(), Vector2.Zero);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

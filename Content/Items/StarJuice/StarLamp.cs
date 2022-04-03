@@ -18,20 +18,20 @@ namespace StarlightRiver.Content.Items.StarJuice
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useAnimation = 10;
-            item.useTime = 10;
-            item.rare = ItemRarityID.Green;
+            Item.width = 16;
+            Item.height = 16;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useAnimation = 10;
+            Item.useTime = 10;
+            Item.rare = ItemRarityID.Green;
         }
 
-        public override void UpdateInventory(Player player)
+        public override void UpdateInventory(Player Player)
         {
             if (charge > 0)
             {
                 if (Main.time % 60 == 0 && !Main.fastForwardTime) charge--;
-                Lighting.AddLight(player.Center, new Vector3(1f, 1.7f, 1.9f) * (charge / (float)maxCharge) * (player.HeldItem == item ? 0.6f : 0.4f));
+                Lighting.AddLight(Player.Center, new Vector3(1f, 1.7f, 1.9f) * (charge / (float)maxCharge) * (Player.HeldItem == Item ? 0.6f : 0.4f));
             }
         }
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.StarJuice
             if (charge > 0)
             {
                 if (Main.time % 60 == 0 && !Main.fastForwardTime) charge--;
-                Lighting.AddLight(item.Center, new Vector3(1f, 1.7f, 1.9f) * (charge / (float)maxCharge) * 0.4f);
+                Lighting.AddLight(Item.Center, new Vector3(1f, 1.7f, 1.9f) * (charge / (float)maxCharge) * 0.4f);
             }
         }
     }

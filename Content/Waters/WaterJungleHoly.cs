@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Waters
 
         public override int ChooseWaterfallStyle()
         {
-            return mod.GetWaterfallStyleSlot<WaterfallJungleHoly>();
+            return Mod.GetWaterfallStyleSlot<WaterfallJungleHoly>();
         }
 
         public override int GetSplashDust()
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Waters
 
         public override int GetDropletGore()
         {
-            return 0;// mod.GetGoreSlot("Gores/DropJungleHoly");
+            return 0;// Mod.GetGoreSlot("Gores/DropJungleHoly");
         }
 
         public override void LightColorMultiplier(ref float r, ref float g, ref float b)

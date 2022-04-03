@@ -15,28 +15,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            npc.width = 26;
-            npc.height = 30;
-            npc.lifeMax = 40;
-            npc.damage = 10;
-            npc.noGravity = true;
-            npc.aiStyle = -1;
-            npc.knockBackResist = 3f;
+            NPC.width = 26;
+            NPC.height = 30;
+            NPC.lifeMax = 40;
+            NPC.damage = 10;
+            NPC.noGravity = true;
+            NPC.aiStyle = -1;
+            NPC.knockBackResist = 3f;
         }
 
         public override void AI()
         {
-            npc.ai[0]++;
-            npc.frame = new Rectangle(26 * ((int)(npc.ai[0] / 5) % 3), 0, 26, 30);
+            NPC.ai[0]++;
+            NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
 
-            npc.TargetClosest();
-            Player player = Main.player[npc.target];
+            NPC.TargetClosest();
+            Player Player = Main.player[NPC.target];
 
-            npc.velocity += Vector2.Normalize(npc.Center - player.Center) * -0.1f;
-            if (npc.velocity.LengthSquared() > 4) npc.velocity = Vector2.Normalize(npc.velocity) * 2;
-            if (npc.ai[0] % 15 == 0) npc.velocity.Y -= 0.5f;
+            NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.1f;
+            if (NPC.velocity.LengthSquared() > 4) NPC.velocity = Vector2.Normalize(NPC.velocity) * 2;
+            if (NPC.ai[0] % 15 == 0) NPC.velocity.Y -= 0.5f;
 
-            npc.rotation = npc.velocity.X * 0.25f;
+            NPC.rotation = NPC.velocity.X * 0.25f;
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
@@ -46,18 +46,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.SquidBoss + "AuroralingGlow");
-            Texture2D tex2 = GetTexture(AssetDirectory.SquidBoss + "AuroralingGlow2");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
+            Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
 
-            float sin = 1 + (float)Math.Sin(npc.ai[0] / 10f);
-            float cos = 1 + (float)Math.Cos(npc.ai[0] / 10f);
+            float sin = 1 + (float)Math.Sin(NPC.ai[0] / 10f);
+            float cos = 1 + (float)Math.Cos(NPC.ai[0] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-            spriteBatch.Draw(GetTexture(Texture), npc.Center - Main.screenPosition, npc.frame, drawColor * 1.2f, npc.rotation, npc.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, color * 0.8f, npc.rotation, npc.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex2, npc.Center - Main.screenPosition, npc.frame, color, npc.rotation, npc.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, NPC.frame, drawColor * 1.2f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, NPC.frame, color * 0.8f, NPC.rotation, NPC.Size / 2, 1, 0, 0);
+            spriteBatch.Draw(tex2, NPC.Center - Main.screenPosition, NPC.frame, color, NPC.rotation, NPC.Size / 2, 1, 0, 0);
 
-            Lighting.AddLight(npc.Center, color.ToVector3() * 0.5f);
+            Lighting.AddLight(NPC.Center, color.ToVector3() * 0.5f);
         }
     }
 }

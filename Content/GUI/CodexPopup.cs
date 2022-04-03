@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.GUI
         {
             CodexHandler mp = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 
-            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
+            Texture2D tex = mp.CodexState == 1 ? Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Closed").Value;
 
             string str = "New Entry: " + Text;
             float stringWidth = Main.fontMouseText.MeasureString(str).X;
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.GUI
 
             Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 25), (int)(stringWidth + 140), 40);
             var bgTex = Main.magicPixel;
-            var edgeTex = GetTexture(AssetDirectory.GUI + "CodexPopupEdge");
+            var edgeTex = Request<Texture2D>(AssetDirectory.GUI + "CodexPopupEdge").Value;
 
             spriteBatch.Draw(bgTex, target, null, new Color(20, 20, 35) * alpha * 0.5f);
             spriteBatch.Draw(edgeTex, target.TopRight(), null, new Color(20, 20, 35) * alpha * 0.5f);

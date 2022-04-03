@@ -21,8 +21,8 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var player = Main.LocalPlayer;
-			var sp = player.GetModPlayer<ShieldPlayer>();
+			var Player = Main.LocalPlayer;
+			var sp = Player.GetModPlayer<ShieldPlayer>();
 
 			if (sp.Shield > 0 || sp.MaxShield > 0)
 			{
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (sp.Shield > 0)
 			{
-				int vanillaHearts = Math.Min(20, player.statLifeMax / 20);
+				int vanillaHearts = Math.Min(20, Player.statLifeMax / 20);
 				int fullHeartsToDraw = Math.Min(vanillaHearts, sp.Shield / 20);
 				int partialHeartMax = fullHeartsToDraw < 20 ? sp.Shield % 20 : 0;
 				float shieldPerHeart = sp.MaxShield > vanillaHearts * 20 ? sp.MaxShield / (float)vanillaHearts : 20;
@@ -61,9 +61,9 @@ namespace StarlightRiver.Content.GUI
 					if (k >= 10)
 						pos += new Vector2(-260, 26);
 
-					var tex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldHeart");
-					var texOver = ModContent.GetTexture(AssetDirectory.GUI + "ShieldHeartOver");
-					var texLine = ModContent.GetTexture(AssetDirectory.GUI + "ShieldHeartLine");
+					var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
+					var texOver = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
+					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
 					int width = 0;
 
 					if (sp.Shield >= (k + 1) * shieldPerHeart)

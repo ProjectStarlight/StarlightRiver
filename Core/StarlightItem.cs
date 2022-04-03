@@ -18,19 +18,19 @@ namespace StarlightRiver.Core
 
         public override bool CloneNewInstances => true;
 
-        public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox) => meleeHitbox = hitbox;
+        public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox) => meleeHitbox = hitbox;
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual)
+        public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
         {
-            var prefix = ModPrefix.GetPrefix(item.prefix);
+            var prefix = ModPrefix.GetPrefix(Item.prefix);
 
             if (prefix is CustomTooltipPrefix)
-                (prefix as CustomTooltipPrefix).Update(item, player);
+                (prefix as CustomTooltipPrefix).Update(Item, Player);
 
-            base.UpdateAccessory(item, player, hideVisual);
+            base.UpdateAccessory(Item, Player, hideVisual);
         }
 
-        public override int ChoosePrefix(Item item, UnifiedRandom rand)
+        public override int ChoosePrefix(Item Item, UnifiedRandom rand)
         {
             //resetting for custom prefix stuff
             prefixLine = "";
@@ -38,23 +38,23 @@ namespace StarlightRiver.Core
             return -1;
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
         {
-            if (ModPrefix.GetPrefix(item.prefix) is CustomTooltipPrefix)
+            if (ModPrefix.GetPrefix(Item.prefix) is CustomTooltipPrefix)
             {
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
-                TooltipLine line = new TooltipLine(mod, "CustomPrefix", prefixLine);
+                TooltipLine line = new TooltipLine(Mod, "CustomPrefix", prefixLine);
                 line.isModifier = true;
                 line.isModifierBad = false;
                 tooltips.Insert(index + 1, line);
             }
 
             //Crit display. Same as ammo, maybe move this later?
-            if(item.damage > 0 && item.crit > -4)
+            if(Item.damage > 0 && Item.crit > -4)
 			{
-                TooltipLine line = new TooltipLine(mod, "CritDamage", "");
+                TooltipLine line = new TooltipLine(Mod, "CritDamage", "");
 
                 var critLine = tooltips.Find(n => n.Name == "Damage");
 
@@ -65,12 +65,12 @@ namespace StarlightRiver.Core
                     var mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
                     float mult = 2;
-                    if (item.melee) mult += mp.MeleeCritMult;
-                    if (item.ranged) mult += mp.RangedCritMult;
-                    if (item.magic) mult += mp.MagicCritMult;
+                    if (Item.melee) mult += mp.MeleeCritMult;
+                    if (Item.ranged) mult += mp.RangedCritMult;
+                    if (Item.magic) mult += mp.MagicCritMult;
                     mult += mp.AllCritMult;
 
-                    line.text = $"{(int)(item.damage * mult)} critical strike damage";
+                    line.text = $"{(int)(Item.damage * mult)} critical strike damage";
                     line.overrideColor = new Color(255, 200, 100);
                     tooltips.Insert(index + 1, line);
                 }
@@ -78,14 +78,14 @@ namespace StarlightRiver.Core
 
             //Ammo display, maybe move this later? TODO?
 
-            if(item.useAmmo != 0)
+            if(Item.useAmmo != 0)
             {
-                TooltipLine line = new TooltipLine(mod, "AmmoInfo", "Uses:");
+                TooltipLine line = new TooltipLine(Mod, "AmmoInfo", "Uses:");
 
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
-                line.text += $"[i:{ item.useAmmo}]";
+                line.text += $"[i:{ Item.useAmmo}]";
 
                 tooltips.Insert(index + 1, line);
             }

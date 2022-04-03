@@ -83,24 +83,24 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
             if (Main.rand.Next(20) == 0)
             {
-                var pos = projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
+                var pos = Projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
                 Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
             }
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-            var tex = GetTexture(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.frameX);
+            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.frameX).Value;
             var sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
-            var pos = projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
+            var pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
             spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
         }
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-            var texGlow = GetTexture(AssetDirectory.VitricBoss + "LongGlow");
-            var pos = projectile.position - Main.screenPosition + new Vector2(33, 10);
+            var texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
+            var pos = Projectile.position - Main.screenPosition + new Vector2(33, 10);
 
             var sin = (float)Math.Sin(Main.GameUpdateCount / 18f);
 

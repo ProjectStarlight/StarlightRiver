@@ -5,13 +5,13 @@ namespace StarlightRiver.NPCs
 {
 	public class DropHandler : GlobalNPC
     {
-        public override void NPCLoot(NPC npc)
+        public override void NPCLoot(NPC NPC)
         {
-            if (npc.type == mod.NPCType("JungleCorruptWasp"))
+            if (NPC.type == Mod.NPCType("JungleCorruptWasp"))
             {
                 if (Main.rand.Next(2) == 0)
                 {
-                    Item.NewItem((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height, mod.ItemType("JungleCorruptSoul"));
+                    Item.NewItem((int)NPC.position.X, (int)NPC.position.Y, NPC.width, NPC.height, Mod.ItemType("JungleCorruptSoul"));
                 }
             }
         }

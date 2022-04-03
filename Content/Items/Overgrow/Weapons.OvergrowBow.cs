@@ -19,27 +19,27 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.damage = 20;
-            item.ranged = true;
-            item.width = 40;
-            item.height = 20;
-            item.useTime = 30;
-            item.useAnimation = 30;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noMelee = true;
-            item.knockBack = 4;
-            item.rare = ItemRarityID.Green;
-            item.UseSound = SoundID.Item5;
-            item.shoot = ProjectileID.PurificationPowder;
-            item.shootSpeed = 14f;
-            item.useAmmo = AmmoID.Arrow;
+            Item.damage = 20;
+            Item.ranged = true;
+            Item.width = 40;
+            Item.height = 20;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.noMelee = true;
+            Item.knockBack = 4;
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item5;
+            Item.shoot = ProjectileID.PurificationPowder;
+            Item.shootSpeed = 14f;
+            Item.useAmmo = AmmoID.Arrow;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            int proj = Projectile.NewProjectile(player.Center.X, player.Center.Y, 0f, 0f, ProjectileType<LeafSpawner>(), damage, knockBack, player.whoAmI);
-            LeafSpawner spawner = Main.projectile[proj].modProjectile as LeafSpawner;
-            spawner.Parent = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
+            int proj = Projectile.NewProjectile(Player.Center.X, Player.Center.Y, 0f, 0f, ProjectileType<LeafSpawner>(), damage, knockBack, Player.whoAmI);
+            LeafSpawner spawner = Main.projectile[proj].ModProjectile as LeafSpawner;
+            spawner.Parent = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), type, damage, knockBack, Player.whoAmI);
             return false;
         }
     }
@@ -50,22 +50,22 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            projectile.width = 1;
-            projectile.height = 1;
-            projectile.damage = 0;
-            projectile.aiStyle = -1;
-            projectile.ignoreWater = true;
-            projectile.friendly = true;
+            Projectile.width = 1;
+            Projectile.height = 1;
+            Projectile.damage = 0;
+            Projectile.aiStyle = -1;
+            Projectile.ignoreWater = true;
+            Projectile.friendly = true;
         }
 
         public int Parent { get; set; }
 
         public override void AI()
         {
-            projectile.ai[0]++;
-            if (!Main.projectile[Parent].active) projectile.Kill();
-            projectile.position = Main.projectile[Parent].position;
-            if (projectile.ai[0] % 10 == 0) Projectile.NewProjectile(projectile.Center, new Vector2(0, 0), ProjectileType<BowLeaf>(), projectile.damage, projectile.knockBack, projectile.owner);
+            Projectile.ai[0]++;
+            if (!Main.projectile[Parent].active) Projectile.Kill();
+            Projectile.position = Main.projectile[Parent].position;
+            if (Projectile.ai[0] % 10 == 0) Projectile.NewProjectile(Projectile.Center, new Vector2(0, 0), ProjectileType<BowLeaf>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
         }
     }
 
@@ -75,29 +75,29 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            projectile.width = 14;
-            projectile.height = 13;
-            projectile.damage = 9;
-            projectile.aiStyle = -1;
-            projectile.ignoreWater = true;
-            projectile.friendly = true;
-            projectile.timeLeft = 160;
-            Main.projFrames[projectile.type] = 6;
+            Projectile.width = 14;
+            Projectile.height = 13;
+            Projectile.damage = 9;
+            Projectile.aiStyle = -1;
+            Projectile.ignoreWater = true;
+            Projectile.friendly = true;
+            Projectile.timeLeft = 160;
+            Main.projFrames[Projectile.type] = 6;
         }
 
         public override void AI()
         {
-            projectile.ai[0]++;
+            Projectile.ai[0]++;
 
-            if (++projectile.frameCounter >= 18)
+            if (++Projectile.frameCounter >= 18)
             {
-                projectile.frameCounter = 0;
+                Projectile.frameCounter = 0;
 
-                if (++projectile.frame >= 6) 
-                    projectile.frame = 0;
+                if (++Projectile.frame >= 6) 
+                    Projectile.frame = 0;
             }
 
-            projectile.velocity = new Vector2(2 * (float)Math.Sin(MathHelper.ToRadians(projectile.ai[0] * MathHelper.Pi)), 1 + 1.2f * (float)Math.Sin(MathHelper.ToRadians(projectile.ai[0] * (MathHelper.Pi * 2))));
+            Projectile.velocity = new Vector2(2 * (float)Math.Sin(MathHelper.ToRadians(Projectile.ai[0] * MathHelper.Pi)), 1 + 1.2f * (float)Math.Sin(MathHelper.ToRadians(Projectile.ai[0] * (MathHelper.Pi * 2))));
         }
     }
 }

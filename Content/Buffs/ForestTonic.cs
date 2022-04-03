@@ -6,10 +6,10 @@ namespace StarlightRiver.Content.Buffs
     {
         public ForestTonic() : base("Forest Tonic", "Immunity to poision\nSlowly regenerate life", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.lifeRegen += 2;
-            if (player.poisoned) player.poisoned = false;
+            Player.lifeRegen += 2;
+            if (Player.poisoned) Player.poisoned = false;
         }
     }
 }

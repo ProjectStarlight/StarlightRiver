@@ -26,15 +26,15 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 28;
-            item.height = 28;
-            item.value = 0;
-            item.vanity = true;
+            Item.width = 28;
+            Item.height = 28;
+            Item.value = 0;
+            Item.vanity = true;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.UglySweater, 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vanity
             DisplayName.SetDefault("Engineer Chestplate");
         }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.PostUpdateEquipsEvent += PostMovementUpdate;
             return true;
@@ -60,10 +60,10 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 34;
-            item.height = 20;
-            item.value = 0;
-            item.vanity = true;
+            Item.width = 34;
+            Item.height = 20;
+            Item.value = 0;
+            Item.vanity = true;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -71,15 +71,15 @@ namespace StarlightRiver.Content.Items.Vanity
             return head.type == ItemType<EngineerHead>() && legs.type == ItemType<EngineerLegs>();
         }
 
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            player.setBonus = "Hold space to hover over tiles";
+            Player.setBonus = "Hold space to hover over tiles";
             //starlightPlayer.ivyArmorComplete = true;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.UglySweater, 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Vanity
 
         private void PostMovementUpdate(StarlightPlayer slp)
         {
-            EngineerArmorPlayer starlightPlayer = slp.player.GetModPlayer<EngineerArmorPlayer>();
+            EngineerArmorPlayer starlightPlayer = slp.Player.GetModPlayer<EngineerArmorPlayer>();
             starlightPlayer.HandleEngineerArmor();
         }
     }
@@ -106,15 +106,15 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 30;
-            item.height = 20;
-            item.value = 0;
-            item.vanity = true;
+            Item.width = 30;
+            Item.height = 20;
+            Item.value = 0;
+            Item.vanity = true;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.UglySweater, 8);
             recipe.AddTile(TileID.Anvils);
             recipe.SetResult(this);
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Vanity
         float EaseXVel = 0f;
         float EaseYVel = 0f;
         bool TransformActive => SLP.EngineerTransform >= MaxTransform;
-        StarlightPlayer SLP => player.GetModPlayer<StarlightPlayer>();
+        StarlightPlayer SLP => Player.GetModPlayer<StarlightPlayer>();
 
         public override void Initialize()
         {
@@ -143,34 +143,34 @@ namespace StarlightRiver.Content.Items.Vanity
 
         private bool EngieArmor()
         {
-            return player.armor[0].type == ItemType<EngineerHead>() && player.armor[1].type == ItemType<EngineerChest>() && player.armor[2].type == ItemType<EngineerLegs>();//Really is there a better way?
+            return Player.armor[0].type == ItemType<EngineerHead>() && Player.armor[1].type == ItemType<EngineerChest>() && Player.armor[2].type == ItemType<EngineerLegs>();//Really is there a better way?
         }
 
-        private void RaycastTile(int z, int zz, ref int highest, ref int middleheight, ref int middletouch, ref int average, Point16 playerpos, ref Vector2 touchpoint)
+        private void RaycastTile(int z, int zz, ref int highest, ref int middleheight, ref int middletouch, ref int average, Point16 Playerpos, ref Vector2 touchpoint)
         {
             for (int i = 0; i < 16; i += 1)
             {
                 int offset = zz * z;
-                Tile tile = Framing.GetTileSafely(playerpos.X + offset, playerpos.Y + i);
-                if (InWorld(playerpos.X + offset, playerpos.Y + i))
-                    if (tile.active() && Main.tileSolid[tile.type] || tile.liquid >= 32)
+                Tile tile = Framing.GetTileSafely(Playerpos.X + offset, Playerpos.Y + i);
+                if (InWorld(Playerpos.X + offset, Playerpos.Y + i))
+                    if (tile.HasTile && Main.tileSolid[tile.type] || tile.liquid >= 32)
                     {
                         if (touchpoint == default)
                         {
-                            touchpoint = new Vector2(playerpos.X, playerpos.Y + i) * 16;
+                            touchpoint = new Vector2(Playerpos.X, Playerpos.Y + i) * 16;
                             middleheight = i;
                             highest = (int)touchpoint.Y;
                             middletouch = (int)touchpoint.Y;
                         }
                         else
                         {
-                            float valuetoadd = (playerpos.Y + i) * 16;
+                            float valuetoadd = (Playerpos.Y + i) * 16;
                             if (valuetoadd < highest)
                                 highest = (int)valuetoadd;
                             touchpoint.Y += valuetoadd;
                         }
 
-                        //Dust.NewDustPerfect((new Vector2((playerpos.X + offset), playerpos.Y + i) * 16)+new Vector2(Main.rand.Next(0, 16),0), ModContent.DustType<FireDust2>(), Vector2.Zero, 120, Color.Red, 4f);
+                        //Dust.NewDustPerfect((new Vector2((Playerpos.X + offset), Playerpos.Y + i) * 16)+new Vector2(Main.rand.Next(0, 16),0), ModContent.DustType<FireDust2>(), Vector2.Zero, 120, Color.Red, 4f);
                         average += 1;
                         break;
                     }
@@ -179,17 +179,17 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public void HandleEngineerArmor()
         {
-            EaseXVel += (player.velocity.X - EaseXVel) / 15f;
-            EaseYVel += (player.velocity.Y - EaseYVel) / 12f;
+            EaseXVel += (Player.velocity.X - EaseXVel) / 15f;
+            EaseYVel += (Player.velocity.Y - EaseYVel) / 12f;
             if (EngieArmor())
                 //Do engie things here
 
-                if (player.controlJump)
+                if (Player.controlJump)
                 {
                     SLP.EngineerTransform = (short)Math.Min(SLP.EngineerTransform + 1, MaxTransform);
                     if (TransformActive)
                     {
-                        Point16 playerpos = new Point16((int)player.Center.X / 16, (int)player.Center.Y / 16);
+                        Point16 Playerpos = new Point16((int)Player.Center.X / 16, (int)Player.Center.Y / 16);
                         Vector2 touchpoint = default;
                         int middleheight = 0;
                         int average = 0;
@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Items.Vanity
                         int highest = 0;
                         for (int z = 0; z <= 2; z += 1)
                             for (int zz = -1; zz <= 1; zz += 2)
-                                RaycastTile(z, zz, ref highest, ref middleheight, ref middletouch, ref average, playerpos, ref touchpoint);
+                                RaycastTile(z, zz, ref highest, ref middleheight, ref middletouch, ref average, Playerpos, ref touchpoint);
 
                         if (touchpoint != default)
                         {
@@ -206,23 +206,23 @@ namespace StarlightRiver.Content.Items.Vanity
                             if (middleheight < 8 && Main.rand.Next(2, 8) > middleheight)
                             {
                                 float scale = 8f - middleheight;
-                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), DustType<StarlightSmoke>(), new Vector2(Main.rand.NextFloat(-8, 8) * scale - player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
+                                Dust dust = Dust.NewDustPerfect(new Vector2(touchpoint.X + Main.rand.Next(0, 16), middletouch), DustType<StarlightSmoke>(), new Vector2(Main.rand.NextFloat(-8, 8) * scale - Player.velocity.X, Main.rand.NextFloat(-1, 1)), 120, Color.Gray, scale / 2f);
                                 dust.color = new Color(196, 179, 143);
                             }
                             if (middleheight < 7)
                             {
-                                float velocityammount = 15f / (touchpoint.Y - player.Center.Y);
-                                player.velocity.Y -= velocityammount + 0.2f;
+                                float velocityammount = 15f / (touchpoint.Y - Player.Center.Y);
+                                Player.velocity.Y -= velocityammount + 0.2f;
                             }
 
-                            if (player.velocity.Y > 0)
-                                player.velocity.Y /= 1.05f;
+                            if (Player.velocity.Y > 0)
+                                Player.velocity.Y /= 1.05f;
 
                         }
 
-                        player.fallStart = (int)(player.position.Y / 16f);
-                        player.maxRunSpeed += 5; //Only a bit faster run speed
-                        player.runAcceleration /= 3f;
+                        Player.fallStart = (int)(Player.position.Y / 16f);
+                        Player.maxRunSpeed += 5; //Only a bit faster run speed
+                        Player.runAcceleration /= 3f;
                     }
                     return;
                 }
@@ -272,21 +272,21 @@ namespace StarlightRiver.Content.Items.Vanity
                 void DrawEngineerArm(PlayerDrawInfo info, int part, Vector2 bodyoffset)
                 {
 
-                    SpriteEffects direction = player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                    Vector2 facingdirection = new Vector2(player.direction, 1f);
+                    SpriteEffects direction = Player.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                    Vector2 facingdirection = new Vector2(Player.direction, 1f);
 
                     //Ugly guessing-game-coded bobber effect
-                    if ((player.bodyFrame.Y + player.bodyFrame.Height * 2) % (player.bodyFrame.Height * 6) > player.bodyFrame.Height * 3 && player.bodyFrame.Y > player.bodyFrame.Height * 6)
+                    if ((Player.bodyFrame.Y + Player.bodyFrame.Height * 2) % (Player.bodyFrame.Height * 6) > Player.bodyFrame.Height * 3 && Player.bodyFrame.Y > Player.bodyFrame.Height * 6)
                         bodyoffset -= new Vector2(0, 2);
 
-                    if (player.direction < 0)
+                    if (Player.direction < 0)
                     {
                         bodyoffset *= facingdirection;
-                        bodyoffset.X -= player.width;
+                        bodyoffset.X -= Player.width;
                     }
 
                     //Alotta predefined stuff for each part
-                    Texture2D[] ShoulderMounts = { GetTexture(AssetDirectory.VanityItem + "ShoulderMount1"), GetTexture(AssetDirectory.VanityItem + "ShoulderMount2"), GetTexture(AssetDirectory.VanityItem + "ShoulderLauncher1"), GetTexture(AssetDirectory.VanityItem + "ShoulderLauncher2") };
+                    Texture2D[] ShoulderMounts = { Request<Texture2D>(AssetDirectory.VanityItem + "ShoulderMount1").Value, Request<Texture2D>(AssetDirectory.VanityItem + "ShoulderMount2").Value, Request<Texture2D>(AssetDirectory.VanityItem + "ShoulderLauncher1").Value, Request<Texture2D>(AssetDirectory.VanityItem + "ShoulderLauncher2").Value };
                     Vector2[] spriteorigins = { new Vector2(ShoulderMounts[0].Width - 4, ShoulderMounts[0].Height - 4),
                         new Vector2(2, ShoulderMounts[1].Height - 2),
                         new Vector2(4, ShoulderMounts[2].Height / 2),
@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Vanity
                         (float)Math.Sin(Main.GlobalTime * 1.33f) * 0.05f,
                         (float)Noise.GetNoise(SLP.Timer * (bodyoffset.X<-11 ? 1f : -1f),SLP.Timer)/5f};
 
-                    //Sway backwards as the player moves
+                    //Sway backwards as the Player moves
                     rotationangles[0] -= (float)Math.Pow(Math.Abs(EaseXVel / 20), 0.60);
                     rotationangles[1] -= (float)Math.Pow(Math.Abs(EaseXVel / 16), 0.70);
 
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Vanity
                     //Transformation angles
                     rotationangles[1] += SLP.EngineerTransform / (float)MaxTransform * (MathHelper.Pi / 1.5f);
                     if (TransformActive)
-                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + player.velocity.X / 3f) / 18f), 0.60) * Math.Sign(EaseXVel + player.velocity.X / 3f) * player.direction;
+                        rotationangles[3] += (float)Math.Pow(Math.Abs((EaseXVel + Player.velocity.X / 3f) / 18f), 0.60) * Math.Sign(EaseXVel + Player.velocity.X / 3f) * Player.direction;
 
                     //Support Arms
                     if (part % 2 == 0)
@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Items.Vanity
                                 Vector2 spriteoriginlocal = new Vector2(XOffset(ShoulderMounts[i], (int)spriteorigins[i].X), spriteorigins[i].Y);
                                 Vector2 partoffset = (partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X);
 
-                                Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + partoffset;
+                                Vector2 drawhere = Player.position + info.bodyOrigin + bodyoffset + partoffset;
                                 DrawData drawarm = new DrawData(ShoulderMounts[i], drawhere - Main.screenPosition, null, info.middleArmorColor, rotationangles[i] * facingdirection.X, spriteoriginlocal, Vector2.One, direction, 0);
 
                                 Main.playerDrawData.Add(drawarm);
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Items.Vanity
                         for (int i = 0; i < 3; i += 1)
                             GLOffset += (partoffsets[i] * facingdirection).RotatedBy(i < 1 ? 0f : rotationangles[i - 1] * facingdirection.X);
 
-                        Vector2 drawhere = player.position + info.bodyOrigin + bodyoffset + GLOffset;
+                        Vector2 drawhere = Player.position + info.bodyOrigin + bodyoffset + GLOffset;
                         DrawData drawGL;
 
                         if (isjetpack == 3)
@@ -367,7 +367,7 @@ namespace StarlightRiver.Content.Items.Vanity
                         if (tex == ShoulderMounts[3])
                             texwidth /= 4;
 
-                        if (player.direction < 1)
+                        if (Player.direction < 1)
                             x = texwidth - x;
                         return x;
                     }

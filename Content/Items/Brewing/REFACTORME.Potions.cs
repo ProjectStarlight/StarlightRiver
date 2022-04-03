@@ -16,10 +16,10 @@ namespace StarlightRiver.Items.Herbology.Potions
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 250;
-            item.rare = ItemRarityID.Green;
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 250;
+            Item.rare = ItemRarityID.Green;
         }
     }
 
@@ -48,19 +48,19 @@ namespace StarlightRiver.Items.Herbology.Potions
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 28;
-            item.useStyle = ItemUseStyleID.EatingUsing;
-            item.useAnimation = 15;
-            item.useTime = 15;
-            item.useTurn = true;
-            item.UseSound = SoundID.Item3;
-            item.maxStack = 30;
-            item.consumable = true;
-            item.rare = Rare;
-            item.value = Item.buyPrice(gold: 1);
-            item.buffType = BuffID;
-            item.buffTime = Time;
+            Item.width = 20;
+            Item.height = 28;
+            Item.useStyle = ItemUseStyleID.EatingUsing;
+            Item.useAnimation = 15;
+            Item.useTime = 15;
+            Item.useTurn = true;
+            Item.UseSound = SoundID.Item3;
+            Item.maxStack = 30;
+            Item.consumable = true;
+            Item.rare = Rare;
+            Item.value = Item.buyPrice(gold: 1);
+            Item.buffType = BuffID;
+            Item.buffTime = Time;
         }
     }
 }

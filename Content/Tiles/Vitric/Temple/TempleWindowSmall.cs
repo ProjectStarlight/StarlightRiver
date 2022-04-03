@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (tile.frameX != 0 || tile.frameY != 0) 
                 return false;
 
-            var frameTex = GetTexture(AssetDirectory.VitricTile + "TempleWindowSmallFrame");
+            var frameTex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmallFrame").Value;
             var pos = new Point16(i * 16, j * 16) - Main.screenPosition.ToPoint16();
             var target = new Rectangle(pos.X, pos.Y, frameTex.Width, frameTex.Height);
 
             for(int k = 0; k < 5; k++)
             {
-                var tex = GetTexture(AssetDirectory.VitricTile + "TempleWindowSmall" + k);
+                var tex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmall" + k).Value;
                 int xOff = (int)((Main.screenPosition.X + Main.screenWidth / 2 - i * 16) * (1f / ((k + 1) * 2)) * -0.35f);
                 int yOff = (int)((Main.screenPosition.Y + Main.screenHeight / 2 - j * 16) * (1f / ((k + 1) * 2)) * -0.35f);
 

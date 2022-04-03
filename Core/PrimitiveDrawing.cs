@@ -84,7 +84,7 @@ namespace StarlightRiver.Core
         private readonly TrailColorFunction trailColorFunction;
 
         /// <summary>
-        /// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. projectile.Center) and Positions[0] is assumed to be the end.
+        /// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. Projectile.Center) and Positions[0] is assumed to be the end.
         /// </summary>
         public Vector2[] Positions 
         {

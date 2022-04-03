@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Void
                     tallBottom: false,
                     mapColor: new Color(55, 60, 40),
                     bottomAnchor: new AnchorData(AnchorType.AlternateTile, 3, 0),
-                    anchorTiles: new int[] { mod.TileType("VoidPillarBase"), mod.TileType("VoidPillarMiddle") }
+                    anchorTiles: new int[] { Mod.TileType("VoidPillarBase"), Mod.TileType("VoidPillarMiddle") }
                     )
                 );
 
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.Void
                     tallBottom: false,
                     mapColor: new Color(55, 60, 40),
                     bottomAnchor: new AnchorData(AnchorType.AlternateTile, 3, 0),
-                    anchorTiles: new int[] { mod.TileType("VoidPillarBase"), mod.TileType("VoidPillarMiddle") }
+                    anchorTiles: new int[] { Mod.TileType("VoidPillarBase"), Mod.TileType("VoidPillarMiddle") }
                     )
                 );
 
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Tiles.Void
                     mapColor: new Color(55, 60, 40),
                     solidTop: true,
                     bottomAnchor: new AnchorData(AnchorType.AlternateTile, 3, 0),
-                    anchorTiles: new int[] { mod.TileType("VoidPillarBase"), mod.TileType("VoidPillarMiddle") }
+                    anchorTiles: new int[] { Mod.TileType("VoidPillarBase"), Mod.TileType("VoidPillarMiddle") }
                     )
                 );
         }

@@ -26,18 +26,18 @@ namespace StarlightRiver.Content.Tiles.Permafrost.VFX
 
         public override void Update()
         {
-            projectile.ai[0]++;
+            Projectile.ai[0]++;
 
-            if (projectile.ai[0] % 10 == 0)
+            if (Projectile.ai[0] % 10 == 0)
             {
-                int diff = (int)projectile.ai[0] % 200;
+                int diff = (int)Projectile.ai[0] % 200;
                 int off = 2 * diff - (int)Math.Pow(diff, 2) / 100;
 
                 for (int k = 0; k < off; k++)
                 {
-                    float x = projectile.ai[0] % 400;
-                    float y = projectile.ai[0] % 200;
-                    Dust.NewDustPerfect(projectile.Center + new Vector2(x, y) + Vector2.One.RotatedByRandom(0.1f) * (k), DustType<Dusts.Star>());
+                    float x = Projectile.ai[0] % 400;
+                    float y = Projectile.ai[0] % 200;
+                    Dust.NewDustPerfect(Projectile.Center + new Vector2(x, y) + Vector2.One.RotatedByRandom(0.1f) * (k), DustType<Dusts.Star>());
                 }
             }
         }

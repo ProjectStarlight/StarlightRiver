@@ -26,13 +26,13 @@ namespace StarlightRiver.Content.Buffs
             Main.debuff[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
             if (!Main.npc.Any(n => n.active && n.boss))
             {
-                player.lifeRegen += 50;
-                player.manaRegen += 50;
-                player.GetHandler().StaminaRegenRate += 1;
+                Player.lifeRegen += 50;
+                Player.manaRegen += 50;
+                Player.GetHandler().StaminaRegenRate += 1;
             }
         }
 

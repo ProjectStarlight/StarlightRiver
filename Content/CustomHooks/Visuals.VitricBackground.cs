@@ -98,9 +98,9 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.gameMenu || Main.dedServ)
                 return;
 
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            if (player != null && StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
+            if (Player != null && StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
             {
                 Vector2 basepoint = (StarlightWorld.VitricBiome != null) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
@@ -124,11 +124,11 @@ namespace StarlightRiver.Content.CustomHooks
                     if (k == 2) off -= 100;
                     if (k == 5) off = 100;
 
-                    DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass" + k), k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
+                    DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value, k + 1, Vector2.UnitY * off, default, false); //the crystal layers and front sand
 
                     if(k == 1)
 					{
-                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/GlassTowerLoop"), k + 1, new Vector2(1304, off - 248), default, false);
+                        DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/GlassTowerLoop").Value, k + 1, new Vector2(1304, off - 248), default, false);
                     }
 
                     if (k == 0)
@@ -143,8 +143,8 @@ namespace StarlightRiver.Content.CustomHooks
                         if (!Main.dayTime)
                             colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);
 
-                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
-                        DrawLayer(basepoint, GetTexture("StarlightRiver/Assets/Backgrounds/Glass0Glow"), k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
+                        DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value, k + 1, Vector2.UnitY * off + Vector2.One * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
+                        DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value, k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
 
                         Main.spriteBatch.End();
                         Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -185,11 +185,11 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawTilingBackground(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSand");
-            Texture2D texBot = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandBottom");
-            Texture2D texTop = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandTop");
-            Texture2D texLeft = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandLeft");
-            Texture2D texRight = GetTexture("StarlightRiver/Assets/Backgrounds/VitricSandRight");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSand").Value;
+            Texture2D texBot = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandBottom").Value;
+            Texture2D texTop = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandTop").Value;
+            Texture2D texLeft = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandLeft").Value;
+            Texture2D texRight = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandRight").Value;
 
             Rectangle blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y - 2, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height);
 

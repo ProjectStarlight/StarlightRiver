@@ -21,13 +21,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = 1;
-            item.rare = ItemRarityID.LightRed;
+            Item.value = 1;
+            Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.GetModPlayer<FrogPlayer>().equipped = true;
+            Player.GetModPlayer<FrogPlayer>().equipped = true;
         }
     }
 
@@ -45,37 +45,37 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override bool InstancePerEntity => true;
 
-        public override void NPCLoot(NPC npc)
+        public override void NPCLoot(NPC NPC)
         {
-            if (npc.type == NPCID.Frog && Main.rand.NextBool(1000))
-                Item.NewItem(npc.Center, ModContent.ItemType<SoulOfFrog>());
+            if (NPC.type == NPCID.Frog && Main.rand.NextBool(1000))
+                Item.NewItem(NPC.Center, ModContent.ItemType<SoulOfFrog>());
         }
 
-        public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
+        public override void OnHitByItem(NPC NPC, Player Player, Item Item, int damage, float knockback, bool crit)
         {
-            if (player.GetModPlayer<FrogPlayer>().equipped == true && npc.life <= 0)
+            if (Player.GetModPlayer<FrogPlayer>().equipped == true && NPC.life <= 0)
             {
-                TrySummonFrog(npc);
+                TrySummonFrog(NPC);
             }
         }
 
-        public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
+        public override void OnHitByProjectile(NPC NPC, Projectile Projectile, int damage, float knockback, bool crit)
         {
-            Player player = Main.player[projectile.owner];
-            if (player.GetModPlayer<FrogPlayer>().equipped == true && npc.life <= 0)
+            Player Player = Main.player[Projectile.owner];
+            if (Player.GetModPlayer<FrogPlayer>().equipped == true && NPC.life <= 0)
             {
-                TrySummonFrog(npc);
+                TrySummonFrog(NPC);
             }
         }
 
-        private static void TrySummonFrog(NPC npc)
+        private static void TrySummonFrog(NPC NPC)
         {
-            if (npc.type == NPCID.Frog || (Main.rand.NextBool(5) && npc.catchItem > 0))
+            if (NPC.type == NPCID.Frog || (Main.rand.NextBool(5) && NPC.catchItem > 0))
             {
-                NPC frog = Main.npc[NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y + 5, NPCID.Frog)];
-                if (npc.type == NPCID.Frog)
+                NPC frog = Main.npc[NPC.NewNPC((int)NPC.Center.X, (int)NPC.Center.Y + 5, NPCID.Frog)];
+                if (NPC.type == NPCID.Frog)
                 {
-                    frog.scale = npc.scale + 0.01f;
+                    frog.scale = NPC.scale + 0.01f;
 
                     int oldWidth = frog.width;
                     int oldHeight = frog.height;
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Misc
                     frog.width = (int)(frog.scale * frog.width);
                     frog.height = (int)(frog.scale * frog.height);
 
-                    frog.Center = npc.Center - new Vector2(0, frog.height - npc.height);
+                    frog.Center = NPC.Center - new Vector2(0, frog.height - NPC.height);
                 }
             }
         }

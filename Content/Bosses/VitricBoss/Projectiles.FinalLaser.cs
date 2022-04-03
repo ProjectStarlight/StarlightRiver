@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override string Texture => AssetDirectory.VitricBoss + Name;
 
-        public ref float Timer => ref projectile.ai[0];
-        public ref float LaserRotation => ref projectile.ai[1];
+        public ref float Timer => ref Projectile.ai[0];
+        public ref float LaserRotation => ref Projectile.ai[1];
 
         private float LaserTimer => (Timer - 120) % 400;
 
@@ -30,24 +30,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            projectile.width = 64;
-            projectile.height = 64;
-            projectile.hostile = true;
+            Projectile.width = 64;
+            Projectile.height = 64;
+            Projectile.hostile = true;
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
             return false;
 		}
 
-        public void findParent()
+		public void findParent()
         {
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
+                NPC NPC = Main.npc[i];
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBoss>())
                 {
-                    parent = npc.modNPC as VitricBoss;
+                    parent = NPC.ModNPC as VitricBoss;
                     return;
                 }
             }
@@ -63,53 +63,53 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 return;
 
             Timer++;
-            projectile.timeLeft = 2;
+            Projectile.timeLeft = 2;
 
-            projectile.Center = parent.npc.Center + new Vector2(4, -4);
+            Projectile.Center = parent.NPC.Center + new Vector2(4, -4);
 
             if (Timer < 60)
 			{
                 for (int k = 0; k < 3; k++)
                 {
                     var rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, new Color(255, Main.rand.Next(200, 255), 100), (1 - (Timer / 60f)));
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, new Color(255, Main.rand.Next(200, 255), 100), (1 - (Timer / 60f)));
                 }
 
-                projectile.scale = Math.Min(1, (Timer / 60f));
+                Projectile.scale = Math.Min(1, (Timer / 60f));
             }
 
             if (Timer > 120)
             {
                 //if (LaserTimer == 1)
-                //    Helpers.Helper.PlayPitched("VitricBoss/CeirosLaser", 1, 0, projectile.Center);
+                //    Helpers.Helper.PlayPitched("VitricBoss/CeirosLaser", 1, 0, Projectile.Center);
 
                 if (LaserTimer == 140)
-                    direction = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
+                    direction = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
 
                 if (LaserTimer > 30 && LaserTimer <= 75)
                 {
-                    projectile.netUpdate = true;
-                    LaserRotation = (Main.player[parent.npc.target].Center - projectile.Center).ToRotation();
+                    Projectile.netUpdate = true;
+                    LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation();
 
                     var rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (LaserTimer - 30) / 45f);
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (LaserTimer - 30) / 45f);
                 }
 
                 if (LaserTimer == 135)
-                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, projectile.Center);
+                    Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
 
                 //if (LaserTimer == 150)
                 //Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
                 if (LaserTimer > 150) //laser is actually active
                 {
-                    parent.npc.position += Vector2.Normalize(endpoint - projectile.Center) * -4.0f;
+                    parent.NPC.position += Vector2.Normalize(endpoint - Projectile.Center) * -4.0f;
 
                     float laserSpeed = Main.expertMode ? 0.017f : 0.014f;
 
                     for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
                     {
-                        Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
+                        Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
                         if (!parent.arena.Contains(posCheck.ToPoint()))
                         {
@@ -123,11 +123,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     for (int k = 0; k < Main.maxPlayers; k++) //laser colission
                     {
                         Vector2 point;
-                        var player = Main.player[k];
+                        var Player = Main.player[k];
 
-                        if (player.active && !player.dead && Helpers.Helper.CheckLinearCollision(projectile.Center, endpoint, player.Hitbox, out point))
+                        if (Player.active && !Player.dead && Helpers.Helper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out point))
                         {
-                            player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(player.name + " was reduced to ash"), Main.expertMode ? 65 : 45, 0, false, false, false, 5);
+                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.expertMode ? 65 : 45, 0, false, false, false, 5);
                             endpoint = point;
                             break;
                         }
@@ -137,10 +137,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if(Timer > 500 || parent.Phase == (int)VitricBoss.AIStates.Dying || parent.Phase == (int)VitricBoss.AIStates.Leaving)
 			{
-                projectile.scale -= 0.05f;
+                Projectile.scale -= 0.05f;
 
-                if (projectile.scale <= 0)
-                    projectile.active = false;
+                if (Projectile.scale <= 0)
+                    Projectile.active = false;
 			}
 
         }
@@ -150,35 +150,35 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (parent is null)
                 return;
 
-            Texture2D texGlow = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
             int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
             var color = new Color(255, 160 + sin, 40 + sin / 2);
 
-            spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, color * projectile.scale, 0, texGlow.Size() / 2, projectile.scale * 1.0f, default, default);
-            spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, color * projectile.scale * 1.2f, 0, texGlow.Size() / 2, projectile.scale * 1.6f, default, default);
+            spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
+            spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
 
             var effect1 = Terraria.Graphics.Effects.Filters.Scene["SunPlasma"].GetShader().Shader;
-            effect1.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap"));
-            effect1.Parameters["sampleTexture3"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort"));
+            effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallMap").Value);
+            effect1.Parameters["sampleTexture3"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
             effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-            spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, Color.White * projectile.scale, 0, projectile.Size / 2, projectile.scale * 1.7f, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricBoss + Name).Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             if (LaserTimer > 30 && LaserTimer <= 120) //tell line
 			{
-                var texTell = GetTexture(AssetDirectory.MiscTextures + "DirectionalBeam");
+                var texTell = Request<Texture2D>(AssetDirectory.MiscTextures + "DirectionalBeam").Value;
                 Vector2 origin = new Vector2(0, texTell.Height / 2);
 
                 for (int k = 0; k < 40; k++)
                 {
-                    var pos = projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(LaserRotation) * k * 32;
+                    var pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(LaserRotation) * k * 32;
 
                     if (!parent.arena.Contains((pos + Main.screenPosition).ToPoint()))
                         break;
@@ -193,14 +193,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (LaserTimer > 150) //the actual laser
             {
-                var texBeam = GetTexture(AssetDirectory.MiscTextures + "BeamCore");
-                var texBeam2 = GetTexture(AssetDirectory.MiscTextures + "BeamTrail");
-                var texDark = GetTexture(AssetDirectory.MiscTextures + "GradientBlack");
+                var texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
+                var texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
+                var texDark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
 
                 Vector2 origin = new Vector2(0, texBeam.Height / 2);
                 Vector2 origin2 = new Vector2(0, texBeam2.Height / 2);
 
-                var effect = StarlightRiver.Instance.GetEffect("Effects/GlowingDust");
+                var effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
                 effect.Parameters["uColor"].SetValue(color.ToVector3());
 
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 float height = texBeam.Height / 2f;
-                int width = (int)(projectile.Center - endpoint).Length();
+                int width = (int)(Projectile.Center - endpoint).Length();
 
                 if (LaserTimer - 150 < 20)
                     height = texBeam.Height / 2f * (LaserTimer - 150) / 20f;
@@ -217,7 +217,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     height = texBeam.Height / 2f * (1 - (LaserTimer - 380) / 20f);
 
 
-                var pos = projectile.Center - Main.screenPosition;
+                var pos = Projectile.Center - Main.screenPosition;
 
                 var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
                 var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
 
                     if(Main.rand.Next(20) == 0)
-                        Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
+                        Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
                 }
 
                 var opacity = height / (texBeam.Height / 2f);
@@ -243,16 +243,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
                 {
-                    spriteBatch.Draw(texDark, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
-                    spriteBatch.Draw(texDark, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
+                    spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
+                    spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
                 }
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                var impactTex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
-                var impactTex2 = GetTexture(AssetDirectory.GUI + "ItemGlow");
-                var glowTex = GetTexture(AssetDirectory.Assets + "GlowTrail");
+                var impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+                var impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+                var glowTex = Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
 
                 spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
@@ -266,7 +266,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     color.G -= (byte)variation;
 
-                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.9f - (variation * 0.03f));
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 2, 0, color, 0.9f - (variation * 0.03f));
                 }
             }
 

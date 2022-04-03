@@ -16,13 +16,13 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private int SwordFrame
         {
-            get => (int) projectile.localAI[1];
-            set => projectile.localAI[1] = value;
+            get => (int) Projectile.localAI[1];
+            set => Projectile.localAI[1] = value;
         }
 
         public VitricSummonSword()
         {
-            strikeWhere = projectile.Center;
+            strikeWhere = Projectile.Center;
             enemySize = Vector2.One;
         }
 
@@ -33,23 +33,23 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Enchanted Vitric Weapons");
-            Main.projFrames[projectile.type] = 1;
-            ProjectileID.Sets.Homing[projectile.type] = true;
+            Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
         }
 
         public sealed override void SetDefaults()
         {
-            projectile.width = 64;
-            projectile.height = 72;
-            projectile.tileCollide = false;
-            projectile.friendly = true;
-            projectile.hostile = false;
-            projectile.minion = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 60;
-            projectile.extraUpdates = 1;
-            projectile.idStaticNPCHitCooldown = 5;
-            projectile.usesIDStaticNPCImmunity = true;
+            Projectile.width = 64;
+            Projectile.height = 72;
+            Projectile.tileCollide = false;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.minion = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 60;
+            Projectile.extraUpdates = 1;
+            Projectile.idStaticNPCHitCooldown = 5;
+            Projectile.usesIDStaticNPCImmunity = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -69,24 +69,24 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void DoAI()
         {
 
-            oldHitbox = new Vector2(projectile.width, projectile.height);
+            oldHitbox = new Vector2(Projectile.width, Projectile.height);
 
             if (globalTimer > 170)
-                projectile.Kill();
+                Projectile.Kill();
 
             doDamage = false;
 
             if (++globalTimer == 1)
             {
                 SwordFrame = 1;
-                projectile.rotation = projectile.ai[0];
-                projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+                Projectile.rotation = Projectile.ai[0];
+                Projectile.spriteDirection = Projectile.rotation > 500 ? -1 : 1;
 
-                if (projectile.rotation > 500)
-                    projectile.rotation -= 1000;
+                if (Projectile.rotation > 500)
+                    Projectile.rotation -= 1000;
 
-                projectile.ai[0] = 0;
-                projectile.netUpdate = true;
+                Projectile.ai[0] = 0;
+                Projectile.netUpdate = true;
             }
 
             if (enemy != null && enemy.active)
@@ -112,14 +112,14 @@ namespace StarlightRiver.Content.Items.Vitric
                     SwordFrame = 0;
 
                 float progress = Math.Min(globalTimer / 10f, 1f);
-                projectile.rotation = projectile.rotation.AngleLerp(0.349066f / 2f, 0.075f * progress);
-                target = strikeWhere + new Vector2(projectile.spriteDirection * -(72 - globalTimer + enemySize.X / 2f), globalTimer * 3);
-                projectile.velocity += (target - projectile.Center) / 100f;
+                Projectile.rotation = Projectile.rotation.AngleLerp(0.349066f / 2f, 0.075f * progress);
+                target = strikeWhere + new Vector2(Projectile.spriteDirection * -(72 - globalTimer + enemySize.X / 2f), globalTimer * 3);
+                Projectile.velocity += (target - Projectile.Center) / 100f;
 
-                if (projectile.velocity.Length() > 2f + 10f * progress)
-                    projectile.velocity = Vector2.Normalize(projectile.velocity) * (2f + 10f * progress);
+                if (Projectile.velocity.Length() > 2f + 10f * progress)
+                    Projectile.velocity = Vector2.Normalize(Projectile.velocity) * (2f + 10f * progress);
 
-                projectile.velocity /= 1f + 0.10f * progress;
+                Projectile.velocity /= 1f + 0.10f * progress;
             }
         }
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 7, 0.75f);
                 }
 
                 if (globalTimer == 50)
@@ -142,14 +142,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 float offset = (60 - globalTimer) * 2f + enemySize.X / 10f;
                 float progress = Math.Min((globalTimer - 30) / 10f, 1f);
-                projectile.rotation = projectile.rotation.AngleLerp(-1.39626f / 2f, 0.075f * progress);
-                target = strikeWhere + new Vector2(projectile.spriteDirection * (-32 + offset), -64);
-                projectile.velocity += (target - projectile.Center) / 50f;
+                Projectile.rotation = Projectile.rotation.AngleLerp(-1.39626f / 2f, 0.075f * progress);
+                target = strikeWhere + new Vector2(Projectile.spriteDirection * (-32 + offset), -64);
+                Projectile.velocity += (target - Projectile.Center) / 50f;
 
-                if (projectile.velocity.Length() > 14f * progress)
-                    projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * progress;
+                if (Projectile.velocity.Length() > 14f * progress)
+                    Projectile.velocity = Vector2.Normalize(Projectile.velocity) * 14 * progress;
 
-                projectile.velocity /= 1f + 0.5f * progress;
+                Projectile.velocity /= 1f + 0.5f * progress;
             }
         }
 
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 7, 0.75f);
                 }
 
                 //format like this when things line up
@@ -176,14 +176,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 float offset = (80 - globalTimer) * 12f;
                 float progress = Math.Min((globalTimer - 70) / 10f, 1f);
-                projectile.rotation = projectile.rotation.AngleLerp(1.39626f / 2f, 0.06f * progress);
-                target = strikeWhere + new Vector2(projectile.spriteDirection * (-36 + offset - enemySize.X / 2f), 72);
-                projectile.velocity += (target - projectile.Center) / 50f;
+                Projectile.rotation = Projectile.rotation.AngleLerp(1.39626f / 2f, 0.06f * progress);
+                target = strikeWhere + new Vector2(Projectile.spriteDirection * (-36 + offset - enemySize.X / 2f), 72);
+                Projectile.velocity += (target - Projectile.Center) / 50f;
 
-                if (projectile.velocity.Length() > 14f * progress)
-                    projectile.velocity = Vector2.Normalize(projectile.velocity) * 14 * progress;
+                if (Projectile.velocity.Length() > 14f * progress)
+                    Projectile.velocity = Vector2.Normalize(Projectile.velocity) * 14 * progress;
 
-                projectile.velocity /= 1f + 0.5f * progress;
+                Projectile.velocity /= 1f + 0.5f * progress;
             }
         }
 
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     doDamage = true;
                     SwordFrame = 2;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.position.X, (int)projectile.position.Y, 7, 0.75f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 7, 0.75f);
                 }
 
                 if (globalTimer == 150)
@@ -208,32 +208,32 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (globalTimer < 130)
                 {
-                    projectile.rotation = projectile.rotation.AngleLerp(1.74533f / 2f, 0.075f * progress);
-                    target = strikeWhere + new Vector2(projectile.spriteDirection * (-96 - enemySize.X / 2f), 70);
+                    Projectile.rotation = Projectile.rotation.AngleLerp(1.74533f / 2f, 0.075f * progress);
+                    target = strikeWhere + new Vector2(Projectile.spriteDirection * (-96 - enemySize.X / 2f), 70);
                 }
                 else
                 {
                     float offset = (150 - globalTimer) * (6f + enemySize.X / 3f);
-                    projectile.rotation = projectile.rotation.AngleLerp(-1.39626f / 2f, 0.075f * progress);
-                    target = strikeWhere + new Vector2(projectile.spriteDirection * (-32 + offset - enemySize.X / 2f), -160);
+                    Projectile.rotation = Projectile.rotation.AngleLerp(-1.39626f / 2f, 0.075f * progress);
+                    target = strikeWhere + new Vector2(Projectile.spriteDirection * (-32 + offset - enemySize.X / 2f), -160);
 
                     if (globalTimer > 150)
                         for (float k = 1f; k < 3; k += 0.5f)
                         {
                             float angle = Main.rand.NextFloat(-MathHelper.Pi / 4f, MathHelper.Pi / 4f);
-                            Dust index = Dust.NewDustPerfect(projectile.Center + new Vector2(Main.rand.Next(40), Main.rand.Next(60) - 30), ModContent.DustType<Dusts.GlassGravity>(), (projectile.velocity * k * 0.25f).RotatedBy(angle), (int)((globalTimer - 150f) / 20f * 255f), default, (40f - k) / 40f);
+                            Dust index = Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.Next(40), Main.rand.Next(60) - 30), ModContent.DustType<Dusts.GlassGravity>(), (Projectile.velocity * k * 0.25f).RotatedBy(angle), (int)((globalTimer - 150f) / 20f * 255f), default, (40f - k) / 40f);
                             index.noGravity = true;
                             index.fadeIn = 0.75f;
                         }
 
                 }
 
-                projectile.velocity += (target - projectile.Center) / 50f;
+                Projectile.velocity += (target - Projectile.Center) / 50f;
 
-                if (projectile.velocity.Length() > 2 + 14f * progress)
-                    projectile.velocity = Vector2.Normalize(projectile.velocity) * (2f + 14 * progress);
+                if (Projectile.velocity.Length() > 2 + 14f * progress)
+                    Projectile.velocity = Vector2.Normalize(Projectile.velocity) * (2f + 14 * progress);
 
-                projectile.velocity /= 1f + 0.5f * progress;
+                Projectile.velocity /= 1f + 0.5f * progress;
 
             }
         }
@@ -248,24 +248,24 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            int[] hitboxframe = { 0, (int)(projectile.height / 2f), (int)(projectile.height / 2f), projectile.height };
-            return base.Colliding(new Rectangle((int)projectile.Center.X - 12, -16 + (int)projectile.position.Y - hitboxframe[SwordFrame], projectile.width + 24, projectile.height + 32), targetHitbox);
+            int[] hitboxframe = { 0, (int)(Projectile.height / 2f), (int)(Projectile.height / 2f), Projectile.height };
+            return base.Colliding(new Rectangle((int)Projectile.Center.X - 12, -16 + (int)Projectile.position.Y - hitboxframe[SwordFrame], Projectile.width + 24, Projectile.height + 32), targetHitbox);
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
+            Texture2D tex = Main.projectileTexture[Projectile.type];
 
             Vector2 pos = VitricSummonOrb.SwordOff[SwordFrame];
-            Vector2 drawOrigin = new Vector2((projectile.spriteDirection < 0 ? tex.Width - pos.X : pos.X) / 2f, pos.Y);
+            Vector2 drawOrigin = new Vector2((Projectile.spriteDirection < 0 ? tex.Width - pos.X : pos.X) / 2f, pos.Y);
             Vector2 drawPos = drawpos - Main.screenPosition;
             Color color = lightColor * Math.Min(1f, 1f - (globalTimer - 140f) / 30f);
 
             var frame = new Rectangle(0, SwordFrame * (tex.Height / 4), tex.Width, tex.Height / 4);
-            var effects = projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            var effects = Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(frame, false), color, projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, effects, 0);
-            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(frame, true), VitricSummonOrb.MoltenGlow(animationProgress), projectile.rotation * projectile.spriteDirection, drawOrigin, projectile.scale, effects, 0);
+            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(frame, false), color, Projectile.rotation * Projectile.spriteDirection, drawOrigin, Projectile.scale, effects, 0);
+            spriteBatch.Draw(tex, drawPos, VitricSummonOrb.WhiteFrame(frame, true), VitricSummonOrb.MoltenGlow(animationProgress), Projectile.rotation * Projectile.spriteDirection, drawOrigin, Projectile.scale, effects, 0);
         }
     }
 

@@ -39,14 +39,14 @@ namespace StarlightRiver.Content.CustomHooks
 
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
-                if (Main.projectile[k].modProjectile is IMoonlordLayerDrawable)
-                    (Main.projectile[k].modProjectile as IMoonlordLayerDrawable).DrawMoonlordLayer(Main.spriteBatch);
+                if (Main.projectile[k].ModProjectile is IMoonlordLayerDrawable)
+                    (Main.projectile[k].ModProjectile as IMoonlordLayerDrawable).DrawMoonlordLayer(Main.spriteBatch);
             }
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {
-                if (Main.npc[k].modNPC is IMoonlordLayerDrawable)
-                    (Main.npc[k].modNPC as IMoonlordLayerDrawable).DrawMoonlordLayer(Main.spriteBatch);
+                if (Main.npc[k].ModNPC is IMoonlordLayerDrawable)
+                    (Main.npc[k].ModNPC as IMoonlordLayerDrawable).DrawMoonlordLayer(Main.spriteBatch);
             }
         }
     }

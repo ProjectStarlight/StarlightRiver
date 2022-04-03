@@ -31,27 +31,27 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 		public sealed override void SetStaticDefaults()
         {
             SafeSetStaticDefaults();
-            InfusionMaker.infusionOptions.Add(item.type);
+            InfusionMaker.infusionOptions.Add(Item.type);
         }
 
         public virtual void SafeSetStaticDefaults() { }
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Blue;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Blue;
         }
 
-        public InfusionObjective FindObjective(Player player, string objectiveText)
+        public InfusionObjective FindObjective(Player Player, string objectiveText)
         {
-            for (int k = 0; k < player.inventory.Length; k++)
+            for (int k = 0; k < Player.inventory.Length; k++)
             {
-                var item = player.inventory[k];
+                var Item = Player.inventory[k];
 
-                if (item.modItem is InfusionImprint)
+                if (Item.ModItem is InfusionImprint)
                 {
-                    var objective = (item.modItem as InfusionImprint).objectives.FirstOrDefault(n => n.text == objectiveText);
+                    var objective = (Item.ModItem as InfusionImprint).objectives.FirstOrDefault(n => n.text == objectiveText);
 
                     if (objective != null)
                         return objective;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             return null;
         }
 
-        public override void UpdateInventory(Player player)
+        public override void UpdateInventory(Player Player)
         {
             bool transform = true;
 
@@ -79,9 +79,9 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
             if (transform)
             {
-                item.SetDefaults(TransformTo);
-                item.newAndShiny = true;
-                Main.NewText("Objectives Complete! You've obtained: " + item.Name);
+                Item.SetDefaults(TransformTo);
+                Item.newAndShiny = true;
+                Main.NewText("Objectives Complete! You've obtained: " + Item.Name);
             }           
         }
 
@@ -89,7 +89,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         {
             var pos = new Vector2(x, y);
 
-            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.mouseTextColorReal));
+            Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.mouseTextColorReal));
             pos.Y += 28;
 
             Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.mouseTextColorReal);
@@ -104,9 +104,9 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             return false;
         }
 
-		public override ModItem Clone(Item item)
+		public override ModItem Clone(Item Item)
 		{
-            var newClone = base.Clone(item);
+            var newClone = base.Clone(Item);
 
             if (newClone is InfusionImprint)
                 (newClone as InfusionImprint).objectives = objectives;
@@ -114,7 +114,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             return newClone;
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             List<TagCompound> objectiveTags = new List<TagCompound>();
 
@@ -127,7 +127,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             objectives.Clear();
 
@@ -154,7 +154,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             this.maxProgress = maxProgress;
         }
 
-        public TagCompound Save()
+        public void SaveData(TagCompound tag)
 		{
             return new TagCompound()
             {
@@ -164,7 +164,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             };
 		}
 
-        public void Load(TagCompound tag)
+        public void LoadData(TagCompound tag)
 		{
             progress = tag.GetFloat("progress");
             maxProgress = tag.GetFloat("maxProgress");
@@ -173,7 +173,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public void DrawBar(SpriteBatch sb, Vector2 pos)
         {
-            var tex = GetTexture(AssetDirectory.GUI + "ChungusMeter");
+            var tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
             sb.Draw(tex, pos, Color.White);
         }
 
@@ -192,8 +192,8 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             pos.X += Main.fontMouseText.MeasureString(wrapped).X + 8;
             pos.Y += 2;
 
-            var tex = GetTexture(AssetDirectory.GUI + "ChungusMeter");
-            var texFill = GetTexture(AssetDirectory.GUI + "ChungusMeterFill");
+            var tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
+            var texFill = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeterFill").Value;
             var fill = (int)(progress / maxProgress * texFill.Width);
 
             var fillRect = new Rectangle((int)pos.X + 14, (int)pos.Y + 4, fill, texFill.Height);

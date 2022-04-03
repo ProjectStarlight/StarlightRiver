@@ -16,27 +16,27 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            item.damage = 140;
-            item.useTime = 60;
-            item.useAnimation = 60;
-            item.useAmmo = AmmoID.FallenStar;
-            item.ranged = true;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.crit = 20;
-            item.shoot = ProjectileType<StarSniperBolt>();
-            item.shootSpeed = 5;
-            item.knockBack = 20;
-            item.UseSound = SoundID.Item40;
-            item.rare = ItemRarityID.Blue;
-            item.value = Item.sellPrice(0, 10, 0, 0);
-            item.noMelee = true;
+            Item.damage = 140;
+            Item.useTime = 60;
+            Item.useAnimation = 60;
+            Item.useAmmo = AmmoID.FallenStar;
+            Item.ranged = true;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.crit = 20;
+            Item.shoot = ProjectileType<StarSniperBolt>();
+            Item.shootSpeed = 5;
+            Item.knockBack = 20;
+            Item.UseSound = SoundID.Item40;
+            Item.rare = ItemRarityID.Blue;
+            Item.value = Item.sellPrice(0, 10, 0, 0);
+            Item.noMelee = true;
         }
 
         public override Vector2? HoldoutOffset() => new Vector2(-10, 0);
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.Boomstick);
             recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
             recipe.AddIngredient(ItemID.FallenStar, 5);
@@ -52,23 +52,23 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            projectile.friendly = true;
-            projectile.width = 8;
-            projectile.height = 8;
-            projectile.extraUpdates = 20;
-            projectile.timeLeft = 600;
-            projectile.penetrate = -1;
+            Projectile.friendly = true;
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.extraUpdates = 20;
+            Projectile.timeLeft = 600;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
         {
-            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
-            Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+            Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), Projectile.velocity * -Main.rand.NextFloat(), 0, default, 2);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<StarSniperAura>(), 20, 0, projectile.owner);
+            Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<StarSniperAura>(), 20, 0, Projectile.owner);
         }
     }
 
@@ -78,15 +78,15 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SetDefaults()
         {
-            projectile.friendly = true;
-            projectile.width = 64;
-            projectile.height = 64;
-            projectile.timeLeft = 60;
-            projectile.penetrate = -1;
+            Projectile.friendly = true;
+            Projectile.width = 64;
+            Projectile.height = 64;
+            Projectile.timeLeft = 60;
+            Projectile.penetrate = -1;
         }
 
-        public override void AI() => projectile.rotation += 0.1f;
+        public override void AI() => Projectile.rotation += 0.1f;
 
-        public override Color? GetAlpha(Color lightColor) => Color.White * (projectile.timeLeft / 60f);
+        public override Color? GetAlpha(Color lightColor) => Color.White * (Projectile.timeLeft / 60f);
     }
 }

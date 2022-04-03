@@ -56,7 +56,7 @@ namespace StarlightRiver.Core
             dustType = DustType;
             animationFrameHeight = Height * 18;
             disableSmartCursor = true;
-            ItemType = mod.ItemType(ItemName);
+            ItemType = Mod.ItemType(ItemName);
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
             adjTiles = new int[] { TileID.WaterFountain };
@@ -103,10 +103,10 @@ namespace StarlightRiver.Core
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = ItemType;
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = ItemType;
         }
 
         public override void HitWire(int i, int j)
@@ -159,10 +159,10 @@ namespace StarlightRiver.Core
         protected readonly Color? MapColor;
         protected readonly string TexturePath;
 
-        public ModBanner(string drop, int npcType, string path = null, int width = 1, int height = 3, Color? mapColor = null)
+        public ModBanner(string drop, int NPCType, string path = null, int width = 1, int height = 3, Color? mapColor = null)
         {
             ItemName = drop;
-            NpcType = npcType;
+            NpcType = NPCType;
             Width = width;
             Height = height;
             MapColor = mapColor;
@@ -193,7 +193,7 @@ namespace StarlightRiver.Core
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));
-            ItemType = mod.ItemType(ItemName);
+            ItemType = Mod.ItemType(ItemName);
             dustType = -1;
 
             SafeSetDefaults();
@@ -205,9 +205,9 @@ namespace StarlightRiver.Core
         {
             if (closer)
             {
-                Player player = Main.LocalPlayer;
-                player.NPCBannerBuff[NpcType] = true;
-                player.hasBanner = true;
+                Player Player = Main.LocalPlayer;
+                Player.NPCBannerBuff[NpcType] = true;
+                Player.hasBanner = true;
             }
         }
 
@@ -258,7 +258,7 @@ namespace StarlightRiver.Core
         {
             AnchorTileTypes = new int[AnchorableTiles.Length + 1];
             for (int i = 0; i < AnchorableTiles.Length; i++)
-                AnchorTileTypes[i] = mod.TileType(AnchorableTiles[i]);
+                AnchorTileTypes[i] = Mod.TileType(AnchorableTiles[i]);
             AnchorTileTypes[AnchorableTiles.Length] = Type;
 
             Main.tileSolid[Type] = false;
@@ -266,7 +266,7 @@ namespace StarlightRiver.Core
             Main.tileMergeDirt[Type] = false;
             Main.tileBlockLight[Type] = false;
 
-            //this TileObjectData stuff is *only* needed for placing with an item
+            //this TileObjectData stuff is *only* needed for placing with an Item
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.AlternateTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
@@ -277,7 +277,7 @@ namespace StarlightRiver.Core
             if(MapColor != null)
                 AddMapEntry(MapColor ?? Color.Transparent);
             if(ItemName != null)
-                drop = mod.ItemType(ItemName);
+                drop = Mod.ItemType(ItemName);
             dustType = DustType;
             soundType = Sound;
 

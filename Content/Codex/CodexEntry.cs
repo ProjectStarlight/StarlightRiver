@@ -65,7 +65,7 @@ namespace StarlightRiver.Codex
             {
                 spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X + 236, (int)pos.Y + 50 + Image.Height, 8, 350 - (50 + Image.Height)), new Rectangle(0, 0, 1, 1), new Color(30, 30, 70), 0, Vector2.Zero, 0, 0);
 
-                Texture2D arrow = GetTexture("StarlightRiver/Assets/GUI/Arrow");
+                Texture2D arrow = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
                 float posY = LinePos / (float)(lines.Count - maxLines) * (350 - (50 + Image.Height));
                 spriteBatch.Draw(arrow, pos + new Vector2(234, 50 + Image.Height + posY - arrow.Height / 2), arrow.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
             }

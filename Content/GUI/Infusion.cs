@@ -92,11 +92,11 @@ namespace StarlightRiver.Content.GUI
 
             if (mp.InfusionLimit > 0)
             {
-                Texture2D texture = GetTexture("StarlightRiver/Assets/GUI/InfusionFrame");
+                Texture2D texture = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionFrame").Value;
                 Rectangle source = new Rectangle(60 * (mp.InfusionLimit - 1), 0, 60, 56);
                 spriteBatch.Draw(texture, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), source, Color.White);
 
-                Texture2D textureGlow = GetTexture("StarlightRiver/Assets/GUI/InfusionFrameFlash");
+                Texture2D textureGlow = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionFrameFlash").Value;
                 Rectangle sourceGlow = new Rectangle(60 * (mp.InfusionLimit - 1), (int)(animationProgress / 4f) * 56, 60, 56);
                 spriteBatch.Draw(textureGlow, new Vector2(infusionElement.Left.Pixels + 6, infusionElement.Top.Pixels), sourceGlow, animationColor * (1 - animationProgress / 40f));
             }
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.GUI
 
             if (!Unlocked) //draw a lock instead for locked slots
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/InfusionLock");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionLock").Value;
                 //spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White, 0f, tex.Size() / 2, 1, SpriteEffects.None, 0);
             }
 
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.GUI
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
-                var glowTex = GetTexture("StarlightRiver/Assets/Abilities/HexGlow");
+                var glowTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/HexGlow").Value;
                 var sin = 0.75f + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.25f;
                 spriteBatch.Draw(glowTex, GetDimensions().Center(), null, equipped.color * sin, 0, glowTex.Size() / 2, 1.2f, 0, 0);
 
@@ -163,24 +163,24 @@ namespace StarlightRiver.Content.GUI
                     Infusion.linkParticles.AddParticle(new Particle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos));
                 }
 
-                //Draws the item itself
+                //Draws the Item itself
                 equipped.Draw(spriteBatch, GetInnerDimensions().Center() + Vector2.UnitY, 1, false);
 
                 if (IsMouseHovering && Main.mouseItem.IsAir)
                 {
-                    //Grabs the items tooltip
+                    //Grabs the Items tooltip
                     System.Text.StringBuilder ToolTip = new System.Text.StringBuilder();
-                    for (int k = 0; k < equipped.item.ToolTip.Lines; k++)
-                        ToolTip.AppendLine(equipped.item.ToolTip.GetLine(k));
+                    for (int k = 0; k < equipped.Item.ToolTip.Lines; k++)
+                        ToolTip.AppendLine(equipped.Item.ToolTip.GetLine(k));
 
                     //Draws the name and tooltip at the mouse
-                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
+                    Utils.DrawBorderStringBig(spriteBatch, equipped.Name, Main.MouseScreen + new Vector2(22, 22), ItemRarity.GetColor(equipped.Item.rare).MultiplyRGB(Main.mouseTextColorReal), 0.39f);
                     Utils.DrawBorderStringBig(spriteBatch, ToolTip.ToString(), Main.MouseScreen + new Vector2(22, 48), Main.mouseTextColorReal, 0.39f);
                 }
             }
 
             // Draws the transparent visual
-            else if (Main.mouseItem?.modItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
+            else if (Main.mouseItem?.ModItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
             {
                 float opacity = 0.33f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
                 mouseItem.Draw(spriteBatch, GetDimensions().Center() + Vector2.UnitY, opacity, false);
@@ -221,31 +221,31 @@ namespace StarlightRiver.Content.GUI
                 var slot = Array.FindIndex(Main.LocalPlayer.inventory, i => i == null || i.IsAir);
                 if (slot > -1)
                 {
-                    Main.LocalPlayer.inventory[slot] = occupant.item;
+                    Main.LocalPlayer.inventory[slot] = occupant.Item;
                     handler.SetInfusion(null, TargetSlot);
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     return;
                 }
             }
 
-            //if the player is holding an infusion
-            if (Main.mouseItem.modItem is InfusionItem item && handler.SetInfusion(item, TargetSlot))
+            //if the Player is holding an infusion
+            if (Main.mouseItem.ModItem is InfusionItem Item && handler.SetInfusion(Item, TargetSlot))
             {
-                if (occupant == null) Main.mouseItem.TurnToAir();  //if nothing is equipped, equip the held item
-                else Main.mouseItem = occupant.item; //if something is equipped, swap that for the held item
+                if (occupant == null) Main.mouseItem.TurnToAir();  //if nothing is equipped, equip the held Item
+                else Main.mouseItem = occupant.Item; //if something is equipped, swap that for the held Item
 
                 Infusion.animationProgress = 0;
-                Infusion.animationColor = (item as InfusionItem).color;
+                Infusion.animationColor = (Item as InfusionItem).color;
                 Helpers.Helper.PlayPitched("Magic/Shadow2", 1, 0);
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
-            //if the player isnt holding anything but something is equipped, unequip it
+            //if the Player isnt holding anything but something is equipped, unequip it
             else if (occupant != null && Main.mouseItem.IsAir)
             {
                 handler.SetInfusion(null, TargetSlot);
 
-                Main.mouseItem = occupant.item;
+                Main.mouseItem = occupant.Item;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
         }

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
-            var tex = GetTexture(AssetDirectory.VitricTile + "ForgeInnerDoorGlow");
+            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "ForgeInnerDoorGlow").Value;
             var tile = Framing.GetTileSafely(i, j);
             var source = new Rectangle(tile.frameX, tile.frameY, 16, 16);
 
@@ -37,6 +37,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class ForgeInnerDoorItem : QuickTileItem
     {
-        public ForgeInnerDoorItem() : base("Forge Inner Door", "Debug item", TileType<ForgeInnerDoor>(), 1, AssetDirectory.Debug, true) { }
+        public ForgeInnerDoorItem() : base("Forge Inner Door", "Debug Item", TileType<ForgeInnerDoor>(), 1, AssetDirectory.Debug, true) { }
     }
 }

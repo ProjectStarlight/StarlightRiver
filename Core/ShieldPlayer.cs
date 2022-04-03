@@ -16,7 +16,7 @@ using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core
 {
-	public class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that players and NPCs share
+	public class ShieldPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that Players and NPCs share
 	{
 		public int MaxShield = 0;
 		public int Shield = 0;
@@ -42,15 +42,15 @@ namespace StarlightRiver.Core
 			{
 				if (barrierDyeItem is null || barrierDyeItem.IsAir)
                 {
-					Item item = new Item();
-					item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
-					barrierDyeItem = item;
+					Item Item = new Item();
+					Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
+					barrierDyeItem = Item;
 				}
 
-				return (barrierDyeItem.modItem as BarrierDye);
+				return (barrierDyeItem.ModItem as BarrierDye);
 			}
 		}
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
 			StarlightPlayer.PreDrawEvent += PreDrawBarrierFX;
@@ -58,16 +58,16 @@ namespace StarlightRiver.Core
 			return base.Autoload(ref name);
 		}
 
-		private void PostDrawBarrierFX(Player player, SpriteBatch spriteBatch)
+		private void PostDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
 			if(!Main.gameMenu)
-				player.GetModPlayer<ShieldPlayer>().dye?.PostDrawEffects(spriteBatch, player);
+				Player.GetModPlayer<ShieldPlayer>().dye?.PostDrawEffects(spriteBatch, Player);
 		}
 
-		private void PreDrawBarrierFX(Player player, SpriteBatch spriteBatch)
+		private void PreDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
 			if (!Main.gameMenu)
-				player.GetModPlayer<ShieldPlayer>().dye?.PreDrawEffects(spriteBatch, player);
+				Player.GetModPlayer<ShieldPlayer>().dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
 		public void ModifyDamage(ref int damage, ref bool crit)
@@ -78,9 +78,9 @@ namespace StarlightRiver.Core
 
 				if (Shield > damage)
 				{
-					dye?.HitBarrierEffects(player);
+					dye?.HitBarrierEffects(Player);
 
-					CombatText.NewText(player.Hitbox, Color.Cyan, damage);
+					CombatText.NewText(Player.Hitbox, Color.Cyan, damage);
 					Shield -= damage;
 					damage = (int)(damage * reduction);
 				}
@@ -88,9 +88,9 @@ namespace StarlightRiver.Core
 				{
 					rechargeAnimation = 0;
 
-					dye?.LoseBarrierEffects(player);
+					dye?.LoseBarrierEffects(Player);
 
-					CombatText.NewText(player.Hitbox, Color.Cyan, Shield);
+					CombatText.NewText(Player.Hitbox, Color.Cyan, Shield);
 					int overblow = damage - Shield;
 					damage = (int)(Shield * reduction) + overblow;
 
@@ -103,11 +103,11 @@ namespace StarlightRiver.Core
 		{
 			if (Shield > 0)
 			{
-				damage = (int)Main.CalculatePlayerDamage(damage, player.statDefense);
+				damage = (int)Main.CalculatePlayerDamage(damage, Player.statDefense);
 
 				ModifyDamage(ref damage, ref crit);
 				TimeSinceLastHit = 0;
-				player.statDefense = 0;
+				Player.statDefense = 0;
 			}
 
 			return true;
@@ -166,7 +166,7 @@ namespace StarlightRiver.Core
 				{
 					int drainSubDelay = 60 / (OvershieldDrainRate % 60);
 
-					if (player.GetModPlayer<StarlightPlayer>().Timer % drainSubDelay == 0 && Shield > MaxShield)
+					if (Player.GetModPlayer<StarlightPlayer>().Timer % drainSubDelay == 0 && Shield > MaxShield)
 						Shield--;
 				}
 			}
@@ -174,7 +174,7 @@ namespace StarlightRiver.Core
 
 		public override void PostUpdate() //change inventory screen for dyes
 		{
-			if (Main.mouseItem.modItem is BarrierDye)
+			if (Main.mouseItem.ModItem is BarrierDye)
 				Main.EquipPageSelected = 2;
 		}
 
@@ -187,7 +187,7 @@ namespace StarlightRiver.Core
 		public override void clientClone(ModPlayer clientClone)
 		{
 			ShieldPlayer clone = clientClone as ShieldPlayer;
-			// Here we would make a backup clone of values that are only correct on the local players Player instance.
+			// Here we would make a backup clone of values that are only correct on the local Players Player instance.
 			clone.barrierDyeItem = barrierDyeItem;
 		}
 
@@ -197,18 +197,18 @@ namespace StarlightRiver.Core
 			if (sendUpdatePacket || clone?.barrierDyeItem?.type != barrierDyeItem?.type)
             {
 				ShieldPacket packet = new ShieldPacket(this);
-				packet.Send(-1, player.whoAmI, false);
+				packet.Send(-1, Player.whoAmI, false);
 			}
 		}
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
-			if (LiveOnOnlyShield && Shield > 0) //if the player has no max life, its implied they can live off of shield
+			if (LiveOnOnlyShield && Shield > 0) //if the Player has no max life, its implied they can live off of shield
 				return false;
 
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
 			return new TagCompound()
 			{
@@ -216,7 +216,7 @@ namespace StarlightRiver.Core
 			};
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadData(TagCompound tag)
 		{
 			barrierDyeItem = tag.Get<Item>("DyeItem");
 		}
@@ -236,9 +236,9 @@ namespace StarlightRiver.Core
 
 			if (dye is null)
 			{
-				Item item = new Item();
-				item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
-				barrierDyeItem = item;
+				Item Item = new Item();
+				Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
+				barrierDyeItem = Item;
 			}
 		}
 	}
@@ -252,7 +252,7 @@ namespace StarlightRiver.Core
 
 		public ShieldPacket(ShieldPlayer sPlayer)
 		{
-			whoAmI = (byte)sPlayer.player.whoAmI;
+			whoAmI = (byte)sPlayer.Player.whoAmI;
 			shield = sPlayer.Shield;
 
 			if (sPlayer.barrierDyeItem is null)
@@ -263,21 +263,21 @@ namespace StarlightRiver.Core
 
 		protected override void Receive()
 		{
-			ShieldPlayer player = Main.player[whoAmI].GetModPlayer<ShieldPlayer>();
+			ShieldPlayer Player = Main.player[whoAmI].GetModPlayer<ShieldPlayer>();
 
-			player.Shield = shield;
+			Player.Shield = shield;
 			
-			if (player.barrierDyeItem is null || player.barrierDyeItem.type != dyeType)
+			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
             {
-				Item item = new Item();
-				item.SetDefaults(dyeType);
-				player.barrierDyeItem = item;
-				player.rechargeAnimation = 0;
+				Item Item = new Item();
+				Item.SetDefaults(dyeType);
+				Player.barrierDyeItem = Item;
+				Player.rechargeAnimation = 0;
             }
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server)
 			{
-				Send(-1, player.player.whoAmI, false);
+				Send(-1, Player.Player.whoAmI, false);
 				return;
 			}
 		}

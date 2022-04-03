@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Pickups
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
         public override Color GlowColor => new Color(255, 255, 130);
 
-        public override bool CanPickup(Player player)
+        public override bool CanPickup(Player Player)
         {
-            return !player.GetHandler().Unlocked<Whip>();
+            return !Player.GetHandler().Unlocked<Whip>();
         }
 
         public override void SetStaticDefaults()
@@ -28,29 +28,29 @@ namespace StarlightRiver.Content.Pickups
 
         public override void Visuals()
         {
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime), (float)Math.Sin(StarlightWorld.rottime)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 1) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 2) / 2, (float)Math.Sin(StarlightWorld.rottime + 2)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 4) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-            Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 4), (float)Math.Sin(StarlightWorld.rottime + 4) / 2) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime), (float)Math.Sin(StarlightWorld.rottime)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 1) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 2) / 2, (float)Math.Sin(StarlightWorld.rottime + 2)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 4) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+            Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 4), (float)Math.Sin(StarlightWorld.rottime + 4) / 2) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
 
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
+            Dust.NewDustPerfect(NPC.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
         }
 
         public override void PickupVisuals(int timer)
         {
             if (timer == 1)
             {
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
                 Filters.Scene.Deactivate("Shockwave");
             }
         }
 
-        public override void PickupEffects(Player player)
+        public override void PickupEffects(Player Player)
         {
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
             mp.Unlock<Whip>();
 
-            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
-            player.AddBuff(BuffID.Featherfall, 580);
+            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
+            Player.AddBuff(BuffID.Featherfall, 580);
         }
     }
 

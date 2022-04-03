@@ -8,13 +8,13 @@ using Terraria.ModLoader;
 /*
  * Fair warning to anyone reading this file, I'm fairly certain what you see here was only able to be made through demonic posession or similar supernatural events.
  * Do not attempt to reverse engineer this yourself, for everyone's sake.
- * If this is broken in the future, just cancel the mod. Its not worth it.
+ * If this is broken in the future, just cancel the Mod. Its not worth it.
  * Please.
  */
 
 namespace StarlightRiver.Core
 {
-	class PermafrostGlobalTile : ModWorld, IOrderedLoadable
+	class PermafrostGlobalTile : ModSystem, IOrderedLoadable
 	{
 		public static RenderTarget2D auroraTarget;
 		public static RenderTarget2D auroraBackTarget;
@@ -73,7 +73,7 @@ namespace StarlightRiver.Core
 						if ((tile.bTileHeader3 & 0b11100000) >> 5 == 1)
 						{
 							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
-							Texture2D tex = ModContent.GetTexture(AssetDirectory.Assets + "Misc/AuroraWater");
+							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
 							Main.spriteBatch.Draw(tex, target, findSource(i, j), Color.White * 0.5f);
 						}
 
@@ -89,7 +89,7 @@ namespace StarlightRiver.Core
 			Main.graphics.GraphicsDevice.SetRenderTarget(auroraBackTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/Misc/AuroraWaterMap");
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap").Value;
 
 			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
 				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)

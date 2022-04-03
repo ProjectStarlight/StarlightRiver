@@ -18,12 +18,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool CloneNewInstances => true;
 
-        public override bool NeedsSaving(Item item) => isRelic;
+        public override bool NeedsSaving(Item Item) => isRelic;
 
         public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 
-        public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
+        public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)
         {
             if (isRelic)
             {
@@ -34,113 +34,113 @@ namespace StarlightRiver.Content.Items.BaseTypes
                     return true;
             }
 
-            return base.PrefixChance(item, pre, rand);
+            return base.PrefixChance(Item, pre, rand);
         }
 
-        public override int ChoosePrefix(Item item, UnifiedRandom rand)
+        public override int ChoosePrefix(Item Item, UnifiedRandom rand)
         {
             if (isRelic)
             {
-                int result = base.ChoosePrefix(item, rand);
-                return result != 0 ? result : ChoosePrefix(item, rand);
+                int result = base.ChoosePrefix(Item, rand);
+                return result != 0 ? result : ChoosePrefix(Item, rand);
             }
 
-            return base.ChoosePrefix(item, rand);
+            return base.ChoosePrefix(Item, rand);
         }
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
+        public override void UpdateAccessory(Item Item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
         {
 			if (!isRelic)
 			{ 
-				base.UpdateAccessory(item, player, hideVisual);
+				base.UpdateAccessory(Item, Player, hideVisual);
 				return;
 				}
 
-			if (item.prefix == 62)
+			if (Item.prefix == 62)
 			{
-				player.statDefense++;
+				Player.statDefense++;
 			}
-			if (item.prefix == 63)
+			if (Item.prefix == 63)
 			{
-				player.statDefense += 2;
+				Player.statDefense += 2;
 			}
-			if (item.prefix == 64)
+			if (Item.prefix == 64)
 			{
-				player.statDefense += 3;
+				Player.statDefense += 3;
 			}
-			if (item.prefix == 65)
+			if (Item.prefix == 65)
 			{
-				player.statDefense += 4;
+				Player.statDefense += 4;
 			}
-			if (item.prefix == 66)
+			if (Item.prefix == 66)
 			{
-				player.statManaMax2 += 20;
+				Player.statManaMax2 += 20;
 			}
-			if (item.prefix == 67)
+			if (Item.prefix == 67)
 			{
-				player.meleeCrit += 2;
-				player.rangedCrit += 2;
-				player.magicCrit += 2;
-				player.thrownCrit += 2;
+				Player.meleeCrit += 2;
+				Player.rangedCrit += 2;
+				Player.magicCrit += 2;
+				Player.thrownCrit += 2;
 			}
-			if (item.prefix == 68)
+			if (Item.prefix == 68)
 			{
-				player.meleeCrit += 4;
-				player.rangedCrit += 4;
-				player.magicCrit += 4;
-				player.thrownCrit += 4;
+				Player.meleeCrit += 4;
+				Player.rangedCrit += 4;
+				Player.magicCrit += 4;
+				Player.thrownCrit += 4;
 			}
-			if (item.prefix == 69)
+			if (Item.prefix == 69)
 			{
-				player.allDamage += 0.01f;
+				Player.allDamage += 0.01f;
 			}
-			if (item.prefix == 70)
+			if (Item.prefix == 70)
 			{
-				player.allDamage += 0.02f;
+				Player.allDamage += 0.02f;
 			}
-			if (item.prefix == 71)
+			if (Item.prefix == 71)
 			{
-				player.allDamage += 0.03f;
+				Player.allDamage += 0.03f;
 			}
-			if (item.prefix == 72)
+			if (Item.prefix == 72)
 			{
-				player.allDamage += 0.04f;
+				Player.allDamage += 0.04f;
 			}
-			if (item.prefix == 73)
+			if (Item.prefix == 73)
 			{
-				player.moveSpeed += 0.01f;
+				Player.moveSpeed += 0.01f;
 			}
-			if (item.prefix == 74)
+			if (Item.prefix == 74)
 			{
-				player.moveSpeed += 0.02f;
+				Player.moveSpeed += 0.02f;
 			}
-			if (item.prefix == 75)
+			if (Item.prefix == 75)
 			{
-				player.moveSpeed += 0.03f;
+				Player.moveSpeed += 0.03f;
 			}
-			if (item.prefix == 76)
+			if (Item.prefix == 76)
 			{
-				player.moveSpeed += 0.04f;
+				Player.moveSpeed += 0.04f;
 			}
-			if (item.prefix == 77)
+			if (Item.prefix == 77)
 			{
-				player.meleeSpeed += 0.01f;
+				Player.meleeSpeed += 0.01f;
 			}
-			if (item.prefix == 78)
+			if (Item.prefix == 78)
 			{
-				player.meleeSpeed += 0.02f;
+				Player.meleeSpeed += 0.02f;
 			}
-			if (item.prefix == 79)
+			if (Item.prefix == 79)
 			{
-				player.meleeSpeed += 0.03f;
+				Player.meleeSpeed += 0.03f;
 			}
-			if (item.prefix == 80)
+			if (Item.prefix == 80)
 			{
-				player.meleeSpeed += 0.04f;
+				Player.meleeSpeed += 0.04f;
 			}
 		}
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
         {
             if (isRelic)
             {
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					{
 						line.overrideColor = RelicColor(k);
 
-						if (item.accessory)
+						if (Item.accessory)
 							line.text = DoubleIntValues(line.text);
 					}
 
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                         line.overrideColor = RelicColorBad(k);
                 }
 
-                var newLine = new TooltipLine(mod, "relicLine", "Cannot be reforged");
+                var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged");
                 newLine.overrideColor = new Color(255, 180, 100);
                 tooltips.Add(newLine);
             }
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return input;
         }
 
-        public override TagCompound Save(Item item)
+        public override TagCompound Save(Item Item)
         {
             return new TagCompound()
             {
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             };
         }
 
-        public override void Load(Item item, TagCompound tag)
+        public override void Load(Item Item, TagCompound tag)
         {
             isRelic = tag.GetBool("isRelic");
         }

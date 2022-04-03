@@ -43,11 +43,11 @@ namespace StarlightRiver.Helpers
         public static Rectangle ScreenTiles => new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
 
         /// <summary>
-        /// Updates the value used for flipping rotation on the player. Should be reset to 0 when not in use.
+        /// Updates the value used for flipping rotation on the Player. Should be reset to 0 when not in use.
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="Player"></param>
         /// <param name="value"></param>
-        public static void UpdateRotation(this Player player, float value) => player.GetModPlayer<StarlightPlayer>().rotation = value;
+        public static void UpdateRotation(this Player Player, float value) => Player.GetModPlayer<StarlightPlayer>().rotation = value;
 
         public static bool OnScreen(Vector2 pos) => pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
 
@@ -72,20 +72,20 @@ namespace StarlightRiver.Helpers
 		}
 
         /// <summary>
-        /// determines if an npc is "fleshy" based on it's hit sound
+        /// determines if an NPC is "fleshy" based on it's hit sound
         /// </summary>
-        /// <param name="npc"></param>
+        /// <param name="NPC"></param>
         /// <returns></returns>
-        public static bool IsFleshy(NPC npc)
+        public static bool IsFleshy(NPC NPC)
 		{
             return !
                 (
-                    npc.HitSound == SoundID.NPCHit2 ||
-                    npc.HitSound == SoundID.NPCHit3 ||
-                    npc.HitSound == SoundID.NPCHit4 ||
-                    npc.HitSound == SoundID.NPCHit41 ||
-                    npc.HitSound == SoundID.NPCHit42 ||
-                    npc.HitSound == StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact")
+                    NPC.HitSound == SoundID.NPCHit2 ||
+                    NPC.HitSound == SoundID.NPCHit3 ||
+                    NPC.HitSound == SoundID.NPCHit4 ||
+                    NPC.HitSound == SoundID.NPCHit41 ||
+                    NPC.HitSound == SoundID.NPCHit42 ||
+                    NPC.HitSound == StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact")
                 );
 		}
 
@@ -119,13 +119,13 @@ namespace StarlightRiver.Helpers
             return min + (difference * val);
         }
 
-        public static void UnlockEntry<type>(Player player)
+        public static void UnlockEntry<type>(Player Player)
         {
-            CodexHandler mp = player.GetModPlayer<CodexHandler>();
+            CodexHandler mp = Player.GetModPlayer<CodexHandler>();
             CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);
 
             if (entry is null || (entry.RequiresUpgradedBook && mp.CodexState != 2) ) 
-                return; //dont give the player void entries if they dont have the void book
+                return; //dont give the Player void entries if they dont have the void book
 
             if (entry.Locked)
             {
@@ -142,8 +142,8 @@ namespace StarlightRiver.Helpers
 
         public static void SpawnGem(int ID, Vector2 position)
         {
-            int item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
-            (Main.item[item].modItem as Content.Items.Misc.StarlightGem).gemID = ID;
+            int Item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
+            (Main.Item[Item].ModItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
         public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
@@ -264,7 +264,7 @@ namespace StarlightRiver.Helpers
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
                 Tile tile = Framing.GetTileSafely(startX, startY + k);
-                if (tile.active() && tile?.type == type)
+                if (tile.HasTile && tile?.type == type)
                     return true;
             }
             return false;
@@ -349,12 +349,12 @@ namespace StarlightRiver.Helpers
 
         public static Player FindNearestPlayer(Vector2 position)
         {
-            Player player = null;
+            Player Player = null;
 
             for (int k = 0; k < Main.maxPlayers; k++)
-                if (Main.player[k] != null && Main.player[k].active && (player == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, player.Center)))
-                    player = Main.player[k];
-            return player;
+                if (Main.player[k] != null && Main.player[k].active && (Player == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, Player.Center)))
+                    Player = Main.player[k];
+            return Player;
         }
 
         public static float BezierEase(float time)

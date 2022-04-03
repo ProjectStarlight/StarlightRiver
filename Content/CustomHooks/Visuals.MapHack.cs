@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (StarlightWorld.spaceEventFade > 0)
             {
                 Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GameUpdateCount / 30f);
-                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["sampleTexture2"].SetValue(Terraria.ModLoader.ModContent.GetTexture("StarlightRiver/Assets/Misc/SkyMap"));
+                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["sampleTexture2"].SetValue(Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/SkyMap").Value);
                 Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["uOpacity"].SetValue(StarlightWorld.spaceEventFade);
 
                 Main.spriteBatch.End();

@@ -24,16 +24,16 @@ namespace StarlightRiver.Content.Pickups
         {
             SafeSetDefaults();
 
-            npc.width = 32;
-            npc.height = 32;
-            npc.lifeMax = 2;
-            npc.damage = 1;
-            npc.dontTakeDamage = true;
-            npc.dontCountMe = true;
-            npc.immortal = true;
-            npc.noGravity = true;
-            npc.aiStyle = -1;
-            npc.friendly = false;
+            NPC.width = 32;
+            NPC.height = 32;
+            NPC.lifeMax = 2;
+            NPC.damage = 1;
+            NPC.dontTakeDamage = true;
+            NPC.dontCountMe = true;
+            NPC.immortal = true;
+            NPC.noGravity = true;
+            NPC.aiStyle = -1;
+            NPC.friendly = false;
         }
 
         public virtual void SafeSetDefaults() { }
@@ -47,9 +47,9 @@ namespace StarlightRiver.Content.Pickups
 
         public override bool CheckActive() => false;
 
-        public sealed override bool? CanBeHitByItem(Player player, Item item) => false;
+        public sealed override bool? CanBeHitByItem(Player Player, Item Item) => false;
 
-        public sealed override bool? CanBeHitByProjectile(Projectile projectile) => false;
+        public sealed override bool? CanBeHitByProjectile(Projectile Projectile) => false;
 
         /// <summary>
         /// The clientside visual dust that this pickup makes when in-world
@@ -63,21 +63,21 @@ namespace StarlightRiver.Content.Pickups
         public virtual void PickupVisuals(int timer) { }
 
         /// <summary>
-        /// What happens to the player internally when they touch the pickup. This is deterministically synced.
+        /// What happens to the Player internally when they touch the pickup. This is deterministically synced.
         /// </summary>
-        /// <param name="player"></param>
-        public virtual void PickupEffects(Player player) { }
+        /// <param name="Player"></param>
+        public virtual void PickupEffects(Player Player) { }
 
         /// <summary>
-        /// If the player should be able to pick this up or not.
+        /// If the Player should be able to pick this up or not.
         /// </summary>
-        public abstract bool CanPickup(Player player);
+        public abstract bool CanPickup(Player Player);
 
         public virtual Color GlowColor => Color.White;
 
         public sealed override void AI()
         {
-            StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local player since ability pickup visuals are clientside
+            StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>(); //the local Player since ability pickup visuals are clientside
 
             if (Visible)
             {
@@ -86,28 +86,28 @@ namespace StarlightRiver.Content.Pickups
                 if (!Fancy) 
                     return;
 
-                if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), npc.Center) <= Main.screenWidth / 2 + 100) //shader
+                if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), NPC.Center) <= Main.screenWidth / 2 + 100) //shader
                 {
                     float timer = Math.Abs((float)Math.Sin(StarlightWorld.rottime));
-                    Filters.Scene.Activate("Shockwave", npc.Center).GetShader()
+                    Filters.Scene.Activate("Shockwave", NPC.Center).GetShader()
                         .UseProgress(Main.screenWidth / (float)Main.screenHeight)
                         .UseIntensity(500 + 200 * (timer))
                         .UseDirection(new Vector2(0.005f + timer * 0.03f, 1 * 0.008f - timer * 0.004f));
                 }
 
-                if (Vector2.Distance(Main.LocalPlayer.Center, npc.Center) < 200f) //music handling
+                if (Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 200f) //music handling
                 {
                     for (int k = 0; k < Main.musicFade.Length; k++)
                     {
-                        if (k == Main.curMusic) Main.musicFade[k] = Vector2.Distance(Main.LocalPlayer.Center, npc.Center) / 200f;
+                        if (k == Main.curMusic) Main.musicFade[k] = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) / 200f;
                     }
                 }
             }
 
             Main.blockInput = false;
-            if (mp.PickupTarget?.whoAmI == npc.whoAmI)
+            if (mp.PickupTarget?.whoAmI == NPC.whoAmI)
             {
-                PickupVisuals(mp.PickupTimer); //if the player is picking this up, clientside only also
+                PickupVisuals(mp.PickupTimer); //if the Player is picking this up, clientside only also
                 Main.blockInput = true;
                 // TODO sync it so they're not floating? idk
             }
@@ -117,10 +117,10 @@ namespace StarlightRiver.Content.Pickups
         {
             StarlightPlayer mp = target.GetModPlayer<StarlightPlayer>();
 
-            if (CanPickup(target) && target.Hitbox.Intersects(npc.Hitbox))
+            if (CanPickup(target) && target.Hitbox.Intersects(NPC.Hitbox))
             {
                 PickupEffects(target);
-                mp.PickupTarget = npc;
+                mp.PickupTarget = NPC;
 
                 AbilityProgress packet = new AbilityProgress(target.whoAmI, target.GetHandler());
                 packet.Send();
@@ -138,8 +138,8 @@ namespace StarlightRiver.Content.Pickups
         {
             if (Visible)
             {
-                Texture2D tex = GetTexture(Texture);
-                Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
+                Texture2D tex = Request<Texture2D>(Texture).Value;
+                Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
             }
 
@@ -150,8 +150,8 @@ namespace StarlightRiver.Content.Pickups
         {
             if (Visible)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0");
-                Vector2 pos = npc.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow0").Value;
+                Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
 
                 spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);
                 spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.5f, 0, tex.Size() / 2, 0.6f, 0, 0);

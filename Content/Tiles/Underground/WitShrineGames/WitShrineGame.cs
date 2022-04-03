@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 
 		}
 
-		public virtual void UpdatePlayer(Vector2 player, Vector2 oldPlayer)
+		public virtual void UpdatePlayer(Vector2 Player, Vector2 oldPlayer)
 		{
 
 		}

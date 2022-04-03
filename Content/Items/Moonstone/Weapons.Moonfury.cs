@@ -22,21 +22,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void SetDefaults()
         {
-            item.damage = 25;
-            item.melee = true;
-            item.width = 36;
-            item.height = 38;
-            item.useTime = 25;
-            item.useAnimation = 25;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 7.5f;
-            item.value = 1000;
-            item.rare = ItemRarityID.Green;
-            item.UseSound = SoundID.Item1;
-            item.shootSpeed = 14f;
-            item.autoReuse = false;
-            item.shoot = ModContent.ProjectileType<MoonfuryProj>();
-            item.useTurn = true;
+            Item.damage = 25;
+            Item.melee = true;
+            Item.width = 36;
+            Item.height = 38;
+            Item.useTime = 25;
+            Item.useAnimation = 25;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 7.5f;
+            Item.value = 1000;
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.shootSpeed = 14f;
+            Item.autoReuse = false;
+            Item.shoot = ModContent.ProjectileType<MoonfuryProj>();
+            Item.useTurn = true;
         }
 
         public override void SetStaticDefaults()
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 8);
             recipe.AddIngredient(ItemID.Starfury, 1);
             recipe.AddTile(TileID.Anvils);
@@ -55,21 +55,21 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe.AddRecipe();
         }
 
-        public override void HoldItem(Player player)
+        public override void HoldItem(Player Player)
         {
             cooldown--;
-            base.HoldItem(player);
+            base.HoldItem(Player);
         }
-        public override void UseItemHitbox(Player player, ref Rectangle hitbox, ref bool noHitbox)
+        public override void UseItemHitbox(Player Player, ref Rectangle hitbox, ref bool noHitbox)
         {
             if(Main.rand.Next(15) == 0)
             {
                 Dust.NewDustPerfect(hitbox.TopLeft() + new Vector2(Main.rand.NextFloat(hitbox.Width), Main.rand.NextFloat(hitbox.Height)),
-                ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 1.2f) * player.direction, -Main.rand.NextFloat(0.3f, 0.5f)), 0,
+                ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 1.2f) * Player.direction, -Main.rand.NextFloat(0.3f, 0.5f)), 0,
                 new Color(Main.rand.NextFloat(0.15f, 0.30f), Main.rand.NextFloat(0.2f, 0.30f), Main.rand.NextFloat(0.3f, 0.5f), 0f), Main.rand.NextFloat(0.15f, 0.40f));
             }
         }
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             if (cooldown > 0)
                 return false;
@@ -85,17 +85,17 @@ namespace StarlightRiver.Content.Items.Moonstone
             return true;
         }
 
-        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        public override void ModifyHitNPC(Player Player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
             if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
             {
-                player.GetModPlayer<StarlightPlayer>().Shake += 10;
+                Player.GetModPlayer<StarlightPlayer>().Shake += 10;
                 int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
                 target.DelBuff(index);
                 Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
                 damage += 5;
                 damage += (int)((float)target.defense / (float)5);
-                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
+                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, Player.whoAmI);
 
                 for (int i = 0; i < 16; i++)
                     Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(Main.rand.NextFloat(6.28f)) * Main.rand.NextFloat(12), 0, new Color(50, 50, 255), 0.4f);
@@ -114,47 +114,47 @@ namespace StarlightRiver.Content.Items.Moonstone
         private bool stuck = false;
         public override void SetDefaults()
         {
-            projectile.width = 36;
-            projectile.height = 50;
-            projectile.melee = true;
-            projectile.friendly = true;
-            projectile.tileCollide = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 300;
-            projectile.extraUpdates = 6;
+            Projectile.width = 36;
+            Projectile.height = 50;
+            Projectile.melee = true;
+            Projectile.friendly = true;
+            Projectile.tileCollide = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+            Projectile.extraUpdates = 6;
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonfury Spike");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 30;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
         public override void AI()
         {
-            if (projectile.ai[0] == 0)
-                projectile.ai[0] = Main.MouseWorld.Y;
+            if (Projectile.ai[0] == 0)
+                Projectile.ai[0] = Main.MouseWorld.Y;
 
-            if (projectile.Bottom.Y > projectile.ai[0])
-                projectile.tileCollide = true;
+            if (Projectile.Bottom.Y > Projectile.ai[0])
+                Projectile.tileCollide = true;
             else
-                projectile.tileCollide = false;
+                Projectile.tileCollide = false;
             if (!stuck)
             {
-                var d = Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+                var d = Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
                 d.customData = Main.rand.NextFloat(0.6f, 1.3f);
                 d.fadeIn = 10;
-                Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f).fadeIn = 10;
+                Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f).fadeIn = 10;
                 ManageCaches();
 
-                projectile.rotation = projectile.velocity.ToRotation() - 1.44f;
+                Projectile.rotation = Projectile.velocity.ToRotation() - 1.44f;
             }
             else
             {
-                projectile.friendly = false;
+                Projectile.friendly = false;
 
-                if (projectile.timeLeft <= 30)
-                    projectile.alpha += 10;
+                if (Projectile.timeLeft <= 30)
+                    Projectile.alpha += 10;
 
                 trailWidth *= 0.93f;
 
@@ -172,29 +172,29 @@ namespace StarlightRiver.Content.Items.Moonstone
                 //add hit sound effect here
                 for (int k = 0; k <= 8; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f), 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
+                    Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f), 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
                     if (Main.rand.Next(3) == 0)
                     {
-                        Dust.NewDustPerfect(projectile.TopLeft + new Vector2(Main.rand.NextFloat(projectile.width), Main.rand.NextFloat(projectile.height)),
+                        Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)),
                         ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.2f, 0.4f)), 0,
                         new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
                     }
                 }
-                Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
-                Projectile.NewProjectileDirect(projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, projectile.owner).timeLeft = 194;
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, projectile.Center);
+                Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
+                Projectile.NewProjectileDirect(Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
                 stuck = true;
-                projectile.extraUpdates = 0;
-                projectile.velocity = Vector2.Zero;
-                projectile.timeLeft = 90;
+                Projectile.extraUpdates = 0;
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 90;
             }
             return false;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor * (1 - (projectile.alpha / 255f)), projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
+            Texture2D tex = Main.projectileTexture[Projectile.type];
+            spriteBatch.Draw(tex, (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor * (1 - (Projectile.alpha / 255f)), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
 
@@ -209,11 +209,11 @@ namespace StarlightRiver.Content.Items.Moonstone
                 cache = new List<Vector2>();
                 for (int i = 0; i < 50; i++)
                 {
-                    cache.Add(projectile.Bottom + new Vector2(0, 20));
+                    cache.Add(Projectile.Bottom + new Vector2(0, 20));
                 }
             }
-            if (projectile.oldPos[0] != Vector2.Zero)
-                cache.Add(projectile.oldPos[0] + new Vector2(projectile.width / 2, projectile.height) + new Vector2(0, 20));
+            if (Projectile.oldPos[0] != Vector2.Zero)
+                cache.Add(Projectile.oldPos[0] + new Vector2(Projectile.width / 2, Projectile.height) + new Vector2(0, 20));
 
             while (cache.Count > 50)
             {
@@ -238,10 +238,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             trail2.Positions = cache.ToArray();
 
-            if (projectile.velocity.Length() > 1)
+            if (Projectile.velocity.Length() > 1)
             {
-                trail.NextPosition = projectile.Bottom + new Vector2(0, 20) + projectile.velocity;
-                trail2.NextPosition = projectile.Bottom + new Vector2(0, 20) + projectile.velocity;
+                trail.NextPosition = Projectile.Bottom + new Vector2(0, 20) + Projectile.velocity;
+                trail2.NextPosition = Projectile.Bottom + new Vector2(0, 20) + Projectile.velocity;
             }
         }
 
@@ -257,8 +257,8 @@ namespace StarlightRiver.Content.Items.Moonstone
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
             effect.Parameters["repeats"].SetValue(8f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
-            effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+            effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
 
             trail?.Render(effect);
 
@@ -269,9 +269,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = ModContent.GetTexture(Texture + "_Additive");
-            Color color = Color.White * (1 - (projectile.alpha / 255f));
-            spriteBatch.Draw(tex, (projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color * 0.5f, projectile.rotation, new Vector2(tex.Width / 2, tex.Height), projectile.scale, SpriteEffects.None, 0);
+            Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Additive").Value;
+            Color color = Color.White * (1 - (Projectile.alpha / 255f));
+            spriteBatch.Draw(tex, (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color * 0.5f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
         }
     }
     internal class MoonfuryRing : ModProjectile, IDrawPrimitive
@@ -283,18 +283,18 @@ namespace StarlightRiver.Content.Items.Moonstone
         private Trail trail;
         private Trail trail2;
 
-        private float Progress => 1 - (projectile.timeLeft / 10f);
+        private float Progress => 1 - (Projectile.timeLeft / 10f);
 
         private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
         public override void SetDefaults()
         {
-            projectile.width = 80;
-            projectile.height = 80;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.tileCollide = false;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 10;
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.ranged = true;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 10;
         }
 
         public override void SetStaticDefaults()
@@ -312,17 +312,17 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (target.whoAmI == (int)projectile.ai[0])
+            if (target.whoAmI == (int)Projectile.ai[0])
                 return false;
             return base.CanHitNPC(target);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            Vector2 line = targetHitbox.Center.ToVector2() - projectile.Center;
+            Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
             line.Normalize();
             line *= Radius;
-            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projectile.Center, projectile.Center + line))
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
             {
                 return true;
             }
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 double rad = (i / 32f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
                 offset *= radius;
-                cache.Add(projectile.Center + offset);
+                cache.Add(Projectile.Center + offset);
             }
 
             while (cache.Count > 33)
@@ -364,10 +364,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             offset *= Radius;
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + offset;
+            trail.NextPosition = Projectile.Center + offset;
 
             trail2.Positions = cache.ToArray();
-            trail2.NextPosition = projectile.Center + offset;
+            trail2.NextPosition = Projectile.Center + offset;
         }
 
         public void DrawPrimitives()
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
             effect.Parameters["alpha"].SetValue(1);
 
             trail?.Render(effect);
@@ -390,11 +390,11 @@ namespace StarlightRiver.Content.Items.Moonstone
     {
         public MoonfuryDebuff() : base("Dreamfire", "Next Moonfury hit has increased damage", false) { }
 
-        public override void Update(NPC npc, ref int buffIndex)
+        public override void Update(NPC NPC, ref int buffIndex)
         {
-            Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, new Color(50, 50, 255), 0.4f).velocity = Vector2.Zero;
+            Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, new Color(50, 50, 255), 0.4f).velocity = Vector2.Zero;
 
-            var d = Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Aurora>(), 0, 0, 0, new Color(20, 20, 100), 0.8f);
+            var d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<Dusts.Aurora>(), 0, 0, 0, new Color(20, 20, 100), 0.8f);
             d.customData = Main.rand.NextFloat(0.6f, 1.3f);
             d.fadeIn = 10; 
         }

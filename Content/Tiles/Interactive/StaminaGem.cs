@@ -41,35 +41,35 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override void Update()
         {
-            if (projectile.ai[0] > 0) projectile.ai[0]--; else if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.position, 16, 16, DustType<Dusts.Stamina>());
+            if (Projectile.ai[0] > 0) Projectile.ai[0]--; else if (Main.rand.Next(3) == 0) Dust.NewDust(Projectile.position, 16, 16, DustType<Dusts.Stamina>());
 
-            Lighting.AddLight(projectile.Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
+            Lighting.AddLight(Projectile.Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
         }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
 
-            if (projectile.ai[0] == 0 && projectile.Hitbox.Intersects(player.Hitbox) && mp.Stamina < mp.StaminaMax && mp.ActiveAbility != null)
+            if (Projectile.ai[0] == 0 && Projectile.Hitbox.Intersects(Player.Hitbox) && mp.Stamina < mp.StaminaMax && mp.ActiveAbility != null)
             {
                 mp.Stamina++;
-                projectile.ai[0] = 300;
+                Projectile.ai[0] = 300;
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, projectile.Center);
-                CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Projectile.Center);
+                CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
                 for (float k = 0; k <= 6.28; k += 0.1f)
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
             }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            if (projectile.ai[0] == 0)
+            if (Projectile.ai[0] == 0)
             {
                 Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime * 3f);
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/StaminaGemGlow"), projectile.position - Main.screenPosition, color);
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/StaminaGemOn"), projectile.position - Main.screenPosition, Color.White);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemGlow").Value, Projectile.position - Main.screenPosition, color);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemOn").Value, Projectile.position - Main.screenPosition, Color.White);
             }
         }
     }

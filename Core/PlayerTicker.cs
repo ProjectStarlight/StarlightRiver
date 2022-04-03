@@ -11,7 +11,7 @@ namespace StarlightRiver.Core
 	{
 		public float Priority => 1;
 
-		public abstract bool Active(Player player);
+		public abstract bool Active(Player Player);
 		public abstract int TickFrequency { get; }
 
 		public void Load()
@@ -24,6 +24,6 @@ namespace StarlightRiver.Core
 			StarlightPlayer.spawners.Remove(this);
 		}
 
-		public virtual void Tick(Player player) { }
+		public virtual void Tick(Player Player) { }
 	}
 }

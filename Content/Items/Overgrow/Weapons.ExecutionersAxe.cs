@@ -21,31 +21,31 @@ namespace StarlightRiver.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.channel = true;
-            item.damage = 30;
-            item.width = 60;
-            item.height = 60;
-            item.useTime = 320;
-            item.useAnimation = 320;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.melee = true;
-            item.noMelee = true;
-            item.knockBack = 12;
-            item.useTurn = false;
-            item.value = Item.sellPrice(0, 1, 42, 0);
-            item.rare = ItemRarityID.Orange;
-            item.autoReuse = false;
-            item.shoot = ModContent.ProjectileType<AxeHead>();
-            item.shootSpeed = 6f;
-            item.noUseGraphic = true;
+            Item.channel = true;
+            Item.damage = 30;
+            Item.width = 60;
+            Item.height = 60;
+            Item.useTime = 320;
+            Item.useAnimation = 320;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.melee = true;
+            Item.noMelee = true;
+            Item.knockBack = 12;
+            Item.useTurn = false;
+            Item.value = Item.sellPrice(0, 1, 42, 0);
+            Item.rare = ItemRarityID.Orange;
+            Item.autoReuse = false;
+            Item.shoot = ModContent.ProjectileType<AxeHead>();
+            Item.shootSpeed = 6f;
+            Item.noUseGraphic = true;
         }
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            return base.Shoot(Player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
-            return base.CanUseItem(player);
+            return base.CanUseItem(Player);
         }
         public override Vector2? HoldoutOffset()
         {
@@ -64,15 +64,15 @@ namespace StarlightRiver.Items.Overgrow
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.magic = true;
-            projectile.width = 48;
-            projectile.height = 48;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.magic = true;
+            Projectile.width = 48;
+            Projectile.height = 48;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.alpha = 255;
         }
 
         bool released = false;
@@ -83,16 +83,16 @@ namespace StarlightRiver.Items.Overgrow
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Main.spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "AxeHead"), ((Main.player[projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur(), null, lightColor, (float)radians + 3.9f, new Vector2(0, 84), projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowItem + "AxeHead").Value, ((Main.player[Projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur(), null, lightColor, (float)radians + 3.9f, new Vector2(0, 84), Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            if (projectile.ai[0] >= 60)
+            if (Projectile.ai[0] >= 60)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
-                Vector2 pos = (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY);
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2").Value;
+                Vector2 pos = (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY);
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
@@ -101,59 +101,59 @@ namespace StarlightRiver.Items.Overgrow
 
         private void Smash(Vector2 position)
         {
-            Player player = Main.player[projectile.owner];
-            player.GetModPlayer<StarlightPlayer>().Shake += (int)(projectile.ai[0] * 0.2f);
+            Player Player = Main.player[Projectile.owner];
+            Player.GetModPlayer<StarlightPlayer>().Shake += (int)(Projectile.ai[0] * 0.2f);
             for (int k = 0; k <= 100; k++)
             {
-                Dust.NewDustPerfect(projectile.oldPosition + new Vector2(projectile.width / 2, projectile.height / 2), DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * projectile.ai[0] / 10f);
+                Dust.NewDustPerfect(Projectile.oldPosition + new Vector2(Projectile.width / 2, Projectile.height / 2), DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Projectile.ai[0] / 10f);
             }
-            Projectile.NewProjectile(projectile.Center.X, projectile.Center.Y - 32, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage / 3, projectile.knockBack / 2, projectile.owner, 15, player.direction);
+            Projectile.NewProjectile(Projectile.Center.X, Projectile.Center.Y - 32, 0, 0, ModContent.ProjectileType<AxeFire>(), Projectile.damage / 3, Projectile.knockBack / 2, Projectile.owner, 15, Player.direction);
         }
 
         public override bool PreAI()
         {
-            projectile.scale = projectile.ai[0] < 10 ? (projectile.ai[0] / 10f) : 1;
-            Player player = Main.player[projectile.owner];
-            int degrees = (int)(((player.itemAnimation) * -0.7) + 55) * player.direction;
-            if (player.direction == 1)
+            Projectile.scale = Projectile.ai[0] < 10 ? (Projectile.ai[0] / 10f) : 1;
+            Player Player = Main.player[Projectile.owner];
+            int degrees = (int)(((Player.ItemAnimation) * -0.7) + 55) * Player.direction;
+            if (Player.direction == 1)
             {
                 degrees += 180;
             }
             radians = degrees * (Math.PI / 180);
-            if (player.channel && !released)
+            if (Player.channel && !released)
             {
-                if (projectile.ai[0] == 0)
+                if (Projectile.ai[0] == 0)
                 {
-                    player.itemTime = 180;
-                    player.itemAnimation = 180;
+                    Player.ItemTime = 180;
+                    Player.ItemAnimation = 180;
                 }
-                if (projectile.ai[0] < chargeTime)
+                if (Projectile.ai[0] < chargeTime)
                 {
-                    projectile.ai[0]++;
+                    Projectile.ai[0]++;
                     float rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Content.Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, projectile.ai[0] / 100f);
-                    if (projectile.ai[0] < chargeTime / 1.5f || projectile.ai[0] % 2 == 0)
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Content.Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, Projectile.ai[0] / 100f);
+                    if (Projectile.ai[0] < chargeTime / 1.5f || Projectile.ai[0] % 2 == 0)
                         angularMomentum = -1;
                     else
                         angularMomentum = 0;
                 }
                 else
                 {
-                    if (projectile.ai[0] == chargeTime)
+                    if (Projectile.ai[0] == chargeTime)
                     {
                         for (int k = 0; k <= 100; k++)
-                            Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, projectile.Center);
-                        projectile.ai[0]++;
+                            Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.5f);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+                        Projectile.ai[0]++;
                     }
-                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
                     angularMomentum = 0;
                 }
-                projectile.damage = 20 + (int)projectile.ai[0];
+                Projectile.damage = 20 + (int)Projectile.ai[0];
             }
             else
             {
-                projectile.scale = 1;
+                Projectile.scale = 1;
                 if (angularMomentum < 10)
                 {
                     angularMomentum += 1.2f;
@@ -161,41 +161,41 @@ namespace StarlightRiver.Items.Overgrow
                 if (!released)
                 {
                     released = true;
-                    projectile.friendly = true;
+                    Projectile.friendly = true;
                 }
-                if (projectile.ai[0] > chargeTime)
+                if (Projectile.ai[0] > chargeTime)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
                 }
             }
 
-            projectile.position.Y = player.Center.Y - (int)(Math.Sin(radians * 0.96) * 86) - (projectile.height / 2);
-            projectile.position.X = player.Center.X - (int)(Math.Cos(radians * 0.96) * 86) - (projectile.width / 2);
+            Projectile.position.Y = Player.Center.Y - (int)(Math.Sin(radians * 0.96) * 86) - (Projectile.height / 2);
+            Projectile.position.X = Player.Center.X - (int)(Math.Cos(radians * 0.96) * 86) - (Projectile.width / 2);
             if (lingerTimer == 0)
             {
-                player.itemTime++;
-                player.itemAnimation++;
-                if (player.itemTime > angularMomentum + 1)
+                Player.ItemTime++;
+                Player.ItemAnimation++;
+                if (Player.ItemTime > angularMomentum + 1)
                 {
-                    player.itemTime -= (int)angularMomentum;
-                    player.itemAnimation -= (int)angularMomentum;
+                    Player.ItemTime -= (int)angularMomentum;
+                    Player.ItemAnimation -= (int)angularMomentum;
                 }
                 else
                 {
-                    player.itemTime = 2;
-                    player.itemAnimation = 2;
+                    Player.ItemTime = 2;
+                    Player.ItemAnimation = 2;
                 }
-                if (player.itemTime == 2 || (Main.tile[(int)projectile.Center.X / 16, (int)((projectile.Center.Y + 24) / 16)].collisionType == 1 && released))
+                if (Player.ItemTime == 2 || (Main.tile[(int)Projectile.Center.X / 16, (int)((Projectile.Center.Y + 24) / 16)].collisionType == 1 && released))
                 {
                     lingerTimer = 30;
-                    if (projectile.ai[0] >= chargeTime)
+                    if (Projectile.ai[0] >= chargeTime)
                     {
-                        this.Smash(projectile.Center);
+                        this.Smash(Projectile.Center);
 
                     }
-                    projectile.damage = (int)projectile.damage / 3;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
+                    Projectile.damage = (int)Projectile.damage / 3;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
                 }
             }
             else
@@ -203,12 +203,12 @@ namespace StarlightRiver.Items.Overgrow
                 lingerTimer--;
                 if (lingerTimer == 1)
                 {
-                    projectile.active = false;
-                    player.itemTime = 2;
-                    player.itemAnimation = 2;
+                    Projectile.active = false;
+                    Player.ItemTime = 2;
+                    Player.ItemAnimation = 2;
                 }
-                player.itemTime++;
-                player.itemAnimation++;
+                Player.ItemTime++;
+                Player.ItemAnimation++;
             }
             return true;
         }
@@ -225,57 +225,57 @@ namespace StarlightRiver.Items.Overgrow
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.aiStyle = -1;
-            projectile.friendly = true;
-            projectile.damage = 1;
-            projectile.penetrate = -1;
-            projectile.alpha = 255;
-            projectile.timeLeft = 3;
-            projectile.tileCollide = true;
-            projectile.extraUpdates = 1;
-            projectile.ignoreWater = true;
+            Projectile.hostile = false;
+            Projectile.width = 24;
+            Projectile.height = 24;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = true;
+            Projectile.damage = 1;
+            Projectile.penetrate = -1;
+            Projectile.alpha = 255;
+            Projectile.timeLeft = 3;
+            Projectile.tileCollide = true;
+            Projectile.extraUpdates = 1;
+            Projectile.ignoreWater = true;
         }
 
-        //projectile.ai[0]: how many more pillars. Each one is one less
-        //projectile.ai[1]: 0: center, -1: going left, 1: going right
+        //Projectile.ai[0]: how many more pillars. Each one is one less
+        //Projectile.ai[1]: 0: center, -1: going left, 1: going right
         bool activated = false;
         float startposY = 0;
         public override bool PreAI()
         {
             if (startposY == 0)
             {
-                startposY = projectile.position.Y;
-                if (Main.tile[(int)projectile.Center.X / 16, (int)(projectile.Center.Y / 16)].collisionType == 1)
+                startposY = Projectile.position.Y;
+                if (Main.tile[(int)Projectile.Center.X / 16, (int)(Projectile.Center.Y / 16)].collisionType == 1)
                 {
-                    projectile.active = false;
+                    Projectile.active = false;
                 }
             }
-            projectile.velocity.X = 0;
+            Projectile.velocity.X = 0;
             if (!activated)
             {
-                projectile.velocity.Y = 24;
+                Projectile.velocity.Y = 24;
             }
             else
             {
-                projectile.velocity.Y = -6;
+                Projectile.velocity.Y = -6;
                 for (int i = 0; i < 5; i++)
                 {
-                    int dust = Dust.NewDust(projectile.Center, projectile.width, projectile.height * 2, DustType<Content.Dusts.GoldWithMovement>());
+                    int dust = Dust.NewDust(Projectile.Center, Projectile.width, Projectile.height * 2, DustType<Content.Dusts.GoldWithMovement>());
                     Main.dust[dust].velocity = Vector2.Zero;
                     Main.dust[dust].noGravity = true;
                 }
-                if (projectile.timeLeft == 5 && projectile.ai[0] > 0)
+                if (Projectile.timeLeft == 5 && Projectile.ai[0] > 0)
                 {
-                    if (projectile.ai[1] == -1 || projectile.ai[1] == 0)
+                    if (Projectile.ai[1] == -1 || Projectile.ai[1] == 0)
                     {
-                        Projectile.NewProjectile(projectile.Center.X - projectile.width, startposY, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.ai[0] - 1, -1);
+                        Projectile.NewProjectile(Projectile.Center.X - Projectile.width, startposY, 0, 0, ModContent.ProjectileType<AxeFire>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0] - 1, -1);
                     }
-                    if (projectile.ai[1] == 1 || projectile.ai[1] == 0)
+                    if (Projectile.ai[1] == 1 || Projectile.ai[1] == 0)
                     {
-                        Projectile.NewProjectile(projectile.Center.X + projectile.width, startposY, 0, 0, ModContent.ProjectileType<AxeFire>(), projectile.damage, projectile.knockBack, projectile.owner, projectile.ai[0] - 1, 1);
+                        Projectile.NewProjectile(Projectile.Center.X + Projectile.width, startposY, 0, 0, ModContent.ProjectileType<AxeFire>(), Projectile.damage, Projectile.knockBack, Projectile.owner, Projectile.ai[0] - 1, 1);
                     }
                 }
             }
@@ -283,12 +283,12 @@ namespace StarlightRiver.Items.Overgrow
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (oldVelocity.Y != projectile.velocity.Y && !activated)
+            if (oldVelocity.Y != Projectile.velocity.Y && !activated)
             {
-                startposY = projectile.position.Y;
-                projectile.velocity.Y = -6;
+                startposY = Projectile.position.Y;
+                Projectile.velocity.Y = -6;
                 activated = true;
-                projectile.timeLeft = 10;
+                Projectile.timeLeft = 10;
             }
             return false;
         }

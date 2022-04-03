@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
                         emptyRight = !tileRight0.active() || tileRight0.type != Type || tileRight0.slope() == 2 || Main.tile[i + 1, j].active();
 
-                        midTex = GetTexture(AssetDirectory.MoonstoneTile + "GlowSlopeRight");
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
                         yOffsetLeft = 1f;
                         break;
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyRight = !((tileRight1.active() && tileRight1.type == Type && !Main.tile[i + 1, j - 1].active()) || 
                             (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].active()));
 
-                        midTex = GetTexture(AssetDirectory.MoonstoneTile + "GlowSlopeLeft");
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
                         yOffsetRight = 1f;
                         break;
 
@@ -71,22 +71,22 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyRight = !((tileRight2.active() && tileRight2.type == Type && tileRight2.slope() != 2 && !Main.tile[i + 1, j - 1].active()) || 
                             (Main.tile[i + 1, j - 1].slope() == 2 && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].active()));
 
-                        midTex = GetTexture(AssetDirectory.MoonstoneTile + "GlowMid");
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
                         break;
                 }
 
                 if (emptyLeft)
                     if (emptyRight) //solo
-                        spriteBatch.Draw(GetTexture(AssetDirectory.MoonstoneTile + "GlowSolo"), (new Vector2(i + 12, j + 7.5f + yOffsetLeft + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
+                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo").Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
                     else            //left
-                        spriteBatch.Draw(GetTexture(AssetDirectory.MoonstoneTile + "GlowLeft"), (new Vector2(i + 12, j + 7.5f + yOffsetLeft) * 16) - Main.screenPosition, overlayColor);
+                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLeft").Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft) * 16) - Main.screenPosition, overlayColor);
                 else if (emptyRight)//right
-                    spriteBatch.Draw(GetTexture(AssetDirectory.MoonstoneTile + "GlowRight"), (new Vector2(i + 12, j + 7.5f + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
+                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowRight").Value, (new Vector2(i + 12, j + 7.5f + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
                 else                //both
                     spriteBatch.Draw(midTex, (new Vector2(i + 12, j + 7.5f) * 16) - Main.screenPosition, overlayColor);
 
 
-                Texture2D glowLines = GetTexture(AssetDirectory.MoonstoneTile + "GlowLines");
+                Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines").Value;
                 int realX = i * 16;
                 int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
                 int realWidth = glowLines.Width - 1;//1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
         }
 
-        public override void FloorVisuals(Player player) => 
-            player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+        public override void FloorVisuals(Player Player) => 
+            Player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
     }
 }

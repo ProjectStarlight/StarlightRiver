@@ -46,28 +46,28 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Engaged = true;
 			RotationVelocity = 2;
 
-			Lighting.AddLight(projectile.Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
+			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D bgTex = ModContent.GetTexture(AssetDirectory.VitricTile + "OriginGearBase");
-			spriteBatch.Draw(bgTex, projectile.Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
+			Texture2D bgTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGearBase").Value;
+			spriteBatch.Draw(bgTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, new Vector2(bgTex.Width / 2, 4), 1, 0, 0);
 
-			var tex = ModContent.GetTexture(AssetDirectory.VitricTile + "OriginGear"); 
+			var tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGear").Value; 
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 
-			var magmiteTex = ModContent.GetTexture(AssetDirectory.VitricNpc + "MagmitePassive");
+			var magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
 			var sinTimer = Main.GameUpdateCount / 20f;
 			var frame = new Rectangle(42, sinTimer % 6.28f < 1.57f ? 0 : (int)(Main.GameUpdateCount / 3f) % 5 * 40, 42, 40);
 
-			spriteBatch.Draw(magmiteTex, projectile.Center - Main.screenPosition, frame, Color.White, (float)Math.Sin(sinTimer), new Vector2(21, 0), 1, SpriteEffects.FlipHorizontally, 0);
+			spriteBatch.Draw(magmiteTex, Projectile.Center - Main.screenPosition, frame, Color.White, (float)Math.Sin(sinTimer), new Vector2(21, 0), 1, SpriteEffects.FlipHorizontally, 0);
 		}
 	}
 
 	class GearPuzzleOriginPlacer : QuickTileItem
 	{
-		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "Debug item", ModContent.TileType<GearPuzzleOrigin>(), 8, AssetDirectory.Debug, true) { }
+		public GearPuzzleOriginPlacer() : base("Gear puzzle origin", "Debug Item", ModContent.TileType<GearPuzzleOrigin>(), 8, AssetDirectory.Debug, true) { }
 	}
 }

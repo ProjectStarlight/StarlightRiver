@@ -17,22 +17,22 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.melee = true;
-            item.width = 32;
-            item.height = 32;
-            item.damage = 20;
-            item.useTime = 40;
-            item.useAnimation = 40;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noUseGraphic = true;
-            item.noMelee = true;
-            item.knockBack = 2.5f;
-            item.autoReuse = true;
+            Item.melee = true;
+            Item.width = 32;
+            Item.height = 32;
+            Item.damage = 20;
+            Item.useTime = 40;
+            Item.useAnimation = 40;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.noUseGraphic = true;
+            Item.noMelee = true;
+            Item.knockBack = 2.5f;
+            Item.autoReuse = true;
 
-            item.UseSound = mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword");
+            Item.UseSound = Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword");
 
-            item.shoot = ProjectileType<MonkSpadeProjectile>();
-            item.shootSpeed = 1;
+            Item.shoot = ProjectileType<MonkSpadeProjectile>();
+            Item.shootSpeed = 1;
         }
     }
 
@@ -42,50 +42,50 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.timeLeft = 40;
-            projectile.penetrate = -1;
-            projectile.friendly = true;
-            projectile.ignoreWater = true;
+            Projectile.width = 24;
+            Projectile.height = 24;
+            Projectile.timeLeft = 40;
+            Projectile.penetrate = -1;
+            Projectile.friendly = true;
+            Projectile.ignoreWater = true;
         }
 
         public override void AI()
         {
-            var player = Main.player[projectile.owner];
+            var Player = Main.player[Projectile.owner];
 
-            var center = player.Center + Vector2.UnitY * player.gfxOffY;
+            var center = Player.Center + Vector2.UnitY * Player.gfxOffY;
 
-            if(projectile.timeLeft == 40)
-                projectile.rotation = (player.Center - Main.MouseWorld).ToRotation();
+            if(Projectile.timeLeft == 40)
+                Projectile.rotation = (Player.Center - Main.MouseWorld).ToRotation();
 
-            player.heldProj = projectile.whoAmI;
+            Player.heldProj = Projectile.whoAmI;
 
-            projectile.extraUpdates = projectile.timeLeft > 15 ? 2 : 0;
+            Projectile.extraUpdates = Projectile.timeLeft > 15 ? 2 : 0;
 
-            projectile.Center = center + Vector2.UnitX.RotatedBy(projectile.rotation + (projectile.timeLeft - 20f) / 20f * 0.3f * -player.direction) * (float)Math.Sin(projectile.timeLeft / 40f * Math.PI) * -100;
+            Projectile.Center = center + Vector2.UnitX.RotatedBy(Projectile.rotation + (Projectile.timeLeft - 20f) / 20f * 0.3f * -Player.direction) * (float)Math.Sin(Projectile.timeLeft / 40f * Math.PI) * -100;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var player = Main.player[projectile.owner];
+            var Player = Main.player[Projectile.owner];
 
             float fade =
-                projectile.timeLeft > 35 ? (40 - projectile.timeLeft) / 5f :
-                projectile.timeLeft < 5 ? projectile.timeLeft / 5f : 
+                Projectile.timeLeft > 35 ? (40 - Projectile.timeLeft) / 5f :
+                Projectile.timeLeft < 5 ? Projectile.timeLeft / 5f : 
                 1;
 
-            var tex = GetTexture(Texture);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor * fade, (projectile.Center - player.Center).ToRotation() + (float)Math.PI - (float)Math.PI / 4, new Vector2(8, 8), 1, 0, 0);
+            var tex = Request<Texture2D>(Texture).Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, (Projectile.Center - Player.Center).ToRotation() + (float)Math.PI - (float)Math.PI / 4, new Vector2(8, 8), 1, 0, 0);
 
             return false;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            var ownerSpade = Main.player[projectile.owner].HeldItem.modItem as MonkSpade;
+            var ownerSpade = Main.player[Projectile.owner].HeldItem.ModItem as MonkSpade;
 
-            if (projectile.type == ProjectileType<MonkSpadeProjectile>() && ownerSpade != null)
+            if (Projectile.type == ProjectileType<MonkSpadeProjectile>() && ownerSpade != null)
             {
                 if (target.life <= 0)
                 {
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            projectile.friendly = false; //cant deal damage through walls
+            Projectile.friendly = false; //cant deal damage through walls
             return false;
         }
     }

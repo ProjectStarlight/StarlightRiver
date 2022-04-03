@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Foregrounds
 
 		public override void Draw(SpriteBatch spriteBatch, float opacity)
         {
-            var tex = ModContent.GetTexture(AssetDirectory.Assets + "Foregrounds/Vignette");
+            var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Foregrounds/Vignette").Value;
             var targetRect = new Rectangle(Main.screenWidth / 2 + (int)offset.X - (int)holeSize.X / 2, Main.screenHeight / 2 + (int)offset.Y - (int)holeSize.Y / 2, (int)holeSize.X, (int)holeSize.Y);
 
             var targetLeft = new Rectangle(0, 0, targetRect.X, Main.screenHeight);

@@ -6,13 +6,9 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-	class RoarLine : ModDust
+    class RoarLine : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + "RoarLine";
-            return true;
-        }
+        public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -23,9 +19,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         }
 
         float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
-		{
+        {
             return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
-		}
+        }
 
         public override void OnSpawn(Dust dust)
         {
@@ -34,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 8, 128);
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)

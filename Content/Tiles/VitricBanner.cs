@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override void SafeSetDefaults()
         {
-            Chain = new TriangularBanner(16, false, projectile.Center, 16)
+            Chain = new TriangularBanner(16, false, Projectile.Center, 16)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -52,19 +52,19 @@ namespace StarlightRiver.Content.Tiles
 
         public override void Update()
         {
-            Chain.UpdateChain(projectile.Center);
+            Chain.UpdateChain(Projectile.Center);
             Chain.IterateRope(WindForce);
 
-            projectile.ai[0] += 0.005f;
+            Projectile.ai[0] += 0.005f;
         }
 
         private void WindForce(int index)//wind
         {
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
             float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
-            float cos = (float)System.Math.Cos(projectile.ai[0]);
+            float cos = (float)System.Math.Cos(Projectile.ai[0]);
             float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);

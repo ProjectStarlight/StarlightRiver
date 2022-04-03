@@ -16,24 +16,24 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetDefaults()
         {
-            npc.width = 32;
-            npc.height = 48;
-            npc.lifeMax = 150;
-            npc.defense = 10;
-            npc.damage = 30;
-            npc.aiStyle = -1;
+            NPC.width = 32;
+            NPC.height = 48;
+            NPC.lifeMax = 150;
+            NPC.defense = 10;
+            NPC.damage = 30;
+            NPC.aiStyle = -1;
         }
 
         public override void AI()
         {
-            npc.TargetClosest();
-            Player player = Main.player[npc.target];
+            NPC.TargetClosest();
+            Player Player = Main.player[NPC.target];
 
             //basic movement
-            if (player.Center.X > npc.Center.X && npc.velocity.X < 3) npc.velocity.X += 0.02f;
-            else if (npc.velocity.X > -3) npc.velocity.X -= 0.02f;
+            if (Player.Center.X > NPC.Center.X && NPC.velocity.X < 3) NPC.velocity.X += 0.02f;
+            else if (NPC.velocity.X > -3) NPC.velocity.X -= 0.02f;
 
-            if (npc.collideX) npc.velocity.Y -= 3;
+            if (NPC.collideX) NPC.velocity.Y -= 3;
         }
     }
 

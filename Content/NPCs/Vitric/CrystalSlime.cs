@@ -16,76 +16,76 @@ namespace StarlightRiver.Content.NPCs.Vitric
     {
         public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 
-        public ref float Shield => ref npc.ai[1];
+        public ref float Shield => ref NPC.ai[1];
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crystal Slime");
-            Main.npcFrameCount[npc.type] = 2;
+            Main.npcFrameCount[NPC.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            npc.width = 48;
-            npc.height = 32;
-            npc.damage = 10;
-            npc.defense = 5;
-            npc.lifeMax = 25;
-            npc.HitSound = SoundID.NPCHit42;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.value = 10f;
-            npc.knockBackResist = 0.6f;
-            npc.aiStyle = 1;
-            npc.immortal = true;
+            NPC.width = 48;
+            NPC.height = 32;
+            NPC.damage = 10;
+            NPC.defense = 5;
+            NPC.lifeMax = 25;
+            NPC.HitSound = SoundID.NPCHit42;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.value = 10f;
+            NPC.knockBackResist = 0.6f;
+            NPC.aiStyle = 1;
+            NPC.immortal = true;
         }
 
         public override Color? GetAlpha(Color drawColor)
         {
-            return Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.75f;
+            return Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.75f;
         }
 
         public override void AI()
         {
-            npc.TargetClosest(true);
-            Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetHandler();
+            NPC.TargetClosest(true);
+            Player Player = Main.player[NPC.target];
+            AbilityHandler mp = Player.GetHandler();
 
-            if (AbilityHelper.CheckDash(player, npc.Hitbox) && Shield == 1)
+            if (AbilityHelper.CheckDash(Player, NPC.Hitbox) && Shield == 1)
             {
                 Shield = 0;
-                npc.velocity += player.velocity * 0.5f;
+                NPC.velocity += Player.velocity * 0.5f;
 
                 mp.ActiveAbility?.Deactivate();
-                player.velocity = Vector2.Normalize(player.velocity) * -10f;
+                Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
 
-                player.immune = true;
-                player.immuneTime = 10;
+                Player.immune = true;
+                Player.immuneTime = 10;
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 
                 for (int k = 0; k <= 20; k++)
-                    Dust.NewDust(npc.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+                    Dust.NewDust(NPC.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
 
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
             }
 
             if (Shield == 1)
             {
-                npc.immortal = true;
-                npc.HitSound = SoundID.NPCHit42;
+                NPC.immortal = true;
+                NPC.HitSound = SoundID.NPCHit42;
 
                 if (Main.rand.Next(30) == 0)
                 {
                     if (Main.rand.NextBool())
-                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+                        Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
                     else
-                        Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+                        Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
                 }
             }
             else
             {
-                npc.immortal = false;
-                npc.HitSound = SoundID.NPCHit1;
+                NPC.immortal = false;
+                NPC.HitSound = SoundID.NPCHit1;
             }
         }
 
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
         {
-            if (AbilityHelper.CheckDash(target, npc.Hitbox))
+            if (AbilityHelper.CheckDash(target, NPC.Hitbox))
             {
                 target.immune = true;
                 target.immuneTime = 5;
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void NPCLoot()
         {
-            if (Main.rand.NextFloat() < 0.50f) Item.NewItem(npc.getRect(), ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(4, 5)); Item.NewItem(npc.getRect(), ItemID.Gel, Main.rand.Next(5, 6));
+            if (Main.rand.NextFloat() < 0.50f) Item.NewItem(NPC.getRect(), ItemType<Items.Vitric.VitricOre>(), Main.rand.Next(4, 5)); Item.NewItem(NPC.getRect(), ItemID.Gel, Main.rand.Next(5, 6));
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
@@ -121,8 +121,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (Shield == 1)
             {
                 Color color = Helper.IndicatorColor;
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/Crystal"), npc.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16));
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow"), npc.position - Main.screenPosition + new Vector2(-3, -6), color);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - Main.screenPosition + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - Main.screenPosition + new Vector2(-3, -6), color);
             }
         }
     }

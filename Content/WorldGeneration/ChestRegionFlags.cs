@@ -17,6 +17,6 @@ namespace StarlightRiver.Content.WorldGeneration
         Granite = 512,
         Marble = 1024,
         Underworld = 2048,
-        Dungeon = 4096 // Only locked gold chests - biome chests should not have their items replaced.
+        Dungeon = 4096 // Only locked gold chests - biome chests should not have their Items replaced.
     }
 }

@@ -65,11 +65,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
             particle.Timer--;
         }
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
             if(GoingBoom)
 			{
-                var tex = ModContent.GetTexture(Texture);
+                var tex = ModContent.Request<Texture2D>(Texture).Value;
                 position += Vector2.One.RotatedByRandom(6.28f) * boomTimer / 60;
 
                 spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, 0, 0);
@@ -85,10 +85,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 return false;
 			}
 
-			return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+			return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
 
-		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
             spriteBatch.Draw(Glow, position, new Rectangle(0, 0, 32, 32), color, 0, origin, scale, SpriteEffects.None, 0);
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             }
         }
 
-        public override bool CanEquipAccessory(Player player, int slot)
+        public override bool CanEquipAccessory(Player Player, int slot)
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
@@ -120,41 +120,41 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            TooltipLine line = new TooltipLine(mod, "StarlightRiverCursedWarning", "Cursed\nCannot be removed normally once equipped")
+            TooltipLine line = new TooltipLine(Mod, "StarlightRiverCursedWarning", "Cursed\nCannot be removed normally once equipped")
             {
                 overrideColor = new Color(200, 100, 255)
             };
             tooltips.Add(line);
         }
 
-		public override void UpdateInventory(Player player)
+		public override void UpdateInventory(Player Player)
 		{
-            if (!(Main.HoverItem.modItem is CursedAccessory))
+            if (!(Main.HoverItem.ModItem is CursedAccessory))
                 tooltipProgress = 0;
         }
 
-        public virtual void SafeUpdateAccessory(Player player, bool hideVisual) { }
+        public virtual void SafeUpdateAccessory(Player Player, bool hideVisual) { }
 
-		public sealed override void UpdateAccessory(Player player, bool hideVisual)
+		public sealed override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-            SafeUpdateAccessory(player, hideVisual);
+            SafeUpdateAccessory(Player, hideVisual);
 
-            if (!(Main.HoverItem.modItem is CursedAccessory))
+            if (!(Main.HoverItem.ModItem is CursedAccessory))
                 tooltipProgress = 0;
 
             if (GoingBoom)
                 boomTimer++;
 
             if (boomTimer == 1)
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
-                var tex = Main.PopupTexture[item.type];
+                var tex = Main.PopupTexture[Item.type];
 
-                item.TurnToAir();
+                Item.TurnToAir();
 ;
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {
@@ -184,10 +184,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
-            if(line.mod == "Terraria" && line.Name == "ItemName")
+            if(line.Mod == "Terraria" && line.Name == "ItemName")
 			{
                 var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
-                var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
+                var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
                 effect.Parameters["speed"].SetValue(1);
                 effect.Parameters["power"].SetValue(0.011f * tooltipProgress);

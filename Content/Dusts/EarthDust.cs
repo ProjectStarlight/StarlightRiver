@@ -49,17 +49,17 @@ namespace StarlightRiver.Content.Dusts
 
         public override bool Update(Dust dust)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             dust.position += dust.velocity;
             dust.velocity.Y += 0.1f;
 
-            if (player.ZoneSnow) dust.color = new Color(250, 250, 255);
-            if (player.ZoneDesert) dust.color = new Color(241, 228, 131);
-            if (player.ZoneJungle) dust.color = new Color(143, 215, 29);
-            if (player.ZoneGlowshroom) dust.color = new Color(63, 90, 231);
-            if (player.ZoneCorrupt) dust.color = new Color(186, 177, 243);
-            if (player.ZoneCrimson) dust.color = new Color(208, 80, 80);
-            if (player.ZoneHoly) dust.color = new Color(98, 213, 247);
+            if (Player.ZoneSnow) dust.color = new Color(250, 250, 255);
+            if (Player.ZoneDesert) dust.color = new Color(241, 228, 131);
+            if (Player.ZoneJungle) dust.color = new Color(143, 215, 29);
+            if (Player.ZoneGlowshroom) dust.color = new Color(63, 90, 231);
+            if (Player.ZoneCorrupt) dust.color = new Color(186, 177, 243);
+            if (Player.ZoneCrimson) dust.color = new Color(208, 80, 80);
+            if (Player.ZoneHoly) dust.color = new Color(98, 213, 247);
 
             dust.rotation += 0.1f;
             dust.scale *= 0.98f;

@@ -43,20 +43,20 @@ namespace StarlightRiver.Tiles.Temple
     {
         public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
             }
         }
     }
 
     public class DashBarrierItem : QuickTileItem
     {
-        public DashBarrierItem() : base("Dash Barrier", "Debug item", TileType<DashBarrier>(), -12, AssetDirectory.UndergroundTempleTile) { }
+        public DashBarrierItem() : base("Dash Barrier", "Debug Item", TileType<DashBarrier>(), -12, AssetDirectory.UndergroundTempleTile) { }
     }
 }

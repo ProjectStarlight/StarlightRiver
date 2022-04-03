@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to five times") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
             StarlightPlayer.OnHitNPCEvent += OnHitNPC;
@@ -28,25 +28,25 @@ namespace StarlightRiver.Content.Items.Misc
             return true;
         }
 
-        private void OnHit(Player player, NPC target, bool crit)
+        private void OnHit(Player Player, NPC target, bool crit)
         {
-            if (Equipped(player) && crit)
+            if (Equipped(Player) && crit)
             {
                 BleedStack.ApplyBleedStack(target, 300, true);
                 if (Main.netMode == NetmodeID.MultiplayerClient)
-                    player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
+                    Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
             }
         }
 
-        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit) 
-            => OnHit(player, target, crit);
+        private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit) 
+            => OnHit(Player, target, crit);
 
-        private void OnHitNPC(Player player, Item item, NPC target, int damage, float knockback, bool crit) 
-            => OnHit(player, target, crit);
+        private void OnHitNPC(Player Player, Item Item, NPC target, int damage, float knockback, bool crit) 
+            => OnHit(Player, target, crit);
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.ShadowScale, 5);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
             recipe.AddTile(TileID.Anvils);
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             recipe.AddRecipe();
 
-            recipe = new ModRecipe(mod);
+            recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.TissueSample, 5);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
             recipe.AddTile(TileID.Anvils);

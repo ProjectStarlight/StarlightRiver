@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	public abstract class InteractiveProjectile : ModProjectile
     {
-        public List<Point16> ValidPoints { get; set; } = new List<Point16>(); //the points this projectile allows tile placement at
+        public List<Point16> ValidPoints { get; set; } = new List<Point16>(); //the points this Projectile allows tile placement at
 
         public bool CheckPoint(int x, int y) => ValidPoints.Contains(new Point16(x, y));
 
@@ -32,28 +32,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             foreach (Point16 point in ValidPoints.Where(n => Main.tile[n.X, n.Y].inActive()))
                 Main.tile[point.X, point.Y].inActive(false);
 
-            if (projectile.timeLeft < 10)
+            if (Projectile.timeLeft < 10)
                 foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(AssetDirectory.SquidBoss + "Highlight");
-            int off = 16 * ((int)projectile.ai[0] % 5);
+            Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "Highlight").Value;
+            int off = 16 * ((int)Projectile.ai[0] % 5);
 
-            if (projectile.timeLeft > 10)
+            if (Projectile.timeLeft > 10)
                 foreach (Point16 point in ValidPoints)
                     if (!Main.tile[point.X, point.Y].active()) spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
-            projectile.ai[0] += 0.2f;
+            Projectile.ai[0] += 0.2f;
         }
 
         /// <summary>
-        /// what happens when the projectile dies and tiles are placed appropriately
+        /// what happens when the Projectile dies and tiles are placed appropriately
         /// </summary>
         public virtual void BadEffects() { }
 
         /// <summary>
-        /// what happens if the projectile dies and tiles are not placed
+        /// what happens if the Projectile dies and tiles are not placed
         /// </summary>
         public virtual void GoodEffects() { }
 

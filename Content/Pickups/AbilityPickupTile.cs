@@ -33,8 +33,8 @@ namespace StarlightRiver.Content.Pickups
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {
-                NPC npc = Main.npc[k];
-                if (npc.active && npc.type == PickupType && Vector2.DistanceSquared(npc.position, new Vector2(i, j) * 16) <= 128)
+                NPC NPC = Main.npc[k];
+                if (NPC.active && NPC.type == PickupType && Vector2.DistanceSquared(NPC.position, new Vector2(i, j) * 16) <= 128)
                     return;
             }
 

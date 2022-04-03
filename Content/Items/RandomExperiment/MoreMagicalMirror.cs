@@ -26,9 +26,9 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 
 		public void Unload() { }
 
-		public override bool UseItem(Item item, Player player)
+		public override bool UseItem(Item Item, Player Player)
 		{
-			if (item.type == ItemID.MagicMirror)
+			if (Item.type == ItemID.MagicMirror)
 			{
 				savedScreen = new Texture2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 				transitionTime = 160;
 			}
 
-			return base.UseItem(item, player);
+			return base.UseItem(Item, Player);
 		}
 
 		private void DrawMirrorOver(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.RandomExperiment
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(default, BlendState.Additive);
 
-					var tex = ModContent.GetTexture("StarlightRiver/Assets/GlowTrailUp");
+					var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailUp").Value;
 
 					Rectangle targetBar1 = new Rectangle((int)(Main.screenWidth * (timer - 30) / 40f), 0, 200, Main.screenHeight * 2);
 					Main.spriteBatch.Draw(tex, targetBar1, null, Color.White * 0.65f, -0.1f, Vector2.Zero, 0, 0);

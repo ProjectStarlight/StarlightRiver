@@ -11,18 +11,18 @@ namespace StarlightRiver.Items.Armor
 {
 	public static class ArmorHelper
     {
-        public static bool IsSetEquipped(this ModItem item, Player player) => item.IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
+        public static bool IsSetEquipped(this ModItem Item, Player Player) => Item.IsArmorSet(Player.armor[0], Player.armor[1], Player.armor[2]);
 
         public static void QuickDrawArmor(PlayerDrawInfo info, string texture, Color color, float scale, Vector2 offset)
         {
             if (info.drawPlayer.ActiveAbility<Whip>())
                 return;
-            Texture2D tex = GetTexture(texture);
+            Texture2D tex = Request<Texture2D>(texture).Value;
             Main.playerDrawData.Add(new DrawData(tex, (info.position - Main.screenPosition + offset).ToPoint16().ToVector2(), null, color * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f), info.drawPlayer.headRotation, tex.Size() * 0.5f, scale, info.spriteEffects, 0));
         }
 
         /// <summary>
-        /// uses the player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
+        /// uses the Player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
         /// is color is null immune fade is applied by default
         /// </summary>
         /// <param name="info"></param>
@@ -35,7 +35,7 @@ namespace StarlightRiver.Items.Armor
         {
             if (info.drawPlayer.ActiveAbility<Whip>())
                 return;
-            Texture2D tex = GetTexture(texture);
+            Texture2D tex = Request<Texture2D>(texture).Value;
             int frame = (int)(info.drawPlayer.legFrame.Y/*TODO*/ * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.headPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
             int height = (int)(tex.Height * 0.05f);//tex.Height / 20
@@ -44,7 +44,7 @@ namespace StarlightRiver.Items.Armor
         }
 
         /// <summary>
-        /// uses the player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
+        /// uses the Player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
         /// is color is null immune fade is applied by default
         /// </summary>
         /// <param name="info"></param>
@@ -57,7 +57,7 @@ namespace StarlightRiver.Items.Armor
         {
             if (info.drawPlayer.ActiveAbility<Whip>())
                 return;
-            Texture2D tex = GetTexture(texture);
+            Texture2D tex = Request<Texture2D>(texture).Value;
             int frame = (int)(info.drawPlayer.bodyFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.bodyPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
             int height = (int)(tex.Height * 0.05f);//tex.Height / 20
@@ -66,7 +66,7 @@ namespace StarlightRiver.Items.Armor
         }
 
         /// <summary>
-        /// uses the player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
+        /// uses the Player frame as the frame in the passed sheet, frame position is normalized to the passed sheet height.  
         /// is color is null immune fade is applied by default
         /// </summary>
         /// <param name="info"></param>
@@ -79,7 +79,7 @@ namespace StarlightRiver.Items.Armor
         {
             if (info.drawPlayer.ActiveAbility<Whip>())
                 return;
-            Texture2D tex = GetTexture(texture);
+            Texture2D tex = Request<Texture2D>(texture).Value;
             int frame = (int)(info.drawPlayer.legFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
             Vector2 pos = ((info.position + info.drawPlayer.legPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
             int height = (int)(tex.Height * 0.05f);//tex.Height / 20

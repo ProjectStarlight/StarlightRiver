@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
         {
             if (Main.tile[i, j + 2].type == TileType<CrystalBlock>() && Main.tile[i, j].frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/StarJuice/SiphonGlow");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/StarJuice/SiphonGlow").Value;
                 spriteBatch.Draw(tex, (new Vector2(i, j) + Helper.TileAdj) * 16 + new Vector2(8, 12) - Main.screenPosition, tex.Frame(), Color.White * 0.8f, 0, tex.Frame().Size() / 2, 1.2f, 0, 0);
             }
         }
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.type == TileType<Siphon>() && tile.active() && tile.frameX == 0 && tile.frameY == 0;
+            return tile.type == TileType<Siphon>() && tile.HasTile && tile.frameX == 0 && tile.frameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)

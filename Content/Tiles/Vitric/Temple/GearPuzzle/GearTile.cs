@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool ValidTile(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return ModContent.GetModTile(tile.type) is GearTile && tile.active();
+			return ModContent.GetModTile(tile.type) is GearTile && tile.HasTile;
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			rotationOffset = reader.ReadSingle();
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
 			return new TagCompound()
 			{
@@ -294,7 +294,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			};
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadData(TagCompound tag)
 		{
 			engaged = tag.GetBool("engaged");
 			size = tag.GetInt("size");
@@ -362,7 +362,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				for (int k = 0; k < 10 * Size; k++)
 				{
 					Vector2 off = Vector2.One.RotatedByRandom(6.28f);
-					Dust.NewDustPerfect(projectile.Center + off * Size * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(Size * 2 - 2, Size * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
+					Dust.NewDustPerfect(Projectile.Center + off * Size * 10, ModContent.DustType<Dusts.GlowFastDecelerate>(), off * Main.rand.NextFloat(Size * 2 - 2, Size * 2) * 0.6f, 0, new Color(100, 200, 255), 0.5f);
 				}
 			}
 		}
@@ -373,14 +373,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			switch (Size)
 			{
-				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
-				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
-				case 2: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearMid"); break;
-				case 3: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearLarge"); break;
-				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "MagicalGearSmall"); break;
+				case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+				case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+				case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
+				case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
+				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
 			}
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 }

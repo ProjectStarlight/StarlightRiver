@@ -8,20 +8,20 @@ namespace StarlightRiver.Core.Loaders
 {
 	public abstract class TileLoader : IOrderedLoadable, IPostLoadable
     {
-        public Mod mod => StarlightRiver.Instance;
+        public Mod Mod => StarlightRiver.Instance;
 
         public virtual string AssetRoot => "StarlightRiver/Assets/Unknown/";
 
         public void LoadTile(string internalName, string displayName, TileLoadData data)
         {
-            mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
-            mod.AddTile(internalName, new LoaderTile(data, data.dropType == -1 ? mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + internalName);
+            Mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddTile(internalName, new LoaderTile(data, data.dropType == -1 ? Mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + internalName);
         }
 
         public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
         {
-            mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
-            mod.AddTile(internalName, new LoaderFurniture(data, mod.ItemType(internalName + "Item")), AssetRoot + internalName);
+            Mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddTile(internalName, new LoaderFurniture(data, Mod.ItemType(internalName + "Item")), AssetRoot + internalName);
         }
 
 
@@ -39,8 +39,8 @@ namespace StarlightRiver.Core.Loaders
         {
             foreach (string type2 in type2arr)
             {
-                Main.tileMerge[mod.TileType(type1)][mod.TileType(type2)] = true;
-                Main.tileMerge[mod.TileType(type2)][mod.TileType(type1)] = true;
+                Main.tileMerge[Mod.TileType(type1)][Mod.TileType(type2)] = true;
+                Main.tileMerge[Mod.TileType(type2)][Mod.TileType(type1)] = true;
             }
         }
 
@@ -48,8 +48,8 @@ namespace StarlightRiver.Core.Loaders
         {
             foreach (int type2 in type2arr)
             {
-                Main.tileMerge[mod.TileType(type1)][type2] = true;
-                Main.tileMerge[type2][mod.TileType(type1)] = true;
+                Main.tileMerge[Mod.TileType(type1)][type2] = true;
+                Main.tileMerge[type2][Mod.TileType(type1)] = true;
             }
         }
 
@@ -63,31 +63,31 @@ namespace StarlightRiver.Core.Loaders
 
         public void AddMerge(string type1, string type2)
         {
-            Main.tileMerge[mod.TileType(type1)][mod.TileType(type2)] = true;
-            Main.tileMerge[mod.TileType(type2)][mod.TileType(type1)] = true;
+            Main.tileMerge[Mod.TileType(type1)][Mod.TileType(type2)] = true;
+            Main.tileMerge[Mod.TileType(type2)][Mod.TileType(type1)] = true;
         }
 
         public void AddSand(string type)
         {
-            TileID.Sets.Conversion.Sand[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
-            TileID.Sets.ForAdvancedCollision.ForSandshark[mod.TileType(type)] = true;
+            TileID.Sets.Conversion.Sand[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.ForAdvancedCollision.ForSandshark[Mod.TileType(type)] = true;
         }
 
         public void AddSandstone(string type)
         {
-            TileID.Sets.Conversion.Sandstone[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.Conversion.Sandstone[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
         }
 
         public void AddHardenedSand(string type)
         {
-            TileID.Sets.Conversion.HardenedSand[mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.Conversion.HardenedSand[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
         }
 
 
         public void AddMerge(string type1, int type2)
         {
-            Main.tileMerge[mod.TileType(type1)][type2] = true;
-            Main.tileMerge[type2][mod.TileType(type1)] = true;
+            Main.tileMerge[Mod.TileType(type1)][type2] = true;
+            Main.tileMerge[type2][Mod.TileType(type1)] = true;
         }
 
 

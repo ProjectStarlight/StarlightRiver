@@ -19,7 +19,7 @@ namespace StarlightRiver.Configs
 
         [Label("Custom Inventory Sounds")]
         [DrawTicks]
-        [Tooltip("If custom inventory sounds should play for all items, select few, or none.")]
+        [Tooltip("If custom inventory sounds should play for all Items, select few, or none.")]
         [DefaultValue(typeof(CustomSounds), "All")]
         public CustomSounds InvSounds = CustomSounds.All;
     }

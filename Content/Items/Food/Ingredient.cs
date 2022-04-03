@@ -30,23 +30,23 @@ namespace StarlightRiver.Content.Items.Food
 
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             return base.Autoload(ref name);
         }
 
         public override void AddRecipes() //this is dumb, too bad!
         {
-            ChefBag.ingredientTypes.Add(item.type);
+            ChefBag.ingredientTypes.Add(Item.type);
         }
 
-        ///<summary>Where the effects of this food item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
-        public virtual void BuffEffects(Player player, float multiplier) { }
+        ///<summary>Where the effects of this food Item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
+        public virtual void BuffEffects(Player Player, float multiplier) { }
 
         /// <summary>
         /// Make sure to reset appropriate buff updates here
         /// </summary>
-        public virtual void ResetBuffEffects(Player player, float multiplier) { }
+        public virtual void ResetBuffEffects(Player Player, float multiplier) { }
 
         public virtual void SafeSetDefaults() { }
 
@@ -59,12 +59,12 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SetDefaults()
         {
-            item.maxStack = 99;
-            item.width = 32;
-            item.height = 32;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.useTime = 10;
-            item.useAnimation = 10;
+            Item.maxStack = 99;
+            Item.width = 32;
+            Item.height = 32;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useTime = 10;
+            Item.useAnimation = 10;
 
             SafeSetDefaults();
         }
@@ -85,11 +85,11 @@ namespace StarlightRiver.Content.Items.Food
 
             foreach (TooltipLine line in tooltips)
             {
-                if (line.mod == "Terraria" && line.Name == "Tooltip0") { line.text = description; line.overrideColor = nameColor; }
-                if (line.mod == "Terraria" && line.Name == "Tooltip1") { line.text = ItemTooltip; line.overrideColor = descriptionColor; }
+                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.text = description; line.overrideColor = nameColor; }
+                if (line.Mod == "Terraria" && line.Name == "Tooltip1") { line.text = ItemTooltip; line.overrideColor = descriptionColor; }
             }
 
-            TooltipLine fullLine = new TooltipLine(mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
+            TooltipLine fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
             {
                 overrideColor = new Color(110, 235, 255)
             };

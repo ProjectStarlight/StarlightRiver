@@ -22,9 +22,9 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Blue;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Blue;
         }
     }
 }

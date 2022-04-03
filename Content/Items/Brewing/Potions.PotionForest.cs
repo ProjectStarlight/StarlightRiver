@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Brewing
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.BottledWater, 1);
             recipe.AddIngredient(ItemType<ForestBerries>(), 5);
             recipe.AddIngredient(ItemType<Ivy>(), 20);

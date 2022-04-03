@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-    //todo finish this (hover item, etc) and abstract it for other crops
+    //todo finish this (hover Item, etc) and abstract it for other crops
     public abstract class Crop : ModTile
     {
         protected readonly int Height;
@@ -90,13 +90,13 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
             if(ExtraGroundNames != null)
                 foreach (string name in ExtraGroundNames)
-                    valid.Add(mod.TileType(name));
+                    valid.Add(Mod.TileType(name));
 
             QuickBlock.QuickSetFurniture(this, 1, Height, DustType, SoundType, false, 
                 MapColor == default ? new Color(200, 255, 220) : MapColor,
                 false, false, MapName, anchor, TopAnchorOverride, valid.ToArray());
 
-            drop = mod.ItemType(DropType);
+            drop = Mod.ItemType(DropType);
 
             FrameHeight = 16 * Height;
             LastFrame = (FrameCount - 1) * FrameHeight;

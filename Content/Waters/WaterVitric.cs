@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Waters
         }
 
         public override int ChooseWaterfallStyle() => 
-            mod.GetWaterfallStyleSlot<WaterfallVitric>();
+            Mod.GetWaterfallStyleSlot<WaterfallVitric>();
 
         public override int GetSplashDust() => 
             DustType<Dusts.QuickSplash>();

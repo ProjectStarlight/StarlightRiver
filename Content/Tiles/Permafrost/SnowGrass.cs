@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost.Decoration
 
             if (tile.frameX == 0 && tile.frameY == 0)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Permafrost/SnowGrassGlow");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/SnowGrassGlow").Value;
 
                 float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
 

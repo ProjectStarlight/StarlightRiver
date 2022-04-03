@@ -20,23 +20,23 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 8;
-            item.ranged = true;
-            item.width = 8;
-            item.height = 8;
-            item.maxStack = 999;
-            item.consumable = true;
-            item.knockBack = 0.5f;
-            item.value = 10;
-            item.rare = ItemRarityID.Green;
-            item.shoot = ProjectileType<MagmaArrowProj>();
-            item.shootSpeed = 6f;
-            item.ammo = AmmoID.Arrow;
+            Item.damage = 8;
+            Item.ranged = true;
+            Item.width = 8;
+            Item.height = 8;
+            Item.maxStack = 999;
+            Item.consumable = true;
+            Item.knockBack = 0.5f;
+            Item.value = 10;
+            Item.rare = ItemRarityID.Green;
+            Item.shoot = ProjectileType<MagmaArrowProj>();
+            Item.shootSpeed = 6f;
+            Item.ammo = AmmoID.Arrow;
         }
 
         public override void AddRecipes()
         {
-            var r = new ModRecipe(mod);
+            var r = new ModRecipe(Mod);
             r.AddIngredient(ItemID.FlamingArrow, 100);
             r.AddIngredient(ItemType<MagmaCore>(), 1);
             r.AddTile(TileID.Anvils);
@@ -64,15 +64,15 @@ namespace StarlightRiver.Content.Items.Vitric
         }
         public override void SetDefaults()
         {
-            projectile.width = 7;
-            projectile.height = 7;
-            projectile.friendly = true;
-            projectile.ranged = true;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 400;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = false;
-            projectile.aiStyle = 1;
+            Projectile.width = 7;
+            Projectile.height = 7;
+            Projectile.friendly = true;
+            Projectile.ranged = true;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 400;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = false;
+            Projectile.aiStyle = 1;
             aiType = ProjectileID.WoodenArrowFriendly;
         }
         public override void AI()
@@ -81,25 +81,25 @@ namespace StarlightRiver.Content.Items.Vitric
                 coolness += 0.015f;
             if (moltenCounter > 0)
                 moltenCounter -= 0.05f;
-            Lighting.AddLight(projectile.Center, (Color.Orange * heat).ToVector3());
+            Lighting.AddLight(Projectile.Center, (Color.Orange * heat).ToVector3());
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(AssetDirectory.VitricItem + "NeedlerBloom");
+            Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom").Value;
             Color bloomColor = Color.Orange;
             bloomColor.A = 0;
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY) + ((projectile.rotation - 1.57f).ToRotationVector2() * 10), new Rectangle(0, 0, tex.Width, tex.Height), //bloom
-                bloomColor * heat, projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), projectile.scale * 0.85f, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) + ((Projectile.rotation - 1.57f).ToRotationVector2() * 10), new Rectangle(0, 0, tex.Width, tex.Height), //bloom
+                bloomColor * heat, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * 0.85f, SpriteEffects.None, 0);
 
-            tex = Main.projectileTexture[projectile.type];
+            tex = Main.projectileTexture[Projectile.type];
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), new Rectangle(tex.Width / 3, 0, tex.Width / 3, tex.Height), //crystal arrow
-                lightColor * coolness, projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), new Rectangle(0, 0, tex.Width / 3, tex.Height), //magma arrow
-                lightColor * heat, projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(tex.Width / 3, 0, tex.Width / 3, tex.Height), //crystal arrow
+                lightColor * coolness, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(0, 0, tex.Width / 3, tex.Height), //magma arrow
+                lightColor * heat, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), new Rectangle((tex.Width / 3) * 2, 0, tex.Width / 3, tex.Height), //white sprite
-                Color.Lerp(Color.Orange, Color.White, moltenCounter) * moltenCounter, projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), projectile.scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle((tex.Width / 3) * 2, 0, tex.Width / 3, tex.Height), //white sprite
+                Color.Lerp(Color.Orange, Color.White, moltenCounter) * moltenCounter, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
     }

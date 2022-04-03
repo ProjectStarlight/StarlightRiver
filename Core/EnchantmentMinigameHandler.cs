@@ -12,7 +12,7 @@ namespace StarlightRiver.Core
 
         public void ResetMinigame(ArmorEnchantment enchant)
         {
-            minigameLife = player.statLifeMax >= 500 ? 4 : 3;
+            minigameLife = Player.statLifeMax >= 500 ? 4 : 3;
             minigameTimer = 0;
             activeEnchant = enchant;
         }
@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
 
         public override void PreUpdateMovement()
         {            
-            //player.velocity *= 0.2f;
+            //Player.velocity *= 0.2f;
         }
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)

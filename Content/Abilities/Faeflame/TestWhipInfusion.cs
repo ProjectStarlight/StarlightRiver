@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Green;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
 
             color = new Color(255, 235, 70);
         }
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
 
         public override bool Visible => Main.LocalPlayer.controlHook;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             return base.Autoload(ref name);
         }

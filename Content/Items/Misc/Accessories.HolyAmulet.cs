@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public HolyAmulet() : base("Holy Amulet", "Releases bursts of homing energy for every 25 HP healed") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             On.Terraria.Player.HealEffect += HealEffect;
             return true;
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
 
             recipe.AddIngredient(ItemID.Ruby, 5);
             recipe.AddIngredient(ItemID.LifeCrystal);
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.SetResult(this);
             recipe.AddRecipe();
 
-            recipe = new ModRecipe(mod);
+            recipe = new ModRecipe(Mod);
 
             recipe.AddIngredient(ItemID.Ruby, 5);
             recipe.AddIngredient(ItemID.LifeCrystal);
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             while (cumulativeAmountHealed >= 25)
             {
-                Projectile.NewProjectile(player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, player.whoAmI);
+                Projectile.NewProjectile(Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI);
 
                 rotation += step;
 
@@ -95,51 +95,51 @@ namespace StarlightRiver.Content.Items.Misc
 
         private int TargetNPCIndex
         {
-            get => (int)projectile.ai[0];
-            set => projectile.ai[0] = value;
+            get => (int)Projectile.ai[0];
+            set => Projectile.ai[0] = value;
         }
 
         private bool HitATarget
         {
-            get => (int)projectile.ai[1] == 1;
-            set => projectile.ai[1] = value ? 1 : 0;
+            get => (int)Projectile.ai[1] == 1;
+            set => Projectile.ai[1] = value ? 1 : 0;
         }
 
         public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.Homing[projectile.type] = true;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.friendly = true;
-            projectile.timeLeft = 300;
-            projectile.tileCollide = false;
-            projectile.penetrate = -1;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.friendly = true;
+            Projectile.timeLeft = 300;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
         {
             // Sync its target.
-            projectile.netUpdate = true;
+            Projectile.netUpdate = true;
 
             ManageCaches();
             ManageTrail();
 
-            if (projectile.timeLeft < 30)
-                projectile.alpha += 8;
+            if (Projectile.timeLeft < 30)
+                Projectile.alpha += 8;
 
             if (!HitATarget && TargetNPCIndex == -1)
             {
                 for (int i = 0; i < Main.maxNPCs; i++)
                 {
-                    NPC npc = Main.npc[i];
+                    NPC NPC = Main.npc[i];
 
-                    if (npc.CanBeChasedBy() && npc.DistanceSQ(projectile.Center) < detectionRange * detectionRange)
+                    if (NPC.CanBeChasedBy() && NPC.DistanceSQ(Projectile.Center) < detectionRange * detectionRange)
                     {
                         TargetNPCIndex = i;
                         break;
@@ -160,11 +160,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         private void Homing(NPC target)
         {
-            Vector2 move = target.Center - projectile.Center;
+            Vector2 move = target.Center - Projectile.Center;
             AdjustMagnitude(ref move);
 
-            projectile.velocity = (10 * projectile.velocity + move) / 11f;
-            AdjustMagnitude(ref projectile.velocity);
+            Projectile.velocity = (10 * Projectile.velocity + move) / 11f;
+            AdjustMagnitude(ref Projectile.velocity);
         }
 
         private void AdjustMagnitude(ref Vector2 vector)
@@ -184,11 +184,11 @@ namespace StarlightRiver.Content.Items.Misc
 
                 for (int i = 0; i < oldPositionCacheLength; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > oldPositionCacheLength)
             {
@@ -201,14 +201,14 @@ namespace StarlightRiver.Content.Items.Misc
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
             {
                 // 1 = full opacity, 0 = transparent.
-                float normalisedAlpha = 1 - (projectile.alpha / 255f);
+                float normalisedAlpha = 1 - (Projectile.alpha / 255f);
 
-                // Scales opacity with the projectile alpha as well as the distance from the beginning of the trail.
+                // Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
                 return Color.Crimson * normalisedAlpha * factor.X;
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -229,11 +229,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            projectile.timeLeft = 30;
+            Projectile.timeLeft = 30;
             HitATarget = true;
 
-            // This is hacky, but it lets the projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
-            projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
+            // This is hacky, but it lets the Projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
         }
 
         public override void Kill(int timeLeft)

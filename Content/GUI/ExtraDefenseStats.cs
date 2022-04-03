@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.GUI
 		public int Timer = 0;
 		public Vector2 basePos;
 
-		public ExtraDefenseInfoPanel DoTResistPanel = new ExtraDefenseInfoPanel(ModContent.GetTexture(AssetDirectory.GUI + "DoTResistBG"), 1);
+		public ExtraDefenseInfoPanel DoTResistPanel = new ExtraDefenseInfoPanel(ModContent.Request<Texture2D>(AssetDirectory.GUI + "DoTResistBG").Value, 1);
 
 		public override bool Visible => Main.playerInventory;
 
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var player = Main.LocalPlayer;
+			var Player = Main.LocalPlayer;
 
 			int mapHeight = 0;
 			if (Main.mapEnabled)
@@ -43,9 +43,9 @@ namespace StarlightRiver.Content.GUI
 					mapHeight = Main.screenHeight - Main.instance.RecommendedEquipmentAreaPushUp;
 			}
 
-			int slotsOff = 10 + player.extraAccessorySlots;
+			int slotsOff = 10 + Player.extraAccessorySlots;
 
-			if (slotsOff == 10 && (player.armor[8].type > 0 || player.armor[18].type > 0 || player.dye[8].type > 0))
+			if (slotsOff == 10 && (Player.armor[8].type > 0 || Player.armor[18].type > 0 || Player.dye[8].type > 0))
 				slotsOff = 9;
 
 			if (Main.screenHeight < 900 && slotsOff == 10)
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.GUI
 				if(Timer < 25)
 					Timer++;
 
-				var ResistPlayer = player.GetModPlayer<DoTResistancePlayer>();
+				var ResistPlayer = Player.GetModPlayer<DoTResistancePlayer>();
 
 				int resistPercent = (int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero);
 				DoTResistPanel.value = $"{resistPercent}%";

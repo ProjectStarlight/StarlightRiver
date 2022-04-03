@@ -28,42 +28,42 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.melee = true;
-            item.damage = 35;
-            item.useTime = 35;
-            item.useAnimation = 35;
-            item.width = 32;
-            item.height = 32;
-            item.knockBack = 8;
-            item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
-            item.shootSpeed = 1;
-            item.rare = ItemRarityID.Green;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noMelee = true;
-            item.noUseGraphic = true;
-            item.UseSound = SoundID.DD2_MonkStaffSwing;
+            Item.melee = true;
+            Item.damage = 35;
+            Item.useTime = 35;
+            Item.useAnimation = 35;
+            Item.width = 32;
+            Item.height = 32;
+            Item.knockBack = 8;
+            Item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
+            Item.shootSpeed = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.noMelee = true;
+            Item.noUseGraphic = true;
+            Item.UseSound = SoundID.DD2_MonkStaffSwing;
         }
 
-        public override void HoldItem(Player player)
+        public override void HoldItem(Player Player)
         {
-            if (player.whoAmI == Main.myPlayer)
-                player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+            if (Player.whoAmI == Main.myPlayer)
+                Player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
 
-            if (player.GetModPlayer<ControlsPlayer>().mouseRight)
+            if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
             {
-                item.shoot = ModContent.ProjectileType<BossSpearShieldProjectile>();
-                item.UseSound = SoundID.DD2_CrystalCartImpact;
-                item.useAnimation = 80;
-                item.useTime = 80;
-                item.knockBack = 12;
+                Item.shoot = ModContent.ProjectileType<BossSpearShieldProjectile>();
+                Item.UseSound = SoundID.DD2_CrystalCartImpact;
+                Item.useAnimation = 80;
+                Item.useTime = 80;
+                Item.knockBack = 12;
             }
             else
             {
-                item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
-                item.UseSound = SoundID.DD2_MonkStaffSwing;
-                item.useAnimation = 35;
-                item.useTime = 35;
-                item.knockBack = 8;
+                Item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
+                Item.UseSound = SoundID.DD2_MonkStaffSwing;
+                Item.useAnimation = 35;
+                Item.useTime = 35;
+                Item.knockBack = 8;
             }
         }
 
@@ -73,15 +73,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if(damageLine != null)
             {
-                tooltips.Insert(tooltips.IndexOf(damageLine) + 1, new TooltipLine(mod, "ShieldLife", "50 shield life"));
+                tooltips.Insert(tooltips.IndexOf(damageLine) + 1, new TooltipLine(Mod, "ShieldLife", "50 shield life"));
             }
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
-            if (buffed && player.altFunctionUse != 2)
+            if (buffed && Player.altFunctionUse != 2)
             {
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI, 0, buffPower);
+                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, Player.whoAmI, 0, buffPower);
                 buffed = false;
 
                 return false;
@@ -89,23 +89,23 @@ namespace StarlightRiver.Content.Items.Vitric
 
             buffed = false;
 
-            return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            return base.Shoot(Player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
         }
 
-        public override bool AltFunctionUse(Player player)
+        public override bool AltFunctionUse(Player Player)
         {
             return true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
-            //player.velocity += Vector2.Normalize(player.Center - Main.MouseWorld) * 10;
-            if (player.GetModPlayer<ControlsPlayer>().mouseRight)
+            //Player.velocity += Vector2.Normalize(Player.Center - Main.MouseWorld) * 10;
+            if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
             {
-                Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, player.position);
+                Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
             } else
             {
-                Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, player.position);
+                Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
             }
 
             return true;
@@ -116,8 +116,8 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public ref float DrawbackTime => ref projectile.ai[0];
-        public ref float BuffPower => ref projectile.ai[1];
+        public ref float DrawbackTime => ref Projectile.ai[0];
+        public ref float BuffPower => ref Projectile.ai[1];
 
         public BossSpearProjectile() : base(50, 74, 164) { }
 
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SafeAI()
         {
-            var player = Main.player[projectile.owner];
+            var Player = Main.player[Projectile.owner];
 
             DrawbackTime++;
 
@@ -137,19 +137,19 @@ namespace StarlightRiver.Content.Items.Vitric
                 Min -= 2;
 
                 if (DrawbackTime < 6)
-                    projectile.timeLeft += 2;
+                    Projectile.timeLeft += 2;
             }
             
-            if (projectile.timeLeft > (int)(20 * player.meleeSpeed) && projectile.timeLeft < (int)(50 * player.meleeSpeed))
-                projectile.extraUpdates = 8;
+            if (Projectile.timeLeft > (int)(20 * Player.meleeSpeed) && Projectile.timeLeft < (int)(50 * Player.meleeSpeed))
+                Projectile.extraUpdates = 8;
             else  
-                projectile.extraUpdates = 0;
+                Projectile.extraUpdates = 0;
             
-            if (projectile.timeLeft == (int)(25 * player.meleeSpeed))
+            if (Projectile.timeLeft == (int)(25 * Player.meleeSpeed))
             {
-                Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
+                Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
 
-                 player.velocity += Vector2.UnitX.RotatedBy(projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
+                 Player.velocity += Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
             }
 
 
@@ -157,78 +157,78 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void PostAI()
         {
-            if (Main.myPlayer != projectile.owner)
+            if (Main.myPlayer != Projectile.owner)
                 findIfHit();
         }
 
         public override bool? CanHitNPC(NPC target)
         {
-            var player = Main.player[projectile.owner];
-            return (projectile.timeLeft < (int)(50 * player.meleeSpeed)) && target.active && !target.dontTakeDamage && !target.townNPC;
+            var Player = Main.player[Projectile.owner];
+            return (Projectile.timeLeft < (int)(50 * Player.meleeSpeed)) && target.active && !target.dontTakeDamage && !target.townNPC;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            hitDirection = Main.player[projectile.owner].direction;
+            hitDirection = Main.player[Projectile.owner].direction;
             if (BuffPower > 0)
             {
                 var slot2 = SoundID.DD2_BetsyFireballImpact;
-                Terraria.Audio.SoundEngine.PlaySound(slot2.SoundId, (int)projectile.Center.X, (int)projectile.Center.Y, slot2.Style, 1, -3.5f);
+                Terraria.Audio.SoundEngine.PlaySound(slot2.SoundId, (int)Projectile.Center.X, (int)Projectile.Center.Y, slot2.Style, 1, -3.5f);
                 damage = (int)(damage * (1 + BuffPower / 50f));
                 knockback *= 3;
 
                 for (int k = 0; k < 20; k++)
-                    Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Stamina>(), Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Stamina>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
 
                 BuffPower = 0;
             }
 
-            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
+            target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
 
-            if (Main.myPlayer == projectile.owner)
-                projectile.netUpdate = true;
+            if (Main.myPlayer == Projectile.owner)
+                Projectile.netUpdate = true;
 
             if (Helpers.Helper.IsFleshy(target))
             {
-                Helpers.Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), projectile.Center);
+                Helpers.Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
                 for (int k = 0; k < 20; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustID.Blood, Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, default, 1.5f);
+                    Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, default, 1.5f);
                 }
             }
 
             else
 			{
-                Helpers.Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), projectile.Center);
+                Helpers.Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
                 for(int k = 0; k < 15; k++)
 				{
-                    Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Glow>(), Vector2.One.RotatedBy(projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.5f));
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Glow>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, new Color(255, Main.rand.Next(130, 255), 80), Main.rand.NextFloat(0.3f, 0.5f));
                 }
             }
         }
 
         private void findIfHit()
         {
-            foreach (NPC npc in Main.npc.Where(n => n.active  && !n.dontTakeDamage && !n.townNPC && n.life > 0 && projectile.timeLeft < (int)(50 * Main.player[projectile.owner].meleeSpeed) && n.immune[projectile.owner] <= 0 &&  n.Hitbox.Intersects(projectile.Hitbox) ))
+            foreach (NPC NPC in Main.npc.Where(n => n.active  && !n.dontTakeDamage && !n.townNPC && n.life > 0 && Projectile.timeLeft < (int)(50 * Main.player[Projectile.owner].meleeSpeed) && n.immune[Projectile.owner] <= 0 &&  n.Hitbox.Intersects(Projectile.Hitbox) ))
             {
                 int zero = 0;
                 float zerof = 0f;
                 bool none = false;
-                ModifyHitNPC(npc, ref zero, ref zerof, ref none, ref zero);
+                ModifyHitNPC(NPC, ref zero, ref zerof, ref none, ref zero);
             }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = Main.projectileTexture[projectile.type];
+            var tex = Main.projectileTexture[Projectile.type];
             var color = lightColor * (DrawbackTime < 10 ? (DrawbackTime / 10f) : 1); //fadein   why did I write it like this? idk lol shoot me
-            if (projectile.timeLeft <= 5) color *= projectile.timeLeft / 5f; //fadeout
+            if (Projectile.timeLeft <= 5) color *= Projectile.timeLeft / 5f; //fadeout
 
-            spriteBatch.Draw(tex, (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY),
-                tex.Frame(), color, projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), projectile.scale, 0, 0);
+            spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
+                tex.Frame(), color, Projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), Projectile.scale, 0, 0);
 
             return false;
         }
@@ -238,15 +238,15 @@ namespace StarlightRiver.Content.Items.Vitric
             if (BuffPower <= 0)
                 return;
 
-            var tex = ModContent.GetTexture("StarlightRiver/Assets/FireTrail");
+            var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value;
             var color = new Color(255, 200, 100);
 
-            var source = new Rectangle((int)(projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);
-            var target = new Rectangle((int)(projectile.Center.X - Main.screenPosition.X), (int)(projectile.Center.Y - Main.screenPosition.Y), 64, 40);
+            var source = new Rectangle((int)(Projectile.timeLeft / 50f * tex.Width / 2), 0, tex.Width / 2, tex.Height);
+            var target = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y), 64, 40);
 
-            spriteBatch.Draw(tex, target, source, color, projectile.rotation - (float)Math.PI * 3/4f, new Vector2(tex.Width / 2, tex.Height / 2), 0, 0);
+            spriteBatch.Draw(tex, target, source, color, Projectile.rotation - (float)Math.PI * 3/4f, new Vector2(tex.Width / 2, tex.Height / 2), 0, 0);
 
-            Lighting.AddLight(projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
+            Lighting.AddLight(Projectile.Center, new Vector3(1, 0.6f, 0.2f) * 0.5f);
         }
     }
 
@@ -254,9 +254,9 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public ref float ShieldLife => ref projectile.ai[0];
+        public ref float ShieldLife => ref Projectile.ai[0];
 
-        public ref float Rotation => ref projectile.ai[1];
+        public ref float Rotation => ref Projectile.ai[1];
 
         public override void SetStaticDefaults()
         {
@@ -265,14 +265,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            projectile.friendly = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.timeLeft = 60;
-            projectile.tileCollide = false;
-            projectile.penetrate = -1;
-            projectile.knockBack = 2;
-            projectile.melee = true;
+            Projectile.friendly = true;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.timeLeft = 60;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.knockBack = 2;
+            Projectile.melee = true;
             ShieldLife = 50;
         }
 
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (timeLeft > 0)
             {
                 for (int k = 0; k < 20; k++)
-                    Dust.NewDust(projectile.position, 16, 16, ModContent.DustType<Dusts.GlassNoGravity>());
+                    Dust.NewDust(Projectile.position, 16, 16, ModContent.DustType<Dusts.GlassNoGravity>());
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
             }
@@ -289,108 +289,108 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void findIfHit()
         {
-            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
             {
-                OnHitNPC(npc, 0, 0, false);
+                OnHitNPC(NPC, 0, 0, false);
             }
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             ShieldLife -= target.damage / 2;
-            CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), target.damage / 2);
+            CombatText.NewText(Projectile.Hitbox, new Color(100, 255, 255), target.damage / 2);
 
-            var player = Main.player[projectile.owner];
-            player.velocity += Vector2.Normalize(player.Center - target.Center) * 3;
+            var Player = Main.player[Projectile.owner];
+            Player.velocity += Vector2.Normalize(Player.Center - target.Center) * 3;
 
-            var item = (player.HeldItem.modItem as BossSpear);
+            var Item = (Player.HeldItem.ModItem as BossSpear);
 
-            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
+            target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
-            if (item != null && !item.buffed)
+            if (Item != null && !Item.buffed)
             {
-                item.buffed = true;
-                item.buffPower = (int)ShieldLife;
+                Item.buffed = true;
+                Item.buffPower = (int)ShieldLife;
             }
 
             if (ShieldLife <= 0)
-                projectile.Kill();
+                Projectile.Kill();
 
-            if (Main.myPlayer == projectile.owner)
-                projectile.netUpdate = true;
+            if (Main.myPlayer == Projectile.owner)
+                Projectile.netUpdate = true;
         }
 
         public override void AI()
         {
-            var player = Main.player[projectile.owner];
-            projectile.frameCounter++;
+            var Player = Main.player[Projectile.owner];
+            Projectile.frameCounter++;
 
-            ControlsPlayer cplayer = player.GetModPlayer<ControlsPlayer>();
+            ControlsPlayer cPlayer = Player.GetModPlayer<ControlsPlayer>();
 
-            if (Main.myPlayer == projectile.owner)
+            if (Main.myPlayer == Projectile.owner)
             {
-                cplayer.mouseRotationListener = true;
-                cplayer.rightClickListener = true;
+                cPlayer.mouseRotationListener = true;
+                cPlayer.rightClickListener = true;
             }
                 
 
-            if (projectile.timeLeft > 5 && !cplayer.mouseRight)
+            if (Projectile.timeLeft > 5 && !cPlayer.mouseRight)
             {
-                projectile.timeLeft = 5;
-                player.itemTime = 20;
-                player.itemAnimation = 20;
+                Projectile.timeLeft = 5;
+                Player.ItemTime = 20;
+                Player.ItemAnimation = 20;
             }
-            if (cplayer.mouseRight && projectile.timeLeft < 10)
+            if (cPlayer.mouseRight && Projectile.timeLeft < 10)
             {
-                projectile.timeLeft = 10;
-                player.itemTime = 20;
-                player.itemAnimation = 20;
+                Projectile.timeLeft = 10;
+                Player.ItemTime = 20;
+                Player.ItemAnimation = 20;
             }
 
-            Rotation = (cplayer.mouseWorld - player.Center).ToRotation() - (float)Math.PI;
+            Rotation = (cPlayer.mouseWorld - Player.Center).ToRotation() - (float)Math.PI;
 
-            if (projectile.timeLeft == 60)
+            if (Projectile.timeLeft == 60)
             {
-                projectile.damage = 10;
+                Projectile.damage = 10;
 
                 ShieldLife = 50;
             }
 
-            var progress = projectile.timeLeft > 50 ? (60 - projectile.timeLeft) / 10f : projectile.timeLeft < 5 ? (projectile.timeLeft / 5f) : 1;
+            var progress = Projectile.timeLeft > 50 ? (60 - Projectile.timeLeft) / 10f : Projectile.timeLeft < 5 ? (Projectile.timeLeft / 5f) : 1;
 
-            projectile.Center = player.Center + Vector2.UnitY * player.gfxOffY + Vector2.UnitX.RotatedBy(Rotation) * 28 * -progress;
-            projectile.scale = progress;
-            projectile.rotation = Rotation + (float)Math.PI;
+            Projectile.Center = Player.Center + Vector2.UnitY * Player.gfxOffY + Vector2.UnitX.RotatedBy(Rotation) * 28 * -progress;
+            Projectile.scale = progress;
+            Projectile.rotation = Rotation + (float)Math.PI;
 
-            if (cplayer.mouseWorld.X > player.Center.X)
-                player.direction = 1;
+            if (cPlayer.mouseWorld.X > Player.Center.X)
+                Player.direction = 1;
             else
-                player.direction = -1;
+                Player.direction = -1;
 
-            player.itemRotation = Rotation + (float)Math.PI; //TODO: Wrap properly when facing left
+            Player.ItemRotation = Rotation + (float)Math.PI; //TODO: Wrap properly when facing left
 
-            if (player.direction != 1)
-                player.itemRotation -= 3.14f;
+            if (Player.direction != 1)
+                Player.ItemRotation -= 3.14f;
 
-            player.heldProj = projectile.whoAmI;
+            Player.heldProj = Projectile.whoAmI;
 
-            if(projectile.timeLeft < 40 && ShieldLife > 10)
+            if(Projectile.timeLeft < 40 && ShieldLife > 10)
                 ShieldLife --;
 
             for(int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
 
-                if(proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(projectile.Hitbox))
+                if(proj.active && proj.hostile && proj.damage > 1 && proj.Hitbox.Intersects(Projectile.Hitbox))
                 {
                     var diff = (proj.damage * 2) - ShieldLife;
 
-                    var item = (player.HeldItem.modItem as BossSpear);
+                    var Item = (Player.HeldItem.ModItem as BossSpear);
 
-                    if(item != null && !item.buffed)
+                    if(Item != null && !Item.buffed)
                     {
-                        item.buffed = true;
-                        item.buffPower = (int)ShieldLife;
+                        Item.buffed = true;
+                        Item.buffPower = (int)ShieldLife;
                     }
 
                     if(diff <= 0)
@@ -398,51 +398,51 @@ namespace StarlightRiver.Content.Items.Vitric
                         proj.penetrate -= 1;
                         proj.friendly = true;
                         ShieldLife -= proj.damage * 2;
-                        CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), proj.damage * 2);
+                        CombatText.NewText(Projectile.Hitbox, new Color(100, 255, 255), proj.damage * 2);
                     }
                     else
                     {
-                        CombatText.NewText(projectile.Hitbox, new Color(100, 255, 255), "Cant block!");
+                        CombatText.NewText(Projectile.Hitbox, new Color(100, 255, 255), "Cant block!");
                         proj.damage -= (int)ShieldLife / 2;
-                        projectile.Kill();
+                        Projectile.Kill();
                         return;
                     }
 
-                    player.velocity += Vector2.Normalize(player.Center - proj.Center) * 3;
+                    Player.velocity += Vector2.Normalize(Player.Center - proj.Center) * 3;
                 }
             }
 
             if (ShieldLife <= 0)
-                projectile.Kill();
+                Projectile.Kill();
         }
 
         public override void PostAI()
         {
-            if (Main.myPlayer != projectile.owner)
+            if (Main.myPlayer != Projectile.owner)
                 findIfHit();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = ModContent.GetTexture(Texture);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, 32 * projectile.frame, 22, 32), lightColor, projectile.rotation, new Vector2(11, 16), projectile.scale, 0, 0);
+            var tex = ModContent.Request<Texture2D>(Texture).Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, 32 * Projectile.frame, 22, 32), lightColor, Projectile.rotation, new Vector2(11, 16), Projectile.scale, 0, 0);
 
-            if (Main.LocalPlayer == Main.player[projectile.owner])
+            if (Main.LocalPlayer == Main.player[Projectile.owner])
             {
-                var barTex = ModContent.GetTexture(AssetDirectory.GUI + "SmallBar0");
-                var barTex2 = ModContent.GetTexture(AssetDirectory.GUI + "SmallBar1");
+                var barTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar0").Value;
+                var barTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "SmallBar1").Value;
 
                 var pos = Main.LocalPlayer.Center - Main.screenPosition + new Vector2(0, -36) - barTex.Size() / 2;
                 var target = new Rectangle((int)pos.X + 1, (int)pos.Y - 2, (int)(ShieldLife / 50f * barTex2.Width), barTex2.Height);
-                var opacity = projectile.timeLeft > 50 ? 1 - (projectile.timeLeft - 50) / 10f : projectile.timeLeft < 5 ? projectile.timeLeft / 5f : 1;
+                var opacity = Projectile.timeLeft > 50 ? 1 - (Projectile.timeLeft - 50) / 10f : Projectile.timeLeft < 5 ? Projectile.timeLeft / 5f : 1;
                 var color = Color.Lerp(new Color(50, 100, 200), new Color(100, 255, 255), ShieldLife / 50f);
 
                 spriteBatch.Draw(barTex, pos, color * opacity);
                 spriteBatch.Draw(barTex2, target, color * 0.8f * opacity);
             }
 
-            if (projectile.frameCounter % 8 == 0) projectile.frame++;
-            projectile.frame %= 3;
+            if (Projectile.frameCounter % 8 == 0) Projectile.frame++;
+            Projectile.frame %= 3;
 
             return false;
         }

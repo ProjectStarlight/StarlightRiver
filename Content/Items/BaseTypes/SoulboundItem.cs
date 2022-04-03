@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
             SafeModifyTooltips(tooltips);
 
-            TooltipLine line = new TooltipLine(mod, "binding", "Soulbound")
+            TooltipLine line = new TooltipLine(Mod, "binding", "Soulbound")
             {
                 overrideColor = new Color(150, 255, 255)
             };

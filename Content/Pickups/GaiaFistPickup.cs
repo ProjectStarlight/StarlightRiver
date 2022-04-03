@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Pickups
         public override string Texture => "StarlightRiver/Assets/Abilities/GaiaFist";
         public override Color GlowColor => new Color(180, 220, 140);
 
-        public override bool CanPickup(Player player)
+        public override bool CanPickup(Player Player)
         {
-            return !player.GetHandler().Unlocked<Smash>();
+            return !Player.GetHandler().Unlocked<Smash>();
         }
 
         public override void SetStaticDefaults()
@@ -29,17 +29,17 @@ namespace StarlightRiver.Content.Pickups
         public override void Visuals()
         {
             float timer = StarlightWorld.rottime;
-            //Vector2 pos = npc.position - Main.screenPosition - (new Vector2((int)((Math.Cos(timer * 3) + 1) * 4f), (int)((Math.Sin(timer * 3) + 1) * 4f)) / 2) + new Vector2(0, (float)Math.Sin(timer) * 4);
+            //Vector2 pos = NPC.position - Main.screenPosition - (new Vector2((int)((Math.Cos(timer * 3) + 1) * 4f), (int)((Math.Sin(timer * 3) + 1) * 4f)) / 2) + new Vector2(0, (float)Math.Sin(timer) * 4);
 
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(timer) * (23 + (float)Math.Sin(timer * 10) * 4), DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(timer) * 18, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(timer) * 28, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+            Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(timer) * (23 + (float)Math.Sin(timer * 10) * 4), DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+            Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(timer) * 18, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+            Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(timer) * 28, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
 
             for (int k = 0; k < 2; k++)
             {
-                Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * (43 + (float)Math.Sin(timer * 10) * 4), DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
-                Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * 38, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
-                Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * 48, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+                Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * (43 + (float)Math.Sin(timer * 10) * 4), DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+                Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * 38, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
+                Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(-timer + k * 0.02f) * 48, DustType<Content.Dusts.JungleEnergy>(), Vector2.Zero, 254, default, 0.8f);
             }
         }
 
@@ -47,18 +47,18 @@ namespace StarlightRiver.Content.Pickups
         {
             if (timer == 1)
             {
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
                 Filters.Scene.Deactivate("Shockwave");
             }
         }
 
-        public override void PickupEffects(Player player)
+        public override void PickupEffects(Player Player)
         {
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
             mp.Unlock<Smash>();
 
-            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
-            player.AddBuff(BuffID.Featherfall, 580);
+            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
+            Player.AddBuff(BuffID.Featherfall, 580);
         }
     }
 }

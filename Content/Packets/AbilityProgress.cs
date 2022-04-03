@@ -31,8 +31,8 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            Player player = Main.player[fromWho];
-            AbilityHandler handler = player.GetHandler();
+            Player Player = Main.player[fromWho];
+            AbilityHandler handler = Player.GetHandler();
 
             for (int k = 0; k < shards.Length; k++)
                 if(!handler.Shards.Has(shards[k]))

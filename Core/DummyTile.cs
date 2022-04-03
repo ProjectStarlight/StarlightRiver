@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 
             if (dummies.TryGetValue(key, out Projectile dummy))
             {
-                if (dummy.modProjectile is T && dummy.active)
+                if (dummy.ModProjectile is T && dummy.active)
                     return dummy;
             }
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Core
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
-                if (proj.active && proj.modProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
+                if (proj.active && proj.ModProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
                     return true;
             }
 

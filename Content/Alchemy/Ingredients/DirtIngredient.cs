@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Alchemy.Ingredients
             }
         }
 
-        public override bool addToStack(Item item)
+        public override bool addToStack(Item Item)
         {
             return false; //unstackable equipment
         }

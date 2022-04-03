@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class PowerupDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -34,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             dust.scale *= 0.3f;
             dust.frame = new Rectangle(0, 0, 64, 64);
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)

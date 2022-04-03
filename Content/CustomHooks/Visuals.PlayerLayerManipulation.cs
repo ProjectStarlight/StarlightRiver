@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class PlayerLayerManipulation : HookGroup
     {
-        //Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning. This might look weird if other mods do strange playerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.
+        //Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning. This might look weird if other mods do strange PlayerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.
         public override SafetyLevel Safety => SafetyLevel.Fragile;
 
         public override void Load()
@@ -37,20 +37,20 @@ namespace StarlightRiver.Content.CustomHooks
             c.EmitDelegate<LayerManipDelegate>(EmitLayerManipDelegate);
         }
 
-        private delegate DrawData LayerManipDelegate(DrawData input, Player player);
+        private delegate DrawData LayerManipDelegate(DrawData input, Player Player);
 
-        private DrawData EmitLayerManipDelegate(DrawData input, Player player)
+        private DrawData EmitLayerManipDelegate(DrawData input, Player Player)
         {
-            /*if(!Main.gameMenu && player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Main.PopupTexture[player.HeldItem.type])
+            /*if(!Main.gameMenu && Player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Main.PopupTexture[Player.HeldItem.type])
             {
                 input.shader = 2; //TODO: Move this. actually bind the correct armor shader. Stop being lazy.
             }*/
 
-            float rotation = player.GetModPlayer<StarlightPlayer>().rotation;
+            float rotation = Player.GetModPlayer<StarlightPlayer>().rotation;
 
             if (rotation != 0) //paper mario-style rotation
             {
-                float sin = (float)Math.Sin(rotation + 1.57f * player.direction);
+                float sin = (float)Math.Sin(rotation + 1.57f * Player.direction);
                 int off = Math.Abs((int)(input.texture.Width * sin));
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -65,9 +65,9 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //the pancake debuff
-            else if (player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
+            else if (Player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
             {
-                DrawData newData = new DrawData(input.texture, new Rectangle((int)player.position.X - 20 - (int)Main.screenPosition.X, (int)player.position.Y + 20 - (int)Main.screenPosition.Y + 1, player.width + 40, player.height - 20), input.sourceRect, input.color, input.rotation, default, input.effect, 0);
+                DrawData newData = new DrawData(input.texture, new Rectangle((int)Player.position.X - 20 - (int)Main.screenPosition.X, (int)Player.position.Y + 20 - (int)Main.screenPosition.Y + 1, Player.width + 40, Player.height - 20), input.sourceRect, input.color, input.rotation, default, input.effect, 0);
                 newData.shader = input.shader;
 
                 return newData;

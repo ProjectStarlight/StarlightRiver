@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	public class ProtectionGlobalItem : GlobalItem
 	{
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
             On.Terraria.Player.PickTile += DontPickInZone;
             On.Terraria.WorldGen.PlaceTile += DontManuallyPlaceInZone;
@@ -130,19 +130,19 @@ namespace StarlightRiver.Content.CustomHooks
             return orig(i, j, type, mute, forced, plr, style);
         }
 
-        public override bool CanUseItem(Item item, Player player)
+        public override bool CanUseItem(Item Item, Player Player)
 		{
-            if (player != Main.LocalPlayer)
-                return base.CanUseItem(item, player);
+            if (Player != Main.LocalPlayer)
+                return base.CanUseItem(Item, Player);
 
-            //list of item ids that don't place items in the normal way so we need to specifically take them out
+            //list of Item ids that don't place Items in the normal way so we need to specifically take them out
             List<int> forbiddenItemIds = new List<int>{ ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket,
                                                         ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench,
                                                         ItemID.ActuationRod, ItemID.Actuator, ItemID.WireKite, ItemID.WireCutter, ItemID.WireBulb,
                                                         ItemID.Paintbrush, ItemID.PaintRoller, ItemID.PaintScraper,
                                                         ItemID.SpectrePaintbrush, ItemID.SpectrePaintRoller, ItemID.SpectrePaintScraper};
 
-            if (item.createTile != -1 || item.createWall != -1 || forbiddenItemIds.Contains(item.type))
+            if (Item.createTile != -1 || Item.createWall != -1 || forbiddenItemIds.Contains(Item.type))
             {
                 Point16 targetPoint = Main.SmartCursorEnabled ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
 
@@ -154,25 +154,25 @@ namespace StarlightRiver.Content.CustomHooks
                     {
                         Projectile proj = Main.projectile[k];
 
-                        if (proj.active && proj.timeLeft > 10 && proj.modProjectile is InteractiveProjectile && (proj.modProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
+                        if (proj.active && proj.timeLeft > 10 && proj.ModProjectile is InteractiveProjectile && (proj.ModProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
                         {
-                            return base.CanUseItem(item, player);
+                            return base.CanUseItem(Item, Player);
                         }
                     }
-                    player.AddBuff(BuffID.Cursed, 10, false);
+                    Player.AddBuff(BuffID.Cursed, 10, false);
                     FailFX(targetPoint);
                     return false;
                 }
 
                 if (IsProtected(targetPoint.X, targetPoint.Y))
                 {
-                    player.AddBuff(BuffID.Cursed, 10, false);
+                    Player.AddBuff(BuffID.Cursed, 10, false);
                     FailFX(targetPoint);
                     return false;
                 }
             }
 
-            return base.CanUseItem(item, player);
+            return base.CanUseItem(Item, Player);
         }
 
         private void FailFX(Point16 pos)
@@ -186,24 +186,24 @@ namespace StarlightRiver.Content.CustomHooks
 
     public class ProtectionGlobalProjectile : GlobalProjectile //gravestones shouldnt do terrible things
 	{
-		public override void PostAI(Projectile projectile)
+		public override void PostAI(Projectile Projectile)
 		{
-            if(projectile.aiStyle == 17)
+            if(Projectile.aiStyle == 17)
 			{
                 foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
-                    if (region.Contains(new Point((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16)))
+                    if (region.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
                     {
-                        projectile.active = false;
+                        Projectile.active = false;
                     }
             }
 		}
 	}
 
-    public class ProtectionWorld : ModWorld
+    public class ProtectionWorld : ModSystem
 	{
         public static List<Rectangle> ProtectedRegions = new List<Rectangle>();
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
 		{
             ProtectedRegions.Clear();
 
@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
             var tag = new TagCompound()
             {

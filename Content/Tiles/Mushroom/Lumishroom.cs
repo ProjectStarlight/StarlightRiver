@@ -44,7 +44,7 @@ namespace StarlightRiver.Tiles.Mushroom
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             var tile = Framing.GetTileSafely(i, j);
-            var tex = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/LumishroomGlow");
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/LumishroomGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
 
             spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White * (float)(0.8f + Math.Sin(StarlightWorld.rottime + i) * 0.5f));

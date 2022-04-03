@@ -10,25 +10,25 @@ namespace StarlightRiver.Content.Items.Moonstone
     {
         public MoonstoneOre() : base("Moonstone", "", "MoonstoneOre", ItemRarityID.Blue, AssetDirectory.MoonstoneItem) { }
 
-        public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 1, 50);
+        public override void SafeSetDefaults() => Item.value = Item.sellPrice(0, 0, 1, 50);
     }
 
     public class MoonstoneBar : QuickTileItem
     {
         public MoonstoneBar() : base("Moonstone Bar", "'Shimmering with Beautiful Light'", "MoonstoneBar", ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
 
-        public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 13, 50);
+        public override void SafeSetDefaults() => Item.value = Item.sellPrice(0, 0, 13, 50);
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemType<MoonstoneOre>(), 3);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this);
             recipe.AddRecipe();
 
             //adds back neccisary vanilla recipies
-            ModRecipe recipe2 = new ModRecipe(mod);
+            ModRecipe recipe2 = new ModRecipe(Mod);
             recipe2.AddIngredient(ItemID.LunarBar, 40);
             recipe2.AddIngredient(ItemID.ChlorophyteBar, 40);
             recipe2.AddIngredient(ItemID.ShroomiteBar, 40);

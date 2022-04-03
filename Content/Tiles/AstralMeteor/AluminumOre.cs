@@ -31,14 +31,14 @@ namespace StarlightRiver.Content.Tiles.AstralMeteor
             }
         }
 
-        public override void FloorVisuals(Player player) => 
-            player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+        public override void FloorVisuals(Player Player) => 
+            Player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
     }
 
     public class AluminumOreItem : QuickTileItem
     {
         public AluminumOreItem() : base("Astral Aluminum", "", "AluminumOre", ItemRarityID.Blue, AssetDirectory.AluminumTile) { }
 
-        public override void SafeSetDefaults() => item.value = Item.sellPrice(0, 0, 2, 0);
+        public override void SafeSetDefaults() => Item.value = Item.sellPrice(0, 0, 2, 0);
     }
 }

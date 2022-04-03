@@ -19,29 +19,29 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = Item.sellPrice(0, 2, 0, 0);
-            item.rare = ItemRarityID.Pink;
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.Pink;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            if (player.controlJump && player.wingTime > 0)
+            if (Player.controlJump && Player.wingTime > 0)
             {
                 Vector2 dir = new Vector2(0, -1);
-                if (player.controlDown)
+                if (Player.controlDown)
                     dir.Y = 1;
-                if (player.controlUp)
+                if (Player.controlUp)
                     dir.Y = -1;
-                if (player.controlLeft)
+                if (Player.controlLeft)
                     dir.X = -1;
-                if (player.controlRight)
+                if (Player.controlRight)
                     dir.X = 1;
 
-                if (!player.releaseJump)
+                if (!Player.releaseJump)
                 {
                     for (int i = 0; i < 15; i++)
                     {
-                        Dust dust = Dust.NewDustDirect(player.Center - new Vector2(8, 8), 0, 0, ModContent.DustType<ImpulseThrusterDustOne>());
+                        Dust dust = Dust.NewDustDirect(Player.Center - new Vector2(8, 8), 0, 0, ModContent.DustType<ImpulseThrusterDustOne>());
                         dust.velocity = -dir.RotatedByRandom(0.4f) * Main.rand.NextFloat(20);
                         dust.scale = Main.rand.NextFloat(1.2f, 1.9f);
                         dust.alpha = Main.rand.Next(70);
@@ -51,20 +51,20 @@ namespace StarlightRiver.Content.Items.Misc
                     for (int i = 0; i < 5; i++)
                     {
                         Vector2 projDir = dir.RotatedByRandom(1.4f);
-                        Projectile.NewProjectileDirect(player.Center - (projDir * 20), projDir * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<ThrusterEmber>(), 0, 0, player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+                        Projectile.NewProjectileDirect(Player.Center - (projDir * 20), projDir * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<ThrusterEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
                     }
                 }
 
                 dir.Normalize();
 
-                float mult = MathHelper.Clamp((float)Math.Pow(player.wingTime, 0.7f) * 3, 1, 70);
+                float mult = MathHelper.Clamp((float)Math.Pow(Player.wingTime, 0.7f) * 3, 1, 70);
                 dir *= mult;
-                player.velocity = dir;
-                player.wingTime = 0;
+                Player.velocity = dir;
+                Player.wingTime = 0;
                 releaseJump = true;
             }
 
-            if ((player.velocity.Y == 0 || player.grappling[0] > -1) && !player.controlJump)
+            if ((Player.velocity.Y == 0 || Player.grappling[0] > -1) && !Player.controlJump)
             {
                 releaseJump = false;
             }
@@ -82,25 +82,25 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            projectile.penetrate = 1;
-            projectile.tileCollide = true;
-            projectile.hostile = false;
-            projectile.friendly = false;
-            projectile.aiStyle = 1;
-            projectile.width = projectile.height = 12;
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-            projectile.extraUpdates = 1;
-            projectile.alpha = 255;
+            Projectile.penetrate = 1;
+            Projectile.tileCollide = true;
+            Projectile.hostile = false;
+            Projectile.friendly = false;
+            Projectile.aiStyle = 1;
+            Projectile.width = Projectile.height = 12;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+            Projectile.extraUpdates = 1;
+            Projectile.alpha = 255;
         }
 
         public override void AI()
         {
-            projectile.scale *= 0.98f;
+            Projectile.scale *= 0.98f;
             if (Main.rand.Next(2) == 0)
             {
-                Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<ImpulseThrusterDustTwo>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
-                dust.scale = 0.6f * projectile.scale;
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<ImpulseThrusterDustTwo>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
+                dust.scale = 0.6f * Projectile.scale;
                 dust.rotation = Main.rand.NextFloatDirection();
             }
         }

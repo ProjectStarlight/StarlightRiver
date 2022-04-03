@@ -60,8 +60,8 @@ namespace StarlightRiver.Content.CustomHooks
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
-                if (proj.active && proj.modProjectile is HotspringFountainDummy)
-                    (proj.modProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
+                if (proj.active && proj.ModProjectile is HotspringFountainDummy)
+                    (proj.ModProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
             }
 
             Main.spriteBatch.End();
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.CustomHooks
             Main.graphics.GraphicsDevice.SetRenderTarget(hotspringShineTarget);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-            Texture2D tex2 = Terraria.ModLoader.ModContent.GetTexture("StarlightRiver/Assets/Misc/HotspringWaterMap");
+            Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap").Value;
 
             Vector2 screenSize = Helpers.Helper.ScreenSize;
             Vector2 textureSize = tex2.Size();

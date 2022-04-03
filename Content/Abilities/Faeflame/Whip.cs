@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
         public Vector2 extraVelocity;
         public float targetRot;
 
-        public NPC attachedNPC; //if the whip is attached to an npc, what is it attached to?
+        public NPC attachedNPC; //if the whip is attached to an NPC, what is it attached to?
 
         public override void Reset()
         {
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                     if (dist < 700)
                         tipsPosition += Vector2.UnitX.RotatedBy(targetRot) * tipVelocity;
 
-                    if (Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16).collisionType == 1) //debug
+                    if (Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16).BlockType == BlockType.Solid) //debug
                     {
                         endRooted = true;
 
@@ -179,11 +179,11 @@ namespace StarlightRiver.Content.Abilities.Faeflame
                 effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.05f);
                 effect.Parameters["repeats"].SetValue(2f);
                 effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-                effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+                effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
                 trail?.Render(effect);
 
-                effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+                effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
                 glowTrail?.Render(effect);
             }

@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private int stringConcatDelegate(int arg)
 		{
-			Player player = Main.LocalPlayer;
-			var sp = player.GetModPlayer<ShieldPlayer>();
+			Player Player = Main.LocalPlayer;
+			var sp = Player.GetModPlayer<ShieldPlayer>();
 
 			if (sp.Shield <= 0 && sp.MaxShield <= 0)
 				return arg;

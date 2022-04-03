@@ -33,14 +33,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             if (Main.rand.Next(8) == 0)
             {
                 float rot = Main.rand.NextFloat(-0.5f, 0.5f);
-                Dust.NewDustPerfect(projectile.Center + new Vector2(0, 10).RotatedBy(rot), 244, new Vector2(0, 1).RotatedBy(rot), 0, default, 0.7f);
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 10).RotatedBy(rot), 244, new Vector2(0, 1).RotatedBy(rot), 0, default, 0.7f);
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Vector2 pos = projectile.Center - Main.screenPosition;
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Shine");
+            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/Shine").Value;
             Color col = new Color(160, 160, 120);
 
             for (int k = 0; k <= 5; k++)
@@ -83,28 +83,28 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void Update()
         {
-            projectile.ai[0] += 0.01f;
+            Projectile.ai[0] += 0.01f;
 
-            if (projectile.ai[0] >= 6.28f)
-                projectile.ai[0] = 0;
+            if (Projectile.ai[0] >= 6.28f)
+                Projectile.ai[0] = 0;
 
             if (Main.rand.Next(5) == 0)
             {
                 float rot = Main.rand.NextFloat(-0.7f, 0.7f);
-                Dust.NewDustPerfect(projectile.Center + new Vector2(24, -24), DustType<Dusts.GoldSlowFade>(), new Vector2(0, 0.4f).RotatedBy(rot + 0.7f), 0, default, 0.4f - Math.Abs(rot) / 0.7f * 0.2f);
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(24, -24), DustType<Dusts.GoldSlowFade>(), new Vector2(0, 0.4f).RotatedBy(rot + 0.7f), 0, default, 0.4f - Math.Abs(rot) / 0.7f * 0.2f);
             }
         }
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Vector2 pos = projectile.Center + new Vector2(24, -32) - Main.screenPosition;
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Overgrow/Shine");
+            Vector2 pos = Projectile.Center + new Vector2(24, -32) - Main.screenPosition;
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/Shine").Value;
             Color col = new Color(160, 160, 120);
 
             for (int k = 0; k <= 5; k++)
             {
-                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.4f, (float)Math.Sin(projectile.ai[0] + k) * 0.5f + 0.7f, new Vector2(8, 0), 2.6f, 0, 0);
-                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.3f, (float)Math.Sin(projectile.ai[0] + k + 0.5f) * 0.6f + 0.7f, new Vector2(8, 0), 4f, 0, 0);
-                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.5f, (float)Math.Sin(projectile.ai[0] + k + 0.9f) * 0.3f + 0.7f, new Vector2(8, 0), 3.2f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.4f, (float)Math.Sin(Projectile.ai[0] + k) * 0.5f + 0.7f, new Vector2(8, 0), 2.6f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.3f, (float)Math.Sin(Projectile.ai[0] + k + 0.5f) * 0.6f + 0.7f, new Vector2(8, 0), 4f, 0, 0);
+                spriteBatch.Draw(tex, pos, tex.Frame(), col * 0.5f, (float)Math.Sin(Projectile.ai[0] + k + 0.9f) * 0.3f + 0.7f, new Vector2(8, 0), 3.2f, 0, 0);
             }
         }
     }

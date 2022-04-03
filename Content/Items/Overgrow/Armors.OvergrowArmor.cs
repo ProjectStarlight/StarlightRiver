@@ -23,17 +23,17 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 2;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 2;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.magicCrit += 5;
-            player.rangedCrit += 5;
+            Player.magicCrit += 5;
+            Player.rangedCrit += 5;
         }
 
         public override void AddRecipes()
@@ -56,17 +56,17 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 5;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            if (player.velocity.Y != 0)
-                player.rangedDamageMult += 0.15f;
+            if (Player.velocity.Y != 0)
+                Player.rangedDamageMult += 0.15f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -74,20 +74,20 @@ namespace StarlightRiver.Content.Items.Overgrow
             return head.type == ItemType<OvergrowHead>() && legs.type == ItemType<OvergrowLegs>();
         }
 
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
             //Main.NewText(floatTime);
-            player.setBonus = "Hitting enemies with ranged attacks allows you to float\n20% increased ranged critical strike chance while airborne";
+            Player.setBonus = "Hitting enemies with ranged attacks allows you to float\n20% increased ranged critical strike chance while airborne";
 
             if (floatTime > 0)
             {
-                player.fallStart = (int)player.position.Y;
-                player.maxFallSpeed -= 8.5f;
+                Player.fallStart = (int)Player.position.Y;
+                Player.maxFallSpeed -= 8.5f;
                 floatTime--;
             }
 
-            if (player.velocity.Y != 0)
-                player.rangedCrit += 20;
+            if (Player.velocity.Y != 0)
+                Player.rangedCrit += 20;
         }
 
         public override void AddRecipes()
@@ -97,15 +97,15 @@ namespace StarlightRiver.Content.Items.Overgrow
 
     public class OvergrowArmorProjectile : GlobalProjectile
     {
-        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(Projectile Projectile, NPC target, int damage, float knockback, bool crit)
         {
-            foreach (Player player in Main.player.Where(player => player.armor[1].type == ItemType<OvergrowChest>()))
-                if (projectile.owner == player.whoAmI && projectile.active && projectile.ranged && player.velocity.Y != 0 && player.armor[1].modItem is OvergrowChest)
-                    (player.armor[1].modItem as OvergrowChest).floatTime = 40;
+            foreach (Player Player in Main.player.Where(Player => Player.armor[1].type == ItemType<OvergrowChest>()))
+                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.ranged && Player.velocity.Y != 0 && Player.armor[1].ModItem is OvergrowChest)
+                    (Player.armor[1].ModItem as OvergrowChest).floatTime = 40;
 
-            foreach (Player player in Main.player.Where(player => player.armor[1].type == ItemType<OvergrowRobe>()))
-                if (projectile.owner == player.whoAmI && projectile.active && projectile.magic && player.armor[1].modItem is OvergrowRobe && (player.armor[1].modItem as OvergrowRobe).leaves < 10)
-                    (player.armor[1].modItem as OvergrowRobe).leaves++;
+            foreach (Player Player in Main.player.Where(Player => Player.armor[1].type == ItemType<OvergrowRobe>()))
+                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.magic && Player.armor[1].ModItem is OvergrowRobe && (Player.armor[1].ModItem as OvergrowRobe).leaves < 10)
+                    (Player.armor[1].ModItem as OvergrowRobe).leaves++;
         }
     }
 
@@ -124,17 +124,17 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 5;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.magicDamageMult += 0.1f;
-            player.manaRegenBonus += 15;
+            Player.magicDamageMult += 0.1f;
+            Player.manaRegenBonus += 15;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -142,21 +142,21 @@ namespace StarlightRiver.Content.Items.Overgrow
             return head.type == ItemType<OvergrowHead>() && legs.type == ItemType<OvergrowLegs>();
         }
 
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            player.setBonus = "Hitting enemies grants you damaging leaves\n getting hit releases them";
+            Player.setBonus = "Hitting enemies grants you damaging leaves\n getting hit releases them";
 
             for (int k = 0; k < leaves; k++)
             {
-                Dust dus = Dust.NewDustPerfect(player.Center + (new Vector2((float)Math.Cos(StarlightWorld.rottime) * 2, (float)Math.Sin(StarlightWorld.rottime)) * 20).RotatedBy(k / (float)leaves * 6.28f),
+                Dust dus = Dust.NewDustPerfect(Player.Center + (new Vector2((float)Math.Cos(StarlightWorld.rottime) * 2, (float)Math.Sin(StarlightWorld.rottime)) * 20).RotatedBy(k / (float)leaves * 6.28f),
                 DustType<Dusts.GenericFollow>(), Vector2.Zero, 0, default, leaves == 10 ? 1.2f : 0.8f);
-                dus.customData = player;
+                dus.customData = Player;
             }
 
-            if (player.GetModPlayer<StarlightPlayer>().JustHit)
+            if (Player.GetModPlayer<StarlightPlayer>().JustHit)
             {
                 for (int k = 0; k < leaves; k++)
-                    //Projectile.NewProjectile(player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<ArmorLeaf>(), 10, 0); TODO: Rework this
+                    //Projectile.NewProjectile(Player.Center, Vector2.One.RotatedByRandom(6.28f) * 3, ProjectileType<ArmorLeaf>(), 10, 0); TODO: Rework this
                 leaves = 0;
             }
         }
@@ -179,16 +179,16 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 3;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 3;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.jumpSpeedBoost += 2;
+            Player.jumpSpeedBoost += 2;
         }
 
         public override void AddRecipes()

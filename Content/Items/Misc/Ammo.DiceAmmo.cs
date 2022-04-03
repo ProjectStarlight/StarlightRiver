@@ -26,23 +26,23 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			item.width = 8;
-			item.height = 16;
-			item.value = 1000;
-			item.rare = ItemRarityID.Blue;
-			item.value = Item.buyPrice(0, 0, 0, 40);
+			Item.width = 8;
+			Item.height = 16;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.Blue;
+			Item.value = Item.buyPrice(0, 0, 0, 40);
 
-			item.maxStack = 999;
+			Item.maxStack = 999;
 
-            item.damage = 15;
-			item.knockBack = 1.5f;
-			item.ammo = AmmoID.Bullet;
+            Item.damage = 15;
+			Item.knockBack = 1.5f;
+			Item.ammo = AmmoID.Bullet;
 
-			item.ranged = true;
-			item.consumable = true;
+			Item.ranged = true;
+			Item.consumable = true;
 
-			item.shoot = ModContent.ProjectileType<DiceProj>();
-			item.shootSpeed = 3f;
+			Item.shoot = ModContent.ProjectileType<DiceProj>();
+			Item.shootSpeed = 3f;
 
 		}
 	}
@@ -58,30 +58,30 @@ namespace StarlightRiver.Content.Items.Misc
         const int frameCount = 6;
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
+            Texture2D tex = Main.projectileTexture[Projectile.type];
             int width = tex.Width / frameCount;
-            Rectangle sourceRect = new Rectangle(projectile.frame * width, 0, width, tex.Height);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, sourceRect, lightColor, projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+            Rectangle sourceRect = new Rectangle(Projectile.frame * width, 0, width, tex.Height);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
             return false;
         }
         public override void SetDefaults()
         {
-            projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
-            projectile.width = 8;
-            projectile.height = 8;
-            projectile.friendly = true;
-            projectile.ranged = true;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 600;
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 5;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-            projectile.extraUpdates = 1;
-            projectile.frame = Main.rand.Next(frameCount);
+            Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.friendly = true;
+            Projectile.ranged = true;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 600;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+            Projectile.extraUpdates = 1;
+            Projectile.frame = Main.rand.Next(frameCount);
         }
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
-            DicePlayer mPlayer = player.GetModPlayer<DicePlayer>();
+            Player Player = Main.player[Projectile.owner];
+            DicePlayer mPlayer = Player.GetModPlayer<DicePlayer>();
             if (!initialized)
             {
                 initialized = true;
@@ -96,13 +96,13 @@ namespace StarlightRiver.Content.Items.Misc
                 mPlayer.velocityMult /= (float)Math.Sqrt(mPlayer.velocityMult);
                 mPlayer.knockbackMult /= (float)Math.Sqrt(mPlayer.knockbackMult);
 
-                projectile.damage = (int)(projectile.damage * mPlayer.damageMult);
+                Projectile.damage = (int)(Projectile.damage * mPlayer.damageMult);
                 gravity *= mPlayer.gravityMult;
-                projectile.velocity *= mPlayer.velocityMult;
-                projectile.knockBack *= mPlayer.knockbackMult;
+                Projectile.velocity *= mPlayer.velocityMult;
+                Projectile.knockBack *= mPlayer.knockbackMult;
             }
-            projectile.velocity.X *= 0.995f;
-            projectile.velocity.Y += gravity;
+            Projectile.velocity.X *= 0.995f;
+            Projectile.velocity.Y += gravity;
         }
     }
     public class DicePlayer : ModPlayer

@@ -15,6 +15,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricLargeFountainItem : QuickTileItem
     {
-        public VitricLargeFountainItem() : base("Vitric Large Fountain", "Debug item", "VitricLargeFountain", texturePath: AssetDirectory.VitricTile) { }
+        public VitricLargeFountainItem() : base("Vitric Large Fountain", "Debug Item", "VitricLargeFountain", texturePath: AssetDirectory.VitricTile) { }
     }
 }

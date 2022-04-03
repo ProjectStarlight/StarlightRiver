@@ -15,11 +15,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public StaminaRing() : base("Band of Endurance", "Slowly regenerates stamina") { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Green;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Green;
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
             mp.StaminaRegenRate += 0.05f;
         }
     }

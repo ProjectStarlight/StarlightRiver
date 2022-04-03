@@ -49,50 +49,50 @@ namespace StarlightRiver.Content.CustomHooks
             c.EmitDelegate<DynamicIconDelegate>(EmitDynamicIconDelegateFullmap);
         }
 
-        private delegate NPC DynamicIconDelegate(NPC npc);
+        private delegate NPC DynamicIconDelegate(NPC NPC);
 
-        private NPC EmitDynamicIconDelegateOverlay(NPC npc)
+        private NPC EmitDynamicIconDelegateOverlay(NPC NPC)
         {
-            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
+            if (NPC?.active == true && NPC.ModNPC is IDynamicMapIcon)
             {
-                Vector2 npcPos = npc.Center;
+                Vector2 NPCPos = NPC.Center;
                 Vector2 framePos = (Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2));
-                Vector2 target = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + (npcPos - framePos) / 16 * Main.mapOverlayScale;
+                Vector2 target = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2) + (NPCPos - framePos) / 16 * Main.mapOverlayScale;
 
                 float scale = (Main.mapMinimapScale * 0.25f * 2f + 1f) / 3f;
 
-                (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White * Main.mapOverlayAlpha);
+                (NPC.ModNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White * Main.mapOverlayAlpha);
             }
-            return npc;
+            return NPC;
         }
 
-        private NPC EmitDynamicIconDelegateMinimap(NPC npc)
+        private NPC EmitDynamicIconDelegateMinimap(NPC NPC)
         {
-            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
+            if (NPC?.active == true && NPC.ModNPC is IDynamicMapIcon)
             {
                 Vector2 mapPos = new Vector2(Main.miniMapX, Main.miniMapY);
-                Vector2 npcPos = npc.Center;
+                Vector2 NPCPos = NPC.Center;
                 Vector2 framePos = (Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2));
-                Vector2 target = mapPos + Vector2.One * 117 + (npcPos - framePos) / 16 * Main.mapMinimapScale;
+                Vector2 target = mapPos + Vector2.One * 117 + (NPCPos - framePos) / 16 * Main.mapMinimapScale;
 
                 if (target.X > Main.miniMapX + 15 && target.Y > Main.miniMapY + 15 && target.X < Main.miniMapX + 235 && target.Y < Main.miniMapY + 235) //only draw on the minimap
                 {
                     float scale = (Main.mapMinimapScale * 0.25f * 2f + 1f) / 3f;
 
-                    (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+                    (NPC.ModNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
 
                     if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                     {
-                        Utils.DrawBorderString(Main.spriteBatch, npc.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
+                        Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
                     }
                 }
             }
-            return npc;
+            return NPC;
         }
 
-        private NPC EmitDynamicIconDelegateFullmap(NPC npc)
+        private NPC EmitDynamicIconDelegateFullmap(NPC NPC)
         {
-            if (npc?.active == true && npc.modNPC is IDynamicMapIcon)
+            if (NPC?.active == true && NPC.ModNPC is IDynamicMapIcon)
             {
                 float mapScale = Main.mapFullscreenScale / Main.UIScale;
 
@@ -102,19 +102,19 @@ namespace StarlightRiver.Content.CustomHooks
                 float mapY = -mapFullscrY + (Main.screenHeight / 2f);
 
                 Vector2 mapPos = new Vector2(mapX, mapY);
-                Vector2 npcPos = npc.Center;
-                Vector2 target = mapPos + npcPos / 16 * Main.mapFullscreenScale;
+                Vector2 NPCPos = NPC.Center;
+                Vector2 target = mapPos + NPCPos / 16 * Main.mapFullscreenScale;
 
                 float scale = Main.UIScale;
 
-                (npc.modNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
+                (NPC.ModNPC as IDynamicMapIcon).DrawOnMap(Main.spriteBatch, target, scale, Color.White);
 
                 if (new Rectangle((int)target.X - (int)(15 * scale), (int)target.Y - (int)(15 * scale), (int)(30 * scale), (int)(30 * scale)).Contains(Main.MouseScreen.ToPoint()))
                 {
-                    Utils.DrawBorderString(Main.spriteBatch, npc.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
+                    Utils.DrawBorderString(Main.spriteBatch, NPC.GivenOrTypeName, Main.MouseScreen + Vector2.One * 15, Main.mouseTextColorReal);
                 }
             }
-            return npc;
+            return NPC;
         }
     }
 }

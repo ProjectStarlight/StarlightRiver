@@ -45,9 +45,9 @@ namespace StarlightRiver.Core
             }
         }
 
-        private static void DrawSubstring(SpriteBatch sb, Vector2 pos, float scale, string message, string mod)
+        private static void DrawSubstring(SpriteBatch sb, Vector2 pos, float scale, string message, string Mod)
         {
-            ParseModifier(mod, out Color color, out Vector2 offset, out Vector3 modScale);
+            ParseModifier(Mod, out Color color, out Vector2 offset, out Vector3 modScale);
             //sb.DrawString(Main.fontItemStack, message, pos + offset, color, 0, Vector2.Zero, scale, 0, 0);
             Utils.DrawBorderString(sb, message, pos + offset, color, scale * modScale.X, modScale.Y, modScale.Z);
         }
@@ -86,18 +86,18 @@ namespace StarlightRiver.Core
             mods = modifierMessages;
         }
 
-        private static void ParseModifier(string mod, out Color color, out Vector2 offset, out Vector3 scale)
+        private static void ParseModifier(string Mod, out Color color, out Vector2 offset, out Vector3 scale)
         {
             color = Color.White;
             offset = Vector2.Zero;
             scale = Vector3.UnitX;
 
-            mod = mod.Replace("[", "");
-            mod = mod.Replace("]", "");
+            Mod = Mod.Replace("[", "");
+            Mod = Mod.Replace("]", "");
 
-            if (mod == "") return;
+            if (Mod == "") return;
 
-            string[] mods = mod.Split('<');
+            string[] mods = Mod.Split('<');
 
             for (int k = 0; k < mods.Length; k++)
             {

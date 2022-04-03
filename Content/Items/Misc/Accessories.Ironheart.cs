@@ -13,25 +13,25 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Ironheart() : base("Ironheart", "Melee damage generates decaying barrier and defense") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.OnHitNPCEvent += OnHit;
             StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
             return base.Autoload(ref name);
         }
 
-		private void OnHitProjectile(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void OnHitProjectile(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-            var player = Main.player[projectile.owner];
+            var Player = Main.player[Projectile.owner];
 
-            if (projectile.melee && Equipped(player))
-                player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+            if (Projectile.melee && Equipped(Player))
+                Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
         }
 
-        private void OnHit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
+        private void OnHit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
         {
-            if(Equipped(player))
-                player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+            if(Equipped(Player))
+                Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
         }
     }
 
@@ -51,9 +51,9 @@ namespace StarlightRiver.Content.Items.Misc
             Main.debuff[Type] = false;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
+            StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
 
             float level;
 
@@ -61,26 +61,26 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 mp.ironheartTimer += 0.01f;
                 level = mp.ironheartLevel;
-                player.GetModPlayer<ShieldPlayer>().DontDrainOvershield = true;
+                Player.GetModPlayer<ShieldPlayer>().DontDrainOvershield = true;
             }
             else
             {
                 mp.ironheartTimer *= 1.02f;
                 level = (mp.ironheartLevel + 1) - mp.ironheartTimer;
-                player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate = (int)(2.2f * mp.ironheartTimer);
+                Player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate = (int)(2.2f * mp.ironheartTimer);
             }
 
             //Main.NewText(level + " | " + mp.ironheartTimer);
             //Main.NewText(level);
             if (level < 0.001f)
             {
-                player.ClearBuff(Type);
+                Player.ClearBuff(Type);
                 mp.ResetIronHeart();
             }
 
-            player.statDefense += (int)level;
+            Player.statDefense += (int)level;
 
-            player.buffTime[buffIndex] = (int)level * 60;//visual time value
+            Player.buffTime[buffIndex] = (int)level * 60;//visual time value
         }
     }
 }
@@ -101,18 +101,18 @@ namespace StarlightRiver.Core
 
             int buffType = ModContent.BuffType<IronheartBuff>();
 
-            if (!player.HasBuff(buffType))
+            if (!Player.HasBuff(buffType))
                 ResetIronHeart();
 
             int level = Math.Min(damage, IronheartMaxDamage) / 12;
 
             if (level > 0 && ironheartLevel < IronheartMaxLevel)//if level was increased
             {
-                player.GetModPlayer<ShieldPlayer>().Shield += ((ironheartLevel += level) > IronheartMaxLevel ? 
+                Player.GetModPlayer<ShieldPlayer>().Shield += ((ironheartLevel += level) > IronheartMaxLevel ? 
                     level - (ironheartLevel - IronheartMaxLevel) : level) * 2;
 
                 ironheartLevel = ironheartLevel > IronheartMaxLevel ? IronheartMaxLevel : ironheartLevel;//caps value
-                player.AddBuff(buffType, 1);
+                Player.AddBuff(buffType, 1);
             }
         }
 

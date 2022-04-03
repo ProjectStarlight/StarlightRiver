@@ -47,14 +47,14 @@ namespace StarlightRiver.Content.Tiles.StarJuice
 
         public override bool NewRightClick(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
             int index = GetInstance<TankEntity>().Find(i - tile.frameX / 18 * 16, j - tile.frameY / 18 * 16);
             if (index == -1) return true;
             TankEntity entity = (TankEntity)TileEntity.ByID[index];
 
-            if (player.HeldItem.modItem is StarjuiceStoringItem)
-                (player.HeldItem.modItem as StarjuiceStoringItem).Refuel(entity);
+            if (Player.HeldItem.ModItem is StarjuiceStoringItem)
+                (Player.HeldItem.ModItem as StarjuiceStoringItem).Refuel(entity);
 
             return true;
         }
@@ -74,15 +74,15 @@ namespace StarlightRiver.Content.Tiles.StarJuice
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);//spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive);
 
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/RiftCrafting/Glow0"), pos + Vector2.One * -16, new Color(80, 150, 200) * (entity.charge / 5000f * 0.7f));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow0").Value, pos + Vector2.One * -16, new Color(80, 150, 200) * (entity.charge / 5000f * 0.7f));
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);//spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend);
 
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/StarJuice/OrbIn"), new Rectangle((int)pos.X, (int)pos.Y + (32 - charge), 32, charge),
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/StarJuice/OrbIn").Value, new Rectangle((int)pos.X, (int)pos.Y + (32 - charge), 32, charge),
                     new Rectangle(0, 0, 32, charge), Color.White, 0, Vector2.Zero, SpriteEffects.FlipVertically, 0);
 
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/StarJuice/OrbOut"), pos, Lighting.GetColor(i + 1, j - 2));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/StarJuice/OrbOut").Value, pos, Lighting.GetColor(i + 1, j - 2));
 
                 if (new Rectangle(i * 16, (j - 2) * 16, 48, 64).Contains(Main.MouseWorld.ToPoint()))
                 {
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.type == TileType<Tank>() && tile.active() && tile.frameX == 0 && tile.frameY == 0;
+            return tile.type == TileType<Tank>() && tile.HasTile && tile.frameX == 0 && tile.frameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
             if (charge > maxCharge) charge = maxCharge;
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound
             {
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Tiles.StarJuice
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             charge = tag.GetInt("Charge");
         }

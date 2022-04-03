@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class LavaSpew : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.VitricBoss + name;
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

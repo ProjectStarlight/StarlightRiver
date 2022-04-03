@@ -8,6 +8,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Packets;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Abilities
         }
 
         public AbilityHandler User { get; internal set; }
-        public Player Player => User.player;
+        public Player Player => User.Player;
         public float ActivationCostBonus { get; set; }
         public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Abilities
         public virtual Color Color => Color.White;
 
         public abstract bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys);
-        public virtual void ModifyDrawLayers(List<PlayerLayer> layers) { }
+        public virtual void ModifyDrawInfo(ref PlayerDrawSet drawInfo) { }
         public virtual void Reset() { }
         public virtual void UpdateActiveEffects() { }
         public virtual void DrawActiveEffects(SpriteBatch spriteBatch) { }
@@ -51,7 +52,7 @@ namespace StarlightRiver.Content.Abilities
         {
             user.ActiveAbility = this;
 
-            StartAbility packet = new StartAbility(user.player.whoAmI, this);
+            StartAbility packet = new StartAbility(user.Player.whoAmI, this);
             packet.Send(-1, -1, false);
 
             NetMessage.SendData(MessageID.PlayerControls);

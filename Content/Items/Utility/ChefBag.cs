@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Utility
     {
         public static List<int> ingredientTypes = new List<int>();
 
-        public List<Item> items = new List<Item>();
+        public List<Item> Items = new List<Item>();
 
         public override bool CloneNewInstances => true;
 
@@ -29,44 +29,44 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 32;
-            item.rare = ItemRarityID.Orange;
-            item.value = 500000;
+            Item.width = 32;
+            Item.height = 32;
+            Item.rare = ItemRarityID.Orange;
+            Item.value = 500000;
         }
 
-        public override void RightClick(Player player)
+        public override void RightClick(Player Player)
         {
             UpdateBagSlots();
 
-            item.stack++;
+            Item.stack++;
             ChefBagUI.openBag = this;
             UILoader.GetUIState<ChefBagUI>().OnInitialize();
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            for (int k = 0; k < items.Count; k++)
+            for (int k = 0; k < Items.Count; k++)
             {
-                var a = new TooltipLine(mod, "test", items[k].Name);
-                a.overrideColor = ItemRarity.GetColor(items[k].rare);
+                var a = new TooltipLine(Mod, "test", Items[k].Name);
+                a.overrideColor = ItemRarity.GetColor(Items[k].rare);
                 tooltips.Add(a);
             }
         }
 
         private void UpdateBagSlots()
         {
-            items.Clear();
+            Items.Clear();
 
             ingredientTypes.Sort((n, t) => SortIngredient(n, t));
 
             for (int k = 0; k < ingredientTypes.Count; k++)
             {
-                if (items.Count <= k || items[k].type != ingredientTypes[k])
+                if (Items.Count <= k || Items[k].type != ingredientTypes[k])
                 {
-                    Item item = new Item();
-                    item.SetDefaults(ingredientTypes[k]);
-                    items.Insert(k, item);
+                    Item Item = new Item();
+                    Item.SetDefaults(ingredientTypes[k]);
+                    Items.Insert(k, Item);
                 }
             }
         }
@@ -82,17 +82,17 @@ namespace StarlightRiver.Content.Items.Utility
             return x > y ? 1 : -1;
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
             return new TagCompound()
             {
-                ["Items"] = items
+                ["Items"] = Items
             };
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
-            items = (List<Item>)tag.GetList<Item>("Items");
+            Items = (List<Item>)tag.GetList<Item>("Items");
             UpdateBagSlots();
         }
     }

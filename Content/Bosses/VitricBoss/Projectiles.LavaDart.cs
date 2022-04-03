@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public Vector2 endPoint;
         public Vector2 midPoint;
 
-        public ref float Duration => ref projectile.ai[0];
+        public ref float Duration => ref Projectile.ai[0];
 
         public float dist1;
         public float dist2;
@@ -34,23 +34,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Magma Shot");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 2;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.hostile = true;
-            projectile.timeLeft = 120;
-            projectile.tileCollide = false;
-            projectile.penetrate = -1;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.hostile = true;
+            Projectile.timeLeft = 120;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            float timer = (Duration + 30) - projectile.timeLeft;
+            float timer = (Duration + 30) - Projectile.timeLeft;
 
             if (timer > 30)
                 return base.Colliding(projHitbox, targetHitbox);
@@ -60,30 +60,30 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void AI()
         {
-            projectile.rotation = projectile.velocity.ToRotation();
+            Projectile.rotation = Projectile.velocity.ToRotation();
 
             if (startPoint == Vector2.Zero)
             {
-                startPoint = projectile.Center;
-                projectile.timeLeft = (int)Duration + 30;
+                startPoint = Projectile.Center;
+                Projectile.timeLeft = (int)Duration + 30;
 
                 dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
                 dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
 
                 if (Main.netMode == NetmodeID.Server)
-                    projectile.netUpdate = true;
+                    Projectile.netUpdate = true;
             }
 
-            float timer = (Duration + 30) - projectile.timeLeft;
+            float timer = (Duration + 30) - Projectile.timeLeft;
 
             if (endPoint != Vector2.Zero && timer > 30)
             {
-                projectile.Center = PointOnSpline((timer - 30) / Duration);
+                Projectile.Center = PointOnSpline((timer - 30) / Duration);
             }
 
-            projectile.rotation = (projectile.position - projectile.oldPos[0]).ToRotation() + 1.57f;
+            Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation() + 1.57f;
 
-            Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 200, 100), 0.5f);
+            Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 200, 100), 0.5f);
 
             if (Main.netMode != NetmodeID.Server)
             {
@@ -120,24 +120,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             return total;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            int timer = ((int)Duration + 30) - projectile.timeLeft;
+            var spriteBatch = Main.spriteBatch;
+
+            int timer = ((int)Duration + 30) - Projectile.timeLeft;
 
             if (timer < 30)
             {
-                var tellTex = ModContent.GetTexture(AssetDirectory.GUI + "Line");
+                var tellTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "Line").Value;
                 float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
                 for (int k = 0; k < 20; k++)
-                    spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
+                    spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(255, 200, 100) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
             }
-        }
-
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
-
-            return true;
         }
 
         private void ManageCaches()
@@ -148,11 +144,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 for (int i = 0; i < 30; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > 30)
             {
@@ -181,14 +177,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 float alpha = 1;
 
-                if (projectile.timeLeft < 20)
-                    alpha = projectile.timeLeft / 20f;
+                if (Projectile.timeLeft < 20)
+                    alpha = Projectile.timeLeft / 20f;
 
                 return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -202,7 +198,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
         }

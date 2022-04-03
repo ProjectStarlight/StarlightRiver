@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
 
         public override Texture2D GetTexture()
         {
-            return StarlightRiver.Instance.GetTexture("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt");
+            return StarlightRiver.Instance.Request<Texture2D>("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt").Value;
         }
 
         public override Texture2D GetTopTextures(int i, int j, ref int frame, ref int frameWidth, ref int frameHeight, ref int xOffsetLeft, ref int yOffset)
@@ -32,12 +32,12 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
             frameHeight = 98;
             xOffsetLeft = 48;
             yOffset = 2;
-            return StarlightRiver.Instance.GetTexture("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt_Tops");
+            return StarlightRiver.Instance.Request<Texture2D>("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt_Tops").Value;
         }
 
         public override Texture2D GetBranchTextures(int i, int j, int trunkOffset, ref int frame)
         {
-            return StarlightRiver.Instance.GetTexture("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt_Branches");
+            return StarlightRiver.Instance.Request<Texture2D>("Assets/Tiles/JungleCorrupt/TreeJungleCorrupt_Branches").Value;
         }
     }
 }

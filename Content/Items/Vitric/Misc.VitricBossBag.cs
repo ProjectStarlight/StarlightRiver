@@ -16,16 +16,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.consumable = true;
-            item.rare = ItemRarityID.Expert;
-            item.expert = true;
+            Item.consumable = true;
+            Item.rare = ItemRarityID.Expert;
+            Item.expert = true;
             
-            item.maxStack = 999;
+            Item.maxStack = 999;
         }
 
         public override bool CanRightClick() => true;
 
-        public override void OpenBossBag(Player player)
+        public override void OpenBossBag(Player Player)
         {
             int weapon = Main.rand.Next(4);
 
@@ -33,21 +33,21 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 switch (weapon % 4)
                 {
-                    case 0: player.QuickSpawnItem(ItemType<BossSpear>()); break;
-                    case 1: player.QuickSpawnItem(ItemType<VitricBossBow>()); break;
-                    case 2: player.QuickSpawnItem(ItemType<Needler>()); break;
-                    case 3: player.QuickSpawnItem(ItemType<RefractiveBlade>()); break;
+                    case 0: Player.QuickSpawnItem(ItemType<BossSpear>()); break;
+                    case 1: Player.QuickSpawnItem(ItemType<VitricBossBow>()); break;
+                    case 2: Player.QuickSpawnItem(ItemType<Needler>()); break;
+                    case 3: Player.QuickSpawnItem(ItemType<RefractiveBlade>()); break;
                 }
                 weapon++;
             }
 
-            player.QuickSpawnItem(ItemType<VitricOre>(), Main.rand.Next(45, 85));
-            player.QuickSpawnItem(ItemType<MagmaCore>(), Main.rand.Next(2, 3));
-            player.QuickSpawnItem(ItemType<Misc.StaminaUp>());
-            player.QuickSpawnItem(ItemType<CeirosExpert>());
+            Player.QuickSpawnItem(ItemType<VitricOre>(), Main.rand.Next(45, 85));
+            Player.QuickSpawnItem(ItemType<MagmaCore>(), Main.rand.Next(2, 3));
+            Player.QuickSpawnItem(ItemType<Misc.StaminaUp>());
+            Player.QuickSpawnItem(ItemType<CeirosExpert>());
 
             if (Main.rand.Next(8) == 0)
-                player.QuickSpawnItem(ItemType<BarrierDye.VitricBossBarrierDye>());
+                Player.QuickSpawnItem(ItemType<BarrierDye.VitricBossBarrierDye>());
         }
     }
 }

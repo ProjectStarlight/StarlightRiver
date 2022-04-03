@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void SafeSetDefaults()
         {
-            ChainLong = new VerletChain(8, false, projectile.Center + new Vector2(14, -26), 8)
+            ChainLong = new VerletChain(8, false, Projectile.Center + new Vector2(14, -26), 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                 scale = 0.4f
             };
 
-            ChainShort = new VerletChain(6, false, projectile.Center + new Vector2(14, -26), 8)
+            ChainShort = new VerletChain(6, false, Projectile.Center + new Vector2(14, -26), 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -72,34 +72,34 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void Update()
         {
-            ChainLong.UpdateChain(projectile.Center + new Vector2(14, -16));
-            ChainShort.UpdateChain(projectile.Center + new Vector2(14, -16));
+            ChainLong.UpdateChain(Projectile.Center + new Vector2(14, -16));
+            ChainShort.UpdateChain(Projectile.Center + new Vector2(14, -16));
 
             ChainLong.IterateRope(WindForceLong);
             ChainShort.IterateRope(WindForceShort);
 
-            projectile.ai[0] += 0.005f;
+            Projectile.ai[0] += 0.005f;
         }
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-            var tex = GetTexture(AssetDirectory.ForestTile + "MonkSpearOver");
+            var tex = Request<Texture2D>(AssetDirectory.ForestTile + "MonkSpearOver").Value;
 
             for (int k = 0; k < 3; k++)
             {
-                int x = (int)((projectile.position.X + 8) / 16) + k;
-                int y = (int)((projectile.position.Y + 6 * 16 + 8) / 16);
-                spriteBatch.Draw(tex, projectile.position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
+                int x = (int)((Projectile.position.X + 8) / 16) + k;
+                int y = (int)((Projectile.position.Y + 6 * 16 + 8) / 16);
+                spriteBatch.Draw(tex, Projectile.position + new Vector2(k * 16, 6 * 16) - Main.screenPosition, new Rectangle(k * 16, 0, 16, 16), Lighting.GetColor(x, y));
             }
 		}
 
 		private void WindForceShort(int index)//wind
         {
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
             float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
-            float cos = (float)System.Math.Cos(projectile.ai[0]);
+            float cos = (float)System.Math.Cos(Projectile.ai[0]);
             float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 posShort = new Vector2(ChainShort.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainShort.ropeSegments[index].posNow.Y + sin * 0.8f);
@@ -110,11 +110,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         private void WindForceLong(int index)
 		{
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
             float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
-            float cos = (float)System.Math.Cos(projectile.ai[0]);
+            float cos = (float)System.Math.Cos(Projectile.ai[0]);
             float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 posLong = new Vector2(ChainLong.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainLong.ropeSegments[index].posNow.Y + sin * 0.8f);

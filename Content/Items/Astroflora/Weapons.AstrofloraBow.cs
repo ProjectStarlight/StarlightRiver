@@ -33,28 +33,28 @@ namespace StarlightRiver.Content.Items.Astroflora
         public override void SetDefaults()
         {
             // Balance requiered on all stats (I have no idea what point in progression this is).
-            item.damage = 200;
-            item.ranged = true;
+            Item.damage = 200;
+            Item.ranged = true;
 
-            item.useTime = 30;
-            item.useAnimation = 30;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
 
-            item.shootSpeed = 1;
-            item.shoot = ProjectileID.PurificationPowder; // Dummy since Shoot hook changes the result.
-            item.useAmmo = AmmoID.Arrow;
+            Item.shootSpeed = 1;
+            Item.shoot = ProjectileID.PurificationPowder; // Dummy since Shoot hook changes the result.
+            Item.useAmmo = AmmoID.Arrow;
 
-            item.noMelee = true;
+            Item.noMelee = true;
 
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.UseSound = SoundID.Item5;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.UseSound = SoundID.Item5;
 
-            item.rare = ItemRarityID.Blue;
-            item.value = Item.sellPrice(0, 1, 0, 0);
+            Item.rare = ItemRarityID.Blue;
+            Item.value = Item.sellPrice(0, 1, 0, 0);
         }
 
 
 
-        public override void HoldItem(Player player)
+        public override void HoldItem(Player Player)
         {
             if (CursorShouldBeRed && --counter <= 0)
             {
@@ -66,40 +66,40 @@ namespace StarlightRiver.Content.Items.Astroflora
 
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC npc = Main.npc[i];
+                NPC NPC = Main.npc[i];
 
-                if (locks.Contains(npc) && (!npc.CanBeChasedBy() || (npc.CanBeChasedBy() && !npc.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked)))
+                if (locks.Contains(NPC) && (!NPC.CanBeChasedBy() || (NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked)))
                 {
-                    locks.Remove(npc);
+                    locks.Remove(NPC);
                 }
 
-                Rectangle generousHitbox = npc.Hitbox;
-                generousHitbox.Inflate(npc.Hitbox.Width / 3, npc.Hitbox.Height / 3);
+                Rectangle generousHitbox = NPC.Hitbox;
+                generousHitbox.Inflate(NPC.Hitbox.Width / 3, NPC.Hitbox.Height / 3);
 
-                if (npc.CanBeChasedBy() && !npc.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked && locks.Count < maxLocks && !locks.Contains(npc) && generousHitbox.Contains(Main.MouseWorld.ToPoint()))
+                if (NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked && locks.Count < maxLocks && !locks.Contains(NPC) && generousHitbox.Contains(Main.MouseWorld.ToPoint()))
                 {
-                    Say("Target Locked!", player);
+                    Say("Target Locked!", Player);
 
-                    locks.Add(npc);
+                    locks.Add(NPC);
 
-                    npc.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = true;
+                    NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = true;
 
                     // TODO: Play some kind of lock-on sound effect?
                 }
             }
         }
 
-        private void Say(string text, Player player)
+        private void Say(string text, Player Player)
         {
             // Main.fontCombatText[0] is just the variant used when dramatic == false.
             Vector2 textSize = Main.fontCombatText[0].MeasureString(text);
 
-            Rectangle textRectangle = new Rectangle((int)player.MountedCenter.X, (int)(player.MountedCenter.Y + player.height), (int)textSize.X, (int)textSize.Y);
+            Rectangle textRectangle = new Rectangle((int)Player.MountedCenter.X, (int)(Player.MountedCenter.Y + Player.height), (int)textSize.X, (int)textSize.Y);
 
             CombatText.NewText(textRectangle, Main.cursorColor, text);
         }
 
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
             locks = locks ?? new List<NPC>();
 
@@ -109,11 +109,11 @@ namespace StarlightRiver.Content.Items.Astroflora
             }
             else
             {
-                player.GetModPlayer<StarlightPlayer>().Shake = 5;
+                Player.GetModPlayer<StarlightPlayer>().Shake = 5;
 
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, $"{SoundPath}Failure"), player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, $"{SoundPath}Failure"), Player.Center);
 
-                Say("No Locks!", player);
+                Say("No Locks!", Player);
 
                 CursorShouldBeRed = true;
                 counter = 30;
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Astroflora
             }
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             for (int i = 0; i < maxLocks; i++)
             {
@@ -134,13 +134,13 @@ namespace StarlightRiver.Content.Items.Astroflora
                 }
                 else
                 {
-                    // Dictates which lock the projectile will go for. If three locks, it's one for each, else any excess projectiles target a random lock.
+                    // Dictates which lock the Projectile will go for. If three locks, it's one for each, else any excess Projectiles target a random lock.
                     index = i > locks.Count - 1 ? Main.rand.Next(locks).whoAmI : locks[i].whoAmI;
                 }
 
                 Vector2 shotOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 32;
 
-                Projectile.NewProjectile(position + shotOffset, new Vector2(speedX, speedY).RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockBack, player.whoAmI, index);
+                Projectile.NewProjectile(position + shotOffset, new Vector2(speedX, speedY).RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockBack, Player.whoAmI, index);
             }
 
             locks.Clear();
@@ -163,55 +163,55 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         private int TargetNPCIndex
         {
-            get => (int)projectile.ai[0];
-            set => projectile.ai[0] = value;
+            get => (int)Projectile.ai[0];
+            set => Projectile.ai[0] = value;
         }
 
         private bool HitATarget
         {
-            get => (int)projectile.ai[1] == 1;
-            set => projectile.ai[1] = value ? 1 : 0;
+            get => (int)Projectile.ai[1] == 1;
+            set => Projectile.ai[1] = value ? 1 : 0;
         }
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.Homing[projectile.type] = true;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
+            Projectile.width = 16;
+            Projectile.height = 16;
 
-            projectile.damage = 100;
-            projectile.knockBack = 8;
+            Projectile.damage = 100;
+            Projectile.knockBack = 8;
 
-            projectile.friendly = true;
+            Projectile.friendly = true;
 
-            projectile.timeLeft = 300;
+            Projectile.timeLeft = 300;
 
-            projectile.tileCollide = false;
+            Projectile.tileCollide = false;
 
-            projectile.penetrate = -1;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
         {
             // Sync its target.
-            projectile.netUpdate = true;
+            Projectile.netUpdate = true;
 
             ManageCaches();
 
             ManageTrail();
 
-            if (projectile.timeLeft < 30)
+            if (Projectile.timeLeft < 30)
             {
-                projectile.alpha += 8;
+                Projectile.alpha += 8;
             }
 
             if (!HitATarget)
             {
-                projectile.velocity.Y = Math.Min(projectile.velocity.Y + 0.1f, 10);
+                Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.1f, 10);
 
                 if (TargetNPCIndex == -1)
                 {
@@ -234,13 +234,13 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         private void Homing(NPC target)
         {
-            Vector2 move = target.Center - projectile.Center;
+            Vector2 move = target.Center - Projectile.Center;
 
             AdjustMagnitude(ref move);
 
-            projectile.velocity = (10 * projectile.velocity + move) / 11f;
+            Projectile.velocity = (10 * Projectile.velocity + move) / 11f;
 
-            AdjustMagnitude(ref projectile.velocity);
+            AdjustMagnitude(ref Projectile.velocity);
         }
 
         private void AdjustMagnitude(ref Vector2 vector)
@@ -263,11 +263,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 
                 for (int i = 0; i < oldPositionCacheLength; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > oldPositionCacheLength)
             {
@@ -280,14 +280,14 @@ namespace StarlightRiver.Content.Items.Astroflora
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
             {
                 // 1 = full opacity, 0 = transparent.
-                float normalisedAlpha = 1 - (projectile.alpha / 255f);
+                float normalisedAlpha = 1 - (Projectile.alpha / 255f);
 
-                // Scales opacity with the projectile alpha as well as the distance from the beginning of the trail.
+                // Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
                 return new Color(31, 250, 131) * normalisedAlpha * factor.X;
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -310,12 +310,12 @@ namespace StarlightRiver.Content.Items.Astroflora
         {
             target.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
 
-            projectile.timeLeft = 30;
+            Projectile.timeLeft = 30;
 
             HitATarget = true;
 
-            // This is hacky, but it lets the projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
-            projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
+            // This is hacky, but it lets the Projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
         } 
 
         public override void Kill(int timeLeft)
@@ -324,11 +324,11 @@ namespace StarlightRiver.Content.Items.Astroflora
 
             if (TargetNPCIndex > -1)
             {
-                NPC npc = Main.npc[TargetNPCIndex];
+                NPC NPC = Main.npc[TargetNPCIndex];
 
-                if (npc.active)
+                if (NPC.active)
                 {
-                    npc.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
+                    NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
                 }
             }
         }
@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public int remainingLockDuration;
 
-        public override bool PreAI(NPC npc)
+        public override bool PreAI(NPC NPC)
         {
             if (--remainingLockDuration <= 0)
             {
@@ -366,7 +366,7 @@ namespace StarlightRiver.Content.Items.Astroflora
                 remainingLockDuration = 0;
             }
 
-            return base.PreAI(npc);
+            return base.PreAI(NPC);
         }
     }
 }

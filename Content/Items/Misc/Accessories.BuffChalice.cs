@@ -13,20 +13,20 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;
 			return base.Autoload(ref name);
 		}
 
-		private void ChaliceEffects(Player player, NPC npc, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
+		private void ChaliceEffects(Player Player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
 		{
-			if (Equipped(player))
+			if (Equipped(Player))
 			{
 				for (int k = 0; k < 5; k++)
 				{
 					if (oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k])
-						player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
+						Player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
 				}
 			}
 		}
@@ -44,9 +44,9 @@ namespace StarlightRiver.Content.Items.Misc
 				Description.SetDefault("+30% to DoT Resistance");
 			}
 
-			public override void Update(Player player, ref int buffIndex)
+			public override void Update(Player Player, ref int buffIndex)
 			{
-				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+				Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 			}
 		}
 	}

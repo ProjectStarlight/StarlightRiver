@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Items.Hell
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Hell/HellKeyGlow");
-            spriteBatch.Draw(tex, item.position + new Vector2(0, -8) - Main.screenPosition, Color.White);
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Items/Hell/HellKeyGlow").Value;
+            spriteBatch.Draw(tex, Item.position + new Vector2(0, -8) - Main.screenPosition, Color.White);
         }
     }
 }

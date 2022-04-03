@@ -15,25 +15,25 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            projectile.friendly = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.timeLeft = 176;
+            Projectile.friendly = true;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.timeLeft = 176;
         }
 
         public override void AI()
         {
-            if (projectile.timeLeft == 175) ValidPoints.Add(new Point16((int)projectile.Center.X / 16 + 11, (int)projectile.Center.Y / 16));
+            if (Projectile.timeLeft == 175) ValidPoints.Add(new Point16((int)Projectile.Center.X / 16 + 11, (int)Projectile.Center.Y / 16));
 
-            projectile.ai[1] += 0.1f;
-            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+            Projectile.ai[1] += 0.1f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
-            float sin = 1 + (float)Math.Sin(projectile.ai[1]);
-            float cos = 1 + (float)Math.Cos(projectile.ai[1]);
+            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-            Lighting.AddLight(projectile.Center, color.ToVector3() * 0.6f);
+            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.6f);
 
-            Dust d = Dust.NewDustPerfect(projectile.Center, 264, -projectile.velocity * 0.5f, 0, color, 1.4f);
+            Dust d = Dust.NewDustPerfect(Projectile.Center, 264, -Projectile.velocity * 0.5f, 0, color, 1.4f);
             d.noGravity = true;
             d.rotation = Main.rand.NextFloat(6.28f);
         }
@@ -42,12 +42,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             for (int k = 0; k < 20; k++)
             {
-                Dust d = Dust.NewDustPerfect(projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, Color.White, 1.4f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, Color.White, 1.4f);
                 d.noGravity = true;
                 d.rotation = Main.rand.NextFloat(6.28f);
             }
 
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
         }
     }
 }

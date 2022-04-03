@@ -38,7 +38,7 @@ namespace StarlightRiver.Physics
             forceGravity = new Vector2(0f, 1f),
             gravityStrengthMult = 1f
         };*/
-        //Chain.UpdateChain(projectile.Center); //chain example
+        //Chain.UpdateChain(Projectile.Center); //chain example
         #endregion
 
         //basic variables

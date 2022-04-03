@@ -13,13 +13,13 @@ namespace StarlightRiver.Content.Buffs
     {
         public Overcharge() : base("Overcahrged", "Greatly reduced armor, shocking nearby enemies!", true) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.statDefense /= 4;
+            Player.statDefense /= 4;
 
             if (Main.rand.Next(10) == 0)
             {
-                Vector2 pos = player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(player.width);
+                Vector2 pos = Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(Player.width);
                 DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
 
@@ -29,26 +29,26 @@ namespace StarlightRiver.Content.Buffs
             {
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
-                    NPC npc = Main.npc[k];
-                    if (npc.active && Vector2.Distance(npc.Center, player.Center) < 100)
+                    NPC NPC = Main.npc[k];
+                    if (NPC.active && Vector2.Distance(NPC.Center, Player.Center) < 100)
                     {
-                        var proj = Projectile.NewProjectileDirect(npc.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, player.whoAmI, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
                         proj.friendly = false;
-                        proj.modProjectile.OnHitNPC(npc, 2, 0, false);
-                        DrawHelper.DrawElectricity(player.Center, npc.Center, DustType<Content.Dusts.Electric>());
+                        proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
+                        DrawHelper.DrawElectricity(Player.Center, NPC.Center, DustType<Content.Dusts.Electric>());
                         break;
                     }
                 }
             }
         }
 
-        public override void Update(NPC npc, ref int buffIndex)
+        public override void Update(NPC NPC, ref int buffIndex)
         {
-            npc.defense /= 4;
+            NPC.defense /= 4;
 
             if (Main.rand.Next(10) == 0)
             {
-                Vector2 pos = npc.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(npc.width);
+                Vector2 pos = NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(NPC.width);
                 DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
             }
 
@@ -59,12 +59,12 @@ namespace StarlightRiver.Content.Buffs
                 for (int k = 0; k < Main.maxNPCs; k++)
                 {
                     NPC target = Main.npc[k];
-                    if (target.active && Vector2.Distance(target.Center, npc.Center) < 200)
+                    if (target.active && Vector2.Distance(target.Center, NPC.Center) < 200)
                     {
                         var proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
                         proj.friendly = false;
-                        proj.modProjectile.OnHitNPC(npc, 2, 0, false);
-                        DrawHelper.DrawElectricity(npc.Center, target.Center, DustType<Content.Dusts.Electric>());
+                        proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
+                        DrawHelper.DrawElectricity(NPC.Center, target.Center, DustType<Content.Dusts.Electric>());
                         break;
                     }
                 }
@@ -78,10 +78,10 @@ namespace StarlightRiver.Content.Buffs
 
         public override void SetDefaults()
         {
-            projectile.width = 8;
-            projectile.height = 8;
-            projectile.timeLeft = 1;
-            projectile.friendly = true;
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.timeLeft = 1;
+            Projectile.friendly = true;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -91,19 +91,19 @@ namespace StarlightRiver.Content.Buffs
             //1: jump radius
 
             List<NPC> possibleTargets = new List<NPC>();
-            foreach (NPC npc in Main.npc.Where(npc => npc.active && !npc.immortal && Vector2.Distance(npc.Center, projectile.Center) < projectile.ai[1] && npc != target))
+            foreach (NPC NPC in Main.npc.Where(NPC => NPC.active && !NPC.immortal && Vector2.Distance(NPC.Center, Projectile.Center) < Projectile.ai[1] && NPC != target))
             {
-                possibleTargets.Add(npc); //This grabs all possible targets, which includes all NPCs in the appropriate raidus which are alive and vulnerable, excluding the hit NPC
+                possibleTargets.Add(NPC); //This grabs all possible targets, which includes all NPCs in the appropriate raidus which are alive and vulnerable, excluding the hit NPC
             }
             if (possibleTargets.Count == 0) return; //kill if no targets are available
             NPC chosenTarget = possibleTargets[Main.rand.Next(possibleTargets.Count)];
 
-            if (projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
+            if (Projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
-                Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, projectile.owner, projectile.ai[0] - 1, projectile.ai[1]);
+                Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
                 DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
             }
-            projectile.timeLeft = 0;
+            Projectile.timeLeft = 0;
         }
     }
 }

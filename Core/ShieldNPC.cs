@@ -23,7 +23,7 @@ namespace StarlightRiver.Core
 
 		public override bool InstancePerEntity => true;
 
-		public void ModifyDamage(NPC npc, ref int damage, ref float knockback, ref bool crit)
+		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Shield > 0)
 			{
@@ -31,16 +31,16 @@ namespace StarlightRiver.Core
 
 				if (Shield > damage)
 				{
-					CombatText.NewText(npc.Hitbox, Color.Cyan, damage);
+					CombatText.NewText(NPC.Hitbox, Color.Cyan, damage);
 
 					Shield -= damage;
 					damage = (int)(damage * reduction);
 				}
 				else
 				{
-					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, npc.Center);
+					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, NPC.Center);
 
-					CombatText.NewText(npc.Hitbox, Color.Cyan, Shield);
+					CombatText.NewText(NPC.Hitbox, Color.Cyan, Shield);
 
 					int overblow = damage - Shield;
 					damage = (int)(Shield * reduction) + overblow;
@@ -52,23 +52,23 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-			ModifyDamage(npc, ref damage, ref knockback, ref crit);
+			ModifyDamage(NPC, ref damage, ref knockback, ref crit);
 			TimeSinceLastHit = 0;
 
-			base.ModifyHitByItem(npc, player, item, ref damage, ref knockback, ref crit);
+			base.ModifyHitByItem(NPC, Player, Item, ref damage, ref knockback, ref crit);
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			ModifyDamage(npc, ref damage, ref knockback, ref crit);
+			ModifyDamage(NPC, ref damage, ref knockback, ref crit);
 			TimeSinceLastHit = 0;
 
-			base.ModifyHitByProjectile(npc, projectile, ref damage, ref knockback, ref crit, ref hitDirection);
+			base.ModifyHitByProjectile(NPC, Projectile, ref damage, ref knockback, ref crit, ref hitDirection);
 		}
 
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		public override void UpdateLifeRegen(NPC NPC, ref int damage)
 		{
 			if (Shield > MostShield) 
 				MostShield = Shield;
@@ -103,21 +103,21 @@ namespace StarlightRiver.Core
 				{
 					int drainSubDelay = 60 / (OvershieldDrainRate % 60);
 
-					if (npc.GetAge() % drainSubDelay == 0 && Shield > MaxShield)
+					if (NPC.GetAge() % drainSubDelay == 0 && Shield > MaxShield)
 						Shield--;
 				}
 			}
 		}
 
-		public override bool? DrawHealthBar(NPC npc, byte hbPosition, ref float scale, ref Vector2 position)
+		public override bool? DrawHealthBar(NPC NPC, byte hbPosition, ref float scale, ref Vector2 position)
 		{
 			if (Shield > 0)
 			{
-				var bright = Lighting.Brightness((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
+				var bright = Lighting.Brightness((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
 
-				Main.instance.DrawHealthBar((int)position.X, (int)position.Y, npc.life, npc.lifeMax, bright, scale);
+				Main.instance.DrawHealthBar((int)position.X, (int)position.Y, NPC.life, NPC.lifeMax, bright, scale);
 
-				var tex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar1");
+				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
 				var factor = Math.Min(Shield / (float)MaxShield, 1);
 
@@ -128,7 +128,7 @@ namespace StarlightRiver.Core
 
 				if (Shield < MaxShield)
 				{
-					var texLine = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBarLine");
+					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
 					var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
 					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));
@@ -139,7 +139,7 @@ namespace StarlightRiver.Core
 				return false;
 			}
 
-			return base.DrawHealthBar(npc, hbPosition, ref scale, ref position);
+			return base.DrawHealthBar(NPC, hbPosition, ref scale, ref position);
 		}
 	}
 }

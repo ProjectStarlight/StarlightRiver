@@ -6,15 +6,15 @@ namespace StarlightRiver.Content.Buffs.Summon
     {
         public TentacleSummonBuff() : base("Tentacles", "Now you'll be able to get that damn spiderman for sure!", false, true) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            if (player.ownedProjectileCounts[mod.ProjectileType("TentacleSummonHead")] > 0)
+            if (Player.ownedProjectileCounts[Mod.ProjectileType("TentacleSummonHead")] > 0)
             {
-                player.buffTime[buffIndex] = 18000;
+                Player.buffTime[buffIndex] = 18000;
             }
             else
             {
-                player.DelBuff(buffIndex);
+                Player.DelBuff(buffIndex);
                 buffIndex--;
             }
         }

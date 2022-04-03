@@ -51,7 +51,7 @@ namespace StarlightRiver.Core
         public float GuardBuff;
         public int GuardRad;
 
-        public float itemSpeed;
+        public float ItemSpeed;
         public float rotation;
 
         public static List<PlayerTicker> spawners = new List<PlayerTicker>();
@@ -64,15 +64,15 @@ namespace StarlightRiver.Core
             if (PickupTarget != null)
             {
                 if (PickupTimer == 0)
-                    oldPickupPos = player.Center;
+                    oldPickupPos = Player.Center;
 
                 PickupTimer++;
 
-                player.immune = true;
-                player.immuneTime = 5;
-                player.immuneNoBlink = true;
+                Player.immune = true;
+                Player.immuneTime = 5;
+                Player.immuneNoBlink = true;
 
-                player.Center = Vector2.SmoothStep(oldPickupPos, PickupTarget.Center, PickupTimer / 30f);
+                Player.Center = Vector2.SmoothStep(oldPickupPos, PickupTarget.Center, PickupTimer / 30f);
                 if (PickupTimer >= MaxPickupTimer) PickupTarget = null;
             }
             else PickupTimer = 0;
@@ -81,22 +81,22 @@ namespace StarlightRiver.Core
 
             if (DarkSlow)
             {
-                player.velocity.X *= 0.8f;
+                Player.velocity.X *= 0.8f;
             }
             DarkSlow = false;
 
-            if (!player.immune)
+            if (!Player.immune)
             {
-                VitricSpike.CollideWithSpikes(player, out int damage);
+                VitricSpike.CollideWithSpikes(Player, out int damage);
                 if (damage > 0)
-                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was impaled by glass shards."), damage, 0);
+                    Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " was impaled by glass shards."), damage, 0);
             }
 
-            foreach (PlayerTicker ticker in spawners.Where(n => n.Active(player) && Timer % n.TickFrequency == 0))
-                ticker.Tick(player);
+            foreach (PlayerTicker ticker in spawners.Where(n => n.Active(Player) && Timer % n.TickFrequency == 0))
+                ticker.Tick(Player);
         }
 
-        public delegate void ResetEffectsDelegate(StarlightPlayer player);
+        public delegate void ResetEffectsDelegate(StarlightPlayer Player);
         public static event ResetEffectsDelegate ResetEffectsEvent;
         public override void ResetEffects()
         {
@@ -105,11 +105,11 @@ namespace StarlightRiver.Core
             GuardCrit = 0;
             GuardBuff = 1;
             GuardRad = 0;
-            itemSpeed = 1;
+            ItemSpeed = 1;
 
             trueInvisible = false;
 
-            player.fullRotation = 0;
+            Player.fullRotation = 0;
 
             shouldSendHitPacket = false;
 
@@ -119,9 +119,9 @@ namespace StarlightRiver.Core
 
         public override void PostUpdate()
         {
-            PostUpdateEvent.Invoke(player);
+            PostUpdateEvent.Invoke(Player);
 
-            if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
+            if (Main.netMode == NetmodeID.MultiplayerClient && Player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
             Timer++;
 
             if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
@@ -141,7 +141,7 @@ namespace StarlightRiver.Core
 
             bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
 
-            if (validTile && Main.npc.Any(n => n.active && n.modNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
+            if (validTile && Main.npc.Any(n => n.active && n.ModNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
                 panDown++;
             else if (panDown > 0) panDown--;
         }
@@ -152,7 +152,7 @@ namespace StarlightRiver.Core
             LastHit = Timer;
         }
 
-        public delegate void PostUpdateEquipsDelegate(StarlightPlayer player);
+        public delegate void PostUpdateEquipsDelegate(StarlightPlayer Player);
         public static event PostUpdateEquipsDelegate PostUpdateEquipsEvent;
         public override void PostUpdateEquips()
         {
@@ -172,7 +172,7 @@ namespace StarlightRiver.Core
 
         public override void ModifyScreenPosition()
         {
-            if (Main.myPlayer != player.whoAmI)
+            if (Main.myPlayer != Player.whoAmI)
                 return;
 
             var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
@@ -214,7 +214,7 @@ namespace StarlightRiver.Core
 
         public override void ModifyDrawLayers(List<PlayerLayer> layers)
         {
-            if (player.HeldItem.modItem is Content.Items.Vitric.VitricSword && (player.HeldItem.modItem as Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
+            if (Player.HeldItem.ModItem is Content.Items.Vitric.VitricSword && (Player.HeldItem.ModItem as Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
 
             Action<PlayerDrawInfo> layerTarget = DrawGlowmasks;
             PlayerLayer layer = new PlayerLayer("ItemLayer", "Starlight River Item Drawing Layer", layerTarget);
@@ -222,7 +222,7 @@ namespace StarlightRiver.Core
 
             void DrawGlowmasks(PlayerDrawInfo info)
             {
-                if (info.drawPlayer.HeldItem.modItem is IGlowingItem) (info.drawPlayer.HeldItem.modItem as IGlowingItem).DrawGlowmask(info);
+                if (info.drawPlayer.HeldItem.ModItem is IGlowingItem) (info.drawPlayer.HeldItem.ModItem as IGlowingItem).DrawGlowmask(info);
             }
             #region armor masks
             Action<PlayerDrawInfo> helmetTarget = DrawHelmetMask;
@@ -237,18 +237,18 @@ namespace StarlightRiver.Core
 
             void DrawHelmetMask(PlayerDrawInfo info)
             {
-                if (info.drawPlayer.armor[10].IsAir && info.drawPlayer.armor[0].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[0].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[10].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[10].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                if (info.drawPlayer.armor[10].IsAir && info.drawPlayer.armor[0].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[0].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                else if (info.drawPlayer.armor[10].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[10].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
             }
             void DrawChestMask(PlayerDrawInfo info)
             {
-                if (info.drawPlayer.armor[11].IsAir && info.drawPlayer.armor[1].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[1].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[11].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[11].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                if (info.drawPlayer.armor[11].IsAir && info.drawPlayer.armor[1].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[1].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                else if (info.drawPlayer.armor[11].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[11].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
             }
             void DrawLegMask(PlayerDrawInfo info)
             {
-                if (info.drawPlayer.armor[12].IsAir && info.drawPlayer.armor[2].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[2].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[12].modItem is IArmorLayerDrawable) (info.drawPlayer.armor[12].modItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                if (info.drawPlayer.armor[12].IsAir && info.drawPlayer.armor[2].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[2].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
+                else if (info.drawPlayer.armor[12].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[12].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
             }
             #endregion
         }
@@ -263,8 +263,8 @@ namespace StarlightRiver.Core
         /// <param name="crit"></param>
         public void addHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            if (Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
-                hitPacket = new OnHitPacket(player, proj, target, damage, knockback, crit);
+            if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+                hitPacket = new OnHitPacket(Player, proj, target, damage, knockback, crit);
         }
 
         /// <summary>
@@ -272,7 +272,7 @@ namespace StarlightRiver.Core
         /// </summary>
         public void sendHitPacket()
         {
-            if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
+            if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
             {
                 hitPacket.Send(-1, Main.myPlayer, false);
                 shouldSendHitPacket = false;
@@ -280,7 +280,7 @@ namespace StarlightRiver.Core
             }
         }
 
-        public override void OnEnterWorld(Player player)
+        public override void OnEnterWorld(Player Player)
         {
             ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
 
@@ -300,7 +300,7 @@ namespace StarlightRiver.Core
             DummyTile.dummies.Clear();
         }
 
-		public override void OnRespawn(Player player)
+		public override void OnRespawn(Player Player)
 		{
             panDown = 0;
 
@@ -312,31 +312,31 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-		public override void PlayerConnect(Player player)
+		public override void PlayerConnect(Player Player)
         {
             AbilityProgress packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
             packet.Send(runLocally: false);
         }
 
-        public override float UseTimeMultiplier(Item item) => itemSpeed;
+        public override float UseTimeMultiplier(Item Item) => ItemSpeed;
 
         public void DoubleTapEffects(int keyDir)
         {
             if (keyDir == (Main.ReversedUpDownArmorSetBonuses ? 1 : 0)) //double tap down
             {
                 //Breacher drone
-                var spotter = Main.projectile.Where(n => n.owner == player.whoAmI && n.modProjectile is SpotterDrone drone2).OrderBy(n => Vector2.Distance(n.Center, player.Center)).FirstOrDefault();
-                if (spotter != default && spotter.modProjectile is SpotterDrone drone && drone.CanScan)
+                var spotter = Main.projectile.Where(n => n.owner == Player.whoAmI && n.ModProjectile is SpotterDrone drone2).OrderBy(n => Vector2.Distance(n.Center, Player.Center)).FirstOrDefault();
+                if (spotter != default && spotter.ModProjectile is SpotterDrone drone && drone.CanScan)
                 {
-                    BreacherPlayer modPlayer = player.GetModPlayer<BreacherPlayer>();
-                    Projectile projectile = spotter;
-                    var target = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
+                    BreacherPlayer modPlayer = Player.GetModPlayer<BreacherPlayer>();
+                    Projectile Projectile = spotter;
+                    var target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
                     if (modPlayer.Charges >= 1 && target != default)
                     {
                         Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
                         drone.ScanTimer = SpotterDrone.ScanTime;
-                        drone.Charges = player.GetModPlayer<BreacherPlayer>().Charges;
-                        player.GetModPlayer<BreacherPlayer>().ticks = 0;
+                        drone.Charges = Player.GetModPlayer<BreacherPlayer>().Charges;
+                        Player.GetModPlayer<BreacherPlayer>().ticks = 0;
                     }
                 }
             }

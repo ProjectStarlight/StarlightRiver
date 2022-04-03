@@ -20,9 +20,9 @@ namespace StarlightRiver.Core.Loaders
             if (Main.dedServ)
                 return;
 
-            Mod mod = StarlightRiver.Instance;
+            Mod Mod = StarlightRiver.Instance;
 
-            foreach (Type t in mod.Code.GetTypes())
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(Foreground)) && !t.IsAbstract)
                 {

@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
         private void DrawSpline(SpriteBatch spriteBatch, int i, int j, Vector2 end, float colorMult)
         {
-            Texture2D tex = GetTexture(texture);
+            Texture2D tex = Request<Texture2D>(texture).Value;
             Vector2 oldPos = new Vector2(i, j) * 16;
             float max = Vector2.Distance(end, new Vector2(i, j) * 16) / (tex.Size().Length() / 5);
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
                         if (glowTexture != "")
                         {
-                            Texture2D tex2 = GetTexture(glowTexture);
+                            Texture2D tex2 = Request<Texture2D>(glowTexture).Value;
                             spriteBatch.Draw(tex2, pos - Main.screenPosition, new Rectangle(k % 3 * tex.Width / 3, 0, tex.Height, tex.Width / 3), Color.White * colorMult, rot, tex.Size() / 2, 1, 0, 0);
                         }
 
@@ -107,12 +107,12 @@ namespace StarlightRiver.Content.Tiles.Decoration
 
         public override void SetDefaults()
         {
-            item.useTime = 10;
-            item.useAnimation = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useTime = 10;
+            Item.useAnimation = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
             if (target != null)
             {

@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.GUI
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            Player player = Main.LocalPlayer;
-            AbilityHandler mp = player.GetHandler();
+            Player Player = Main.LocalPlayer;
+            AbilityHandler mp = Player.GetHandler();
 
             if (Main.mapStyle != 1)
                 if (Main.playerInventory)
@@ -85,11 +85,11 @@ namespace StarlightRiver.Content.GUI
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             Rectangle dimensions = GetDimensions().ToRectangle();
-            Player player = Main.LocalPlayer;
-            AbilityHandler mp = player.GetHandler();
+            Player Player = Main.LocalPlayer;
+            AbilityHandler mp = Player.GetHandler();
 
-            Texture2D emptyTex = GetTexture("StarlightRiver/Assets/GUI/StaminaEmpty");
-            Texture2D fillTex = overrideTexture is null ? GetTexture("StarlightRiver/Assets/GUI/Stamina") : overrideTexture;
+            Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
+            Texture2D fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value : overrideTexture;
 
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
@@ -101,8 +101,8 @@ namespace StarlightRiver.Content.GUI
 
                 if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
-                    Texture2D shard1 = GetTexture("StarlightRiver/Assets/Abilities/Stamina1");
-                    Texture2D shard2 = GetTexture("StarlightRiver/Assets/Abilities/Stamina2");
+                    Texture2D shard1 = Request<Texture2D>("StarlightRiver/Assets/Abilities/Stamina1").Value;
+                    Texture2D shard2 = Request<Texture2D>("StarlightRiver/Assets/Abilities/Stamina2").Value;
 
                     if (mp.ShardCount % 3 >= 1) spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
                     if (mp.ShardCount % 3 >= 2) spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -112,10 +112,10 @@ namespace StarlightRiver.Content.GUI
                 var slotTex = emptyTex;
 
                 //if (k < specialVesselTextures.Count)
-                //slotTex = GetTexture(specialVesselTextures[k]);
+                //slotTex = Request<Texture2D>(specialVesselTextures[k]).Value;
 
                 if (k >= mp.StaminaMax - specialVesselTextures.Count)
-                    slotTex = GetTexture(specialVesselTextures[(int)mp.StaminaMax - k - 1]);
+                    slotTex = Request<Texture2D>(specialVesselTextures[(int).Valuemp.StaminaMax - k - 1]);
 
                 spriteBatch.Draw(slotTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
@@ -170,13 +170,13 @@ namespace StarlightRiver.Content.GUI
 
         private void DrawOverhead(SpriteBatch spriteBatch)
         {
-            Player player = Main.LocalPlayer;
-            AbilityHandler mp = player.GetHandler();
-            Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48;
+            Player Player = Main.LocalPlayer;
+            AbilityHandler mp = Player.GetHandler();
+            Vector2 basepos = Player.Center - Main.screenPosition - Vector2.UnitY * 48;
 
-            var flagTex = GetTexture("StarlightRiver/Assets/GUI/StaminaFlag");
-            var emptyTex = GetTexture("StarlightRiver/Assets/GUI/StaminaSmallEmpty");
-            var fillTex = GetTexture("StarlightRiver/Assets/GUI/StaminaSmall");
+            var flagTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFlag").Value;
+            var emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmallEmpty").Value;
+            var fillTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmall").Value;
 
             var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
 

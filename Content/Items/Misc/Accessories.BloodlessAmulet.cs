@@ -12,9 +12,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BloodlessAmulet() : base(ModContent.GetTexture(AssetDirectory.MiscItem + "BloodlessAmuletGlow")) { }
+		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			On.Terraria.Player.HealEffect += GrantRage;
 			return true;
@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.Items.Misc
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			player.allDamageMult += rage / 2000f;
+			Player.allDamageMult += rage / 2000f;
 
 			if(rage > 0)
 				rage--;
@@ -58,13 +58,13 @@ namespace StarlightRiver.Content.Items.Misc
 			if (rage > 800)
 				rage = 800;
 
-			player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
-			player.GetModPlayer<ShieldPlayer>().ShieldResistance = 1;
-			player.GetModPlayer<ShieldPlayer>().LiveOnOnlyShield = true;
-			player.GetModPlayer<ShieldPlayer>().RechargeRate -= 10;
-			player.statLife = 0;
-			player.lifeRegen = 0;
-			player.lifeRegenCount = 0;
+			Player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
+			Player.GetModPlayer<ShieldPlayer>().ShieldResistance = 1;
+			Player.GetModPlayer<ShieldPlayer>().LiveOnOnlyShield = true;
+			Player.GetModPlayer<ShieldPlayer>().RechargeRate -= 10;
+			Player.statLife = 0;
+			Player.lifeRegen = 0;
+			Player.lifeRegenCount = 0;
 		}
 	}
 }

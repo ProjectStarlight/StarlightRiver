@@ -19,21 +19,21 @@ namespace StarlightRiver.Content.Buffs
             Main.debuff[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
             if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
             {
-                player.lifeRegen -= 60;
-                player.slow = true;
-                player.wet = true;
+                Player.lifeRegen -= 60;
+                Player.slow = true;
+                Player.wet = true;
 
-                if (player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
+                if (Player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
                     Main.musicFade[Main.curMusic] = 0.05f;
             }
             else
             {
-                player.wet = true;
-                player.breath--;
+                Player.wet = true;
+                Player.breath--;
             }
         }
     }

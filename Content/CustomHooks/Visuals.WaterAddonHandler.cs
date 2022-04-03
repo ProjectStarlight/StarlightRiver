@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.CustomHooks
 			IL.Terraria.Main.DrawTiles += SwapBlockTexture;
 		}
 
-		private void UpdateActiveAddon(Player player)
+		private void UpdateActiveAddon(Player Player)
 		{
 			activeAddon = addons.FirstOrDefault(n => n.Visible);
 		}

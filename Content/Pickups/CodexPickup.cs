@@ -18,23 +18,23 @@ namespace StarlightRiver.Content.Pickups
 
         public override Color GlowColor => new Color(200, 130, 40);
 
-        public override bool CanPickup(Player player) => player.GetModPlayer<CodexHandler>().CodexState == 0;
+        public override bool CanPickup(Player Player) => Player.GetModPlayer<CodexHandler>().CodexState == 0;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Starlight Codex");
 
         public override void Visuals()
         {
             float rot = Main.rand.NextFloat(6.28f);
-            Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedBy(rot) * 20, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedBy(rot) * -1);
+            Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 20, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedBy(rot) * -1);
 
-            Lighting.AddLight(npc.Center, new Vector3(1, 0.5f, 0));
+            Lighting.AddLight(NPC.Center, new Vector3(1, 0.5f, 0));
         }
 
         public override void PickupVisuals(int timer)
         {
             if (timer == 1)
             {
-                Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
+                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
                 Filters.Scene.Deactivate("Shockwave");
             }
 
@@ -51,13 +51,13 @@ namespace StarlightRiver.Content.Pickups
             }
         }
 
-        public override void PickupEffects(Player player)
+        public override void PickupEffects(Player Player)
         {
-            CodexHandler mp = player.GetModPlayer<CodexHandler>();
+            CodexHandler mp = Player.GetModPlayer<CodexHandler>();
             mp.CodexState = 1;
 
-            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 120;
-            player.AddBuff(BuffID.Featherfall, 130);
+            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 120;
+            Player.AddBuff(BuffID.Featherfall, 130);
         }
     }
 

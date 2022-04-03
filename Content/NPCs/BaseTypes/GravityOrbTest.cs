@@ -17,30 +17,30 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
         public override void SetDefaults()
         {
-            npc.lifeMax = 2;
-            npc.life = 2;
-            npc.immortal = true;
-            npc.dontTakeDamage = true;
-            npc.aiStyle = -1;
-            npc.noGravity = true;
-            npc.width = 200;
-            npc.height = 200;
-            npc.knockBackResist = 0;
+            NPC.lifeMax = 2;
+            NPC.life = 2;
+            NPC.immortal = true;
+            NPC.dontTakeDamage = true;
+            NPC.aiStyle = -1;
+            NPC.noGravity = true;
+            NPC.width = 200;
+            NPC.height = 200;
+            NPC.knockBackResist = 0;
         }
 
         public override void AI()
         {
             for (int k = 0; k < Main.maxPlayers; k++)
             {
-                Player player = Main.player[k];
-                if (!player.active) return;
-                GravityPlayer mp = player.GetModPlayer<GravityPlayer>();
+                Player Player = Main.player[k];
+                if (!Player.active) return;
+                GravityPlayer mp = Player.GetModPlayer<GravityPlayer>();
 
-                if (Vector2.DistanceSquared(player.Center, npc.Center) < (radius + attract) * (radius + attract) && mp.cooldown <= 0 && mp.controller is null)
+                if (Vector2.DistanceSquared(Player.Center, NPC.Center) < (radius + attract) * (radius + attract) && mp.cooldown <= 0 && mp.controller is null)
                 {
                     mp.controller = this;
-                    mp.angle = (player.Center - npc.Center).ToRotation();
-                    mp.attractSpeed = GetComponent(player.velocity, (player.Center - npc.Center).ToRotation()).Length() / 2f;
+                    mp.angle = (Player.Center - NPC.Center).ToRotation();
+                    mp.attractSpeed = GetComponent(Player.velocity, (Player.Center - NPC.Center).ToRotation()).Length() / 2f;
                     if (mp.attractSpeed < 1) mp.attractSpeed = 1;
                 }
             }
@@ -60,9 +60,9 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
             {
                 float time = (Main.GameUpdateCount + k / (6 / 4f) * 200) / 200f;
 
-                var tex = GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2");
+                var tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2").Value;
                 float rad = (radius + attract) * 2 / (float)tex.Width;
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
+                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.Cyan * (time % rad / (rad / 4)) * 0.4f, 0, tex.Size() / 2, rad - time % rad, 0, 0);
             }
         }
     }
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
         public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
         {
-            if (controller != null && controller.npc.active || angleTimer > 0)
+            if (controller != null && controller.NPC.active || angleTimer > 0)
             {
                 drawInfo.drawPlayer.fullRotationOrigin = drawInfo.drawPlayer.Size / 2;
                 drawInfo.drawPlayer.fullRotation = realAngle + (float)Math.PI * 0.5f * angleTimer / 59f;
@@ -89,24 +89,24 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
         public override void PostUpdate()
         {
-            if (controller != null && controller.npc.active)
+            if (controller != null && controller.NPC.active)
             {
-                player.MountedCenter = controller.npc.Center + Vector2.UnitX.RotatedBy(angle) * (controller.radius + player.height / 2 + (controller.attract - controller.attract * (angleTimer / 60f)));
-                angle += player.velocity.X / (controller.radius + player.height / 2);
+                Player.MountedCenter = controller.NPC.Center + Vector2.UnitX.RotatedBy(angle) * (controller.radius + Player.height / 2 + (controller.attract - controller.attract * (angleTimer / 60f)));
+                angle += Player.velocity.X / (controller.radius + Player.height / 2);
                 angle %= (float)(Math.PI * 2);
 
-                if (player.justJumped && angleTimer >= 60)
+                if (Player.justJumped && angleTimer >= 60)
                 {
                     controller = null;
-                    player.velocity = Vector2.UnitX.RotatedBy(angle) * 10;
-                    player.jump = 0;
+                    Player.velocity = Vector2.UnitX.RotatedBy(angle) * 10;
+                    Player.jump = 0;
                     cooldown = 30;
                 }
 
                 if (angleTimer < 60)
                 {
                     angleTimer += (int)attractSpeed;
-                    attractSpeed += player.gravity * (float)Math.Max(0, Math.Sin(angle));
+                    attractSpeed += Player.gravity * (float)Math.Max(0, Math.Sin(angle));
                 }
                 if (angleTimer > 60) angleTimer = 60;
             }

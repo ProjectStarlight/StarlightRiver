@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	internal class VitricRockItem : QuickTileItem 
     { 
         public VitricRockItem() : base("Vitric Rock", "", TileType<VitricRock>(), 0, AssetDirectory.VitricTile) { }
-        //public override void OnConsumeItem(Player player) => Main.NewText(TileType<VitricRock>());
+        //public override void OnConsumeItem(Player Player) => Main.NewText(TileType<VitricRock>());
     }
 
     internal class VitricRock : ModTile
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.Origin = new Point16(0, 0);
             TileObjectData.newTile.RandomStyleRange = 6;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { mod.TileType("VitricSand"), mod.TileType("VitricSoftSand"), TileID.FossilOre,
+            TileObjectData.newTile.AnchorValidTiles = new int[] { Mod.TileType("VitricSand"), Mod.TileType("VitricSoftSand"), TileID.FossilOre,
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
             TileObjectData.addTile(Type);

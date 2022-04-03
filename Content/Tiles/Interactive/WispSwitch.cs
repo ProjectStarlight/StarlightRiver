@@ -61,11 +61,11 @@ namespace StarlightRiver.Content.Tiles.Interactive
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
                 Color color = Color.White * (0.2f + timer / 300f * 0.8f);
 
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchReal"), pos, Lighting.GetColor(i, j));
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow0"), pos - Vector2.One, Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16));
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow1"), pos, color);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchReal").Value, pos, Lighting.GetColor(i, j));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow0").Value, pos - Vector2.One, Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16));
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow1").Value, pos, color);
                 if (timer > 0)
-                    spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2"), pos + Vector2.One * 16, new Rectangle(0, 0, 96, 96), Color.LightYellow * (timer / 300f), 0, new Vector2(48, 48), timer * 0.002f, 0, 0);
+                    spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2").Value, pos + Vector2.One * 16, new Rectangle(0, 0, 96, 96), Color.LightYellow * (timer / 300f), 0, new Vector2(48, 48), timer * 0.002f, 0, 0);
             }
 
             return true;
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
         public override bool ValidTile(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.active() && tile.type == TileType<WispSwitch>() && tile.frameX == 0 && tile.frameY == 0;
+            return tile.HasTile && tile.type == TileType<WispSwitch>() && tile.frameX == 0 && tile.frameY == 0;
         }
 
         public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override void Update()
         {
-            if (Main.player.Any(player => Vector2.Distance(player.Center, Position.ToVector2() * 16) <= 100 && player.ActiveAbility<Whip>()) && timer == 0)
+            if (Main.player.Any(Player => Vector2.Distance(Player.Center, Position.ToVector2() * 16) <= 100 && Player.ActiveAbility<Whip>()) && timer == 0)
                 timer = 300;
             if (timer > 0)
             {

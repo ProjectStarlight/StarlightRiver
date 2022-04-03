@@ -16,7 +16,7 @@ using static Terraria.WorldGen;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
         public static FastNoise genNoise = new FastNoise(_genRandSeed);
         private const int VitricSlopeOffset = 48;

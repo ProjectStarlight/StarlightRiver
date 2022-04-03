@@ -22,18 +22,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            npc.townNPC = true;
-            npc.friendly = true;
-            npc.width = 64;
-            npc.height = 64;
-            npc.aiStyle = -1;
-            npc.damage = 10;
-            npc.defense = 15;
-            npc.lifeMax = 250;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.knockBackResist = 0;
-            npc.dontTakeDamage = true;
+            NPC.townNPC = true;
+            NPC.friendly = true;
+            NPC.width = 64;
+            NPC.height = 64;
+            NPC.aiStyle = -1;
+            NPC.damage = 10;
+            NPC.defense = 15;
+            NPC.lifeMax = 250;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.knockBackResist = 0;
+            NPC.dontTakeDamage = true;
         }
 
         public override string GetChat()
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else
             {
                 Main.LocalPlayer.HeldItem.GetGlobalItem<GlassReplica>().isReplica = true;
-                Main.npcChatText = "Held item turned into replica.";
+                Main.npcChatText = "Held Item turned into replica.";
             }
         }
     }

@@ -26,13 +26,13 @@ namespace StarlightRiver.Content.Pickups
 
         public override void SetDefaults()
         {
-            npc.width = 32;
-            npc.height = 32;
-            npc.aiStyle = -1;
-            npc.immortal = true;
-            npc.lifeMax = 1;
-            npc.knockBackResist = 0;
-            npc.noGravity = true;
+            NPC.width = 32;
+            NPC.height = 32;
+            NPC.aiStyle = -1;
+            NPC.immortal = true;
+            NPC.lifeMax = 1;
+            NPC.knockBackResist = 0;
+            NPC.noGravity = true;
         }
 
         public override bool CheckActive()
@@ -44,11 +44,11 @@ namespace StarlightRiver.Content.Pickups
 
         public override void AI()
         {
-            npc.TargetClosest(true);
-            Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetHandler();
+            NPC.TargetClosest(true);
+            Player Player = Main.player[NPC.target];
+            AbilityHandler mp = Player.GetHandler();
 
-            if (npc.Hitbox.Intersects(player.Hitbox) && !mp.Unlocked<Pure>() && animate == 0)
+            if (NPC.Hitbox.Intersects(Player.Hitbox) && !mp.Unlocked<Pure>() && animate == 0)
             {
                 animate = 500;
             }
@@ -58,35 +58,35 @@ namespace StarlightRiver.Content.Pickups
                 mp.Unlock<Pure>();
                 for (float k = 3.48f; k >= -0.4f; k -= 0.1f)
                 {
-                    Dust.NewDustPerfect(player.Center + new Vector2((float)Math.Cos(k) * 32, (float)Math.Sin(k) * 16 - 55), mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
+                    Dust.NewDustPerfect(Player.Center + new Vector2((float)Math.Cos(k) * 32, (float)Math.Sin(k) * 16 - 55), Mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
                 }
                 for (int k = 0; k <= 10; k++)
                 {
-                    Dust.NewDustPerfect(player.Center + new Vector2(-5 + k / 2, -k * 3 - 39), mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(5 - k / 2, -k * 3 - 39), mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(-25 + k / 2, -k * 1.2f - 47), mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
-                    Dust.NewDustPerfect(player.Center + new Vector2(25 - k / 2, -k * 1.2f - 47), mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
+                    Dust.NewDustPerfect(Player.Center + new Vector2(-5 + k / 2, -k * 3 - 39), Mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
+                    Dust.NewDustPerfect(Player.Center + new Vector2(5 - k / 2, -k * 3 - 39), Mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
+                    Dust.NewDustPerfect(Player.Center + new Vector2(-25 + k / 2, -k * 1.2f - 47), Mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
+                    Dust.NewDustPerfect(Player.Center + new Vector2(25 - k / 2, -k * 1.2f - 47), Mod.DustType("Purify2"), new Vector2(0, -2), 0, default, 3f);
                 }
                 for (int k = 0; k <= 100; k++)
                 {
                     float r = Main.rand.NextFloat(0, 6.28f);
                     float r2 = Main.rand.NextFloat(3, 9);
-                    Dust.NewDustPerfect(player.Center, mod.DustType("Purify2"), new Vector2((float)Math.Cos(r) * r2, (float)Math.Sin(r) * r2), 0, default, 4f);
+                    Dust.NewDustPerfect(Player.Center, Mod.DustType("Purify2"), new Vector2((float)Math.Cos(r) * r2, (float)Math.Sin(r) * r2), 0, default, 4f);
                 }
             }
 
             if (animate >= 1)
             {
-                player.position = new Vector2(npc.position.X, npc.position.Y - 16);
-                player.immune = true;
-                player.immuneTime = 5;
-                player.immuneNoBlink = true;
+                Player.position = new Vector2(NPC.position.X, NPC.position.Y - 16);
+                Player.immune = true;
+                Player.immuneTime = 5;
+                Player.immuneNoBlink = true;
                 if (animate == 1)
                 {
-                    player.AddBuff(BuffID.Featherfall, 120);
+                    Player.AddBuff(BuffID.Featherfall, 120);
                     mp.GetAbility<Pure>(out var purify);
                     UILoader.GetUIState<TextCard>().Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Pure>().GetAssignedKeys()[0] + " to purify nearby tiles", purify);
-                    Helper.UnlockEntry<PureEntry>(player);
+                    Helper.UnlockEntry<PureEntry>(Player);
                 }
             }
 
@@ -96,36 +96,36 @@ namespace StarlightRiver.Content.Pickups
             }
         }
 
-        public static Texture2D wind = GetTexture("StarlightRiver/Assets/Abilities/PureCrown");
+        public static Texture2D wind = Request<Texture2D>("StarlightRiver/Assets/Abilities/PureCrown").Value;
         private float timer = 0;
 
         public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (Main.LocalPlayer == Main.player[npc.target])
+            if (Main.LocalPlayer == Main.player[NPC.target])
             {
                 //darkness
                 if (animate >= 400)
                 {
-                    //spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (100 - ((float)animate - 400)) / 100));
+                    //spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Pickups/Overlay").Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (100 - ((float)animate - 400)) / 100));
                     Lighting.brightness = (float)(animate - 400) / 100;
                 }
 
                 if (animate >= 30 && animate < 400)
                 {
-                    //spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, 0.99f));
+                    //spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Pickups/Overlay").Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, 0.99f));
                     Lighting.brightness = 0f;
                 }
 
                 if (animate < 30 && animate > 0)
                 {
-                    //spriteBatch.Draw(GetTexture("StarlightRiver/Assets/NPCs/Pickups/Overlay"), new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (float)animate / 30));
+                    //spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Pickups/Overlay").Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Color(0, 0, 0, (float)animate / 30));
                     Lighting.brightness = (float)(30 - animate) / 30;
                 }
 
                 //crown
                 if (animate <= 400 && animate > 120)
                 {
-                    spriteBatch.Draw(wind, Vector2.Lerp(new Vector2(npc.position.X - Main.screenPosition.X, 0), (npc.position - Main.screenPosition) + new Vector2(0, -32), 1 - ((float)animate - 120) / 280), Color.White * (((float)animate - 120) / 30));
+                    spriteBatch.Draw(wind, Vector2.Lerp(new Vector2(NPC.position.X - Main.screenPosition.X, 0), (NPC.position - Main.screenPosition) + new Vector2(0, -32), 1 - ((float)animate - 120) / 280), Color.White * (((float)animate - 120) / 30));
                 }
             }
 
@@ -139,11 +139,11 @@ namespace StarlightRiver.Content.Pickups
 
             if (!mp.Unlocked<Pure>() && animate == 0)
             {
-                spriteBatch.Draw(wind, npc.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
-                Dust.NewDust(npc.position + new Vector2(0, (float)Math.Sin(timer) * 16), npc.width, npc.height, DustType<Content.Dusts.Purify>());
+                spriteBatch.Draw(wind, NPC.position - Main.screenPosition + new Vector2(0, (float)Math.Sin(timer) * 4), Color.White);
+                Dust.NewDust(NPC.position + new Vector2(0, (float)Math.Sin(timer) * 16), NPC.width, NPC.height, DustType<Content.Dusts.Purify>());
 
-                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20), DustType<Content.Dusts.Purify>(), null, 0, default, 2f);
-                Dust.NewDustPerfect(npc.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20) * -1, DustType<Content.Dusts.Purify>(), null, 0, default, 2f);
+                Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20), DustType<Content.Dusts.Purify>(), null, 0, default, 2f);
+                Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(timer) * 40, (float)Math.Sin(timer) * 20) * -1, DustType<Content.Dusts.Purify>(), null, 0, default, 2f);
             }
         }
     }

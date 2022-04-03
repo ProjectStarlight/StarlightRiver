@@ -35,11 +35,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-            int item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
+            int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
 
-            // Sync the drop for multiplayer
-            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+            // Sync the drop for multiPlayer
+            if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -75,11 +75,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            int item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
+            int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
 
-            // Sync the drop for multiplayer
-            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+            // Sync the drop for multiPlayer
+            if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
         }
     }
 
@@ -89,32 +89,32 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public VitricOreDummy() : base(TileType<VitricOre>(), 32, 48) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
-                if (Main.myPlayer == player.whoAmI)
+                if (Main.myPlayer == Player.whoAmI)
                 {
-                    WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
-                    NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                    WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
+                    NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
                 } 
                 else
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
                 }
             }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreGlow");
-            Color color = Helper.IndicatorColorProximity(150, 300, projectile.Center);
+            Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreGlow").Value;
+            Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-            spriteBatch.Draw(tex, projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
+            spriteBatch.Draw(tex, Projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
         }
     }
 
@@ -124,32 +124,32 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public VitricOreFloatDummy() : base(TileType<VitricOreFloat>(), 32, 32) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
-                if (Main.myPlayer == player.whoAmI)
+                if (Main.myPlayer == Player.whoAmI)
                 {
-                    WorldGen.KillTile((int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f));
-                    NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                    WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
+                    NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
                 }
                 else
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
                 for (int k = 0; k <= 10; k++)
                 {
-                    Dust.NewDustPerfect(projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-                    Dust.NewDustPerfect(projectile.Center, DustType<Content.Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
                 }
             }
         }
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = GetTexture(AssetDirectory.VitricTile + "VitricOreFloatGlow");
-            Color color = Helper.IndicatorColorProximity(150, 300, projectile.Center);
+            Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
+            Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-            spriteBatch.Draw(tex, projectile.position - Vector2.One - Main.screenPosition, color);
+            spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
         }
     }
 

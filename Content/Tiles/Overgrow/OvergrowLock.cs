@@ -59,11 +59,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            player.showItemIcon = true;
-            player.showItemIcon2 = -1;
-            player.showItemIconText = "Need: Overgrowth Key";
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = -1;
+            Player.showItemIconText = "Need: Overgrowth Key";
         }
     }
 }

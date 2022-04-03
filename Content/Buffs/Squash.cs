@@ -19,9 +19,9 @@ namespace StarlightRiver.Content.Buffs
             Main.debuff[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.velocity.X *= 0.9f;
+            Player.velocity.X *= 0.9f;
         }
     }
 }

@@ -24,54 +24,54 @@ namespace StarlightRiver.Content.Items.Misc
         }
         public override void SetDefaults()
         {
-            item.damage = 20;
-            item.melee = true;
-            item.width = 36;
-            item.height = 38;
-            item.useTime = 25;
-            item.useAnimation = 25;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 7.5f;
-            item.value = Item.sellPrice(0,1,0,0);
-            item.rare = ItemRarityID.Green;
-            item.UseSound = SoundID.Item1;
-            item.autoReuse = false;
-            item.useTurn = true;
-            item.crit = 10;
+            Item.damage = 20;
+            Item.melee = true;
+            Item.width = 36;
+            Item.height = 38;
+            Item.useTime = 25;
+            Item.useAnimation = 25;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 7.5f;
+            Item.value = Item.sellPrice(0,1,0,0);
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.autoReuse = false;
+            Item.useTurn = true;
+            Item.crit = 10;
         }
-        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        public override void ModifyHitNPC(Player Player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
-            if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
+            if (Player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
                 crit = false;
         }
-        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+        public override void OnHitNPC(Player Player, NPC target, int damage, float knockBack, bool crit)
         {
             if (crit)
             {
                 Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
-                int itemType = -1;
+                int ItemType = -1;
                 switch (Main.rand.Next(3))
                 {
                     case 0:
-                        itemType = ModContent.ItemType<FiletGiblet1>();
+                        ItemType = ModContent.ItemType<FiletGiblet1>();
                         break;
                     case 1:
-                        itemType = ModContent.ItemType<FiletGiblet2>();
+                        ItemType = ModContent.ItemType<FiletGiblet2>();
                         break;
                     default:
-                        itemType = ModContent.ItemType<FiletGiblet3>();
+                        ItemType = ModContent.ItemType<FiletGiblet3>();
                         break;
                 }
-                Item.NewItem(target.Center, itemType);
+                Item.NewItem(target.Center, ItemType);
 
                 if (target.GetGlobalNPC<FiletNPC>().DOT < 3)
                     target.GetGlobalNPC<FiletNPC>().DOT += 1;
 
 
-                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
+                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, Player.whoAmI, target.whoAmI);
 
-                Vector2 direction = Vector2.Normalize(target.Center - player.Center);
+                Vector2 direction = Vector2.Normalize(target.Center - Player.Center);
                 for (int j = 0; j < 15; j++)
                 {
                     Dust.NewDustPerfect(target.Center, DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
@@ -92,21 +92,21 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.width = 24;
-            item.height = 24;
-            item.maxStack = 1;
+            Item.width = 24;
+            Item.height = 24;
+            Item.maxStack = 1;
         }
 
-        public override bool ItemSpace(Player player) => true;
-        public override bool OnPickup(Player player)
+        public override bool ItemSpace(Player Player) => true;
+        public override bool OnPickup(Player Player)
         {
-            int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 10);
-            player.HealEffect(10);
-            player.statLife += healAmount;
+            int healAmount = (int)MathHelper.Min(Player.statLifeMax2 - Player.statLife, 10);
+            Player.HealEffect(10);
+            Player.statLife += healAmount;
 
-            player.AddBuff(BuffID.WellFed, 18000);
-            player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            Player.AddBuff(BuffID.WellFed, 18000);
+            Player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)Player.position.X, (int)Player.position.Y);
             return false;
         }
     }
@@ -122,62 +122,62 @@ namespace StarlightRiver.Content.Items.Misc
 
         public bool hasSword = false;
 
-        public override void SetDefaults(NPC npc)
+        public override void SetDefaults(NPC NPC)
         {
-            if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(50))
+            if (NPC.type == NPCID.BloodZombie && Main.rand.NextBool(50))
                 hasSword = true;
-            base.SetDefaults(npc);
+            base.SetDefaults(NPC);
         }
 
-        public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(NPC NPC, SpriteBatch spriteBatch, Color drawColor)
         {     
             if (hasSword)
             {
-                Texture2D tex = ModContent.GetTexture(AssetDirectory.MiscItem + "FiletKnifeEmbedded");
-                bool facingLeft = npc.direction == -1;
+                Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "FiletKnifeEmbedded").Value;
+                bool facingLeft = NPC.direction == -1;
 
                 Vector2 origin = facingLeft ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
                 SpriteEffects effects = facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
                 float rotation = facingLeft ? 0.78f : -0.78f;
 
 
-                spriteBatch.Draw(tex, npc.Center - Main.screenPosition, null, drawColor, rotation, origin, npc.scale, effects, 0f);
+                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, drawColor, rotation, origin, NPC.scale, effects, 0f);
             }
-            return base.PreDraw(npc, spriteBatch, drawColor);
+            return base.PreDraw(NPC, spriteBatch, drawColor);
         }
 
-        public override void NPCLoot(NPC npc)
+        public override void NPCLoot(NPC NPC)
         {
             if (hasSword && Main.rand.NextBool(3))
-                Item.NewItem(npc.Center, ModContent.ItemType<FiletKnife>());
-            base.NPCLoot(npc);
+                Item.NewItem(NPC.Center, ModContent.ItemType<FiletKnife>());
+            base.NPCLoot(NPC);
         }
 
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
             if (DOT == 0)
                 return;
-            if (npc.lifeRegen > 0)
+            if (NPC.lifeRegen > 0)
             {
-                npc.lifeRegen = 0;
+                NPC.lifeRegen = 0;
             }
-            npc.lifeRegen -= DOT * 3;
+            NPC.lifeRegen -= DOT * 3;
             if (damage < DOT)
             {
                 damage = DOT;
             }
         }
 
-        public override void DrawEffects(NPC npc, ref Color drawColor)
+        public override void DrawEffects(NPC NPC, ref Color drawColor)
         {
             if (DOT != 0)
             {
                 if (Main.rand.Next(5) < DOT)
-                    Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood, npc.velocity.X * 0.4f, npc.velocity.Y * 0.4f, default, default(Color), 1.25f);
+                    Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, NPC.velocity.X * 0.4f, NPC.velocity.Y * 0.4f, default, default(Color), 1.25f);
             }
 
             if (hasSword)
-                Dust.NewDustPerfect(npc.Center - new Vector2(npc.spriteDirection * 12, 0), DustID.Blood, Vector2.Zero);
+                Dust.NewDustPerfect(NPC.Center - new Vector2(NPC.spriteDirection * 12, 0), DustID.Blood, Vector2.Zero);
         }
     }
     public class FiletSlash : ModProjectile, IDrawPrimitive
@@ -197,17 +197,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.melee = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = BASETIMELEFT - 2;
-            projectile.ignoreWater = true;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.melee = true;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = BASETIMELEFT - 2;
+            Projectile.ignoreWater = true;
+            Projectile.alpha = 255;
         }
 
         public override void AI()
@@ -218,19 +218,19 @@ namespace StarlightRiver.Content.Items.Misc
                 effect.VertexColorEnabled = true;
             }
 
-            NPC target = Main.npc[(int)projectile.ai[0]];
-            projectile.Center = target.Center;
+            NPC target = Main.npc[(int)Projectile.ai[0]];
+            Projectile.Center = target.Center;
 
             if (direction == Vector2.Zero)
                 direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * (target.width + target.height) * 0.06f;
             cache = new List<Vector2>();
 
-            float progress = (BASETIMELEFT - projectile.timeLeft) / (float)BASETIMELEFT;
+            float progress = (BASETIMELEFT - Projectile.timeLeft) / (float)BASETIMELEFT;
 
             int widthExtra = (int)(6 * Math.Sin(progress * 3.14f));
 
-            int min = (BASETIMELEFT - (20 + widthExtra)) - projectile.timeLeft;
-            int max = (BASETIMELEFT + (widthExtra)) - projectile.timeLeft;
+            int min = (BASETIMELEFT - (20 + widthExtra)) - Projectile.timeLeft;
+            int max = (BASETIMELEFT + (widthExtra)) - Projectile.timeLeft;
 
             int average = (min + max) / 2;
             for (int i = min; i < max; i++)
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Items.Misc
                 cache.Add(target.Center + (direction * i));
             }
 
-            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((target.width + target.height) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (projectile.timeLeft /(float)(BASETIMELEFT + 5)))) * (projectile.timeLeft / (float)BASETIMELEFT), factor =>
+            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((target.width + target.height) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (Projectile.timeLeft /(float)(BASETIMELEFT + 5)))) * (Projectile.timeLeft / (float)BASETIMELEFT), factor =>
             {
                 return Color.Lerp(Color.Red,Color.DarkRed,factor.X) * 0.8f;
             });
@@ -275,9 +275,9 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed, but decreased crit rate on Filet Knife", false, false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.meleeSpeed += 0.3f;
+            Player.meleeSpeed += 0.3f;
         }
     }
 }

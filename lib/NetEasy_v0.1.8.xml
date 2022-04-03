@@ -21,8 +21,8 @@
             </summary>
             <exception cref="T:NetEasy.ModuleLoadException">Thrown when a module or its observed members do not have the <see cref="T:System.SerializableAttribute"/>.</exception>
         </member>
-        <member name="P:NetEasy.Module.mod">
-            <summary>The mod responsible for this <see cref="T:NetEasy.Module"/>.</summary>
+        <member name="P:NetEasy.Module.Mod">
+            <summary>The Mod responsible for this <see cref="T:NetEasy.Module"/>.</summary>
         </member>
         <member name="P:NetEasy.Module.Sender">
             <summary>The sender of the net message.</summary>
@@ -67,7 +67,7 @@
             <summary>Loads your <see cref="T:Terraria.ModLoader.Mod"/> for NetEasy. Call this in <see cref="M:Terraria.ModLoader.Mod.Load"/>.</summary>
         </member>
         <member name="M:NetEasy.NetEasy.HandleNetEasyPacket(System.IO.BinaryReader,System.Int32)">
-            <summary>Handles packets sent from your mod. Call this in <see cref="M:Terraria.ModLoader.Mod.HandlePacket(System.IO.BinaryReader,System.Int32)"/>.</summary>
+            <summary>Handles packets sent from your Mod. Call this in <see cref="M:Terraria.ModLoader.Mod.HandlePacket(System.IO.BinaryReader,System.Int32)"/>.</summary>
         </member>
         <member name="M:NetEasy.NetEasy.Unload">
             <inheritdoc/>

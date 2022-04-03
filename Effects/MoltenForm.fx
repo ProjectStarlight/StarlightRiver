@@ -8,7 +8,7 @@ float uTime;
 float4 sourceFrame;
 float2 texSize;
 
-float mod(float x, float y)
+float Mod(float x, float y)
 {
     return x - y * floor(x / y);
 }
@@ -18,7 +18,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     float2 st = (uv - float2(sourceFrame.xy / texSize)) * float2(texSize.x / sourceFrame.z, texSize.y / sourceFrame.w);
     float4 color = tex2D(samplerTex, uv);
     color.a = 0.0;
-    float value = mod(-tex2D(samplerTex2, (1 - st)).x + uTime - (1 - st.y), 2.0);
+    float value = Mod(-tex2D(samplerTex2, (1 - st)).x + uTime - (1 - st.y), 2.0);
 
     color.a += value > uTime ? 0.0 : 1.0;
     color.r += max(1.2 - abs(uTime - st.y), 0.0) * (1.0 - value);

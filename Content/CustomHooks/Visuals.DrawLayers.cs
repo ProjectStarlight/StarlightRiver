@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Main.drawWaters += DrawUnderwaterNPCs;
             //Keys
             On.Terraria.Main.DrawItems += DrawKeys;
-            //Tile draws infront of the player
+            //Tile draws infront of the Player
             On.Terraria.Main.DrawPlayer += PostDrawPlayer;
         }
 
@@ -33,17 +33,17 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig(self, bg, styleOverride, allowUpdate);
 
-            foreach (NPC npc in Main.npc.Where(npc => npc.type == NPCType<BoneMine>() && npc.active))
+            foreach (NPC NPC in Main.npc.Where(NPC => NPC.type == NPCType<BoneMine>() && NPC.active))
             {
                 SpriteBatch spriteBatch = Main.spriteBatch;
-                Color drawColor = Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.3f;
+                Color drawColor = Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.3f;
 
-                spriteBatch.Draw(GetTexture(npc.modNPC.Texture), npc.position - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2((float)Math.Sin(npc.ai[0]) * 4f, 0), drawColor);
+                spriteBatch.Draw(Request<Texture2D>(NPC.ModNPC.Texture).Value, NPC.position - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2((float)Math.Sin(NPC.ai[0]) * 4f, 0), drawColor);
                 for (int k = 0; k >= 0; k++)
                 {
-                    if (Main.tile[(int)npc.position.X / 16, (int)npc.position.Y / 16 + k + 2].active()) break;
-                    spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "ShakerChain"),
-                        npc.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(npc.ai[0] + k) * 4, 18 + k * 16), drawColor);
+                    if (Main.tile[(int)NPC.position.X / 16, (int)NPC.position.Y / 16 + k + 2].active()) break;
+                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowItem + "ShakerChain").Value,
+                        NPC.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(NPC.ai[0] + k) * 4, 18 + k * 16), drawColor);
                 }
             }
         }

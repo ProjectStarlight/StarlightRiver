@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Alchemy
     {
 		public override string Texture => AssetDirectory.Alchemy + Name;
 
-		public override bool AltFunctionUse(Player player) => true;
+		public override bool AltFunctionUse(Player Player) => true;
 
 		public override void SetStaticDefaults()
 		{
@@ -23,16 +23,16 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void SetDefaults()
 		{
-			item.width = 26;
-			item.height = 22;
-			item.maxStack = 99;
-			item.useTurn = true;
-			item.autoReuse = true;
-			item.useAnimation = 15;
-			item.useTime = 15;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.consumable = true;
-			item.value = 500;
+			Item.width = 26;
+			Item.height = 22;
+			Item.maxStack = 99;
+			Item.useTurn = true;
+			Item.autoReuse = true;
+			Item.useAnimation = 15;
+			Item.useTime = 15;
+			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.consumable = true;
+			Item.value = 500;
 		}
 	}
 }

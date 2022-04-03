@@ -18,22 +18,22 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SetDefaults()
         {
-            item.magic = true;
-            item.width = 32;
-            item.height = 32;
-            item.damage = 10;
-            item.crit = 15;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.useTime = 30;
-            item.useAnimation = 30;
-            item.noMelee = true;
-            item.knockBack = 2;
-            item.rare = ItemRarityID.Green;
-            item.useAmmo = AmmoID.Arrow;
-            item.shoot = ProjectileID.PurificationPowder;
+            Item.magic = true;
+            Item.width = 32;
+            Item.height = 32;
+            Item.damage = 10;
+            Item.crit = 15;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useTime = 30;
+            Item.useAnimation = 30;
+            Item.noMelee = true;
+            Item.knockBack = 2;
+            Item.rare = ItemRarityID.Green;
+            Item.useAmmo = AmmoID.Arrow;
+            Item.shoot = ProjectileID.PurificationPowder;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
         {
             float rot = Main.rand.NextFloat(-0.2f, 0.2f);
             Vector2 pos = Main.MouseWorld + Vector2.UnitY.RotatedBy(rot) * -900;

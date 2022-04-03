@@ -16,17 +16,17 @@ namespace StarlightRiver.Content.Buffs
         public override void SetDefaults()
         {
             DisplayName.SetDefault("Ferrofluid Draft");
-            Description.SetDefault("Nearby items gravitate towards you");
+            Description.SetDefault("Nearby Items gravitate towards you");
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            for (int k = 0; k < Main.item.Length; k++)
+            for (int k = 0; k < Main.Item.Length; k++)
             {
-                if (Vector2.Distance(Main.item[k].Center, player.Center) <= 800)
+                if (Vector2.Distance(Main.Item[k].Center, Player.Center) <= 800)
                 {
-                    Main.item[k].velocity += Vector2.Normalize(player.Center - Main.item[k].Center) * 3f;
-                    Main.item[k].velocity = Vector2.Normalize(Main.item[k].velocity) * 12;
+                    Main.Item[k].velocity += Vector2.Normalize(Player.Center - Main.Item[k].Center) * 3f;
+                    Main.Item[k].velocity = Vector2.Normalize(Main.Item[k].velocity) * 12;
                 }
             }
         }

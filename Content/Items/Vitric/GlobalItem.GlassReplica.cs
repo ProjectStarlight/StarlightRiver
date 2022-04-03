@@ -16,12 +16,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool CloneNewInstances => true;
 
-        public override bool NeedsSaving(Item item) => isReplica;
+        public override bool NeedsSaving(Item Item) => isReplica;
 
         public bool isReplica;
         private bool firstTime = true;
 
-        public override TagCompound Save(Item item)
+        public override TagCompound Save(Item Item)
         {
             return new TagCompound
             {
@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Items.Vitric
             };
         }
 
-        public override void Load(Item item, TagCompound tag)
+        public override void Load(Item Item, TagCompound tag)
         {
             isReplica = tag.GetBool("isReplica");
             firstTime = false;
         }
 
-        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             if (isReplica)
             {
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Vitric
             return true;
         }
 
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void PostDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             if (isReplica)
             {
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Vitric
             }
         }
 
-        public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        public override bool PreDrawInWorld(Item Item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
             if (isReplica)
             {
@@ -65,13 +65,13 @@ namespace StarlightRiver.Content.Items.Vitric
                     spriteBatch.End();
                     spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                    var tex = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
-                    float scale1 = Main.PopupTexture[item.type].Size().Length() / tex.Size().Length();
+                    var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow1").Value;
+                    float scale1 = Main.PopupTexture[Item.type].Size().Length() / tex.Size().Length();
                     var color = new Color(180, 240, 255);
 
-                    spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.rottime, tex.Size() / 2, 2 * scale1, 0, 0);
-                    spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.3f, -StarlightWorld.rottime, tex.Size() / 2, 2.5f * scale1, 0, 0);
-                    spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.8f, StarlightWorld.rottime * 2, tex.Size() / 2, 1.2f * scale1, 0, 0);
+                    spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.rottime, tex.Size() / 2, 2 * scale1, 0, 0);
+                    spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, color * 0.3f, -StarlightWorld.rottime, tex.Size() / 2, 2.5f * scale1, 0, 0);
+                    spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, color * 0.8f, StarlightWorld.rottime * 2, tex.Size() / 2, 1.2f * scale1, 0, 0);
                 }
 
                 spriteBatch.End();
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Vitric
             return true;
         }
 
-        public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+        public override void PostDrawInWorld(Item Item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
             if (isReplica)
             {
@@ -91,15 +91,15 @@ namespace StarlightRiver.Content.Items.Vitric
             }
         }
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
         {
             if (isReplica)
             {
-                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.mod == "Terraria").text = "Replica " + item.Name;
+                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").text = "Replica " + Item.Name;
             }
         }
 
-        public override bool OnPickup(Item item, Player player)
+        public override bool OnPickup(Item Item, Player Player)
         {
             firstTime = false;
             return true;

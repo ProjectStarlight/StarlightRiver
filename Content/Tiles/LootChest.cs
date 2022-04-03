@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles
 
         public virtual void SafeSetDefaults() { }
 
-        public virtual bool CanOpen(Player player) => true;
+        public virtual bool CanOpen(Player Player) => true;
 
         public override void SetDefaults()
         {

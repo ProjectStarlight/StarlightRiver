@@ -17,19 +17,19 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
         public override void SetDefaults()
         {
-            npc.townNPC = true;
-            npc.friendly = true;
-            npc.width = 18;
-            npc.height = 40;
-            npc.aiStyle = -1;
-            npc.damage = 10;
-            npc.defense = 15;
-            npc.lifeMax = 250;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.knockBackResist = 0.5f;
-            npc.dontTakeDamage = true;
-            npc.dontCountMe = true;
+            NPC.townNPC = true;
+            NPC.friendly = true;
+            NPC.width = 18;
+            NPC.height = 40;
+            NPC.aiStyle = -1;
+            NPC.damage = 10;
+            NPC.defense = 15;
+            NPC.lifeMax = 250;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.knockBackResist = 0.5f;
+            NPC.dontTakeDamage = true;
+            NPC.dontCountMe = true;
         }
 
         public override string GetChat()
@@ -59,11 +59,11 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
         public override void AI()
         {
-            if (RichTextBox.talking == npc)
+            if (RichTextBox.talking == NPC)
             {
                 SetData();
 
-                if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
+                if (Main.player[Main.myPlayer].talkNPC != NPC.whoAmI)
                 {
                     UILoader.GetUIState<RichTextBox>().Visible = false;
                     RichTextBox.SetData(null, "", "");
@@ -79,12 +79,12 @@ namespace StarlightRiver.Content.NPCs.Permafrost
                     switch (textState)
                     {
                         case 0:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]This message should appear on first visit"
                             ); break;
 
                         case 1:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]This message is the second one to appear on first visit"
                             ); break;
 
@@ -98,12 +98,12 @@ namespace StarlightRiver.Content.NPCs.Permafrost
                     switch (textState)
                     {
                         case 0:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]This message should appear on the next visit"
                             ); break;
 
                         case 1:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]This message too... i guess"
                             ); break;
 
@@ -117,12 +117,12 @@ namespace StarlightRiver.Content.NPCs.Permafrost
                     switch (textState)
                     {
                         case 0:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]damn found me"
                             ); break;
 
                         case 1:
-                            RichTextBox.SetData(npc, "[PH]Tutorial Cultist",
+                            RichTextBox.SetData(NPC, "[PH]Tutorial Cultist",
                             "[]Bend over."
                             ); break;
 

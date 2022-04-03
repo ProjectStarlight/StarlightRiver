@@ -14,9 +14,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	public abstract class WalkableCrystalItem : QuickTileItem
     {
         private bool held = false;
-        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "The slot this item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
+        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
-        //public override bool AltFunctionUse(Player player) => true;
+        //public override bool AltFunctionUse(Player Player) => true;
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
         {
             glowstick = true;
@@ -24,28 +24,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
             wetTorch = true;
         }
 
-        public override void HoldItem(Player player) =>
+        public override void HoldItem(Player Player) =>
             held = true;
-        public override void UpdateInventory(Player player) =>
+        public override void UpdateInventory(Player Player) =>
             held = false;
 
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             if (held)
             {
-                WalkableCrystal modtile = ((GetModTile(item.createTile) as WalkableCrystal));
+                WalkableCrystal modtile = ((GetModTile(Item.createTile) as WalkableCrystal));
                 float zoom = Main.GameViewMatrix.Zoom.X;
                 Vector2 offset = new Vector2(((modtile.MaxWidth / 2) - 1) * 16, ((modtile.MaxHeight - 1) * 16) - 1) * zoom;
-                spriteBatch.Draw(Main.tileTexture[item.createTile], ((((Main.MouseWorld) / (16 * zoom)).PointAccur() * (16 * zoom)) - Main.screenPosition) - offset,
-                    Main.tileTexture[item.createTile].Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
+                spriteBatch.Draw(Main.tileTexture[Item.createTile], ((((Main.MouseWorld) / (16 * zoom)).PointAccur() * (16 * zoom)) - Main.screenPosition) - offset,
+                    Main.tileTexture[Item.createTile].Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
                     Color.White * 0.75f, 0, default, zoom, default, default);
             }
         }
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
             //(GetModTile(Tiletype) as WalkableCrystal).
-            item.placeStyle = player.selectedItem;
-            return base.CanUseItem(player);
+            Item.placeStyle = Player.selectedItem;
+            return base.CanUseItem(Player);
         }
     }
 
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)//broken?
         {
-            Texture2D lavaFadeTex = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
+            Texture2D lavaFadeTex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
 
             if (Main.tile[i, j].type == Type)
             {
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 
     //            //lava fade drawing
-    //            Texture2D lavaFadeTex = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
+    //            Texture2D lavaFadeTex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
     //            for (int k = -6; k < 7; k++)
     //                for (int h = -18; h < 1; h++)
     //                {
@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     //            spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, 2), tex.Frame(2, 1, t.frameX - 1), Color.LightGray, 0, new Vector2(32, 48), 1, 0, 0);
     //            //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
 
-    //            Texture2D tex1 = GetTexture(AssetDirectory.VitricTile + "VitricLavaFade");
+    //            Texture2D tex1 = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
     //            for (int k = -2; k < 2; k++)
     //                for (int h = -3; h < 3; h++)
     //                {

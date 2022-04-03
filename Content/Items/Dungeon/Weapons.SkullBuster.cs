@@ -25,22 +25,22 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			item.damage = 30;
-			item.ranged = true;
-			item.width = 24;
-			item.height = 24;
-			item.useTime = 65;
-			item.useAnimation = 65;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.noMelee = true;
-			item.knockBack = 0;
-			item.rare = ItemRarityID.Orange;
-			item.shoot = ModContent.ProjectileType<SkullBusterProj>();
-			item.shootSpeed = 12f;
-			item.useAmmo = AmmoID.Bullet;
-			item.autoReuse = true;
+			Item.damage = 30;
+			Item.ranged = true;
+			Item.width = 24;
+			Item.height = 24;
+			Item.useTime = 65;
+			Item.useAnimation = 65;
+			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.noMelee = true;
+			Item.knockBack = 0;
+			Item.rare = ItemRarityID.Orange;
+			Item.shoot = ModContent.ProjectileType<SkullBusterProj>();
+			Item.shootSpeed = 12f;
+			Item.useAmmo = AmmoID.Bullet;
+			Item.autoReuse = true;
 		}
-		public override void HoldItem(Player player)
+		public override void HoldItem(Player Player)
 		{
 			reloadCounter--;
 			recoil *= 0.965f;
@@ -57,34 +57,34 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				shotCounter = 0;
 				reloadCounter = 120;
-				Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), player.Center);
-				item.noUseGraphic = true;
-				Projectile.NewProjectile(player.Center,Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, player.whoAmI);
+				Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), Player.Center);
+				Item.noUseGraphic = true;
+				Projectile.NewProjectile(Player.Center,Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Player.whoAmI);
 			}
 		}
-		public override bool CanUseItem(Player player)
+		public override bool CanUseItem(Player Player)
 		{
 			if (reloadCounter > 0)
 			{
 				return false;
 			}
-			item.noUseGraphic = false;
-			return base.CanUseItem(player);
+			Item.noUseGraphic = false;
+			return base.CanUseItem(Player);
 		}
-		public override bool Shoot(Player player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player Player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
+			Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
 			if (shotCounter < 1)
 			{
-				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, player.whoAmI);
+				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, Player.whoAmI);
 				shotsHit = 0;
 			}
 			shotCounter++;
 			Vector2 direction = new Vector2(speedX,speedY);
 			direction = direction.RotatedBy(spread);
-			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, player.whoAmI);
+			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, Player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
-			recoil = 0.8f * (player.direction * -1);
+			recoil = 0.8f * (Player.direction * -1);
 			spread = Main.rand.NextFloat(-1.5f, 1.5f);
 			return false;
 		}
@@ -105,53 +105,53 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			projectile.hostile = false;
-			projectile.ranged = true;
-			projectile.width = 2;
-			projectile.height = 2;
-			projectile.aiStyle = -1;
-			projectile.friendly = false;
-			projectile.penetrate = -1;
-			projectile.tileCollide = false;
-			projectile.timeLeft = 999999;
-			projectile.ignoreWater = true;
-			projectile.alpha = 255;
+			Projectile.hostile = false;
+			Projectile.ranged = true;
+			Projectile.width = 2;
+			Projectile.height = 2;
+			Projectile.aiStyle = -1;
+			Projectile.friendly = false;
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.timeLeft = 999999;
+			Projectile.ignoreWater = true;
+			Projectile.alpha = 255;
 		}
 
 		public override void AI()
 		{
-			Player player = Main.player[projectile.owner];
-			player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
-			projectile.Center = player.Center;
+			Player Player = Main.player[Projectile.owner];
+			Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
+			Projectile.Center = Player.Center;
 
-			direction = Main.MouseWorld - (player.Center);
-			player.itemTime = player.itemAnimation = 8;
-			if (player.HeldItem.modItem is SkullBuster item)
+			direction = Main.MouseWorld - (Player.Center);
+			Player.ItemTime = Player.ItemAnimation = 8;
+			if (Player.HeldItem.ModItem is SkullBuster Item)
 			{
-				direction = direction.RotatedBy(item.recoil);
+				direction = direction.RotatedBy(Item.recoil);
 
-				if (Main.mouseLeft && !leftClick) //Change to check if its myplayer holding mouseleft later
+				if (Main.mouseLeft && !leftClick) //Change to check if its myPlayer holding mouseleft later
 				{
 					leftClick = true;
-					player.itemTime = 0;
-					if (item.shotCounter >= 3)
+					Player.ItemTime = 0;
+					if (Item.shotCounter >= 3)
 					{
-						projectile.active = false;
+						Projectile.active = false;
 					}
 				}
 				
-				if (!Main.mouseLeft)              //Change to check if its myplayer holding mouseleft later
+				if (!Main.mouseLeft)              //Change to check if its myPlayer holding mouseleft later
 					leftClick = false;
 
-				if (item.shotCounter >= 4)
+				if (Item.shotCounter >= 4)
 				{
-					projectile.active = false;
+					Projectile.active = false;
 				}
 
-				player.itemRotation = direction.ToRotation();
-				if (player.direction != 1)
+				Player.ItemRotation = direction.ToRotation();
+				if (Player.direction != 1)
 				{
-					player.itemRotation -= 3.14f;
+					Player.ItemRotation -= 3.14f;
 				}
 			}
 		}
@@ -170,70 +170,70 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetDefaults()
 		{
-			projectile.hostile = false;
-			projectile.ranged = true;
-			projectile.width = 2;
-			projectile.height = 2;
-			projectile.aiStyle = -1;
-			projectile.friendly = false;
-			projectile.penetrate = -1;
-			projectile.tileCollide = false;
-			projectile.timeLeft = 999999;
-			projectile.ignoreWater = true;
-			projectile.alpha = 255;
-			Main.projFrames[projectile.type] = 22;
+			Projectile.hostile = false;
+			Projectile.ranged = true;
+			Projectile.width = 2;
+			Projectile.height = 2;
+			Projectile.aiStyle = -1;
+			Projectile.friendly = false;
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.timeLeft = 999999;
+			Projectile.ignoreWater = true;
+			Projectile.alpha = 255;
+			Main.projFrames[Projectile.type] = 22;
 		}
 		public override void AI()
 		{
-			Player player = Main.player[projectile.owner];
-			player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
-			player.itemTime = player.itemAnimation = 2;
-			direction = Main.MouseWorld - (player.Center);
+			Player Player = Main.player[Projectile.owner];
+			Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
+			Player.ItemTime = Player.ItemAnimation = 2;
+			direction = Main.MouseWorld - (Player.Center);
 			direction.Normalize();
 			direction*= 15;
-			player.itemRotation = direction.ToRotation();
-			player.heldProj = projectile.whoAmI;
-			projectile.Center = player.Center;
-			if (player.direction != 1)
+			Player.ItemRotation = direction.ToRotation();
+			Player.heldProj = Projectile.whoAmI;
+			Projectile.Center = Player.Center;
+			if (Player.direction != 1)
 			{
-				player.itemRotation -= 3.14f;
+				Player.ItemRotation -= 3.14f;
 			}
-			projectile.frameCounter++;
-			if (projectile.frameCounter >= 5)
+			Projectile.frameCounter++;
+			if (Projectile.frameCounter >= 5)
 			{
-				projectile.frame++;
-				projectile.frameCounter = 0;
-				if (projectile.frame >= Main.projFrames[projectile.type])
+				Projectile.frame++;
+				Projectile.frameCounter = 0;
+				if (Projectile.frame >= Main.projFrames[Projectile.type])
 				{
-					projectile.active = false;
-					if (player.HeldItem.modItem is SkullBuster item)
+					Projectile.active = false;
+					if (Player.HeldItem.ModItem is SkullBuster Item)
 					{
-						item.reloadCounter = 0;
+						Item.reloadCounter = 0;
 					}
 				}
 			}
-			if (player.HeldItem.modItem is SkullBuster item2 && item2.reloadCounter <= 0)
+			if (Player.HeldItem.ModItem is SkullBuster Item2 && Item2.reloadCounter <= 0)
 			{
-				projectile.active = false;
+				Projectile.active = false;
 			}
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Player player = Main.player[projectile.owner];
-			Texture2D texture = Main.projectileTexture[projectile.type];
-			int height = Main.projectileTexture[projectile.type].Height / Main.projFrames[projectile.type];
-			int y2 = height * projectile.frame;
-			if (player.direction == 1)
+			Player Player = Main.player[Projectile.owner];
+			Texture2D texture = Main.projectileTexture[Projectile.type];
+			int height = Main.projectileTexture[Projectile.type].Height / Main.projFrames[Projectile.type];
+			int y2 = height * Projectile.frame;
+			if (Player.direction == 1)
 			{
 				SpriteEffects effects1 = SpriteEffects.None;
-				Vector2 position = (projectile.position + (0.5f * direction) + new Vector2((float) projectile.width, (float) projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition).Floor();
-				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation(), new Vector2((float) texture.Width / 8f, (float) height * .75f), projectile.scale, effects1, 0.0f);
+				Vector2 position = (Projectile.position + (0.5f * direction) + new Vector2((float) Projectile.width, (float) Projectile.height) / 2f + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition).Floor();
+				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation(), new Vector2((float) texture.Width / 8f, (float) height * .75f), Projectile.scale, effects1, 0.0f);
 			}
 			else
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-				Vector2 position = (projectile.position - (0.5f * direction) + new Vector2((float) projectile.width, (float) projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition).Floor();
-				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation() - 3.14f, new Vector2((float) texture.Width / 8f, (float) height * .75f), projectile.scale, effects1, 0.0f); 
+				Vector2 position = (Projectile.position - (0.5f * direction) + new Vector2((float) Projectile.width, (float) Projectile.height) / 2f + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition).Floor();
+				Main.spriteBatch.Draw(texture, position, new Microsoft.Xna.Framework.Rectangle?(new Microsoft.Xna.Framework.Rectangle(0, y2, texture.Width, height)), lightColor, direction.ToRotation() - 3.14f, new Vector2((float) texture.Width / 8f, (float) height * .75f), Projectile.scale, effects1, 0.0f); 
 			}
 			return false;
 		}

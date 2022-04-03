@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.GUI
 
         public static void DrawBox(SpriteBatch sb, Rectangle target)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/FancyBox");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/FancyBox").Value;
             Color color = Color.White * 0.8f;
 
             Rectangle sourceCorner = new Rectangle(0, 0, 6, 6);
@@ -76,9 +76,9 @@ namespace StarlightRiver.Content.GUI
             sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI * 1.5f, Vector2.Zero, 0, 0);
         }
 
-        public static void SetData(NPC npc, string newTitle, string newMessage)
+        public static void SetData(NPC NPC, string newTitle, string newMessage)
         {
-            talking = npc;
+            talking = NPC;
             title = newTitle;
             message = newMessage;
         }

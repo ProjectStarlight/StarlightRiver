@@ -26,19 +26,19 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            item.rare = ItemRarityID.Green;
-            item.value = Item.sellPrice(0, 1, 0, 0);
-            item.damage = 10;
-            item.useTime = 15;
-            item.useAnimation = 30;
-            item.axe = 8;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.autoReuse = true;
+            Item.rare = ItemRarityID.Green;
+            Item.value = Item.sellPrice(0, 1, 0, 0);
+            Item.damage = 10;
+            Item.useTime = 15;
+            Item.useAnimation = 30;
+            Item.axe = 8;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.autoReuse = true;
         }
 
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            var tex = GetTexture(Texture + "Glow");
+            var tex = Request<Texture2D>(Texture + "Glow").Value;
 
             float time = Main.GameUpdateCount % 400f;
             float sin2 = (float)Math.Sin(time * 0.2f * 0.2f);
@@ -50,13 +50,13 @@ namespace StarlightRiver.Content.Items.Permafrost
             spriteBatch.Draw(tex, position, frame, color * charge * 0.5f, 0, origin, scale, 0, 0);
         }
 
-        public override void HoldItem(Player player)
+        public override void HoldItem(Player Player)
         {
-            item.noUseGraphic = charged;
+            Item.noUseGraphic = charged;
 
             if (Main.mouseRight)
             {
-                if (charge < 1) charge += 1f / (item.useAnimation * 2f);
+                if (charge < 1) charge += 1f / (Item.useAnimation * 2f);
                 else
                 {
                     if (!charged) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana);
@@ -64,34 +64,34 @@ namespace StarlightRiver.Content.Items.Permafrost
                     charge = 1;
                 }
 
-                player.itemAnimation = 2 + (int)(charge * 7);
-                player.itemRotation = (1.1f - charge / 2f) * player.direction;
+                Player.ItemAnimation = 2 + (int)(charge * 7);
+                Player.ItemRotation = (1.1f - charge / 2f) * Player.direction;
             }
             else if (charge > 0 && charged)
             {
                 if (charge == 1)
-                    Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<AuroraAxeVFX>(), 0, 0, player.whoAmI, player.direction);
+                    Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<AuroraAxeVFX>(), 0, 0, Player.whoAmI, Player.direction);
 
                 charge -= 0.025f;
-                player.itemAnimation = 9;
+                Player.ItemAnimation = 9;
 
                 if (Main.GameUpdateCount % 8 == 0) //I think this should work? maximum deviation should be +- 1 hit, and pickTile shoooould sync? I hope? idk this is mostly built on optimism and laziness. TODO: be less lazy
                 {
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1.SoundId, (int)player.Center.X, (int)player.Center.Y, SoundID.Item1.Style, 1, -0.5f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1.SoundId, (int)Player.Center.X, (int)Player.Center.Y, SoundID.Item1.Style, 1, -0.5f);
 
-                    int center = (int)player.Center.X / 16;
-                    int centerY = (int)player.Center.Y / 16;
+                    int center = (int)Player.Center.X / 16;
+                    int centerY = (int)Player.Center.Y / 16;
                     for (int x = center - 3; x <= center + 3; x++)
                     {
                         Tile tile = Framing.GetTileSafely(x, centerY);
-                        if (tile.type == TileID.Trees) player.PickTile(x, centerY, 12);
+                        if (tile.type == TileID.Trees) Player.PickTile(x, centerY, 12);
                     }
                 }
 
                 if (charge <= 0)
                 {
                     charged = false;
-                    player.itemAnimation = 0;
+                    Player.ItemAnimation = 0;
                 }
             }
             else
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public void DrawGlowmask(PlayerDrawInfo info)
         {
-            Player player = info.drawPlayer;
+            Player Player = info.drawPlayer;
 
             float time = Main.GameUpdateCount % 400f;
             float sin2 = (float)Math.Sin(time * 0.2f * 0.2f);
@@ -114,34 +114,34 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             if (charge > 0 && charged)
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOut");
-                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOutGlow");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOut").Value;
+                Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Items/Permafrost/AuroraAxeOutGlow").Value;
 
-                DrawData data = new DrawData(tex, (player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY)).PointAccur(), null, Lighting.GetColor((int)player.Center.X / 16, (int)player.Center.Y / 16), 0, tex.Size() / 2, 1, info.spriteEffects, 0);
-                DrawData data2 = new DrawData(tex2, (player.Center - Main.screenPosition - Vector2.UnitY * (2 - player.gfxOffY)).PointAccur(), null, color * charge * 0.5f, 0, tex.Size() / 2, 1, info.spriteEffects, 0);
+                DrawData data = new DrawData(tex, (Player.Center - Main.screenPosition - Vector2.UnitY * (2 - Player.gfxOffY)).PointAccur(), null, Lighting.GetColor((int)Player.Center.X / 16, (int)Player.Center.Y / 16), 0, tex.Size() / 2, 1, info.spriteEffects, 0);
+                DrawData data2 = new DrawData(tex2, (Player.Center - Main.screenPosition - Vector2.UnitY * (2 - Player.gfxOffY)).PointAccur(), null, color * charge * 0.5f, 0, tex.Size() / 2, 1, info.spriteEffects, 0);
                 Main.playerDrawData.Add(data);
                 Main.playerDrawData.Add(data2);
             }
 
             else
             {
-                var tex3 = GetTexture(Texture + "Glow");
-                DrawData data3 = new DrawData(tex3, info.itemLocation - Main.screenPosition, null, color * charge * 0.5f, player.itemRotation, info.spriteEffects == 0 ? new Vector2(0, tex3.Height) : new Vector2(tex3.Width, tex3.Height), player.HeldItem.scale, info.spriteEffects, 0);
+                var tex3 = Request<Texture2D>(Texture + "Glow").Value;
+                DrawData data3 = new DrawData(tex3, info.ItemLocation - Main.screenPosition, null, color * charge * 0.5f, Player.ItemRotation, info.spriteEffects == 0 ? new Vector2(0, tex3.Height) : new Vector2(tex3.Width, tex3.Height), Player.HeldItem.scale, info.spriteEffects, 0);
                 Main.playerDrawData.Add(data3);
             }
 
-            Lighting.AddLight(player.Center, color.ToVector3() * charge * 0.2f);
+            Lighting.AddLight(Player.Center, color.ToVector3() * charge * 0.2f);
         }
 
         public override void AddRecipes()
         {
-            ModRecipe r = new ModRecipe(mod);
+            ModRecipe r = new ModRecipe(Mod);
             r.AddIngredient(ItemID.CopperAxe);
             r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
             r.SetResult(this);
             r.AddRecipe();
 
-            r = new ModRecipe(mod);
+            r = new ModRecipe(Mod);
             r.AddIngredient(ItemID.TinAxe);
             r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
             r.SetResult(this);
@@ -157,13 +157,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            projectile.timeLeft = 240;
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.friendly = true;
-            projectile.damage = 0;
-            projectile.tileCollide = false;
-            projectile.extraUpdates = 4;
+            Projectile.timeLeft = 240;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.friendly = true;
+            Projectile.damage = 0;
+            Projectile.tileCollide = false;
+            Projectile.extraUpdates = 4;
 
             switch (Main.rand.Next(3))
             {
@@ -175,34 +175,34 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
+            Player Player = Main.player[Projectile.owner];
 
-            if (projectile.timeLeft % 8 == 0)
+            if (Projectile.timeLeft % 8 == 0)
             {
-                int d = Dust.NewDust(projectile.position, 16, 16, DustType<Dusts.Aurora>(), 0, 0, 0, thisColor * 0.6f, 1);
+                int d = Dust.NewDust(Projectile.position, 16, 16, DustType<Dusts.Aurora>(), 0, 0, 0, thisColor * 0.6f, 1);
                 Main.dust[d].customData = Main.rand.NextFloat(0.1f, 0.3f);
             }
 
-            Dust dus = Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Aurora>(), Vector2.Zero, 0, thisColor * 1.1f);
+            Dust dus = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Aurora>(), Vector2.Zero, 0, thisColor * 1.1f);
             dus.customData = 0.8f;
             dus.fadeIn = 8.6f;
             dus.rotation = Main.rand.NextFloat(2f);
 
-            float time = (projectile.ai[0] == -1 ? 3.14f : 0f) + projectile.timeLeft / 240f * 6.28f * 2.5f;
-            projectile.Center = player.Center + new Vector2((float)Math.Cos(time) * 58, (float)Math.Sin(time) * 16);
+            float time = (Projectile.ai[0] == -1 ? 3.14f : 0f) + Projectile.timeLeft / 240f * 6.28f * 2.5f;
+            Projectile.Center = Player.Center + new Vector2((float)Math.Cos(time) * 58, (float)Math.Sin(time) * 16);
 
-            player.UpdateRotation(time);
-            if (projectile.timeLeft <= 1) player.UpdateRotation(0);
+            Player.UpdateRotation(time);
+            if (Projectile.timeLeft <= 1) Player.UpdateRotation(0);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
-            float progress = projectile.timeLeft < 120 ? projectile.timeLeft / 120f : 1 - (projectile.timeLeft - 120) / 120f;
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+            float progress = Projectile.timeLeft < 120 ? Projectile.timeLeft / 120f : 1 - (Projectile.timeLeft - 120) / 120f;
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, thisColor * progress * 0.7f, 0, tex.Size() / 2, 0.1f, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, thisColor * progress * 0.5f, 0, tex.Size() / 2, 0.3f, 0, 0);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, thisColor * progress * 0.3f, 0, tex.Size() / 2, 0.5f, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, thisColor * progress * 0.7f, 0, tex.Size() / 2, 0.1f, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, thisColor * progress * 0.5f, 0, tex.Size() / 2, 0.3f, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, thisColor * progress * 0.3f, 0, tex.Size() / 2, 0.5f, 0, 0);
         }
     }
 }

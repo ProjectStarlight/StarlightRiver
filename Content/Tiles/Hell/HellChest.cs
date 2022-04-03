@@ -40,15 +40,15 @@ namespace StarlightRiver.Content.Tiles.Hell
 
         public override void SafeSetDefaults() => this.QuickSetFurniture(2, 2, DustID.AmberBolt, SoundID.Unlock, false, new Color(255, 255, 155));
 
-        public override bool CanOpen(Player player)
+        public override bool CanOpen(Player Player)
         {
-            for (int k = 0; k < player.inventory.Length; k++)
+            for (int k = 0; k < Player.inventory.Length; k++)
             {
-                Item item = player.inventory[k];
-                if (item.type == ItemType<Items.Hell.HellKey>())
+                Item Item = Player.inventory[k];
+                if (Item.type == ItemType<Items.Hell.HellKey>())
                 {
-                    if (item.stack > 1) item.stack--;
-                    else item.TurnToAir();
+                    if (Item.stack > 1) Item.stack--;
+                    else Item.TurnToAir();
                     return true;
                 }
             }
@@ -57,10 +57,10 @@ namespace StarlightRiver.Content.Tiles.Hell
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.noThrow = 2;
-            player.showItemIcon = true;
-            player.showItemIcon2 = ItemType<Items.Hell.HellKey>();
+            Player Player = Main.LocalPlayer;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
+            Player.showItemIcon2 = ItemType<Items.Hell.HellKey>();
         }
 
     }

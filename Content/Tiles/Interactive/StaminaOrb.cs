@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
             Main.tileBlockLight[Type] = false;
             Main.tileLighted[Type] = true;
 
-            drop = mod.ItemType("StaminaOrbItem");
-            dustType = mod.DustType("Stamina");
+            drop = Mod.ItemType("StaminaOrbItem");
+            dustType = Mod.DustType("Stamina");
             AddMapEntry(new Color(255, 186, 66));
         }
 
@@ -44,26 +44,26 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override void Update()
         {
-            if (projectile.localAI[0] > 0)
-                projectile.localAI[0]--;
+            if (Projectile.localAI[0] > 0)
+                Projectile.localAI[0]--;
             else
             {
                 float rot = Main.rand.NextFloat(0, 6.28f);
-                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(rot), (float)Math.Sin(rot)) * 0.4f, 0, default, 2f);
             }
         }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
 
             mp.Stamina++;
-            projectile.localAI[0] = 300;
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, projectile.Center);
-            CombatText.NewText(player.Hitbox, new Color(255, 170, 60), "+1");
+            Projectile.localAI[0] = 300;
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Projectile.Center);
+            CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
 
             for (float k = 0; k <= 6.28; k += 0.1f)
-                Dust.NewDustPerfect(projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
         }
     }
 

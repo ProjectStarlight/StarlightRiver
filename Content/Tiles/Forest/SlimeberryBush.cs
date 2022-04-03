@@ -74,16 +74,16 @@ namespace StarlightRiver.Content.Tiles.Forest
         {
             if (Main.tile[i, j].frameX >= 32)
             {
-                Player player = Main.LocalPlayer;
-                player.showItemIcon2 = ItemType<Slimeberry>();
-                player.noThrow = 2;
-                player.showItemIcon = true;
+                Player Player = Main.LocalPlayer;
+                Player.showItemIcon2 = ItemType<Slimeberry>();
+                Player.noThrow = 2;
+                Player.showItemIcon = true;
             }
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<SlimeberryBushItem>()); //drop a bush item
+            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<SlimeberryBushItem>()); //drop a bush Item
 
             if (frameX > 35)
                 Item.NewItem(new Vector2(i, j) * 16, ItemType<Slimeberry>()); //Drops berries if harvestable
@@ -102,28 +102,28 @@ namespace StarlightRiver.Content.Tiles.Forest
 
     public class BerrySlime : ModNPC
 	{
-        public ref float PhaseTimer => ref npc.ai[0];
-        public ref float GlobalTimer => ref npc.ai[1];
+        public ref float PhaseTimer => ref NPC.ai[0];
+        public ref float GlobalTimer => ref NPC.ai[1];
 
         public override string Texture => AssetDirectory.ForestTile + Name;
 
 		public override void SetStaticDefaults()
 		{
             DisplayName.SetDefault("Slimeberry");
-            Main.npcFrameCount[npc.type] = 2;
+            Main.npcFrameCount[NPC.type] = 2;
 		}
 
 		public override void SetDefaults()
 		{
-            npc.width = 18;
-            npc.height = 14;
-            npc.aiStyle = -1;
-            npc.lifeMax = 5;
-            npc.catchItem = (short)ItemType<Slimeberry>();
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
+            NPC.width = 18;
+            NPC.height = 14;
+            NPC.aiStyle = -1;
+            NPC.lifeMax = 5;
+            NPC.catchItem = (short)ItemType<Slimeberry>();
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
 
-            npc.color = new Color(30, Main.rand.Next(170, 250), Main.rand.Next(220, 255));
+            NPC.color = new Color(30, Main.rand.Next(170, 250), Main.rand.Next(220, 255));
         }
 
 		public override void AI()
@@ -132,65 +132,65 @@ namespace StarlightRiver.Content.Tiles.Forest
 
             if(GlobalTimer > 300) //die after 5 seconds
 			{
-                if(npc.velocity.Y == 0)
+                if(NPC.velocity.Y == 0)
 				{
-                    npc.velocity *= 0;
-                    npc.frame = new Rectangle(0, npc.height, npc.width, npc.height);
+                    NPC.velocity *= 0;
+                    NPC.frame = new Rectangle(0, NPC.height, NPC.width, NPC.height);
 
-                    npc.alpha += 5;
-                    npc.position.Y += 0.1f;
-                    npc.noGravity = true;
-                    npc.noTileCollide = true;
-                    npc.knockBackResist = 0;
+                    NPC.alpha += 5;
+                    NPC.position.Y += 0.1f;
+                    NPC.noGravity = true;
+                    NPC.noTileCollide = true;
+                    NPC.knockBackResist = 0;
 
-                    if (npc.alpha >= 255)
-                        npc.active = false;
+                    if (NPC.alpha >= 255)
+                        NPC.active = false;
 				}
                 return;
 			}
 
-            if (npc.velocity.Y == 0) //else jump around like a lunatic
+            if (NPC.velocity.Y == 0) //else jump around like a lunatic
             {
-                npc.velocity *= 0;
-                npc.frame = new Rectangle(0, npc.height, npc.width, npc.height);
+                NPC.velocity *= 0;
+                NPC.frame = new Rectangle(0, NPC.height, NPC.width, NPC.height);
 
                 PhaseTimer++;
                 if (PhaseTimer >= 4 && Main.rand.Next(4) == 0)
                 {
-                    npc.direction = Main.rand.NextBool() ? 1 : -1;
-                    npc.velocity += new Vector2(npc.direction * Main.rand.NextFloat(2, 4), -6);
-                    npc.netUpdate = true;
+                    NPC.direction = Main.rand.NextBool() ? 1 : -1;
+                    NPC.velocity += new Vector2(NPC.direction * Main.rand.NextFloat(2, 4), -6);
+                    NPC.netUpdate = true;
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1.SoundId, (int)npc.Center.X, (int)npc.Center.Y, SoundID.NPCDeath1.Style, 0.5f, Main.rand.NextFloat(0.5f, 1));
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1.SoundId, (int)NPC.Center.X, (int)NPC.Center.Y, SoundID.NPCDeath1.Style, 0.5f, Main.rand.NextFloat(0.5f, 1));
                 }
             }
             else
             {
-                npc.frame = new Rectangle(0, 0, npc.width, npc.height);
+                NPC.frame = new Rectangle(0, 0, NPC.width, NPC.height);
                 PhaseTimer = 0;
             }
         }
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-            spriteBatch.Draw(GetTexture(Texture), npc.position - Main.screenPosition, npc.frame, drawColor.MultiplyRGBA(npc.color * ((255 - npc.alpha) / 255f)), npc.rotation, Vector2.Zero, npc.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(Texture + "Shine"), npc.position - Main.screenPosition, npc.frame, drawColor * (0.6f * (255 - npc.alpha) / 255f), npc.rotation, Vector2.Zero, npc.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition, NPC.frame, drawColor.MultiplyRGBA(NPC.color * ((255 - NPC.alpha) / 255f)), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Shine").Value, NPC.position - Main.screenPosition, NPC.frame, drawColor * (0.6f * (255 - NPC.alpha) / 255f), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
             return false;
 		}
 
-		public override void OnCatchNPC(Player player, Item item)
+		public override void OnCatchNPC(Player Player, Item Item)
 		{
             for (int k = 0; k < 20; k++)
-                Dust.NewDust(npc.position, 16, 16, DustID.t_Slime, 0, 0, 200, npc.color, 0.5f);
+                Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
         }
 
 		public override void NPCLoot()
 		{
-            int i = Item.NewItem(npc.Center, ItemID.Gel);
-            Main.item[i].color = npc.color;
+            int i = Item.NewItem(NPC.Center, ItemID.Gel);
+            Main.Item[i].color = NPC.color;
 
             for (int k = 0; k < 20; k++)
-                Dust.NewDust(npc.position, 16, 16, DustID.t_Slime, 0, 0, 200, npc.color, 0.5f);
+                Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
 		}
 	}
 }

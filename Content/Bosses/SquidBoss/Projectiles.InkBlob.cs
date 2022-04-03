@@ -18,34 +18,34 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            projectile.width = 80;
-            projectile.height = 80;
-            projectile.aiStyle = -1;
-            projectile.timeLeft = 300;
-            projectile.hostile = true;
-            projectile.damage = 25;
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.aiStyle = -1;
+            Projectile.timeLeft = 300;
+            Projectile.hostile = true;
+            Projectile.damage = 25;
         }
 
         public override void AI()
         {
-            projectile.velocity.Y += 0.11f;
-            projectile.scale -= 1 / 400f;
+            Projectile.velocity.Y += 0.11f;
+            Projectile.scale -= 1 / 400f;
 
-            projectile.ai[1] += 0.1f;
-            projectile.rotation += Main.rand.NextFloat(0.2f);
+            Projectile.ai[1] += 0.1f;
+            Projectile.rotation += Main.rand.NextFloat(0.2f);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-            float sin = 1 + (float)Math.Sin(projectile.ai[1]);
-            float cos = 1 + (float)Math.Cos(projectile.ai[1]);
+            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), color, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 
-            Lighting.AddLight(projectile.Center, color.ToVector3());
+            Lighting.AddLight(Projectile.Center, color.ToVector3());
             return false;
         }
     }
@@ -56,36 +56,36 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aurora Shard");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 20;
-            projectile.height = 20;
-            projectile.aiStyle = -1;
-            projectile.timeLeft = 300;
-            projectile.hostile = true;
-            projectile.damage = 20;
+            Projectile.width = 20;
+            Projectile.height = 20;
+            Projectile.aiStyle = -1;
+            Projectile.timeLeft = 300;
+            Projectile.hostile = true;
+            Projectile.damage = 20;
         }
 
         public override void AI()
         {
-            projectile.velocity.Y -= 0.14f;
-            projectile.velocity.X *= 0.9f;
+            Projectile.velocity.Y -= 0.14f;
+            Projectile.velocity.X *= 0.9f;
 
-            projectile.ai[1] += 0.1f;
-            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+            Projectile.ai[1] += 0.1f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
-            float sin = 1 + (float)Math.Sin(projectile.ai[1]);
-            float cos = 1 + (float)Math.Cos(projectile.ai[1]);
+            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-            Lighting.AddLight(projectile.Center, color.ToVector3() * 0.2f);
+            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.2f);
 
             if (Main.rand.Next(10) == 0)
             {
-                Dust d = Dust.NewDustPerfect(projectile.Center, 264, -projectile.velocity.RotatedByRandom(0.25f) * 0.75f, 0, color, 1);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, 264, -Projectile.velocity.RotatedByRandom(0.25f) * 0.75f, 0, color, 1);
                 d.noGravity = true;
                 d.rotation = Main.rand.NextFloat(6.28f);
             }
@@ -93,15 +93,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = ModContent.GetTexture(Texture);
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-            for (int k = 0; k < projectile.oldPos.Length; k++)
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                float sin = 1 + (float)Math.Sin(projectile.ai[1] + k * 0.1f);
-                float cos = 1 + (float)Math.Cos(projectile.ai[1] + k * 0.1f);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (1 - k / (float)projectile.oldPos.Length);
+                float sin = 1 + (float)Math.Sin(Projectile.ai[1] + k * 0.1f);
+                float cos = 1 + (float)Math.Cos(Projectile.ai[1] + k * 0.1f);
+                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (1 - k / (float)Projectile.oldPos.Length);
 
-                spriteBatch.Draw(tex, projectile.oldPos[k] + projectile.Size / 2 - Main.screenPosition, null, color, projectile.oldRot[k], tex.Size() / 2, 1, default, default);
+                spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1, default, default);
             }
 
             return false;
@@ -111,11 +111,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             for (int n = 0; n < 20; n++)
             {
-                float sin = 1 + (float)Math.Sin(projectile.ai[1] + n * 0.1f);
-                float cos = 1 + (float)Math.Cos(projectile.ai[1] + n * 0.1f);
+                float sin = 1 + (float)Math.Sin(Projectile.ai[1] + n * 0.1f);
+                float cos = 1 + (float)Math.Cos(Projectile.ai[1] + n * 0.1f);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-                Dust d = Dust.NewDustPerfect(projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color, 2.2f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color, 2.2f);
                 d.noGravity = true;
                 d.rotation = Main.rand.NextFloat(6.28f);
             }

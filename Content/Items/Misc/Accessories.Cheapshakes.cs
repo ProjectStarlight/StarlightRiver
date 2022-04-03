@@ -18,22 +18,22 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Cheapskates() : base("Cheapskates", "Maximum movement speed is doubled\nYou take 30% more damage and acceleration is reduced") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.PreHurtEvent += PreHurtAccessory;
 
             return true;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.runAcceleration *= 2;
-            player.maxRunSpeed *= 2;
+            Player.runAcceleration *= 2;
+            Player.maxRunSpeed *= 2;
         }
 
-        private bool PreHurtAccessory(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        private bool PreHurtAccessory(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            if (Equipped(player))
+            if (Equipped(Player))
             {
                 damage = (int)(damage * 1.3f);
             }
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
 
             recipe.AddIngredient(ItemID.Wood, 50);
             recipe.AddIngredient(ItemID.Chain, 10);
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             recipe.AddRecipe();
 
-            recipe = new ModRecipe(mod);
+            recipe = new ModRecipe(Mod);
 
             recipe.AddIngredient(ItemID.Wood, 50);
             recipe.AddIngredient(ItemID.Chain, 10);

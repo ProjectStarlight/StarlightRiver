@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Tiles.AstralMeteor
             }
         }
 
-        //public override void FloorVisuals(Player player) => 
-        //    player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+        //public override void FloorVisuals(Player Player) => 
+        //    Player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
     }
 
     public class AluminumBrickItem : QuickTileItem

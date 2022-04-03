@@ -19,9 +19,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 
         public List<NPC> targets = new List<NPC>();
 
-        public ref float State => ref npc.ai[0];
-        public ref float GlobalTimer => ref npc.ai[1];
-        public ref float BuffRadius => ref npc.ai[2];
+        public ref float State => ref NPC.ai[0];
+        public ref float GlobalTimer => ref NPC.ai[1];
+        public ref float BuffRadius => ref NPC.ai[2];
 
         public float VFXAlpha => BuffRadius / MAX_BUFF_RADIUS;
 
@@ -40,17 +40,17 @@ namespace StarlightRiver.Content.NPCs.Forest
 
         public override void SetDefaults()
         {
-            npc.width = 32;
-            npc.height = 32;
-            npc.knockBackResist = 0.1f;
-            npc.lifeMax = 100;
-            npc.noGravity = true;
-            npc.noTileCollide = true;
-            npc.damage = 1;
-            npc.aiStyle = -1;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath2;
-            npc.chaseable = true;
+            NPC.width = 32;
+            NPC.height = 32;
+            NPC.knockBackResist = 0.1f;
+            NPC.lifeMax = 100;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.damage = 1;
+            NPC.aiStyle = -1;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath2;
+            NPC.chaseable = true;
         }
 
         public override void AI()
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                     if (BuffRadius > 0)
                         BuffRadius--;
 
-                    var firstTarget = npc.FindNearestNPC(n => n.active && !n.friendly && !n.noGravity && Vector2.Distance(npc.Center, n.Center) < 2500);
+                    var firstTarget = NPC.FindNearestNPC(n => n.active && !n.friendly && !n.noGravity && Vector2.Distance(NPC.Center, n.Center) < 2500);
 
                     if (firstTarget != null)
                     {
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                     }
 					else 
 					{
-                        npc.velocity *= 0.9f;
+                        NPC.velocity *= 0.9f;
                         if (GlobalTimer > 600)
                         {
                             State = (int)BehaviorStates.Fleeing; //after waiting for 10 seconds for a target they instead flee
@@ -98,12 +98,12 @@ namespace StarlightRiver.Content.NPCs.Forest
                     for (int k = 0; k < targets.Count; k++) 
                     {
                         var toCheck = targets[k];
-                        if (toCheck is null || !toCheck.active || Vector2.Distance(npc.Center, toCheck.Center) > (targets.Count  > 1 ? MAX_BUFF_RADIUS : 2500) ) //remove invalid targets
+                        if (toCheck is null || !toCheck.active || Vector2.Distance(NPC.Center, toCheck.Center) > (targets.Count  > 1 ? MAX_BUFF_RADIUS : 2500) ) //remove invalid targets
                         {
                             targets.Remove(toCheck);
                             //k--;
                         }
-                        else if (Helper.CheckCircularCollision(npc.Center, (int)BuffRadius, toCheck.Hitbox))
+                        else if (Helper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
 						{
                             toCheck.AddBuff(BuffType<Rage>(), 2);
 						}
@@ -118,14 +118,14 @@ namespace StarlightRiver.Content.NPCs.Forest
 
                     var target = Helper.Centeroid(targets) + new Vector2(0, -100);
 
-                    npc.velocity += Vector2.Normalize(npc.Center - target) * -0.2f; //accelerate towards the centeroid of it's supported NPCs
+                    NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.2f; //accelerate towards the centeroid of it's supported NPCs
 
-                    if (npc.velocity.Length() > 2) //speed cap
-                        npc.velocity = Vector2.Normalize(npc.velocity) * 1.9f;
+                    if (NPC.velocity.Length() > 2) //speed cap
+                        NPC.velocity = Vector2.Normalize(NPC.velocity) * 1.9f;
 
                     if (GlobalTimer % 60 == 0) //periodically check for more targets
 					{
-                        var potentialTarget = npc.FindNearestNPC(n => !n.noGravity && !targets.Contains(n) && Vector2.Distance(npc.Center, n.Center) < 500);
+                        var potentialTarget = NPC.FindNearestNPC(n => !n.noGravity && !targets.Contains(n) && Vector2.Distance(NPC.Center, n.Center) < 500);
 
                         if(potentialTarget != null)
                             targets.Add(potentialTarget);
@@ -138,10 +138,10 @@ namespace StarlightRiver.Content.NPCs.Forest
                     if (BuffRadius > 0)
                         BuffRadius -= 5;
 
-                    npc.velocity.Y -= 0.2f;
+                    NPC.velocity.Y -= 0.2f;
 
                     if (GlobalTimer > 300)
-                        npc.active = false;
+                        NPC.active = false;
 
                     break;
             }
@@ -149,15 +149,15 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-            var auraTex = GetTexture(AssetDirectory.VitricBoss + "BombTell");
+            var auraTex = Request<Texture2D>(AssetDirectory.VitricBoss + "BombTell").Value;
             var maxScale = MAX_BUFF_RADIUS / auraTex.Width;
 
-            spriteBatch.Draw(auraTex, npc.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.8f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
+            spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.8f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            if (spawnInfo.player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == npc.type)) //they should only spawn at night in the forest after EoC is dead, and one max
+            if (spawnInfo.Player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type)) //they should only spawn at night in the forest after EoC is dead, and one max
                 return 0.25f;
 
             return 0;
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.NPCs.Forest
         public override void NPCLoot()
         {
             if (Main.rand.Next(4) == 0)
-                Item.NewItem(npc.Hitbox, ItemType<ForestBerries>(), Main.rand.Next(3));
+                Item.NewItem(NPC.Hitbox, ItemType<ForestBerries>(), Main.rand.Next(3));
         }
 
     }

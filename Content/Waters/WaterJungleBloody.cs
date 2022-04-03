@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Waters
         }
 
         public override int ChooseWaterfallStyle() =>
-            mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
+            Mod.GetWaterfallStyleSlot<WaterfallJungleBloody>();
 
         public override int GetSplashDust() =>
             DustType<Dusts.BloodyJungleSplash>();

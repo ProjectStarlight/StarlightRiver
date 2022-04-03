@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             minPick = 200;
             drop = ItemType<AncientSandstoneTorchItem>();
-            dustType = mod.DustType("Air");
+            dustType = Mod.DustType("Air");
             AddMapEntry(new Color(115, 182, 158));
         }
 
@@ -51,8 +51,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
                 return;
-            Texture2D tex = GetTexture(AssetDirectory.RiftCrafting + "Glow0");
-            Texture2D tex2 = GetTexture(AssetDirectory.RiftCrafting + "Glow1");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow0").Value;
+            Texture2D tex2 = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow1").Value;
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);

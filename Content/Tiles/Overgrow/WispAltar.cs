@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public WispAltarLItem() : base("Wisp Altar L Placer", "Debug item", TileType<WispAltarL>(), -1) { }
+        public WispAltarLItem() : base("Wisp Altar L Placer", "Debug Item", TileType<WispAltarL>(), -1) { }
 
     }
 
@@ -40,6 +40,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public WispAltarRItem() : base("Wisp Altar R Placer", "Debug item", TileType<WispAltarR>(), -1) { }
+        public WispAltarRItem() : base("Wisp Altar R Placer", "Debug Item", TileType<WispAltarR>(), -1) { }
     }
 }

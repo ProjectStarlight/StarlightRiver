@@ -22,10 +22,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             if (Main.tile[i, j].frameX == 0 && Main.tile[i, j].frameY == 0)
             {
-                if (!(Main.projectile.Any(proj => proj.modProjectile is Zapper && (proj.modProjectile as Zapper).parent == Main.tile[i, j] && proj.active)))
+                if (!(Main.projectile.Any(proj => proj.ModProjectile is Zapper && (proj.ModProjectile as Zapper).parent == Main.tile[i, j] && proj.active)))
                 {
                     int proj = Projectile.NewProjectile(new Vector2(i + 2, j + 2) * 16, Vector2.Zero, ProjectileType<Zapper>(), 1, 1);
-                    (Main.projectile[proj].modProjectile as Zapper).parent = Main.tile[i, j];
+                    (Main.projectile[proj].ModProjectile as Zapper).parent = Main.tile[i, j];
                 }
             }
         }

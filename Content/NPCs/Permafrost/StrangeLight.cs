@@ -15,47 +15,47 @@ namespace StarlightRiver.Content.NPCs.Permafrost
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Strange Light");
-            Main.npcFrameCount[npc.type] = 1;
+            Main.npcFrameCount[NPC.type] = 1;
         }
 
         public override void SetDefaults()
         {
-            npc.width = 16;
-            npc.height = 16;
-            npc.damage = 18;
-            npc.defense = 12;
-            npc.noGravity = true;
-            npc.lifeMax = 5000;
-            npc.friendly = false;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.value = 500f;
-            npc.alpha = 255;
-            npc.knockBackResist = 0.2f;
+            NPC.width = 16;
+            NPC.height = 16;
+            NPC.damage = 18;
+            NPC.defense = 12;
+            NPC.noGravity = true;
+            NPC.lifeMax = 5000;
+            NPC.friendly = false;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.value = 500f;
+            NPC.alpha = 255;
+            NPC.knockBackResist = 0.2f;
         }
 
-        //npc.ai[0]: phase
-        //npc.ai[1]: x sin timer
-        //npc.ai[2]: y sin timer
+        //NPC.ai[0]: phase
+        //NPC.ai[1]: x sin timer
+        //NPC.ai[2]: y sin timer
         int numOfTentacles = 5;
         bool spawnedTentacles = false;
         int[] tentacles = new int[5];
 
         public override void AI()
         {
-            npc.TargetClosest(true);
-            Player player = Main.player[npc.target];
+            NPC.TargetClosest(true);
+            Player Player = Main.player[NPC.target];
             if (!spawnedTentacles)
             {
                 spawnedTentacles = true;
                 for (int i = 0; i < numOfTentacles; i++)
-                    tentacles[i] = Projectile.NewProjectile(npc.Center, Vector2.Zero, ModContent.ProjectileType<StrangeTentacle>(), npc.damage, npc.knockBackResist, player.whoAmI, npc.whoAmI, i / 4);
+                    tentacles[i] = Projectile.NewProjectile(NPC.Center, Vector2.Zero, ModContent.ProjectileType<StrangeTentacle>(), NPC.damage, NPC.knockBackResist, Player.whoAmI, NPC.whoAmI, i / 4);
             }
-            npc.ai[1] += 0.05f;
-            if (npc.ai[1] > 21)
-                Projectile.NewProjectile(npc.Center, Vector2.UnitY.RotatedBy(Main.projectile[3].rotation + 1.57) * 10, ModContent.ProjectileType<StrangePredictor>(), 0, 0);
-            if (npc.ai[1] > 29.5)
-                npc.ai[1] = 0;
+            NPC.ai[1] += 0.05f;
+            if (NPC.ai[1] > 21)
+                Projectile.NewProjectile(NPC.Center, Vector2.UnitY.RotatedBy(Main.projectile[3].rotation + 1.57) * 10, ModContent.ProjectileType<StrangePredictor>(), 0, 0);
+            if (NPC.ai[1] > 29.5)
+                NPC.ai[1] = 0;
         }
     }
     internal class StrangePredictor : ModProjectile
@@ -69,23 +69,23 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 2;
-            projectile.height = 2;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.damage = 1;
-            projectile.penetrate = -1;
-            projectile.alpha = 255;
-            projectile.timeLeft = 30;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.extraUpdates = 5;
+            Projectile.hostile = true;
+            Projectile.width = 2;
+            Projectile.height = 2;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.damage = 1;
+            Projectile.penetrate = -1;
+            Projectile.alpha = 255;
+            Projectile.timeLeft = 30;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.extraUpdates = 5;
         }
 
         public override void AI()
         {
-            Dust.NewDustPerfect(projectile.position, 6).noGravity = true;
+            Dust.NewDustPerfect(Projectile.position, 6).noGravity = true;
         }
     }
 
@@ -100,16 +100,16 @@ namespace StarlightRiver.Content.NPCs.Permafrost
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.damage = 1;
-            projectile.penetrate = -1;
-            projectile.alpha = 0;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
+            Projectile.hostile = true;
+            Projectile.width = 24;
+            Projectile.height = 24;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.damage = 1;
+            Projectile.penetrate = -1;
+            Projectile.alpha = 0;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
 
         float rotationCounter = 0;
@@ -122,10 +122,10 @@ namespace StarlightRiver.Content.NPCs.Permafrost
         float extend = 1;
         public override void AI()
         {
-            projectile.timeLeft = 2;
+            Projectile.timeLeft = 2;
             Vector2 posToBe = Vector2.UnitY * 100;
-            Player player = projectile.Owner();
-            NPC parent = Main.npc[(int)projectile.ai[0]];
+            Player Player = Projectile.Owner();
+            NPC parent = Main.npc[(int)Projectile.ai[0]];
 
             if (circleX == 0)
             {
@@ -134,61 +134,61 @@ namespace StarlightRiver.Content.NPCs.Permafrost
                 circleY = Main.rand.Next(20, 40);
             }
 
-            projectile.ai[1] += 0.05f;
+            Projectile.ai[1] += 0.05f;
 
-            if (projectile.ai[1] < 21)
+            if (Projectile.ai[1] < 21)
                 if (extend > 1f)
                     extend -= 0.2f;
-                else if (Math.Abs(projectile.rotation - (parent.Center - player.Center).ToRotation()) > 0.1f)
-                    projectile.rotation = (parent.Center - player.Center).ToRotation();
+                else if (Math.Abs(Projectile.rotation - (parent.Center - Player.Center).ToRotation()) > 0.1f)
+                    Projectile.rotation = (parent.Center - Player.Center).ToRotation();
 
-            if (projectile.ai[1] > 21 && projectile.ai[1] < 22f)
+            if (Projectile.ai[1] > 21 && Projectile.ai[1] < 22f)
             {
                 extend -= 0.03f;
-                projectile.rotation = (parent.Center - player.Center).ToRotation();
+                Projectile.rotation = (parent.Center - Player.Center).ToRotation();
             }
 
-            if (projectile.ai[1] > 28)
+            if (Projectile.ai[1] > 28)
                 extend += 0.13f;
 
-            if (projectile.ai[1] > 29.5)
-                projectile.ai[1] = 0;
+            if (Projectile.ai[1] > 29.5)
+                Projectile.ai[1] = 0;
 
             rotationCounter += circleSpeed;
 
             float speed = 0.5f;
             Vector2 circle = new Vector2(circleX * (float)Math.Sin(rotationCounter), circleY * (float)Math.Cos(rotationCounter));
-            float angle = projectile.rotation;
+            float angle = Projectile.rotation;
             posToBe *= extend;
             posToBe += circle;
             posToBe = posToBe.RotatedBy(angle + 1.57);
             control1 = new Vector2(50 * (float)Math.Sin((double)rotationCounter * 1.1f), 50 * (float)Math.Cos((double)rotationCounter * 1.1f)) + parent.position;
             control2 = posToBe.RotatedBy(Math.Sin(rotationCounter)) + parent.Center;
             posToBe += parent.Center;
-            Vector2 direction = posToBe - projectile.position;
+            Vector2 direction = posToBe - Projectile.position;
 
             if (direction.Length() > 1000)
-                projectile.position = posToBe;
+                Projectile.position = posToBe;
             else
             {
                 speed *= (float)Math.Sqrt(direction.Length());
                 direction.Normalize();
                 direction *= speed;
 
-                projectile.velocity = direction;
+                Projectile.velocity = direction;
             }
         }
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            NPC parent = Main.npc[(int)projectile.ai[0]];
+            NPC parent = Main.npc[(int)Projectile.ai[0]];
             if (parent.active)
             {
-                Texture2D tex = Main.projectileTexture[projectile.type];
-                float dist = (projectile.position - parent.Center).Length();
-                TentacleDraw.DrawBezier(spriteBatch, lightColor, tex, projectile.Center, parent.Center, control1, control2, tex.Height / dist / 2, projectile.rotation);
+                Texture2D tex = Main.projectileTexture[Projectile.type];
+                float dist = (Projectile.position - parent.Center).Length();
+                TentacleDraw.DrawBezier(spriteBatch, lightColor, tex, Projectile.Center, parent.Center, control1, control2, tex.Height / dist / 2, Projectile.rotation);
             }
             else
-                projectile.active = false;
+                Projectile.active = false;
             return false;
         }
     }

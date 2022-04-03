@@ -13,7 +13,7 @@ namespace StarlightRiver.Structures
         public static void RuinsGen(GenerationProgress progress)
         {
             progress.Message = "Spicing up Forests...";
-            Texture2D Ruins = GetTexture("StarlightRiver/Structures/Ruins");
+            Texture2D Ruins = Request<Texture2D>("StarlightRiver/Structures/Ruins").Value;
 
             for (int x = 0; x + 16 < Main.maxTilesX; x += Main.rand.Next(8, 16))
             {

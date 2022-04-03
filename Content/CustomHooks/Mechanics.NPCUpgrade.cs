@@ -53,17 +53,17 @@ namespace StarlightRiver.Content.CustomHooks
         private void SwapTitleMenu(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchLdsfld<Main>("spriteBatch"), i => i.MatchLdsfld<Main>("npcHeadTexture"), i => i.MatchLdloc(78));
+            c.TryGotoNext(i => i.MatchLdsfld<Main>("spriteBatch"), i => i.MatchLdsfld<Main>("NPCHeadTexture"), i => i.MatchLdloc(78));
             c.Index += 4; //not the safest thing ever ech
 
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
             c.Emit(OpCodes.Ldloc, 71);
             c.Emit(OpCodes.Ldelem_Ref);
 
             c.EmitDelegate<SwapTitleMenuDelegate>(EmitSwapTitleMenuDelegate);
 
             c.Emit(OpCodes.Ldloc, 66);
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
             c.Emit(OpCodes.Ldloc, 71);
             c.Emit(OpCodes.Ldelem_Ref);
 
@@ -75,23 +75,23 @@ namespace StarlightRiver.Content.CustomHooks
             c.Emit(OpCodes.Stloc, 66);
         }
 
-        private delegate string SwapTextMenuDelegate(string input, NPC npc, int x, int y);
+        private delegate string SwapTextMenuDelegate(string input, NPC NPC, int x, int y);
 
-        private string EmitSwapTextMenuDelegate(string input, NPC npc, int x, int y)
+        private string EmitSwapTextMenuDelegate(string input, NPC NPC, int x, int y)
         {
             bool hovering = Main.mouseX >= x && Main.mouseX <= x + Main.inventoryBackTexture.Width * Main.inventoryScale && Main.mouseY >= y && Main.mouseY <= y + Main.inventoryBackTexture.Height * Main.inventoryScale;
 
-            if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool unlocked) && unlocked)
-                return npc.GivenName + " the " + TownUpgrade.FromString(npc.TypeName)._title;
+            if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+                return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title;
             return input;
         }
 
-        private delegate Texture2D SwapTitleMenuDelegate(Texture2D input, NPC npc);
+        private delegate Texture2D SwapTitleMenuDelegate(Texture2D input, NPC NPC);
 
-        private Texture2D EmitSwapTitleMenuDelegate(Texture2D input, NPC npc)
+        private Texture2D EmitSwapTitleMenuDelegate(Texture2D input, NPC NPC)
         {
-            if (StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool unlocked) && unlocked)
-                return TownUpgrade.FromString(npc.TypeName).icon;
+            if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+                return TownUpgrade.FromString(NPC.TypeName).icon;
             return input;
         }
 
@@ -104,12 +104,12 @@ namespace StarlightRiver.Content.CustomHooks
             c.EmitDelegate<SwapTitleDeathDelegate>(EmitSwapTitleDeathDelegate);
         }
 
-        private delegate NetworkText SwapTitleDeathDelegate(NetworkText input, NPC npc);
+        private delegate NetworkText SwapTitleDeathDelegate(NetworkText input, NPC NPC);
 
-        private NetworkText EmitSwapTitleDeathDelegate(NetworkText input, NPC npc)
+        private NetworkText EmitSwapTitleDeathDelegate(NetworkText input, NPC NPC)
         {
-            if (StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool unlocked) && unlocked)
-                return NetworkText.FromLiteral(npc.GivenName + " the " + TownUpgrade.FromString(npc.TypeName)._title + " was slain...");
+            if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+                return NetworkText.FromLiteral(NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title + " was slain...");
             return input;
         }
 
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.CustomHooks
             c.TryGotoNext(i => i.MatchStloc(8));
             c.Index++;
 
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
             c.Emit(OpCodes.Ldloc, 7);
             c.Emit(OpCodes.Ldelem_Ref);
 
@@ -130,11 +130,11 @@ namespace StarlightRiver.Content.CustomHooks
             c.Emit(OpCodes.Stloc, 8);
         }
 
-        private delegate string SwapTitleDelegate(NPC npc, string input);
+        private delegate string SwapTitleDelegate(NPC NPC, string input);
 
-        private string EmitSwapTitleDelegate(NPC npc, string input)
+        private string EmitSwapTitleDelegate(NPC NPC, string input)
         {
-            if (StarlightWorld.TownUpgrades.TryGetValue(npc.TypeName, out bool unlocked) && unlocked) return npc.GivenName + " the " + TownUpgrade.FromString(npc.TypeName)._title;
+            if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked) return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title;
             return input;
         }
     }

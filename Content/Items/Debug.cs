@@ -23,34 +23,34 @@ namespace StarlightRiver.Content.Items
 
         public override void SetDefaults()
         {
-            item.damage = 10;
-            item.melee = true;
-            item.width = 38;
-            item.height = 40;
-            item.useTime = 18;
-            item.useAnimation = 18;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 5f;
-            item.value = 1000;
-            item.rare = ItemRarityID.LightRed;
-            item.autoReuse = true;
-            item.UseSound = SoundID.Item18;
-            item.useTurn = true;
-            item.accessory = true;
+            Item.damage = 10;
+            Item.melee = true;
+            Item.width = 38;
+            Item.height = 40;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 5f;
+            Item.value = 1000;
+            Item.rare = ItemRarityID.LightRed;
+            Item.autoReuse = true;
+            Item.UseSound = SoundID.Item18;
+            Item.useTurn = true;
+            Item.accessory = true;
 
-            item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
-            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
+            Player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
             InfusionMaker.visible = !InfusionMaker.visible;
             return true;
 
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
             return true;
 
-            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+            Player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             return true;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)
@@ -88,10 +88,10 @@ namespace StarlightRiver.Content.Items
             Player dummy = new Player();
             dummy.active = true;
 
-            var item = new Item();
-            item.SetDefaults(ModContent.ItemType<UndergroundTemple.TempleRune>());
+            var Item = new Item();
+            Item.SetDefaults(ModContent.ItemType<UndergroundTemple.TempleRune>());
 
-            dummy.armor[5] = item;
+            dummy.armor[5] = Item;
             dummy.Center = Main.LocalPlayer.Center;
 
             Main.player[1] = dummy;
@@ -103,16 +103,16 @@ namespace StarlightRiver.Content.Items
             return true;
 
             /*
-            foreach (NPC npc in Main.npc)
-                npc.active = false;
+            foreach (NPC NPC in Main.npc)
+                NPC.active = false;
 
             NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
-            player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
+            Player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
 
             return true;*/
         }
 
-		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
             return;
 
@@ -147,26 +147,26 @@ namespace StarlightRiver.Content.Items
 
         public override void SetDefaults()
         {
-            item.damage = 10;
-            item.melee = true;
-            item.width = 38;
-            item.height = 38;
-            item.useTime = 2;
-            item.useAnimation = 2;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 5f;
-            item.value = 1000;
-            item.rare = ItemRarityID.LightRed;
-            item.autoReuse = true;
-            item.UseSound = SoundID.Item18;
-            item.useTurn = true;
-            item.accessory = true;
+            Item.damage = 10;
+            Item.melee = true;
+            Item.width = 38;
+            Item.height = 38;
+            Item.useTime = 2;
+            Item.useAnimation = 2;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 5f;
+            Item.value = 1000;
+            Item.rare = ItemRarityID.LightRed;
+            Item.autoReuse = true;
+            Item.UseSound = SoundID.Item18;
+            Item.useTurn = true;
+            Item.accessory = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
-            foreach (NPC npc in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
-                npc.StrikeNPC(99999, 0, 0, false, false, false);
+            foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
+                NPC.StrikeNPC(99999, 0, 0, false, false, false);
             return true;
         }
     }

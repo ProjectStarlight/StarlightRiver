@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.StarJuice
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            TooltipLine line = new TooltipLine(mod, "Starlight", "Starlight: " + charge + "/" + maxCharge)
+            TooltipLine line = new TooltipLine(Mod, "Starlight", "Starlight: " + charge + "/" + maxCharge)
             {
                 overrideColor = new Color(140, 220, 255)
             };

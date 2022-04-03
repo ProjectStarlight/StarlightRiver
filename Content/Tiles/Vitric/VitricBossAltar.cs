@@ -72,19 +72,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (tile.frameX >= 90)
             {
-                Player player = Main.LocalPlayer;
-                player.showItemIcon2 = ItemType<Items.Vitric.GlassIdol>();
-                player.noThrow = 2;
-                player.showItemIcon = true;
+                Player Player = Main.LocalPlayer;
+                Player.showItemIcon2 = ItemType<Items.Vitric.GlassIdol>();
+                Player.noThrow = 2;
+                Player.showItemIcon = true;
             }
         }
 
         public override bool NewRightClick(int i, int j)
         {
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (Player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || Player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
             {
                 int x = i - (tile.frameX - 90) / 18;
                 int y = j - tile.frameY / 18;
@@ -106,16 +106,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
 
             int n = NPC.NewNPC(i * 16 + 40, j * 16 + 556, NPCType<VitricBoss>());
-            var npc = Main.npc[n];
+            var NPC = Main.npc[n];
 
-            if (npc.type == NPCType<VitricBoss>())
-                (Dummy(i, j).modProjectile as VitricBossAltarDummy).boss = Main.npc[n];
+            if (NPC.type == NPCType<VitricBoss>())
+                (Dummy(i, j).ModProjectile as VitricBossAltarDummy).boss = Main.npc[n];
         }
     }
 
     class VitricBossAltarItem : QuickTileItem
     {
-        public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug item", TileType<VitricBossAltar>(), 1, AssetDirectory.Debug, true) { }
+        public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", TileType<VitricBossAltar>(), 1, AssetDirectory.Debug, true) { }
     }
 
     internal class VitricBossAltarDummy : Dummy
@@ -125,14 +125,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public NPC boss;
 
-        public ref float BarrierProgress => ref projectile.ai[0];
-        public ref float CutsceneTimer => ref projectile.ai[1];
+        public ref float BarrierProgress => ref Projectile.ai[0];
+        public ref float CutsceneTimer => ref Projectile.ai[1];
 
         public VitricBossAltarDummy() : base(TileType<VitricBossAltar>(), 80, 112) { }
 
         bool collisionHappened = false;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             ReflectionTarget.DrawReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
             return base.Autoload(ref name);
@@ -157,13 +157,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (parent.frameX < 90)
             {
-                Texture2D reflectionMap = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap");
+                Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value;
                 spriteBatch.Draw(reflectionMap, proj.position - Main.screenPosition, Color.White);
             }
         }
         public override void SafeSetDefaults()
         {
-            projectile.hide = true;
+            Projectile.hide = true;
         }
 
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
@@ -171,12 +171,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             drawCacheProjsBehindNPCsAndTiles.Add(index);
         }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
+            Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
-            if (parent.frameX == 0 && Abilities.AbilityHelper.CheckDash(player, projectile.Hitbox) && !collisionHappened)
+            if (parent.frameX == 0 && Abilities.AbilityHelper.CheckDash(Player, Projectile.Hitbox) && !collisionHappened)
             {
                 collisionHappened = true;
 
@@ -185,15 +185,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (Main.netMode != NetmodeID.Server)
                 {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
-                    for (int k = 0; k < 100; k++) Dust.NewDust(projectile.position, projectile.width, projectile.height, DustType<Dusts.GlassGravity>(), 0, 0, 0, default, 1.2f);
+                    for (int k = 0; k < 100; k++) Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>(), 0, 0, 0, default, 1.2f);
 
-                    if (Main.myPlayer == player.whoAmI)
+                    if (Main.myPlayer == Player.whoAmI)
                     {
                         for (int x = parentPos.X; x < parentPos.X + 5; x++)
                             for (int y = parentPos.Y; y < parentPos.Y + 7; y++)
                                 Framing.GetTileSafely(x, y).frameX += 90;
 
-                        NetMessage.SendTileRange(player.whoAmI, parentPos.X, parentPos.Y, 5, 7, TileChangeType.None);
+                        NetMessage.SendTileRange(Player.whoAmI, parentPos.X, parentPos.Y, 5, 7, TileChangeType.None);
                     }
                 }
             }
@@ -207,15 +207,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == ModContent.NPCType<VitricBoss>())
-                    boss = npc;
+                NPC NPC = Main.npc[i];
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBoss>())
+                    boss = NPC;
 
-                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropLeft>())
-                    arenaLeft = npc;
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropLeft>())
+                    arenaLeft = NPC;
 
-                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropRight>())
-                    arenaRight = npc;
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropRight>())
+                    arenaRight = NPC;
             }
 
             return;
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Update()
         {
-            Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
+            Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
             if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer < 660) //should prevent the cutscene from reoccuring?
@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             //This controls spawning the rest of the arena
             if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active && Main.netMode != NetmodeID.MultiplayerClient)
             {
-                foreach (NPC npc in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
+                foreach (NPC NPC in Main.npc.Where(n => n.active && //reset the arena if one of the sides somehow dies
                  (
                  n.type == NPCType<VitricBackdropLeft>() ||
                  n.type == NPCType<VitricBackdropRight>() ||
@@ -245,11 +245,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
                  n.type == NPCType<VitricBossPlatformUpSmall>()
                  )))
                 {
-                    npc.active = false;
-                    npc.netUpdate = true;
+                    NPC.active = false;
+                    NPC.netUpdate = true;
                 }
 
-                Vector2 center = projectile.Center + new Vector2(0, 60);
+                Vector2 center = Projectile.Center + new Vector2(0, 60);
                 int timerset = StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && CutsceneTimer >= 660 ? 360 : 0; //the arena should already be up if it was opened before
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -257,14 +257,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     int index = NPC.NewNPC((int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
                     arenaRight = Main.npc[index];
 
-                    if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropRight)
-                        (Main.npc[index].modNPC as VitricBackdropRight).SpawnPlatforms(false);
+                    if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].ModNPC is VitricBackdropRight)
+                        (Main.npc[index].ModNPC as VitricBackdropRight).SpawnPlatforms(false);
 
                     index = NPC.NewNPC((int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
                     arenaLeft = Main.npc[index];
 
-                    if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].modNPC is VitricBackdropLeft)
-                        (Main.npc[index].modNPC as VitricBackdropLeft).SpawnPlatforms(false);
+                    if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].ModNPC is VitricBackdropLeft)
+                        (Main.npc[index].ModNPC as VitricBackdropLeft).SpawnPlatforms(false);
                 }
             }
 
@@ -279,14 +279,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
-                    Dust.NewDust(projectile.Center + new Vector2(-632, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
-                    Dust.NewDust(projectile.Center + new Vector2(72, projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
+                    Dust.NewDust(Projectile.Center + new Vector2(-632, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
+                    Dust.NewDust(Projectile.Center + new Vector2(72, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
 
                     if (CutsceneTimer > 120 && CutsceneTimer <= 240)
                         Main.musicFade[Main.curMusic] = 1 - ((CutsceneTimer - 120) / 120f);
 
                     if (CutsceneTimer == 180)
-                        Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, projectile.Center);
+                        Helper.PlayPitched("ArenaRise", 0.5f, -0.1f, Projectile.Center);
                 }
 
                 CutsceneTimer++;
@@ -297,8 +297,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                     if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
                     {
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = projectile.Center + new Vector2(0, -400);
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = projectile.Center;
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = Projectile.Center + new Vector2(0, -400);
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = Projectile.Center;
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = VitricBackdropLeft.Risetime + 120;
                     }
                 }
@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     if (BarrierProgress == 119) //hitting the top
                     {
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
-                        Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, projectile.Center);
+                        Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Projectile.Center);
                     }
                 }
             }
@@ -330,28 +330,28 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 BarrierProgress--;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor) //actually drawing the barriers and item indicator
+        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor) //actually drawing the barriers and Item indicator
         {
-            Point16 parentPos = new Point16((int)projectile.position.X / 16, (int)projectile.position.Y / 16);
+            Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
             Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
             if (parent.frameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()))
             {
-                Texture2D texSkull = GetTexture("StarlightRiver/Assets/Symbol");
-                spriteBatch.Draw(texSkull, projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, projectile.Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
+                Texture2D texSkull = Request<Texture2D>("StarlightRiver/Assets/Symbol").Value;
+                spriteBatch.Draw(texSkull, Projectile.Center - Main.screenPosition, null, new Color(255, 100, 100) * (1 - Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) / 200f), 0, texSkull.Size() / 2, 1, 0, 0);
             }
 
             else if (parent.frameX < 90 && ReflectionTarget.canUseTarget)
             {
-                Texture2D glow = GetTexture(AssetDirectory.VitricTile + "VitricBossAltarGlow");
-                spriteBatch.Draw(glow, projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, projectile.Center), 0, Vector2.Zero, 1, 0, 0);
+                Texture2D glow = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarGlow").Value;
+                spriteBatch.Draw(glow, Projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Projectile.Center), 0, Vector2.Zero, 1, 0, 0);
             }
 
             //Barriers
-            Vector2 center = projectile.Center + new Vector2(0, 56);
-            Texture2D tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrier");
-            Texture2D tex2 = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrier2");
-            Texture2D texTop = GetTexture(AssetDirectory.VitricBoss + "VitricBossBarrierTop");
+            Vector2 center = Projectile.Center + new Vector2(0, 56);
+            Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier").Value;
+            Texture2D tex2 = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrier2").Value;
+            Texture2D texTop = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBarrierTop").Value;
             //Color color = new Color(180, 225, 255);
 
             int off = (int)(BarrierProgress / 120f * tex.Height);

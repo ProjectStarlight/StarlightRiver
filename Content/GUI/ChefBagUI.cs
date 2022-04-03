@@ -41,20 +41,20 @@ namespace StarlightRiver.Content.GUI
 			if (openBag is null)
 				return;
 
-			for(int k = 0; k < openBag.items.Count; k++)
+			for(int k = 0; k < openBag.Items.Count; k++)
 			{
-				grid.Add(new IngredientStorageSlot(openBag.items[k], k));
+				grid.Add(new IngredientStorageSlot(openBag.Items[k], k));
 			}
 		}
 	}
 
 	class IngredientStorageSlot : UIElement
 	{
-		public Item item;
+		public Item Item;
 
-		public IngredientStorageSlot(Item item, int index)
+		public IngredientStorageSlot(Item Item, int index)
 		{
-			this.item = item;
+			this.Item = Item;
 
 			Width.Set(50, 0);
 			Height.Set(50, 0);
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (IsMouseHovering)
 			{
-				Main.HoverItem = item;
+				Main.HoverItem = Item;
 				//ItemSlot.mouse
 			}
 			
@@ -76,17 +76,17 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var tex = GetTexture(AssetDirectory.GUI + "FoodSlot");
-			var itemTex = Main.PopupTexture[item.type];
+			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
+			var ItemTex = Main.PopupTexture[Item.type];
 			var pos = GetDimensions().Center();
 
-			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(item.rare), 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(itemTex, pos, null, Color.White, 0, itemTex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare), 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(ItemTex, pos, null, Color.White, 0, ItemTex.Size() / 2, 1, 0, 0);
 
 			if(IsMouseHovering)
 			{
-				//Main.HoverItem = item;
-				//typeof(Main).GetMethod("MouseText_DrawItemTooltip", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Main.instance, new Object[] { item.rare, (byte)0, Main.mouseX, Main.mouseY });
+				//Main.HoverItem = Item;
+				//typeof(Main).GetMethod("MouseText_DrawItemTooltip", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(Main.instance, new Object[] { Item.rare, (byte)0, Main.mouseX, Main.mouseY });
 			}
 		}
 	}

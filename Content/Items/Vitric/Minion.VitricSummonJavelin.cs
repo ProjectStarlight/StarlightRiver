@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public VitricSummonJavelin()
         {
-            strikeWhere = projectile.Center;
+            strikeWhere = Projectile.Center;
             enemySize = Vector2.One;
             Vector2 offset = Vector2.Zero;
         }
@@ -27,40 +27,40 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Enchanted Vitric Weapons");
-            Main.projFrames[projectile.type] = 1;
-            ProjectileID.Sets.Homing[projectile.type] = true;
+            Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
         }
 
         public sealed override void SetDefaults()
         {
-            projectile.width = 24;
-            projectile.height = 24;
-            projectile.friendly = true;
-            projectile.hostile = false;
-            projectile.minion = true;
-            projectile.penetrate = 5;
-            projectile.tileCollide = false;
-            projectile.timeLeft = 60;
-            projectile.extraUpdates = 3;
+            Projectile.width = 24;
+            Projectile.height = 24;
+            Projectile.friendly = true;
+            Projectile.hostile = false;
+            Projectile.minion = true;
+            Projectile.penetrate = 5;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 60;
+            Projectile.extraUpdates = 3;
         }
 
         public override void DoAI()
         {
-            oldHitbox = new Vector2(projectile.width, projectile.height);
+            oldHitbox = new Vector2(Projectile.width, Projectile.height);
 
-            if (projectile.localAI[0] > 1000)
-                projectile.Kill();
+            if (Projectile.localAI[0] > 1000)
+                Projectile.Kill();
 
-            if (projectile.localAI[0] == 1)
+            if (Projectile.localAI[0] == 1)
             {
-                projectile.localAI[1] = 1;
-                projectile.rotation = projectile.ai[0];
-                projectile.spriteDirection = projectile.rotation > 500 ? -1 : 1;
+                Projectile.localAI[1] = 1;
+                Projectile.rotation = Projectile.ai[0];
+                Projectile.spriteDirection = Projectile.rotation > 500 ? -1 : 1;
 
-                if (projectile.rotation > 500)
-                    projectile.rotation -= 1000;
+                if (Projectile.rotation > 500)
+                    Projectile.rotation -= 1000;
 
-                projectile.netUpdate = true;
+                Projectile.netUpdate = true;
             }
 
             if (enemy != null && enemy.active)
@@ -71,43 +71,43 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (offset.X < 1)
             {
-                Vector2 gothere = projectile.Center;
-                Vector2 aimvector = strikeWhere - projectile.Center;
-                float animlerp = Math.Min(projectile.localAI[0] / 200f, 1f);
+                Vector2 gothere = Projectile.Center;
+                Vector2 aimvector = strikeWhere - Projectile.Center;
+                float animlerp = Math.Min(Projectile.localAI[0] / 200f, 1f);
                 float turnto = aimvector.ToRotation();
 
-                if (projectile.localAI[0] < 200)
+                if (Projectile.localAI[0] < 200)
                 {
-                    gothere = strikeWhere - new Vector2(projectile.spriteDirection * 96, 0);
-                    projectile.velocity += (gothere - projectile.Center) / 80f * animlerp;
-                    projectile.velocity *= 0.65f;
+                    gothere = strikeWhere - new Vector2(Projectile.spriteDirection * 96, 0);
+                    Projectile.velocity += (gothere - Projectile.Center) / 80f * animlerp;
+                    Projectile.velocity *= 0.65f;
                 }
                 else
                 {
-                    projectile.velocity -= (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * 0.40f * projectile.spriteDirection;
-                    projectile.velocity *= 0.95f / (1f + (projectile.localAI[0] - 200f) / 150f);
+                    Projectile.velocity -= (Projectile.rotation * Projectile.spriteDirection).ToRotationVector2() * 0.40f * Projectile.spriteDirection;
+                    Projectile.velocity *= 0.95f / (1f + (Projectile.localAI[0] - 200f) / 150f);
                 }
 
-                projectile.rotation = projectile.rotation.AngleTowards(turnto * projectile.spriteDirection + (projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * (projectile.localAI[0] < 200 ? 0.01f : 0.005f));
+                Projectile.rotation = Projectile.rotation.AngleTowards(turnto * Projectile.spriteDirection + (Projectile.spriteDirection < 0 ? (float)Math.PI : 0), animlerp * (Projectile.localAI[0] < 200 ? 0.01f : 0.005f));
 
-                if ((int)projectile.localAI[0] == 400)
+                if ((int)Projectile.localAI[0] == 400)
                 {
                     for (float num315 = 0.75f; num315 < 8; num315 += 2f)
                         for (float i = -80; i < 41; i += 8f)
                         {
                             float angle = Main.rand.NextFloat(-MathHelper.Pi / 8f, MathHelper.Pi / 8f);
                             float idist = (i + 82f) / 40f;
-                            Vector2 velo = Vector2.Normalize((projectile.rotation + angle + (float)Math.PI).ToRotationVector2()) * idist;
-                            Vector2 velo2 = new Vector2(velo.X * projectile.spriteDirection, velo.Y);
-                            Vector2 veloincreasebyi = Vector2.Normalize(projectile.velocity) * (i * 1.5f);
+                            Vector2 velo = Vector2.Normalize((Projectile.rotation + angle + (float)Math.PI).ToRotationVector2()) * idist;
+                            Vector2 velo2 = new Vector2(velo.X * Projectile.spriteDirection, velo.Y);
+                            Vector2 veloincreasebyi = Vector2.Normalize(Projectile.velocity) * (i * 1.5f);
                             Vector2 randomvelo = new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-6, 6));
 
-                            Dust.NewDustPerfect(projectile.Center + veloincreasebyi + randomvelo, DustID.LavaMoss, velo2, 100, default, num315 / 2f);
+                            Dust.NewDustPerfect(Projectile.Center + veloincreasebyi + randomvelo, DustID.LavaMoss, velo2, 100, default, num315 / 2f);
                         }
 
                     offset.X = 1;
-                    projectile.velocity = (projectile.rotation * projectile.spriteDirection).ToRotationVector2() * 10f * projectile.spriteDirection;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)projectile.Center.X, (int)projectile.Center.Y, 75, 0.75f, -0.50f);
+                    Projectile.velocity = (Projectile.rotation * Projectile.spriteDirection).ToRotationVector2() * 10f * Projectile.spriteDirection;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.Center.X, (int)Projectile.Center.Y, 75, 0.75f, -0.50f);
 
                 }
             }
@@ -121,28 +121,28 @@ namespace StarlightRiver.Content.Items.Vitric
                 for (float i = -80; i < 41; i += 8f)
                 {
                     float angle = MathHelper.ToRadians(-Main.rand.NextFloat(-MathHelper.Pi / 5f, MathHelper.Pi / 5f));
-                    Vector2 velo = projectile.rotation.ToRotationVector2() * num315;
-                    Vector2 offset = Vector2.Normalize(projectile.velocity) * (i * 1.5f);
+                    Vector2 velo = Projectile.rotation.ToRotationVector2() * num315;
+                    Vector2 offset = Vector2.Normalize(Projectile.velocity) * (i * 1.5f);
                     Vector2 randomoffsetreboiled = new Vector2(Main.rand.NextFloat(-10, 10), Main.rand.NextFloat(-20, -8));
 
-                    Dust.NewDustPerfect(projectile.Center + offset + randomoffsetreboiled, dusttype, new Vector2(velo.X * projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
+                    Dust.NewDustPerfect(Projectile.Center + offset + randomoffsetreboiled, dusttype, new Vector2(velo.X * Projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
                 }
 
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 0.75f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, (int)Projectile.Center.X, (int)Projectile.Center.Y, 0, 0.75f);
             return true;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
+            Texture2D tex = Main.projectileTexture[Projectile.type];
 
             Vector2 drawOrigin = new Vector2(tex.Width / 2f, tex.Height) / 2f;
             Rectangle Rect = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false);
             Rectangle Rect2 = VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true);
-            float rotoffset = projectile.rotation + MathHelper.ToRadians(90f);
-            float themath = Math.Min((projectile.localAI[0] - 200f) / 300f, 1f);
-            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect, lightColor, rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
-            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(animationProgress), rotoffset * projectile.spriteDirection, drawOrigin, projectile.scale, projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            float rotoffset = Projectile.rotation + MathHelper.ToRadians(90f);
+            float themath = Math.Min((Projectile.localAI[0] - 200f) / 300f, 1f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect, lightColor, rotoffset * Projectile.spriteDirection, drawOrigin, Projectile.scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
+            spriteBatch.Draw(tex, drawpos - Main.screenPosition, Rect2, VitricSummonOrb.MoltenGlow(animationProgress), rotoffset * Projectile.spriteDirection, drawOrigin, Projectile.scale, Projectile.spriteDirection > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0f);
         }
     }
 

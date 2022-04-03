@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 {
                     Tile tile = Framing.GetTileSafely(i + x, j + y);
 
-                    if (tile.active() && tile.type == TileType<DiscGate>())
+                    if (tile.HasTile && tile.type == TileType<DiscGate>())
                         WorldGen.KillTile(i + x, j + y);
                 }
         }
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void SafeSetDefaults()
         {
-            projectile.hide = true;
+            Projectile.hide = true;
         }
 
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
@@ -75,8 +75,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = GetTexture("StarlightRiver/Assets/Tiles/Permafrost/DiscHole");
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16), 0, tex.Size() / 2, 1, 0, 0);
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/DiscHole").Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16), 0, tex.Size() / 2, 1, 0, 0);
         }
 
         public void OpenGate() => WorldGen.KillTile(ParentX, ParentY);

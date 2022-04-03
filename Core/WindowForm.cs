@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void WindowFormChanges()//generates a icon from a png and changes the window text
         {
-            GameForm.Icon = Texture2Icon(ModContent.GetTexture(GetModIcon()));
+            GameForm.Icon = Texture2Icon(ModContent.Request<Texture2D>(GetModIcon().Value));
             GameForm.Text = GetWindowTitle();
         }
 

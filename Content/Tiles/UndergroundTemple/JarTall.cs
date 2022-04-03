@@ -36,8 +36,8 @@ namespace StarlightRiver.Tiles.Temple
                 if (dummy is null) 
                     return;
 
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow");
-                Texture2D tex2 = GetTexture("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow").Value;
+                Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Tiles/UndergroundTemple/JarTallGlow2").Value;
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
@@ -56,21 +56,21 @@ namespace StarlightRiver.Tiles.Temple
     {
         public JarDummy() : base(TileType<JarTall>(), 32, 32) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 4, TileChangeType.None);
+                NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 4, TileChangeType.None);
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
             }
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), Color.OrangeRed * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + Vector2.UnitY * 16, tex.Frame(), Color.OrangeRed * 0.7f, 0, tex.Size() / 2, 0.8f, 0, 0);
         }
     }
 
@@ -78,6 +78,6 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug item", TileType<JarTall>(), -12) { }
+        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug Item", TileType<JarTall>(), -12) { }
     }
 }

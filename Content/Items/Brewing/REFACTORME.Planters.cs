@@ -15,23 +15,23 @@ namespace StarlightRiver.Items.Herbology
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createTile = mod.TileType("Soil");
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createTile = Mod.TileType("Soil");
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.MudBlock, 10);
-            recipe.AddIngredient(mod.ItemType("Ivy"), 5);
+            recipe.AddIngredient(Mod.ItemType("Ivy"), 5);
             recipe.AddIngredient(ItemID.CrystalShard, 1);
             recipe.AddTile(TileID.Furnaces);
             recipe.SetResult(this, 10);
@@ -51,23 +51,23 @@ namespace StarlightRiver.Items.Herbology
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createTile = mod.TileType("Trellis");
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createTile = Mod.TileType("Trellis");
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.Wood, 5);
-            recipe.AddIngredient(mod.ItemType("Soil"), 1);
+            recipe.AddIngredient(Mod.ItemType("Soil"), 1);
             recipe.AddTile(TileID.WorkBenches);
             recipe.SetResult(this);
             recipe.AddRecipe();
@@ -86,21 +86,21 @@ namespace StarlightRiver.Items.Herbology
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createTile = mod.TileType("Planter");
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createTile = Mod.TileType("Planter");
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.ClayBlock, 5);
             recipe.AddIngredient(ItemID.Chain, 1);
             recipe.AddTile(TileID.WorkBenches);

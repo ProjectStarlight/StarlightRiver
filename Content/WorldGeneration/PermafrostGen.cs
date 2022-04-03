@@ -15,7 +15,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
         public static int permafrostCenter;
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Core
             circles.ForEach(n => DecorateCircle(n));
 
             SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
-            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), mod);
+            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), Mod);
 
             MakeCenterGates(bigCircle, caves);
 
@@ -399,7 +399,7 @@ namespace StarlightRiver.Core
                     //I have to do this because PlaceTile and PlaceObject crash for some ungodly reason. Dont ask.
                     Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
 
-                    if (!tile.active())
+                    if (!tile.HasTile)
                     {
                         tile.active(true);
                         tile.type = (ushort)TileType<SpikeImmuneOrb>();
@@ -443,7 +443,7 @@ namespace StarlightRiver.Core
                 for (int y = rect.Y; y < rect.Y + rect.Height; y++)
                 {
                     Tile tile = Framing.GetTileSafely(x, y);
-                    if (tile.wall == WallID.SnowWallUnsafe) return true;
+                    if (tile.WallType == WallID.SnowWallUnsafe) return true;
                 }
 
             return false;
@@ -455,7 +455,7 @@ namespace StarlightRiver.Core
                 for (int y = rect.Y; y < rect.Y + rect.Height; y++)
                 {
                     Tile tile = Framing.GetTileSafely(x, y);
-                    if (!tile.active())
+                    if (!tile.HasTile)
                     {
                         tile.liquid = 255;
                         tile.liquidType(0);
@@ -480,7 +480,7 @@ namespace StarlightRiver.Core
                     {
                         Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
                         Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
-                        if (tile.wall == WallID.SnowWallUnsafe)
+                        if (tile.WallType == WallID.SnowWallUnsafe)
                         {
                             windup++;
                             if (windup >= 2)
@@ -497,7 +497,7 @@ namespace StarlightRiver.Core
                     {
                         Point16 pos = Vector2.Lerp(line.XY(), line.ZW(), k).ToPoint16();
                         Tile tile = Framing.GetTileSafely(pos.X, pos.Y);
-                        if (tile.wall == WallID.SnowWallUnsafe)
+                        if (tile.WallType == WallID.SnowWallUnsafe)
                         {
                             windup++;
                             if (windup >= 2)
@@ -524,7 +524,7 @@ namespace StarlightRiver.Core
                     {
                         Tile tile = Framing.GetTileSafely(x, y);
 
-                        if (tile.wall == WallID.SnowWallUnsafe)
+                        if (tile.WallType == WallID.SnowWallUnsafe)
                             WorldGen.PlaceTile(x, y, TileType<DiscGate>());
                     }
 
@@ -533,7 +533,7 @@ namespace StarlightRiver.Core
                     {
                         Tile tile = Framing.GetTileSafely(x, y);
 
-                        if (tile.active() && tile.wall == WallID.SnowWallUnsafe && tile.type != TileType<PermafrostIce>() && tile.type != TileType<DiscGate>())
+                        if (tile.HasTile && tile.WallType == WallID.SnowWallUnsafe && tile.type != TileType<PermafrostIce>() && tile.type != TileType<DiscGate>())
                             tile.active(false);
                     }
 

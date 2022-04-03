@@ -66,11 +66,11 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class OvenItem : QuickTileItem
     {
-        public OvenItem() : base("Oven", "Used to bake items", TileType<Oven>(), 0, AssetDirectory.CraftingTile) { }
+        public OvenItem() : base("Oven", "Used to bake Items", TileType<Oven>(), 0, AssetDirectory.CraftingTile) { }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.StoneBlock, 20);
             recipe.AddIngredient(ItemID.Gel, 5);
             recipe.AddIngredient(ItemID.Wood, 10);
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.Wood, 20);
             recipe.AddIngredient(ItemType<Ivy>());
             recipe.AddIngredient(ItemID.Bottle, 1);
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.Wood, 20);
             recipe.AddIngredient(RecipeGroupID.IronBar, 5);
             recipe.AddTile(TileID.WorkBenches);

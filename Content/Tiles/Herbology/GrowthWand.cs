@@ -22,22 +22,22 @@ namespace StarlightRiver.Content.Items
 
         public override void SetDefaults()
         {
-            item.damage = 10;
-            item.melee = true;
-            item.width = 38;
-            item.height = 40;
-            item.useTime = 18;
-            item.useAnimation = 18;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 5f;
-            item.value = 1000;
-            item.rare = ItemRarityID.LightRed;
-            item.autoReuse = true;
-            item.UseSound = SoundID.Item18;
-            item.useTurn = true;
+            Item.damage = 10;
+            Item.melee = true;
+            Item.width = 38;
+            Item.height = 40;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.knockBack = 5f;
+            Item.value = 1000;
+            Item.rare = ItemRarityID.LightRed;
+            Item.autoReuse = true;
+            Item.UseSound = SoundID.Item18;
+            Item.useTurn = true;
         }
 
-        public override bool UseItem(Player player)
+        public override bool UseItem(Player Player)
         {
             //Main.windSpeed += 0.8f;
             //float scale = System.Math.Min(0.03f + (Main.windSpeed * 0.07f), 0.12f);

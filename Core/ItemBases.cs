@@ -15,15 +15,15 @@ namespace StarlightRiver.Core
 
         public sealed override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.friendly = false;
-            projectile.width = 10;
-            projectile.height = 10;
-            projectile.aiStyle = -1;
-            projectile.penetrate = 1;
-            projectile.tileCollide = false;
-            projectile.alpha = 255;
-            projectile.timeLeft = 9999;
+            Projectile.hostile = false;
+            Projectile.friendly = false;
+            Projectile.width = 10;
+            Projectile.height = 10;
+            Projectile.aiStyle = -1;
+            Projectile.penetrate = 1;
+            Projectile.tileCollide = false;
+            Projectile.alpha = 255;
+            Projectile.timeLeft = 9999;
 
             SafeSetDefaults();
         }
@@ -34,15 +34,15 @@ namespace StarlightRiver.Core
         public sealed override bool PreAI()
         {
             AdjustDirection();
-            Player player = Main.player[projectile.owner];
-            player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
-            player.heldProj = projectile.whoAmI;
-            player.itemTime = 2;
-            player.itemAnimation = 2;
-            projectile.Center = player.Center;
+            Player Player = Main.player[Projectile.owner];
+            Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
+            Player.heldProj = Projectile.whoAmI;
+            Player.ItemTime = 2;
+            Player.ItemAnimation = 2;
+            Projectile.Center = Player.Center;
 
-            if (!player.channel)
-                projectile.Kill();
+            if (!Player.channel)
+                Projectile.Kill();
 
             return true;
         }
@@ -51,12 +51,12 @@ namespace StarlightRiver.Core
         {
             SpriteEffects spriteEffect = SpriteEffects.None;
             Vector2 offset = Vector2.Zero;
-            Texture2D tex = Main.projectileTexture[projectile.type];
+            Texture2D tex = Main.projectileTexture[Projectile.type];
 
-            if (Main.player[projectile.owner].direction != 1)
+            if (Main.player[Projectile.owner].direction != 1)
                 spriteEffect = SpriteEffects.FlipVertically;
 
-            Main.spriteBatch.Draw(tex, (Main.player[projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[projectile.owner].gfxOffY)).PointAccur() + offset + direction * Distance, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, projectile.scale, spriteEffect, 0);
+            Main.spriteBatch.Draw(tex, (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset + direction * Distance, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, Projectile.scale, spriteEffect, 0);
 
             return SafePreDraw(spriteBatch, lightColor);
         }
@@ -64,13 +64,13 @@ namespace StarlightRiver.Core
 
         private void AdjustDirection(float deviation = 0f)
         {
-            Player player = Main.player[projectile.owner];
-            direction = Main.MouseWorld - (player.Center - new Vector2(4, 4)) - new Vector2(0, Main.player[projectile.owner].gfxOffY);
+            Player Player = Main.player[Projectile.owner];
+            direction = Main.MouseWorld - (Player.Center - new Vector2(4, 4)) - new Vector2(0, Main.player[Projectile.owner].gfxOffY);
             direction.Normalize();
             direction = direction.RotatedBy(deviation);
-            player.itemRotation = direction.ToRotation();
-            if (player.direction != 1)
-                player.itemRotation -= 3.14f;
+            Player.ItemRotation = direction.ToRotation();
+            if (Player.direction != 1)
+                Player.ItemRotation -= 3.14f;
         }
     }
 
@@ -105,23 +105,23 @@ namespace StarlightRiver.Core
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = Maxstack;
-            item.value = Value;
-            item.rare = Rare;
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = Maxstack;
+            Item.value = Value;
+            Item.rare = Rare;
         }
     }
 
     public class QuickBannerItem : QuickTileItem
     {
-        public QuickBannerItem(string placetype, string npcDisplayName, string texturePath = null, int rare = ItemRarityID.Blue, int itemValue = 1000) : //todo maybe: bool for tooltip
-            base(npcDisplayName + " Banner", "Nearby players get a bonus against: " + npcDisplayName, placetype, rare, texturePath, false, itemValue) { }
+        public QuickBannerItem(string placetype, string NPCDisplayName, string texturePath = null, int rare = ItemRarityID.Blue, int ItemValue = 1000) : //todo maybe: bool for tooltip
+            base(NPCDisplayName + " Banner", "Nearby Players get a bonus against: " + NPCDisplayName, placetype, rare, texturePath, false, ItemValue) { }
 
         public override void SetDefaults()
         {
             base.SetDefaults();
-            item.maxStack = 99;
+            Item.maxStack = 99;
         }
     }
 
@@ -136,7 +136,7 @@ namespace StarlightRiver.Core
         private readonly bool PathHasName;
         private readonly int ItemValue;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int itemValue = 0)
+        public QuickTileItem(string name, string tooltip, int placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -146,7 +146,7 @@ namespace StarlightRiver.Core
             PathHasName = pathHasName;
         }
 
-        public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int itemValue = 0)
+        public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
@@ -154,7 +154,7 @@ namespace StarlightRiver.Core
             Rare = rare;
             TexturePath = texturePath;
             PathHasName = pathHasName;
-            ItemValue = itemValue;
+            ItemValue = ItemValue;
         }
 
         public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
@@ -171,18 +171,18 @@ namespace StarlightRiver.Core
 
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createTile = Tiletype == 0 && Tilename != null ? mod.TileType(Tilename) : Tiletype;
-            item.rare = Rare;
-            item.value = ItemValue;
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createTile = Tiletype == 0 && Tilename != null ? Mod.TileType(Tilename) : Tiletype;
+            Item.rare = Rare;
+            Item.value = ItemValue;
             SafeSetDefaults();
         }
     }
@@ -215,17 +215,17 @@ namespace StarlightRiver.Core
         }
         public override void SetDefaults()
         {
-            item.width = 16;
-            item.height = 16;
-            item.maxStack = 999;
-            item.useTurn = true;
-            item.autoReuse = true;
-            item.useAnimation = 15;
-            item.useTime = 10;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.consumable = true;
-            item.createWall = Walltype;
-            item.rare = Rare;
+            Item.width = 16;
+            Item.height = 16;
+            Item.maxStack = 999;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.consumable = true;
+            Item.createWall = Walltype;
+            Item.rare = Rare;
         }
     }
 }

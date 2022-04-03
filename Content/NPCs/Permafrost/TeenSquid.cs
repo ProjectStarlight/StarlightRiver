@@ -13,88 +13,88 @@ namespace StarlightRiver.Content.NPCs.Permafrost
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Volatile teenage squid");
-            Main.npcFrameCount[npc.type] = 1;
+            Main.npcFrameCount[NPC.type] = 1;
         }
 
         public override void SetDefaults()
         {
-            npc.width = 46;
-            npc.height = 80;
-            npc.damage = 18;
-            npc.defense = 12;
-            npc.noGravity = true;
-            npc.lifeMax = 50;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.value = 500f;
-            npc.knockBackResist = 0.2f;
+            NPC.width = 46;
+            NPC.height = 80;
+            NPC.damage = 18;
+            NPC.defense = 12;
+            NPC.noGravity = true;
+            NPC.lifeMax = 50;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.value = 500f;
+            NPC.knockBackResist = 0.2f;
         }
 
         const float xsinmult = 0.75f;
         const float ysinmult = 1.5f;
         const float jumpSpeed = 1f;
-        //npc.ai[0]: phase
-        //npc.ai[1]: x sin timer
-        //npc.ai[2]: y sin timer
+        //NPC.ai[0]: phase
+        //NPC.ai[1]: x sin timer
+        //NPC.ai[2]: y sin timer
         public override void AI()
         {
-            npc.TargetClosest(true);
-            Player player = Main.player[npc.target];
-            switch (npc.ai[0])
+            NPC.TargetClosest(true);
+            Player Player = Main.player[NPC.target];
+            switch (NPC.ai[0])
             {
                 case 0: //bobbing in the water
-                    npc.ai[1] += 0.1f;
-                    npc.ai[2] += 0.03f;
+                    NPC.ai[1] += 0.1f;
+                    NPC.ai[2] += 0.03f;
 
-                    if (!npc.wet)
+                    if (!NPC.wet)
                     {
-                        npc.noGravity = false;
-                        npc.velocity.Y += 0.3f;
+                        NPC.noGravity = false;
+                        NPC.velocity.Y += 0.3f;
                     }
                     else
                     {
-                        npc.noGravity = true;
-                        if (Math.Abs(player.Center.X - npc.Center.X) < 100)
-                            npc.ai[0] = 1;
-                        float xvel = (float)Math.Sin(npc.ai[1]) * xsinmult;
-                        float yvel = (float)Math.Sin(npc.ai[2]) * ysinmult;
+                        NPC.noGravity = true;
+                        if (Math.Abs(Player.Center.X - NPC.Center.X) < 100)
+                            NPC.ai[0] = 1;
+                        float xvel = (float)Math.Sin(NPC.ai[1]) * xsinmult;
+                        float yvel = (float)Math.Sin(NPC.ai[2]) * ysinmult;
                         yvel -= 0.03f;
-                        npc.velocity = new Vector2(xvel, yvel);
+                        NPC.velocity = new Vector2(xvel, yvel);
                     }
 
                     break;
 
                 case 1: //jumping up 
-                    npc.velocity.X = 0;
+                    NPC.velocity.X = 0;
 
-                    if (npc.wet && !npc.noTileCollide)
+                    if (NPC.wet && !NPC.noTileCollide)
                     {
-                        npc.velocity.Y = 0 - (float)Math.Sqrt(MathHelper.Clamp(npc.Center.Y - player.Center.Y, 0, 700)) * jumpSpeed;
-                        npc.noTileCollide = true;
+                        NPC.velocity.Y = 0 - (float)Math.Sqrt(MathHelper.Clamp(NPC.Center.Y - Player.Center.Y, 0, 700)) * jumpSpeed;
+                        NPC.noTileCollide = true;
                     }
                     else
                     {
-                        npc.velocity.Y += 0.39f * jumpSpeed;
-                        npc.noTileCollide = false;
+                        NPC.velocity.Y += 0.39f * jumpSpeed;
+                        NPC.noTileCollide = false;
                     }
 
-                    if (npc.velocity.Y >= 0)
-                        npc.ai[0] = 2;
+                    if (NPC.velocity.Y >= 0)
+                        NPC.ai[0] = 2;
                     break;
 
                 case 2: //falling down
-                    npc.velocity.X = 0;
-                    npc.noTileCollide = false;
+                    NPC.velocity.X = 0;
+                    NPC.noTileCollide = false;
 
-                    if (npc.wet)
+                    if (NPC.wet)
                     {
-                        npc.velocity.Y = 0 - (float)Math.Sqrt(MathHelper.Clamp(npc.Center.Y - player.Center.Y, 0, 700)) * jumpSpeed;
-                        npc.ai[0] = 1;
+                        NPC.velocity.Y = 0 - (float)Math.Sqrt(MathHelper.Clamp(NPC.Center.Y - Player.Center.Y, 0, 700)) * jumpSpeed;
+                        NPC.ai[0] = 1;
                     }
                     else
-                        npc.velocity.Y += 0.39f * jumpSpeed;
+                        NPC.velocity.Y += 0.39f * jumpSpeed;
 
-                    if (npc.collideX)
+                    if (NPC.collideX)
                     {
                         //explode
                     }

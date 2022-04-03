@@ -20,9 +20,9 @@ namespace StarlightRiver.Content.Buffs
             Main.buffNoTimeDisplay[Type] = false;
         }
 
-        public override void Update(NPC npc, ref int buffIndex)
+        public override void Update(NPC NPC, ref int buffIndex)
         {
-            //npc.GetGlobalNPC<DebuffHandler>().ivy = true;
+            //NPC.GetGlobalNPC<DebuffHandler>().ivy = true;
         }
     }
 }

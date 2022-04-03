@@ -6,16 +6,16 @@ namespace StarlightRiver.Content.Buffs
     {
         public GhastlyCloakBuff() : base("Cloaked", "Increases most stats", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.immuneAlpha += 80;
-            player.lifeRegen++;
-            player.statDefense += 2;
-            player.allDamage += 0.05f;
-            player.moveSpeed += 0.4f;
+            Player.immuneAlpha += 80;
+            Player.lifeRegen++;
+            Player.statDefense += 2;
+            Player.allDamage += 0.05f;
+            Player.moveSpeed += 0.4f;
             if (Main.rand.NextBool())
             {
-                Dust.NewDust(player.position, player.width, player.height, 62);
+                Dust.NewDust(Player.position, Player.width, Player.height, 62);
             }
         }
     }

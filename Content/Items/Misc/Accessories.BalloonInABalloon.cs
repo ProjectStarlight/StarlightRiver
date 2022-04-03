@@ -16,26 +16,26 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = Item.sellPrice(0, 2, 0, 0);
-            item.rare = ItemRarityID.LightRed;
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.jumpBoost = true;
-            if (player.velocity.Y != 0 && player.wings <= 0 && !player.mount.Active)
+            Player.jumpBoost = true;
+            if (Player.velocity.Y != 0 && Player.wings <= 0 && !Player.mount.Active)
             {
-                player.runAcceleration *= 2f;
-                player.maxRunSpeed *= 1.5f;
+                Player.runAcceleration *= 2f;
+                Player.maxRunSpeed *= 1.5f;
             }
 
-            if (player.controlUp && player.velocity.Y > 0)
-                player.AddBuff(BuffID.Featherfall, 5);
+            if (Player.controlUp && Player.velocity.Y > 0)
+                Player.AddBuff(BuffID.Featherfall, 5);
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddTile(TileID.TinkerersWorkbench);
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             recipe.AddRecipe();
 
-            recipe = new ModRecipe(mod);
+            recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddTile(TileID.TinkerersWorkbench);

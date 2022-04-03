@@ -22,59 +22,59 @@ namespace StarlightRiver.Content.NPCs.Hell
 
         public override void SetDefaults()
         {
-            npc.width = 50;
-            npc.knockBackResist = 0f;
-            npc.height = 50;
-            npc.lifeMax = 200;
-            npc.HitSound = SoundID.NPCHit8;
-            npc.DeathSound = SoundID.NPCDeath33;
-            npc.noGravity = true;
-            npc.damage = 100;
-            npc.aiStyle = -1;
-            npc.lavaImmune = true;
+            NPC.width = 50;
+            NPC.knockBackResist = 0f;
+            NPC.height = 50;
+            NPC.lifeMax = 200;
+            NPC.HitSound = SoundID.NPCHit8;
+            NPC.DeathSound = SoundID.NPCDeath33;
+            NPC.noGravity = true;
+            NPC.damage = 100;
+            NPC.aiStyle = -1;
+            NPC.lavaImmune = true;
         }
 
         public override bool CheckDead()
         {
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14, npc.Center);
-            //Projectile.NewProjectile(npc.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), npc.damage, 3, 255, 128); TODO: New explosion
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
+            //Projectile.NewProjectile(NPC.Center, Vector2.Zero, ProjectileType<AOEExplosionHostile>(), NPC.damage, 3, 255, 128); TODO: New explosion
             return true;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            spriteBatch.Draw(GetTexture(Texture), npc.position - Main.screenPosition + new Vector2((float)Math.Sin(npc.ai[0]) * 4f, 0), drawColor);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition + new Vector2((float)Math.Sin(NPC.ai[0]) * 4f, 0), drawColor);
             return false;
         }
 
         public override void AI()
         {
-            npc.ai[0] += 0.02f;
-            if (npc.ai[0] >= 6.28f) npc.ai[0] = 0;
+            NPC.ai[0] += 0.02f;
+            if (NPC.ai[0] >= 6.28f) NPC.ai[0] = 0;
 
-            if (npc.ai[1] == 0)
+            if (NPC.ai[1] == 0)
             {
-                if (Main.player.Any(player => Vector2.Distance(player.Center, npc.Center) <= 64)) //arm
-                    npc.ai[1] = 1;
+                if (Main.player.Any(Player => Vector2.Distance(Player.Center, NPC.Center) <= 64)) //arm
+                    NPC.ai[1] = 1;
 
-                if (Main.player.Any(player => Vector2.Distance(player.Center, npc.Center) <= 128)) //warning ring
-                    Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<Dusts.Stamina>());
+                if (Main.player.Any(Player => Vector2.Distance(Player.Center, NPC.Center) <= 128)) //warning ring
+                    Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(6.28f) * 42, DustType<Dusts.Stamina>());
             }
             else
             {
-                npc.ai[2]++;
-                if (npc.ai[2] % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, 0.5f); //warning beep
-                if (npc.ai[2] >= 45) npc.Kill(); //detonate
+                NPC.ai[2]++;
+                if (NPC.ai[2] % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, (int)NPC.Center.X, (int)NPC.Center.Y, 1, 1, 0.5f); //warning beep
+                if (NPC.ai[2] >= 45) NPC.Kill(); //detonate
             }
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            Player player = spawnInfo.player;
+            Player Player = spawnInfo.Player;
             Vector2 spawnPos = new Vector2(spawnInfo.spawnTileX * 16, spawnInfo.spawnTileY * 16);
 
-            return player.position.Y >= Main.maxTilesY - 200 && Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY].liquid != 0 &&
-                !Main.npc.Any(npc => npc.active && npc.type == NPCType<BoneMine>() && Vector2.Distance(npc.Center, spawnPos) <= 128)
+            return Player.position.Y >= Main.maxTilesY - 200 && Main.tile[spawnInfo.spawnTileX, spawnInfo.spawnTileY].liquid != 0 &&
+                !Main.npc.Any(NPC => NPC.active && NPC.type == NPCType<BoneMine>() && Vector2.Distance(NPC.Center, spawnPos) <= 128)
                 ? 1
                 : (float)0;
         }

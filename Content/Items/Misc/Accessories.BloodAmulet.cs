@@ -24,13 +24,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = Item.sellPrice(0, 2, 0, 0);
-            item.rare = ItemRarityID.LightRed;
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.GetModPlayer<BloodAmuletPlayer>().equipped = true;
+            Player.GetModPlayer<BloodAmuletPlayer>().equipped = true;
         }
 	}
     public class BloodAmuletPlayer : ModPlayer
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Misc
             equipped = false;
         }
 
-        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        public override void ModifyHitByNPC(NPC NPC, ref int damage, ref bool crit)
         {
             if (equipped)
             {
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
             while (damageTicker > 25)
             {
                 damageTicker -= 25;
-                Projectile.NewProjectile(player.Center, Main.rand.NextVector2Circular(10,10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
+                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(10,10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, Player.whoAmI);
             }
         }
     }
@@ -78,10 +78,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool dropHeart = false;
 
-        public override void NPCLoot(NPC npc)
+        public override void NPCLoot(NPC NPC)
         {
 			if (dropHeart)
-				Item.NewItem(npc.Center, ItemID.Heart);
+				Item.NewItem(NPC.Center, ItemID.Heart);
         }
     }
 
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		const int TRAILLENGTH = 25;
 
-		public float fade => Math.Min(1, projectile.timeLeft / 15f);
+		public float fade => Math.Min(1, Projectile.timeLeft / 15f);
 
 		public override void SetStaticDefaults()
 		{
@@ -104,14 +104,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			projectile.width = 20;
-			projectile.height = 20;
-			projectile.friendly = true;
-			projectile.penetrate = -1;
-			projectile.timeLeft = 450;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-			projectile.alpha = 255;
+			Projectile.width = 20;
+			Projectile.height = 20;
+			Projectile.friendly = true;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 450;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.alpha = 255;
 		}
 
 		public override void AI()
@@ -125,26 +125,26 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
-			projectile.friendly = false;
-			if (projectile.timeLeft > 15)
+			Projectile.friendly = false;
+			if (Projectile.timeLeft > 15)
             {
-				projectile.timeLeft = 15;
+				Projectile.timeLeft = 15;
             }				
 		}
 
 		private void Movement()
 		{
-			NPC target = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
 
 			if (target != default)
 			{
-				Vector2 direction = target.Center - projectile.Center;
+				Vector2 direction = target.Center - Projectile.Center;
 				direction.Normalize();
 				direction *= 10;
-				projectile.velocity = Vector2.Lerp(projectile.velocity, direction, 0.03f);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.03f);
 			}
 			if (fade < 1)
-				projectile.velocity = Vector2.Zero;
+				Projectile.velocity = Vector2.Zero;
 		}
 
 		private void ManageCaches()
@@ -154,11 +154,11 @@ namespace StarlightRiver.Content.Items.Misc
 				cache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
 				{
-					cache.Add(projectile.Center);
+					cache.Add(Projectile.Center);
 				}
 			}
 
-			cache.Add(projectile.Center);
+			cache.Add(Projectile.Center);
 
 			while (cache.Count > TRAILLENGTH)
 			{
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.Misc
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center + projectile.velocity;
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
 		public void DrawPrimitives()
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/FireTrail"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
 			trail?.Render(effect);
 		}

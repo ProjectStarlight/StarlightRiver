@@ -40,52 +40,52 @@ namespace StarlightRiver.Items.Prototypes
                 case (BreakType.Time): text += " Left"; break;
                 case (BreakType.MaxDamage): text += " Damage Left"; break;
             }
-            TooltipLine line = new TooltipLine(mod, "PrototypeInfo", text)
+            TooltipLine line = new TooltipLine(Mod, "PrototypeInfo", text)
             {
                 overrideColor = new Color(255, 200, 100)
             };
             tooltips.Add(line);
         }
 
-        public virtual bool SafeUseItem(Player player)
+        public virtual bool SafeUseItem(Player Player)
         {
             return true;
         } //allows on-use effects without breaking the prototype behavior
 
-        public sealed override bool UseItem(Player player) //reduces durability on use if the breaking method of the prototype is limited uses
+        public sealed override bool UseItem(Player Player) //reduces durability on use if the breaking method of the prototype is limited uses
         {
             if (Breaktype == BreakType.MaxUses) Durability--;
-            if (Durability == 0) BreakItem(player.Center); //destroys the item on it's last use
-            return SafeUseItem(player);
+            if (Durability == 0) BreakItem(Player.Center); //destroys the Item on it's last use
+            return SafeUseItem(Player);
         }
 
-        public virtual void SafeUpdateInventory(Player player)
+        public virtual void SafeUpdateInventory(Player Player)
         {
         } //allows in-inventory effects without breaking the prototype behavior
 
-        public sealed override void UpdateInventory(Player player) //reduces durability every tick in the player's inventory if of the appropriate breaking method
+        public sealed override void UpdateInventory(Player Player) //reduces durability every tick in the Player's inventory if of the appropriate breaking method
         {
             if (Breaktype == BreakType.Time) Durability--;
-            if (Durability == 0) BreakItem(player.Center); //destroys the item when time is up, if in the inventory
-            SafeUpdateInventory(player);
+            if (Durability == 0) BreakItem(Player.Center); //destroys the Item when time is up, if in the inventory
+            SafeUpdateInventory(Player);
         }
 
         public sealed override void PostUpdate() //reduces durability every tick in the world if of the appropriate breaking method
         {
             if (Breaktype == BreakType.Time) Durability--;
-            if (Durability == 0) BreakItem(item.Center); //destroys the item when time is up, if on the ground
+            if (Durability == 0) BreakItem(Item.Center); //destroys the Item when time is up, if on the ground
         }
 
         public void BreakItem(Vector2 spawnpos)
         {
-            Main.NewText("Your " + item.Name + " broke...", new Color(255, 200, 100));
+            Main.NewText("Your " + Item.Name + " broke...", new Color(255, 200, 100));
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, spawnpos);
             for (int k = 0; k <= 40; k++)
             {
                 Dust.NewDustPerfect(spawnpos, DustType<Content.Dusts.Stone>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5));
                 Dust.NewDustPerfect(spawnpos, 133, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
             }
-            item.TurnToAir();
+            Item.TurnToAir();
         }
     }
 }

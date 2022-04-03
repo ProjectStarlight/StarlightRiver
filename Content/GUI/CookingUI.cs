@@ -26,10 +26,10 @@ namespace StarlightRiver.Content.GUI
         private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
-        private readonly UIImageButton CookButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/CookPrep"));
-        private readonly UIImageButton ExitButton = new UIImageButton(GetTexture("StarlightRiver/Assets/GUI/CookExit"));
-        private readonly UIImage StatBack = new UIImage(GetTexture("StarlightRiver/Assets/GUI/CookStatWindow"));
-        private readonly UIImage TopBar = new UIImage(GetTexture("StarlightRiver/Assets/GUI/CookTop"));
+        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep").Value);
+        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit").Value);
+        private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow").Value);
+        private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop").Value);
 
         private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.GUI
             Utils.DrawBorderString(spriteBatch, "Prepare", Basepos + new Vector2(212, 210), Color.White, 1.1f);
 
             int drawY = 0;
-            if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.modItem as Ingredient).ThisType == IngredientType.Main))
+            if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
                 Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
 
             else
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.GUI
 
                 foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
                 {
-                    Ingredient ingredient = (element as CookingSlot).Item.modItem as Ingredient;
+                    Ingredient ingredient = (element as CookingSlot).Item.ModItem as Ingredient;
 
                     var strings = ingredient.ItemTooltip.Split('\n');
 
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.GUI
 
                 if (lineCount > 5)
                 {
-                    var tex = GetTexture("StarlightRiver/Assets/GUI/Arrow");
+                    var tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
 
                     spriteBatch.Draw(Main.magicPixel, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
                     spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -155,15 +155,15 @@ namespace StarlightRiver.Content.GUI
         {
             if (!MainSlot.Item.IsAir) //make sure were cooking SOMETHING!
             {
-                Item item = new Item();
-                item.SetDefaults(ItemType<Meal>()); //let TML hanlde making the item properly
-                (item.modItem as Meal).Ingredients = new List<Item>();
-                CookIngredient(item, MainSlot);
-                CookIngredient(item, SideSlot0);
-                CookIngredient(item, SideSlot1);
-                CookIngredient(item, SeasonSlot);
-                item.position = Main.LocalPlayer.Center;
-                Main.LocalPlayer.QuickSpawnClonedItem(item);
+                Item Item = new Item();
+                Item.SetDefaults(ItemType<Meal>()); //let TML hanlde making the Item properly
+                (Item.ModItem as Meal).Ingredients = new List<Item>();
+                CookIngredient(Item, MainSlot);
+                CookIngredient(Item, SideSlot0);
+                CookIngredient(Item, SideSlot1);
+                CookIngredient(Item, SeasonSlot);
+                Item.position = Main.LocalPlayer.Center;
+                Main.LocalPlayer.QuickSpawnClonedItem(Item);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
             }
@@ -171,10 +171,10 @@ namespace StarlightRiver.Content.GUI
 
         private static void CookIngredient(Item target, CookingSlot source)
         {
-            if (!source.Item.IsAir && source.Item.modItem is Ingredient)
+            if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
             {
-                (target.modItem as Meal).Ingredients.Add(source.Item.Clone());
-                (target.modItem as Meal).Fullness += (source.Item.modItem as Ingredient).Fill;
+                (target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
+                (target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
                 if (source.Item.stack == 1) source.Item.TurnToAir();
                 else source.Item.stack--;
             }
@@ -202,19 +202,19 @@ namespace StarlightRiver.Content.GUI
             if (IsMouseHovering)
                 Main.LocalPlayer.mouseInterface = true;
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotY");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value;
             switch (Type)
             {
-                case IngredientType.Main: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotY"); break;
-                case IngredientType.Side: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotG"); break;
-                case IngredientType.Seasoning: tex = GetTexture("StarlightRiver/Assets/GUI/CookSlotB"); break;
+                case IngredientType.Main: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotY").Value; break;
+                case IngredientType.Side: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotG").Value; break;
+                case IngredientType.Seasoning: tex = Request<Texture2D>("StarlightRiver/Assets/GUI/CookSlotB").Value; break;
             }
 
             spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White, 0, Vector2.Zero, 1, 0, 0);
 
             if (!Item.IsAir)
             {
-                Texture2D tex2 = GetTexture(Item.modItem.Texture);
+                Texture2D tex2 = Request<Texture2D>(Item.ModItem.Texture).Value;
                 spriteBatch.Draw(tex2, new Rectangle((int)GetDimensions().X + 30, (int)GetDimensions().Y + 30, (int)MathHelper.Min(tex2.Width, 28), (int)MathHelper.Min(tex2.Height, 28)), tex2.Frame(), Color.White, 0, tex2.Size() / 2, 0, 0);
 
                 if (Item.stack > 1)
@@ -224,44 +224,44 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            if (Main.mouseItem.IsAir && !Item.IsAir) //if the cursor is empty and there is something in the slot, take the item out
+            if (Main.mouseItem.IsAir && !Item.IsAir) //if the cursor is empty and there is something in the slot, take the Item out
             {
                 Main.mouseItem = Item.Clone();
                 Item.TurnToAir();
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
-            if (Item.IsAir && player.HeldItem.type == Item.type) //if the cursor is the same type as the item already in the slot, add to the slot
+            if (Item.IsAir && Player.HeldItem.type == Item.type) //if the cursor is the same type as the Item already in the slot, add to the slot
             {
-                Item.stack += player.HeldItem.stack;
-                player.HeldItem.TurnToAir();
+                Item.stack += Player.HeldItem.stack;
+                Player.HeldItem.TurnToAir();
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
-            if (player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && Item.IsAir) //if the slot is empty and the cursor has an item, put it in the slot
+            if (Player.HeldItem.ModItem is Ingredient && (Player.HeldItem.ModItem as Ingredient).ThisType == Type && Item.IsAir) //if the slot is empty and the cursor has an Item, put it in the slot
             {
-                Item = player.HeldItem.Clone();
-                player.HeldItem.TurnToAir();
+                Item = Player.HeldItem.Clone();
+                Player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
             }
 
-            if(player.HeldItem.modItem is Ingredient && (player.HeldItem.modItem as Ingredient).ThisType == Type && !Item.IsAir) //swap or stack
+            if(Player.HeldItem.ModItem is Ingredient && (Player.HeldItem.ModItem as Ingredient).ThisType == Type && !Item.IsAir) //swap or stack
 			{
-                if(player.HeldItem.type == Item.type) //stack
+                if(Player.HeldItem.type == Item.type) //stack
 				{
-                    if (Item.stack + player.HeldItem.stack > Item.maxStack)
+                    if (Item.stack + Player.HeldItem.stack > Item.maxStack)
                     {
-                        Main.mouseItem.stack = Item.stack + player.HeldItem.stack - Item.maxStack;
+                        Main.mouseItem.stack = Item.stack + Player.HeldItem.stack - Item.maxStack;
                         Item.stack = Item.maxStack;                    
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     }
                     else
                     {
-                        Item.stack += player.HeldItem.stack;
-                        player.HeldItem.TurnToAir();
+                        Item.stack += Player.HeldItem.stack;
+                        Player.HeldItem.TurnToAir();
                         Main.mouseItem.TurnToAir();
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                     }
@@ -269,7 +269,7 @@ namespace StarlightRiver.Content.GUI
 				else //swap
 				{
                     var temp = Item;
-                    Item = player.HeldItem;
+                    Item = Player.HeldItem;
                     Main.mouseItem = temp;
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
                 }

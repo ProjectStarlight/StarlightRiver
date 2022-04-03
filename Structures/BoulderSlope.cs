@@ -14,7 +14,7 @@ namespace StarlightRiver.Structures
         {
             progress.Message = "Setting ancient traps...";
 
-            Texture2D BoulderSlope = GetTexture("StarlightRiver/Assets/Structures/BoulderSlope");
+            Texture2D BoulderSlope = Request<Texture2D>("StarlightRiver/Assets/Structures/BoulderSlope").Value;
             Vector2 spawn = new Vector2(0, 0);
             List<int> allowedBlocks = new List<int> {
                 TileID.Stone,

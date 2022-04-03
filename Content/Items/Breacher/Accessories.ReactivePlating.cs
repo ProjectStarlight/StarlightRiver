@@ -30,20 +30,20 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 4, 0, 0);
-			item.defense = 4;
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 4, 0, 0);
+			Item.defense = 4;
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+			ArmorPlatingPlayer modPlayer = Player.GetModPlayer<ArmorPlatingPlayer>();
 			modPlayer.active = true;
 			if (modPlayer.Shield)
-				player.endurance += 0.3f;
+				Player.endurance += 0.3f;
 		}
 	}
 

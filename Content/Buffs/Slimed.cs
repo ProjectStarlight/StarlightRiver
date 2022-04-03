@@ -5,16 +5,16 @@ namespace StarlightRiver.Content.Buffs
 	public class Slimed : SmartBuff
     {
         public Slimed() : base("Slimed", "eww", true) { }
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.lifeRegen -= 5;
-            player.slow = true;
+            Player.lifeRegen -= 5;
+            Player.slow = true;
         }
 
-        public override void Update(NPC npc, ref int buffIndex)
+        public override void Update(NPC NPC, ref int buffIndex)
         {
-            npc.lifeRegen -= 5;//life per second
-            npc.velocity *= npc.noGravity ? 0.96f : 0.92f;//4% & 8%
+            NPC.lifeRegen -= 5;//life per second
+            NPC.velocity *= NPC.noGravity ? 0.96f : 0.92f;//4% & 8%
         }
     }
 }

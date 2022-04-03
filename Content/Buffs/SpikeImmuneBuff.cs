@@ -6,9 +6,9 @@ namespace StarlightRiver.Content.Buffs
     {
         public SpikeImmuneBuff() : base("Aurora's blessing", "Immunity to spikes\nImproved movement speed", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.moveSpeed += 0.5f;
+            Player.moveSpeed += 0.5f;
         }
     }
 }

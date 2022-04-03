@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Abilities.GaiasFist
 
                 Player.frozen = true;
                 Player.maxFallSpeed = 999;
-                //player.velocity.X = 0;
+                //Player.velocity.X = 0;
                 if (Player.velocity.Y < 35) Player.velocity.Y += 2;
                 else Player.velocity.Y = 35;
 
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Abilities.GaiasFist
             else
             {
                 //float rot = Main.rand.NextFloat(6.28f);
-                //Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(rot) * 40, ModContent.DustType<JungleEnergy>(), Vector2.One.RotatedBy(rot) * -2f, 0, default, 0.3f);
+                //Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(rot) * 40, ModContent.DustType<JungleEnergy>(), Vector2.One.RotatedBy(rot) * -2f, 0, default, 0.3f);
             }
         }
 

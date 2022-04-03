@@ -8,25 +8,25 @@ namespace StarlightRiver.Content.Items.Food
     {
         public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightNPC.NPCLootEvent += LootMonsterSteak;
             return true;
         }
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.meleeCrit += 3;
-            player.rangedCrit += 3;
-            player.magicCrit += 3;
+            Player.meleeCrit += 3;
+            Player.rangedCrit += 3;
+            Player.magicCrit += 3;
         }
 
-        private void LootMonsterSteak(NPC npc)
+        private void LootMonsterSteak(NPC NPC)
         {
-            if (npc.type == NPCID.FaceMonster && Main.rand.Next(4) == 0)
-                Item.NewItem(npc.Center, item.type);
+            if (NPC.type == NPCID.FaceMonster && Main.rand.Next(4) == 0)
+                Item.NewItem(NPC.Center, Item.type);
         }
     }
 }

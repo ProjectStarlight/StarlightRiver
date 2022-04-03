@@ -25,30 +25,30 @@ namespace StarlightRiver.Content.Items.Demon
 
 		public override void SetDefaults()
 		{
-			item.damage = 20;
-			item.melee = true;
-			item.width = 36;
-			item.height = 44;
-			item.useTime = 12;
-			item.useAnimation = 12;
-			item.reuseDelay = 20;
-			item.channel = true;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.knockBack = 6.5f;
-			item.value = Item.sellPrice(0, 1, 0, 0);
-			item.crit = 4;
-			item.rare = 2;
-			item.shootSpeed = 0f;
-			item.shoot = ModContent.ProjectileType<DarkDrinkerSlash>();
-			item.noUseGraphic = true;
-			item.noMelee = true;
-			item.autoReuse = true;
+			Item.damage = 20;
+			Item.melee = true;
+			Item.width = 36;
+			Item.height = 44;
+			Item.useTime = 12;
+			Item.useAnimation = 12;
+			Item.reuseDelay = 20;
+			Item.channel = true;
+			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.knockBack = 6.5f;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
+			Item.crit = 4;
+			Item.rare = 2;
+			Item.shootSpeed = 0f;
+			Item.shoot = ModContent.ProjectileType<DarkDrinkerSlash>();
+			Item.noUseGraphic = true;
+			Item.noMelee = true;
+			Item.autoReuse = true;
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
 			float rot = 0;
-			Vector2 frontPosition = player.Center + new Vector2(player.direction * 30, 0);
+			Vector2 frontPosition = Player.Center + new Vector2(Player.direction * 30, 0);
 			var target = Main.npc.Where(x => x.Distance(frontPosition) < 250 && x.active && !x.townNPC && !x.friendly).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
 			if (target != default)
 			{
@@ -60,9 +60,9 @@ namespace StarlightRiver.Content.Items.Demon
 			}
 
 			Vector2 pos = frontPosition + ((rot + Main.rand.NextFloat(-0.3f, 0.3f)).ToRotationVector2() * Main.rand.Next(40));
-			DarkDrinkerSlash mp = Projectile.NewProjectileDirect(pos, Vector2.Zero, type, damage, knockBack, player.whoAmI).modProjectile as DarkDrinkerSlash;
+			DarkDrinkerSlash mp = Projectile.NewProjectileDirect(pos, Vector2.Zero, type, damage, knockBack, Player.whoAmI).ModProjectile as DarkDrinkerSlash;
 			mp.frameX = Main.rand.Next(4);
-			mp.projectile.rotation = rot + Main.rand.NextFloat(-0.4f, 0.4f);
+			mp.Projectile.rotation = rot + Main.rand.NextFloat(-0.4f, 0.4f);
 			return false;
 		}
 	}
@@ -83,19 +83,19 @@ namespace StarlightRiver.Content.Items.Demon
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dark Drinker");
-			Main.projFrames[projectile.type] = 4;
+			Main.projFrames[Projectile.type] = 4;
 		}
 
 		public override void SetDefaults()
 		{
-			projectile.friendly = true;
-			projectile.melee = true;
-			projectile.tileCollide = false;
-			projectile.Size = new Vector2(76, 76);
-			projectile.penetrate = -1;
-			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = 16;
-			projectile.ownerHitCheck = true;
+			Projectile.friendly = true;
+			Projectile.melee = true;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(76, 76);
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 16;
+			Projectile.ownerHitCheck = true;
 
 			Color color1 = new Color(165, 80, 210);
 			Color color2 = new Color(250, 60, 80);
@@ -109,16 +109,16 @@ namespace StarlightRiver.Content.Items.Demon
             {
 				frameY++;
 				if (frameY > 3)
-					projectile.active = false;
+					Projectile.active = false;
             }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-			Texture2D tex = Main.projectileTexture[projectile.type];
+			Texture2D tex = Main.projectileTexture[Projectile.type];
 			Rectangle frame = new Rectangle(frameX * FRAMEWIDTH, frameY * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, frame, drawColor, projectile.rotation, tex.Size() / 8, projectile.scale, SpriteEffects.None, 0); ;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, drawColor, Projectile.rotation, tex.Size() / 8, Projectile.scale, SpriteEffects.None, 0); ;
 			return false;
         }
     }

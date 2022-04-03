@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.JungleCorrupt
         {
             if (Main.rand.Next(600) == 0 && !Main.tile[i, j + 1].active() && Main.tile[i, j].slope() == 0)
             {
-                Dust.NewDustPerfect(new Vector2(i, j) * 16, mod.DustType("Corrupt2"), new Vector2(0, 0.6f));
+                Dust.NewDustPerfect(new Vector2(i, j) * 16, Mod.DustType("Corrupt2"), new Vector2(0, 0.6f));
             }
         }
     }

@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.GUI
         {
             for (int k = 0; k < 3; k++)
             {
-                if (slots[k].item.IsAir || slots[k].item.GetGlobalItem<ArmorEnchantment.EnchantedArmorGlobalItem>().Enchantment != null)
+                if (slots[k].Item.IsAir || slots[k].Item.GetGlobalItem<ArmorEnchantment.EnchantedArmorGlobalItem>().Enchantment != null)
                     return false;
             }
 
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.GUI
             for (int k = 0; k < ArmorEnchantLoader.Enchantments.Count; k++)
             {
                 var enchant = ArmorEnchantLoader.Enchantments[k];
-                if (enchant.IsAvailable(slots[0].item, slots[1].item, slots[2].item))
+                if (enchant.IsAvailable(slots[0].Item, slots[1].Item, slots[2].Item))
                 {
                     var button = new EnchantButton(enchant);
                     buttons.Add(button);
@@ -140,10 +140,10 @@ namespace StarlightRiver.Content.GUI
         {
             for (int k = 0; k < 3; k++)
             {
-                if (slots[k].item.IsAir) return false;
+                if (slots[k].Item.IsAir) return false;
             }
 
-            ArmorEnchantment.ArmorEnchantment.EnchantArmor(slots[0].item, slots[1].item, slots[2].item, enchant);
+            ArmorEnchantment.ArmorEnchantment.EnchantArmor(slots[0].Item, slots[1].Item, slots[2].Item, enchant);
             return true;
         }
     }
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.GUI
     class ArmorSlot : UIElement
     {
         public int animationTimer;
-        public Item item = new Item();
+        public Item Item = new Item();
         private readonly int slotIndex;
 
         private ParticleSystem slotParticles = new ParticleSystem(AssetDirectory.GUI + "WhiteCircle", ParticleUpdate);
@@ -222,9 +222,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var closedTex = GetTexture(AssetDirectory.GUI + "EnchantSlotClosed");
-            var openTex = GetTexture(AssetDirectory.GUI + "EnchantSlotOpen");
-            var iconTex = GetTexture(AssetDirectory.GUI + "EnchantSlotIcon");
+            var closedTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotClosed").Value;
+            var openTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotOpen").Value;
+            var iconTex = Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotIcon").Value;
 
             leafParticles.DrawParticles(spriteBatch);
 
@@ -253,15 +253,15 @@ namespace StarlightRiver.Content.GUI
                 spriteBatch.Draw(openTex, GetDimensions().Center(), new Rectangle(0, 0, 98, 106), Color.White, 0, Vector2.One * 49, 1, 0, 0);
                 spriteBatch.Draw(iconTex, GetDimensions().Center() + Vector2.UnitY * 6, new Rectangle(0, 18 * slotIndex, 20, 18), Color.White, 0, Vector2.One * 9, 1, 0, 0);
 
-                if (!item.IsAir)
+                if (!Item.IsAir)
                 {
-                    Texture2D PopupTexture = item.type > ItemID.Count ? GetTexture(item.modItem.Texture) : GetTexture("Terraria/Item_" + item.type);
+                    Texture2D PopupTexture = Item.type > ItemID.Count ? Request<Texture2D>(Item.ModItem.Texture).Value : Request<Texture2D>("Terraria/Item_" + Item.type).Value;
                     float scale = PopupTexture.Frame().Size().Length() < 52 ? 1 : 52f / PopupTexture.Frame().Size().Length();
 
                     spriteBatch.Draw(PopupTexture, GetDimensions().Center(), PopupTexture.Frame(), Color.White, 0, PopupTexture.Frame().Size() / 2, scale, 0, 0);
 
                     var pos = GetDimensions().Center() + Vector2.UnitY * 45 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5);
-                    slotParticles.AddParticle(new Particle(pos, Vector2.UnitY * -Main.rand.NextFloat(0.4f, 0.6f), 0, Main.rand.NextFloat(0.6f, 1.2f), ItemRarity.GetColor(item.rare) * 0.8f, 1, Vector2.Zero));
+                    slotParticles.AddParticle(new Particle(pos, Vector2.UnitY * -Main.rand.NextFloat(0.4f, 0.6f), 0, Main.rand.NextFloat(0.6f, 1.2f), ItemRarity.GetColor(Item.rare) * 0.8f, 1, Vector2.Zero));
                 }
 
                 if (Main.rand.Next(20) == 0)
@@ -276,36 +276,36 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            if (item.IsAir && !Main.mouseItem.IsAir && CheckValid(Main.mouseItem))
+            if (Item.IsAir && !Main.mouseItem.IsAir && CheckValid(Main.mouseItem))
             {
-                item = Main.mouseItem.Clone();
+                Item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact);
 
                 for (int k = 0; k < 50; k++)
-                    slotParticles.AddParticle(new Particle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(item.rare), 1, Vector2.One));
+                    slotParticles.AddParticle(new Particle(GetDimensions().Center() + Vector2.UnitY * 45, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(8), 0, Main.rand.NextFloat(0.4f, 0.6f), ItemRarity.GetColor(Item.rare), 1, Vector2.One));
             }
 
-            else if (!item.IsAir && Main.mouseItem.IsAir)
+            else if (!Item.IsAir && Main.mouseItem.IsAir)
             {
-                Main.mouseItem = item.Clone();
-                item.TurnToAir();
+                Main.mouseItem = Item.Clone();
+                Item.TurnToAir();
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
             }
         }
 
-        public bool CheckValid(Item item)
+        public bool CheckValid(Item Item)
         {
-            if (item.vanity)
+            if (Item.vanity)
                 return false;
 
             switch (slotIndex)
             {
-                case 0: if (item.headSlot != -1) return true; break;
-                case 1: if (item.bodySlot != -1) return true; break;
-                case 2: if (item.legSlot != -1) return true; break;
+                case 0: if (Item.headSlot != -1) return true; break;
+                case 1: if (Item.bodySlot != -1) return true; break;
+                case 2: if (Item.legSlot != -1) return true; break;
             }
 
             return false;
@@ -330,7 +330,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var tex = GetTexture(enchant.Texture);
+            var tex = Request<Texture2D>(enchant.Texture).Value;
             var pos = GetDimensions().Center();
 
             spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.GUI
 
         public void DrawAdditive(SpriteBatch spriteBatch) //batched and drawn in parent
         {
-            var tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
             var pos = GetDimensions().Center();
             var scale = 1 + animationTimer / 30f;
             var opacity = 1 - animationTimer / 30f;

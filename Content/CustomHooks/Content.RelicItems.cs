@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             c.TryGotoPrev(i => i.MatchLdarg(0), i => i.MatchLdarg(0), i => i.MatchLdfld<Item>("damage"));
 
-            c.Emit(OpCodes.Ldarg_0); //emits the values of the prefixes decided by vanilla, and the item instance
+            c.Emit(OpCodes.Ldarg_0); //emits the values of the prefixes decided by vanilla, and the Item instance
             c.Emit(OpCodes.Ldloc, 3);
             c.Emit(OpCodes.Ldloc, 5);
             c.Emit(OpCodes.Ldloc, 8);
@@ -40,19 +40,19 @@ namespace StarlightRiver.Content.CustomHooks
             c.Emit(OpCodes.Brtrue, label); //skip vanilla stat setting if we do our own!
         }
 
-        private bool ApplyTwiceBody(Item item, float damage, float speed, float mana, float knockBack, float scale, float shootSpeed, int crit)
+        private bool ApplyTwiceBody(Item Item, float damage, float speed, float mana, float knockBack, float scale, float shootSpeed, int crit)
         {
-            if(item.GetGlobalItem<RelicItem>().isRelic)
+            if(Item.GetGlobalItem<RelicItem>().isRelic)
             {
-                item.damage = (int)Math.Round(item.damage * (damage + (damage - 1)));
-                item.useAnimation = (int)Math.Round(item.useAnimation * (speed + (speed - 1)));
-                item.useTime = (int)Math.Round(item.useTime * (speed + (speed - 1)));
-                item.reuseDelay = (int)Math.Round(item.reuseDelay * (speed + (speed - 1)));
-                item.mana = (int)Math.Round(item.mana * (mana + (mana - 1)));
-                item.knockBack *= knockBack + (knockBack - 1);
-                item.scale *= scale + (scale - 1);
-                item.shootSpeed *= shootSpeed + (shootSpeed - 1);
-                item.crit += crit * 2;
+                Item.damage = (int)Math.Round(Item.damage * (damage + (damage - 1)));
+                Item.useAnimation = (int)Math.Round(Item.useAnimation * (speed + (speed - 1)));
+                Item.useTime = (int)Math.Round(Item.useTime * (speed + (speed - 1)));
+                Item.reuseDelay = (int)Math.Round(Item.reuseDelay * (speed + (speed - 1)));
+                Item.mana = (int)Math.Round(Item.mana * (mana + (mana - 1)));
+                Item.knockBack *= knockBack + (knockBack - 1);
+                Item.scale *= scale + (scale - 1);
+                Item.shootSpeed *= shootSpeed + (shootSpeed - 1);
+                Item.crit += crit * 2;
 
                 return true;
             }

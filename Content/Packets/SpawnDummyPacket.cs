@@ -31,7 +31,7 @@ namespace StarlightRiver.Packets
             {
                 if (Core.DummyTile.DummyExists(x, y, type))
                 {
-                    DummyTile.GetDummy(x, y, type).netUpdate = true; //this case meant that a player went up to a tile dummy that did not exist for them, but did on server and we want to make sure they receive it
+                    DummyTile.GetDummy(x, y, type).netUpdate = true; //this case meant that a Player went up to a tile dummy that did not exist for them, but did on server and we want to make sure they receive it
                     return;
                 }
 

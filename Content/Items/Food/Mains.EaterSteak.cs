@@ -8,23 +8,23 @@ namespace StarlightRiver.Content.Items.Food
     {
         public EaterSteak() : base("+3% damage reduction", 900, IngredientType.Main) { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightNPC.NPCLootEvent += LootEaterSteak;
             return true;
         }
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.endurance += 0.03f;
+            Player.endurance += 0.03f;
         }
 
-        private void LootEaterSteak(NPC npc)
+        private void LootEaterSteak(NPC NPC)
         {
-            if (npc.type == NPCID.EaterofSouls && Main.rand.Next(4) == 0)
-                Item.NewItem(npc.Center, item.type);
+            if (NPC.type == NPCID.EaterofSouls && Main.rand.Next(4) == 0)
+                Item.NewItem(NPC.Center, Item.type);
         }
     }
 }

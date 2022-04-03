@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.RatKing
 	{
 		public override string Texture => AssetDirectory.RatKingItem + Name;
 
-		public BloodCrystal() : base(ModContent.GetTexture(AssetDirectory.RatKingItem + "BloodCrystal")) { }
+		public BloodCrystal() : base(ModContent.Request<Texture2D>(AssetDirectory.RatKingItem + "BloodCrystal").Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -24,11 +24,11 @@ namespace StarlightRiver.Content.Items.RatKing
 
         public override void SafeSetDefaults()
         {
-			item.value = Item.sellPrice(0, 3, 0, 0);
+			Item.value = Item.sellPrice(0, 3, 0, 0);
         }
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
 		{
-			player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
+			Player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
 		}
 	}
 
@@ -47,15 +47,15 @@ namespace StarlightRiver.Content.Items.RatKing
 			StatusTrackingNPC.buffCompareEffects -= buffCompareEffects;
 		}
 
-		private void buffCompareEffects(Player player, NPC npc, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
+		private void buffCompareEffects(Player Player, NPC NPC, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
         {
-			if (player.GetModPlayer<BloodCrystalPlayer>().equipped)
+			if (Player.GetModPlayer<BloodCrystalPlayer>().equipped)
 			{
 				for (int i = 0; i < 5; i++)
                 {
 					if (!storedBuffs.Contains(buffType[i]))
                     {
-						player.AddBuff(buffType[i], buffTime[i] / 4);
+						Player.AddBuff(buffType[i], buffTime[i] / 4);
 						buffTime[i] = (int)(buffTime[i] * 1.25f);
 					}
 					else
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.RatKing
 						if (storedTimes[storedIndex] != buffTime[i] && storedTimes[storedIndex] - 1 != buffTime[i])
                         {
 							buffTime[i] = storedTimes[storedIndex] + (int)(buffTime[i] * 0.25f);
-							player.AddBuff(buffType[i], buffTime[i] / 4);
+							Player.AddBuff(buffType[i], buffTime[i] / 4);
 						}
 
 					}

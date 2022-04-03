@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public BossWindowDummy() : base(TileType<BossWindow>(), 16, 16) { }
 
-        public override void SafeSetDefaults() => projectile.hide = true;
+        public override void SafeSetDefaults() => Projectile.hide = true;
 
         public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
         {
@@ -24,10 +24,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Vector2 dpos = projectile.Center - Main.screenPosition + Vector2.UnitY * 16;
+            Vector2 dpos = Projectile.Center - Main.screenPosition + Vector2.UnitY * 16;
 
-            Texture2D frametex = GetTexture(AssetDirectory.OvergrowTile + "WindowFrame");
-            Texture2D glasstex = GetTexture(AssetDirectory.OvergrowTile + "WindowGlass");
+            Texture2D frametex = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowFrame").Value;
+            Texture2D glasstex = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowGlass").Value;
 
             spriteBatch.Draw(glasstex, dpos, glasstex.Frame(), Color.White * 0.15f, 0, glasstex.Frame().Size() / 2, 1, 0, 0); //glass
             spriteBatch.Draw(frametex, dpos, frametex.Frame(), new Color(255, 255, 200), 0, frametex.Frame().Size() / 2, 1, 0, 0); //frame
@@ -48,65 +48,65 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void Update()
         {
             //Dust
-            if (projectile.ai[0] > 0 && projectile.ai[0] < 359) Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * 412, DustType<Dusts.Stone>());
+            if (Projectile.ai[0] > 0 && Projectile.ai[0] < 359) Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * 412, DustType<Dusts.Stone>());
 
-            if (Main.rand.Next(4) == 0 && projectile.ai[0] >= 360)
+            if (Main.rand.Next(4) == 0 && Projectile.ai[0] >= 360)
             {
                 float rot = Main.rand.NextFloat(-1.5f, 1.5f);
-                Dust.NewDustPerfect(projectile.Center + new Vector2(0, 1).RotatedBy(rot) * 500, DustType<Dusts.GoldSlowFade>(), (new Vector2(0, 1).RotatedBy(rot) + new Vector2(0, 1.6f)) * (0.1f + Math.Abs(rot / 5f)), 0, default, 0.23f + Math.Abs(rot / 5f));
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 1).RotatedBy(rot) * 500, DustType<Dusts.GoldSlowFade>(), (new Vector2(0, 1).RotatedBy(rot) + new Vector2(0, 1.6f)) * (0.1f + Math.Abs(rot / 5f)), 0, default, 0.23f + Math.Abs(rot / 5f));
             }
 
             //Screenshake
-            if (projectile.ai[0] < 359 && projectile.ai[0] > 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(359 - projectile.ai[0]) / 175;
+            if (Projectile.ai[0] < 359 && Projectile.ai[0] > 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(359 - Projectile.ai[0]) / 175;
 
             //Lighting
             for (float k = 0; k <= 6.28f; k += 0.2f)
             {
-                Lighting.AddLight(projectile.Center + Vector2.One.RotatedBy(k) * 23 * 16, new Vector3(1, 1, 0.7f) * 0.8f);
+                Lighting.AddLight(Projectile.Center + Vector2.One.RotatedBy(k) * 23 * 16, new Vector3(1, 1, 0.7f) * 0.8f);
             }
 
             for (int k = 0; k < 6; k++)
             {
-                if (projectile.ai[0] > 0)
+                if (Projectile.ai[0] > 0)
                 {
-                    float bright = projectile.ai[0] / 60f; if (bright > 1) bright = 1;
-                    Lighting.AddLight(projectile.Center + new Vector2(560 + k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
-                    Lighting.AddLight(projectile.Center + new Vector2(-560 - k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
+                    float bright = Projectile.ai[0] / 60f; if (bright > 1) bright = 1;
+                    Lighting.AddLight(Projectile.Center + new Vector2(560 + k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
+                    Lighting.AddLight(Projectile.Center + new Vector2(-560 - k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
                 }
 
-                if (projectile.ai[0] > 60)
+                if (Projectile.ai[0] > 60)
                 {
-                    float bright = (projectile.ai[0] - 60) / 150f; if (bright > 1) bright = 1;
-                    Lighting.AddLight(projectile.Center + new Vector2(450 + k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
-                    Lighting.AddLight(projectile.Center + new Vector2(-450 - k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
+                    float bright = (Projectile.ai[0] - 60) / 150f; if (bright > 1) bright = 1;
+                    Lighting.AddLight(Projectile.Center + new Vector2(450 + k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
+                    Lighting.AddLight(Projectile.Center + new Vector2(-450 - k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
                 }
 
-                if (projectile.ai[0] > 210)
+                if (Projectile.ai[0] > 210)
                 {
-                    float bright = (projectile.ai[0] - 210) / 70f; if (bright > 1) bright = 1;
-                    Lighting.AddLight(projectile.Center + new Vector2(250 + k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
-                    Lighting.AddLight(projectile.Center + new Vector2(-250 - k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
+                    float bright = (Projectile.ai[0] - 210) / 70f; if (bright > 1) bright = 1;
+                    Lighting.AddLight(Projectile.Center + new Vector2(250 + k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
+                    Lighting.AddLight(Projectile.Center + new Vector2(-250 - k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
                 }
 
-                if (projectile.ai[0] > 280)
+                if (Projectile.ai[0] > 280)
                 {
-                    float bright = (projectile.ai[0] - 280) / 50f; if (bright > 1) bright = 1;
-                    Lighting.AddLight(projectile.Center + new Vector2(40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
-                    Lighting.AddLight(projectile.Center + new Vector2(-40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
+                    float bright = (Projectile.ai[0] - 280) / 50f; if (bright > 1) bright = 1;
+                    Lighting.AddLight(Projectile.Center + new Vector2(40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
+                    Lighting.AddLight(Projectile.Center + new Vector2(-40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
                 }
             }
 
-            if (Main.player.Any(p => Vector2.Distance(p.Center, projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<Bosses.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
+            if (Main.player.Any(p => Vector2.Distance(p.Center, Projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<Bosses.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
             {
-                NPC.NewNPC((int)projectile.Center.X, (int)projectile.Center.Y + 250, NPCType<Bosses.OvergrowBoss.OvergrowBoss>());
+                NPC.NewNPC((int)Projectile.Center.X, (int)Projectile.Center.Y + 250, NPCType<Bosses.OvergrowBoss.OvergrowBoss>());
 
-                NPC.NewNPC((int)projectile.Center.X - 790, (int)projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X + 790, (int)projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X - 300, (int)projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)projectile.Center.X + 300, (int)projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)Projectile.Center.X - 790, (int)Projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)Projectile.Center.X + 790, (int)Projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)Projectile.Center.X - 300, (int)Projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
+                NPC.NewNPC((int)Projectile.Center.X + 300, (int)Projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
             }
 
-            if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && projectile.ai[0] <= 360) projectile.ai[0]++;
+            if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && Projectile.ai[0] <= 360) Projectile.ai[0]++;
         }
 
         private static Vector2 FindOffset(Vector2 basepos, float factor, bool noVertical = false)
@@ -121,13 +121,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         {
             int x = tex.Width / 2 - 564;
             int y = tex.Height / 2 - 564;
-            Vector2 pos = new Vector2(x, y) - FindOffset(projectile.Center, offset);
+            Vector2 pos = new Vector2(x, y) - FindOffset(Projectile.Center, offset);
             return new Rectangle((int)pos.X, (int)pos.Y + 160, 1128, 1128);
         }
 
         public void DrawMoonlordLayer(SpriteBatch spriteBatch)
         {
-            Vector2 pos = projectile.Center;
+            Vector2 pos = Projectile.Center;
             Vector2 dpos = pos - Main.screenPosition;
             Rectangle target = new Rectangle((int)dpos.X - 564, (int)dpos.Y - 564, 1128, 1128);
 
@@ -135,15 +135,15 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 return;
 
             //background
-            Texture2D backtex1 = GetTexture(AssetDirectory.OvergrowTile + "Window4");
+            Texture2D backtex1 = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window4").Value;
             spriteBatch.Draw(backtex1, target, GetSource(0, backtex1), Color.White, 0, Vector2.Zero, 0, 0);
 
 
-            Texture2D backtex2 = GetTexture(AssetDirectory.OvergrowTile + "Window3");
+            Texture2D backtex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window3").Value;
             spriteBatch.Draw(backtex2, target, GetSource(0.4f, backtex2), Color.White, 0, Vector2.Zero, 0, 0);
 
 
-            Texture2D backtex3 = GetTexture(AssetDirectory.OvergrowTile + "Window2");
+            Texture2D backtex3 = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window2").Value;
             spriteBatch.Draw(backtex3, target, GetSource(0.3f, backtex3), Color.White, 0, Vector2.Zero, 0, 0);
 
             //godbeams
@@ -152,11 +152,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             // Update + draw dusts
             particles.DrawParticles(spriteBatch);
-            if (Main.rand.Next(10) == 0) particles.AddParticle(new Particle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, projectile.Center + new Vector2(Main.rand.Next(-350, 350), -580)));
+            if (Main.rand.Next(10) == 0) particles.AddParticle(new Particle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, Projectile.Center + new Vector2(Main.rand.Next(-350, 350), -580)));
 
             for (int k = -2; k < 3; k++)
             {
-                Texture2D tex2 = GetTexture(AssetDirectory.OvergrowTile + "PitGlow");
+                Texture2D tex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "PitGlow").Value;
                 float rot = (float)Main.time / 50 % 6.28f;
                 float sin = (float)Math.Sin(rot + k);
                 float sin2 = (float)Math.Sin(rot + k * 1.4f);
@@ -173,31 +173,31 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             for (int k = -9; k < 8; k++)// small waterfalls
             {
-                Texture2D watertex = GetTexture(AssetDirectory.OvergrowTile + "Waterfall");
+                Texture2D watertex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Waterfall").Value;
                 int frame = (int)Main.time % 16 / 2;
                 spriteBatch.Draw(watertex, dpos + new Vector2(100, k * 64) + FindOffset(pos, 0.22f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 2, 0, 0);
             }
 
             //front row
-            Texture2D backtex4 = GetTexture(AssetDirectory.OvergrowTile + "Window1");
+            Texture2D backtex4 = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window1").Value;
             spriteBatch.Draw(backtex4, target, GetSource(0.2f, backtex4), Color.White, 0, Vector2.Zero, 0, 0);
 
             for (int k = -6; k < 6; k++) //big waterfall
             {
-                Texture2D watertex = GetTexture(AssetDirectory.OvergrowTile + "Waterfall");
+                Texture2D watertex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Waterfall").Value;
                 int frame = (int)Main.time % 16 / 2;
                 spriteBatch.Draw(watertex, dpos + new Vector2(300, k * 96) + FindOffset(pos, 0.1f, true), new Rectangle(0, frame * 32, watertex.Width, 32), Color.White * 0.3f, 0, Vector2.Zero, 3, 0, 0);
             }
 
-            if (projectile.ai[0] <= 360) //wall
+            if (Projectile.ai[0] <= 360) //wall
             {
-                Texture2D walltex = GetTexture(AssetDirectory.OvergrowTile + "Dor2");
-                Texture2D walltex2 = GetTexture(AssetDirectory.OvergrowTile + "Dor1");
-                Rectangle sourceRect = new Rectangle(0, 0, walltex.Width, walltex.Height - (int)(projectile.ai[0] / 360 * 764));
-                Rectangle sourceRect2 = new Rectangle(0, (int)(projectile.ai[0] / 360 * 564), walltex2.Width, walltex2.Height - (int)(projectile.ai[0] / 360 * 564));
+                Texture2D walltex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Dor2").Value;
+                Texture2D walltex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "Dor1").Value;
+                Rectangle sourceRect = new Rectangle(0, 0, walltex.Width, walltex.Height - (int)(Projectile.ai[0] / 360 * 764));
+                Rectangle sourceRect2 = new Rectangle(0, (int)(Projectile.ai[0] / 360 * 564), walltex2.Width, walltex2.Height - (int)(Projectile.ai[0] / 360 * 564));
 
-                spriteBatch.Draw(walltex, dpos + new Vector2(0, 176 + projectile.ai[0] / 360 * 764), sourceRect, new Color(255, 255, 200), 0, walltex.Frame().Size() / 2, 1, 0, 0); //frame
-                spriteBatch.Draw(walltex2, dpos + new Vector2(0, -282 - projectile.ai[0] / 360), sourceRect2, new Color(255, 255, 200), 0, walltex2.Frame().Size() / 2, 1, 0, 0); //frame
+                spriteBatch.Draw(walltex, dpos + new Vector2(0, 176 + Projectile.ai[0] / 360 * 764), sourceRect, new Color(255, 255, 200), 0, walltex.Frame().Size() / 2, 1, 0, 0); //frame
+                spriteBatch.Draw(walltex2, dpos + new Vector2(0, -282 - Projectile.ai[0] / 360), sourceRect2, new Color(255, 255, 200), 0, walltex2.Frame().Size() / 2, 1, 0, 0); //frame
             }
         }
     }

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Lavas
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
         }
 
-        private void UpdateActiveStyle(StarlightPlayer player)
+        private void UpdateActiveStyle(StarlightPlayer Player)
 		{
             if(!Main.gameMenu)
                 activeStyle = lavas.FirstOrDefault(n => n.ChooseLavaStyle());
@@ -84,12 +84,12 @@ namespace StarlightRiver.Content.Lavas
             if (activeStyle is null)
                 return arg;
 
-            if (arg != GetTexture("Terraria/Liquid_1"))
+            if (arg != Request<Texture2D>("Terraria/Liquid_1").Value)
                 return arg;
 
             string path = activeStyle.texturePath;
             activeStyle.DrawBlockEffects(x, y, up, left, right, down);
-            return GetTexture(path + "_Block");
+            return Request<Texture2D>(path + "_Block").Value;
         }
 
         private void SwapLavaDrawEffects(ILContext il)

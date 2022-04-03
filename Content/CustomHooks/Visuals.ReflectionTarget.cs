@@ -21,12 +21,12 @@ namespace StarlightRiver.Content.CustomHooks
         //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
-        private MethodInfo playerDrawMethod;
-        private MethodInfo projectileDrawMethod;
+        private MethodInfo PlayerDrawMethod;
+        private MethodInfo ProjectileDrawMethod;
         private MethodInfo drawCachedProjsMethod;
         private MethodInfo drawCachedNPCsMethod;
         private MethodInfo drawItemsMethod;
-        private MethodInfo npcDrawMethod;
+        private MethodInfo NPCDrawMethod;
         private MethodInfo dustDrawMethod;
         private MethodInfo goreDrawMethod;
 
@@ -43,12 +43,12 @@ namespace StarlightRiver.Content.CustomHooks
             Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
             reflectionNormalMapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
-            playerDrawMethod = typeof(Main).GetMethod("DrawPlayers", BindingFlags.NonPublic | BindingFlags.Instance);
-            projectileDrawMethod = typeof(Main).GetMethod("DrawProjectiles", BindingFlags.NonPublic | BindingFlags.Instance);
+            PlayerDrawMethod = typeof(Main).GetMethod("DrawPlayers", BindingFlags.NonPublic | BindingFlags.Instance);
+            ProjectileDrawMethod = typeof(Main).GetMethod("DrawProjectiles", BindingFlags.NonPublic | BindingFlags.Instance);
             drawCachedProjsMethod = typeof(Main).GetMethod("DrawCachedProjs", BindingFlags.NonPublic | BindingFlags.Instance);
             drawCachedNPCsMethod = typeof(Main).GetMethod("DrawCachedNPCs", BindingFlags.NonPublic | BindingFlags.Instance);
             drawItemsMethod = typeof(Main).GetMethod("DrawItems", BindingFlags.NonPublic | BindingFlags.Instance);
-            npcDrawMethod = typeof(Main).GetMethod("DrawNPCs", BindingFlags.NonPublic | BindingFlags.Instance);
+            NPCDrawMethod = typeof(Main).GetMethod("DrawNPCs", BindingFlags.NonPublic | BindingFlags.Instance);
             dustDrawMethod = typeof(Main).GetMethod("DrawDust", BindingFlags.NonPublic | BindingFlags.Instance);
             goreDrawMethod = typeof(Main).GetMethod("DrawGore", BindingFlags.NonPublic | BindingFlags.Instance);
 
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             ReflectionTarget.DrawReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
-            GameShaders.Misc["StarlightRiver:TileReflection"] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/TileReflection")), "TileReflectionPass");
+            GameShaders.Misc["StarlightRiver:TileReflection"] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/TileReflection").Value), "TileReflectionPass");
         }
 
         private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
@@ -103,9 +103,9 @@ namespace StarlightRiver.Content.CustomHooks
 
                 Vector2 originalZoom = Main.GameViewMatrix.Zoom;
                 Main.GameViewMatrix.Zoom = originalZoom;
-                //player draw has its own spritebatch start
+                //Player draw has its own spritebatch start
                 if (reflectionConfig.PlayerReflectionsOn)
-                    playerDrawMethod?.Invoke(Main.instance, null);
+                    PlayerDrawMethod?.Invoke(Main.instance, null);
 
                 if (reflectionConfig.ProjReflectionsOn)
                     drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsBehindNPCsAndTiles, true });
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.CustomHooks
                 if (reflectionConfig.NpcReflectionsOn)
                 {
                     sb.Begin();
-                    npcDrawMethod?.Invoke(Main.instance, new object[] { true });
+                    NPCDrawMethod?.Invoke(Main.instance, new object[] { true });
                     sb.End();
                 }
 
@@ -123,14 +123,14 @@ namespace StarlightRiver.Content.CustomHooks
                 if (reflectionConfig.NpcReflectionsOn)
                 {
                     sb.Begin();
-                    npcDrawMethod?.Invoke(Main.instance, new object[] { false });
+                    NPCDrawMethod?.Invoke(Main.instance, new object[] { false });
                     sb.End();
                     sb.Begin();
                     drawCachedNPCsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheNPCProjectiles, false });
                     sb.End();
                 }
                 if (reflectionConfig.ProjReflectionsOn)
-                    projectileDrawMethod?.Invoke(Main.instance, null);
+                    ProjectileDrawMethod?.Invoke(Main.instance, null);
 
                 if (reflectionConfig.DustReflectionsOn)
                 {
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         /// <summary>
-        /// draw background reflections immediately before drawing players since they are the
+        /// draw background reflections immediately before drawing Players since they are the
         /// </summary>
         /// <param name="orig"></param>
         public void DrawReflectionLayer(On.Terraria.Main.orig_DrawPlayers orig, Main self)
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.CustomHooks
             Filters.Scene["ReflectionMapper"].GetShader().Shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
             Filters.Scene["ReflectionMapper"].GetShader().Shader.Parameters["uIntensity"].SetValue(0.5f);
 
-            int TileSearchSize = 30; //limit distance from player for getting these wall tiles
+            int TileSearchSize = 30; //limit distance from Player for getting these wall tiles
             for (int i = -TileSearchSize; i < TileSearchSize; i++)
             {
                 for (int j = -TileSearchSize; j < TileSearchSize; j++)
@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.CustomHooks
                     if (WorldGen.InWorld(pij.X, pij.Y))
                     {
                         Tile tile = Framing.GetTileSafely(pij);
-                        ushort type = tile.wall;
+                        ushort type = tile.WallType;
 
                         if (type == WallID.Glass
                          || type == WallID.BlueStainedGlass
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.CustomHooks
                         {
                             Vector2 pos = pij.ToVector2() * 16;
                             Texture2D tex = Main.wallTexture[type];
-                            if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.wallFrameX(), tile.wallFrameY(), 36, 36), new Color(128, 128, 255, 255));
+                            if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.WallTypeFrameX(), tile.WallTypeFrameY(), 36, 36), new Color(128, 128, 255, 255));
                         }
                     }
 

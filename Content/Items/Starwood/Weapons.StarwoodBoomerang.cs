@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	public class StarwoodBoomerang : StarwoodItem
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
-        public StarwoodBoomerang() : base(ModContent.GetTexture(AssetDirectory.StarwoodItem + "StarwoodBoomerang_Alt")) { }
+        public StarwoodBoomerang() : base(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodBoomerang_Alt").Value) { }
 
         public override void SetStaticDefaults()
         {
@@ -18,27 +18,27 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void SetDefaults()
         {
-            item.damage = 10;
-            item.melee = true;
-            item.width = 18;
-            item.height = 34;
-            item.useTime = 10;
-            item.noUseGraphic = true;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.shootSpeed = 10f;
-            item.knockBack = 4f;
-            item.UseSound = SoundID.Item19;
-            item.shoot = ModContent.ProjectileType<StarwoodBoomerangProjectile>();
-            item.useAnimation = 10;
-            item.noMelee = true;
+            Item.damage = 10;
+            Item.melee = true;
+            Item.width = 18;
+            Item.height = 34;
+            Item.useTime = 10;
+            Item.noUseGraphic = true;
+            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.shootSpeed = 10f;
+            Item.knockBack = 4f;
+            Item.UseSound = SoundID.Item19;
+            Item.shoot = ModContent.ProjectileType<StarwoodBoomerangProjectile>();
+            Item.useAnimation = 10;
+            Item.noMelee = true;
         }
 
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
             for (int k = 0; k <= Main.maxProjectiles; k++)
-                if (Main.projectile[k].active && Main.projectile[k].owner == player.whoAmI && Main.projectile[k].type == ModContent.ProjectileType<StarwoodBoomerangProjectile>())
+                if (Main.projectile[k].active && Main.projectile[k].owner == Player.whoAmI && Main.projectile[k].type == ModContent.ProjectileType<StarwoodBoomerangProjectile>())
                     return false;
-            return base.CanUseItem(player);
+            return base.CanUseItem(Player);
         }
     }
 }

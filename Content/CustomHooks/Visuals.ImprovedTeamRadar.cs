@@ -12,11 +12,11 @@ namespace StarlightRiver.Content.CustomHooks
     {
         public override void Load()
         {
-            //Here we have an interesting problem. This functionality is perfectly doable with a detour. Though when done this way, requires you to re-iterate through all players
+            //Here we have an interesting problem. This functionality is perfectly doable with a detour. Though when done this way, requires you to re-iterate through all Players
             //and re-calculate the position of their text and if they should display for the client. You could avoid this using an IL delegate injection, but that would be less
             //safe than the method swap. Due to the fact that this will need to be ported at some point im going with the safer and more portable option of using a detour.
             //at some point in the future we may want to change this if the delegate injection figures to be a significant performance gain and is relatively safe.
-            On.Terraria.Main.DrawInterface_20_MultiplayerPlayerNames += DrawNewInfo;
+            On.Terraria.Main.DrawInterface_20_MultiPlayerPlayerNames += DrawNewInfo;
             On.Terraria.Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
             On.Terraria.Main.DrawInterface_39_MouseOver += drawShieldHoverText;
         }
@@ -27,34 +27,34 @@ namespace StarlightRiver.Content.CustomHooks
 
             for (int k = 0; k < Main.maxPlayers; k++)
             {
-                var player = Main.player[k];
+                var Player = Main.player[k];
 
-                if (player != null && player.active)
+                if (Player != null && Player.active)
                 {
-                    var mp = player.GetModPlayer<ShieldPlayer>();
+                    var mp = Player.GetModPlayer<ShieldPlayer>();
 
-                    if (k != Main.myPlayer && player.active && !player.ghost && !player.dead && player.statLife != player.statLifeMax2)
+                    if (k != Main.myPlayer && Player.active && !Player.ghost && !Player.dead && Player.statLife != Player.statLifeMax2)
                     {
                         var offset = Main.HealthBarDrawSettings == 1 ? 10 : -20;
 
-                        var tex = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBar1");
+                        var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-                        var pos = new Vector2(player.position.X - 8, player.position.Y + player.height + offset + player.gfxOffY);
+                        var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY);
                         var factor = Math.Min(mp.Shield / (float)mp.MaxShield, 1);
 
                         var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
                         var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(factor * tex.Width), tex.Height);
 
-                        Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)player.Center.X / 16, (int)player.Center.Y / 16) * 1.5f);
+                        Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 1.5f);
 
                         if (mp.Shield < mp.MaxShield && mp.Shield > 0)
                         {
-                            var texLine = ModContent.GetTexture(AssetDirectory.GUI + "ShieldBarLine");
+                            var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
                             var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
                             var targetLine = new Rectangle((int)(pos.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(pos.Y - Main.screenPosition.Y), 2, tex.Height);
 
-                            Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * Lighting.Brightness((int)player.Center.X / 16, (int)player.Center.Y / 16) * 2);
+                            Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 2);
                         }
                     }
                 }
@@ -76,20 +76,20 @@ namespace StarlightRiver.Content.CustomHooks
                 rectangle.Y = (int)Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
             }
 
-            for (int playerIndex = 0; playerIndex < 255; playerIndex++)
+            for (int PlayerIndex = 0; PlayerIndex < 255; PlayerIndex++)
             {
-                if (!Main.player[playerIndex].active || Main.myPlayer == playerIndex || Main.player[playerIndex].dead)
+                if (!Main.player[PlayerIndex].active || Main.myPlayer == PlayerIndex || Main.player[PlayerIndex].dead)
                 {
                     continue;
                 }
-                Rectangle value2 = new Rectangle((int)((double)Main.player[playerIndex].position.X + (double)Main.player[playerIndex].width * 0.5 - 16.0), (int)(Main.player[playerIndex].position.Y + (float)Main.player[playerIndex].height - 48f), 32, 48);
+                Rectangle value2 = new Rectangle((int)((double)Main.player[PlayerIndex].position.X + (double)Main.player[PlayerIndex].width * 0.5 - 16.0), (int)(Main.player[PlayerIndex].position.Y + (float)Main.player[PlayerIndex].height - 48f), 32, 48);
                 if (rectangle.Intersects(value2))
                 {
-                    var player = Main.player[playerIndex];
-                    var mp = player.GetModPlayer<Core.ShieldPlayer>();
+                    var Player = Main.player[PlayerIndex];
+                    var mp = Player.GetModPlayer<Core.ShieldPlayer>();
                     string textString = "[c/64c8ff:" + mp.Shield + "/" + mp.MaxShield +"]";
 
-                    string vanillaString = player.name + ": " + player.statLife + "/" + player.statLifeMax2;
+                    string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
 
                     var vanillaText = ChatManager.ParseMessage(vanillaString, Color.White).ToArray();
                     Vector2 vanillaTextPosition = ChatManager.GetStringSize(Main.fontMouseText, vanillaText, Vector2.One);
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
-        private void DrawNewInfo(On.Terraria.Main.orig_DrawInterface_20_MultiplayerPlayerNames orig)
+        private void DrawNewInfo(On.Terraria.Main.orig_DrawInterface_20_MultiPlayerPlayerNames orig)
         {
             orig();
 
@@ -133,10 +133,10 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 if (Main.player[i].active && Main.myPlayer != i && !Main.player[i].dead && Main.player[Main.myPlayer].team > 0 && Main.player[Main.myPlayer].team == Main.player[i].team)
                 {
-                    var player = Main.player[i];
-                    var mp = player.GetModPlayer<Core.ShieldPlayer>();
+                    var Player = Main.player[i];
+                    var mp = Player.GetModPlayer<Core.ShieldPlayer>();
 
-                    if (player.statLife >= player.statLifeMax2 && mp.Shield >= mp.MaxShield)
+                    if (Player.statLife >= Player.statLifeMax2 && mp.Shield >= mp.MaxShield)
                         continue;
 
                     string text = mp.Shield + "/" + mp.MaxShield;

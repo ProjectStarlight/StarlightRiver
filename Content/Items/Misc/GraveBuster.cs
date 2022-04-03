@@ -23,24 +23,24 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 32;
-            item.useTime = 80;
-            item.useAnimation = 80;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noMelee = true;
-            item.autoReuse = false;
-            item.shoot = ProjectileType<GraveBusterHeld>();
-            item.shootSpeed = 1;
-            item.channel = true;
-            item.value = Item.sellPrice(0, 0, 20, 0);
-            item.rare = ItemRarityID.Blue;
-            item.noUseGraphic = true;
+            Item.width = 32;
+            Item.height = 32;
+            Item.useTime = 80;
+            Item.useAnimation = 80;
+            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.noMelee = true;
+            Item.autoReuse = false;
+            Item.shoot = ProjectileType<GraveBusterHeld>();
+            Item.shootSpeed = 1;
+            Item.channel = true;
+            Item.value = Item.sellPrice(0, 0, 20, 0);
+            Item.rare = ItemRarityID.Blue;
+            Item.noUseGraphic = true;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            ModRecipe recipe = new ModRecipe(Mod);
             recipe.AddIngredient(ItemID.FallenStar, 3);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
             recipe.AddRecipeGroup("StarlightRiver:Graves", 1);
@@ -57,40 +57,40 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Grave Buster");
 
-        Player owner => Main.player[projectile.owner];
+        Player owner => Main.player[Projectile.owner];
 
         private bool initialized = false;
 
-        private Vector2 currentDirection => projectile.rotation.ToRotationVector2();
+        private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.ranged = true;
-            projectile.width = 2;
-            projectile.height = 2;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = 999;
-            projectile.ignoreWater = true;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.ranged = true;
+            Projectile.width = 2;
+            Projectile.height = 2;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 999;
+            Projectile.ignoreWater = true;
+            Projectile.alpha = 255;
         }
 
         public override void AI()
         {
-            owner.heldProj = projectile.whoAmI;
-            if (owner.itemTime <= 1)
+            owner.heldProj = Projectile.whoAmI;
+            if (owner.ItemTime <= 1)
             {
                 DestroyGraves();
-                projectile.active = false;
+                Projectile.active = false;
             }
-            if (projectile.timeLeft % 6 == 0 && owner.itemTime > 15)
+            if (Projectile.timeLeft % 6 == 0 && owner.ItemTime > 15)
             {
                 Vector2 range = new Vector2(25, 25);
-                Vector2 startPos = (projectile.Center / 16) - range;
-                Vector2 endPos = (projectile.Center / 16) + range;
+                Vector2 startPos = (Projectile.Center / 16) - range;
+                Vector2 endPos = (Projectile.Center / 16) + range;
 
                 for (int i = (int)startPos.X; i < (int)endPos.X; i++)
                 {
@@ -98,39 +98,39 @@ namespace StarlightRiver.Content.Items.Misc
                     {
                         Tile tile = Main.tile[i, j];
                         Tile tile2 = Main.tile[i + 1, j + 1];
-                        if (tile.type == 85 && tile.active() && tile2.type == 85 && tile2.active())
+                        if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.active())
                         {
                             Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                             Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-                            Projectile.NewProjectile(graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, projectile.owner);
+                            Projectile.NewProjectile(graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
                         }
                     }
                 }
             }
-            projectile.Center = owner.Center;
+            Projectile.Center = owner.Center;
 
             if (!initialized)
             {
                 initialized = true;
-                projectile.rotation = projectile.DirectionTo(Main.MouseWorld).ToRotation();
+                Projectile.rotation = Projectile.DirectionTo(Main.MouseWorld).ToRotation();
             }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D texture = Main.projectileTexture[projectile.type];
+            Texture2D texture = Main.projectileTexture[Projectile.type];
             Vector2 position = (owner.Center + (currentDirection * 4)) - Main.screenPosition;
 
             if (owner.direction == 1)
             {
                 SpriteEffects effects1 = SpriteEffects.None;
-                Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), new Vector2(texture.Width / 2, texture.Height), projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
             }
 
             else
             {
                 SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-                Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, new Vector2(texture.Width / 2, texture.Height), projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
 
             }
             return false;
@@ -139,8 +139,8 @@ namespace StarlightRiver.Content.Items.Misc
         private void DestroyGraves()
         {
             Vector2 range = new Vector2(25, 25);
-            Vector2 startPos = (projectile.Center / 16) - range;
-            Vector2 endPos = (projectile.Center / 16) + range;
+            Vector2 startPos = (Projectile.Center / 16) - range;
+            Vector2 endPos = (Projectile.Center / 16) + range;
 
             for (int i = (int)startPos.X; i < (int)endPos.X; i++)
             {
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Tile tile = Main.tile[i, j];
 
                     Tile tile2 = Main.tile[i + 1, j + 1];
-                    if (tile.type == 85 && tile.active() && tile2.type == 85 && tile2.active())
+                    if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.active())
                     {
                         Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                         for (int t = 0; t < 10; t++)
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Items.Misc
                         }
                     }
 
-                    if (tile.type == 85 && tile.active())
+                    if (tile.type == 85 && tile.HasTile)
                     {
                         tile.active(false);
                         if (!Main.tile[i, j].active() && Main.netMode != NetmodeID.SinglePlayer)
@@ -191,17 +191,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.melee = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.aiStyle = -1;
-            projectile.friendly = false;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = BASETIMELEFT - 2;
-            projectile.ignoreWater = true;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.melee = true;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = BASETIMELEFT - 2;
+            Projectile.ignoreWater = true;
+            Projectile.alpha = 255;
         }
 
         public override void AI()
@@ -216,12 +216,12 @@ namespace StarlightRiver.Content.Items.Misc
                 direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * (32) * 0.06f;
             cache = new List<Vector2>();
 
-            float progress = (BASETIMELEFT - projectile.timeLeft) / (float)BASETIMELEFT;
+            float progress = (BASETIMELEFT - Projectile.timeLeft) / (float)BASETIMELEFT;
 
             int widthExtra = (int)(6 * Math.Sin(progress * 3.14f));
 
-            int min = (BASETIMELEFT - (20 + widthExtra)) - projectile.timeLeft;
-            int max = (BASETIMELEFT + (widthExtra)) - projectile.timeLeft;
+            int min = (BASETIMELEFT - (20 + widthExtra)) - Projectile.timeLeft;
+            int max = (BASETIMELEFT + (widthExtra)) - Projectile.timeLeft;
 
             int average = (min + max) / 2;
             for (int i = min; i < max; i++)
@@ -229,10 +229,10 @@ namespace StarlightRiver.Content.Items.Misc
                 float offset = (float)Math.Pow(Math.Abs(i - average) / (float)(max - min), 2);
                 Vector2 offsetVector = (direction.RotatedBy(1.57f) * offset * 10);
 
-                cache.Add(projectile.Center + (direction * i));
+                cache.Add(Projectile.Center + (direction * i));
             }
 
-            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((32) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (projectile.timeLeft / (float)(BASETIMELEFT + 5)))) * (projectile.timeLeft / (float)BASETIMELEFT), factor =>
+            trail = new Trail(Main.instance.GraphicsDevice, 20 + (widthExtra * 2), new TriangularTip((int)((32) * 0.6f)), factor => 10 * (1 - Math.Abs((1 - factor) - (Projectile.timeLeft / (float)(BASETIMELEFT + 5)))) * (Projectile.timeLeft / (float)BASETIMELEFT), factor =>
             {
                 return Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f;
             });
@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.Items.Misc
             float offset2 = (float)Math.Pow(Math.Abs((max + 1) - average) / (float)(max - min), 2);
 
             Vector2 offsetVector2 = (direction.RotatedBy(1.57f) * offset2 * 10);
-            trail.NextPosition = projectile.Center + (direction * (max + 1));
+            trail.NextPosition = Projectile.Center + (direction * (max + 1));
         }
 
         public void DrawPrimitives()

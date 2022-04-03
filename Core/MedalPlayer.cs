@@ -61,7 +61,7 @@ namespace StarlightRiver.Core
 				attemptedMedal = default;
 		}
 
-		public override TagCompound Save()
+		public override void SaveData(TagCompound tag)
 		{
 			return new TagCompound()
 			{ 
@@ -69,7 +69,7 @@ namespace StarlightRiver.Core
 			};
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadData(TagCompound tag)
 		{
 			medals.Clear();
 
@@ -85,10 +85,10 @@ namespace StarlightRiver.Core
 
 		public Texture2D GetMedalTexture(string name)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Medals/" + name);
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/" + name).Value;
 
 			if (tex is null)
-				return ModContent.GetTexture("StarlightRiver/Assets/Medals/Cheater");
+				return ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/Cheater").Value;
 			else return tex;
 		}
 	}

@@ -25,22 +25,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 4, 0, 0);
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 4, 0, 0);
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			SupplyBeaconPlayer modPlayer = player.GetModPlayer<SupplyBeaconPlayer>();
+			SupplyBeaconPlayer modPlayer = Player.GetModPlayer<SupplyBeaconPlayer>();
 			modPlayer.active = true;
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			ModRecipe recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
 			recipe.AddIngredient(ItemID.Wire, 15);
 			recipe.AddTile(TileID.Anvils);
@@ -85,17 +85,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				launchCounter--;
 				if (launchCounter == 1)
-					SummonDrop(player);
+					SummonDrop(Player);
 			}
 			else
 				launchCounter = 0;
 		}
 
-		private static void SummonDrop(Player player)
+		private static void SummonDrop(Player Player)
 		{
 			Vector2 direction = new Vector2(0, -1);
 			direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-			Projectile.NewProjectile(player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, player.whoAmI, Main.rand.Next(3));
+			Projectile.NewProjectile(Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
 		}
 	}
 	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
@@ -112,22 +112,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private float startupCounter = 0f;
 
-		private int state => (int)projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
+		private int state => (int)Projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
 
-		private Player owner => Main.player[projectile.owner];
+		private Player owner => Main.player[Projectile.owner];
 
 		private float trailAlpha => Math.Max(0, 1 - (startupCounter * 5));
 
 		public override void SetDefaults()
 		{
-			projectile.width = 20;
-			projectile.height = 20;
-			projectile.ranged = true;
-			projectile.friendly = false;
-			projectile.tileCollide = false;
-			projectile.penetrate = 1;
-			projectile.timeLeft = 300;
-			projectile.extraUpdates = 2;
+			Projectile.width = 20;
+			Projectile.height = 20;
+			Projectile.ranged = true;
+			Projectile.friendly = false;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = 1;
+			Projectile.timeLeft = 300;
+			Projectile.extraUpdates = 2;
 		}
 
 		public override void SetStaticDefaults()
@@ -143,21 +143,21 @@ namespace StarlightRiver.Content.Items.Breacher
 					ManageCaches();
 
 
-				if (projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)projectile.Center.X / 16, (int)projectile.Center.Y / 16].active())
+				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].active())
 				{
 					ableToLand = true;
 				}
 
 				if (ableToLand)
-					projectile.tileCollide = true;
+					Projectile.tileCollide = true;
 			}
 			else
 			{
-				projectile.velocity.Y += 0.3f;
+				Projectile.velocity.Y += 0.3f;
 				if (startupCounter < 1)
 					startupCounter += 0.02f;
 
-				Lighting.AddLight(projectile.Center - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), GetColor().ToVector3() * startupCounter);
+				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), GetColor().ToVector3() * startupCounter);
 				BuffPlayers();
 			}
 
@@ -167,12 +167,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D mainTex = Main.projectileTexture[projectile.type];
-			Vector2 position = (projectile.Center - Main.screenPosition);
+			Texture2D mainTex = Main.projectileTexture[Projectile.type];
+			Vector2 position = (Projectile.Center - Main.screenPosition);
 			if (landed)
 			{
-				Texture2D displayTex = ModContent.GetTexture(Texture + "_Display");
-				Texture2D symbolTex = ModContent.GetTexture(Texture + "_Symbol");
+				Texture2D displayTex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
+				Texture2D symbolTex = ModContent.Request<Texture2D>(Texture + "_Symbol").Value;
 
 				Color displayColor = GetColor();
 				displayColor.A = 0;
@@ -188,19 +188,19 @@ namespace StarlightRiver.Content.Items.Breacher
 				spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
 				spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
 			}
-			spriteBatch.Draw(mainTex, position, null, lightColor, projectile.rotation, mainTex.Size() / 2, projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 
-			Texture2D starTex = ModContent.GetTexture(Texture + "_Star");
+			Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
 			Color color = GetColor();
 			color.A = 0;
 			Color color2 = Color.White;
 			color2.A = 0;
 			spriteBatch.Draw(starTex, position, null,
-							 color * trailAlpha * 0.33f, projectile.rotation, starTex.Size() / 2, projectile.scale * 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(starTex, projectile.Center - Main.screenPosition, null,
-							 color * trailAlpha, projectile.rotation, starTex.Size() / 2, projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(starTex, projectile.Center - Main.screenPosition, null,
-							 color2 * trailAlpha, projectile.rotation, starTex.Size() / 2, projectile.scale * 0.75f, SpriteEffects.None, 0);
+							 color * trailAlpha * 0.33f, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
+			spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+							 color * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+							 color2 * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
 			return false;
 		}
 
@@ -210,14 +210,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				if (!landed)
 				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, projectile.Center);
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
 					landed = true;
-					projectile.timeLeft = 700;
+					Projectile.timeLeft = 700;
 					owner.GetModPlayer<StarlightPlayer>().Shake += 12;
 				}
-				projectile.extraUpdates = 0;
-				projectile.velocity = Vector2.Zero;
+				Projectile.extraUpdates = 0;
+				Projectile.velocity = Vector2.Zero;
 			}
 			return false;
 		}
@@ -226,8 +226,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			for (int i = 0; i < Main.player.Length; i++)
 			{
-				Player player = Main.player[i];
-				if (player.active && player.Distance(projectile.Center) < 150 && !player.dead)
+				Player Player = Main.player[i];
+				if (Player.active && Player.Distance(Projectile.Center) < 150 && !Player.dead)
 				{
 					int buffType = -1;
 					switch (state)
@@ -242,7 +242,7 @@ namespace StarlightRiver.Content.Items.Breacher
 							buffType = ModContent.BuffType<SupplyBeaconDamage>();
 							break;
 					}
-					player.AddBuff(buffType, 2);
+					Player.AddBuff(buffType, 2);
 				}
 			}
 		}
@@ -254,10 +254,10 @@ namespace StarlightRiver.Content.Items.Breacher
 				cache = new List<Vector2>();
 				for (int i = 0; i < 100; i++)
 				{
-					cache.Add(projectile.Center);
+					cache.Add(Projectile.Center);
 				}
 			}
-			cache.Add(projectile.Center);
+			cache.Add(Projectile.Center);
 
 			while (cache.Count > 100)
 			{
@@ -292,10 +292,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center;
+			trail.NextPosition = Projectile.Center;
 
 			trail2.Positions = cache.ToArray();
-			trail2.NextPosition = projectile.Center;
+			trail2.NextPosition = Projectile.Center;
 		}
 
 		public void DrawPrimitives()
@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 			effect.Parameters["alpha"].SetValue(trailAlpha);
 
 			trail?.Render(effect);
@@ -325,11 +325,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			base.SafeSetDetafults();
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
 			if (Main.rand.NextBool(7))
-				Dust.NewDust(player.position, player.width, player.height, ModContent.DustType<SupplyBeaconDefenseDust>());
-			player.statDefense += 15;
+				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconDefenseDust>());
+			Player.statDefense += 15;
 		}
 	}
 
@@ -343,12 +343,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			base.SafeSetDetafults();
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
 			if (Main.rand.NextBool(7))
-				Dust.NewDust(player.position, player.width, player.height, ModContent.DustType<SupplyBeaconHealDust>());
-			player.lifeRegen += 10;
-			player.manaRegen += 10;
+				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconHealDust>());
+			Player.lifeRegen += 10;
+			Player.manaRegen += 10;
 		}
 	}
 
@@ -362,14 +362,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			base.SafeSetDetafults();
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
 			if (Main.rand.NextBool(7))
-				Dust.NewDust(player.position, player.width, player.height, ModContent.DustType<SupplyBeaconAttackDust>());
-			player.meleeDamage += 0.2f;
-			player.rangedDamage += 0.2f;
-			player.magicDamage += 0.2f;
-			player.minionDamage += 0.2f;
+				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconAttackDust>());
+			Player.meleeDamage += 0.2f;
+			Player.rangedDamage += 0.2f;
+			Player.magicDamage += 0.2f;
+			Player.minionDamage += 0.2f;
 		}
 	}
 	public class SupplyBeaconDefenseDust : ModDust

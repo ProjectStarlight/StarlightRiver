@@ -56,7 +56,7 @@ namespace StarlightRiver
         {
             if (Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active)
             {
-                Player player = Main.LocalPlayer;
+                Player Player = Main.LocalPlayer;
 
                 if(useIntenseMusic)
 				{
@@ -64,73 +64,73 @@ namespace StarlightRiver
                     priority = MusicPriority.BossLow;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneHotspring)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneHotspring)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneGlass)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((player.Center / 16).ToPoint()))
+                if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((Player.Center / 16).ToPoint()))
 				{
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
                     priority = MusicPriority.BossLow;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleCorrupt");
                     priority = MusicPriority.BiomeMedium;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleBloody)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleBloody)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleBloody");
                     priority = MusicPriority.BiomeMedium;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleHoly)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleHoly)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleHoly");
                     priority = MusicPriority.BiomeMedium;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().zoneAluminum)
+                if (Player.GetModPlayer<BiomeHandler>().zoneAluminum)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/AluminumPassive");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZonePermafrost)
+                if (Player.GetModPlayer<BiomeHandler>().ZonePermafrost)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/PermafrostPassive");
                     priority = MusicPriority.BiomeMedium;
                 }
 
-                if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
+                if (Main.tile[(int)Player.Center.X / 16, (int)Player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
                     priority = MusicPriority.BiomeHigh;
                 }
 
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
+                if (Player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
                 {
                     music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
                     priority = MusicPriority.BiomeHigh;
@@ -262,7 +262,7 @@ namespace StarlightRiver
         //    {
         //        BinaryReader binaryReader = new BinaryReader(stream);
 
-        //        //advances the position forward to the mod signature
+        //        //advances the position forward to the Mod signature
         //        stream.Position += 4; //binaryReader.ReadBytes(4);  //discarded //tmod
         //        binaryReader.ReadString();  //discarded //version
         //        stream.Position += 20; //binaryReader.ReadBytes(20); //discarded //hash
@@ -270,7 +270,7 @@ namespace StarlightRiver
         //        writerStartPos = stream.Position;
 
         //        //the next 256 bytes are free to use*
-        //        modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the mod is off the browser, but this bit of code should never be on a browser version
+        //        modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the Mod is off the browser, but this bit of code should never be on a browser version
 
         //        if (modSig.ToString().Contains(id))
         //            doNotCopy = true;
@@ -348,7 +348,7 @@ namespace StarlightRiver
                 {
                     if (TileDrawOverLoader.projTarget != null)
                         TileDrawOverLoader.ResizeTarget();
-                    if (BreacherArmorHelper.npcTarget != null)
+                    if (BreacherArmorHelper.NPCTarget != null)
                         BreacherArmorHelper.ResizeTarget();
                 }
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);

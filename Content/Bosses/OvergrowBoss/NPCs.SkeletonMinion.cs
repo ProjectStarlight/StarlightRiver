@@ -14,31 +14,31 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void SetDefaults()
         {
-            npc.lifeMax = 120;
-            npc.damage = 35;
-            npc.width = 32;
-            npc.height = 48;
-            npc.defense = -20;
-            npc.aiStyle = -1;
-            npc.knockBackResist = 1.8f;
-            npc.HitSound = SoundID.NPCHit2;
-            npc.DeathSound = SoundID.NPCDeath2;
+            NPC.lifeMax = 120;
+            NPC.damage = 35;
+            NPC.width = 32;
+            NPC.height = 48;
+            NPC.defense = -20;
+            NPC.aiStyle = -1;
+            NPC.knockBackResist = 1.8f;
+            NPC.HitSound = SoundID.NPCHit2;
+            NPC.DeathSound = SoundID.NPCDeath2;
         }
 
-        public override bool CanHitPlayer(Player target, ref int cooldownSlot) => npc.ai[2] > 0;
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot) => NPC.ai[2] > 0;
 
-        public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) => damage *= 3;
+        public override void ModifyHitByProjectile(Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) => damage *= 3;
 
-        public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit) => damage *= 3;
+        public override void ModifyHitByItem(Player Player, Item Item, ref int damage, ref float knockback, ref bool crit) => damage *= 3;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (npc.ai[0] < 60)
+            if (NPC.ai[0] < 60)
             {
-                Texture2D tex = GetTexture(Texture);
-                int progress = (int)(npc.ai[0] / 60f * npc.height);
-                Rectangle target = new Rectangle((int)(npc.position.X - Main.screenPosition.X), (int)(npc.position.Y + npc.height - progress - Main.screenPosition.Y), npc.width, progress);
-                Rectangle frame = new Rectangle(0, 0, npc.width, progress);
+                Texture2D tex = Request<Texture2D>(Texture).Value;
+                int progress = (int)(NPC.ai[0] / 60f * NPC.height);
+                Rectangle target = new Rectangle((int)(NPC.position.X - Main.screenPosition.X), (int)(NPC.position.Y + NPC.height - progress - Main.screenPosition.Y), NPC.width, progress);
+                Rectangle frame = new Rectangle(0, 0, NPC.width, progress);
 
                 spriteBatch.Draw(tex, target, frame, drawColor);
                 return false;
@@ -48,45 +48,45 @@ namespace StarlightRiver.NPCs.Boss.OvergrowBoss
 
         public override void AI()
         {
-            npc.ai[0]++;
+            NPC.ai[0]++;
 
-            if (npc.ai[0] == 1) npc.ai[1] = Main.rand.NextFloat(2, 4);
+            if (NPC.ai[0] == 1) NPC.ai[1] = Main.rand.NextFloat(2, 4);
 
-            if (npc.ai[0] < 60)
+            if (NPC.ai[0] < 60)
             {
-                Dust.NewDustPerfect(npc.position + new Vector2(Main.rand.Next(npc.width), npc.height), DustID.Stone);
-                npc.noGravity = true;
-                npc.velocity.Y = 10;
+                Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), NPC.height), DustID.Stone);
+                NPC.noGravity = true;
+                NPC.velocity.Y = 10;
             }
 
-            if (npc.ai[0] > 60)
+            if (NPC.ai[0] > 60)
             {
-                npc.noGravity = false;
-                npc.TargetClosest();
-                Player player = Main.player[npc.target];
+                NPC.noGravity = false;
+                NPC.TargetClosest();
+                Player Player = Main.player[NPC.target];
 
-                if (player != null)
+                if (Player != null)
                 {
                     //pathing
-                    npc.velocity.X += player.Center.X > npc.Center.X ? 0.4f : -0.4f;
-                    if (npc.velocity.Length() > npc.ai[1]) npc.velocity = Vector2.Normalize(npc.velocity) * npc.ai[1];
+                    NPC.velocity.X += Player.Center.X > NPC.Center.X ? 0.4f : -0.4f;
+                    if (NPC.velocity.Length() > NPC.ai[1]) NPC.velocity = Vector2.Normalize(NPC.velocity) * NPC.ai[1];
 
                     //jump
-                    Tile obstacleTile = Framing.GetTileSafely((npc.position + new Vector2(npc.direction == 1 ? npc.width : 0, 48)));
-                    if (obstacleTile.collisionType == 1 && npc.velocity.Y == 0) npc.velocity.Y -= 5;
+                    Tile obstacleTile = Framing.GetTileSafely((NPC.position + new Vector2(NPC.direction == 1 ? NPC.width : 0, 48)));
+                    if (obstacleTile.collisionType == 1 && NPC.velocity.Y == 0) NPC.velocity.Y -= 5;
 
                     //melee attack activation
-                    if (npc.ai[2] == 0 && Vector2.Distance(player.Center, npc.Center) <= 32)
+                    if (NPC.ai[2] == 0 && Vector2.Distance(Player.Center, NPC.Center) <= 32)
                     {
-                        npc.ai[2] += 60;
+                        NPC.ai[2] += 60;
                     }
 
                     //melee attack
-                    if (npc.ai[2] > 0)
+                    if (NPC.ai[2] > 0)
                     {
-                        npc.ai[2]--;
-                        npc.velocity.X = 0;
-                        npc.velocity.Y = 0;
+                        NPC.ai[2]--;
+                        NPC.velocity.X = 0;
+                        NPC.velocity.Y = 0;
                     }
                 }
             }

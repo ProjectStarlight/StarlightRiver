@@ -12,8 +12,8 @@ namespace StarlightRiver.Content.Items.Starwood
         protected bool isEmpowered;
 
         protected StarwoodItem(Texture2D AltTexture) => EmpoweredTexture = AltTexture;
-        public override void UpdateInventory(Player player) => isEmpowered = player.GetModPlayer<StarlightPlayer>().empowered;
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void UpdateInventory(Player Player) => isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             if (isEmpowered)
                 spriteBatch.Draw(EmpoweredTexture, position, frame, drawColor, default, origin, scale, default, default);

@@ -14,19 +14,19 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.Green;
-            item.value = 10000;
+            Item.rare = ItemRarityID.Green;
+            Item.value = 10000;
         }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightItem.GetHealLifeEvent += HealMoss;
             return true;
         }
 
-        private void HealMoss(Item item, Player player, bool quickHeal, ref int healValue)
+        private void HealMoss(Item Item, Player Player, bool quickHeal, ref int healValue)
         {
-            if (item.potion && Equipped(player)) player.AddBuff(BuffType<Buffs.MossRegen>(), 60 * 6);
+            if (Item.potion && Equipped(Player)) Player.AddBuff(BuffType<Buffs.MossRegen>(), 60 * 6);
         }
     }
 }

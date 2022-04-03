@@ -12,7 +12,7 @@ namespace StarlightRiver.Core
 {
 	public class ControlsPlayer : ModPlayer
     {
-        //this is used to keep track of player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded items)
+        //this is used to keep track of Player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded Items)
 
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace StarlightRiver.Core
 
         /// <summary>
         /// set this to true when something wants to recieve updates on mouseworld changes 
-        /// this particular mouse listener will only send changes when the rotation to the player changes, sending much less frequently
+        /// this particular mouse listener will only send changes when the rotation to the Player changes, sending much less frequently
         /// </summary>
         public bool mouseRotationListener = false;
 
@@ -52,7 +52,7 @@ namespace StarlightRiver.Core
         public bool rightClickListener = false;
         public override void PreUpdate()
         {
-            if (Main.myPlayer == player.whoAmI)
+            if (Main.myPlayer == Player.whoAmI)
             {
                 mouseRight = PlayerInput.Triggers.Current.MouseRight;
                 mouseWorld = Main.MouseWorld;
@@ -71,7 +71,7 @@ namespace StarlightRiver.Core
                     mouseListener = false;
                 } 
                 
-                if (mouseRotationListener && Math.Abs((mouseWorld - player.MountedCenter).ToRotation() - (oldMouseWorld - player.MountedCenter).ToRotation()) > 0.15f)
+                if (mouseRotationListener && Math.Abs((mouseWorld - Player.MountedCenter).ToRotation() - (oldMouseWorld - Player.MountedCenter).ToRotation()) > 0.15f)
                 {
                     oldMouseWorld = mouseWorld;
                     sendControls = true;
@@ -82,7 +82,7 @@ namespace StarlightRiver.Core
                 {
                     sendControls = false;
                     ControlsPacket packet = new ControlsPacket(this);
-                    packet.Send(-1, player.whoAmI, false);
+                    packet.Send(-1, Player.whoAmI, false);
                 }
 
             }
@@ -99,28 +99,28 @@ namespace StarlightRiver.Core
 
         public ControlsPacket(ControlsPlayer cPlayer)
         {
-            whoAmI = (byte)cPlayer.player.whoAmI;
+            whoAmI = (byte)cPlayer.Player.whoAmI;
 
             if (cPlayer.mouseRight) controls |= 0b10000000;
 
-            xDist = (short)(cPlayer.mouseWorld.X - cPlayer.player.position.X);
-            yDist = (short)(cPlayer.mouseWorld.Y - cPlayer.player.position.Y);
+            xDist = (short)(cPlayer.mouseWorld.X - cPlayer.Player.position.X);
+            yDist = (short)(cPlayer.mouseWorld.Y - cPlayer.Player.position.Y);
 
         }
 
         protected override void Receive()
         {
-            ControlsPlayer player = Main.player[whoAmI].GetModPlayer<ControlsPlayer>();
+            ControlsPlayer Player = Main.player[whoAmI].GetModPlayer<ControlsPlayer>();
             if ((controls & 0b10000000) == 0b10000000)
-                player.mouseRight = true;
+                Player.mouseRight = true;
             else
-                player.mouseRight = false;
+                Player.mouseRight = false;
 
-            player.mouseWorld = new Vector2(xDist + player.player.position.X, yDist + player.player.position.Y);
+            Player.mouseWorld = new Vector2(xDist + Player.Player.position.X, yDist + Player.Player.position.Y);
 
             if (Main.netMode == Terraria.ID.NetmodeID.Server)
             {
-                Send(-1, player.player.whoAmI, false);
+                Send(-1, Player.Player.whoAmI, false);
                 return;
             }
         }

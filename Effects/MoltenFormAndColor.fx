@@ -8,7 +8,7 @@ float uTime;
 float4 sourceFrame;
 float2 texSize;
 
-float mod(float x, float y)
+float Mod(float x, float y)
 {
     return x - y * floor(x / y);
 }
@@ -31,7 +31,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 
     color.a = 0;
 
-    float value = mod(-tex2D(samplerTex2, (1 - st)).x + uTime - (1 - st.y), 4.0);
+    float value = Mod(-tex2D(samplerTex2, (1 - st)).x + uTime - (1 - st.y), 4.0);
 
     float rAdd = max(1.2 - abs(uTime - st.y), 0.0) * (1.0 - value);
 

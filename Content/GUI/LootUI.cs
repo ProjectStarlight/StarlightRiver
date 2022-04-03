@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
-            var glowTex = GetTexture(AssetDirectory.GUI + "ItemGlow");
+            var glowTex = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
             var sin = (float)Math.Sin(Main.GameUpdateCount / 20f);
             spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.Gold * (0.4f + sin * 0.05f), Main.GameUpdateCount / 120f, glowTex.Size() / 2, 0.65f + sin * 0.03f, 0, 0);
             spriteBatch.Draw(glowTex, GetDimensions().Center(), null, Color.White * (0.4f + sin * 0.05f), -Main.GameUpdateCount / 60f, glowTex.Size() / 2, 0.5f + sin * 0.03f, 0, 0);
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/LootSlotOn");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value;
 
             Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) -  1.5f * Main.fontItemStack.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
 
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.GUI
 
             if (!BigItem.IsAir)
             {
-                Texture2D tex2 = BigItem.type > ItemID.Count ? GetTexture(BigItem.modItem.Texture) : GetTexture("Terraria/Item_" + BigItem.type);
+                Texture2D tex2 = BigItem.type > ItemID.Count ? Request<Texture2D>(BigItem.ModItem.Texture).Value : Request<Texture2D>("Terraria/Item_" + BigItem.type).Value;
                 float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                 spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, scale, 0, 0);
@@ -110,24 +110,24 @@ namespace StarlightRiver.Content.GUI
             Elements.Clear();
             Selections = new Item[2];
 
-            Item item = new Item();
-            item.SetDefaults(bigItemID.Type);
-            item.stack = bigItemID.GetCount();
-            BigItem = item;
+            Item Item = new Item();
+            Item.SetDefaults(bigItemID.Type);
+            Item.stack = bigItemID.GetCount();
+            BigItem = Item;
 
             for (int k = 0; k < smallItemIDs.Length; k++)
             {
-                Item item2 = new Item();
-                item2.SetDefaults(smallItemIDs[k].Type);
-                item2.stack = smallItemIDs[k].GetCount();
-                AppendSlot(item2, (-2 + k) * 60);
+                Item Item2 = new Item();
+                Item2.SetDefaults(smallItemIDs[k].Type);
+                Item2.stack = smallItemIDs[k].GetCount();
+                AppendSlot(Item2, (-2 + k) * 60);
             }
             QuoteID = Main.rand.Next(Quotes.Count);
         }
 
-        private void AppendSlot(Item item, int offX)
+        private void AppendSlot(Item Item, int offX)
         {
-            LootSelection slot = new LootSelection(item);
+            LootSelection slot = new LootSelection(Item);
             slot.Left.Set(offX - 26, 0.5f);
             slot.Top.Set(50, 0.5f);
             slot.Width.Set(50, 0);
@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.GUI
     {
         internal Item Item;
 
-        public LootSelection(Item item) { Item = item; }
+        public LootSelection(Item Item) { Item = Item; }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -150,14 +150,14 @@ namespace StarlightRiver.Content.GUI
             if (Parent is LootUI)
             {
                 LootUI parent = Parent as LootUI;
-                Texture2D tex = parent.Selections.Any(n => n == Item) ? GetTexture("StarlightRiver/Assets/GUI/LootSlotOn") : GetTexture("StarlightRiver/Assets/GUI/LootSlot");
+                Texture2D tex = parent.Selections.Any(n => n == Item) ? Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlotOn").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/LootSlot").Value;
                 float opacity = IsMouseHovering ? 1 : 0.6f;
 
                 spriteBatch.Draw(tex, GetDimensions().Position(), tex.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, 0, 0);
 
                 if (!Item.IsAir)
                 {
-                    Texture2D tex2 = Item.type > ItemID.Count ? GetTexture(Item.modItem.Texture) : GetTexture("Terraria/Item_" + Item.type);
+                    Texture2D tex2 = Item.type > ItemID.Count ? Request<Texture2D>(Item.ModItem.Texture).Value : Request<Texture2D>("Terraria/Item_" + Item.type).Value;
                     float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                     spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, 1, 0, 0);

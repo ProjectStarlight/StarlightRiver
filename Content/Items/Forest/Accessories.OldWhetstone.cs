@@ -11,17 +11,17 @@ namespace StarlightRiver.Content.Items.Forest
 
         public OldWhetstone() : base("Old Whetstone", "+1 to all damage\n'Why in tarnation are you sharpening your wand?!'") { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightItem.ModifyWeaponDamageEvent += AddDamage;
             return base.Autoload(ref name);
         }
 
-		private void AddDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
+		private void AddDamage(Item Item, Player Player, ref float add, ref float mult, ref float flat)
 		{
-            if (Equipped(player))
+            if (Equipped(Player))
                 flat += 1;
 		}
 	}

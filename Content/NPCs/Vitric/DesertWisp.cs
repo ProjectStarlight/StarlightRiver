@@ -24,34 +24,34 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetDefaults()
         {
-            npc.width = 8;
-            npc.height = 8;
-            npc.damage = 0;
-            npc.defense = 0;
-            npc.lifeMax = 10;
-            npc.noGravity = true;
-            npc.noTileCollide = true;
-            npc.dontTakeDamage = true;
-            npc.value = 0f;
-            npc.knockBackResist = 0f;
-            npc.aiStyle = 65;
+            NPC.width = 8;
+            NPC.height = 8;
+            NPC.damage = 0;
+            NPC.defense = 0;
+            NPC.lifeMax = 10;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.dontTakeDamage = true;
+            NPC.value = 0f;
+            NPC.knockBackResist = 0f;
+            NPC.aiStyle = 65;
         }
 
         public override void AI()
         {
-            npc.TargetClosest(true);
-            Player player = Main.player[npc.target];
-            AbilityHandler mp = player.GetHandler();
-            Vector2 distance = player.Center - npc.Center;
+            NPC.TargetClosest(true);
+            Player Player = Main.player[NPC.target];
+            AbilityHandler mp = Player.GetHandler();
+            Vector2 distance = Player.Center - NPC.Center;
 
-            Dust.NewDustPerfect(npc.Center, DustType<Dusts.Air>(), Vector2.Zero);
+            Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if (distance.Length() <= 180 && !mp.Unlocked<Whip>() || Main.dayTime) npc.ai[3] = 1;
+            if (distance.Length() <= 180 && !mp.Unlocked<Whip>() || Main.dayTime) NPC.ai[3] = 1;
 
-            if (npc.ai[3] == 1)
+            if (NPC.ai[3] == 1)
             {
-                npc.velocity.Y = 10;
-                npc.velocity.X = 0;
+                NPC.velocity.Y = 10;
+                NPC.velocity.X = 0;
             }
         }
 
@@ -65,8 +65,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetStaticDefaults()
 		{
-            NPCID.Sets.TrailCacheLength[npc.type] = 120;
-            NPCID.Sets.TrailingMode[npc.type] = 1;
+            NPCID.Sets.TrailCacheLength[NPC.type] = 120;
+            NPCID.Sets.TrailingMode[NPC.type] = 1;
         }
 
 		public override void SetDefaults()
@@ -91,16 +91,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
         {
-            if (npc.velocity.Length() < 1.7f)
-                npc.velocity = Vector2.Normalize(npc.velocity) * 1.71f;
+            if (NPC.velocity.Length() < 1.7f)
+                NPC.velocity = Vector2.Normalize(NPC.velocity) * 1.71f;
         }
 
 		public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
 		{
-            if (npc.oldPos[119] == Vector2.Zero || trail is null)
+            if (NPC.oldPos[119] == Vector2.Zero || trail is null)
                 return;
 
-            trail.Positions = npc.oldPos;
+            trail.Positions = NPC.oldPos;
 
             Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
             effect.Parameters["time"].SetValue(-Main.GameUpdateCount / 100f);
             effect.Parameters["repeats"].SetValue(1);
 
@@ -118,6 +118,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             trail?.Render(effect);
         }
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
+		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
     }
 }

@@ -8,23 +8,23 @@ namespace StarlightRiver.Content.Items.Food
     {
         public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.White;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightNPC.NPCLootEvent += LootRabbit;
             return true;
         }
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.meleeDamageMult += 0.05f * multiplier;
+            Player.meleeDamageMult += 0.05f * multiplier;
         }
 
-        private void LootRabbit(NPC npc)
+        private void LootRabbit(NPC NPC)
         {
-            if (npc.type == NPCID.Bunny && Main.rand.Next(4) == 0)
-                Item.NewItem(npc.Center, item.type);
+            if (NPC.type == NPCID.Bunny && Main.rand.Next(4) == 0)
+                Item.NewItem(NPC.Center, Item.type);
         }
     }
 }

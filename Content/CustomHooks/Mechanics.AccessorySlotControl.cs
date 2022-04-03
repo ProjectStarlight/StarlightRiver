@@ -22,16 +22,16 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void HandleSpecialItemInteractions(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
         {
-            if ((inv[slot].modItem is CursedAccessory || inv[slot].modItem is Blocker) && context == 10)
+            if ((inv[slot].ModItem is CursedAccessory || inv[slot].ModItem is Blocker) && context == 10)
             {
                 ItemLoader.CanEquipAccessory(Main.mouseItem, slot);
                 return;
             }
 
-            if (Main.mouseItem.modItem is SoulboundItem && (context != 0 || inv != Main.LocalPlayer.inventory))
+            if (Main.mouseItem.ModItem is SoulboundItem && (context != 0 || inv != Main.LocalPlayer.inventory))
                 return;
 
-            if (inv[slot].modItem is SoulboundItem && Main.keyState.PressingShift())
+            if (inv[slot].ModItem is SoulboundItem && Main.keyState.PressingShift())
                 return;
 
             orig(inv, context, slot);
@@ -39,21 +39,21 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void NoSwapCurse(On.Terraria.UI.ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
         {
-            Player player = Main.player[Main.myPlayer];
+            Player Player = Main.player[Main.myPlayer];
 
-            for (int i = 0; i < player.armor.Length; i++)
+            for (int i = 0; i < Player.armor.Length; i++)
             {
-                if ((player.armor[i].modItem is CursedAccessory || player.armor[i].modItem is Blocker) && ItemSlot.ShiftInUse && inv[slot].accessory)
+                if ((Player.armor[i].ModItem is CursedAccessory || Player.armor[i].ModItem is Blocker) && ItemSlot.ShiftInUse && inv[slot].accessory)
 				{              
                     return;
                 }                  
             }
 
-            if (inv == player.armor)
+            if (inv == Player.armor)
             {
-                Item swaptarget = player.armor[slot - 10];
+                Item swaptarget = Player.armor[slot - 10];
 
-                if (context == 11 && (swaptarget.modItem is CursedAccessory || swaptarget.modItem is Blocker || swaptarget.modItem is InfectedAccessory))
+                if (context == 11 && (swaptarget.ModItem is CursedAccessory || swaptarget.ModItem is Blocker || swaptarget.ModItem is InfectedAccessory))
                     return;
             }
 
@@ -63,25 +63,25 @@ namespace StarlightRiver.Content.CustomHooks
         private void DrawSpecial(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
         {
             //TODO: Rewrite this later to be less... noob looking.
-            if ((inv[slot].modItem is CursedAccessory) && context == 10)
+            if ((inv[slot].ModItem is CursedAccessory) && context == 10)
             {
-                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/CursedBack");
+                Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/CursedBack").Value;
                 Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
                 RedrawItem(sb, inv, back, position, slot, color);
             }
-            else if ((inv[slot].modItem is InfectedAccessory || inv[slot].modItem is Blocker) && context == 10)
+            else if ((inv[slot].ModItem is InfectedAccessory || inv[slot].ModItem is Blocker) && context == 10)
             {
-                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/InfectedBack");
+                Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/InfectedBack").Value;
                 Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
                 RedrawItem(sb, inv, back, position, slot, color);
             }
-            else if (inv[slot].modItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
+            else if (inv[slot].ModItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
             {
-                Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/ProtoBack");
+                Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ProtoBack").Value;
                 Color backcolor = Main.LocalPlayer.HeldItem != inv[slot] ? Color.White * 0.75f : Color.Yellow;
 
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
@@ -96,13 +96,13 @@ namespace StarlightRiver.Content.CustomHooks
         //this is vanilla code. I cant be assed to try to change this. Only alternative I see is porting this all to IL.
         internal static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
         {
-            Item item = inv[slot];
+            Item Item = inv[slot];
             Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;
-            Texture2D PopupTexture = ModContent.GetTexture(item.modItem.Texture);
+            Texture2D PopupTexture = ModContent.Request<Texture2D>(Item.ModItem.Texture).Value;
             Rectangle source = (PopupTexture.Frame(1, 1, 0, 0));
             Color currentColor = color;
             float scaleFactor2 = 1f;
-            ItemSlot.GetItemLight(ref currentColor, ref scaleFactor2, item, false);
+            ItemSlot.GetItemLight(ref currentColor, ref scaleFactor2, Item, false);
             float scaleFactor = 1f;
 
             if (source.Width > 32 || source.Height > 32)
@@ -111,11 +111,11 @@ namespace StarlightRiver.Content.CustomHooks
             scaleFactor *= Main.inventoryScale;
             Vector2 drawPos = position + scaleVector / 2f - source.Size() * scaleFactor / 2f;
             Vector2 origin = source.Size() * (scaleFactor2 / 2f - 0.5f);
-            if (ItemLoader.PreDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2))
+            if (ItemLoader.PreDrawInInventory(Item, sb, drawPos, source, Item.GetAlpha(currentColor), Item.GetColor(color), origin, scaleFactor * scaleFactor2))
             {
                 sb.Draw(PopupTexture, drawPos, source, Color.White, 0f, origin, scaleFactor * scaleFactor2, SpriteEffects.None, 0f);
             }
-            ItemLoader.PostDrawInInventory(item, sb, drawPos, source, item.GetAlpha(currentColor), item.GetColor(color), origin, scaleFactor * scaleFactor2);
+            ItemLoader.PostDrawInInventory(Item, sb, drawPos, source, Item.GetAlpha(currentColor), Item.GetColor(color), origin, scaleFactor * scaleFactor2);
         }
     }
 

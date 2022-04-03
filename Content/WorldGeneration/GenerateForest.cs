@@ -11,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
         private void ForestHerbGen(GenerationProgress progress)
         {

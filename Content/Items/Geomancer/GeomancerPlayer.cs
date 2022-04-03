@@ -57,15 +57,15 @@ namespace StarlightRiver.Content.Items.Geomancer
         static int shaderValue2 = 0;
 
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
             return base.Autoload(ref name);
         }
 
-        private void PreDrawGlowFX(Player player, SpriteBatch spriteBatch)
+        private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
         {
-            if (!player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
+            if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
                 return;
 
             if (!CustomHooks.PlayerTarget.canUseTarget)
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
-            if (player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+            if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
             {
 
                 float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
@@ -96,15 +96,15 @@ namespace StarlightRiver.Content.Items.Geomancer
                     Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
                     var color = Color.White * (opacity - sin * 0.1f) * 0.9f;
 
-                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color * 0.25f * fadeOut);
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
                 }
             }
-            else if (player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
+            else if (Player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
             {
-                float sin = player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
+                float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
                 float opacity = 1.5f - sin;
 
-                Color color = GetArmorColor(player) * (opacity - sin * 0.1f) * 0.9f;
+                Color color = GetArmorColor(Player) * (opacity - sin * 0.1f) * 0.9f;
 
                 effect.Parameters["uColor"].SetValue(color.ToVector3());
                 effect.Parameters["uOpacity"].SetValue(sin);
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 {
                     Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
 
-                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), Color.White * 0.25f);
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
                 }
             }
 
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             SamplerState samplerState = Main.DefaultSamplerState;
 
-            if (player.mount.Active)
+            if (Player.mount.Active)
                 samplerState = Main.MountedSamplerState;
 
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
@@ -173,36 +173,36 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             if (SetBonusActive && storedGem != StoredGem.None)
             {
-                if (player.armor[10].type == 0)
+                if (Player.armor[10].type == 0)
                 {
-                    layers.Insert(layers.FindIndex(x => x.Name == "Head" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemHead",
+                    layers.Insert(layers.FindIndex(x => x.Name == "Head" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemHead",
                        delegate (PlayerDrawInfo info)
                        {
-                           DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems"), info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
+                           DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
                        }));
                 }
 
-                if (player.armor[11].type == 0)
+                if (Player.armor[11].type == 0)
                 {
-                    layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemBody",
+                    layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemBody",
                        delegate (PlayerDrawInfo info)
                        {
-                           DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems"), info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+                           DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
                        }));
 
-                    layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemBody2",
+                    layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemBody2",
                        delegate (PlayerDrawInfo info)
                        {
-                           DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims"), info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+                           DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
                        }));
                 }
 
-                if (player.armor[12].type == 0)
+                if (Player.armor[12].type == 0)
                 {
-                    layers.Insert(layers.FindIndex(x => x.Name == "Legs" && x.mod == "Terraria") + 1, new PlayerLayer(mod.Name, "GemLegs",
+                    layers.Insert(layers.FindIndex(x => x.Name == "Legs" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemLegs",
                         delegate (PlayerDrawInfo info)
                         {
-                            DrawGemArmor(ModContent.GetTexture(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems"), info, info.drawPlayer.legFrame, info.drawPlayer.legRotation);
+                            DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.legRotation);
                         }));
                 }
             }
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             Player armorOwner = info.drawPlayer;
 
-            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - player.gfxOffY);
+            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - Player.gfxOffY);
             float timerVar = (float)(Main.GlobalTime % 2.4f / 2.4f) * 6.28f;
             float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
 
@@ -269,9 +269,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             timer--;
 
-            ShieldPlayer shieldPlayer = player.GetModPlayer<ShieldPlayer>();
-            if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxShield - shieldPlayer.Shield < 100)
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, player.whoAmI);
+            ShieldPlayer shieldPlayer = Player.GetModPlayer<ShieldPlayer>();
+            if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxShield - shieldPlayer.Shield < 100)
+                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
 
             if (storedGem == StoredGem.All)
             {
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
 
             ActivationCounter -= 0.03f;
-            Lighting.AddLight(player.Center, (GetArmorColor(player)).ToVector3());
+            Lighting.AddLight(Player.Center, (GetArmorColor(Player)).ToVector3());
         }
 
         public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
@@ -299,13 +299,13 @@ namespace StarlightRiver.Content.Items.Geomancer
                 if (Main.rand.NextBool(odds))
                 {
                     rngProtector = 0;
-                    SpawnGem(target, player.GetModPlayer<GeomancerPlayer>());
+                    SpawnGem(target, Player.GetModPlayer<GeomancerPlayer>());
                 }
             }
 
 
-            int critRate = Math.Min(player.HeldItem.crit, 4);
-            critRate += player.magicCrit;
+            int critRate = Math.Min(Player.HeldItem.crit, 4);
+            critRate += Player.magicCrit;
 
             if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) 
             {
@@ -333,12 +333,12 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
             {
-                Projectile.NewProjectile(player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, player.whoAmI, target.whoAmI);
+                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI);
             }
 
             if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
             {
-                if (Main.rand.Next(Math.Max(((10 / player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
+                if (Main.rand.Next(Math.Max(((10 / Player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
                 {
                     Projectile.NewProjectile(
                         target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                         ModContent.ProjectileType<AmethystShard>(),
                         0,
                         0,
-                        player.whoAmI,
+                        Player.whoAmI,
                         target.GetGlobalNPC<GeoNPC>().amethystDebuff,
                         target.whoAmI);
                     target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
@@ -356,38 +356,38 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         private static void SpawnGem(NPC target, GeomancerPlayer modPlayer)
         {
-            int itemType = -1;
-            List<int> itemTypes = new List<int>();
+            int ItemType = -1;
+            List<int> ItemTypes = new List<int>();
 
             if (!modPlayer.AmethystStored)
-                itemTypes.Add(ModContent.ItemType<GeoAmethyst>());
+                ItemTypes.Add(ModContent.ItemType<GeoAmethyst>());
 
             if (!modPlayer.TopazStored)
-                itemTypes.Add(ModContent.ItemType<GeoTopaz>());
+                ItemTypes.Add(ModContent.ItemType<GeoTopaz>());
 
             if (!modPlayer.EmeraldStored)
-                itemTypes.Add(ModContent.ItemType<GeoEmerald>());
+                ItemTypes.Add(ModContent.ItemType<GeoEmerald>());
 
             if (!modPlayer.SapphireStored)
-                itemTypes.Add(ModContent.ItemType<GeoSapphire>());
+                ItemTypes.Add(ModContent.ItemType<GeoSapphire>());
 
             if (!modPlayer.RubyStored)
-                itemTypes.Add(ModContent.ItemType<GeoRuby>());
+                ItemTypes.Add(ModContent.ItemType<GeoRuby>());
 
             if (!modPlayer.DiamondStored)
-                itemTypes.Add(ModContent.ItemType<GeoDiamond>());
+                ItemTypes.Add(ModContent.ItemType<GeoDiamond>());
 
-            if (itemTypes.Count == 0)
+            if (ItemTypes.Count == 0)
                 return;
 
-            itemType = itemTypes[Main.rand.Next(itemTypes.Count)];
+            ItemType = ItemTypes[Main.rand.Next(ItemTypes.Count)];
 
-            Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), itemType, 1);
+            Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
         }
 
-        public static void PickOldGem(Player player)
+        public static void PickOldGem(Player Player)
         {
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             List<StoredGem> gemTypes = new List<StoredGem>();
 
             if (modPlayer.AmethystStored)
@@ -414,9 +414,9 @@ namespace StarlightRiver.Content.Items.Geomancer
                 modPlayer.storedGem = gemTypes[Main.rand.Next(gemTypes.Count)];
         }
 
-        public static Color GetArmorColor(Player player)
+        public static Color GetArmorColor(Player Player)
         {
-            StoredGem storedGem = player.GetModPlayer<GeomancerPlayer>().storedGem;
+            StoredGem storedGem = Player.GetModPlayer<GeomancerPlayer>().storedGem;
 
             switch (storedGem)
             {
@@ -446,21 +446,21 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public int amethystDebuff;
 
-        public override bool PreAI(NPC npc)
+        public override bool PreAI(NPC NPC)
         {
             if (amethystDebuff > 0)
                 amethystDebuff--;
 
-            return base.PreAI(npc);
+            return base.PreAI(NPC);
         }
 
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
-            if (npc.lifeRegen > 0)
+            if (NPC.lifeRegen > 0)
             {
-                npc.lifeRegen = 0;
+                NPC.lifeRegen = 0;
             }
-            npc.lifeRegen -= amethystDebuff / 50;
+            NPC.lifeRegen -= amethystDebuff / 50;
             if (damage < amethystDebuff / 150)
             {
                 damage = amethystDebuff / 150;

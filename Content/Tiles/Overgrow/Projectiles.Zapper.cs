@@ -21,13 +21,13 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.height = 8;
-            projectile.width = 8;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 2;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
+            Projectile.hostile = true;
+            Projectile.height = 8;
+            Projectile.width = 8;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 2;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
 
         public override void SetStaticDefaults()
@@ -41,30 +41,30 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             for (int k = 0; 1 == 1; k++)
             {
                 dims.Y++;
-                if (Main.tileSolid[Main.tile[((int)projectile.position.X + 4) / 16, (int)(projectile.position.Y + k) / 16].type] && Main.tile[(int)projectile.position.X / 16, (int)(projectile.position.Y + k) / 16].active()) break;
+                if (Main.tileSolid[Main.tile[((int)Projectile.position.X + 4) / 16, (int)(Projectile.position.Y + k) / 16].type] && Main.tile[(int)Projectile.position.X / 16, (int)(Projectile.position.Y + k) / 16].active()) break;
             }
 
-            foreach (Player player in Main.player.Where(player => player.active))
-                if (Collision.CheckAABBvAABBCollision(projectile.position, dims, player.position, player.Hitbox.Size()) && !player.ActiveAbility<Whip>())
+            foreach (Player Player in Main.player.Where(Player => Player.active))
+                if (Collision.CheckAABBvAABBCollision(Projectile.position, dims, Player.position, Player.Hitbox.Size()) && !Player.ActiveAbility<Whip>())
                 {
-                    player.Hurt(PlayerDeathReason.ByCustomReason(player.name + " was zapped to death."), 50, 0);
-                    player.velocity.X = player.velocity.Length() <= 8 ? (-Vector2.Normalize(player.velocity) * 8).X : player.velocity.X * -1;
-                    player.velocity.Y = 0.1f;
+                    Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " was zapped to death."), 50, 0);
+                    Player.velocity.X = Player.velocity.Length() <= 8 ? (-Vector2.Normalize(Player.velocity) * 8).X : Player.velocity.X * -1;
+                    Player.velocity.Y = 0.1f;
 
-                    Projectile proj = Main.projectile.FirstOrDefault(p => p.owner == player.whoAmI && Main.projHook[p.type]);
+                    Projectile proj = Main.projectile.FirstOrDefault(p => p.owner == Player.whoAmI && Main.projHook[p.type]);
                     if (proj != null) proj.timeLeft = 0;
 
-                    player.GetHandler().ActiveAbility?.Deactivate();
+                    Player.GetHandler().ActiveAbility?.Deactivate();
                 }
 
-            projectile.timeLeft = 2;
+            Projectile.timeLeft = 2;
             if (!parent.active())
-                projectile.timeLeft = 0;
+                Projectile.timeLeft = 0;
 
             //Dust
             if (Main.time % 15 == 0)
             {
-                Vector2 startpos = projectile.Center + new Vector2(8, -8);
+                Vector2 startpos = Projectile.Center + new Vector2(8, -8);
                 Vector2[] joints = new Vector2[(int)dims.Y / 20 + 1];
                 joints[0] = startpos;
                 joints[(int)dims.Y / 20] = startpos + new Vector2(0, dims.Y);
@@ -87,9 +87,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Vector2 pos = projectile.position - Main.screenPosition + new Vector2(1, -23);
-            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow0"), pos, Helper.IndicatorColor);
-            spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowTile + "ZapperGlow1"), pos + Vector2.One * 3, Color.White * 0.8f);
+            Vector2 pos = Projectile.position - Main.screenPosition + new Vector2(1, -23);
+            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowTile + "ZapperGlow0").Value, pos, Helper.IndicatorColor);
+            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowTile + "ZapperGlow1").Value, pos + Vector2.One * 3, Color.White * 0.8f);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 {
 	internal class TreePure : ModTree
     {
-        private static Mod mod => ModLoader.GetMod("StarlightRiver");
+        private static Mod Mod => ModLoader.GetMod("StarlightRiver");
 
         public override int CreateDust()
         {
@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 
         public override int GrowthFXGore()
         {
-            return mod.GetGoreSlot("Gores/Ward0");
+            return Mod.GetGoreSlot("Gores/Ward0");
         }
 
         public override int DropWood()
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Purified
 
         public override Texture2D GetTexture()
         {
-            return mod.GetTexture("Assets/Tiles/Purified/TreePure");
+            return Mod.Request<Texture2D>("Assets/Tiles/Purified/TreePure").Value;
         }
 
         public override Texture2D GetTopTextures(int i, int j, ref int frame, ref int frameWidth, ref int frameHeight, ref int xOffsetLeft, ref int yOffset)
@@ -35,13 +35,13 @@ namespace StarlightRiver.Content.Tiles.Purified
             frameHeight = 98;
             xOffsetLeft = 48;
             yOffset = 2;
-            return mod.GetTexture("Assets/Tiles/Purified/TreePure_Tops");
+            return Mod.Request<Texture2D>("Assets/Tiles/Purified/TreePure_Tops").Value;
 
         }
 
         public override Texture2D GetBranchTextures(int i, int j, int trunkOffset, ref int frame)
         {
-            return mod.GetTexture("Assets/Tiles/Purified/TreePure_Branches");
+            return Mod.Request<Texture2D>("Assets/Tiles/Purified/TreePure_Branches").Value;
         }
     }
 }

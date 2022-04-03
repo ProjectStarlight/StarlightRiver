@@ -30,27 +30,27 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 5, 0, 0);
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 5, 0, 0);
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
-			player.GetModPlayer<DianePlayer>().Active = true;
+			Player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+			Player.GetModPlayer<DianePlayer>().Active = true;
 
-			if (player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !player.dead)
+			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)
 			{
-				Projectile.NewProjectile(player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), (int)(30 * player.magicDamage), 1.5f, player.whoAmI);
+				Projectile.NewProjectile(Player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), (int)(30 * Player.magicDamage), 1.5f, Player.whoAmI);
 			}
 		}
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(mod);
+			ModRecipe recipe = new ModRecipe(Mod);
 			recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 4);
 			recipe.AddIngredient(ModContent.ItemType<AquaSapphire>(), 1);
 			recipe.AddTile(TileID.Anvils);
@@ -87,57 +87,57 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crescant");
-            Main.projPet[projectile.type] = true;
-            Main.projFrames[projectile.type] = 1;
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 1;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 0;
-            ProjectileID.Sets.MinionSacrificable[projectile.type] = true;
-            ProjectileID.Sets.Homing[projectile.type] = true;
-            ProjectileID.Sets.MinionTargettingFeature[projectile.type] = true;
+            Main.projPet[Projectile.type] = true;
+            Main.projFrames[Projectile.type] = 1;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+            ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
+            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
 
         public override void SetDefaults()
         {
-            projectile.netImportant = true;
-            projectile.width = 68;
-            projectile.height = 68;
-            projectile.friendly = false;
-            projectile.minion = true;
-            projectile.minionSlots = 0;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 216000;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
+            Projectile.netImportant = true;
+            Projectile.width = 68;
+            Projectile.height = 68;
+            Projectile.friendly = false;
+            Projectile.minion = true;
+            Projectile.minionSlots = 0;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 216000;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
         }
 
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
+            Player Player = Main.player[Projectile.owner];
 
-            if (player.dead)
-                projectile.active = false;
+            if (Player.dead)
+                Projectile.active = false;
 
-            if (player.GetModPlayer<DianePlayer>().Active)
-                projectile.timeLeft = 2;
+            if (Player.GetModPlayer<DianePlayer>().Active)
+                Projectile.timeLeft = 2;
 
             if (Attacking)
-                AttackMovement(player);
+                AttackMovement(Player);
             else
-                IdleMovement(player);
+                IdleMovement(Player);
         }
 
-        private void AttackMovement(Player player)
+        private void AttackMovement(Player Player)
         {
 
         }
 
-        private void IdleMovement(Player player)
+        private void IdleMovement(Player Player)
         {
-            Vector2 direction = player.Center - projectile.Center;
+            Vector2 direction = Player.Center - Projectile.Center;
             if (direction.Length() > 150)
             {
                 direction.Normalize();
-                projectile.velocity = Vector2.Lerp(projectile.velocity, direction * speed, 0.03f);
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, 0.03f);
             }
         }
     }

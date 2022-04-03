@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Purified
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileStone[Type] = true;
-            dustType = mod.DustType("Purify");
+            dustType = Mod.DustType("Purify");
             drop = TileID.Stone;
             AddMapEntry(new Color(208, 201, 199));
         }
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Purified
             Main.tileLighted[Type] = true;
             TileID.Sets.Grass[Type] = true;
             SetModTree(new TreePure());
-            dustType = mod.DustType("Purify");
+            dustType = Mod.DustType("Purify");
             drop = ItemID.DirtBlock;
             AddMapEntry(new Color(208, 201, 199));
         }
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Purified
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileSand[Type] = true;
-            dustType = mod.DustType("Purify");
+            dustType = Mod.DustType("Purify");
             AddMapEntry(new Color(208, 201, 199));
         }
     }

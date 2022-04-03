@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void SetDefaults()
         {
             QuickBlock.QuickSet(this, 210, DustType<Dusts.Leaf>(), SoundID.Tink, new Color(202, 157, 49), StarlightRiver.Instance.ItemType("BrickOvergrowItem"), true, true);
-            Main.tileMerge[Type][mod.GetTile("BrickOvergrow").Type] = true;
-            Main.tileMerge[Type][mod.GetTile("StoneOvergrow").Type] = true;
-            Main.tileMerge[Type][mod.GetTile("LeafOvergrow").Type] = true;
+            Main.tileMerge[Type][Mod.GetTile("BrickOvergrow").Type] = true;
+            Main.tileMerge[Type][Mod.GetTile("StoneOvergrow").Type] = true;
+            Main.tileMerge[Type][Mod.GetTile("LeafOvergrow").Type] = true;
             Main.tileMerge[Type][TileType<CrusherTile>()] = true;
             Main.tileMerge[Type][TileType<GlowBrickOvergrow>()] = true;
             TileID.Sets.Grass[Type] = true;
@@ -42,15 +42,15 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public static void CustomDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
-            Texture2D tex = GetTexture(AssetDirectory.OvergrowTile + "GrassOvergrowMoss");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "GrassOvergrowMoss").Value;
             Rectangle source = new Rectangle(0 + i % 5 * 8, 0, 8, 16);
             Color color = Lighting.GetColor(i, j);
 
             Vector2 crunch = new Vector2(0, -5);
-            foreach (Player player in Main.player.Where(n => n.active))
+            foreach (Player Player in Main.player.Where(n => n.active))
             {
-                if (player.Hitbox.Intersects(new Rectangle(i * 16 - 8, j * 16 - 1, 16, 1))) crunch.Y += 1;
-                if (player.Hitbox.Intersects(new Rectangle(i * 16, j * 16 - 1, 8, 1))) crunch.Y += 2;
+                if (Player.Hitbox.Intersects(new Rectangle(i * 16 - 8, j * 16 - 1, 16, 1))) crunch.Y += 1;
+                if (Player.Hitbox.Intersects(new Rectangle(i * 16, j * 16 - 1, 8, 1))) crunch.Y += 2;
             }
 
             if (tile.frameX >= 10 && tile.frameX < 70 && tile.frameY == 0)
@@ -59,18 +59,18 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 spriteBatch.Draw(tex, new Vector2(i + 0.5f, j) * 16 + crunch * 0.5f - Main.screenPosition, source, color);
             }
         }
-        public override void FloorVisuals(Player player)
+        public override void FloorVisuals(Player Player)
         {
-            Vector2 playerFeet = player.Center + new Vector2(-8, player.height / 2);
-            if (player.velocity.X != 0)
+            Vector2 PlayerFeet = Player.Center + new Vector2(-8, Player.height / 2);
+            if (Player.velocity.X != 0)
             {
-                if (Main.rand.Next(3) == 0) Dust.NewDust(playerFeet, 16, 1, DustType<Dusts.Stamina>(), 0, -2);
-                if (Main.rand.Next(10) == 0) Dust.NewDust(playerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, 0.6f);
+                if (Main.rand.Next(3) == 0) Dust.NewDust(PlayerFeet, 16, 1, DustType<Dusts.Stamina>(), 0, -2);
+                if (Main.rand.Next(10) == 0) Dust.NewDust(PlayerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, 0.6f);
             }
 
-            if (player.GetModPlayer<AbilityHandler>().GetAbility<Dash>(out var dash) && dash.Cooldown == 90)
+            if (Player.GetModPlayer<AbilityHandler>().GetAbility<Dash>(out var dash) && dash.Cooldown == 90)
                 for (int k = 0; k < 20; k++)
-                    Dust.NewDust(playerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, -2);
+                    Dust.NewDust(PlayerFeet, 16, 1, DustType<Dusts.Leaf>(), 0, -2);
         }
         public override void RandomUpdate(int i, int j)
         {

@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 
         public static NPC tracked;
         public static string Text;
-        public static Texture2D Texture = GetTexture(AssetDirectory.GUI + "BossBarFrame");
+        public static Texture2D Texture = Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value;
         public static Color glowColor = Color.Transparent;
         public int Timer;
 
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.GUI
                             ShardsSystem.AddParticle(new Particle(pos, vel, 0, 1, Color.White, 120, Vector2.Zero, frame));
                         }
 
-                    var tex = GetTexture("StarlightRiver/Assets/GUI/BossbarBack");
+                    var tex = Request<Texture2D>("StarlightRiver/Assets/GUI/BossbarBack").Value;
 
                     for (int x = 0; x < tex.Width; x += 12)
                         for (int y = 0; y < tex.Height; y += 11)
@@ -123,9 +123,9 @@ namespace StarlightRiver.Content.GUI
             }
 		}
 
-		public static void SetTracked(NPC npc, string text = "", Texture2D tex = default)
+		public static void SetTracked(NPC NPC, string text = "", Texture2D tex = default)
         {
-            tracked = npc;
+            tracked = NPC;
             Text = text;
             visible = true;
 
@@ -138,22 +138,22 @@ namespace StarlightRiver.Content.GUI
 	{
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-            var npc = BootlegHealthbar.tracked;
+            var NPC = BootlegHealthbar.tracked;
             var pos = GetDimensions().ToRectangle().TopLeft();
             var off = new Vector2(30, 14);
 
-            if (npc is null)
+            if (NPC is null)
                 return;
 
-            var texBack = GetTexture(AssetDirectory.GUI + "BossbarBack");
-            var texFill = GetTexture(AssetDirectory.GUI + "BossbarFill");
-            var texEdge = GetTexture(AssetDirectory.GUI + "BossbarEdge");
-            var texGlow = GetTexture(AssetDirectory.GUI + "BossbarGlow");
+            var texBack = Request<Texture2D>(AssetDirectory.GUI + "BossbarBack").Value;
+            var texFill = Request<Texture2D>(AssetDirectory.GUI + "BossbarFill").Value;
+            var texEdge = Request<Texture2D>(AssetDirectory.GUI + "BossbarEdge").Value;
+            var texGlow = Request<Texture2D>(AssetDirectory.GUI + "BossbarGlow").Value;
 
-            if (npc.dontTakeDamage || npc.immortal)
+            if (NPC.dontTakeDamage || NPC.immortal)
 			{
-                texFill = GetTexture(AssetDirectory.GUI + "BossbarFillImmune");
-                texEdge = GetTexture(AssetDirectory.GUI + "BossbarEdgeImmune");
+                texFill = Request<Texture2D>(AssetDirectory.GUI + "BossbarFillImmune").Value;
+                texEdge = Request<Texture2D>(AssetDirectory.GUI + "BossbarEdgeImmune").Value;
             }
 
             int progress = (int)(BootlegHealthbar.tracked?.life / (float)BootlegHealthbar.tracked?.lifeMax * texBack.Width);
@@ -171,20 +171,20 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-            Utils.DrawBorderString(spriteBatch, npc.FullName + BootlegHealthbar.Text + ": " + npc.life + "/" + npc.lifeMax, pos + new Vector2(BootlegHealthbar.Texture.Width / 2, -20), Color.White, 1, 0.5f, 0);
+            Utils.DrawBorderString(spriteBatch, NPC.FullName + BootlegHealthbar.Text + ": " + NPC.life + "/" + NPC.lifeMax, pos + new Vector2(BootlegHealthbar.Texture.Width / 2, -20), Color.White, 1, 0.5f, 0);
 
             spriteBatch.Draw(BootlegHealthbar.Texture, pos, Color.White);
 
             
 
-            if (npc.GetBossHeadTextureIndex() > 0)
+            if (NPC.GetBossHeadTextureIndex() > 0)
             {
-                var tex = Main.npcHeadBossTexture[npc.GetBossHeadTextureIndex()];
+                var tex = Main.npcHeadBossTexture[NPC.GetBossHeadTextureIndex()];
                 spriteBatch.Draw(tex, pos + new Vector2(0, 10), Color.White);
             }
 
-            if (npc.dontTakeDamage || npc.immortal)
-                spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "BossbarChains"), pos, Color.White);
+            if (NPC.dontTakeDamage || NPC.immortal)
+                spriteBatch.Draw(Request<Texture2D>(AssetDirectory.GUI + "BossbarChains").Value, pos, Color.White);
         }
 	}
 }

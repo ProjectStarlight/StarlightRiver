@@ -22,14 +22,14 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void SetDefaults()
             {
-                item.width = 18;
-                item.height = 18;
-                item.value = Item.sellPrice(0, 0, 90, 0);
-                item.rare = ItemRarityID.Blue;
-                item.defense = 6;
+                Item.width = 18;
+                Item.height = 18;
+                Item.value = Item.sellPrice(0, 0, 90, 0);
+                Item.rare = ItemRarityID.Blue;
+                Item.defense = 6;
             }
 
-            public override void UpdateEquip(Player player)
+            public override void UpdateEquip(Player Player)
             {
 
             }
@@ -39,14 +39,14 @@ namespace StarlightRiver.Content.Items.AstralMeteor
                 return body.type == ItemType<AluminumChest>() && legs.type == ItemType<AluminumLegs>();
             }
 
-            public override void UpdateArmorSet(Player player)
+            public override void UpdateArmorSet(Player Player)
             {
-                player.setBonus = "No description";
+                Player.setBonus = "No description";
             }
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(mod);
+                ModRecipe recipe = new ModRecipe(Mod);
                 recipe.AddIngredient(ItemType<AluminumBarItem>(), 10);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);
@@ -67,20 +67,20 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void SetDefaults()
             {
-                item.width = 18;
-                item.height = 18;
-                item.value = Item.sellPrice(0, 0, 60, 0);
-                item.rare = ItemRarityID.Blue;
-                item.defense = 7;
+                Item.width = 18;
+                Item.height = 18;
+                Item.value = Item.sellPrice(0, 0, 60, 0);
+                Item.rare = ItemRarityID.Blue;
+                Item.defense = 7;
             }
 
-            public override void UpdateEquip(Player player)
+            public override void UpdateEquip(Player Player)
             {
             }
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(mod);
+                ModRecipe recipe = new ModRecipe(Mod);
                 recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);
@@ -101,21 +101,21 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void SetDefaults()
             {
-                item.width = 18;
-                item.height = 18;
-                item.value = Item.sellPrice(0, 0, 60, 0);
-                item.rare = ItemRarityID.Blue;
-                item.defense = 5;
+                Item.width = 18;
+                Item.height = 18;
+                Item.value = Item.sellPrice(0, 0, 60, 0);
+                Item.rare = ItemRarityID.Blue;
+                Item.defense = 5;
             }
 
-            public override void UpdateEquip(Player player)
+            public override void UpdateEquip(Player Player)
             {
 
             }
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(mod);
+                ModRecipe recipe = new ModRecipe(Mod);
                 recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
                 recipe.AddTile(TileID.Anvils);
                 recipe.SetResult(this);

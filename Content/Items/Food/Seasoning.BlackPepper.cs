@@ -9,15 +9,15 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.White;
-            item.value = 500;
+            Item.rare = ItemRarityID.White;
+            Item.value = 500;
             if(StarlightRiver.Instance.HasLoaded && Main.rand.Next(10000) == 0)
-                item.SetNameOverride("Grandma's ashes");
+                Item.SetNameOverride("Grandma's ashes");
         }
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.15f;
+            Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.15f;
         }
     }
 }

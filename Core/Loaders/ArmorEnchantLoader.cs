@@ -13,9 +13,9 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
-            Mod mod = StarlightRiver.Instance;
+            Mod Mod = StarlightRiver.Instance;
 
-            foreach (Type t in mod.Code.GetTypes())
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(ArmorEnchantment)))
                 {

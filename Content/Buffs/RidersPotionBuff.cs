@@ -5,14 +5,14 @@ namespace StarlightRiver.Content.Buffs
 	public class RidersPotionBuff : SmartBuff
     {
         public RidersPotionBuff() : base("Rider's Blessing", "Increased critical strike chance while mounted", false) { }
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            if (player.mount.Active)
+            if (Player.mount.Active)
             {
-                player.thrownCrit += 25;
-                player.rangedCrit += 25;
-                player.meleeCrit += 25;
-                player.magicCrit += 25;
+                Player.thrownCrit += 25;
+                Player.rangedCrit += 25;
+                Player.meleeCrit += 25;
+                Player.magicCrit += 25;
             }
         }
     }

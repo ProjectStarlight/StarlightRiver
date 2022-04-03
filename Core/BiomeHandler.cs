@@ -47,16 +47,16 @@ namespace StarlightRiver.Core
 
         public override void UpdateBiomes()
         {
-            ZoneGlass = StarlightWorld.glassTiles > 50 || StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
-            ZoneGlassTemple = GlassTempleZone.Contains((player.Center / 16).ToPoint()) && Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall != Terraria.ID.WallID.None;
-            GlassBG = StarlightWorld.VitricBiome.Contains((player.Center / 16).ToPoint()) && ZoneGlass;
+            ZoneGlass = StarlightWorld.glassTiles > 50 || StarlightWorld.VitricBiome.Contains((Player.position / 16).ToPoint());
+            ZoneGlassTemple = GlassTempleZone.Contains((Player.Center / 16).ToPoint()) && Main.tile[(int)(Player.Center.X / 16), (int)(Player.Center.Y / 16)].wall != Terraria.ID.WallID.None;
+            GlassBG = StarlightWorld.VitricBiome.Contains((Player.Center / 16).ToPoint()) && ZoneGlass;
             ZoneVoidPre = (StarlightWorld.voidTiles > 50);
             ZoneJungleCorrupt = (StarlightWorld.corruptJungleTiles > 50);
             ZoneJungleBloody = (StarlightWorld.bloodJungleTiles > 50);
             ZoneJungleHoly = (StarlightWorld.holyJungleTiles > 50);
-            ZoneOvergrow = Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<WallOvergrowGrass>() ||
-                Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<WallOvergrowBrick>() ||
-                Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].wall == WallType<WallOvergrowInvisible>();
+            ZoneOvergrow = Main.tile[(int)(Player.Center.X / 16), (int)(Player.Center.Y / 16)].wall == WallType<WallOvergrowGrass>() ||
+                Main.tile[(int)(Player.Center.X / 16), (int)(Player.Center.Y / 16)].wall == WallType<WallOvergrowBrick>() ||
+                Main.tile[(int)(Player.Center.X / 16), (int)(Player.Center.Y / 16)].wall == WallType<WallOvergrowInvisible>();
             zoneAluminum = StarlightWorld.aluminumTiles > 50;
             ZonePermafrost = StarlightWorld.permafrostTiles > 50;
             ZoneAshhell = StarlightWorld.ashHellTiles > 50;
@@ -136,7 +136,7 @@ namespace StarlightRiver.Core
                 DustType<Content.Dusts.OvergrowDust>(), Vector2.Zero, 0, new Color(255, 255, 205) * 0.05f, 2);
             }
 
-            if (!Main.dedServ && player == Main.LocalPlayer)
+            if (!Main.dedServ && Player == Main.LocalPlayer)
             {
                 if (ZoneGlass && Main.Configuration.Get<bool>("UseHeatDistortion", false))
                 {
@@ -161,14 +161,14 @@ namespace StarlightRiver.Core
                 ZoomHandler.AddFlatZoom(0.2f);
 
             //Codex Unlocks
-            if (ZoneGlass && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))
-                Helper.UnlockEntry<VitricEntry>(player);
+            if (ZoneGlass && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))
+                Helper.UnlockEntry<VitricEntry>(Player);
 
-            if (ZoneOvergrow && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
-                Helper.UnlockEntry<OvergrowEntry>(player);
+            if (ZoneOvergrow && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
+                Helper.UnlockEntry<OvergrowEntry>(Player);
 
-            if (ZonePermafrost && player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
-                Helper.UnlockEntry<PermafrostEntry>(player);
+            if (ZonePermafrost && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
+                Helper.UnlockEntry<PermafrostEntry>(Player);
         }
 
 		public override void ResetEffects()
@@ -179,32 +179,32 @@ namespace StarlightRiver.Core
         public override Texture2D GetMapBackgroundImage()
         {
             if (ZoneOvergrow)
-                return GetTexture(AssetDirectory.MapBackgrounds + "OvergrowMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "OvergrowMap").Value;
             else if (ZoneGlass || ZoneGlassTemple || GlassBG)
-                return GetTexture(AssetDirectory.MapBackgrounds + "GlassMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "GlassMap").Value;
             else if (ZonePermafrost)
-                return GetTexture(AssetDirectory.MapBackgrounds + "PermafrostMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "PermafrostMap").Value;
 
             else if (ZoneVoidPre)
-                return GetTexture(AssetDirectory.MapBackgrounds + "VoidPreMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "VoidPreMap").Value;
             else if (ZoneAshhell)
-                return GetTexture(AssetDirectory.MapBackgrounds + "AshhellMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "AshhellMap").Value;
 
             else if (ZoneJungleCorrupt)
-                return GetTexture(AssetDirectory.MapBackgrounds + "JungleCorruptMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "JungleCorruptMap").Value;
             else if (ZoneJungleBloody)
-                return GetTexture(AssetDirectory.MapBackgrounds + "JungleBloodyMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "JungleBloodyMap").Value;
             else if (ZoneJungleHoly)
-                return GetTexture(AssetDirectory.MapBackgrounds + "JungleHolyMap");
+                return Request<Texture2D>(AssetDirectory.MapBackgrounds + "JungleHolyMap").Value;
 
             //else if (ZoneHotspring)
-            //    return GetTexture(AssetDirectory.MapBackgrounds + "HotspringMap");
+            //    return Request<Texture2D>(AssetDirectory.MapBackgrounds + "HotspringMap").Value;
 
             return null;
         }
     }
 
-    public partial class StarlightWorld : ModWorld
+    public partial class StarlightWorld : ModSystem
     {
         public static int glassTiles;
         public static int voidTiles;
@@ -217,8 +217,8 @@ namespace StarlightRiver.Core
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            glassTiles = tileCounts[mod.TileType("VitricSand")] + tileCounts[mod.TileType("AncientSandstone")];
-            voidTiles = tileCounts[mod.TileType("VoidBrick")] + tileCounts[mod.TileType("VoidStone")];
+            glassTiles = tileCounts[Mod.TileType("VitricSand")] + tileCounts[Mod.TileType("AncientSandstone")];
+            voidTiles = tileCounts[Mod.TileType("VoidBrick")] + tileCounts[Mod.TileType("VoidStone")];
             corruptJungleTiles = tileCounts[TileType<GrassJungleCorrupt>()];
             bloodJungleTiles = tileCounts[TileType<GrassJungleBloody>()];
             holyJungleTiles = tileCounts[TileType<GrassJungleHoly>()];

@@ -25,21 +25,21 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Fire, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
         }
 
-        public override bool CanOpen(Player player) => Helper.HasItem(player, ItemID.ShadowKey, 1);
+        public override bool CanOpen(Player Player) => Helper.HasItem(Player, ItemID.ShadowKey, 1);
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.showItemIcon2 = ItemID.ShadowKey;
-            player.noThrow = 2;
-            player.showItemIcon = true;
+            Player Player = Main.LocalPlayer;
+            Player.showItemIcon2 = ItemID.ShadowKey;
+            Player.noThrow = 2;
+            Player.showItemIcon = true;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             var tile = Framing.GetTileSafely(i, j);
 
-            var tex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow");
+            var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
             var frame = new Rectangle(tile.frameX, tile.frameY, 16, 16);
             var color = Color.White * (0.4f + (float)Math.Sin(Main.GameUpdateCount / 40f) * 0.25f);
