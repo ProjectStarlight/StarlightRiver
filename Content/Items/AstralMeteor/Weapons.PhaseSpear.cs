@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.noUseGraphic = true;
             Item.noMelee = true;
             Item.melee = true;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item15;
             Item.rare = ItemRarityID.Blue;
             Item.value = Item.sellPrice(0, 0, 54, 0);

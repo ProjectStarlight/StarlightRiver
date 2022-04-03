@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items
             Item.autoReuse = true;
             Item.useAnimation = 20;
             Item.useTime = 20;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.value = 0;
             //Item.createTile = ModContent.TileType<Tiles.GemTiles.AmethystSolid>();
             //Item.createTile = ModContent.TileType<Tiles.Projector>();

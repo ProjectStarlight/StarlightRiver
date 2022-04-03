@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             Item.height = 20;
             Item.useTime = 30;
             Item.useAnimation = 30;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 4;
             Item.rare = ItemRarityID.Green;

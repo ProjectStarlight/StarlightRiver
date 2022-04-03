@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.useAnimation = 14;
             Item.pick = 75;
             Item.axe = 20;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
             Item.value = Item.sellPrice(0, 0, 30, 0);
             Item.rare = ItemRarityID.Blue;

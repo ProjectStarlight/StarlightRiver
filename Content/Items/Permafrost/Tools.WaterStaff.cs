@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.height = 38;
             Item.useTime = 12;
             Item.useAnimation = 12;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.value = 10000;
             Item.rare = ItemRarityID.Orange;
             Item.autoReuse = true;

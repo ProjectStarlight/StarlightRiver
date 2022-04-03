@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Food
             Item.maxStack = 99;
             Item.width = 32;
             Item.height = 32;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 10;
             Item.useAnimation = 10;
 

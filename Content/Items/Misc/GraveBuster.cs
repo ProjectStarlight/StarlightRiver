@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.height = 32;
             Item.useTime = 80;
             Item.useAnimation = 80;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.autoReuse = false;
             Item.shoot = ProjectileType<GraveBusterHeld>();

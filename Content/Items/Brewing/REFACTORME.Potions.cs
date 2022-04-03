@@ -50,7 +50,7 @@ namespace StarlightRiver.Items.Herbology.Potions
         {
             Item.width = 20;
             Item.height = 28;
-            Item.useStyle = ItemUseStyleID.EatingUsing;
+            Item.useStyle = ItemUseStyleID.EatFood;
             Item.useAnimation = 15;
             Item.useTime = 15;
             Item.useTurn = true;

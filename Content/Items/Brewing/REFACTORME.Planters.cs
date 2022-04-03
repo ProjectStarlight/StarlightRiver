@@ -22,7 +22,7 @@ namespace StarlightRiver.Items.Herbology
             Item.autoReuse = true;
             Item.useAnimation = 15;
             Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = Mod.TileType("Soil");
         }
@@ -58,7 +58,7 @@ namespace StarlightRiver.Items.Herbology
             Item.autoReuse = true;
             Item.useAnimation = 15;
             Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = Mod.TileType("Trellis");
         }
@@ -93,7 +93,7 @@ namespace StarlightRiver.Items.Herbology
             Item.autoReuse = true;
             Item.useAnimation = 15;
             Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = Mod.TileType("Planter");
         }

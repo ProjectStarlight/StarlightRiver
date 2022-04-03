@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.damage = 20;
             Item.useTime = 40;
             Item.useAnimation = 40;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noUseGraphic = true;
             Item.noMelee = true;
             Item.knockBack = 2.5f;

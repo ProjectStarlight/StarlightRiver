@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.useAnimation = 45;
             Item.mana = 15;
             Item.magic = true;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.crit = 4;
             Item.shoot = ProjectileType<CarbideLaser>();
             Item.shootSpeed = 5;

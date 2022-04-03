@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             Item.width = 38;
             Item.height = 34;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.staff[Item.type] = true;
             Item.useAnimation = 10;
             Item.useTime = 10;

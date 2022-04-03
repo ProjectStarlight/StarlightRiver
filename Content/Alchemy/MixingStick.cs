@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Alchemy
 			Item.autoReuse = true;
 			Item.useAnimation = 15;
 			Item.useTime = 15;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.consumable = true;
 			Item.value = 500;
 		}

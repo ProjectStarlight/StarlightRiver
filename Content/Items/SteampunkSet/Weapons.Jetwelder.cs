@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Item.height = 32;
             Item.useTime = 36;
             Item.useAnimation = 36;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.value = Item.sellPrice(0, 1, 0, 0);
             Item.rare = 3;
             Item.UseSound = SoundID.Item44;

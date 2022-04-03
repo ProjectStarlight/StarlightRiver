@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.useAnimation = 12;
 			Item.reuseDelay = 20;
 			Item.channel = true;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6.5f;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.crit = 4;

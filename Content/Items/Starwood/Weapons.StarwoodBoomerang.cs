@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Starwood
             Item.height = 34;
             Item.useTime = 10;
             Item.noUseGraphic = true;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.shootSpeed = 10f;
             Item.knockBack = 4f;
             Item.UseSound = SoundID.Item19;

@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.height = 24;
 			Item.useTime = 1;
 			Item.useAnimation = 8;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 0;
 			Item.rare = ItemRarityID.Orange;

@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Item.height = 32;
             Item.damage = 12;
             Item.crit = 5;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.noUseGraphic = true;

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.height = 38;
             Item.useTime = 18;
             Item.useAnimation = 18;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 7.5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.Green;

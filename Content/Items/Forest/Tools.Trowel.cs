@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			Item.width = 16;
 			Item.height = 16;
-			Item.useStyle = ItemUseStyleID.SwingThrow;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 10;
 			Item.useAnimation = 20;
 			Item.autoReuse = true;
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			Item.width = 16;
 			Item.height = 16;
-			Item.useStyle = ItemUseStyleID.SwingThrow;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.useTime = 2;
 			Item.useAnimation = 10;
 			Item.autoReuse = true;

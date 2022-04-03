@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.height = 34;
             Item.useTime = 24;
             Item.useAnimation = 24;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 0f;
             Item.shoot = ModContent.ProjectileType<StarShuriken>();
             Item.shootSpeed = 15f;

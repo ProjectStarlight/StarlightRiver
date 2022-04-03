@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.height = 60;
             Item.useTime = 22;
             Item.useAnimation = 22;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.melee = true;
             Item.noMelee = true;
             Item.knockBack = 7;
@@ -55,9 +55,9 @@ namespace StarlightRiver.Content.Items.Vitric
                 Player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
 
             if (Player.altFunctionUse == 2)
-                Item.useStyle = ItemUseStyleID.HoldingOut;
+                Item.useStyle = ItemUseStyleID.Shoot;
             else
-                Item.useStyle = ItemUseStyleID.SwingThrow;
+                Item.useStyle = ItemUseStyleID.Swing;
         }
 
         public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Hell
             Item.knockBack = 0.5f;
             Item.useTime = 45;
             Item.useAnimation = 45;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.rare = ItemRarityID.Orange;
             Item.shoot = ProjectileType<MagmaSwordBlob>();
             Item.shootSpeed = 11;

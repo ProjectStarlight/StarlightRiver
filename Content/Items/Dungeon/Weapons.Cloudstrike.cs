@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             Item.damage = 45;
             Item.useTime = 5;
             Item.useAnimation = 5;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.magic = true;
             Item.mana = 100;
             Item.shoot = ModContent.ProjectileType<CloudstrikeShot>();

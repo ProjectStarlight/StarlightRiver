@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             Item.damage = 32;
             Item.useTime = 30;
             Item.useAnimation = 30;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.magic = true;
             Item.mana = 60;
             Item.shoot = ModContent.ProjectileType<ThunderbussShot>();

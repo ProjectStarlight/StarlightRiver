@@ -178,7 +178,7 @@ namespace StarlightRiver.Core
             Item.autoReuse = true;
             Item.useAnimation = 15;
             Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createTile = Tiletype == 0 && Tilename != null ? Mod.TileType(Tilename) : Tiletype;
             Item.rare = Rare;
@@ -222,7 +222,7 @@ namespace StarlightRiver.Core
             Item.autoReuse = true;
             Item.useAnimation = 15;
             Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
             Item.createWall = Walltype;
             Item.rare = Rare;

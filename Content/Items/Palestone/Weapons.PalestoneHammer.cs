@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Palestone
             Item.height = 24;
             Item.useTime = 320;
             Item.useAnimation = 320;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.melee = true;
             Item.noMelee = true;
             Item.knockBack = 8;

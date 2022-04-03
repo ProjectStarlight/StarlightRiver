@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.useTime = 18;
             Item.useAnimation = 18;
             Item.pick = 85;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.Green;

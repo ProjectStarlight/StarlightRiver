@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
             Item.width = 36;
             Item.height = 16;
 
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.autoReuse = true;
 
             Item.useAnimation = Item.useTime = 30; // 15 less than vanilla blowpipe (1.3), 5 more than vanilla blowpipe (1.4) TODO: maybe change idk

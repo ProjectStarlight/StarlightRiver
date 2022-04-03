@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.useTime = 24;
             Item.useAnimation = 24;
             Item.pick = 45;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.autoReuse = true;
         }
 

@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.height = 38;
             Item.useTime = 25;
             Item.useAnimation = 25;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 7.5f;
             Item.value = Item.sellPrice(0,1,0,0);
             Item.rare = ItemRarityID.Green;

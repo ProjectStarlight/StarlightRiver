@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Alchemy
 			Item.autoReuse = true;
 			Item.useAnimation = 15;
 			Item.useTime = 15;
-			Item.useStyle = ItemUseStyleID.SwingThrow;
+			Item.useStyle = ItemUseStyleID.Swing;
 			Item.consumable = true;
 			Item.value = 500;
 			Item.createTile = ModContent.TileType<CauldronTile>();

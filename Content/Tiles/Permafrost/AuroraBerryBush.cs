@@ -95,8 +95,8 @@ namespace StarlightRiver.Content.Tiles.Forest
             Item.maxStack = 99;
             Item.useTime = 15;
             Item.useAnimation = 15;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
-            //Item.useStyle = ItemUseStyleID.EatingUsing;
+            Item.useStyle = ItemUseStyleID.Swing;
+            //Item.useStyle = ItemUseStyleID.EatFood;
             //Item.healLife = 5;
             //Item.potion = true;
             //Item.UseSound = SoundID.Item2;

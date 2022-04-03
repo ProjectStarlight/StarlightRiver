@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Utility
 			Item.width = 32;
 			Item.height = 32;
 			Item.rare = ItemRarityID.Green;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 5;
 			Item.useAnimation = 5;
 			Item.channel = true;

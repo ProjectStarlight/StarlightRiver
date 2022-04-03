@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Starwood
             Item.height = 34;
             Item.useTime = 30;
             Item.useAnimation = 30;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item43;
             Item.knockBack = 0f;
             Item.shoot = ModContent.ProjectileType<StarwoodStaffProjectile>();

@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Item.height = 38;
             Item.useTime = 25;
             Item.useAnimation = 25;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 7.5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.Green;

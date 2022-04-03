@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Potions
 			Item.consumable = true;
 			Item.maxStack = 30;
 			Item.UseSound = SoundID.Item3;
-			Item.useStyle = ItemUseStyleID.EatingUsing;
+			Item.useStyle = ItemUseStyleID.EatFood;
 			Item.useTime = 15;
 			Item.useAnimation = 15;
 		}

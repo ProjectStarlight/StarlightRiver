@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void SetDefaults()
         {
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.useAnimation = 30;
             Item.useTime = 30;
             Item.knockBack = 2f;

@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Item.height = 24;
 			Item.useTime = 65;
 			Item.useAnimation = 65;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 0;
 			Item.rare = ItemRarityID.Orange;

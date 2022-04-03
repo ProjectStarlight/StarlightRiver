@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.useTime = 25;
             Item.noUseGraphic = true;
             Item.rare = ItemRarityID.Green;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.shootSpeed = 20f;
             Item.knockBack = 1f;
             Item.UseSound = SoundID.Item19;

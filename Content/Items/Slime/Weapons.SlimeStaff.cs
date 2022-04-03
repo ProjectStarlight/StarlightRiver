@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Slime
             Item.useAnimation = 30;
             Item.value = Item.sellPrice(0, 0, 10, 0);//todo
             Item.rare = ItemRarityID.Green;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item43;
             Item.knockBack = 0f;
             Item.shoot = ModContent.ProjectileType<SlimeStaffProjectile>();

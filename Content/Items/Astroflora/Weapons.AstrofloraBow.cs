@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
             Item.noMelee = true;
 
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item5;
 
             Item.rare = ItemRarityID.Blue;

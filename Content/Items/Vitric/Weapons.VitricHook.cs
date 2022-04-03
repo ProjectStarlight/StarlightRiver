@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.useAnimation = 20;
             Item.shoot = ProjectileType<VitricHookProjectile>();
             Item.shootSpeed = 20;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.noUseGraphic = true;
             Item.knockBack = 3;
         }

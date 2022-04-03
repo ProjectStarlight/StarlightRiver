@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Food
             Item.consumable = true;
             Item.useAnimation = 30;
             Item.useTime = 30;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.width = 32;
             Item.height = 32;
         }

@@ -13,7 +13,7 @@ namespace StarlightRiver.Core
 	{
 		public override void SetDefaults()
 		{
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noUseGraphic = true;
 			Item.melee = true;
 			Item.channel = true;

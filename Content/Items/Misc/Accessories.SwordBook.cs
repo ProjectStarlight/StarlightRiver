@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(Player))
 			{
-				if (Item.melee && Item.pick <= 0 && Item.axe <= 0 && Item.hammer <= 0 && Item.shoot <= 0 && Item.useStyle == Terraria.ID.ItemUseStyleID.SwingThrow && !Item.noMelee)
+				if (Item.melee && Item.pick <= 0 && Item.axe <= 0 && Item.hammer <= 0 && Item.shoot <= 0 && Item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !Item.noMelee)
 				{
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == Player.whoAmI))
 						return false;

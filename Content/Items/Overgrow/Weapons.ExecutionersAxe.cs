@@ -27,7 +27,7 @@ namespace StarlightRiver.Items.Overgrow
             Item.height = 60;
             Item.useTime = 320;
             Item.useAnimation = 320;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.melee = true;
             Item.noMelee = true;
             Item.knockBack = 12;

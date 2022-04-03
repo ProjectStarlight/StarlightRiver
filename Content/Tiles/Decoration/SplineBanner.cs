@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Tiles.Decoration
         {
             Item.useTime = 10;
             Item.useAnimation = 10;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
         }
 
         public override bool? UseItem(Player Player)

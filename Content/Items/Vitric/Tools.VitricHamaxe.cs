@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.useAnimation = 32;
             Item.axe = 20;
             Item.hammer = 60;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 3.5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.Green;

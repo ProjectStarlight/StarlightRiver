@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Item.width = 16;
 			Item.height = 16;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 16;
 			Item.useAnimation = 16;
 			Item.shootSpeed = 1f;

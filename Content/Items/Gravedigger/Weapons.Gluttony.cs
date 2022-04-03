@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.rare = ItemRarityID.Green;
 			Item.damage = 20;
 			Item.mana = 9;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
 			Item.magic = true;

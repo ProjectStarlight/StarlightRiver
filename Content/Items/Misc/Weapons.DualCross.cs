@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.height = 42;
 			Item.useTime = 1;
 			Item.useAnimation = 20;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.shoot = ProjectileID.Shuriken;
 			Item.useAmmo = AmmoID.Arrow;
 			Item.knockBack = 1;

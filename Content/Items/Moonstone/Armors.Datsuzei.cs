@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Item.damage = 50;
             Item.width = 16;
             Item.height = 16;
-            Item.useStyle = ItemUseStyleID.Stabbing;
+            Item.useStyle = ItemUseStyleID.Thrust;
             Item.useTime = 20;
             Item.useAnimation = 20;
             Item.shoot = ProjectileType<DatsuzeiProjectile>();

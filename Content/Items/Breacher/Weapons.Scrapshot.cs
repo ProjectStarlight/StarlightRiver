@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Item.damage = 6;
             Item.useAnimation = 30;
             Item.useTime = 30;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 2f;
             Item.rare = ItemRarityID.Orange;
             Item.value = Item.sellPrice(0, 10, 0, 0);

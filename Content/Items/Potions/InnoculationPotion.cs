@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Potions
 			Item.width = 18;
 			Item.height = 30;
 			Item.maxStack = 30;
-			Item.useStyle = Terraria.ID.ItemUseStyleID.EatingUsing;
+			Item.useStyle = Terraria.ID.ItemUseStyleID.EatFood;
 			Item.consumable = true;
 			Item.buffType = ModContent.BuffType<InoculationPotionBuff>();
 			Item.buffTime = 180 * 60;

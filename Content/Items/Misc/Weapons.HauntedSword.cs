@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.height = 20;
             Item.useTime = 25;
             Item.useAnimation = 25;
-            Item.useStyle = ItemUseStyleID.HoldingUp;
+            Item.useStyle = ItemUseStyleID.HoldUp;
             Item.noMelee = true;
             Item.knockBack = 2;
             Item.rare = ItemRarityID.Green;

@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             Item.height = 20;
             Item.useTime = 60;
             Item.useAnimation = 1;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.knockBack = 4;
             Item.rare = ItemRarityID.Orange;

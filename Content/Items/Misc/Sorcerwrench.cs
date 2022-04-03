@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.height = 32;
             Item.useTime = 40;
             Item.useAnimation = 40;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.staff[Item.type] = true;
             Item.noMelee = true;
             Item.autoReuse = false;

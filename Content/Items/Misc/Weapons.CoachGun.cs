@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.height = 24;
 			Item.useTime = 35;
 			Item.useAnimation = 35;
-			Item.useStyle = ItemUseStyleID.HoldingOut;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 0;
 			Item.rare = ItemRarityID.Blue;
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
 			if (Player.altFunctionUse == 2)
 			{
-				Item.useStyle = ItemUseStyleID.SwingThrow;
+				Item.useStyle = ItemUseStyleID.Swing;
 				Item.noUseGraphic = true;
 
 				Item.useTime = 15;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
 				Item.useTime = 35;
 				Item.useAnimation = 35;
-				Item.useStyle = ItemUseStyleID.HoldingOut;
+				Item.useStyle = ItemUseStyleID.Shoot;
 				Item.noUseGraphic = false;
 			}
 			return base.CanUseItem(Player);

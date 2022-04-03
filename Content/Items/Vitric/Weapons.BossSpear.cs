@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
             Item.shootSpeed = 1;
             Item.rare = ItemRarityID.Green;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.UseSound = SoundID.DD2_MonkStaffSwing;

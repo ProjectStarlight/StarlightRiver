@@ -74,7 +74,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
             Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
 
-           if (Player.ItemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.SwingThrow && Player.ItemAnimation == Player.ItemAnimationMax - 1) //corrects the rotation on used Items
+           if (Player.ItemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.ItemAnimation == Player.ItemAnimationMax - 1) //corrects the rotation on used Items
                 Player.ItemRotation -= realRotation + 1.57f;
 
             if (!isSwimming) //return later so rotation logic still runs

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items
             Item.height = 40;
             Item.useTime = 18;
             Item.useAnimation = 18;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.LightRed;
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items
             Item.height = 38;
             Item.useTime = 2;
             Item.useAnimation = 2;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
             Item.value = 1000;
             Item.rare = ItemRarityID.LightRed;

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.StarJuice
         {
             Item.width = 16;
             Item.height = 16;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.useAnimation = 10;
             Item.useTime = 10;
             Item.rare = ItemRarityID.Green;

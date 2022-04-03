@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Item.pick = 45;
             Item.useTime = 16;
             Item.useAnimation = 16;
-            Item.useStyle = ItemUseStyleID.SwingThrow;
+            Item.useStyle = ItemUseStyleID.Swing;
             Item.damage = 8;
             Item.autoReuse = true;
             Item.channel = true;

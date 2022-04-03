@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Balanced
         {
             Item.width = 44;
             Item.height = 44;
-            Item.useStyle = ItemUseStyleID.HoldingOut;
+            Item.useStyle = ItemUseStyleID.Shoot;
             Item.useAnimation = 16;
             Item.useTime = 16;
             Item.knockBack = 2f;
