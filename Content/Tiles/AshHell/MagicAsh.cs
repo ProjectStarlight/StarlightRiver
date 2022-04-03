@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.AshHell
     {
         public override string Texture => AssetDirectory.AshHellTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSet(0, DustID.Stone, SoundID.Dig, Color.White, ItemType<MagicAshItem>());
         }
