@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.useTime = 45;
             Item.useAnimation = 45;
             Item.mana = 15;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.crit = 4;
             Item.shoot = ProjectileType<CarbideLaser>();

@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetDefaults()
 		{
 			Item.damage = 30;
-			Item.ranged = true;
+			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
 			Item.useTime = 35;
@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 2;
 			Projectile.damage = 0;
 			Projectile.height = 2;
-			Projectile.ranged = false;
+			Projectile.DamageType.CountsAs(DamageClass.Ranged) = false;
 			Projectile.timeLeft = 5;
 			Projectile.friendly = false;
 		}
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 18;
 			Projectile.damage = 0;
 			Projectile.height = 18;
-			Projectile.ranged = false;
+			Projectile.DamageType.CountsAs(DamageClass.Ranged) = false;
 			Projectile.timeLeft = 150;
 			Projectile.aiStyle = 14;
 			Projectile.friendly = false;
@@ -419,7 +419,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Projectile.width = 80;
 			Projectile.height = 80;
-			Projectile.ranged = true;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
@@ -546,7 +546,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-			if (Projectile.ranged && damageIncreased)
+			if (Projectile.DamageType.CountsAs(DamageClass.Ranged) && damageIncreased)
 				damage = (int)(damage * 1.2f);
         }
     }

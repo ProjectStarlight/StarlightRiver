@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Slime
             ProjectileCountMax = 3;
 
             Item.damage = 20;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 10;
             Item.width = 18;
             Item.height = 34;

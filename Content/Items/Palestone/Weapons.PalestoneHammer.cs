@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Palestone
             Item.useTime = 320;
             Item.useAnimation = 320;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.knockBack = 8;
             Item.useTurn = false;

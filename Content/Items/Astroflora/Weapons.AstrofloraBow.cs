@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Astroflora
         {
             // Balance requiered on all stats (I have no idea what point in progression this is).
             Item.damage = 200;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
 
             Item.useTime = 30;
             Item.useAnimation = 30;

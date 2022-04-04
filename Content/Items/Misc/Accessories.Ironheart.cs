@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
             var Player = Main.player[Projectile.owner];
 
-            if (Projectile.melee && Equipped(Player))
+            if (Projectile.DamageType.CountsAs(DamageClass.Melee) && Equipped(Player))
                 Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
         }
 

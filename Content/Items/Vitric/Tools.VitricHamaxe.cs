@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Item.damage = 26;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 36;
             Item.height = 32;
             Item.useTime = 15;

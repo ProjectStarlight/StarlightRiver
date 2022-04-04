@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             Item.useTime = 5;
             Item.useAnimation = 5;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 100;
             Item.shoot = ModContent.ProjectileType<CloudstrikeShot>();
             Item.shootSpeed = 10;
@@ -238,11 +238,10 @@ namespace StarlightRiver.Content.Items.Dungeon
             Projectile.width = 8;
             Projectile.height = 8;
             Projectile.friendly = true;
-            Projectile.ranged = true;
             Projectile.timeLeft = 60;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.extraUpdates = 14;
             Projectile.penetrate = -1;
             Projectile.hide = true;

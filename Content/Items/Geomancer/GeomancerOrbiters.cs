@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = false;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.Size = new Vector2(16, 16);
             Projectile.penetrate = -1;

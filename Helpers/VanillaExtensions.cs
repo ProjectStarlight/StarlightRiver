@@ -13,7 +13,7 @@ namespace StarlightRiver.Helpers
 				&& !Player.ZoneDungeon
 				&& !Player.ZoneCorrupt
 				&& !Player.ZoneCrimson
-				&& !Player.ZoneHoly
+				&& !Player.ZoneHallow
 				&& !Player.ZoneSnow
 				&& !Player.ZoneUndergroundDesert
 				&& !Player.ZoneGlowshroom

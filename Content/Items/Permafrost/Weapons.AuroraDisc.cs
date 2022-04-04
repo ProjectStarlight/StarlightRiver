@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override void SetDefaults()
         {
             Item.damage = 12;
-            Item.summon = true;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 32;
             Item.height = 32;
             Item.useTime = 25;
@@ -330,12 +330,13 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         public AuroraDoT() : base("Aurora DoT", "No description", true) { }
 
-        public override bool Autoload(ref string name, ref string texture)
+        public override void Load()
         {
             StarlightNPC.ModifyHitByProjectileEvent += SpecialMinionRecation;
-            texture = AssetDirectory.Invisible;
-            return true;
         }
+
+        public override string Texture => AssetDirectory.Invisible;
+
 
         private void SpecialMinionRecation(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {

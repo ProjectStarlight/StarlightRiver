@@ -102,7 +102,7 @@ public class PalestonePlayer : ModPlayer
     public int[] tablets = new int[3];
     public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
     {
-        if (Item.melee && target.life <= 0)
+        if (Item.DamageType.CountsAs(DamageClass.Melee) && target.life <= 0)
             for (int i = 0; i < tablets.Length; i++)
                 if (tablets[i] == 0)
                 {

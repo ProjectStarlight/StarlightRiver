@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.shoot = ProjectileType<VitricBookProjectile>();
             Item.rare = ItemRarityID.Green;
             Item.noMelee = true;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 15;
         }
 
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.timeLeft = 500;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = -1;
             Projectile.localNPCHitCooldown = 1;
             Projectile.usesLocalNPCImmunity = true;

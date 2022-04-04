@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.width = 2;
             Projectile.height = 2;
             Projectile.aiStyle = -1;
@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 32;
             Projectile.height = 32;
             Projectile.aiStyle = -1;

@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
 #pragma warning restore ChangeMagicNumberToID
 
             Item.noMelee = true;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.knockBack = 4f; // .5 more than vanilla blowpipe
             Item.damage = 16; // TODO: determine if this is good (same with other stats), I can't balance if my life depended on it
             // (btw 7 more than vanilla blowpipe)

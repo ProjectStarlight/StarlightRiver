@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Starwood
             Projectile.ignoreWater = true;
             Projectile.aiStyle = -1;
             Projectile.rotation = Main.rand.NextFloat(4f);
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
         }
 
         public override void AI()

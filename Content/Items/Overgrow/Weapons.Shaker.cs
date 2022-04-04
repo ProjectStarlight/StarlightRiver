@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Overgrow
         public override void SetDefaults()
         {
             Item.damage = 100;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 60;
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             Projectile.timeLeft = 2;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override void SetStaticDefaults()

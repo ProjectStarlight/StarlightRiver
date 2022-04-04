@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.shootSpeed = 1;
             Item.noUseGraphic = true;
             Item.noMelee = true;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.UseSound = SoundID.Item15;
             Item.rare = ItemRarityID.Blue;

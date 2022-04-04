@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             Item.useTime = 30;
             Item.useAnimation = 30;
             Item.useStyle = ItemUseStyleID.Shoot;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 60;
             Item.shoot = ModContent.ProjectileType<ThunderbussShot>();
             Item.shootSpeed = 10;
@@ -218,11 +218,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             Projectile.width = 8;
             Projectile.height = 8;
             Projectile.friendly = true;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.timeLeft = 60;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = 2;
             Projectile.extraUpdates = 6;
 
@@ -591,7 +591,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             Projectile.width = 1;
             Projectile.height = 1;
             Projectile.timeLeft = 600;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.penetrate = -1;
             Projectile.damage = 0;
         }

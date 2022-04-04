@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetDefaults()
 		{
 			Item.damage = 40;
-			Item.ranged = true;
+			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
 			Item.useTime = 65;

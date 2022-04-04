@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 10;
 			Item.useAnimation = 10;
-			Item.magic = true;
+			Item.DamageType = DamageClass.Magic;
 			Item.channel = true;
 			Item.noMelee = true;
 			Item.shoot = ModContent.ProjectileType<GluttonyHandle>();
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.hostile = false;
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
-			Projectile.magic = true;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.ignoreWater = true;
 		}
 

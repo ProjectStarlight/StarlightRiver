@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Item.damage = 18;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 10;
             Item.width = 18;
             Item.height = 34;
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.height = 30;
 			Projectile.timeLeft = 150;
 			Projectile.extraUpdates = 6;
-			Projectile.magic = true;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.friendly = true;
 			Projectile.penetrate = 1;
 			Projectile.scale = 0.85f;
@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.height = 62;
 			Projectile.timeLeft = 600;
 			Projectile.extraUpdates = 3;
-			Projectile.magic = true;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.friendly = true;
 			Projectile.penetrate = 20;
 			Projectile.scale = 0.85f;

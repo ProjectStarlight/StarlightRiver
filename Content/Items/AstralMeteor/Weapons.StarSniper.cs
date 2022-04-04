@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.useTime = 60;
             Item.useAnimation = 60;
             Item.useAmmo = AmmoID.FallenStar;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.crit = 20;
             Item.shoot = ProjectileType<StarSniperBolt>();

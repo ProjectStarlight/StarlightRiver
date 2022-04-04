@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
@@ -26,15 +27,15 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.UseSound = SoundID.Item44;
 
             Item.noMelee = true;
-            Item.summon = true;
-            Item.buffType = Mod.BuffType("VitricSummonBuff");
-            Item.shoot = Mod.ProjectileType("VitricSummonOrb");
+            Item.DamageType = DamageClass.Magic;
+            Item.buffType = ModContent.BuffType<VitricSummonBuff>();
+            Item.shoot = ModContent.ProjectileType<VitricSummonOrb>();
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            Player.AddBuff(Item.buffType, 2);
-            position = Player.Center - new Vector2(Player.direction * 64, 16);
+            player.AddBuff(Item.buffType, 2);
+            position = player.Center - new Vector2(player.direction * 64, 16);
 
             int index = 0;
 
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 Projectile currentProjectile = Main.projectile[i];
                 if (currentProjectile.active
-                && currentProjectile.owner == Player.whoAmI
+                && currentProjectile.owner == player.whoAmI
                 && currentProjectile.type == type)
                 {
                     if (i == currentProjectile.whoAmI)
@@ -51,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 }
             }
 
-            Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockBack, Player.whoAmI, index);
+            Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockback, player.whoAmI, index);
 
             return false;
         }

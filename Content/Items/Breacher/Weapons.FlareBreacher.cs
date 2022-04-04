@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Item.autoReuse = true;
             Item.useTurn = false;
             Item.useAmmo = AmmoID.Flare;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.shoot = ModContent.ProjectileType<ExplosiveFlare>();
             Item.shootSpeed = 17;
         }
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Projectile.width = 10;
             Projectile.height = 10;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.aiStyle = 1;
@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Projectile.width = 4;
             Projectile.height = 4;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.penetrate = 1;
             Projectile.timeLeft = Main.rand.Next(50, 70);

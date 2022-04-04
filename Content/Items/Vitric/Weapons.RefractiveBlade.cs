@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.useTime = 22;
             Item.useAnimation = 22;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.knockBack = 7;
             Item.useTurn = false;
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Item.useStyle = ItemUseStyleID.Swing;
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
 		{
             if(Player.altFunctionUse == 2)
 			{
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public sealed override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 2;
             Projectile.aiStyle = -1;
             Projectile.friendly = true;
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.width = 2;
             Projectile.height = 2;
             Projectile.friendly = true;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
 
             Projectile.usesLocalNPCImmunity = true;
@@ -566,18 +566,17 @@ namespace StarlightRiver.Content.Items.Vitric
 	class RefractiveBladeBuff : SmartBuff
 	{
         public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
+        public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
+        public override void Load()
+        {
             StarlightNPC.ModifyHitByProjectileEvent += ExtraDamage;
             StarlightNPC.ModifyHitByItemEvent += ExtraMeleeDamage;
 
             StarlightPlayer.ModifyHitByNPCEvent += PlayerExtraMeleeDamage;
+        }
 
-            return base.Autoload(ref name, ref texture);
-		}
-
-		public override void Update(NPC NPC, ref int buffIndex)
+        public override void Update(NPC NPC, ref int buffIndex)
 		{
             Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
 		}
@@ -594,7 +593,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             if (Inflicted(NPC))
             {
-                if (Item.melee)
+                if (Item.DamageType.CountsAs(DamageClass.Melee))
                     damage = (int)(damage * 1.25f);
             }
 		}
@@ -603,7 +602,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             if (Inflicted(NPC))
             {
-                if (Projectile.melee)
+                if (Projectile.DamageType.CountsAs(DamageClass.Melee))
                     damage = (int)(damage * 1.25f);
 
                 if (Projectile.type == ProjectileType<RefractiveBladeProj>())

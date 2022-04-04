@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetDefaults()
 		{
 			Item.damage = 30;
-			Item.ranged = true;
+			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
 			Item.useTime = 65;
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetDefaults()
 		{
 			Projectile.hostile = false;
-			Projectile.ranged = true;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.width = 2;
 			Projectile.height = 2;
 			Projectile.aiStyle = -1;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetDefaults()
 		{
 			Projectile.hostile = false;
-			Projectile.ranged = true;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.width = 2;
 			Projectile.height = 2;
 			Projectile.aiStyle = -1;

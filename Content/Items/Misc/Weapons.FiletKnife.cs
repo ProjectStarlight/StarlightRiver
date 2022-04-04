@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Item.damage = 20;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 36;
             Item.height = 38;
             Item.useTime = 25;
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 32;
             Projectile.height = 32;
             Projectile.aiStyle = -1;

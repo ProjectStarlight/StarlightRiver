@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.noUseGraphic = true;
 			Item.channel = true;
 			Item.autoReuse = true;
-			Item.ranged = true;
+			Item.DamageType = DamageClass.Ranged;
 			Item.damage = 16;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.rare = ItemRarityID.Green;

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item5;
             Item.noMelee = true;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

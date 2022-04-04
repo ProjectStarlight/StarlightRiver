@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             Item.damage = 28;
             Item.crit = 5;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 10;
@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.penetrate = -1;
             Projectile.timeLeft = 2;
             Projectile.extraUpdates = 3;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

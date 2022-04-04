@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Projectiles
             Projectile.friendly = true;
             Projectile.timeLeft = Duration;
             Projectile.tileCollide = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             SafeSetDefaults();
         }
 

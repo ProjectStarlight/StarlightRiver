@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Projectile.width = 20;
 			Projectile.height = 20;
-			Projectile.ranged = true;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.friendly = false;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = 1;

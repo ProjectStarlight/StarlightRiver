@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.minion = true;
 			Projectile.minionSlots = 0;
 			Projectile.tileCollide = false;
-			Projectile.magic = true;
+			Projectile.DamageType = DamageClass.Magic;
 		}
 
         public override void Kill(int timeLeft)

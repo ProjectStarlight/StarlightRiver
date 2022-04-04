@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Item.damage = 120;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.width = 36;
             Item.height = 38;
             Item.useTime = 18;

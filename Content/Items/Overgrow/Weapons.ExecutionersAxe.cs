@@ -29,7 +29,7 @@ namespace StarlightRiver.Items.Overgrow
             Item.useTime = 320;
             Item.useAnimation = 320;
             Item.useStyle = ItemUseStyleID.Swing;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.noMelee = true;
             Item.knockBack = 12;
             Item.useTurn = false;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Items.Overgrow
         public override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.width = 48;
             Projectile.height = 48;
             Projectile.aiStyle = -1;

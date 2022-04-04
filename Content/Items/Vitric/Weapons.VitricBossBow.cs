@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Item.damage = 44;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 16;
             Item.height = 64;
             Item.useTime = 6;
@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.friendly = true;
             Projectile.hostile = false;
             Projectile.penetrate = 20;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
 
             Projectile.usesLocalNPCImmunity = true;
             Projectile.localNPCHitCooldown = -1;

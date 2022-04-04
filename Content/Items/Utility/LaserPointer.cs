@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -63,9 +64,9 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-            if (!Main.projectile.Any(n => n.active && n.type == Item.shoot && n.owner == Player.whoAmI))
+            if (!Main.projectile.Any(n => n.active && n.type == Item.shoot && n.owner == player.whoAmI))
             {
-                var p = Projectile.NewProjectileDirect(Player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockBack, Player.whoAmI);
+                var p = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockback, player.whoAmI);
                 (p.ModProjectile as LaserPointerProjectile).color = color;
             }
 

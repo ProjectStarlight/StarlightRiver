@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Item.UseSound = SoundID.Item44;
             Item.channel = true;
             Item.noMelee = true;
-            Item.summon = true;
+            Item.DamageType = DamageClass.Magic;
             Item.shoot = ModContent.ProjectileType<JetwelderFlame>();
             Item.autoReuse = false;
         }

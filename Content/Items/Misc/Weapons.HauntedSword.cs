@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Item.damage = 20;
-            Item.summon = true;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 25;

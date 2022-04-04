@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetDefaults()
 		{
 			Item.damage = 32;
-			Item.melee = true;
+			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
 			Item.useTime = 12;
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(130, 130);
 			Projectile.penetrate = -1;

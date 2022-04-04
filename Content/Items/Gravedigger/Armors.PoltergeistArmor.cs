@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                     return;
                 }
 
-                if (Item.magic && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= Player.statManaMax2) //addition
+                if (Item.DamageType.CountsAs(DamageClass.Magic) && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= Player.statManaMax2) //addition
                 {                  
                     int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, Player.whoAmI);
                     var proj = Main.projectile[i];
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                 if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion)?.Item?.type == Item.type))
                     return false;
 
-                if (Item.magic)
+                if (Item.DamageType.CountsAs(DamageClass.Magic))
                     helm.sleepTimer = 1200;
             }
 

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.damage = 35;
             Item.useTime = 35;
             Item.useAnimation = 35;
@@ -273,7 +273,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
             Projectile.knockBack = 2;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             ShieldLife = 50;
         }
 

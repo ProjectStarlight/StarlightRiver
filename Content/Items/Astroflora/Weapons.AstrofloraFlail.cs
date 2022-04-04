@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.Size = new Vector2(40, 40);
 			Projectile.tileCollide = true;
 			Projectile.timeLeft = 60;

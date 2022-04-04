@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetDefaults()
 		{
 			Item.damage = 20;
-			Item.melee = true;
+			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
 			Item.useTime = 12;
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(128, 138);
 			Projectile.penetrate = -1;
@@ -375,7 +375,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(128, 128);
 			Projectile.penetrate = -1;

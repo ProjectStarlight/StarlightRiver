@@ -68,7 +68,7 @@ namespace StarlightRiver.Helpers
             }
             else if (Main.netMode == NetmodeID.SinglePlayer)
             {
-                Item.owner = Main.myPlayer;
+                Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
             }
         }
 
@@ -137,7 +137,7 @@ namespace StarlightRiver.Helpers
             }
             else if (Main.netMode == NetmodeID.SinglePlayer)
             {
-                Item.owner = Main.myPlayer;
+                Item.playerIndexTheItemIsReservedFor = Main.myPlayer;
             }
             return Item;
         }

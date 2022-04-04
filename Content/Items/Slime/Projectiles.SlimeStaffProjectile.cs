@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Slime
             Projectile.width = 20;
             Projectile.height = 20;
             Projectile.friendly = true;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = 3;
             Projectile.aiStyle = -1;
             Projectile.tileCollide = true;

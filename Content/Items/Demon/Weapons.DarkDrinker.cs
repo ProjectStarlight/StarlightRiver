@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Demon
 		public override void SetDefaults()
 		{
 			Item.damage = 20;
-			Item.melee = true;
+			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
 			Item.useTime = 12;
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Demon
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(76, 76);
 			Projectile.penetrate = -1;

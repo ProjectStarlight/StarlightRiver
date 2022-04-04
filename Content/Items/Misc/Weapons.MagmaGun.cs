@@ -252,7 +252,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetDefaults()
 		{
 			Item.damage = 30;
-			Item.magic = true;
+			Item.DamageType = DamageClass.Magic;
 			Item.mana = 1;
 			Item.width = 24;
 			Item.height = 24;
@@ -555,7 +555,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.CloneDefaults(ProjectileID.Shuriken);
 			Projectile.width = 2;
 			Projectile.height = 2;
-			Projectile.ranged = true;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.timeLeft = 200;
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;

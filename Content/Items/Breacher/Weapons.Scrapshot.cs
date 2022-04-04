@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Item.value = Item.sellPrice(0, 10, 0, 0);
             Item.noMelee = true;
             Item.useAmmo = AmmoID.Bullet;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.shoot = 0;
             Item.shootSpeed = 17;
         }
@@ -420,7 +420,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Projectile.width = 16;
             Projectile.height = 16;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 100;

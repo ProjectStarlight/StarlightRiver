@@ -40,7 +40,7 @@ namespace StarlightRiver.Core
         public sealed override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = Projectile.height = 48;
             Projectile.aiStyle = -1;
             Projectile.friendly = false;

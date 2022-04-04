@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Hell
 
         public override void SetDefaults()
         {
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 32;
             Item.height = 32;
             Item.noMelee = true;
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Hell
             Projectile.width = 32;
             Projectile.height = 32;
             Projectile.friendly = true;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 300;
             Projectile.scale = 0.5f;
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Items.Hell
             Projectile.width = 18;
             Projectile.height = 18;
             Projectile.friendly = true;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 180;
             Projectile.tileCollide = false;

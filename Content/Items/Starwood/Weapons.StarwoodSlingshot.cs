@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void SetDefaults()
         {
             Item.damage = 20;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.channel = true;
             Item.width = 18;
             Item.height = 34;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public sealed override void SetDefaults()
 		{
 			Projectile.hostile = false;
-			Projectile.magic = true;
+			Projectile.DamageType = DamageClass.Magic;
 			Projectile.width = 30;
 			Projectile.height = 30;
 			Projectile.aiStyle = -1;

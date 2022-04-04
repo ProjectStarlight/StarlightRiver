@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SetDefaults()
         {
             Item.damage = 1;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.width = 8;
             Item.height = 8;
             Item.maxStack = 999;
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.width = 8;
             Projectile.height = 8;
             Projectile.friendly = true;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = 3;
             Projectile.timeLeft = 180;
             Projectile.tileCollide = true;

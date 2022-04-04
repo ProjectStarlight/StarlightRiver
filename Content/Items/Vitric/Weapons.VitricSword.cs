@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Item.damage = 35;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 36;
             Item.height = 38;
             Item.useTime = 18;
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.timeLeft = 120;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override void SetStaticDefaults()

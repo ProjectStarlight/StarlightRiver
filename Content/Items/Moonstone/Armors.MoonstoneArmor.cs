@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ChargeFromMelee(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-            if (Item.melee && IsArmorSet(Player))
+            if (Item.DamageType.CountsAs(DamageClass.Melee) && IsArmorSet(Player))
             {
                 addCharge(Player, damage);
             }

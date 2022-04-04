@@ -65,9 +65,9 @@ namespace StarlightRiver.Core
                     var mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
                     float mult = 2;
-                    if (Item.melee) mult += mp.MeleeCritMult;
-                    if (Item.ranged) mult += mp.RangedCritMult;
-                    if (Item.magic) mult += mp.MagicCritMult;
+                    if (Item.DamageType.CountsAs(DamageClass.Melee)) mult += mp.MeleeCritMult;
+                    if (Item.DamageType.CountsAs(DamageClass.Ranged)) mult += mp.RangedCritMult;
+                    if (Item.DamageType.CountsAs(DamageClass.Magic)) mult += mp.MagicCritMult;
                     mult += mp.AllCritMult;
 
                     line.text = $"{(int)(Item.damage * mult)} critical strike damage";

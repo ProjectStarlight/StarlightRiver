@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Item.autoReuse = false;
             Item.shoot = ModContent.ProjectileType<BuzzsawProj>();
             Item.shootSpeed = 2f;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.channel = true;
             Item.noUseGraphic = true;
             //Item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetDefaults()
         {
             Projectile.hostile = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.width = 32;
             Projectile.height = 32;
             Projectile.aiStyle = -1;
@@ -319,7 +319,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.height = 30;
             Projectile.aiStyle = 3;
             Projectile.friendly = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 700;
             Main.projFrames[Projectile.type] = 2;
@@ -400,7 +400,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.width = 30;
             Projectile.height = 30;
             Projectile.friendly = true;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 700;
             Projectile.tileCollide = false;
@@ -497,7 +497,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.width = 90;
             Projectile.height = 90;
             Projectile.friendly = false;
-            Projectile.melee = true;
+            Projectile.DamageType = DamageClass.Melee;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 700;
             Projectile.rotation = Main.rand.NextFloat(0.78f);

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Overgrow
         public override void SetDefaults()
         {
             Item.damage = 20;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 40;
             Item.height = 20;
             Item.useTime = 30;

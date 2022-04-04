@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.width = 32;
             Projectile.height = 32;
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.width = 32;
             Projectile.height = 32;
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.Size = new Vector2(8, 8);
             Projectile.penetrate = 1;
@@ -336,7 +336,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = false;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.Size = new Vector2(16, 16);
             Projectile.penetrate = 1;
@@ -412,7 +412,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void SetDefaults()
         {
             Projectile.friendly = true;
-            Projectile.magic = true;
+            Projectile.DamageType = DamageClass.Magic;
             Projectile.tileCollide = false;
             Projectile.Size = new Vector2(16, 16);
             Projectile.penetrate = 1;

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Item.damage = 8;
-            Item.ranged = true;
+            Item.DamageType = DamageClass.Ranged;
             Item.width = 8;
             Item.height = 8;
             Item.maxStack = 999;
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.width = 7;
             Projectile.height = 7;
             Projectile.friendly = true;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 400;
             Projectile.tileCollide = true;

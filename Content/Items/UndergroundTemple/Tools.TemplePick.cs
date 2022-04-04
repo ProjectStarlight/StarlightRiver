@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Item.autoReuse = true;
             Item.channel = true;
             Item.UseSound = SoundID.Item1;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
         }
 
         public override bool? UseItem(Player Player)

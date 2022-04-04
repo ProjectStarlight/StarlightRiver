@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Balanced
             Item.rare = ItemRarityID.LightRed;
             Item.autoReuse = false;
             Item.noMelee = true;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.noUseGraphic = true;
         }
 

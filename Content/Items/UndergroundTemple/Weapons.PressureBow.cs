@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SetDefaults()
         {
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.width = 32;
             Item.height = 32;
             Item.damage = 10;

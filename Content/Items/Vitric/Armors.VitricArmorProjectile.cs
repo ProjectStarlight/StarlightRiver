@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             Projectile.width = 16;
             Projectile.height = 16;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 15;
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             Projectile.width = 4;
             Projectile.height = 4;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 180;

@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Palestone
             Item.UseSound = SoundID.Item44;
 
             Item.noMelee = true;
-            Item.summon = true;
+            Item.DamageType = DamageClass.Magic;
             Item.buffType = BuffType<PalestoneSummonBuff>();
 			Item.shoot = ProjectileType<PaleKnight>();
         }

@@ -200,7 +200,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.width = 12;       
             Projectile.height = 12;  
             Projectile.friendly = true;     
-            Projectile.ranged = true;      
+            Projectile.DamageType = DamageClass.Ranged;      
             Projectile.tileCollide = true;   
             Projectile.penetrate = 1;      
             Projectile.timeLeft = 300;   
@@ -357,7 +357,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             Projectile.width = 80;
             Projectile.height = 80;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;

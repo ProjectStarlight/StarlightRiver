@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items
         public override void SetDefaults()
         {
             Item.damage = 10;
-            Item.melee = true;
+            Item.DamageType = DamageClass.Melee;
             Item.width = 38;
             Item.height = 40;
             Item.useTime = 18;

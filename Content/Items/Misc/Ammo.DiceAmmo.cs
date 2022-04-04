@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.knockBack = 1.5f;
 			Item.ammo = AmmoID.Bullet;
 
-			Item.ranged = true;
+			Item.DamageType = DamageClass.Ranged;
 			Item.consumable = true;
 
 			Item.shoot = ModContent.ProjectileType<DiceProj>();
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.width = 8;
             Projectile.height = 8;
             Projectile.friendly = true;
-            Projectile.ranged = true;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = 1;
             Projectile.timeLeft = 600;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;

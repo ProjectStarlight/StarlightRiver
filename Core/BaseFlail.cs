@@ -15,7 +15,7 @@ namespace StarlightRiver.Core
 		{
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noUseGraphic = true;
-			Item.melee = true;
+			Item.DamageType = DamageClass.Melee;
 			Item.channel = true;
 			Item.UseSound = SoundID.Item19;
 			SafeSetDefaults();
@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
 		{
 			Projectile.Size = new Vector2(34, 34);
 			Projectile.friendly = true;
-			Projectile.melee = true;
+			Projectile.DamageType = DamageClass.Melee;
 			Projectile.penetrate = -1;
 		}
 

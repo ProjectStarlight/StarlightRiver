@@ -100,11 +100,11 @@ namespace StarlightRiver.Content.Items.Overgrow
         public override void OnHitNPC(Projectile Projectile, NPC target, int damage, float knockback, bool crit)
         {
             foreach (Player Player in Main.player.Where(Player => Player.armor[1].type == ItemType<OvergrowChest>()))
-                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.ranged && Player.velocity.Y != 0 && Player.armor[1].ModItem is OvergrowChest)
+                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.DamageType.CountsAs(DamageClass.Ranged) && Player.velocity.Y != 0 && Player.armor[1].ModItem is OvergrowChest)
                     (Player.armor[1].ModItem as OvergrowChest).floatTime = 40;
 
             foreach (Player Player in Main.player.Where(Player => Player.armor[1].type == ItemType<OvergrowRobe>()))
-                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.magic && Player.armor[1].ModItem is OvergrowRobe && (Player.armor[1].ModItem as OvergrowRobe).leaves < 10)
+                if (Projectile.owner == Player.whoAmI && Projectile.active && Projectile.DamageType.CountsAs(DamageClass.Magic) && Player.armor[1].ModItem is OvergrowRobe && (Player.armor[1].ModItem as OvergrowRobe).leaves < 10)
                     (Player.armor[1].ModItem as OvergrowRobe).leaves++;
         }
     }

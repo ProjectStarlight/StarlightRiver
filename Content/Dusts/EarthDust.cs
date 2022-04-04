@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Dusts
             if (Player.ZoneGlowshroom) dust.color = new Color(63, 90, 231);
             if (Player.ZoneCorrupt) dust.color = new Color(186, 177, 243);
             if (Player.ZoneCrimson) dust.color = new Color(208, 80, 80);
-            if (Player.ZoneHoly) dust.color = new Color(98, 213, 247);
+            if (Player.ZoneHallow) dust.color = new Color(98, 213, 247);
 
             dust.rotation += 0.1f;
             dust.scale *= 0.98f;

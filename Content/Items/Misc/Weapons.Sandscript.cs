@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.shoot = ProjectileType<SandSlash>();
             Item.rare = ItemRarityID.Blue;
             Item.noMelee = true;
-            Item.magic = true;
+            Item.DamageType = DamageClass.Magic;
             Item.mana = 10;
 
             Item.UseSound = SoundID.Item45;
