@@ -50,9 +50,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			return true;
 		}
 
-        //TODO: Add glowmask to weapon
-        //TODO: Add holdoffset
-        public override bool Shoot(Player Player, ref Microsoft.Xna.Framework.Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		//TODO: Add glowmask to weapon
+		//TODO: Add holdoffset
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Vector2 direction = new Vector2(speedX, speedY);

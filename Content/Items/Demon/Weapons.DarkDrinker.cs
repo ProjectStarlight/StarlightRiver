@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Demon
 			Item.autoReuse = true;
 		}
 
-		public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			float rot = 0;
 			Vector2 frontPosition = Player.Center + new Vector2(Player.direction * 30, 0);

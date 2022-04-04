@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Items.Starwood
             Item.noMelee = true;
             Item.autoReuse = true;
         }
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             StarlightPlayer mp = Main.player[Player.whoAmI].GetModPlayer<StarlightPlayer>();
             int amount = mp.empowered ? 4 : 3;

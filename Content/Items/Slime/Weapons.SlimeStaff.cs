@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Slime
             return activeProjScore;
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             int activeProjScore = ActiveProjectileScore(Player);//if the Item shoots, this is run twice, no way to use this once for both places
 

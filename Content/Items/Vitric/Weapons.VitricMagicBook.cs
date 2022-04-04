@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.mana = 15;
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             for (int i = 0; i < 181; i += 180)
             {

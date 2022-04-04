@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -53,7 +54,7 @@ namespace StarlightRiver.Content.Items.Vitric
             tooltips.Find(n => n.Name == "Speed" && n.Mod == "Terraria").text = "Slow charge";
 		}
 
-		public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (!Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
             {

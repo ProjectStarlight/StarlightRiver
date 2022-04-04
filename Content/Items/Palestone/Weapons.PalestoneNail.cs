@@ -4,6 +4,7 @@ using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			Item.shoot = ProjectileType<PaleKnight>();
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
             Player.AddBuff(Item.buffType, 2);

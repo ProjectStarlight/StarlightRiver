@@ -11,6 +11,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Helpers;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
@@ -69,7 +70,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 new Color(Main.rand.NextFloat(0.15f, 0.30f), Main.rand.NextFloat(0.2f, 0.30f), Main.rand.NextFloat(0.3f, 0.5f), 0f), Main.rand.NextFloat(0.15f, 0.40f));
             }
         }
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (cooldown > 0)
                 return false;

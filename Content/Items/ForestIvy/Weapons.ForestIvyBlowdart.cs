@@ -3,6 +3,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -45,8 +46,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
             // TODO: Value
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY,
-            ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // Pos modifications for the Projectile so it's shot near where the blowdart is actually drawn (see: ForestIvyBlowdartPlayer)
             position.X -= 4f * Player.direction;

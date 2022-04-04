@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.UseSound = SoundID.Item45;
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             int i = Projectile.NewProjectile(Player.Center, Vector2.Normalize(Main.MouseWorld - Player.Center) * 25, type, damage, knockBack, Player.whoAmI);
             Main.projectile[i].rotation = (Main.MouseWorld - Player.Center).ToRotation();
