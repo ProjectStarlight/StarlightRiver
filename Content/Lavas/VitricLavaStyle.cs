@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Lavas
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Lavas
             {
 
 
-                Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * GetOpacity(x, y));
+                Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * GetOpacity(x, y));
             }
 
             return true;
@@ -56,7 +57,7 @@ namespace StarlightRiver.Content.Lavas
             else if (!up.HasTile && up .LiquidAmount > 0)
                 opacity = GetOpacity(x, y - 1);
 
-            Main.spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * opacity);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((x + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X, (y + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y, 16, 16), new Color(255, 175, 0) * opacity);
         }
 
         private float GetOpacity(int x, int y)

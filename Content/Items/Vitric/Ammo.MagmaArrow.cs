@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -91,7 +92,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) + ((Projectile.rotation - 1.57f).ToRotationVector2() * 10), new Rectangle(0, 0, tex.Width, tex.Height), //bloom
                 bloomColor * heat, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * 0.85f, SpriteEffects.None, 0);
 
-            tex = Main.projectileTexture[Projectile.type];
+            tex = TextureAssets.Projectile[Projectile.type].Value;
 
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(tex.Width / 3, 0, tex.Width / 3, tex.Height), //crystal arrow
                 lightColor * coolness, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);

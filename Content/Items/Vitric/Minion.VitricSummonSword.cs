@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -254,7 +255,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void Draw(SpriteBatch spriteBatch, Vector2 drawpos, Color lightColor, float aimframe)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             Vector2 pos = VitricSummonOrb.SwordOff[SwordFrame];
             Vector2 drawOrigin = new Vector2((Projectile.spriteDirection < 0 ? tex.Width - pos.X : pos.X) / 2f, pos.Y);

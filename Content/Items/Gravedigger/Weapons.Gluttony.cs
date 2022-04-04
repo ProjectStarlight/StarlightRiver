@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -444,7 +445,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Main.projectileTexture[Projectile.type]);
+			effect.Parameters["sampleTexture"].SetValue(TextureAssets.Projectile[Projectile.type].Value);
 
 			trail?.Render(effect);
 		}

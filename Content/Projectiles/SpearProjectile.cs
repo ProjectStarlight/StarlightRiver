@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Projectiles
@@ -55,7 +56,7 @@ namespace StarlightRiver.Content.Projectiles
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(Main.projectileTexture[Projectile.type], (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), Main.projectileTexture[Projectile.type].Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
             return false;
         }
     }

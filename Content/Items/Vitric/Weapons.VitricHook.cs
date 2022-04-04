@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -197,7 +198,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     spriteBatch.Draw(chainTex2, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
             }
 
-            Texture2D hook = Main.projectileTexture[Projectile.type];
+            Texture2D hook = TextureAssets.Projectile[Projectile.type].Value;
 
             spriteBatch.Draw(hook, Projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
 

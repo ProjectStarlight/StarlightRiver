@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void OnInitialize()
         {
-            AddElement(button, Main.screenWidth / 2 - Terraria.GameContent.TextureAssets.ChatBack.Value.Width / 2 - 104, 100, 86, 28, this);
+            AddElement(button, Main.screenWidth / 2 - TextureAssets.ChatBack.Value.Width / 2 - 104, 100, 86, 28, this);
         }
 
         internal void AddElement(UIElement element, int x, int y, int width, int height, UIElement appendTo)

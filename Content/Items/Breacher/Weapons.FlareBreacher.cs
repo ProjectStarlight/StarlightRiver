@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -188,7 +189,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = Main.projectileTexture[Projectile.type];
+            var tex = TextureAssets.Projectile[Projectile.type].Value;
             var source = new Rectangle(0, 0, Projectile.width, 16);
 
             if (stuck)

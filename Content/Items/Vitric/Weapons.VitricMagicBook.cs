@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -89,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             Rectangle rect = new Rectangle(0, 0, tex.Width, (int)Projectile.localAI[0]);
             var pos = (Projectile.Center + new Vector2(0, 12 + (tex.Height / 2) - Projectile.localAI[0])) - Main.screenPosition;
 

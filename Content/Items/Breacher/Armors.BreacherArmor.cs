@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 using System.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -256,7 +257,7 @@ namespace StarlightRiver.Content.Items.Breacher
             float currentRotation = rotations[Math.Max(rotations.Count - 1, 0)];
             float rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
             if (rotDifference > 0)
             {
@@ -278,7 +279,7 @@ namespace StarlightRiver.Content.Items.Breacher
             currentRotation = rotations2[Math.Max(rotations2.Count - 1, 0)];
             rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
             if (rotDifference > 0)
             {
@@ -323,7 +324,7 @@ namespace StarlightRiver.Content.Items.Breacher
             lerper *= lerper * lerper;
             Color color = Color.Lerp(Color.Red, new Color(255, 0, 0), (lerper * lerper) / 2);
             color.A = 0;
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color * lerper * 0.5f, rot, Vector2.Zero, new Vector2((targetPosition - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color * lerper * 0.5f, rot, Vector2.Zero, new Vector2((targetPosition - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
         }
 
         private void IdleMovement(Entity entity)
@@ -523,7 +524,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             Color color = Color.Cyan;
             color.A = 0;
             Color color2 = Color.White;

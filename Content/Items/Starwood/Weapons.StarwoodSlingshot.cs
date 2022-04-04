@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -185,7 +186,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 frameHeight += 60;
 
             Rectangle frame = new Rectangle(0, frameHeight, 30, 30);
-            Main.spriteBatch.Draw(Main.projectileTexture[Projectile.type], ((Main.player[Projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset, frame, color, direction.ToRotation(), new Vector2(8, 10), Projectile.scale, spriteEffect, 0);
+            Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, ((Main.player[Projectile.owner].Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset, frame, color, direction.ToRotation(), new Vector2(8, 10), Projectile.scale, spriteEffect, 0);
             
             if (!fired)
             {
@@ -320,7 +321,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            Vector2 drawOrigin = new Vector2(Main.projectileTexture[Projectile.type].Width * 0.5f, Projectile.height * 0.5f);
+            Vector2 drawOrigin = new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width * 0.5f, Projectile.height * 0.5f);
 
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
@@ -332,7 +333,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 new Rectangle(0, 24 * Projectile.frame, 22, 24),
                 color,
                 Projectile.oldRot[k],
-                new Vector2(Main.projectileTexture[Projectile.type].Width / 2, Main.projectileTexture[Projectile.type].Height / 20),
+                new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / 20),
                 scale, default, default);
             }
 

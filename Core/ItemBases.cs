@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -51,7 +52,7 @@ namespace StarlightRiver.Core
         {
             SpriteEffects spriteEffect = SpriteEffects.None;
             Vector2 offset = Vector2.Zero;
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             if (Main.player[Projectile.owner].direction != 1)
                 spriteEffect = SpriteEffects.FlipVertically;

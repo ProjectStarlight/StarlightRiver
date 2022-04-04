@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -279,7 +280,7 @@ namespace StarlightRiver.Content.Items.Misc
                     WorldGen.KillTile(i, j, false, false, false);
                     if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                     {
-                        NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
+                        NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
                     }
                 }
             }
@@ -312,7 +313,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private static void DrawPixel(SpriteBatch spriteBatch, Color color, Vector2 worldPos)
         {
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
         }
 
         private static bool PastIncrement(int val, int end, int increment, bool includeEqual = true)

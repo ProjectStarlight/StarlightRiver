@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -221,8 +222,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
 			Player Player = Main.player[Projectile.owner];
-			Texture2D texture = Main.projectileTexture[Projectile.type];
-			int height = Main.projectileTexture[Projectile.type].Height / Main.projFrames[Projectile.type];
+			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+			int height = TextureAssets.Projectile[Projectile.type].Value.Height / Main.projFrames[Projectile.type];
 			int y2 = height * Projectile.frame;
 			if (Player.direction == 1)
 			{

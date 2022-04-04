@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
@@ -194,7 +195,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             spriteBatch.Draw(tex, (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor * (1 - (Projectile.alpha / 255f)), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }

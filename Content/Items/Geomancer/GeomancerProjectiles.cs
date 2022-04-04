@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ReLogic.Graphics;
 using Terraria.ModLoader.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         }
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             float transparency = (float)Math.Pow(1 - progress, 2);
             float scale = 1f + (progress * 2);
@@ -236,7 +237,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
         }
@@ -312,7 +313,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         }
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
         }
@@ -369,7 +370,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             for (int k = Projectile.oldPos.Length - 1; k > 0; k--) //TODO: Clean this shit up
             {
                 Vector2 drawPos = Projectile.oldPos[k] + (new Vector2(Projectile.width, Projectile.height) / 2);
@@ -487,7 +488,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 
             Vector2 origin = new Vector2(tex.Width / 2, tex.Height);
 

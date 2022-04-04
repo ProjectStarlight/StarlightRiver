@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -114,7 +115,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             if (color.R < 80) color.R = 80;
             if (color.G < 80) color.G = 80;
 
-            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color * 0.3f);
+            spriteBatch.Draw(TextureAssets.Tile[tile.type].Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color * 0.3f);
 
             spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
             spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);

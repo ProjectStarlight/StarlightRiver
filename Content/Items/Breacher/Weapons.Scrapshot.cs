@@ -13,6 +13,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -89,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
-        public override bool? UseItem(Player Player)
+        public override bool? UseItem(Player player)
         {
             //even though this is a "gun" we are using useItem so that it runs on all clients. need to deconstruct the useammo and damage modifiers ourselves here
 
@@ -99,24 +100,24 @@ namespace StarlightRiver.Content.Items.Breacher
             float speedY = 0;
             float knockback = 0;
 
-            if (Main.myPlayer == Player.whoAmI)
+            if (Main.myPlayer == player.whoAmI)
             {
-                damage = (int)(Item.damage * Player.rangedDamage);
-                float rotation = (Player.Center - Main.MouseWorld).ToRotation() - 1.57f;
+                damage = (int)(Item.damage * player.rangedDamage);
+                float rotation = (player.Center - Main.MouseWorld).ToRotation() - 1.57f;
                 speedX = speed * (float)Math.Sin(rotation);
                 speedY = speed * -(float)Math.Cos(rotation);
                 knockback = Item.knockBack;
             }
 
-            if (Player.altFunctionUse == 2)
+            if (player.altFunctionUse == 2)
             {
-                if (Main.myPlayer == Player.whoAmI)
+                if (Main.myPlayer == player.whoAmI)
                 {
-                    int i = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, Item.knockBack, Player.whoAmI);
+                    int i = Projectile.NewProjectile(player, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, Item.knockBack, player.whoAmI);
                     hook = Main.projectile[i].ModProjectile as ScrapshotHook;
                 }
 
-                Helper.PlayPitched("Guns/ChainShoot", 0.5f, 0, Player.Center);
+                Helper.PlayPitched("Guns/ChainShoot", 0.5f, 0, player.Center);
             }
             else
             {
@@ -401,7 +402,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     spriteBatch.Draw(chainTex2, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
             }
 
-            Texture2D hook = Main.projectileTexture[Projectile.type];
+            Texture2D hook = TextureAssets.Projectile[Projectile.type].Value;
 
             spriteBatch.Draw(hook, Projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
 

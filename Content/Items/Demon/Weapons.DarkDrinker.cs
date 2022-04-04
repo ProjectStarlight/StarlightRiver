@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Demon
 {
@@ -115,7 +116,7 @@ namespace StarlightRiver.Content.Items.Demon
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-			Texture2D tex = Main.projectileTexture[Projectile.type];
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Rectangle frame = new Rectangle(frameX * FRAMEWIDTH, frameY * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, drawColor, Projectile.rotation, tex.Size() / 8, Projectile.scale, SpriteEffects.None, 0); ;

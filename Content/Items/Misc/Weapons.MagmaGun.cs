@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.Misc
 				/*if (proj.ModProjectile is MagmaGunProj modProj && proj.active)
 				{
 					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + modProj.rotationConst);
-					spriteBatch.Draw(Main.projectileTexture[proj.type], (proj.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, proj.scale / 32f, SpriteEffects.None, 0);
+					spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, (proj.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, proj.scale / 32f, SpriteEffects.None, 0);
 				}*/
 
 				if (proj.ModProjectile is MagmaGunPhantomProj modProj && proj.active)
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Items.Misc
 						if (glob.active)
                         {
 							borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + glob.rotationConst);
-							spriteBatch.Draw(Main.projectileTexture[proj.type], (glob.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, glob.scale / 32f, SpriteEffects.None, 0);
+							spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, (glob.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, glob.scale / 32f, SpriteEffects.None, 0);
 						}
                     }
                 }

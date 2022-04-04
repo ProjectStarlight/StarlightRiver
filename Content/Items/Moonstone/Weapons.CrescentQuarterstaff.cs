@@ -14,6 +14,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
@@ -379,7 +380,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
 			Texture2D head = ModContent.Request<Texture2D>(Texture + "_Head").Value;
-			Texture2D tex = Main.projectileTexture[Projectile.type];
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			SpriteEffects effects = zRotation > 1.57f && zRotation < 4.71f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 			if (effects == SpriteEffects.FlipHorizontally && Player.direction < 0)
@@ -544,7 +545,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(Main.projectileTexture[Projectile.type], Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, 0, Projectile.Size / 2, Projectile.scale * 1.7f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);

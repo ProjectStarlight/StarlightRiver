@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -206,7 +207,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			else
 				color = VitricSummonOrb.MoltenGlow(100);
-			Texture2D tex = Main.projectileTexture[Projectile.type];
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), color * (needleLerp / 10f), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 			
@@ -261,7 +262,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			effect.Parameters["progress2"].SetValue((20 - Projectile.timeLeft) / 20f);
 			effect.Parameters["noise"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoise").Value);
 			effect.CurrentTechnique.Passes[0].Apply();
-			Main.spriteBatch.Draw(Main.projectileTexture[Projectile.type], (Projectile.Center - Main.screenPosition), null, Color.White, 0f, new Vector2(200, 200), 1, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, (Projectile.Center - Main.screenPosition), null, Color.White, 0f, new Vector2(200, 200), 1, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Main.GameViewMatrix.TransformationMatrix);*/

@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D texture = Main.projectileTexture[Projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 position = (owner.Center + (currentDirection * 15)) - Main.screenPosition;
 
             if (owner.direction == 1)

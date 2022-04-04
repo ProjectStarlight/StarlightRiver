@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -75,12 +76,12 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            spriteBatch.Draw(Main.projectileTexture[Projectile.type],
+            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value,
                 Projectile.Center - Main.screenPosition,
-                new Rectangle(0, Main.projectileTexture[Projectile.type].Height / 2 * Projectile.frame, Main.projectileTexture[Projectile.type].Width, Main.projectileTexture[Projectile.type].Height / 2),
+                new Rectangle(0, TextureAssets.Projectile[Projectile.type].Value.Height / 2 * Projectile.frame, TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / 2),
                 Color.White,
                 Projectile.rotation,
-                new Vector2(Main.projectileTexture[Projectile.type].Width / 2, Main.projectileTexture[Projectile.type].Height / 4),
+                new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / 4),
                 1f, default, default);
 
             return false;
@@ -166,7 +167,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) 
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, Projectile.rotation, new Vector2(11, 12), Projectile.scale, default, default);
             return false; 
         }

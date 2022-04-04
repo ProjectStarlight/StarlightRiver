@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -54,8 +55,8 @@ namespace StarlightRiver.Content.GUI
 			int xOff = Main.screenWidth - 92;
 			int yOff = (int)((174 + mapHeight) + (slotsOff * 56) * Main.inventoryScale);
 
-			Vector2 vector = new Vector2(xOff - 118, yOff + Terraria.GameContent.TextureAssets.InventoryBack.Value.Height * 0.5f);
-			var defenseRect = Utils.CenteredRectangle(vector, Terraria.GameContent.TextureAssets.Extra[58].Size());
+			Vector2 vector = new Vector2(xOff - 118, yOff + TextureAssets.InventoryBack.Value.Height * 0.5f);
+			var defenseRect = Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Size());
 			basePos = defenseRect.Center.ToVector2();
 
 			if (defenseRect.Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface) //zoinked form vanilla DrawInventory() at Main.cs
@@ -83,7 +84,7 @@ namespace StarlightRiver.Content.GUI
 		public string value = "";
 
 		public ExtraDefenseStats ParentState => Parent as ExtraDefenseStats;
-		private Vector2 endPos => ParentState.basePos + new Vector2(offsetPosition * -Terraria.GameContent.TextureAssets.Extra[58].Width() - offsetPosition * 6, 0);
+		private Vector2 endPos => ParentState.basePos + new Vector2(offsetPosition * -TextureAssets.Extra[58].Width() - offsetPosition * 6, 0);
 
 		public ExtraDefenseInfoPanel(Texture2D texture, int offsetPosition)
 		{

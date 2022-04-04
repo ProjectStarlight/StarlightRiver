@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using System.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -221,7 +222,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             lightColor = Color.Lerp(lightColor, heatColor, (Charge / (float)MAXCHARGE) * 0.6f);
 
             Player Player = Main.player[Projectile.owner];
-            Texture2D texture = Main.projectileTexture[Projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Texture2D texture2 = ModContent.Request<Texture2D>(Texture + "_Blade").Value;
             int height1 = texture.Height;
             int height2 = texture2.Height / Main.projFrames[Projectile.type];

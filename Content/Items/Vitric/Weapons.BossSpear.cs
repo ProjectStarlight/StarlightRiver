@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -224,7 +225,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            var tex = Main.projectileTexture[Projectile.type];
+            var tex = TextureAssets.Projectile[Projectile.type].Value;
             var color = lightColor * (DrawbackTime < 10 ? (DrawbackTime / 10f) : 1); //fadein   why did I write it like this? idk lol shoot me
             if (Projectile.timeLeft <= 5) color *= Projectile.timeLeft / 5f; //fadeout
 

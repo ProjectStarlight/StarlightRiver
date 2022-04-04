@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -575,7 +576,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             if(ComboState == 3)
                 trailBack?.Render(effect);
 
-            effect.Parameters["sampleTexture2"].SetValue(Terraria.GameContent.TextureAssets.MagicPixel.Value);
+            effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
             trail2?.Render(effect);
         }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -114,14 +115,14 @@ namespace StarlightRiver.Content.Items.Slime
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            //Vector2 drawOrigin = new Vector2(Main.projectileTexture[Projectile.type].Width * 0.5f, Projectile.height * 0.5f);
+            //Vector2 drawOrigin = new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width * 0.5f, Projectile.height * 0.5f);
 
-            spriteBatch.Draw(Main.projectileTexture[Projectile.type],
+            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value,
                 Projectile.Center - Main.screenPosition,
-                new Rectangle(0, Main.projectileTexture[Projectile.type].Height / maxSize * (globSize - 1), Main.projectileTexture[Projectile.type].Width, Main.projectileTexture[Projectile.type].Height / maxSize),
+                new Rectangle(0, TextureAssets.Projectile[Projectile.type].Value.Height / maxSize * (globSize - 1), TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / maxSize),
                 lightColor,
                 Projectile.rotation,
-                new Vector2(Main.projectileTexture[Projectile.type].Width / 2, Main.projectileTexture[Projectile.type].Height / (maxSize * 2)),
+                new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / (maxSize * 2)),
                 1f, default, default);
 
             return false;

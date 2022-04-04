@@ -8,6 +8,7 @@ using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -131,7 +132,7 @@ namespace StarlightRiver.Core
             
             if (t != null && t.TileFrameX > 0 && variantCount > 0)
             {
-                Texture2D tex = Main.tileTexture[t.type];
+                Texture2D tex = TextureAssets.Tile[((int)t.BlockType)].Value;
                 Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
                 Vector2 pos = ((Projectile.position - Main.screenPosition) + DrawOffset) - new Vector2(frame.Width * 0.5f, frame.Height);
                 LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);

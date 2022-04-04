@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -173,7 +174,7 @@ namespace StarlightRiver.Content.GUI
             if (ContainsPoint(Main.MouseScreen))
                 Main.LocalPlayer.mouseInterface = true;
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, GetDimensions().ToRectangle(), Terraria.GameContent.TextureAssets.MagicPixel.Value.Frame(), Color.White * 0.1f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, GetDimensions().ToRectangle(), Terraria.GameContent.TextureAssets.MagicPixel.Value.Frame(), Color.White * 0.1f);
             Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 50);
             Texture2D backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack").Value;
             if (ActiveEntry?.RequiresUpgradedBook == true) backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack2").Value; //use a purple back for rift entries

@@ -11,7 +11,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Audio;
 using static Terraria.ModLoader.ModContent;
-
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.Misc
         const int frameCount = 6;
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             int width = tex.Width / frameCount;
             Rectangle sourceRect = new Rectangle(Projectile.frame * width, 0, width, tex.Height);
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);

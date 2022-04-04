@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -66,7 +67,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             int offsetX = (int)(Math.Sin(multiTilePos * 11.33333337f) * 6);
 
             Vector2 zero = new Vector2(Main.offScreenRange);
-            Main.spriteBatch.Draw(Main.tileTexture[Type], (new Vector2((i * 16) + offsetX, j * 16) - Main.screenPosition) + zero, new Rectangle(tile.TileFrameX + frameOffsetX, tile.TileFrameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, spriteDir, 0f);
+            Main.spriteBatch.Draw(TextureAssets.Tile[Type].Value, (new Vector2((i * 16) + offsetX, j * 16) - Main.screenPosition) + zero, new Rectangle(tile.TileFrameX + frameOffsetX, tile.TileFrameY, 16, 16), Lighting.GetColor(i, j), 0f, Vector2.Zero, 1f, spriteDir, 0f);
             return false;
         }
     }

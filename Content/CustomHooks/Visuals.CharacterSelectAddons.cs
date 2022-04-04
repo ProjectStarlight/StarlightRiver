@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know
             {
-                spriteBatch.Draw(Terraria.GameContent.TextureAssets.Heart2.Value, origin + new Vector2(80, 37), Color.White);
+                spriteBatch.Draw(TextureAssets.Heart2.Value, origin + new Vector2(80, 37), Color.White);
             }
 
             if(Player.GetModPlayer<ShieldPlayer>().MaxShield > 0)
@@ -162,7 +163,7 @@ namespace StarlightRiver.Content.CustomHooks
             if(mp3.medals.Count > 0) //draw medals if any are earned
 			{
                 Rectangle boxMedals = new Rectangle((int)(origin.X + 10), (int)(origin.Y + 96), (int)self.GetDimensions().Width - 20, 50);
-                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, boxMedals, new Color(43, 56, 101)); //Medal box
+                spriteBatch.Draw(TextureAssets.MagicPixel.Value, boxMedals, new Color(43, 56, 101)); //Medal box
 
                 for (int k = 0; k < mp3.medals.Count; k++) //Draw all medals
 				{

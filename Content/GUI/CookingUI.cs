@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
 
             base.Draw(spriteBatch);
             Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
@@ -99,8 +100,8 @@ namespace StarlightRiver.Content.GUI
                 int cooldown = 0;
                 List<(string, Color)> lines = new List<(string, Color)>();
 
-                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
-                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
+                spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
+                spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
 
                 foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
                 {
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     var tex = Request<Texture2D>("StarlightRiver/Assets/GUI/Arrow").Value;
 
-                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
+                    spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 352, (int)Basepos.Y + 60, 4, 80), new Color(20, 20, 10) * 0.5f);
                     spriteBatch.Draw(tex, Basepos + new Vector2(354, 60 + scrollStart / (float)(lineCount - 5) * 80), null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
                 }
             }

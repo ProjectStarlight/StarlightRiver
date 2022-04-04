@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -77,7 +78,7 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
-			var ItemTex = Terraria.GameContent.TextureAssets.Item[Item.type].Value;
+			var ItemTex = TextureAssets.Item[Item.type].Value;
 			var pos = GetDimensions().Center();
 
 			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare), 0, tex.Size() / 2, 1, 0, 0);

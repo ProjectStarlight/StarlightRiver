@@ -8,6 +8,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -36,8 +37,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 WalkableCrystal modtile = ((GetModTile(Item.createTile) as WalkableCrystal));
                 float zoom = Main.GameViewMatrix.Zoom.X;
                 Vector2 offset = new Vector2(((modtile.MaxWidth / 2) - 1) * 16, ((modtile.MaxHeight - 1) * 16) - 1) * zoom;
-                spriteBatch.Draw(Main.tileTexture[Item.createTile], ((((Main.MouseWorld) / (16 * zoom)).PointAccur() * (16 * zoom)) - Main.screenPosition) - offset,
-                    Main.tileTexture[Item.createTile].Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
+                spriteBatch.Draw(TextureAssets.Tile[Item.createTile].Value, ((((Main.MouseWorld) / (16 * zoom)).PointAccur() * (16 * zoom)) - Main.screenPosition) - offset,
+                    TextureAssets.Tile[Item.createTile].Value.Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
                     Color.White * 0.75f, 0, default, zoom, default, default);
             }
         }
@@ -206,7 +207,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     //        Tile t = Main.tile[i, j];
     //        if (t.TileFrameX > 0)
     //        {
-    //            Texture2D tex = Main.tileTexture[Type];
+    //            Texture2D tex = TextureAssets.Tile[Type].Value;
     //            Rectangle frame = tex.Frame(4, 1, t.TileFrameX - 1);
     //            spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(9, 18), frame, Color.White/*Color.LightGray*/, 0, new Vector2(frame.Width * 0.5f, frame.Height), 1, 0, 0);
     //            //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change
@@ -270,7 +271,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     //        Tile t = Main.tile[i, j];
     //        if (t.TileFrameX > 0)
     //        {
-    //            Texture2D tex = Main.tileTexture[Type];
+    //            Texture2D tex = TextureAssets.Tile[Type].Value;
 
     //            spriteBatch.Draw(tex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, 2), tex.Frame(2, 1, t.TileFrameX - 1), Color.LightGray, 0, new Vector2(32, 48), 1, 0, 0);
     //            //Helper.DrawWithLighting(((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, tex); //Subject to change

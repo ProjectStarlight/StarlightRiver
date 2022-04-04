@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -156,7 +157,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Vector2 drawOrigin = new Vector2(Main.projectileTexture[Projectile.type].Width * 0.5f, Projectile.height * 0.5f);
+            Vector2 drawOrigin = new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width * 0.5f, Projectile.height * 0.5f);
 
             if (Projectile.ai[0] != 1)
                 for (int k = 0; k < Projectile.oldPos.Length; k++) {
@@ -165,18 +166,18 @@ namespace StarlightRiver.Content.Items.Starwood
 
                     spriteBatch.Draw(GlowingTrail,
                     Projectile.oldPos[k] + drawOrigin - Main.screenPosition,
-                    new Rectangle(0, Main.projectileTexture[Projectile.type].Height / 2 * Projectile.frame, Main.projectileTexture[Projectile.type].Width, Main.projectileTexture[Projectile.type].Height / 2),
+                    new Rectangle(0, TextureAssets.Projectile[Projectile.type].Value.Height / 2 * Projectile.frame, TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / 2),
                     color,
                     Projectile.rotation,
-                    new Vector2(Main.projectileTexture[Projectile.type].Width / 2, Main.projectileTexture[Projectile.type].Height / 4),
+                    new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / 4),
                     scale, default, default); }
 
-            spriteBatch.Draw(Main.projectileTexture[Projectile.type],
+            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value,
                 Projectile.Center - Main.screenPosition,
-                new Rectangle(0, Main.projectileTexture[Projectile.type].Height / 2 * Projectile.frame, Main.projectileTexture[Projectile.type].Width, Main.projectileTexture[Projectile.type].Height / 2),
+                new Rectangle(0, TextureAssets.Projectile[Projectile.type].Value.Height / 2 * Projectile.frame, TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / 2),
                 lightColor,
                 Projectile.rotation,
-                new Vector2(Main.projectileTexture[Projectile.type].Width / 2, Main.projectileTexture[Projectile.type].Height / 4),
+                new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / 4),
                 1f, default, default);
 
             return false;
@@ -238,7 +239,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
             //spriteBatch.Draw(GlowingTrail,
             //    position - Main.screenPosition,
-            //    new Rectangle(0, (Main.projectileTexture[Projectile.type].Height / 2) * Projectile.frame, Main.projectileTexture[Projectile.type].Width, Main.projectileTexture[Projectile.type].Height / 2),
+            //    new Rectangle(0, (TextureAssets.Projectile[Projectile.type].Value.Height / 2) * Projectile.frame, TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / 2),
             //    Color.White,
             //    0f,
             //    new Vector2(GlowingTrail.Width / 2, GlowingTrail.Height / 4),

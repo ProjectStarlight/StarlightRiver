@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -239,7 +240,7 @@ namespace StarlightRiver.Content.Items.Overgrow
             if (State == 0)
                 ballPos += new Vector2(0, Player.gfxOffY);
 
-            spriteBatch.Draw(Main.projectileTexture[Projectile.type], ballPos, Main.projectileTexture[Projectile.type].Frame(), Color.White, Projectile.rotation, Projectile.Size / 2, Projectile.scale, 0, 0);
+            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, ballPos, TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Projectile.Size / 2, Projectile.scale, 0, 0);
 
             return false;
         }

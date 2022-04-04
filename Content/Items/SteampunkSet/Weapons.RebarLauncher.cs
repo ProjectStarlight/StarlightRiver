@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -283,7 +284,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			float transparency = 1 - (Projectile.alpha / 255f);
 
 			spriteBatch.Draw(glow, Projectile.Center - Main.screenPosition, null, color * transparency, Projectile.rotation, glow.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(Main.projectileTexture[Projectile.type], Projectile.Center - Main.screenPosition, null, lightColor * transparency, Projectile.rotation, new Vector2(30, 3), Projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, lightColor * transparency, Projectile.rotation, new Vector2(30, 3), Projectile.scale, SpriteEffects.None, 0);
 			spriteBatch.Draw(overlay, Projectile.Center - Main.screenPosition, null, HeatColor(trailWidth / 4f, 0.5f) * transparency, Projectile.rotation, new Vector2(30, 3), Projectile.scale, SpriteEffects.None, 0);
 			return false;
         }

@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
             if(tile.TileFrameX < 16 && tile.TileFrameY == 0)
 			{
-                var tileTex = Main.tileTexture[tile.type];
+                var tileTex = TextureAssets.Tile[tile.type].Value;
                 spriteBatch.Draw(tileTex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
 
                 return false;

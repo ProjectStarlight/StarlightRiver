@@ -12,6 +12,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -170,7 +171,7 @@ namespace StarlightRiver.Content.Items.Misc
         }
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D mainTex = Main.projectileTexture[Projectile.type];
+			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
 			spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(8, mainTex.Height / 2), Projectile.scale, SpriteEffects.None, 0f);
 
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
@@ -292,7 +293,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 				overlayColor = Color.Lerp(Color.Orange * 0.5f, Color.White, (progress - 0.5f) * 2);
 
-			Texture2D mainTex = Main.projectileTexture[Projectile.type];
+			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
 			spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			Texture2D overlayTex = ModContent.Request<Texture2D>(Texture + "_White").Value;

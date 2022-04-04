@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			var pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
 
-			spriteBatch.Draw(Main.tileTexture[tile.type], pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
+			spriteBatch.Draw(TextureAssets.Tile[tile.type].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}
 	}
 

@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -28,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
-                Texture2D tex = Main.tileTexture[Type];
+                Texture2D tex = TextureAssets.Tile[Type].Value;
                 Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
                 int off = StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 46 : 0;
                 spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawColor, 0, Vector2.Zero, 1, 0, 0);

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Foregrounds
@@ -27,10 +28,10 @@ namespace StarlightRiver.Content.Foregrounds
             var targetBottom = new Rectangle(targetRect.X, targetRect.Y + targetRect.Height, targetRect.Width, Main.screenHeight - (targetRect.Y + targetRect.Height));
 
             spriteBatch.Draw(tex, targetRect, null, Color.White * opacity * opacityMult, 0, Vector2.Zero, 0, 0);
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetLeft, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetRight, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetTop, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetBottom, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLeft, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetRight, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetTop, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetBottom, Color.Black * opacity * opacityMult);
         }
 
         public override void Reset()

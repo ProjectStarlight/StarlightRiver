@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -118,7 +119,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D texture = Main.projectileTexture[Projectile.type];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 position = (owner.Center + (currentDirection * 4)) - Main.screenPosition;
 
             if (owner.direction == 1)
@@ -167,7 +168,7 @@ namespace StarlightRiver.Content.Items.Misc
                         tile.active(false);
                         if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                         {
-                            NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
+                            NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
                         }
                     }
                 }

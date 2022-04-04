@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Misc
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
 			if (progress > FireTime && !shot)
             {
-				Texture2D projTexture = Main.projectileTexture[Projectile.type];
+				Texture2D projTexture = TextureAssets.Projectile[Projectile.type].Value;
 
 				Vector2 projBottom = Projectile.Center - new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;
 
@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.timeLeft > 2)
 				return false;
 
-			Texture2D projTexture = Main.projectileTexture[Projectile.type];
+			Texture2D projTexture = TextureAssets.Projectile[Projectile.type].Value;
 
 			//End control point for the chain
 			Vector2 projBottom = Projectile.Center + new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;

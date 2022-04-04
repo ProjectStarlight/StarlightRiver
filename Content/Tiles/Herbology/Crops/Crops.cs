@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 if (Main.canDrawColorTile(i, j))
                     tex = Main.tileAltTexture[Type, Main.tile[i, j].TileColor];
                 else
-                    tex = Main.tileTexture[Type];
+                    tex = TextureAssets.Tile[Type].Value;
 
                 SpriteEffects effect = i % 2 == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                 float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeed) * 0.07f), 0.12f);

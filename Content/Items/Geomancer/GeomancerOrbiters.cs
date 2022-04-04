@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ReLogic.Graphics;
 using Terraria.ModLoader.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -97,7 +98,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[Projectile.type];
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             if (Projectile.scale == bigScale)
             {
                 float progress = glowCounter % 1;

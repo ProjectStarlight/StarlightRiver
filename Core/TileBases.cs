@@ -7,6 +7,7 @@ using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -85,7 +86,7 @@ namespace StarlightRiver.Core
                 Vector2.Zero : new Vector2(Main.offScreenRange, Main.offScreenRange);
 
             Texture2D texture = Main.canDrawColorTile(i, j) ?
-                Main.tileAltTexture[Type, tile.TileColor] : Main.tileTexture[Type];
+                Main.tileAltTexture[Type, tile.TileColor] : TextureAssets.Tile[Type].Value;
 
             int animate = tile.TileFrameY >= animationFrameHeight ?
                 Main.tileFrame[Type] * animationFrameHeight : 0;

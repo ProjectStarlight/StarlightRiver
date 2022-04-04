@@ -6,6 +6,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -124,13 +125,13 @@ namespace StarlightRiver.Content.Items
             var targetO2 = new Rectangle(48, 158 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
             var targetO3 = new Rectangle(48, 158 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO, Color.Black);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO, Color.Black);
             spriteBatch.Draw(Main.screenTarget, target, Color.White);
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO2, Color.Black);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO2, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, target2, Color.White);
 
-            spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, targetO3, Color.Black);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
 	}

@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -181,7 +182,7 @@ namespace StarlightRiver.Content.GUI
             Item Item = new Item();
             Item.SetDefaults(typ);
 
-            if (type <= ItemID.Count) icon = Terraria.GameContent.TextureAssets.Item[type].Value;
+            if (type <= ItemID.Count) icon = TextureAssets.Item[type].Value;
             else icon = Request<Texture2D>(Item.ModItem.Texture).Value;
 
             name = Item.Name;

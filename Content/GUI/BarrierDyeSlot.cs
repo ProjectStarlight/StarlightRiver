@@ -10,6 +10,7 @@ using Terraria.UI;
 using Terraria.ID;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.GUI
             var mp = Player.GetModPlayer<ShieldPlayer>();
             var Item = mp.barrierDyeItem;
 
-            Texture2D tex = Terraria.GameContent.TextureAssets.InventoryBack8.Value;
+            Texture2D tex = TextureAssets.InventoryBack8.Value;
             Texture2D texSlot = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BarrierDyeSlot").Value;
 
             spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White * 0.8f, 0, tex.Size() / 2, 0.85f, 0, 0);

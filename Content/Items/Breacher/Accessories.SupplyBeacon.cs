@@ -10,6 +10,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -167,7 +168,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D mainTex = Main.projectileTexture[Projectile.type];
+			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 position = (Projectile.Center - Main.screenPosition);
 			if (landed)
 			{

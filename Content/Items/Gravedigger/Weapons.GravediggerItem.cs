@@ -6,6 +6,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -255,7 +256,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
 		{
-			Texture2D tex = Main.projectileTexture[Projectile.type];
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Rectangle frame = new Rectangle(frameX, Projectile.frame * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
 			SpriteEffects effects;
 
@@ -394,7 +395,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			Color color = Color.White;
 			color *= (float)Math.Cos(counter);
-			spriteBatch.Draw(Main.projectileTexture[Projectile.type], Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, Main.projectileTexture[Projectile.type].Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, TextureAssets.Projectile[Projectile.type].Value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         }
 	}
 	internal class GravediggerPlayer : ModPlayer

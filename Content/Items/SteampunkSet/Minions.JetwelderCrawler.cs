@@ -77,7 +77,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			windup = Main.rand.Next(40, 80);
 			Projectile.ignoreWater = true;
         }
-
         public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;

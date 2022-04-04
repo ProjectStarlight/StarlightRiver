@@ -33,7 +33,7 @@ namespace StarlightRiver.Helpers
             {
                 for (int j = 0; j < 400; j++)
                 {
-                    if (!Main.item[j].active && Main.itemLockoutTime[j] == 0)
+                    if (!Main.item[j].active && Main.timeItemSlotCannotBeReusedFor[j] == 0)
                     {
                         targetIndex = j;
                         break;
@@ -46,9 +46,9 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.item[k].spawnTime - Main.itemLockoutTime[k] > num2)
+                    if (Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k] > num2)
                     {
-                        num2 = Main.item[k].spawnTime - Main.itemLockoutTime[k];
+                        num2 = Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k];
                         targetIndex = k;
                     }
                 }
@@ -83,7 +83,7 @@ namespace StarlightRiver.Helpers
                 {
                     for (int i = 399; i >= 0; i--)
                     {
-                        if (!Main.item[i].active && Main.itemLockoutTime[i] == 0)
+                        if (!Main.item[i].active && Main.timeItemSlotCannotBeReusedFor[i] == 0)
                         {
                             targetIndex = i;
                             break;
@@ -94,7 +94,7 @@ namespace StarlightRiver.Helpers
                 {
                     for (int j = 0; j < 400; j++)
                     {
-                        if (!Main.item[j].active && Main.itemLockoutTime[j] == 0)
+                        if (!Main.item[j].active && Main.timeItemSlotCannotBeReusedFor[j] == 0)
                         {
                             targetIndex = j;
                             break;
@@ -107,14 +107,14 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.item[k].spawnTime - Main.itemLockoutTime[k] > num2)
+                    if (Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k] > num2)
                     {
-                        num2 = Main.item[k].spawnTime - Main.itemLockoutTime[k];
+                        num2 = Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k];
                         targetIndex = k;
                     }
                 }
             }
-            Main.itemLockoutTime[targetIndex] = 0; //normal stuff
+            Main.timeItemSlotCannotBeReusedFor[targetIndex] = 0; //normal stuff
             Item Item = Main.item[targetIndex];
             Item.SetDefaults(type, false);
             Item.Prefix(prefixGiven);

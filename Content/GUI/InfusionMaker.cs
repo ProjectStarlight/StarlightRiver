@@ -18,6 +18,7 @@ using static Terraria.ModLoader.ModContent;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -156,7 +157,7 @@ namespace StarlightRiver.Content.GUI
 
             if(previewGif is null && selected != null)
 			{
-                spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
+                spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
 
                 for (int k = 0; k < 5; k++)
                 {

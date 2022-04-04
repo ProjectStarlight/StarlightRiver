@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -163,7 +164,7 @@ namespace StarlightRiver.Content.Items.Hell
         public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
         {
             Tile tile = Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16];
-            Texture2D tex = Main.tileTexture[tile.type];
+            Texture2D tex = TextureAssets.Tile[tile.TileType].Value;
             Rectangle frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
             Vector2 pos = Projectile.position + Vector2.One - Main.screenPosition;
             Color color = new Color(255, 140, 50) * 0.2f * (Projectile.timeLeft / 180f);
