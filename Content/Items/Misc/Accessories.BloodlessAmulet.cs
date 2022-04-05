@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
@@ -14,10 +15,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
 
-		public override void Load()
+		public override void Load() //PORTODO: Make cursed accessories not hide Load();
 		{
 			On.Terraria.Player.HealEffect += GrantRage;
-			return true;
 		}
 
 		private void GrantRage(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.allDamageMult += rage / 2000f;
+			Player.GetDamage(DamageClass.Generic) += rage / 2000f;
 
 			if(rage > 0)
 				rage--;

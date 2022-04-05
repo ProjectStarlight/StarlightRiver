@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
-            return true;
         }
 
         private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
@@ -26,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     Vector2 velocity = proj.velocity.RotatedByRandom(MathHelper.Pi / 6f);
                     velocity *= Main.rand.NextFloat(0.5f, 0.75f);
-                    Projectile.NewProjectile(proj.Center, velocity, ModContent.ProjectileType<Vitric.VitricArrowShattered>(), (int)(damage * 0.2f), knockback * 0.15f, Player.whoAmI);
+                    Projectile.NewProjectile(Player.GetProjectileSource_Accessory(Item), proj.Center, velocity, ModContent.ProjectileType<Vitric.VitricArrowShattered>(), (int)(damage * 0.2f), knockback * 0.15f, Player.whoAmI);
                 }
             }
         }

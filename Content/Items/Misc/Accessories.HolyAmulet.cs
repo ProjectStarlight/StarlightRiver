@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             On.Terraria.Player.HealEffect += HealEffect;
-            return true;
         }
 
         private void HealEffect(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
@@ -66,7 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             while (cumulativeAmountHealed >= 25)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI);
+                Projectile.NewProjectile(Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI); //PORTTODO: Figure out correct projectile source for this
 
                 rotation += step;
 
@@ -101,7 +100,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
         }
 
         public override void SetDefaults()

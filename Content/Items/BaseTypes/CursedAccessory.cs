@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public static ParticleSystem ShardsSystem;
 
-        public static void Load()
+        public static void Load() //PORTTODO: Make it so this doesn't hide ModType.Load();
         {
             CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
             ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
         }
 
-        public static void Unload()
+        public static void Unload() //PORTTODO: Make it so this doesn't hide ModType.Unload();
         {
             CursedSystem = null;
             ShardsSystem = null;

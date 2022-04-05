@@ -78,12 +78,12 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AI()
         {
             owner.heldProj = Projectile.whoAmI;
-            if (owner.ItemTime <= 1)
+            if (owner.itemTime <= 1)
             {
                 DestroyGraves();
                 Projectile.active = false;
             }
-            if (Projectile.timeLeft % 6 == 0 && owner.ItemTime > 15)
+            if (Projectile.timeLeft % 6 == 0 && owner.itemTime > 15)
             {
                 Vector2 range = new Vector2(25, 25);
                 Vector2 startPos = (Projectile.Center / 16) - range;
@@ -95,11 +95,11 @@ namespace StarlightRiver.Content.Items.Misc
                     {
                         Tile tile = Main.tile[i, j];
                         Tile tile2 = Main.tile[i + 1, j + 1];
-                        if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.HasTile)
+                        if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
                         {
                             Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                             Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-                            Projectile.NewProjectile(graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
                         }
                     }
                 }
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
             Vector2 position = (owner.Center + (currentDirection * 4)) - Main.screenPosition;
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Tile tile = Main.tile[i, j];
 
                     Tile tile2 = Main.tile[i + 1, j + 1];
-                    if (tile.type == 85 && tile.HasTile && tile2.type == 85 && tile2.HasTile)
+                    if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
                     {
                         Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                         for (int t = 0; t < 10; t++)
@@ -159,9 +159,9 @@ namespace StarlightRiver.Content.Items.Misc
                         }
                     }
 
-                    if (tile.type == 85 && tile.HasTile)
+                    if (tile.TileType == 85 && tile.HasTile)
                     {
-                        tile.active(false);
+                        tile.HasTile = false;
                         if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                         {
                             NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);

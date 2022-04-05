@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System;
@@ -15,10 +16,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public AlchemistShackles() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
 
-		public override void Load()
+		public override void Load() //PORTTODO: Make it so cursed accessories don't hide load()
 		{
 			On.Terraria.Player.AddBuff += Player_AddBuff;
-			return true;
 		}
 
 		
@@ -33,14 +33,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<AlchemistShacklesPlayer>().equipped = true;
 		}
 
-		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true)
+		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
         {
 			if (self.GetModPlayer<AlchemistShacklesPlayer>().equipped && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
 			{
-				orig(self, type, time1 + 900, quiet);
+				orig(self, type, time1 + 900, quiet, foodHack);
 			}
 			else
-				orig(self, type, time1, quiet);
+				orig(self, type, time1, quiet, foodHack);
 		}
 	}
 	class AlchemistShacklesPlayer : ModPlayer

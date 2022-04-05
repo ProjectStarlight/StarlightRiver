@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             public override string Texture => AssetDirectory.PotionsItem + Name;
 
-			public override void SetDefaults()
+			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("Plexus Resistance");
 				Description.SetDefault("+30% to DoT Resistance");

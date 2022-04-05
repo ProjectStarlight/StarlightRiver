@@ -56,12 +56,12 @@ namespace StarlightRiver.Content.Items.Misc
         private float gravity = 0.05f;
         public override void SetStaticDefaults() => DisplayName.SetDefault("Dice");
         const int frameCount = 6;
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             int width = tex.Width / frameCount;
             Rectangle sourceRect = new Rectangle(Projectile.frame * width, 0, width, tex.Height);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
             return false;
         }
         public override void SetDefaults()

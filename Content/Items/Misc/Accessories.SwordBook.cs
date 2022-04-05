@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -25,7 +26,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += OverrideSwordEffects;
-			return true;
 		}
 
 		public override void SafeSetDefaults()
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == Player.whoAmI))
 						return false;
 
-					int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
+					int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), Item.damage, Item.knockBack, Player.whoAmI); //TODO: Figure out what projectile source to use here
 					var proj = Main.projectile[i];
 
 					proj.timeLeft = Item.useAnimation * 4;
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						var modProj = proj.ModProjectile as SwordBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(Item.type);
-						modProj.texture = Main.PopupTexture[Item.type];
+						modProj.texture = TextureAssets.Item[Item.type].Value;
 						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * Item.scale;
 						modProj.lifeSpan = Item.useAnimation * 4;
 						modProj.baseAngle = (Main.MouseWorld - Player.Center).ToRotation() + (float)Math.PI / 4f;
@@ -102,7 +102,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += DoSwingAnimation;
-			return true;
 		}
 
 		public override void SetDefaults()
@@ -239,14 +238,14 @@ namespace StarlightRiver.Content.Items.Misc
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{		
 			var origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
 			var effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 			var rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
 			var pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * (flipSprite ? Direction * -1 : Direction);
 
-			spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, Projectile.scale, effects, 0);
+			Main.spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, Projectile.scale, effects, 0);
 			return false;
 		}
 

@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (Main.myPlayer == owner)
             {
-                Projectile.NewProjectile(NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
+                Projectile.NewProjectile(Main.player[owner].GetProjectileSource_Accessory(Item), NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
                 NPC.StrikeNPC(9999, 0f, 1, false, true, false);// kill NPC
             }
         }
@@ -115,10 +115,10 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             var tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Guillotine").Value;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 45f), 0, tex.Size() / 2f, (1 - (Projectile.timeLeft / 45f)) * 3f, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (Projectile.timeLeft / 45f), 0, tex.Size() / 2f, (1 - (Projectile.timeLeft / 45f)) * 3f, 0, 0);
 
             return false;
         }

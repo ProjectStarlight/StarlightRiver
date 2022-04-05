@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System;
@@ -19,7 +20,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("+40% DoT Resistance\nDebuffs you inflict are inflicted on you\n+5% movement and attack speed per debuff affecting you\nLose all debuff immunities");
 		}
 
-		public override void Load()
+		public override void Load() //TODO: Make cursedaccessory.Load not hide this
 		{
 			StatusTrackingNPC.buffCompareEffects += CollarEffects;
 			

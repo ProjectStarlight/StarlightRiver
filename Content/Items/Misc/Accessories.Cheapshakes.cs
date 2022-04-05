@@ -21,8 +21,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             StarlightPlayer.PreHurtEvent += PreHurtAccessory;
-
-            return true;
         }
 
         public override void SafeUpdateEquip(Player Player)

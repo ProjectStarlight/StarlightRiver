@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
             while (damageTicker > 25)
             {
                 damageTicker -= 25;
-                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(10,10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, Player.whoAmI);
+                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(10,10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, Player.whoAmI); //PORTTODO: Figure out source for this
             }
         }
     }
@@ -78,11 +78,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool dropHeart = false;
 
-        public override void NPCLoot(NPC NPC)
+        public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
         {
-			if (dropHeart)
-				Item.NewItem(NPC.Center, ItemID.Heart);
-        }
+            if (dropHeart && NPC.life <= 0)
+				Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, ItemID.Heart);
+		}
+        public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
+        {
+			if (dropHeart && NPC.life <= 0)
+				Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, ItemID.Heart);
+		}
     }
 
 

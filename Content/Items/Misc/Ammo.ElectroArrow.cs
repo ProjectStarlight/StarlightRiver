@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Items.Misc
                 NPC NPC = Main.npc[k];
                 if (NPC.active && NPC.chaseable && !NPC.HasBuff(BuffType<Overcharge>()) && Vector2.Distance(NPC.Center, target.Center) < 500)
                 {
-                    var proj = Projectile.NewProjectileDirect(target.Center, Vector2.Normalize(target.Center - NPC.Center) * -6, ProjectileType<ElectroArrowProjectile>(), 20, 0, Projectile.owner, 2, 100);
+                    var proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), target.Center, Vector2.Normalize(target.Center - NPC.Center) * -6, ProjectileType<ElectroArrowProjectile>(), 20, 0, Projectile.owner, 2, 100);
                     proj.penetrate = Projectile.penetrate - 1;
                     proj.tileCollide = false;
                     (proj.ModProjectile as ElectroArrowProjectile).blacklistNPC = target.whoAmI;

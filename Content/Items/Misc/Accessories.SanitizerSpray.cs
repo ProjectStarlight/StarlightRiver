@@ -23,8 +23,6 @@ namespace StarlightRiver.Content.Items.Misc
         {
             StarlightPlayer.OnHitNPCEvent += OnHitNPCAccessory;
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
-
-            return true;
         }
         private void OnHit(Player Player, bool crit)
         {

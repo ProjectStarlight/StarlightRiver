@@ -19,7 +19,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             StarlightPlayer.NaturalLifeRegenEvent += HealthRegenLoss;
-            return true;
         }
 
         public override void SafeUpdateEquip(Player Player) => Player.maxRunSpeed *= 1.20f;

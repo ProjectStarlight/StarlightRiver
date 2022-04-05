@@ -1,7 +1,9 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -20,12 +22,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.Red;
 
-        public override void Load()
+        public override void Load() //TODO: Make CursedAccessory.Load not hide this
         {
             StarlightPlayer.PostUpdateEquipsEvent += DisableRegen;
             StarlightPlayer.ModifyHitNPCEvent += LeechStaminaMelee;
             StarlightProjectile.ModifyHitNPCEvent += LeechStaminaRanged;
-            return true;
         }
 
         public override void SafeUpdateAccessory(Player Player, bool hideVisual) => GUI.Stam.overrideTexture = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBlood").Value;

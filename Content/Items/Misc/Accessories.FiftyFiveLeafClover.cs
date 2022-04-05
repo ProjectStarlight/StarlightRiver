@@ -17,8 +17,6 @@ namespace StarlightRiver.Content.Items.Misc
         {
             StarlightPlayer.PreHurtEvent += PreHurtAccessory;
             StarlightPlayer.ResetEffectsEvent += ResetEffectsAccessory;
-
-            return true;
         }
 
         public override void SafeUpdateEquip(Player Player)

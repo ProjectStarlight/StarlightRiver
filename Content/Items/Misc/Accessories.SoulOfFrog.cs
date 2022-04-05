@@ -7,6 +7,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent.ItemDropRules;
 using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -45,10 +46,11 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override bool InstancePerEntity => true;
 
-        public override void NPCLoot(NPC NPC)
+
+        public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
         {
-            if (NPC.type == NPCID.Frog && Main.rand.NextBool(1000))
-                Item.NewItem(NPC.Center, ModContent.ItemType<SoulOfFrog>());
+            if (npc.type == NPCID.Frog)
+                npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<SoulOfFrog>(), 1000));
         }
 
         public override void OnHitByItem(NPC NPC, Player Player, Item Item, int damage, float knockback, bool crit)
@@ -72,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (NPC.type == NPCID.Frog || (Main.rand.NextBool(5) && NPC.catchItem > 0))
             {
-                NPC frog = Main.npc[NPC.NewNPC((int)NPC.Center.X, (int)NPC.Center.Y + 5, NPCID.Frog)];
+                NPC frog = Main.npc[NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y + 5, NPCID.Frog)];
                 if (NPC.type == NPCID.Frog)
                 {
                     frog.scale = NPC.scale + 0.01f;
