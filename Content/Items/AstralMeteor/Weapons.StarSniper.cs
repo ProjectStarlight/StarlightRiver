@@ -36,13 +36,11 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
-            recipe.AddIngredient(ItemID.Boomstick);
-            recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
-            recipe.AddIngredient(ItemID.FallenStar, 5);
-            recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            //Recipe recipe = CreateRecipe();
+            //recipe.AddIngredient(ItemID.Boomstick);
+            //recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
+            //recipe.AddIngredient(ItemID.FallenStar, 5);
+            //recipe.AddTile(TileID.Anvils);
         }
     }
 

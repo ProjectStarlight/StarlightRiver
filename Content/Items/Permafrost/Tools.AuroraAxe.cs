@@ -135,17 +135,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AddRecipes()
         {
-            ModRecipe r = new ModRecipe(Mod);
-            r.AddIngredient(ItemID.CopperAxe);
-            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.CopperAxe);
+            recipe.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
 
-            r = new ModRecipe(Mod);
-            r.AddIngredient(ItemID.TinAxe);
-            r.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
-            r.SetResult(this);
-            r.AddRecipe();
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.TinAxe);
+            recipe.AddIngredient(ItemType<Tiles.Permafrost.AuroraIceBar>());
         }
     }
 

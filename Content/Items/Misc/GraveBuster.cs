@@ -41,15 +41,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.FallenStar, 3);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
             recipe.AddRecipeGroup("StarlightRiver:Graves", 1);
             recipe.AddTile(TileID.Anvils);
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
         }
     }
     public class GraveBusterHeld : ModProjectile

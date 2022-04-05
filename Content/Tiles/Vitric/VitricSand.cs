@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override void SetDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Content.Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), Mod.ItemType("VitricSandItem"));
+            QuickBlock.QuickSet(this, 0, DustType<Content.Dusts.Air>(), SoundID.Dig, new Color(172, 131, 105), ItemType<VitricSandItem>());
             Main.tileMerge[Type][TileID.Sandstone] = true;
             Main.tileMerge[Type][TileID.HardenedSand] = true;
         }

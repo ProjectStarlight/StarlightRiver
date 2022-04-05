@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             minPick = int.MaxValue;
             (this).QuickSet(200, DustType<Dusts.GlassGravity>(), 2, new Color(95, 162, 138), -1, false, false, "", 27);
             TileID.Sets.TouchDamageOther[Type] = 5;//vanilla contact damage
-            Main.tileMerge[Type][Mod.TileType("VitricSand")] = true;
+            Main.tileMerge[Type][TileType<VitricSand>()] = true;
             Main.tileMerge[Type][TileType<VitricGiantCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricMediumCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;

@@ -63,13 +63,11 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(Mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 2);
 			recipe.AddIngredient(ItemID.Glass, 5);
 			recipe.AddIngredient(ItemID.BottledWater);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
 		}
 	}
 
@@ -79,13 +77,11 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(Mod);
+			Recipe recipe = CreateRecipe(5);
 			recipe.AddIngredient(ModContent.ItemType<LesserBarrierPotion>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 2);
 			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 5);
-			recipe.AddRecipe();
 		}
 	}
 
@@ -95,22 +91,18 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(Mod);
+			Recipe recipe = CreateRecipe(5);
 			recipe.AddIngredient(ModContent.ItemType<RegularBarrierPotion>(), 5);
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
-			recipe.SetResult(this, 5);
 			recipe.AddTile(TileID.Bottles);
-			recipe.AddRecipe();
 
-			recipe = new ModRecipe(Mod);
+			recipe = CreateRecipe(5);
 			recipe.AddIngredient(ItemID.BottledWater, 5);
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 10);
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
-			recipe.SetResult(this, 5);
 			recipe.AddTile(TileID.Bottles);
-			recipe.AddRecipe();
 		}
 	}
 

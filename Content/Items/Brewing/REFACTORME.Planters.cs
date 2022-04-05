@@ -1,5 +1,9 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Tiles.Herbology;
+using StarlightRiver.Items.Herbology.Materials;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Items.Herbology
 {
@@ -24,18 +28,16 @@ namespace StarlightRiver.Items.Herbology
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Mod.TileType("Soil");
+            Item.createTile = TileType<SoilTile>();
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe(10);
             recipe.AddIngredient(ItemID.MudBlock, 10);
-            recipe.AddIngredient(Mod.ItemType("Ivy"), 5);
+            recipe.AddIngredient(ItemType<Ivy>(), 5);
             recipe.AddIngredient(ItemID.CrystalShard, 1);
             recipe.AddTile(TileID.Furnaces);
-            recipe.SetResult(this, 10);
-            recipe.AddRecipe();
         }
     }
 
@@ -60,17 +62,15 @@ namespace StarlightRiver.Items.Herbology
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Mod.TileType("Trellis");
+            Item.createTile = TileType<TrellisTile>();
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Wood, 5);
-            recipe.AddIngredient(Mod.ItemType("Soil"), 1);
+            recipe.AddIngredient(ItemType<Soil>(), 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
@@ -95,17 +95,15 @@ namespace StarlightRiver.Items.Herbology
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Mod.TileType("Planter");
+            Item.createTile = TileType<PlanterTile>();
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ClayBlock, 5);
             recipe.AddIngredient(ItemID.Chain, 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 1);
-            recipe.AddRecipe();
         }
     }
 }

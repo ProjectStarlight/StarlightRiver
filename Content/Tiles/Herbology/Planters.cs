@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Items.Herbology;
+using StarlightRiver.Items.Herbology.Materials;
+using StarlightRiver.Tiles.Herbology;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -11,24 +14,24 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-	internal class Soil : ModTile
+	internal class SoilTile : ModTile
     {
-        public override string Texture => AssetDirectory.HerbologyTile + Name;
+        public override string Texture => AssetDirectory.HerbologyTile + "Soil";
 
         public override void SetDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            Main.tileMerge[Type][Mod.GetTile("Trellis").Type] = true;
-            drop = Mod.ItemType("Soil");
+            Main.tileMerge[Type][TileType<TrellisTile>()] = true;
+            ItemDrop = ItemType<Soil>();
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Rich Soil");
             AddMapEntry(new Color(56, 33, 33), name);
         }
     }
 
-    internal class Trellis : ModTile
+    internal class TrellisTile : ModTile
     {
         public override string Texture => AssetDirectory.HerbologyTile + Name;
 
@@ -37,8 +40,8 @@ namespace StarlightRiver.Content.Tiles.Herbology
             Main.tileSolid[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
-            Main.tileMerge[Type][Mod.GetTile("Soil").Type] = true;
-            drop = Mod.ItemType("Soil");
+            Main.tileMerge[Type][TileType<SoilTile>()] = true;
+            ItemDrop = ItemType<Soil>();
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Rich Soil");
@@ -51,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         }
     }
 
-    public class Planter : ModTile
+    public class PlanterTile : ModTile
     {
         public override string Texture => AssetDirectory.HerbologyTile + Name;
 
@@ -83,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 16, 32, Mod.ItemType("Planter"));
+            Item.NewItem(i * 16, j * 16, 16, 32, ItemType<Planter>());
         }
 
         public override void PlaceInWorld(int i, int j, Item Item)
@@ -97,14 +100,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 switch (Main.tile[i, j].TileFrameX / 18)
                 {
                     case 0: break;
-                    case 1: WorldGen.PlaceTile(i, j + 1, Mod.TileType("ForestIvy"), true); break;
+                    case 1: WorldGen.PlaceTile(i, j + 1, TileType<ForestIvy>(), true); break;
                 }
         }
 
         public override bool NewRightClick(int i, int j)
         {
             Player Player = Main.LocalPlayer;
-            if (Player.HeldItem.type == Mod.ItemType("IvySeeds") && Main.tile[i, j].TileFrameX == 0) //plants ivy
+            if (Player.HeldItem.type == ItemType<IvySeeds>() && Main.tile[i, j].TileFrameX == 0) //plants ivy
                 Main.tile[i, j].TileFrameX = 18;
             return true;
         }
@@ -125,12 +128,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Wood, 20);
             recipe.AddIngredient(RecipeGroupID.IronBar, 5);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 }

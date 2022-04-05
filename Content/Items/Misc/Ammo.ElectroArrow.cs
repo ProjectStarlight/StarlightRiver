@@ -47,11 +47,9 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe(50);
             recipe.AddIngredient(ItemID.DirtBlock, 4); //TODO: real recipie
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
-            recipe.AddRecipe();
         }
     }
 

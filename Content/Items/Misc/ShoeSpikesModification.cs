@@ -31,15 +31,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = Mod.CreateRecipe(ItemID.ShoeSpikes);
 
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
             recipe.AddTile(TileID.TinkerersWorkbench);
-
-            recipe.SetResult(ItemID.ShoeSpikes);
-
-            recipe.AddRecipe();
         }
 
         private bool ItemIsDerivativeOfShoeSpikes(Item Item)

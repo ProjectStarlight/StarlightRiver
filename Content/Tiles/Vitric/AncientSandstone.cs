@@ -43,7 +43,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
     internal class AncientSandstoneWall : ModWall
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
-
         public override void SetDefaults() => (this).QuickSetWall(DustID.Copper, SoundID.Dig, ItemType<AncientSandstoneWallItem>(), false, new Color(71, 46, 41));
     }
 

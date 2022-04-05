@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Pickups
         private int spawnAttemptTimer = 0;
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults()
+        public override void PostSetDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 1, 1, 0, 0, false, Color.White);
             //minPick = int.MaxValue;

@@ -36,11 +36,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe(50);
             recipe.AddIngredient(ItemType<VitricOre>(), 4);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 50);
-            recipe.AddRecipe();
         }
     }
 

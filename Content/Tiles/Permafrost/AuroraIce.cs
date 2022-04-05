@@ -148,11 +148,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void AddRecipes()
         {
-            var r = new ModRecipe(Mod);
-            r.AddIngredient(ItemType<AuroraIceItem>(), 3);
-            r.AddTile(TileID.Furnaces);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<AuroraIceItem>(), 3);
+            recipe.AddTile(TileID.Furnaces);
         }
     }
 }

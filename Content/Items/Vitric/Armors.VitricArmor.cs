@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
-            return body.type == Mod.ItemType("VitricChest") && legs.type == Mod.ItemType("VitricLegs");
+            return body.type == ItemType<VitricChest") && legs.type == Mod.ItemType("VitricLegs>();
         }
 
         public override void UpdateArmorSet(Player Player)
@@ -134,13 +134,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 15);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
@@ -166,18 +164,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void UpdateEquip(Player Player)
         {
-            Player.rangedCrit += 5;
+            Player.GetCritChance(DamageClass.Ranged) += 5;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 25);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
@@ -208,13 +204,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 5);
             recipe.AddIngredient(ItemType<VitricOre>(), 20);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 }

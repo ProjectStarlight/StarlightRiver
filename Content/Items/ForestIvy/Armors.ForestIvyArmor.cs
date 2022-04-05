@@ -4,6 +4,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
+using static Terraria.ModLoader.ModContent;
+
 namespace StarlightRiver.Content.Items.ForestIvy
 {
 	[AutoloadEquip(EquipType.Head)]
@@ -25,15 +27,13 @@ namespace StarlightRiver.Content.Items.ForestIvy
             Item.defense = 2;
         }
 
-        public override void UpdateEquip(Player Player) => Player.rangedCrit += 2;
+        public override void UpdateEquip(Player Player) => Player.GetCritChance(DamageClass.Ranged) += 2;
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
-            recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
@@ -70,11 +70,9 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 12);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 
@@ -101,11 +99,9 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 }

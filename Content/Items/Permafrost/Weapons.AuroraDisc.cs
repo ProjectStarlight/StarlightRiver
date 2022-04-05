@@ -86,11 +86,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new LearnableRecipe("Aurora Disc");
+            Recipe recipe = new LearnableRecipe("Aurora Disc");
             recipe.AddIngredient(ItemID.StoneBlock, 10);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 

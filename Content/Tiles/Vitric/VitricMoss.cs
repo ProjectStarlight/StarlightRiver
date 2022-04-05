@@ -19,9 +19,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileMerge[Type][TileType<VitricSpike>()] = true;
-            Main.tileMerge[Type][Mod.TileType("AncientSandstone")] = true;
-            Main.tileMerge[Type][Mod.TileType("VitricSand")] = true;
-            Main.tileMerge[Type][Mod.TileType("VitricSoftSand")] = true;
+            Main.tileMerge[Type][TileType<AncientSandstone>()] = true;
+            Main.tileMerge[Type][TileType<VitricSand>()] = true;
+            Main.tileMerge[Type][TileType<VitricSoftSand>()] = true;
             TileID.Sets.Grass[Type] = true;
             SetModCactus(new VitricCactus());
             AddMapEntry(new Color(172, 131, 105));
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     int tileY = j + y;
                     if (!WorldGen.InWorld(i, j, 0)) 
                         continue;
-                    if (Main.tile[tileX, tileY].type == (ushort)Mod.TileType("VitricSand") && Main.rand.Next(3) == 0)
+                    if (Main.tile[tileX, tileY].type == (ushort)TileType<VitricSand>() && Main.rand.Next(3) == 0)
                     {
                         Main.tile[tileX, tileY].type = (ushort)TileType<VitricMoss>();
                         WorldGen.SquareTileFrame(tileX, tileY, true);
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             if (!effectOnly)
             {
                 fail = true;
-                Main.tile[i, j].type = (ushort)Mod.TileType("VitricSand");
+                Main.tile[i, j].type = (ushort)TileType<VitricSand>();
                 WorldGen.SquareTileFrame(i, j, true);
                 Dust.NewDust(new Vector2(i * 16, j * 16), 16, 16, Mod.DustType("Air3"), 0f, 0f, 0, new Color(121, 121, 121), 1f);
             }

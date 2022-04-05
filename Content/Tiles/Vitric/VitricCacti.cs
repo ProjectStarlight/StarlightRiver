@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.DrawYOffset = 2;
 
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { Mod.TileType("VitricSand"), Mod.TileType("VitricSoftSand"), TileID.FossilOre,
+            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<VitricSand"), Mod.TileType("VitricSoftSand>(), TileID.FossilOre,
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             (this).QuickSetFurniture(2, 2, DustType<Dusts.GlassNoGravity>(), SoundID.Dig, false, new Color(80, 131, 142));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType("VitricCactusItem"), Main.rand.Next(2, 5));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<VitricCactusItem>(), Main.rand.Next(2, 5));
     }
 
     public class VitricSmallCactus : ModTile
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.newTile.DrawYOffset = 2;
 
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-            TileObjectData.newTile.AnchorValidTiles = new int[] { Mod.TileType("VitricSand"), Mod.TileType("VitricSoftSand"), TileID.FossilOre,
+            TileObjectData.newTile.AnchorValidTiles = new int[] { TileType<VitricSand"), Mod.TileType("VitricSoftSand>(), TileID.FossilOre,
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             (this).QuickSetFurniture(1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Dig, false, new Color(80, 131, 142));
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType("VitricCactusItem"), 1);
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<VitricCactusItem>(), 1);
     }
 
     public class VitricCactus : ModCactus

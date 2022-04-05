@@ -312,15 +312,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AddRecipes()
 		{
-			ModRecipe recipe = new ModRecipe(Mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.HellstoneBar, 15);
 			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
 			recipe.AddIngredient(ModContent.ItemType<MagmaCore>(), 1);
 			recipe.AddTile(TileID.Anvils);
-
-			recipe.SetResult(this);
-
-			recipe.AddRecipe();
 		}
 	}
 	public class MagmaGlob

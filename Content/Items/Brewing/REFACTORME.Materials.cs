@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Tiles.Crafting;
 using StarlightRiver.Core;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -16,13 +17,11 @@ namespace StarlightRiver.Items.Herbology.Materials
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe(3);
             recipe.AddIngredient(ItemID.Daybloom, 1);
             recipe.AddIngredient(ItemID.GrassSeeds, 1);
-            recipe.AddIngredient(Mod.ItemType("Ivy"), 5);
-            recipe.AddTile(TileType<HerbStation>());
-            recipe.SetResult(this, 3);
-            recipe.AddRecipe();
+            recipe.AddIngredient(ItemType<Ivy>(), 5);
+            //recipe.AddTile(TileType<HerbStation>());
         }
     }
 
@@ -36,13 +35,11 @@ namespace StarlightRiver.Items.Herbology.Materials
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe(3);
             recipe.AddIngredient(ItemID.Deathweed, 1);
             recipe.AddIngredient(ItemID.Shiverthorn, 1);
-            recipe.AddIngredient(Mod.ItemType("Deathstalk"), 5);
-            recipe.AddTile(TileType<HerbStation>());
-            recipe.SetResult(this, 3);
-            recipe.AddRecipe();
+            recipe.AddIngredient(ItemType<Deathstalk>(), 5);
+            //recipe.AddTile(TileType<HerbStation>());
         }
     }
 }

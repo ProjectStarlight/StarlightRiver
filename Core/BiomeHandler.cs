@@ -217,12 +217,9 @@ namespace StarlightRiver.Core
 
         public override void TileCountsAvailable(int[] tileCounts)
         {
-            glassTiles = tileCounts[Mod.TileType("VitricSand")] + tileCounts[Mod.TileType("AncientSandstone")];
-            voidTiles = tileCounts[Mod.TileType("VoidBrick")] + tileCounts[Mod.TileType("VoidStone")];
             corruptJungleTiles = tileCounts[TileType<GrassJungleCorrupt>()];
             bloodJungleTiles = tileCounts[TileType<GrassJungleBloody>()];
             holyJungleTiles = tileCounts[TileType<GrassJungleHoly>()];
-            aluminumTiles = tileCounts[TileType<AluminumOre>()];
             permafrostTiles = tileCounts[TileType<PermafrostIce>()] + tileCounts[TileType<PermafrostSnow>()] + tileCounts[TileType<AuroraBrick>()];
             ashHellTiles = tileCounts[TileType<MagicAsh>()]; 
         }

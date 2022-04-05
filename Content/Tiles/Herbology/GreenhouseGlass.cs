@@ -49,18 +49,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
-            recipe.AddIngredient(ItemID.Glass, 10);
-            recipe.AddIngredient(ModContent.ItemType<AluminumBarItem>(), 1);
-            recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 10);
-            recipe.AddRecipe();
+            //Recipe recipe = CreateRecipe();
+            //recipe.AddIngredient(ItemID.Glass, 10);
+            //recipe.AddIngredient(ModContent.ItemType<AluminumBarItem>(), 1);
+            //recipe.AddTile(TileID.WorkBenches);
 
-            recipe = new ModRecipe(Mod);//4 wall to 1 tile
-            recipe.AddIngredient(ModContent.ItemType<GreenhouseWallItem>(), 4);
-            recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 1);
-            recipe.AddRecipe();
+            //recipe = CreateRecipe();
+            //recipe.AddIngredient(ModContent.ItemType<GreenhouseWallItem>(), 4);
+            //recipe.AddTile(TileID.WorkBenches);
         }
     }
 
@@ -81,18 +77,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);//1 tile to 4 wall
+            Recipe recipe = CreateRecipe(4);//1 tile to 4 wall
             recipe.AddIngredient(ModContent.ItemType<GreenhouseGlassItem>(), 1);
             recipe.AddTile(TileID.WorkBenches);
-            recipe.SetResult(this, 4);
-            recipe.AddRecipe();
-
-            //recipe = new ModRecipe(Mod);//old recipe when this wall was seperate from the tile
-            //recipe.AddIngredient(ItemID.Glass, 10);
-            //recipe.AddIngredient(ItemID.Wood, 5);
-            //recipe.AddTile(TileID.WorkBenches);
-            //recipe.SetResult(this, 10);
-            //recipe.AddRecipe();
         }
     }
 }

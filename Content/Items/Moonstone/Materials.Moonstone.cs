@@ -21,14 +21,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<MoonstoneOre>(), 3);
             recipe.AddTile(TileID.Furnaces);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
 
             //adds back neccisary vanilla recipies
-            ModRecipe recipe2 = new ModRecipe(Mod);
+            Recipe recipe2 = Mod.CreateRecipe(ItemID.DrillContainmentUnit);
             recipe2.AddIngredient(ItemID.LunarBar, 40);
             recipe2.AddIngredient(ItemID.ChlorophyteBar, 40);
             recipe2.AddIngredient(ItemID.ShroomiteBar, 40);
@@ -36,8 +34,6 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe2.AddIngredient(ItemID.HellstoneBar, 40);
             recipe2.AddIngredient(ItemType<MoonstoneBar>(), 40);
             recipe2.AddTile(TileID.MythrilAnvil);
-            recipe2.SetResult(ItemID.DrillContainmentUnit);
-            recipe2.AddRecipe();
         }
     }
 }

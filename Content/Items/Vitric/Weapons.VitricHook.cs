@@ -51,11 +51,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AddRecipes()
         {
-            var r = new ModRecipe(Mod);
-            r.AddIngredient(ItemID.GrapplingHook);
-            r.AddIngredient(ItemType<VitricOre>(), 30);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.GrapplingHook);
+            recipe.AddIngredient(ItemType<VitricOre>(), 30);
         }
     }
 

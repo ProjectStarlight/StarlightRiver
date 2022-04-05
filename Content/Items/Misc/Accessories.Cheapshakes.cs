@@ -43,27 +43,18 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
 
             recipe.AddIngredient(ItemID.Wood, 50);
             recipe.AddIngredient(ItemID.Chain, 10);
             recipe.AddIngredient(ItemID.DemoniteBar, 20);
             recipe.AddTile(TileID.IceMachine);
 
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
-
-            recipe = new ModRecipe(Mod);
-
+            recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Wood, 50);
             recipe.AddIngredient(ItemID.Chain, 10);
             recipe.AddIngredient(ItemID.CrimtaneBar, 20);
             recipe.AddTile(TileID.IceMachine);
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
         }
     }
 }

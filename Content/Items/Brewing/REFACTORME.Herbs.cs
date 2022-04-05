@@ -36,7 +36,7 @@ namespace StarlightRiver.Items.Herbology.Materials
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Mod.TileType("Deathstalk");
+            Item.createTile = TileType<Deathstalk>();
         }
     }
 }

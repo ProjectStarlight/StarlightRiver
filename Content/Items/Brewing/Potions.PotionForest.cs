@@ -18,13 +18,11 @@ namespace StarlightRiver.Content.Items.Brewing
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.BottledWater, 1);
             recipe.AddIngredient(ItemType<ForestBerries>(), 5);
             recipe.AddIngredient(ItemType<Ivy>(), 20);
             recipe.AddTile(TileType<HerbStation>());
-            recipe.SetResult(this);
-            recipe.AddRecipe();
         }
     }
 }

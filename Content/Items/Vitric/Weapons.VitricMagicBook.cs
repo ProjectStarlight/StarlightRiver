@@ -58,12 +58,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AddRecipes()
         {
-            var r = new ModRecipe(Mod);
-            r.AddIngredient(ItemType<Misc.Sandscript>());
-            r.AddIngredient(ItemType<VitricOre>(), 10);
-            r.AddTile(TileID.Bookcases);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<Misc.Sandscript>());
+            recipe.AddIngredient(ItemType<VitricOre>(), 10);
+            recipe.AddTile(TileID.Bookcases);
         }
     }
 

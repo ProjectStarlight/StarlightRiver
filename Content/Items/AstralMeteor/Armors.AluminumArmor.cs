@@ -46,11 +46,9 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(Mod);
-                recipe.AddIngredient(ItemType<AluminumBarItem>(), 10);
-                recipe.AddTile(TileID.Anvils);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                //Recipe recipe = CreateRecipe();
+                //recipe.AddIngredient(ItemType<AluminumBarItem>(), 10);
+                //recipe.AddTile(TileID.Anvils);
             }
         }
 
@@ -80,11 +78,9 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(Mod);
-                recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
-                recipe.AddTile(TileID.Anvils);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                //Recipe recipe = CreateRecipe();
+                //recipe.AddIngredient(ItemType<AluminumBarItem>(), 20);
+                //recipe.AddTile(TileID.Anvils);
             }
         }
 
@@ -115,11 +111,9 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             public override void AddRecipes()
             {
-                ModRecipe recipe = new ModRecipe(Mod);
-                recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
-                recipe.AddTile(TileID.Anvils);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
+                //Recipe recipe = CreateRecipe();
+                //recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
+                //recipe.AddTile(TileID.Anvils);
             }
         }
     }

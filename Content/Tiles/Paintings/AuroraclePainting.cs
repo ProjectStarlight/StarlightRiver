@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Paintings
     {
         public override string Texture => AssetDirectory.PaintingTile + Name;
 
-        public override void SetDefaults() =>
+        public override void PostSetDefaults() =>
             this.QuickSetPainting(4, 4, 7, new Color(30, 30, 120), "Painting");
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => 

@@ -46,12 +46,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AddRecipes()
 		{
-            var r = new LearnableRecipe("SandScripts");
-            r.AddIngredient(ItemID.Sandstone, 10);
-            r.AddIngredient(ItemID.Topaz);
-            r.AddTile(TileID.Anvils);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = new LearnableRecipe("SandScripts");
+            recipe.AddIngredient(ItemID.Sandstone, 10);
+            recipe.AddIngredient(ItemID.Topaz);
+            recipe.AddTile(TileID.Anvils);
 		}
 	}
 

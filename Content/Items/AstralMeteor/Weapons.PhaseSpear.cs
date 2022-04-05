@@ -55,12 +55,10 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
-            recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
-            recipe.AddIngredient(gemID, 10);
-            recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            //Recipe recipe = CreateRecipe();
+            //recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
+            //recipe.AddIngredient(gemID, 10);
+            //recipe.AddTile(TileID.Anvils);
         }
 
         public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -198,12 +196,10 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
-            recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
-            //recipe.AddIngredient(ItemType<Debug.DebugPotion>());
-            recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            //Recipe recipe = CreateRecipe();
+            //recipe.AddIngredient(ItemType<AluminumBarItem>(), 15);
+            ////recipe.AddIngredient(ItemType<Debug.DebugPotion>());
+            //recipe.AddTile(TileID.Anvils);
         }
     }
 

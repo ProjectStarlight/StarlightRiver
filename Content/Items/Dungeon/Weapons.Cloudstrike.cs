@@ -170,14 +170,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ModContent.ItemType<InertStaff>(), 1);
             recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
             recipe.AddTile(TileID.Anvils);
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
         }
 
     }

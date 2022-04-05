@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.JungleBloody
         {
             Main.wallHouse[Type] = false;
             dustType = 14;
-            drop = Mod.ItemType("WallJungleCorruptItem");
+            drop = ItemType<WallJungleCorruptItem>();
             AddMapEntry(new Color(78, 20, 28));
         }
     }

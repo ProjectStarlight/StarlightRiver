@@ -35,24 +35,15 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(Mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddTile(TileID.TinkerersWorkbench);
 
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
-
-            recipe = new ModRecipe(Mod);
+            recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddTile(TileID.TinkerersWorkbench);
-
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
         }
     }
 }

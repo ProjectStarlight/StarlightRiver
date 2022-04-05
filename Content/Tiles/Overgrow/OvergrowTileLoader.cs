@@ -53,9 +53,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostLoad()
         {
-            int typeLeafOvergrow = Mod.TileType("LeafOvergrow");
-            int typeBrickOvergrow = Mod.TileType("BrickOvergrow");
-            int typeStoneOvergrow = Mod.TileType("StoneOvergrow");
+            int typeLeafOvergrow = TileType<LeafOvergrow>();
+            int typeBrickOvergrow = TileType<BrickOvergrow>();
+            int typeStoneOvergrow = TileType<StoneOvergrow>();
 
             Main.tileMerge[typeLeafOvergrow][typeBrickOvergrow] = true;
             Main.tileMerge[typeLeafOvergrow][typeStoneOvergrow] = true;

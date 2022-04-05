@@ -97,7 +97,7 @@ namespace StarlightRiver.Core
         {
             if (craftingMaterial != ItemID.None)
             {
-                ModRecipe recipe = new ModRecipe(Mod);
+                Recipe recipe = CreateRecipe();
                 recipe.AddIngredient(craftingMaterial, craftingQuantity);
 
                 if (name.Contains("Candle") || name.Contains("Lamp") || name.Contains("Lantern") || name.Contains("Candelabra"))
@@ -138,8 +138,6 @@ namespace StarlightRiver.Core
 
 
                 recipe.AddTile(TileID.WorkBenches);
-                recipe.SetResult(this);
-                recipe.AddRecipe();
             }
         }
     }

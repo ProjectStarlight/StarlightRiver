@@ -17,7 +17,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
-    public class Datsuzei : InworldItem, IOrderedLoadable
+    public class Datsuzei : InworldItem
     {
         public static int activationTimer = 0; //static since this is clientside only and there really shouldnt ever be more than one of these in that context
         public int comboState = 0;
@@ -31,17 +31,12 @@ namespace StarlightRiver.Content.Items.Moonstone
         public float Priority => 1f;
 
         public override void Load()
-		{
-            return true;
-		}
-
-        public void Load()
         {
             StarlightPlayer.PostUpdateEvent += PlayerFrame;
             On.Terraria.Main.DrawInterface_30_Hotbar += OverrideHotbar;
             activationTimer = 0;
             sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
-    }
+        }
 
         public void Unload()
         {
@@ -211,39 +206,39 @@ namespace StarlightRiver.Content.Items.Moonstone
             particle.Position += particle.Velocity;
         }
 
-        private void PlayerFrame(Player Player)
+        private void PlayerFrame(Player player)
         {
-            var proj = Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == Player.whoAmI);
+            var proj = Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
 
             if (proj != null && proj.ai[0] == -1)
-                Player.bodyFrame = new Rectangle(0, 56 * 1, 40, 56);
+                player.bodyFrame = new Rectangle(0, 56 * 1, 40, 56);
         }
 
-        public override bool CanUseItem(Player Player)
+        public override bool CanUseItem(Player player)
 		{
-            return !Main.projectile.Any(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == Player.whoAmI);
+            return !Main.projectile.Any(n => n.active && n.type == ProjectileType<DatsuzeiProjectile>() && n.owner == player.whoAmI);
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            Helper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, Player.Center);
+            Helper.PlayPitched("Magic/HolyCastShort", 1, comboState / 4f, player.Center);
 
             switch (comboState)
             {
                 case 0:
-                    int i = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, Player.whoAmI, 0, 40);
+                    int i = Projectile.NewProjectile(source, player.Center, velocity, ProjectileType<DatsuzeiProjectile>(), damage, knockback, player.whoAmI, 0, 40);
                     break;
 
                 case 1:
-                    i = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, Player.whoAmI, 1, 30);
+                    i = Projectile.NewProjectile(source, player.Center, velocity, ProjectileType<DatsuzeiProjectile>(), damage, knockback, player.whoAmI, 1, 30);
                     break;
 
                 case 2:
-                    i = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, Player.whoAmI, 2, 30);
+                    i = Projectile.NewProjectile(source, player.Center, velocity, ProjectileType<DatsuzeiProjectile>(), damage, knockback, player.whoAmI, 2, 30);
                     break;
 
                 case 3:
-                    i = Projectile.NewProjectile(Player.Center, new Vector2(speedX, speedY), ProjectileType<DatsuzeiProjectile>(), damage, knockBack, Player.whoAmI, 3, 120);
+                    i = Projectile.NewProjectile(source, player.Center, velocity, ProjectileType<DatsuzeiProjectile>(), damage, knockback, player.whoAmI, 3, 120);
                     break;
             }
 
@@ -261,7 +256,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 if (!(Player.armor[0].ModItem is MoonstoneHead) || !(Player.armor[0].ModItem as MoonstoneHead).IsArmorSet(Player))
                 {
                     Item.TurnToAir();
-                    Main.LocalPlayer.QuickSpawnClonedItem(Main.mouseItem);
+                    Main.LocalPlayer.QuickSpawnClonedItem(null, Main.mouseItem, Main.mouseItem.stack); //null since we don't want anything to get any ideas about altering this item being spawned
                     Main.mouseItem = new Item();
                 }
 
@@ -451,8 +446,9 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+            SpriteBatch spriteBatch = Main.spriteBatch;
             if (ComboState == -1)
             {
                 var tex = Request<Texture2D>(Texture).Value;

@@ -87,11 +87,9 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override void AddRecipes()
 		{
-            ModRecipe r = new ModRecipe(Mod);
-            r.AddRecipeGroup(RecipeGroupID.IronBar, 5);
-            r.AddIngredient(extraMaterial);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
+            recipe.AddIngredient(extraMaterial);
 		}
 	}
 
