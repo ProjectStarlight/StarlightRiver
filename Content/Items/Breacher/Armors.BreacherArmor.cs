@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void UpdateEquip(Player Player)
         {
-            Player.rangedDamage += 0.1f;
+            Player.GetDamage(DamageClass.Ranged) += 0.1f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<BreacherHead>() && legs.type == ModContent.ItemType<BreacherLegs>();
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
 
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.rangedDamage), 1.5f, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetProjectileSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged)), 1.5f, Player.whoAmI);
         }
     }
 
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Breacher
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = false;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
 
@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 target = Main.npc[targetIndex];
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             #region battery drawing
 
@@ -231,19 +231,19 @@ namespace StarlightRiver.Content.Items.Breacher
             Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
             Vector2 position = (Projectile.Center - Main.screenPosition);
             Vector2 origin = new Vector2(tex.Width / 2, tex.Height);
-            spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 0.85f), SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 0.85f), SpriteEffects.None, 0);
 
             tex = ModContent.Request<Texture2D>(Texture + "_Battery").Value;
             position = (Projectile.Center - Main.screenPosition) - new Vector2(0, 30);
             origin = tex.Size() / 2;
 
-            spriteBatch.Draw(tex, position, null, scanColor, 0, origin, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(tex, position, null, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
             tex = ModContent.Request<Texture2D>(Texture + "_BatteryCharge").Value;
             Rectangle frame = new Rectangle(0, 0, 11 + (4 * batteryCharge), tex.Height);
 
 
-            spriteBatch.Draw(tex, position, frame, scanColor, 0, origin, 1, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(tex, position, frame, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
             #endregion
 
@@ -257,20 +257,20 @@ namespace StarlightRiver.Content.Items.Breacher
             float currentRotation = rotations[Math.Max(rotations.Count - 1, 0)];
             float rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
             if (rotDifference > 0)
             {
                 for (float k = 0; k < rotDifference; k += 0.02f * Math.Sign(rotDifference))
                 {
-                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+                    DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
                 }
             }
             else
             {
                 for (float k = 0; k > rotDifference; k += 0.02f * Math.Sign(rotDifference))
                 {
-                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+                    DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
                 }
             }
 
@@ -279,20 +279,20 @@ namespace StarlightRiver.Content.Items.Breacher
             currentRotation = rotations2[Math.Max(rotations2.Count - 1, 0)];
             rotDifference = ((((currentRotation - oldRot) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
             if (rotDifference > 0)
             {
                 for (float k = 0; k < rotDifference; k += 0.01f * Math.Sign(rotDifference))
                 {
-                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+                    DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
                 }
             }
             else
             {
                 for (float k = 0; k > rotDifference; k += 0.01f * Math.Sign(rotDifference))
                 {
-                    DrawLine(spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+                    DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
                 }
             }
 
@@ -453,7 +453,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 Vector2 direction = new Vector2(0, -1);
                 direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-                Projectile.NewProjectile(target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
             }
             Charges--;
         }
@@ -522,18 +522,18 @@ namespace StarlightRiver.Content.Items.Breacher
                 ManageTrail();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             Color color = Color.Cyan;
             color.A = 0;
             Color color2 = Color.White;
             color2.A = 0;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
                              color * Alpha * 0.33f, Projectile.rotation, tex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
                              color * Alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
                              color2 * Alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
             return false;
         }
@@ -616,7 +616,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust.NewDustPerfect(Projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustThree>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
                 Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<BreacherDustTwo>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
             }
-            Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
         }
     }
 
@@ -658,7 +658,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
 
         public override bool? CanHitNPC(NPC target)
         {
@@ -847,10 +847,10 @@ namespace StarlightRiver.Content.Items.Breacher
                     {
                         if (NPC.ModNPC != null && NPC.ModNPC is ModNPC ModNPC)
                         {
-                            if (ModNPC.PreDraw(spriteBatch, NPC.GetAlpha(Color.White)))
+                            if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
                                 Main.instance.DrawNPC(i, false);
 
-                            ModNPC.PostDraw(spriteBatch, NPC.GetAlpha(Color.White));
+                            ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
                         }
                     }
                     else

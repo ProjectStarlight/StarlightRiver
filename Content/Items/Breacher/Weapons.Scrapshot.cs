@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
         }
 
-        public override void UseStyle(Player Player)
+        public override void UseStyle(Player Player, Rectangle rect)
         {
             //only know rotation for self
             if (Player.whoAmI == Main.myPlayer)
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (Player.altFunctionUse != 2)
                 {
                     Player.direction = (Player.Center - Main.MouseWorld).ToRotation().ToRotationVector2().X < 0 ? 1 : -1;
-                    Player.ItemRotation = (Player.Center - Main.MouseWorld).ToRotation() + (Player.direction == 1 ? 3.14f : 0);
+                    Player.itemRotation = (Player.Center - Main.MouseWorld).ToRotation() + (Player.direction == 1 ? 3.14f : 0);
                 }
             }
         }

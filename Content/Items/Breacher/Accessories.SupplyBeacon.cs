@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			SupplyBeaconPlayer modPlayer = Player.GetModPlayer<SupplyBeaconPlayer>();
 			modPlayer.active = true;
+			modPlayer.accessory = Item;
 		}
 
 		public override void AddRecipes()
@@ -51,6 +52,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class SupplyBeaconPlayer : ModPlayer
 	{
 		public bool active = false;
+		public Item accessory;
 
 		int cooldown = 0;
 		int damageTicker = 0;
@@ -82,17 +84,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				launchCounter--;
 				if (launchCounter == 1)
-					SummonDrop(Player);
+					SummonDrop(Player, accessory);
 			}
 			else
 				launchCounter = 0;
 		}
 
-		private static void SummonDrop(Player Player)
+		private static void SummonDrop(Player Player, Item acc)
 		{
 			Vector2 direction = new Vector2(0, -1);
 			direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-			Projectile.NewProjectile(Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
+			Projectile.NewProjectile(Player.GetProjectileSource_Accessory(acc), Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
 		}
 	}
 	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
@@ -162,7 +164,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				ManageTrail();
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 position = (Projectile.Center - Main.screenPosition);
@@ -182,21 +184,21 @@ namespace StarlightRiver.Content.Items.Breacher
 					symbolTex.Width / 3,
 					symbolTex.Height / 2);
 
-				spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
-				spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
 			}
-			spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 
 			Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
 			Color color = GetColor();
 			color.A = 0;
 			Color color2 = Color.White;
 			color2.A = 0;
-			spriteBatch.Draw(starTex, position, null,
+			Main.spriteBatch.Draw(starTex, position, null,
 							 color * trailAlpha * 0.33f, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
-			spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
 							 color * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
+			Main.spriteBatch.Draw(starTex, Projectile.Center - Main.screenPosition, null,
 							 color2 * trailAlpha, Projectile.rotation, starTex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
 			return false;
 		}
@@ -363,10 +365,10 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (Main.rand.NextBool(7))
 				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<SupplyBeaconAttackDust>());
-			Player.meleeDamage += 0.2f;
-			Player.rangedDamage += 0.2f;
-			Player.magicDamage += 0.2f;
-			Player.minionDamage += 0.2f;
+			Player.GetDamage(DamageClass.Melee) += 0.2f;
+			Player.GetDamage(DamageClass.Ranged) += 0.2f;
+			Player.GetDamage(DamageClass.Magic) += 0.2f;
+			Player.GetDamage(DamageClass.Summon) += 0.2f;
 		}
 	}
 	public class SupplyBeaconDefenseDust : ModDust

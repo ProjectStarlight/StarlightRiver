@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.IO;
 using Terraria.GameContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -54,11 +55,11 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             type = ModContent.ProjectileType<ExplosiveFlare>();
             position.Y -= 4;
-            Vector2 direction = new Vector2(speedX, speedY);
+            Vector2 direction = velocity;
 
             for (int i = 0; i < 15; i++)
             {
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
 
             Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
-            return base.Shoot(Player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            return true;
         }
     }
 
@@ -92,7 +93,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.aiStyle = 1;
-            aiType = 163;
+            AIType = 163;
         }
 
         public override void SetStaticDefaults()
@@ -187,7 +188,7 @@ namespace StarlightRiver.Content.Items.Breacher
             enemyID = reader.ReadInt32();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             var tex = TextureAssets.Projectile[Projectile.type].Value;
             var source = new Rectangle(0, 0, Projectile.width, 16);
@@ -218,7 +219,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * target.width;
                     var velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
 
-                    Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner, target.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner, target.whoAmI);
                 }
             }
 

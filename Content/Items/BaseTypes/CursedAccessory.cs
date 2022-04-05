@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -150,7 +151,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
             if (boomTimer >= 85)
             {
-                var tex = Main.PopupTexture[Item.type];
+                var tex = TextureAssets.Item[Item.type].Value;
 
                 Item.TurnToAir();
 ;
