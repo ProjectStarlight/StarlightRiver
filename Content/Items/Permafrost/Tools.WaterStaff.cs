@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             {
                 Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
-                if (Player.altFunctionUse != 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 0)
+                if (Player.altFunctionUse != 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 0) //PORTTODO: Port to new 1.4 tile data utils
                 {
                     tile.bTileHeader3 |= 0b00100000;
 

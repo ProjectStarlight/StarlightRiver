@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 12);
+			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 12);
 			recipe.AddTile(TileID.Anvils);
 		}
 	}
@@ -276,7 +276,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 						if (angularVelocity != 0)
 						{
-							if (Main.tile[(int)tilePos.X, (int)tilePos.Y].collisionType == 1 && angularVelocity != 0 && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Math.Sign(direction.X))
+							if (Main.tile[(int)tilePos.X, (int)tilePos.Y].BlockType == BlockType.Solid && angularVelocity != 0 && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Math.Sign(direction.X))
 							{
 									for (int i = 0; i < 13; i++)
 									{
@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 									}
 									if (Charge > 0)
 									{
-										Projectile proj = Projectile.NewProjectileDirect(Projectile.Center, new Vector2(0, 7), ModContent.ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+										Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
 
 										if (proj.ModProjectile is QuarterOrb modproj)
 										{
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 								Player.GetModPlayer<StarlightPlayer>().Shake += 12;
 								angularVelocity = 0;
 								attackDuration = 30;
-								Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+								Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
 							}
 
 							if (LENGTH < LENGTH + SWAY)
@@ -375,8 +375,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return false;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
         {
+			var spriteBatch = Main.spriteBatch;
 			Texture2D head = ModContent.Request<Texture2D>(Texture + "_Head").Value;
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			SpriteEffects effects = zRotation > 1.57f && zRotation < 4.71f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -435,8 +436,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void AdjustPlayer()
         {
 			Player.ChangeDir(FacingRight ? -1 : 1);
-			Player.ItemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Player.direction > 0) ? 0 : MathHelper.Pi));
-			Player.ItemAnimation = Player.ItemTime = 5;
+			Player.itemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Player.direction > 0) ? 0 : MathHelper.Pi));
+			Player.itemAnimation = Player.itemTime = 5;
 		}
     }
 	public class QuarterOrb : ModProjectile, IDrawAdditive

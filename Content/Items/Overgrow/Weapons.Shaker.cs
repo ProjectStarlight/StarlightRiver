@@ -26,20 +26,20 @@ namespace StarlightRiver.Content.Items.Overgrow
             StarlightPlayer.ResetEffectsEvent += ResetLiftAnimation;
         }
 
-		private void DoLiftAnimation(Player Player)
+		private void DoLiftAnimation(Player player)
 		{
-            var instance = Player.HeldItem.ModItem;
+            var instance = player.HeldItem.ModItem;
 
             if (instance is Shaker)
             {
                 if ((instance as Shaker).lifting)
-                    Player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
+                    player.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
             }
         }
 
-        private void ResetLiftAnimation(StarlightPlayer Player)
+        private void ResetLiftAnimation(StarlightPlayer modPlayer)
         {
-            var instance = Player.Player.HeldItem.ModItem;
+            var instance = modPlayer.Player.HeldItem.ModItem;
 
             if (instance is Shaker)
             {
@@ -64,12 +64,12 @@ namespace StarlightRiver.Content.Items.Overgrow
             Item.noUseGraphic = true;
         }
 
-        public override bool CanUseItem(Player Player) => !Main.projectile.Any(n => n.active && Main.player[n.owner] == Player && n.type == ProjectileType<ShakerBall>());
+        public override bool CanUseItem(Player player) => !Main.projectile.Any(n => n.active && Main.player[n.owner] == player && n.type == ProjectileType<ShakerBall>());
 
-        public override bool? UseItem(Player Player)
+        public override bool? UseItem(Player player)
         {
-            int proj = Projectile.NewProjectile(Player.position + new Vector2(0, -32), Vector2.Zero, ProjectileType<ShakerBall>(), Item.damage, Item.knockBack);
-            Main.projectile[proj].owner = Player.whoAmI;
+            int proj = Projectile.NewProjectile(player.GetProjectileSource_Item(Item), player.position + new Vector2(0, -32), Vector2.Zero, ProjectileType<ShakerBall>(), Item.damage, Item.knockBack);
+            Main.projectile[proj].owner = player.whoAmI;
             return true;
         }
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.FirstOrDefault(tooltip => tooltip.Name == "Speed" && tooltip.Mod == "Terraria").text = "Snail Speed";
+            tooltips.FirstOrDefault(tooltip => tooltip.Name == "Speed" && tooltip.mod == "Terraria").text = "Snail Speed";
         }
     }
 
@@ -115,11 +115,11 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void AI()
         {
-            Player Player = Main.player[Projectile.owner];
+            Player player = Main.player[Projectile.owner];
 
             if (Projectile.timeLeft < 2) Projectile.timeLeft = 2;
             Projectile.scale = Timer < 10 ? (Timer / 10f) : 1;
-            Projectile.damage = (int)(Timer * 1.2f * Player.meleeDamage);
+            Projectile.damage = (int)(Timer * 1.2f * player.GetDamage(DamageClass.Melee));
 
             if (Timer == 100)
             {
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (State == 0) //charging/holding
             {
-                Projectile.position = Player.Top + (Projectile.position - Projectile.Bottom);
+                Projectile.position = player.Top + (Projectile.position - Projectile.Bottom);
             }
 
             if (State == 0 && Timer < 100) //charge up
@@ -150,10 +150,10 @@ namespace StarlightRiver.Content.Items.Overgrow
                 Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 35, DustType<Dusts.GoldWithMovement>(), -Vector2.One.RotatedBy(rot) * 1.5f, 0, default, Timer / 100f);
             }
 
-            if (!Player.channel && Timer > 10 && State == 0) //throw if enough charge
+            if (!player.channel && Timer > 10 && State == 0) //throw if enough charge
             {
-                if(Player == Main.LocalPlayer)
-                    Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Player.Center) * Timer * 0.1f;
+                if(player == Main.LocalPlayer)
+                    Projectile.velocity = Vector2.Normalize(Main.MouseWorld - player.Center) * Timer * 0.1f;
 
                 Projectile.tileCollide = true;
                 Projectile.friendly = true;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Overgrow
                     Projectile.timeLeft = 120;
                     State = 2;
 
-                    Player.GetModPlayer<StarlightPlayer>().Shake += (int)(Timer * 0.2f);
+                    player.GetModPlayer<StarlightPlayer>().Shake += (int)(Timer * 0.2f);
                     for (int k = 0; k <= 100; k++)
                     {
                         Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Timer / 10f);
@@ -184,12 +184,12 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (State == 2) //retracting
             {
-                Projectile.velocity += -Vector2.Normalize(Projectile.Center - Player.Center) * 0.1f;
+                Projectile.velocity += -Vector2.Normalize(Projectile.Center - player.Center) * 0.1f;
 
                 if (Projectile.velocity.Length() >= 5) 
                     State = 3;
 
-                if (Vector2.Distance(Projectile.Center, Player.Center) <= 30) 
+                if (Vector2.Distance(Projectile.Center, player.Center) <= 30) 
                     Projectile.timeLeft = 0;
 
                 if (Projectile.timeLeft == 3) 
@@ -198,10 +198,10 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (State == 3) //retracting faster
             {
-                Projectile.velocity = -Vector2.Normalize(Projectile.Center - Player.Center) * 5;
+                Projectile.velocity = -Vector2.Normalize(Projectile.Center - player.Center) * 5;
                 Projectile.velocity.Y += 3;
 
-                if (Vector2.Distance(Projectile.Center, Player.Center) <= 30) 
+                if (Vector2.Distance(Projectile.Center, player.Center) <= 30) 
                     Projectile.timeLeft = 0;
 
                 if (Projectile.timeLeft == 3)
@@ -210,17 +210,17 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (State == 4) //retracting even faster and phasing
             {
-                Projectile.velocity = -Vector2.Normalize(Projectile.Center - Player.Center) * 18;
+                Projectile.velocity = -Vector2.Normalize(Projectile.Center - player.Center) * 18;
                 Projectile.tileCollide = false;
 
-                if (Vector2.Distance(Projectile.Center, Player.Center) <= 30)
+                if (Vector2.Distance(Projectile.Center, player.Center) <= 30)
                     Projectile.timeLeft = 0;
             }
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Player Player = Main.player[Projectile.owner];
 
@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Items.Overgrow
                 for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(Player.Center, Projectile.Center) / 16))
                 {
                     var pos = (Vector2.Lerp(Projectile.Center, Player.Center + new Vector2(0, Main.player[Projectile.owner].gfxOffY), k) - Main.screenPosition);
-                    spriteBatch.Draw(chainTex, pos, null, lightColor, (Projectile.Center - Player.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(chainTex, pos, null, lightColor, (Projectile.Center - Player.Center).ToRotation() + 1.58f, chainTex.Size() / 2, 1, 0, 0);
                 }
             }
 
@@ -240,13 +240,15 @@ namespace StarlightRiver.Content.Items.Overgrow
             if (State == 0)
                 ballPos += new Vector2(0, Player.gfxOffY);
 
-            spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, ballPos, TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Projectile.Size / 2, Projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, ballPos, TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Projectile.Size / 2, Projectile.scale, 0, 0);
 
             return false;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
+            var spriteBatch = Main.spriteBatch;
+
             if (State == 0)
             {
                 float colormult = Timer / 100f * 0.7f;

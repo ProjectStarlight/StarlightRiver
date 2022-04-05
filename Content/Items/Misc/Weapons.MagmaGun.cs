@@ -15,6 +15,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -272,7 +273,7 @@ namespace StarlightRiver.Content.Items.Misc
 			counter++;
 			foreach (Projectile Projectile in Main.projectile)
             {
-				if (Projectile.owner == Player.whoAmI && Projectile.type == type && Projectile.active)
+				if (Projectile.owner == player.whoAmI && Projectile.type == type && Projectile.active)
 					proj = Projectile;
             }
 			if (counter % 5 == 0)
@@ -286,22 +287,22 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					proj.damage = damage / 2;
 					var mp = proj.ModProjectile as MagmaGunPhantomProj;
-					Vector2 direction = new Vector2(speedX, speedY).RotatedByRandom(0.1f);
+					Vector2 direction = velocity.RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
 					Vector2 position2 = position;
-					position2 += Vector2.Normalize(new Vector2(speedX, speedY)) * 20;
-					position2 += Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(1.57f * -Player.direction)) * 5;
+					position2 += Vector2.Normalize(velocity) * 20;
+					position2 += Vector2.Normalize(velocity.RotatedBy(1.57f * -player.direction)) * 5;
 					mp.CreateGlob(position2, direction);
 				}
 			}
 			return false;
 		}
 
-        public override void UpdateInventory(Player Player)
+        public override void UpdateInventory(Player player)
         {
-            if (Player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
+            if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
             {
-				proj = Projectile.NewProjectileDirect(Player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, Player.whoAmI);
+				proj = Projectile.NewProjectileDirect(player.GetProjectileSource_Item(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
             }
         }
 
@@ -482,9 +483,9 @@ namespace StarlightRiver.Content.Items.Misc
 						if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
 						{
 							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
-							if (!Main.tileSolid[tile2.type] || !tile2.HasTile)
+							if (!Main.tileSolid[tile2.TileType] || !tile2.HasTile)
 							{
-								Gore.NewGoreDirect(pos, bubbleDir, Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+								Gore.NewGoreDirect(pos, bubbleDir, StarlightRiver.Instance.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 							}
 						}
 					}
@@ -508,7 +509,7 @@ namespace StarlightRiver.Content.Items.Misc
 					if (WorldGen.InWorld(i / 16, j / 16))
 					{
 						Tile tile = Main.tile[i / 16, j / 16];
-						if (tile.HasTile && Main.tileSolid[tile.type] && !TileID.Sets.Platforms[tile.type])
+						if (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])
 						{
 							return true;
 						}
@@ -559,9 +560,9 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.ignoreWater = true;
 		}
 
-		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			drawCacheProjsBehindNPCsAndTiles.Add(index);
+			behindNPCsAndTiles.Add(index);
 		}
 
 		public override void AI()
@@ -613,13 +614,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Globs.Add(new MagmaGlob(vel, pos));
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
 			foreach (MagmaGlob glob in Globs)
             {
 				if (glob.active)
                 {
-					glob.Draw(spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
+					glob.Draw(Main.spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
                 }
             }
 			return false;
@@ -720,7 +721,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 			{
 				dust.velocity.Y += 0.2f;
-				if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+				if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == BlockType.Solid)
 					dust.velocity *= -0.5f;
 			}
 

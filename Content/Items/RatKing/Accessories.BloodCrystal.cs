@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.RatKing
 {

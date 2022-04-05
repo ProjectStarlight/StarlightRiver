@@ -7,6 +7,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
@@ -42,12 +43,13 @@ namespace StarlightRiver.Content.Items.Starwood
 
         private void spawnStar(Vector2 position)
         {
-            int Item = Item.NewItem(position, ItemID.Star, 1, true, 0, true);
+            var player = Main.player[Item.playerIndexTheItemIsReservedFor];
+            int item = Item.NewItem(player.GetItemSource_Misc(player.whoAmI), position, ItemID.Star, 1, true, 0, true);
 
 
-            if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
             {
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
             }
         }
 
@@ -55,10 +57,7 @@ namespace StarlightRiver.Content.Items.Starwood
         {
             var mp = Player.GetModPlayer<StarlightPlayer>();
 
-            Player.meleeCrit += mp.empowered ? 3 : -3;
-            Player.rangedCrit += mp.empowered ? 3 : -3;
-            Player.magicCrit += mp.empowered ? 3 : -3;
-            Player.thrownCrit += mp.empowered ? 3 : -3;
+            Player.GetCritChance(DamageClass.Generic) += mp.empowered ? 3 : -3;
         }
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)

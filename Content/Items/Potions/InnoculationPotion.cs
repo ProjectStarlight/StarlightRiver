@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Potions
 	{
 		public override string Texture => AssetDirectory.PotionsItem + Name;
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculated");
 			Description.SetDefault("+30% to DoT Resistance");

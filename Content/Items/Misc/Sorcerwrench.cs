@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -45,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             position = Main.MouseWorld;
-            proj = Projectile.NewProjectileDirect(position, Vector2.Zero, type, damage, knockBack, Player.whoAmI);
+            proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI);
             return false;
         }
     }
@@ -56,7 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void Load()
         {
-            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
+            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Find where vanilla draws resource bars now
             
         }
 
@@ -112,13 +113,13 @@ namespace StarlightRiver.Content.Items.Misc
 
                 owner.ChangeDir(Main.MouseWorld.X > owner.position.X ? 1 : -1);
                 Vector2 direction = owner.DirectionTo(Main.MouseWorld);
-                owner.ItemTime = owner.ItemAnimation = 2;
-                owner.ItemRotation = direction.ToRotation();
+                owner.itemTime = owner.itemAnimation = 2;
+                owner.itemRotation = direction.ToRotation();
 
                 if (owner.direction != 1)
-                    owner.ItemRotation -= 3.14f;
+                    owner.itemRotation -= 3.14f;
 
-                owner.ItemRotation = MathHelper.WrapAngle(owner.ItemRotation);
+                owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation);
 
                 Vector2 endCornerGoalGoal;
                 endCornerGoalGoal.X = (int)Math.Floor(Main.MouseWorld.X / 16) * 16;
@@ -286,7 +287,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             if (Projectile.timeLeft < DESTRUCTIONTIME - 2)
                 return false;
@@ -298,11 +299,11 @@ namespace StarlightRiver.Content.Items.Misc
                 for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCorner.Y, yIncrement); j += yIncrement)
                 {
                     if (i == startCorner.X || Math.Abs(i - endCorner.X) < 2 || j == startCorner.Y || Math.Abs(j - endCorner.Y) < 2)
-                        DrawPixel(spriteBatch, Color.Red, new Vector2(i, j));
+                        DrawPixel(Main.spriteBatch, Color.Red, new Vector2(i, j));
                     else
                     {
                         Color shadeColor = Color.LightSalmon;
-                        DrawPixel(spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
+                        DrawPixel(Main.spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
                     }
                 }
             }
@@ -337,11 +338,24 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
             {
-                if (Main.tileDungeon[(int)Main.tile[i, j].type] || Main.tile[i, j].type == 88 || Main.tile[i, j].type == 21 || Main.tile[i, j].type == 26 || Main.tile[i, j].type == 107 || Main.tile[i, j].type == 108 || Main.tile[i, j].type == 111 || Main.tile[i, j].type == 226 || Main.tile[i, j].type == 237 || Main.tile[i, j].type == 221 || Main.tile[i, j].type == 222 || Main.tile[i, j].type == 223 || Main.tile[i, j].type == 211 || Main.tile[i, j].type == 404)
+                if (Main.tileDungeon[(int)Main.tile[i, j].TileType] || 
+                    Main.tile[i, j].TileType == TileID.Dressers || 
+                    Main.tile[i, j].TileType == TileID.Containers || 
+                    Main.tile[i, j].TileType == TileID.DemonAltar || 
+                    Main.tile[i, j].TileType == TileID.Cobalt ||
+                    Main.tile[i, j].TileType == TileID.Mythril ||
+                    Main.tile[i, j].TileType == TileID.Adamantite ||
+                    Main.tile[i, j].TileType == TileID.LihzahrdBrick ||
+                    Main.tile[i, j].TileType == TileID.LihzahrdAltar ||
+                    Main.tile[i, j].TileType == TileID.Palladium ||
+                    Main.tile[i, j].TileType == TileID.Orichalcum ||
+                    Main.tile[i, j].TileType == TileID.Titanium || 
+                    Main.tile[i, j].TileType == TileID.Chlorophyte ||
+                    Main.tile[i, j].TileType == TileID.DesertFossil)
                 {
                     return false;
                 }
-                if (!Main.hardMode && Main.tile[i, j].type == 58)
+                if (!Main.hardMode && Main.tile[i, j].TileType == TileID.Hellstone)
                 {
                     return false;
                 }
@@ -386,13 +400,14 @@ namespace StarlightRiver.Content.Items.Misc
                     starHeight += Main.cursorScale - 1;
 
                 var rottenManaAmount = Player.statManaMax2 - Projectile.manaUsed; //amount of mana to draw as rotten
+                var manaTex = TextureAssets.Mana.Value;
 
                 if (rottenManaAmount < manaDrawn + manaMissing && i < (Player.statManaMax2 / 20 + 1) - manaMissing)
                 {
                     if (manaDrawn - rottenManaAmount < 20)
                     {
                         var tex1 = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + manaTex.Height / 2f) + (manaTex.Height - manaTex.Height * starHeight) / 2f + (28 * (i - 1)));
 
                         int off = (int)(rottenManaAmount % 20 / 20f * tex1.Height);
                         var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
@@ -403,7 +418,7 @@ namespace StarlightRiver.Content.Items.Misc
                     }
 
                     var tex = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                    var pos = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                    var pos = new Vector2(Main.screenWidth - 25, (30 + manaTex.Height / 2f) + (manaTex.Height - manaTex.Height * starHeight) / 2f + (28 * (i - 1)));
 
                     Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, starHeight, 0, 0);
                 }
@@ -522,7 +537,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (type == NPCID.Mechanic)
             {
-                shop.Item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
+                shop.item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
                 nextSlot++;
             }
         }

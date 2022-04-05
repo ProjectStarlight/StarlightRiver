@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<TempleLens>());
-            recipe.AddIngredient(ItemType<Moonstone.MoonstoneBar>(), 5);
+            recipe.AddIngredient(ItemType<Moonstone.MoonstoneBarItem>(), 5);
             recipe.AddTile(TileID.Anvils);
         }
 	}

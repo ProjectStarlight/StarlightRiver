@@ -1,10 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Items.Armor;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
@@ -32,12 +34,14 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void UpdateEquip(Player Player)
         {
-            Player.magicDamage += 0.05f;
+            Player.GetDamage(DamageClass.Magic) += 0.05f;
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
-        public override void UpdateVanity(Player Player, EquipType type) =>
+        public override void UpdateVanity(Player Player)
+        {
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
+        }
 
         public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
         {
@@ -56,7 +60,6 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void Load()//adds method to Starlight Player event
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHitNPCStarwood;
-            return true;
         }
 
         public override void SetStaticDefaults()
@@ -79,11 +82,16 @@ namespace StarlightRiver.Content.Items.Starwood
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
-        public override void UpdateVanity(Player Player, EquipType type) =>
+        public override void UpdateVanity(Player Player)
+        {
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
+        }
 
-        public override bool IsArmorSet(Item head, Item body, Item legs) => 
-            head.type == ItemType<StarwoodHat>() && legs.type == ItemType<StarwoodBoots>();//what Items are required for set
+        public override bool IsArmorSet(Item head, Item body, Item legs)
+        {
+            return head.type == ItemType<StarwoodHat>() && 
+                legs.type == ItemType<StarwoodBoots>();
+        }
 
         public override void UpdateArmorSet(Player Player)
         {
@@ -139,12 +147,14 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void UpdateEquip(Player Player)
         {
-            Player.magicCrit += 5;
+            Player.GetCritChance(DamageClass.Magic) += 5;
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
-        public override void UpdateVanity(Player Player, EquipType type) =>
+        public override void UpdateVanity(Player Player)
+        {
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
+        }
 
         public void DrawArmorLayer(PlayerDrawInfo info)
         {
@@ -171,12 +181,14 @@ namespace StarlightRiver.Content.Items.Starwood
     internal class ManastarDrops : GlobalNPC
     {
         public bool DropStar = false;
+
         public override bool InstancePerEntity => true;
-        public override void NPCLoot(NPC NPC)
+
+		public override void OnKill(NPC npc)
         {
             if (DropStar && Main.rand.Next(2) == 0)
             {
-                Item.NewItem(NPC.Center, ItemID.Star);
+                Item.NewItem(npc.GetItemSource_Loot(), npc.Center, ItemID.Star);
             }
         }
     }

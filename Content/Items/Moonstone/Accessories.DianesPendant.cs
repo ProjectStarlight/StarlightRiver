@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Diane's Pendant");
-			Tooltip.SetDefault("Something about a crescent idk \n+20 barrier"); //EGSHELS FIX!!!!!
+			Tooltip.SetDefault("Something about a crescent idk \n+20 barrier"); //TODO: EGSHELS FIX!!!!!
 
 		}
 
@@ -44,14 +44,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)
 			{
-				Projectile.NewProjectile(Player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), (int)(30 * Player.magicDamage), 1.5f, Player.whoAmI);
+				Projectile.NewProjectile(Player.GetProjectileSource_Accessory(Item), Player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), 30, 1.5f, Player.whoAmI);
 			}
 		}
 
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 4);
+			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 4);
 			recipe.AddIngredient(ModContent.ItemType<AquaSapphire>(), 1);
 			recipe.AddTile(TileID.Anvils);
 		}
@@ -90,7 +90,6 @@ namespace StarlightRiver.Content.Items.Moonstone
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 1;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
 
@@ -106,6 +105,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Projectile.timeLeft = 216000;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
+            Projectile.DamageType.CountsAs(DamageClass.Magic);
         }
 
         public override void AI()

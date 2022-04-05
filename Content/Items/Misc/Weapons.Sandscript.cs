@@ -39,14 +39,14 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            int i = Projectile.NewProjectile(Player.Center, Vector2.Normalize(Main.MouseWorld - Player.Center) * 25, type, damage, knockBack, Player.whoAmI);
-            Main.projectile[i].rotation = (Main.MouseWorld - Player.Center).ToRotation();
+            int i = Projectile.NewProjectile(source, player.Center, Vector2.Normalize(Main.MouseWorld - player.Center) * 25, type, damage, knockback, player.whoAmI);
+            Main.projectile[i].rotation = (Main.MouseWorld - player.Center).ToRotation();
             return false;
         }
 
 		public override void AddRecipes()
 		{
-            Recipe recipe = new LearnableRecipe("SandScripts");
+            Recipe recipe = new LearnableRecipe("SandScripts"); //PORTTODO: Find out how to reimplement learnable recipes
             recipe.AddIngredient(ItemID.Sandstone, 10);
             recipe.AddIngredient(ItemID.Topaz);
             recipe.AddTile(TileID.Anvils);

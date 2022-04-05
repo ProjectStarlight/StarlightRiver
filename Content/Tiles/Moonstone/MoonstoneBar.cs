@@ -10,6 +10,6 @@ namespace StarlightRiver.Content.Tiles.Moonstone
         public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
         public override void SetStaticDefaults() =>
-            this.QuickSetBar(ItemType<Items.Moonstone.MoonstoneBar>(), DustType<Dusts.Electric>(), new Color(156, 172, 177));
+            this.QuickSetBar(ItemType<Items.Moonstone.MoonstoneBarItem>(), DustType<Dusts.Electric>(), new Color(156, 172, 177));
     }
 }

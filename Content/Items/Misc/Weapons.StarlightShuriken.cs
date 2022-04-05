@@ -48,13 +48,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            var aim = Vector2.Normalize(new Vector2(speedX, speedY));
+            var aim = Vector2.Normalize(velocity);
 
-			Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, Player.Center);
+			Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, player.Center);
 
             if(amountToThrow == 1)
 			{
-				Projectile.NewProjectile(Player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, Player.whoAmI);
+				Projectile.NewProjectile(source, player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockback, player.whoAmI);
 
                 amountToThrow = 3;
                 return false;
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
             for(int k = 0; k < amountToThrow; k++)
 			{
                 float maxAngle = amountToThrow == 3 ? 0.21f : 0.16f;
-                int i = Projectile.NewProjectile(Player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockBack, Player.whoAmI, 0, amountToThrow);
+                int i = Projectile.NewProjectile(source, player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockback, player.whoAmI, 0, amountToThrow);
                 var proj = Main.projectile[i].ModProjectile as StarShuriken;
                 proj.creator = this;
 			}
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			var tex = ModContent.Request<Texture2D>(Texture).Value;
 			var texOutline = ModContent.Request<Texture2D>(Texture + "Outline").Value;
@@ -156,8 +156,8 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.timeLeft < 30)
 				drawColor = color * (Projectile.timeLeft / 30f);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
-			spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
 			return false;
 		}
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			var tex = ModContent.Request<Texture2D>(Texture).Value;
 			var texOutline = ModContent.Request<Texture2D>(Texture + "Outline").Value;
@@ -321,8 +321,8 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.timeLeft < 30)
 				drawColor = color * (Projectile.timeLeft / 30f);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
-			spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
 			return false;
 		}

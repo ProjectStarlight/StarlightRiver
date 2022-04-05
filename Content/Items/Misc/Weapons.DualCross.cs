@@ -46,10 +46,9 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 7.8f;
 			Item.crit = 6;
             Item.noUseGraphic = true;
-
 		}
 
-        public override bool ConsumeAmmo(Player Player)
+		public override bool CanConsumeAmmo(Player Player)
         {
             return false;
         }
@@ -89,14 +88,14 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (ticker % 2 == 1)
             {
-                Vector2 offset = Vector2.Normalize(new Vector2(speedX, speedY)).RotatedBy(-1.57f * Player.direction) * 10;
+                Vector2 offset = Vector2.Normalize(velocity).RotatedBy(-1.57f * player.direction) * 10;
                 position += offset;
-                Player.ItemTime = 19;
-                Projectile.NewProjectile(position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, Player.whoAmI);
+                player.itemTime = 19;
+                Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, player.whoAmI);
             }
             else
-                position -= new Vector2(speedX, speedY);
-            return base.Shoot(Player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+                position -= velocity;
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
     }
 
@@ -131,7 +130,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AI()
         {
             owner.heldProj = Projectile.whoAmI;
-            if (owner.ItemTime <= 1)
+            if (owner.itemTime <= 1)
                 Projectile.active = false;
             Projectile.Center = owner.Center;
 
@@ -142,9 +141,9 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
             Vector2 position = (owner.Center + (currentDirection * 15)) - Main.screenPosition;
 
             if (owner.direction == 1)
@@ -262,11 +261,11 @@ namespace StarlightRiver.Content.Items.Misc
             return type;
         }
 
-        public override void PickAmmo(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref int damage, ref float knockback)
+        public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
         {
             if (weapon.type != ModContent.ItemType<DualCross>())
             {
-                base.PickAmmo(weapon, ammo, Player, ref type, ref speed, ref damage, ref knockback);
+                base.PickAmmo(weapon, ammo, player, ref type, ref speed, ref damage, ref knockback);
                 return;
             }
 
@@ -278,8 +277,8 @@ namespace StarlightRiver.Content.Items.Misc
             bool canShoot = false;
             Item obj = new Item();
             Item obj2 = new Item();
-            obj = DualCrossGlobalItem.GetAmmo(ticker % 2, weapon, Player, ref canShoot);
-            obj2 = DualCrossGlobalItem.GetAmmo((ticker + 1) % 2, weapon, Player, ref canShoot);
+            obj = DualCrossGlobalItem.GetAmmo(ticker % 2, weapon, player, ref canShoot);
+            obj2 = DualCrossGlobalItem.GetAmmo((ticker + 1) % 2, weapon, player, ref canShoot);
 
             damage += obj.damage;
 
@@ -288,8 +287,8 @@ namespace StarlightRiver.Content.Items.Misc
 
             mp.ticker++;
 
-            type = GetProjType(weapon, obj, Player, type);
-            type2 = GetProjType(weapon, obj2, Player, type2);
+            type = GetProjType(weapon, obj, player, type);
+            type2 = GetProjType(weapon, obj2, player, type2);
 
             Projectile proj = new Projectile();
             proj.SetDefaults(type);
@@ -297,8 +296,8 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile proj2 = new Projectile();
             proj2.SetDefaults(type2);
 
-            float speed1 = GetSpeed(Player, obj, weapon, speed) * (proj.extraUpdates + 1);
-            float speed2 = GetSpeed(Player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
+            float speed1 = GetSpeed(player, obj, weapon, speed) * (proj.extraUpdates + 1);
+            float speed2 = GetSpeed(player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
             speed = ((speed1 + speed2) / 2) / (proj.extraUpdates + 1);
 
             bool flag2 = false;
@@ -307,19 +306,19 @@ namespace StarlightRiver.Content.Items.Misc
                 flag2 = true;
             if (weapon.type == 3540 && Main.rand.Next(3) != 0)
                 flag2 = true;
-            if (Player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.Next(5) == 0)
+            if (player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.Next(5) == 0)
                 flag2 = true;
-            if (Player.ammoBox && Main.rand.Next(5) == 0)
+            if (player.ammoBox && Main.rand.Next(5) == 0)
                 flag2 = true;
-            if (Player.ammoPotion && Main.rand.Next(5) == 0)
+            if (player.ammoPotion && Main.rand.Next(5) == 0)
                 flag2 = true;
-            if (Player.ammoCost80 && Main.rand.Next(5) == 0)
+            if (player.ammoCost80 && Main.rand.Next(5) == 0)
                 flag2 = true;
-            if (Player.ammoCost75 && Main.rand.Next(4) == 0)
+            if (player.ammoCost75 && Main.rand.Next(4) == 0)
                 flag2 = true;
-            if (type == 85 && Player.ItemAnimation < Player.ItemAnimationMax - 6)
+            if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)
                 flag2 = true;
-            if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && Player.ItemAnimation < Player.ItemAnimationMax - 5)
+            if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
                 flag2 = true;
             if (flag2 || !obj.consumable)
                 return;

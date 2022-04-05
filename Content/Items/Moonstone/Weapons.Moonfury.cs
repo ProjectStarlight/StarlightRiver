@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ModContent.ItemType<MoonstoneBar>(), 8);
+            recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 8);
             recipe.AddIngredient(ItemID.Starfury, 1);
             recipe.AddTile(TileID.Anvils);
         }
@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             cooldown--;
             base.HoldItem(Player);
         }
+
         public override void UseItemHitbox(Player Player, ref Rectangle hitbox, ref bool noHitbox)
         {
             if(Main.rand.Next(15) == 0)
@@ -69,33 +70,38 @@ namespace StarlightRiver.Content.Items.Moonstone
                 new Color(Main.rand.NextFloat(0.15f, 0.30f), Main.rand.NextFloat(0.2f, 0.30f), Main.rand.NextFloat(0.3f, 0.5f), 0f), Main.rand.NextFloat(0.15f, 0.40f));
             }
         }
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            if (cooldown > 0)
-                return false;
+
+		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+		{
             cooldown = 75;
             Vector2 direction = new Vector2(0, -1);
             direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
             position = Main.MouseWorld + (direction * 800);
 
             direction *= -10;
-            speedX = direction.X;
-            speedY = direction.Y;
+            velocity = direction;
             damage *= 2;
+        }
+
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            if (cooldown > 0)
+                return false;
+
             return true;
         }
 
-        public override void ModifyHitNPC(Player Player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
             if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
             {
-                Player.GetModPlayer<StarlightPlayer>().Shake += 10;
+                player.GetModPlayer<StarlightPlayer>().Shake += 10;
                 int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
                 target.DelBuff(index);
                 Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
                 damage += 5;
-                damage += (int)((float)target.defense / (float)5);
-                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, Player.whoAmI);
+                damage += (int)(target.defense / 5f);
+                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
                 for (int i = 0; i < 16; i++)
                     Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(Main.rand.NextFloat(6.28f)) * Main.rand.NextFloat(12), 0, new Color(50, 50, 255), 0.4f);
@@ -172,7 +178,9 @@ namespace StarlightRiver.Content.Items.Moonstone
                 //add hit sound effect here
                 for (int k = 0; k <= 8; k++)
                 {
-                    Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Glow>(), (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f), 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
+                    Vector2 pos = Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15);
+                    Vector2 velocity = (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f);
+                    Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), velocity, 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
                     if (Main.rand.Next(3) == 0)
                     {
                         Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)),
@@ -181,7 +189,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     }
                 }
                 Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
-                Projectile.NewProjectileDirect(Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
+                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
                 stuck = true;
                 Projectile.extraUpdates = 0;
@@ -191,10 +199,11 @@ namespace StarlightRiver.Content.Items.Moonstone
             return false;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-            spriteBatch.Draw(tex, (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, lightColor * (1 - (Projectile.alpha / 255f)), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
+            var pos = (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition;
+            Main.spriteBatch.Draw(tex, pos, null, lightColor * (1 - (Projectile.alpha / 255f)), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
             return false;
         }
 
@@ -308,7 +317,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             ManageTrail();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor)
+		{
+            return false;
+		}
 
         public override bool? CanHitNPC(NPC target)
         {

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -25,8 +26,6 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override bool CloneNewInstances => true;
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Twisted Greatsword");
@@ -35,11 +34,10 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void Load()
         {
-            On.Terraria.Main.DrawPlayer += DrawChargeBar;
-            return true;
+            On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += DrawChargeBar;
         }
 
-        public override void SetDefaults()
+		public override void SetDefaults()
         {
             Item.damage = 28;
             Item.crit = 5;
@@ -75,7 +73,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (Player.whoAmI == Main.myPlayer)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetProjectileSource_Item(Item), Player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
                 return true;
             }
             return false;
@@ -87,8 +85,8 @@ namespace StarlightRiver.Content.Items.Misc
             writer.Write(timer);
         }
 
-        public override void NetRecieve(BinaryReader reader)
-        {
+		public override void NetReceive(BinaryReader reader)
+		{
             charge = reader.ReadInt32();
             timer = reader.ReadInt32();
         }
@@ -179,11 +177,9 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        private void DrawChargeBar(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
+        private void DrawChargeBar(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
         {
-            orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-
-
+            orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
 
             if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
             {
@@ -323,7 +319,7 @@ namespace StarlightRiver.Content.Items.Misc
                 Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), away.RotatedByRandom(0.2f) * Main.rand.NextFloat(4), 0, new Color(50, 110, 255), 0.4f);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
             float x = (float)Math.Cos(-rot) * 120;
@@ -333,7 +329,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             Rectangle target = new Rectangle((int)(owner.Center.X - Main.screenPosition.X), (int)(owner.Center.Y - Main.screenPosition.Y), (int)Math.Abs(x / 120f * tex.Size().Length()), 40);
 
-            spriteBatch.Draw(tex, target, null, lightColor, -rot, new Vector2(0, tex.Height), SpriteEffects.None, default);
+            Main.spriteBatch.Draw(tex, target, null, lightColor, -rot, new Vector2(0, tex.Height), SpriteEffects.None, default);
 
             return false;
         }

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            spriteBatch.Draw(Main.PopupTexture[Item.type], Item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
+            spriteBatch.Draw(Terraria.GameContent.TextureAssets.Item[Item.type].Value, Item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
                 rotation, Vector2.One * 11, 0.9f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, 0, 0);
         }
     }
@@ -41,11 +41,13 @@ namespace StarlightRiver.Content.Items.Misc
     internal class StaminaDrop : GlobalNPC
     {
         public bool DropStamina = false;
+
         public override bool InstancePerEntity => true;
-        public override void NPCLoot(NPC NPC)
-        {
+
+		public override void OnKill(NPC npc)
+		{
             if (DropStamina)
-                Item.NewItem(NPC.Center, ItemType<StaminaPickup>());
+                Item.NewItem(npc.GetItemSource_Loot(), npc.Hitbox, ItemType<StaminaPickup>());
         }
     }
 }

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.knockBack = 2.5f;
             Item.autoReuse = true;
 
-            Item.UseSound = Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword");
+            Item.UseSound = SoundLoader.GetLegacySoundSlot(Mod, "Sounds/GlassMinibossSword");
 
             Item.shoot = ProjectileType<MonkSpadeProjectile>();
             Item.shootSpeed = 1;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.Center = center + Vector2.UnitX.RotatedBy(Projectile.rotation + (Projectile.timeLeft - 20f) / 20f * 0.3f * -Player.direction) * (float)Math.Sin(Projectile.timeLeft / 40f * Math.PI) * -100;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             var Player = Main.player[Projectile.owner];
 
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
                 1;
 
             var tex = Request<Texture2D>(Texture).Value;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, (Projectile.Center - Player.Center).ToRotation() + (float)Math.PI - (float)Math.PI / 4, new Vector2(8, 8), 1, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, (Projectile.Center - Player.Center).ToRotation() + (float)Math.PI - (float)Math.PI / 4, new Vector2(8, 8), 1, 0, 0);
 
             return false;
         }
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     if (Main.rand.NextFloat() < ownerSpade.bonusChance)
                     {
-                        Item.NewItem(target.Center, ItemID.Heart);
+                        Item.NewItem(Projectile.GetItemSource_OnHit(target, target.whoAmI), target.Center, ItemID.Heart);
                         ownerSpade.bonusChance = 0;
                     }
                     else

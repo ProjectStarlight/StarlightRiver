@@ -86,24 +86,24 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            float aim = (Player.Center - Main.MouseWorld).ToRotation();
+            float aim = (player.Center - Main.MouseWorld).ToRotation();
 
             if (ball != null && (!ball.active || ball.type != ModContent.ProjectileType<ThunderbussBall>()))
                 ball = null;
 
-            if (Player.altFunctionUse == 2)
+            if (player.altFunctionUse == 2)
             {
-                int i = Projectile.NewProjectile(Player.Center - new Vector2(48, 0).RotatedBy(aim), new Vector2(speedX, speedY) * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), (int)(damage * 1.25), 0, Player.whoAmI);
+                int i = Projectile.NewProjectile(source, player.Center - new Vector2(48, 0).RotatedBy(aim), velocity * 0.4f, ModContent.ProjectileType<ThunderbussBall>(), (int)(damage * 1.25), 0, player.whoAmI);
                 ball = Main.projectile[i];
 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, Player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.5f, -0.2f, player.Center);
 
                 return false;
             }
 
-            if (ball != null && Player == Main.LocalPlayer && Vector2.Distance(ball.Center, Main.MouseWorld) < 128)
+            if (ball != null && player == Main.LocalPlayer && Vector2.Distance(ball.Center, Main.MouseWorld) < 128)
             {
-                int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, type, damage, knockBack, Player.whoAmI, -1);
+                int i = Projectile.NewProjectile(source, player.Center, Vector2.Zero, type, damage, knockback, player.whoAmI, -1);
 
                 var mp = Main.projectile[i].ModProjectile as ThunderbussShot;
 
@@ -117,28 +117,28 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 return false;
             }
 
-            List<NPC> targets = FindTargets(Player);
+            List<NPC> targets = FindTargets(player);
 
             if (targets.Count == 0) //whiff
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot, Player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot, player.Center);
 
                 for (int k = 0; k < 20; k++)
                 {
                     float dustRot = aim + 1.57f * 1.5f + Main.rand.NextFloat(-0.2f, 0.2f);
-                    Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedBy(dustRot) * 80 + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
+                    Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(dustRot) * 80 + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
                 }
 
                 return false;
             }
 
-            targets.Sort((a, b) => (int)(Vector2.Distance(a.Center, Player.Center) - Vector2.Distance(b.Center, Player.Center)));
+            targets.Sort((a, b) => (int)(Vector2.Distance(a.Center, player.Center) - Vector2.Distance(b.Center, player.Center)));
 
             for (int k = 0; k < 3; k++)
             {
                 int targetIndex = k % targets.Count;
 
-                float offset = Helpers.Helper.CompareAngle(aim, (Player.Center - targets[targetIndex].Center).ToRotation()) * -120;
+                float offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
 
                 if (targets.Count == 1)
                 {
@@ -151,11 +151,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     if (k == 2) offset += 50f;
                 }
 
-                offset *= Vector2.Distance(targets[targetIndex].Center, Player.Center) / 500f;
+                offset *= Vector2.Distance(targets[targetIndex].Center, player.Center) / 500f;
 
                 int targetId = targets[targetIndex].whoAmI;
 
-                int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, type, damage, knockBack, Player.whoAmI, targetId, offset);
+                int i = Projectile.NewProjectile(source, player.Center, Vector2.Zero, type, damage, knockback, player.whoAmI, targetId, offset);
 
                 var mp = Main.projectile[i].ModProjectile as ThunderbussShot;
 
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
              !n.dontTakeDamage &&
              !n.townNPC &&
              Helper.CheckConicalCollision(Player.Center, 500, aim, 1, n.Hitbox) &&
-             Utils.PlotLine((n.Center / 16).ToPoint16(), (Player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+             Utils.PlotLine((n.Center / 16).ToPoint16(), (Player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).BlockType != BlockType.Solid)))
             {
                 targets.Add(NPC);
             }
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                  !n.townNPC &&
                  n.CanBeChasedBy(projOwner) &&
                  Vector2.Distance(Projectile.Center, n.Center) < 500 &&
-                 Utils.PlotLine((n.Center / 16).ToPoint16(), (Projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).collisionType != 1)))
+                 Utils.PlotLine((n.Center / 16).ToPoint16(), (Projectile.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).BlockType != BlockType.Solid)))
                 {
                     targets.Add(NPC);
                 }
@@ -384,9 +384,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
             if (projOwner is null)
             {
-                Player Player = Main.player[Projectile.owner];
-                float armRot = Player.ItemRotation + (Player.direction == -1 ? 3.14f : 0);
-                startPoint = Player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
+                Player player = Main.player[Projectile.owner];
+                float armRot = player.itemRotation + (player.direction == -1 ? 3.14f : 0);
+                startPoint = player.Center + Vector2.UnitX.RotatedBy(armRot) * 48;
             }
             else
             {
@@ -652,7 +652,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     var NPC = Main.npc[k];
                     if (NPC.active && NPC.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
                     {
-                        int i = Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
+                        int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
                         var proj = Main.projectile[i].ModProjectile as ThunderbussShot;
 
                         proj.target = NPC;

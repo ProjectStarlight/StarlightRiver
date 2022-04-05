@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Astroflora
             {
                 Player.GetModPlayer<StarlightPlayer>().Shake = 5;
 
-                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, $"{SoundPath}Failure"), Player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, $"{SoundPath}Failure"), Player.Center);
 
                 Say("No Locks!", Player);
 

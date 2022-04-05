@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	public abstract class ClubProj : ModProjectile
+	public abstract class ClubProjectile : ModProjectile
     {
         public readonly int chargeTime;
         private readonly int minDamage;
@@ -21,7 +21,7 @@ namespace StarlightRiver.Core
 
         private readonly float Acceleration;
         private readonly float MaxSpeed;
-        public ClubProj(int chargetime, int mindamage, int maxdamage, int dusttype, int size, int minknockback, int maxknockback, float acceleration, float maxspeed)
+        public ClubProjectile(int chargetime, int mindamage, int maxdamage, int dusttype, int size, int minknockback, int maxknockback, float acceleration, float maxspeed)
         {
             chargeTime = chargetime;
             minDamage = mindamage;

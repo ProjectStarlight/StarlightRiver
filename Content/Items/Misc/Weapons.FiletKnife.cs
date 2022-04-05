@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -39,39 +41,38 @@ namespace StarlightRiver.Content.Items.Misc
             Item.useTurn = true;
             Item.crit = 10;
         }
-        public override void ModifyHitNPC(Player Player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+        public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
         {
-            if (Player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
+            if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
                 crit = false;
         }
-        public override void OnHitNPC(Player Player, NPC target, int damage, float knockBack, bool crit)
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
         {
             if (crit)
             {
                 Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
-                int ItemType = -1;
+                int itemType = -1;
                 switch (Main.rand.Next(3))
                 {
                     case 0:
-                        ItemType = ModContent.ItemType<FiletGiblet1>();
+                        itemType = ModContent.ItemType<FiletGiblet1>();
                         break;
                     case 1:
-                        ItemType = ModContent.ItemType<FiletGiblet2>();
+                        itemType = ModContent.ItemType<FiletGiblet2>();
                         break;
                     default:
-                        ItemType = ModContent.ItemType<FiletGiblet3>();
+                        itemType = ModContent.ItemType<FiletGiblet3>();
                         break;
                 }
-                Item.NewItem(target.Center, ItemType);
+                Item.NewItem(player.GetItemSource_OnHit(target, target.whoAmI), target.Center, itemType);
 
-                if (target.GetGlobalNPC<FiletNPC>().DOT < 3)
+                if (target.GetGlobalNPC<FiletNPC>().DOT < 3) //TODO: Port to a proper stacking buff system later
                     target.GetGlobalNPC<FiletNPC>().DOT += 1;
 
+                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
 
-                Projectile.NewProjectile(target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, Player.whoAmI, target.whoAmI);
-
-                Vector2 direction = Vector2.Normalize(target.Center - Player.Center);
+                Vector2 direction = Vector2.Normalize(target.Center - player.Center);
                 for (int j = 0; j < 15; j++)
                 {
                     Dust.NewDustPerfect(target.Center, DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
@@ -129,7 +130,7 @@ namespace StarlightRiver.Content.Items.Misc
             base.SetDefaults(NPC);
         }
 
-        public override bool PreDraw(NPC NPC, SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {     
             if (hasSword)
             {
@@ -141,16 +142,17 @@ namespace StarlightRiver.Content.Items.Misc
                 float rotation = facingLeft ? 0.78f : -0.78f;
 
 
-                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, drawColor, rotation, origin, NPC.scale, effects, 0f);
+                spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, rotation, origin, NPC.scale, effects, 0f);
             }
-            return base.PreDraw(NPC, spriteBatch, drawColor);
+            return base.PreDraw(NPC, spriteBatch, screenPos, drawColor);
         }
 
-        public override void NPCLoot(NPC NPC)
+		public override void OnKill(NPC npc) //TODO: Figure out how to integrate this with the vanilla drop rule system later?
         {
             if (hasSword && Main.rand.NextBool(3))
-                Item.NewItem(NPC.Center, ModContent.ItemType<FiletKnife>());
-            base.NPCLoot(NPC);
+                Item.NewItem(npc.GetItemSource_Loot(), npc.Center, ModContent.ItemType<FiletKnife>());
+
+            base.OnKill(npc);
         }
 
         public override void UpdateLifeRegen(NPC NPC, ref int damage)
