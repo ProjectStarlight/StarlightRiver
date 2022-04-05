@@ -3,6 +3,7 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 
@@ -33,10 +34,10 @@ namespace StarlightRiver.Content.Items.Balanced
 
         public override bool CloneNewInstances => true;
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Vector2 aim = Vector2.Normalize(Main.MouseWorld - Player.Center);
-            int proj = Projectile.NewProjectile(Player.Center + aim * 18, aim * 0.1f, type, damage, knockBack, Player.whoAmI);
+            int proj = Projectile.NewProjectile(source, Player.Center + aim * 18, aim * 0.1f, type, damage, knockback, Player.whoAmI);
             Main.projectile[proj].localAI[1] = combostate;
 
             if (combostate < 2) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item65, Player.Center); else Terraria.Audio.SoundEngine.PlaySound(SoundID.Item64, Player.Center);

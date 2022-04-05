@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.AstralMeteor;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

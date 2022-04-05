@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Projectiles;
-using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -89,20 +88,20 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void SafeAI() => Lighting.AddLight(Projectile.Center, glowColor.ToVector3() * 0.5f);
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = Request<Texture2D>(AssetDirectory.AluminumItem + "PhasespearProjectileGlow").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.AluminumItem + "PhasespearProjectileGlow2").Value;
 
-            spriteBatch.Draw(tex2, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex2.Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
-            spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), glowColor, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex2, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex2.Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), tex.Frame(), glowColor, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
             if (Projectile.ai[0] == 0)
             {
-                int i = Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<PhasespearNode>(), Projectile.damage / 2, 0, Projectile.owner, 3, 250);
+                int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, Vector2.Zero, ProjectileType<PhasespearNode>(), Projectile.damage / 2, 0, Projectile.owner, 3, 250);
                 Projectile proj = Main.projectile[i];
                 if (proj.ModProjectile is PhasespearNode) (proj.ModProjectile as PhasespearNode).color = glowColor;
 
@@ -138,7 +137,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
             if (Projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
-                int i = Projectile.NewProjectile(chosenTarget.Center, Vector2.Zero, ProjectileType<PhasespearNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
+                int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), chosenTarget.Center, Vector2.Zero, ProjectileType<PhasespearNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
                 Projectile proj = Main.projectile[i];
                 if (proj.ModProjectile is PhasespearNode) (proj.ModProjectile as PhasespearNode).color = color;
 

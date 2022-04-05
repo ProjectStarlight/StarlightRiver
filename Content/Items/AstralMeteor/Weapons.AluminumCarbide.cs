@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -41,13 +40,12 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             Item.noMelee = true;
             Item.value = Item.sellPrice(0, 0, 40, 0);
         }
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item114, Player.Center);
 
             float mult = (6 - (spinup - 3)) / 6f;
-            Vector2 velocity = new Vector2(speedX, speedY);
-            int i = Projectile.NewProjectile(Player.Center + velocity, velocity, type, (int)(damage * mult), knockBack * mult, Player.whoAmI, spinup == 0 ? 1 : 0);
+            int i = Projectile.NewProjectile(source, Player.Center + velocity, velocity, type, (int)(damage * mult), (int)(knockback * mult), Player.whoAmI, spinup == 0 ? 1 : 0);
             Main.projectile[i].scale = (6 - (spinup - 3)) / 7f;
 
             if (spinup < 3) spinup += 0.25f;
@@ -62,7 +60,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override Vector2? HoldoutOffset() => new Vector2(-10, 0);
 
-        public void DrawGlowmask(PlayerDrawInfo info)
+        public void DrawGlowmask(PlayerDrawSet info)
         {
             Player Player = info.drawPlayer;
 
@@ -70,7 +68,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
             {
                 Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
 
-                float turn = info.spriteEffects == SpriteEffects.None ? 10 : tex.Width - 10;
+                float turn = info.playerEffect == SpriteEffects.None ? 10 : tex.Width - 10;
                 Main.playerDrawData.Add(new DrawData(tex, Player.Center - Main.screenPosition, tex.Frame(), Color.White, Player.ItemRotation, new Vector2(turn, tex.Height / 2), 1, info.spriteEffects, 0));
             }
         }

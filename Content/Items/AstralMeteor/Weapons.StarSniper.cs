@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
@@ -66,7 +65,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Projectile.NewProjectile(target.Center, Vector2.Zero, ProjectileType<StarSniperAura>(), 20, 0, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, Vector2.Zero, ProjectileType<StarSniperAura>(), 20, 0, Projectile.owner);
         }
     }
 

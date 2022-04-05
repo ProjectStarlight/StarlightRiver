@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public override void SpinExtras(Player Player)
 		{
 			if(++Projectile.localAI[0] % 4 == 0)
-				Projectile.NewProjectile(Projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[Projectile.owner].velocity / 5), Mod.ProjectileType("AstrofloraGas"), Projectile.damage * 3, 0, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[Projectile.owner].velocity / 5), ModContent.ProjectileType<AstrofloraGas>(), Projectile.damage * 3, 0, Projectile.owner);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -53,7 +54,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-				Texture2D bloom = Mod.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1).Value + "_bloom");
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
 				spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.LightGoldenrodYellow * 0.5f, Projectile.rotation, bloom.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0);
 				
 				spriteBatch.End(); 
@@ -66,7 +67,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			Lighting.AddLight(Projectile.Center, Color.LightGoldenrodYellow.ToVector3());
 			Rectangle hitbox = Projectile.Hitbox;
 			hitbox.Inflate(hitbox.Width / 2, hitbox.Height / 2);
-			var gasclouds = Main.projectile.Where(x => x.type == Mod.ProjectileType("AstrofloraGas") && x.active && x.owner == Projectile.owner && x.Hitbox.Intersects(hitbox));
+			var gasclouds = Main.projectile.Where(x => x.type == ModContent.ProjectileType<AstrofloraGas>() && x.active && x.owner == Projectile.owner && x.Hitbox.Intersects(hitbox));
 			if (gasclouds.Any())
 			{
 				foreach (Projectile proj in gasclouds)
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 122).WithPitchVariance(0.2f).WithVolume(0.3f), Projectile.Center);
 				for (int i = 0; i < 3; i++)
 				{
-					Projectile.NewProjectile(Projectile.Center, Vector2.Zero, Mod.ProjectileType("AstrofloraSpark"), 0, 0, Projectile.owner, Main.rand.NextVector2Unit().ToRotation(), Main.rand.NextBool() ? -1 : 1);
+					Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AstrofloraSpark>(), 0, 0, Projectile.owner, Main.rand.NextVector2Unit().ToRotation(), Main.rand.NextBool() ? -1 : 1);
 				}
 			}
 		}
@@ -184,14 +185,14 @@ namespace StarlightRiver.Content.Items.Astroflora
 		}
 		private void Dustcloud(Color color, float velocity = 3)
 		{
-			for (int i = 0; i < 5; i++)
+			/*for (int i = 0; i < 5; i++)
 			{
-				Dust dust = Dust.NewDustDirect(Projectile.Center, 0, 0, Mod.DustType("GasDust"));
+				Dust dust = Dust.NewDustDirect(Projectile.Center, 0, 0, ModContent.DustType<GasDust>());
 				dust.position += Main.rand.NextVector2Square(-Projectile.width/2 * Projectile.scale, Projectile.width/2 * Projectile.scale);
 				dust.velocity = Main.rand.NextVector2Circular(velocity, velocity) + Projectile.velocity/2;
 				dust.scale = 2.4f;
 				dust.color = color;
-			}
+			}*/
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -218,7 +219,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 				
-				Texture2D bloom = Mod.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1).Value + "_bloom");
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
 				float opacity = (Projectile.ai[1] / chargetime) * 0.75f;
 				Color color = (Projectile.ai[1] < chargetime / 2) ? Color.White : Color.Lerp(Color.White, Color.Orange, (Projectile.ai[1] - chargetime / 2) / (chargetime / 2));
 				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,
@@ -232,7 +233,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-				Texture2D bloom = Mod.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1).Value + "_bloom");
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
 				float opacity = (Projectile.timeLeft / 20f) * 2f;
 				Color color = Color.Orange;
 				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,

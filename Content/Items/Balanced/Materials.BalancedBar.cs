@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Balanced
 {
 	public class EbonyBar : QuickTileItem
     {
-        public EbonyBar() : base("Ebony Bar", "Soft and heavy", "EbonyBar", ItemRarityID.Blue, AssetDirectory.BalancedItem) { } //TODO: Fix place type
+        public EbonyBar() : base("EbonyBar", "Ebony Bar", "Soft and heavy", "EbonyBar", ItemRarityID.Blue, AssetDirectory.BalancedItem) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {
@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Balanced
 
     public class IvoryBar : QuickTileItem
     {
-        public IvoryBar() : base("Ivory Bar", "Hard and light", "IvoryBar", ItemRarityID.Blue, AssetDirectory.BalancedItem) { } //TODO: Fix place type
+        public IvoryBar() : base("IvoryBar", "Ivory Bar", "Hard and light", "IvoryBar", ItemRarityID.Blue, AssetDirectory.BalancedItem) { } //TODO: Fix place type
 
         public override void AddRecipes()
         {

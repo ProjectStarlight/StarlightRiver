@@ -8,6 +8,8 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -92,7 +94,7 @@ namespace StarlightRiver.Content.Items.Astroflora
         private void Say(string text, Player Player)
         {
             // Main.fontCombatText[0] is just the variant used when dramatic == false.
-            Vector2 textSize = Main.fontCombatText[0].MeasureString(text);
+            Vector2 textSize = FontAssets.CombatText[0].MeasureString(text);
 
             Rectangle textRectangle = new Rectangle((int)Player.MountedCenter.X, (int)(Player.MountedCenter.Y + Player.height), (int)textSize.X, (int)textSize.Y);
 
@@ -122,7 +124,7 @@ namespace StarlightRiver.Content.Items.Astroflora
             }
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             for (int i = 0; i < maxLocks; i++)
             {
@@ -138,9 +140,9 @@ namespace StarlightRiver.Content.Items.Astroflora
                     index = i > locks.Count - 1 ? Main.rand.Next(locks).whoAmI : locks[i].whoAmI;
                 }
 
-                Vector2 shotOffset = Vector2.Normalize(new Vector2(speedX, speedY)) * 32;
+                Vector2 shotOffset = Vector2.Normalize(velocity) * 32;
 
-                Projectile.NewProjectile(position + shotOffset, new Vector2(speedX, speedY).RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockBack, Player.whoAmI, index);
+                Projectile.NewProjectile(source, position + shotOffset, velocity.RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockback, Player.whoAmI, index);
             }
 
             locks.Clear();
@@ -175,7 +177,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         public override void SetStaticDefaults()
         {
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
         }
 
         public override void SetDefaults()
