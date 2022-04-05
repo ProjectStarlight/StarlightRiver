@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.AstralMeteor
 
         public override void HoldItem(Player Player)
         {
-            if (!Player.channel && Player.ItemAnimation == 0) spinup = 0;
+            if (!Player.channel && Player.itemAnimation == 0) spinup = 0;
             Player.GetModPlayer<StarlightPlayer>().ItemSpeed += spinup * 0.75f;
         }
 
@@ -64,12 +64,12 @@ namespace StarlightRiver.Content.Items.AstralMeteor
         {
             Player Player = info.drawPlayer;
 
-            if (Player.ItemAnimation != 0)
+            if (Player.itemAnimation != 0)
             {
                 Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
 
-                float turn = info.playerEffect == SpriteEffects.None ? 10 : tex.Width - 10;
-                Main.playerDrawData.Add(new DrawData(tex, Player.Center - Main.screenPosition, tex.Frame(), Color.White, Player.ItemRotation, new Vector2(turn, tex.Height / 2), 1, info.spriteEffects, 0));
+                float turn = info.itemEffect == SpriteEffects.None ? 10 : tex.Width - 10;
+                info.DrawDataCache.Add(new DrawData(tex, Player.Center - Main.screenPosition, tex.Frame(), Color.White, Player.itemRotation, new Vector2(turn, tex.Height / 2), 1, info.itemEffect, 0));
             }
         }
 
