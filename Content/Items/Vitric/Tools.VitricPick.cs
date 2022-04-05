@@ -18,9 +18,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void Load()
         {
-            On.Terraria.Player.PickTile += GenerateHeat;
-
-            
+            On.Terraria.Player.PickTile += GenerateHeat;           
         }
 
         public override void SetStaticDefaults()
@@ -51,7 +49,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             var myPick = self.HeldItem.ModItem as VitricPick;
             var tile = Framing.GetTileSafely(x, y);
-            var type = tile.type;
+            var type = tile.TileType;
 
             orig(self, x, y, pickPower);
 
@@ -62,11 +60,10 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (myPick.heat < 20)
                     myPick.heat++;
 
-                tile.lava(false);
-                tile .LiquidAmount = 0;
-                tile.liquidType(0);
-                tile.skipLiquid(true);
-                NetMessage.SendTileRange(0, x, y, 1, 1);
+                tile.LiquidType = 0;
+                tile.LiquidAmount = 0;
+                tile.SkipLiquid = true;
+                NetMessage.SendTileSquare(0, x, y, 1, 1);
             }
         }
 
@@ -97,7 +94,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
         }
 
-        public void DrawGlowmask(PlayerDrawInfo info)
+        public void DrawGlowmask(PlayerDrawSet info)
         {
             var Player = info.drawPlayer;
 

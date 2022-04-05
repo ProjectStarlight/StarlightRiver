@@ -51,14 +51,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-            tooltips.Find(n => n.Name == "Speed" && n.Mod == "Terraria").text = "Slow charge";
+            tooltips.Find(n => n.Name == "Speed" && n.mod == "Terraria").text = "Slow charge";
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (!Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
+            if (!Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
             {
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY) / 4f, Item.shoot, damage, knockBack, Player.whoAmI);
+                Projectile.NewProjectile(source, position, velocity / 4f, Item.shoot, damage, knockback, player.whoAmI);
                 manaCharge = 0;
             }
 
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (charge == 1)
                 {
                     if (Main.myPlayer == Projectile.owner)
-                        Projectile.NewProjectile(Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
+                        Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
                     Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
                 }
                 if (Main.myPlayer == Projectile.owner)
@@ -132,8 +132,8 @@ namespace StarlightRiver.Content.Items.Vitric
                     {
                         if (charge == 19 * k + 1)
                         {
-                            Projectile.NewProjectile(Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
-                            Projectile.NewProjectile(Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
+                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
+                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
                         }
                     }
                 }
@@ -150,10 +150,10 @@ namespace StarlightRiver.Content.Items.Vitric
             Lighting.AddLight(owner.Center, new Vector3(0.3f + 0.3f * chargePercent, 0.6f + 0.2f * chargePercent, 1) * chargePercent);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
             var tex = Request<Texture2D>(Texture).Value;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
 
             return false;
 		}

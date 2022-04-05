@@ -26,7 +26,7 @@ namespace StarlightRiver.Core
 
 		private static void AddColor(int type)
 		{
-			Texture2D tex = Main.PopupTexture[type];
+			Texture2D tex = Terraria.GameContent.TextureAssets.Item[type];
 
 			int numPixels = 0;
 			int redTotal = 0;

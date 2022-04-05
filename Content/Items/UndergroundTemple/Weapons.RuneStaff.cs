@@ -20,8 +20,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Tooltip.SetDefault("Hold to summon up to 3 explosive runes\nReleasing will fire the runes towards your cursor\nContinuing to hold will detonate them for increased damage around you");
         }
 
-        public override bool CloneNewInstances => true;
-
         public override void SetDefaults()
         {
             Item.DamageType = DamageClass.Magic;
@@ -40,18 +38,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Item.channel = true;
         }
 
-        public override void HoldItem(Player Player)
+        public override void HoldItem(Player player)
         {
-            if (Player.channel)
+            if (player.channel)
             {
                 if (charge % 30 == 0 && charge < 90)
                 {
                     int index = charge / 30;
                     float rot = MathHelper.Pi / 3f * index - MathHelper.Pi / 3f;
-                    int i = Projectile.NewProjectile(Player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, Player.whoAmI, 0, charge);
+                    int i = Projectile.NewProjectile(player.GetProjectileSource_Item(Item), player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, player.whoAmI, 0, charge);
                     Main.projectile[i].frame = index;
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item8, Player.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item8, player.Center);
                 }
                 charge++;
             }
@@ -78,7 +76,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             Projectile.friendly = true;
         }
 
-        public override bool CanDamage() => Projectile.ai[0] == 1;
+        public override bool? CanDamage() => Projectile.ai[0] == 1;
 
         public override void AI()
         {
@@ -114,18 +112,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void Kill(int timeLeft)
         {
-            Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ProjectileType<RuneStaffExplosion>(), Projectile.ai[0] == 0 ? 120 : 20, 2, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<RuneStaffExplosion>(), Projectile.ai[0] == 0 ? 120 : 20, 2, Projectile.owner);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             int time = 600 - Projectile.timeLeft;
 
             Texture2D tex = Request<Texture2D>(Texture).Value;
             float colorOff = time < 20 ? time / 20f : 1;
             Color color = new Color(255, colorOff, 1 - colorOff);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, Projectile.frame * 32, 32, 32), color, 0, Vector2.One * 16, colorOff / 2, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, Projectile.frame * 32, 32, 32), color, 0, Vector2.One * 16, colorOff / 2, 0, 0);
 
             return false;
         }

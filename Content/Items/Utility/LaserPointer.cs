@@ -22,14 +22,14 @@ namespace StarlightRiver.Content.Items.Utility
 		{
             var Mod = StarlightRiver.Instance;
 
-            Mod.AddItem("RedLaserPointer", new LaserPointer(new Color(255, 20, 20), ItemID.Ruby));
-            Mod.AddItem("OrangeLaserPointer", new LaserPointer(new Color(255, 120, 20), ItemID.Amber));
-            Mod.AddItem("YellowLaserPointer", new LaserPointer(new Color(255, 255, 20), ItemID.Topaz));
-            Mod.AddItem("GreenLaserPointer", new LaserPointer(new Color(20, 255, 20), ItemID.Emerald));
-            Mod.AddItem("BlueLaserPointer", new LaserPointer(new Color(20, 80, 255), ItemID.Sapphire));
-            Mod.AddItem("PurpleLaserPointer", new LaserPointer(new Color(150, 20, 255), ItemID.Amethyst));
-            Mod.AddItem("WhiteLaserPointer", new LaserPointer(Color.White, ItemID.Diamond));
-            Mod.AddItem("PinkLaserPointer", new LaserPointer(new Color(255, 140, 180), ItemID.PinkGel));
+            Mod.AddContent(new LaserPointer("RedLaserPointer", new Color(255, 20, 20), ItemID.Ruby));
+            Mod.AddContent(new LaserPointer("OrangeLaserPointer", new Color(255, 120, 20), ItemID.Amber));
+            Mod.AddContent(new LaserPointer("YellowLaserPointer", new Color(255, 255, 20), ItemID.Topaz));
+            Mod.AddContent(new LaserPointer("GreenLaserPointer", new Color(20, 255, 20), ItemID.Emerald));
+            Mod.AddContent(new LaserPointer("BlueLaserPointer", new Color(20, 80, 255), ItemID.Sapphire));
+            Mod.AddContent(new LaserPointer("PurpleLaserPointer", new Color(150, 20, 255), ItemID.Amethyst));
+            Mod.AddContent(new LaserPointer("WhiteLaserPointer", Color.White, ItemID.Diamond));
+            Mod.AddContent(new LaserPointer("PinkLaserPointer", new Color(255, 140, 180), ItemID.PinkGel));
         }
 
         public void Unload() { }
@@ -39,13 +39,15 @@ namespace StarlightRiver.Content.Items.Utility
 	{
         private Color color;
         private int extraMaterial;
+        private string InternalName;
+
+        public override string Name => InternalName;
 
         public override string Texture => "StarlightRiver/Assets/Items/Utility/LaserPointer";
 
-        public override bool CloneNewInstances => true;
-
-        public LaserPointer(Color color, int extraMaterial)
+        public LaserPointer(string internalName, Color color, int extraMaterial)
 		{
+            InternalName = internalName;
             this.color = color;
             this.extraMaterial = extraMaterial;
 		}
@@ -66,7 +68,7 @@ namespace StarlightRiver.Content.Items.Utility
 		{
             if (!Main.projectile.Any(n => n.active && n.type == Item.shoot && n.owner == player.whoAmI))
             {
-                var p = Projectile.NewProjectileDirect(player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockback, player.whoAmI);
+                var p = Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<LaserPointerProjectile>(), damage, knockback, player.whoAmI);
                 (p.ModProjectile as LaserPointerProjectile).color = color;
             }
 
@@ -132,10 +134,10 @@ namespace StarlightRiver.Content.Items.Utility
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
-            spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
+            Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture).Value.Height - 3), 1, 0, 0);
+            Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, color, LaserRotation, new Vector2(0, ModContent.Request<Texture2D>(Texture + "Glow").Value.Height - 3), 1, 0, 0);
             return false;
         }
 

@@ -17,22 +17,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void Load()
         {
-            StarlightRiver.Instance.AddGore(Texture + "_Gore1");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore2");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore3");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore4");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore5");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore6");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore7");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore8");
-            StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "JetwelderCasing", new JetwelderCasingGore());
-            
+            for (int k = 1; k <= 8; k++)
+                GoreLoader.AddGoreFromTexture<>(Mod, Texture + "_Gore" + k);
+
+            GoreLoader.AddGoreFromTexture<JetwelderCasingGore>(Mod, AssetDirectory.SteampunkItem + "JetwelderCasing");           
         }
 
-        private readonly int ATTACKRANGE = 500;
-        private readonly int MINATTACKRANGE = 150;
-        private readonly float SPEED = 15f;
-        private readonly float IDLESPEED = 8f;
+        private const int ATTACKRANGE = 500;
+        private const int MINATTACKRANGE = 150;
+        private const float SPEED = 15f;
+        private const float IDLESPEED = 8f;
 
         private float idleHoverOffset;
         private int idleYOffset;
@@ -54,7 +48,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             DisplayName.SetDefault("Gatler");
             Main.projFrames[Projectile.type] = 8;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
@@ -90,8 +83,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             FindFrame();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+            var spriteBatch = Main.spriteBatch;
+
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
@@ -120,7 +115,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             firing = false;
             posToBe = Vector2.Zero;
 
-            Vector2 offset = new Vector2((float)Math.Cos((Main.GlobalTime * 3f) + idleHoverOffset) * 50, -100 + idleYOffset);
+            Vector2 offset = new Vector2((float)Math.Cos((Main.timeForVisualEffects * 3f) + idleHoverOffset) * 50, -100 + idleYOffset);
             Vector2 direction = (Player.Center + offset) - Projectile.Center;
             if (direction.Length() > 15)
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLESPEED, 0.02f);
@@ -185,7 +180,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()), 1f);
+                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
             }
         }
 
@@ -199,8 +194,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 dir.Normalize();
                 bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
-                Gore.NewGore(Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.SteampunkItem + "JetwelderCasing"), 1f);
-                Projectile.NewProjectile(Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+                Gore.NewGore(Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.SteampunkItem + "JetwelderCasing").Type, 1f);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }
         }
 
@@ -210,7 +205,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             for (int i = 0; i < direction.Length(); i += 8)
             {
                 Vector2 toLookAt = point1 + (Vector2.Normalize(direction) * i);
-                if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
+                if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType]))
                 {
                     return false;
                 }
@@ -232,7 +227,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 for (int i = 0; i < ATTACKRANGE; i += 8)
                 {
                     Vector2 toLookAt = tempTarget.Center + (angle.ToRotationVector2() * i);
-                    if (i > ATTACKRANGE - 16 || (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
+                    if (i > ATTACKRANGE - 16 || (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType]))
                     {
                         ret = (angle.ToRotationVector2() * i * 0.75f);
 

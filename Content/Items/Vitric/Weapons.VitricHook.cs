@@ -174,10 +174,12 @@ namespace StarlightRiver.Content.Items.Vitric
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
+        public override bool PreDraw(ref Color lightColor)
+        {           
             if(struck) 
                 return false;
+
+            var spriteBatch = Main.spriteBatch;
 
             Texture2D chainTex1 = Request<Texture2D>(AssetDirectory.VitricItem + "VitricHookChain1").Value;
             Texture2D chainTex2 = Request<Texture2D>(AssetDirectory.VitricItem + "VitricHookChain2").Value;

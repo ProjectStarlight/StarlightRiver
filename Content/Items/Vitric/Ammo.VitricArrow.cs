@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             for (int k = 0; k < 3; k++)
             {
-                Projectile.NewProjectile(target.Center, Projectile.velocity.RotatedByRandom(0.3f), ProjectileType<VitricArrowShattered>(), Projectile.damage / 3, 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, Projectile.velocity.RotatedByRandom(0.3f), ProjectileType<VitricArrowShattered>(), Projectile.damage / 3, 0, Projectile.owner);
             }
             MakeDusts();
         }

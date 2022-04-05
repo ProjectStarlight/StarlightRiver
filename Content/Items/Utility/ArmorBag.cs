@@ -12,8 +12,6 @@ namespace StarlightRiver.Content.Items.Utility
     {
         public Item[] storedArmor = new Item[3];
 
-        public override bool CloneNewInstances => true;
-
         public override bool CanRightClick() => true;
 
         public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
@@ -32,7 +30,7 @@ namespace StarlightRiver.Content.Items.Utility
             Item.value = 50000;
         }
 
-        public override ModItem Clone()
+        public override ModItem Clone(Item item)
         {
             var newBag = (ArmorBag)MemberwiseClone();
 
@@ -71,7 +69,7 @@ namespace StarlightRiver.Content.Items.Utility
                         if (storedArmor[k].IsAir)
                             continue;
 
-                        var index = Item.NewItem(Player.Center, storedArmor[k].type);
+                        var index = Item.NewItem(Player.GetItemSource_Misc(Player.whoAmI), Player.Center, storedArmor[k].type);
                         Main.item[index] = storedArmor[k].Clone();
                         storedArmor[k].TurnToAir();
                     }
@@ -145,12 +143,9 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["Head"] = storedArmor[0],
-                ["Chest"] = storedArmor[1],
-                ["Legs"] = storedArmor[2]
-            };
+            tag["Head"] = storedArmor[0];
+            tag["Chest"] = storedArmor[1];
+            tag["Legs"] = storedArmor[2];
         }
 
         public override void LoadData(TagCompound tag)

@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-            var tex = Main.PopupTexture[Item.type];
+            var tex = Terraria.GameContent.TextureAssets.Item[Item.type];
 
             for (int k = 0; k < 3; k++)
             {

@@ -156,8 +156,10 @@ namespace StarlightRiver.Content.Items.Vitric
             timer = reader.ReadInt32();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
+            var spriteBatch = Main.spriteBatch;
+
             var tex = ModContent.Request<Texture2D>(Texture).Value;
             var texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
             var texHot = ModContent.Request<Texture2D>(Texture + "Hot").Value;

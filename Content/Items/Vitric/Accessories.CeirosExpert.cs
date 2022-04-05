@@ -34,7 +34,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void Load()
         {
             StarlightPlayer.PreHurtEvent += PreHurtKnockback;
-            return true;
         }
 
 		public override void SafeUpdateEquip(Player Player)
@@ -45,14 +44,14 @@ namespace StarlightRiver.Content.Items.Vitric
             Player.statDefense += 4;
 		}
 
-		private bool PreHurtKnockback(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            var instance = (GetEquippedInstance(Player) as CeirosExpert);
+            var instance = (GetEquippedInstance(player) as CeirosExpert);
 
-            if (Equipped(Player) && instance.cooldown <= 0)
+            if (Equipped(player) && instance.cooldown <= 0)
             {
-                Helper.PlayPitched("Magic/FireSpell", 1, 0.75f, Player.Center);
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, Player.whoAmI);
+                Helper.PlayPitched("Magic/FireSpell", 1, 0.75f, player.Center);
+                Projectile.NewProjectile(player.GetProjectileSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, player.whoAmI);
                 instance.cooldown = 60;
             }
 
@@ -109,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
                 Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-                Projectile.NewProjectile(target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
 
                 //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustTwo>(), vel);
                 //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustFour>(), vel);

@@ -35,22 +35,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void Load()
 		{
-			StarlightRiver.Instance.AddGore(Texture + "_Gore1");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore2");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore3");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore4");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore5");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore6");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore7");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore8");
-			
-		}
+            for (int k = 1; k <= 8; k++)
+                GoreLoader.AddGoreFromTexture<>(Mod, Texture + "_Gore" + k);
+        }
 
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Jumper");
             Main.projFrames[Projectile.type] = 14;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
@@ -69,46 +61,51 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.ignoreWater = true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             int frameHeight = tex.Height / Main.projFrames[Projectile.type];
             Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
             SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, tex.Size() / new Vector2(2, 2 * Main.projFrames[Projectile.type]), Projectile.scale, effects, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, tex.Size() / new Vector2(2, 2 * Main.projFrames[Projectile.type]), Projectile.scale, effects, 0f);
             return false;
         }
 
         public override void AI()
         {
             NPC testtarget = Main.npc.Where(n => n.active && n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
-                Projectile.frameCounter++;
+            Projectile.frameCounter++;
+
             if (Projectile.frameCounter % 4 == 0 && !jumping && (fireCounter == 20 || fireCounter == 0 || testtarget == default))
             {
                 Projectile.frame++;
+
                 if (Projectile.frame == 11)
-                {
                     Jump(testtarget);
-                }
             }
 
             if (testtarget != default && !jumping && !fired)
             {
                 if (Projectile.frameCounter % 4 == 0 && Projectile.frame < 5)
                     Projectile.frame++;
+
                 fireCounter++;
+
                 if (fireCounter == 10)
                     FireMissle(testtarget);
+
                 if (fireCounter == 20)
                     fired = true;
             }
+
             if (Projectile.velocity.Y < 15)
                 Projectile.velocity.Y += 0.2f;
 
             if (jumping)
             {
                 Projectile.velocity.X = xVel;
+
                 if (Math.Abs(Projectile.velocity.Y) < 0.5f)
                     Projectile.frame = 12;
                 else if (Projectile.velocity.Y >= 0.5f)
@@ -127,6 +124,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     fired = false;
                     fireCounter = 0;
                     jumping = false;
+
                     for (int i = 0; i < 8; i++)
                     {
                         Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
@@ -136,6 +134,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                         Dust.NewDustPerfect(Projectile.Bottom, ModContent.DustType<JetwelderJumperDust>(), dustVel, 0, new Color(236, 214, 146) * 0.3f, Main.rand.NextFloat(0.25f, 0.5f));
                     }
                 }
+
                 Projectile.frame = 0;
                 Projectile.frameCounter = 0;
                 Projectile.velocity.X = 0;
@@ -147,7 +146,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()), 1f);
+                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
             }
         }
 
@@ -163,6 +162,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 int offsetDirection = Math.Sign(target.Center.X - Projectile.Center.X);
                 dir = dir.RotatedBy(Main.rand.NextFloat(Math.Sign((target.Center.X - (offsetDirection * 300)) - Projectile.Center.X) * 0.6f));
             }
+
             Projectile.velocity = dir * Main.rand.Next(6, 11);
             xVel = Projectile.velocity.X;
 
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (target != default)
             {
                 Vector2 vel = ArcVelocityHelper.GetArcVel(Projectile.Center, target.Center, 0.25f, 300, 600);
-                Projectile.NewProjectile(Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Player.whoAmI, target.whoAmI);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, vel, ModContent.ProjectileType<JetwelderJumperMissle>(), Projectile.damage * 2, Projectile.knockBack, Player.whoAmI, target.whoAmI);
             }
         }
     }
@@ -226,9 +226,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             ManageTrail();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            DrawTrail(spriteBatch);
+            DrawTrail(Main.spriteBatch);
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
@@ -236,28 +236,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Vector2 origin = new Vector2(tex.Width / 2, frameHeight / 2);
 
             Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
-            spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
+
         public override bool? CanHitNPC(NPC target)
         {
             if (Projectile.velocity.Y < 0)
                 return false;
+
             return base.CanHitNPC(target);
         }
+
         public override void Kill(int timeLeft)
         {
-
-            /*for (int i = 0; i < 10; i++)
-            {
-                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-                dust.velocity = Main.rand.NextVector2Circular(7, 7);
-                dust.scale = Main.rand.NextFloat(1f, 1.5f);
-                dust.alpha = 70 + Main.rand.Next(60);
-                dust.rotation = Main.rand.NextFloat(6.28f);
-            }*/
-
             for (int i = 0; i < 6; i++)
             {
                 Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<JetwelderDust>());
@@ -271,10 +264,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             for (int i = 0; i < 3; i++)
             {
-                Projectile.NewProjectileDirect(Projectile.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2), ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+                var velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
+                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
             }
 
-            Projectile.NewProjectileDirect(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Player.whoAmI, victim == default ? -1 : victim.whoAmI);
+            Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Player.whoAmI, victim == default ? -1 : victim.whoAmI);
+
             for (int i = 0; i < 10; i++)
             {
                 Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
@@ -394,6 +389,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             return base.CanHitNPC(target);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

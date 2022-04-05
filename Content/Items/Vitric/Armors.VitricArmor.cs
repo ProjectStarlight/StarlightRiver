@@ -27,8 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void Load()
 		{
             StarlightItem.PickAmmoEvent += PickShardsWhenLoaded;
-            On.Terraria.Player.KeyDoubleTap += LoadShots;
-			
+            On.Terraria.Player.KeyDoubleTap += LoadShots;			
 		}
 
 		public override void SetStaticDefaults()
@@ -55,7 +54,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void UpdateEquip(Player Player)
         {
-            Player.rangedDamage += 0.1f;
+            Player.GetDamage(DamageClass.Ranged) += 0.1f;
 
             if (!IsArmorSet(Player.armor[0], Player.armor[1], Player.armor[2]))
             {
@@ -67,14 +66,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
         {
-            return body.type == ItemType<VitricChest") && legs.type == Mod.ItemType("VitricLegs>();
+            return body.type == ItemType<VitricChest>() && legs.type == ItemType<VitricLegs>();
         }
 
-        public override void UpdateArmorSet(Player Player)
+        public override void UpdateArmorSet(Player player)
         {
-            Player.setBonus = "Accumulate powerful glass shards over time\nDouble tap DOWN to load these shards into your bow\nShards fired from bows have high velocity and damage";
+            player.setBonus = "Accumulate powerful glass shards over time\nDouble tap DOWN to load these shards into your bow\nShards fired from bows have high velocity and damage";
 
-            if (Player.whoAmI != Main.myPlayer)
+            if (player.whoAmI != Main.myPlayer)
                 return;
 
             if (shardCount < 3 && !loaded)
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (shardTimer == 210)
                 {
-                    int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, Player.whoAmI, 0, shardCount);
+                    int i = Projectile.NewProjectile(player.GetProjectileSource_SetBonus(player.whoAmI), player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI, 0, shardCount);
                     var proj = Main.projectile[i].ModProjectile as VitricArmorProjectileIdle;
                     proj.parent = this;
                 }

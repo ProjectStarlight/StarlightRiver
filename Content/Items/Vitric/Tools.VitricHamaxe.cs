@@ -48,8 +48,8 @@ namespace StarlightRiver.Content.Items.Vitric
             writer.Write(heatTime);
         }
 
-        public override void NetRecieve(BinaryReader reader)
-        {
+		public override void NetReceive(BinaryReader reader)
+		{
             heat = reader.ReadInt32();
             heatTime = reader.ReadInt32();
         }
@@ -66,14 +66,14 @@ namespace StarlightRiver.Content.Items.Vitric
             if (cPlayer.mouseRight)
             {
                 Item.noMelee = true;
-                Player.ItemAnimation = 13;
+                Player.itemAnimation = 13;
 
                 if (heat < 100)
                 {
                     heat++;
 
                     var off = Vector2.One.RotatedByRandom(6.28f) * 20;
-                    Dust.NewDustPerfect(Player.MountedCenter + (Vector2.One * 40).RotatedBy(Player.ItemRotation - (Player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
+                    Dust.NewDustPerfect(Player.MountedCenter + (Vector2.One * 40).RotatedBy(Player.itemRotation - (Player.direction == 1 ? MathHelper.PiOver2 : MathHelper.Pi)) + off, DustType<Dusts.Stamina>(), -off * 0.05f);
                 }
 
                 if (heat == 98)
@@ -108,18 +108,18 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
         }
 
-        public void DrawGlowmask(PlayerDrawInfo info)
+        public void DrawGlowmask(PlayerDrawSet info) //PORTTODO: Port to new player drawing functionality
         {
             var Player = info.drawPlayer;
 
-            if (Player.ItemAnimation == 0)
+            if (Player.itemAnimation == 0)
                 return;
 
             var tex = Request<Texture2D>(Texture + "Glow").Value;
             var color = Color.White * (heat / 100f);
             var origin = Player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
-            var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.ItemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.itemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             Main.playerDrawData.Add(data);
         }
 

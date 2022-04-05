@@ -144,13 +144,13 @@ namespace StarlightRiver.Helpers
 
         public static Texture2D GetPopupTexture(Item Item)
         {
-            if (Item.type < Main.maxItemTypes) return Main.PopupTexture[Item.type];
+            if (Item.type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[Item.type];
             else return Request<Texture2D>(Item.ModItem.Texture).Value;
         }
 
         public static Texture2D GetPopupTexture(int type)
         {
-            if (type < Main.maxItemTypes) return Main.PopupTexture[type];
+            if (type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[type];
             else
             {
                 Item Item = new Item();

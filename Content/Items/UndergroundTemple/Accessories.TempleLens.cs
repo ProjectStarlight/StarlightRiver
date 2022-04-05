@@ -19,16 +19,13 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeUpdateEquip(Player Player)
         {
-            Player.meleeCrit += 3;
-            Player.rangedCrit += 3;
-            Player.magicCrit += 3;
+            Player.GetCritChance(Terraria.ModLoader.DamageClass.Generic) += 3;
         }
 
         public override void Load()
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHurtLens;
             StarlightProjectile.ModifyHitNPCEvent += ModifyProjectileLens;
-            return true;
         }
 
         private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)

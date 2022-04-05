@@ -15,8 +15,6 @@ namespace StarlightRiver.Content.Items.Utility
 
         public List<Item> Items = new List<Item>();
 
-        public override bool CloneNewInstances => true;
-
         public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
 
         public override bool CanRightClick() => true;
@@ -84,10 +82,7 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["Items"] = Items
-            };
+            tag["Items"] = Items;
         }
 
         public override void LoadData(TagCompound tag)

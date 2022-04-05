@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private DrawData EmitLayerManipDelegate(DrawData input, Player Player)
         {
-            /*if(!Main.gameMenu && Player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Main.PopupTexture[Player.HeldItem.type])
+            /*if(!Main.gameMenu && Player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Terraria.GameContent.TextureAssets.Item[Player.HeldItem.type])
             {
                 input.shader = 2; //TODO: Move this. actually bind the correct armor shader. Stop being lazy.
             }*/

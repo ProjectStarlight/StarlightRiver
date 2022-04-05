@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class RebarLauncher : ModItem
 	{
+		Vector2 direction = Vector2.Zero;
+
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
@@ -24,11 +26,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			DisplayName.SetDefault("Rebar Launcher");
 			Tooltip.SetDefault("Impales enemies \nShoot rebar to drive it deeper into enemies");
 		}
-
-		//TODO: Adjust rarity sellprice and balance
-
-		Vector2 direction = Vector2.Zero;
-		public override void SetDefaults()
+		
+		public override void SetDefaults() //TODO: Adjust rarity sellprice and balance
 		{
 			Item.damage = 40;
 			Item.DamageType = DamageClass.Ranged;
@@ -45,20 +44,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.autoReuse = true;
 		}
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
+		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+		{
 			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
-			Player.GetModPlayer<StarlightPlayer>().Shake += 6;
-			direction = new Vector2(speedX, speedY);
-			position += new Vector2(speedX, speedY) * 0.9f;
-			return true;
-        }
+			player.GetModPlayer<StarlightPlayer>().Shake += 6;
+			direction = velocity;
+			position += velocity * 0.9f;
+		}
 
-        public override void HoldItem(Player Player)
+        public override void HoldItem(Player player)
         {
-			if (Player.ItemTime > 1)
-				Dust.NewDustPerfect(Player.Center + (direction.RotatedBy(-0.1f * Player.direction) * 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(30), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
-			base.HoldItem(Player);
+			if (player.itemTime > 1)
+				Dust.NewDustPerfect(player.Center + (direction.RotatedBy(-0.1f * player.direction) * 0.75f), ModContent.DustType<BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(30), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+			base.HoldItem(player);
         }
 
         public override Vector2? HoldoutOffset()
@@ -101,10 +99,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public float distanceIn = 0;
 
+		public Vector2 A => Projectile.Center + ((Projectile.rotation + 0.3f).ToRotationVector2() * 40); //TODO: These need better names
+		public Vector2 B => Projectile.Center - ((Projectile.rotation + 0.3f).ToRotationVector2() * 40);
+		public Vector2 A2 => Projectile.Center + ((Projectile.rotation - 0.3f).ToRotationVector2() * 40);
+		public Vector2 B2 => Projectile.Center - ((Projectile.rotation - 0.3f).ToRotationVector2() * 40);
+		public Vector2 A3 => Projectile.Center + ((Projectile.rotation).ToRotationVector2() * 30);
+		public Vector2 B3 => Projectile.Center - ((Projectile.rotation).ToRotationVector2() * 30);
+		public Vector2 A4 => Projectile.Center + ((Projectile.rotation).ToRotationVector2() * 35);
+		public Vector2 B4 => Projectile.Center + ((Projectile.rotation).ToRotationVector2() * 35);
+		public Vector2 Top => (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
+
 		public override void Load()
 		{
-			StarlightRiver.Instance.AddGore(AssetDirectory.SteampunkItem + "RebarProj");
-			
+			GoreLoader.AddGoreFromTexture<>(Mod, AssetDirectory.SteampunkItem + "RebarProj");			
 		}
 		public override void SetStaticDefaults()
 		{
@@ -155,7 +162,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					}
 					else
 					{
-						var collidingProj = Main.projectile.Where(n => n.active && n != Projectile && !collidedWith.Contains(n) && n.ModProjectile is RebarProj modProj && Collision.CheckLinevLine(GetA(), GetB(), modProj.GetA2(), modProj.GetB2()).Length > 0 && !modProj.collidedWith.Contains(Projectile) && modProj.distanceIn < distanceIn).OrderBy(n => n.velocity.Length()).FirstOrDefault();
+						var collidingProj = Main.projectile.Where(n => n.active && n != Projectile && !collidedWith.Contains(n) && n.ModProjectile is RebarProj modProj && Collision.CheckLinevLine(A, B, modProj.A2, modProj.B2).Length > 0 && !modProj.collidedWith.Contains(Projectile) && modProj.distanceIn < distanceIn).OrderBy(n => n.velocity.Length()).FirstOrDefault();
 
 						if (collidingProj != default)
 						{
@@ -178,7 +185,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 									Projectile.friendly = true;
 								}
 
-								Vector2[] dustPositions = Collision.CheckLinevLine(GetA(), GetB(), mp.GetA2(), mp.GetB2());
+								Vector2[] dustPositions = Collision.CheckLinevLine(A, B, mp.A2, mp.B2);
 
 								if (dustPositions.Length > 0 && initialVel.Length() < 1)
 								{
@@ -198,7 +205,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 						if (initialVel.Length() > 0.02f)
 							initialVel *= 0.5f;
 
-						var targetCollection = Main.npc.Where(n => n.active && !n.townNPC && (Collision.CheckAABBvLineCollision(n.position, n.Size, GetA3(), GetB3()) || Collision.CheckAABBvAABBCollision(Projectile.position, Projectile.Size, n.position, n.Size))).OrderBy(n => 1).FirstOrDefault();
+						var targetCollection = Main.npc.Where(n => n.active && !n.townNPC && (Collision.CheckAABBvLineCollision(n.position, n.Size, A3, B3) || Collision.CheckAABBvAABBCollision(Projectile.position, Projectile.Size, n.position, n.Size))).OrderBy(n => 1).FirstOrDefault();
 						if (targetCollection == default)
 						{
 							Projectile.extraUpdates = 0;
@@ -212,7 +219,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 							if (!collided)
 							{
 								Projectile.alpha = 255;
-								Gore.NewGorePerfect(Projectile.Center, initialVel, Mod.Find<ModGore>(Texture));
+								Gore.NewGorePerfect(Projectile.Center, initialVel, Mod.Find<ModGore>(Texture).Type);
 								collided = true;
 							}
 						}
@@ -243,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), GetA3(), GetB3());
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), A3, B3);
 		}
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
@@ -274,8 +281,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+			var spriteBatch = Main.spriteBatch;
+
 			Texture2D overlay = ModContent.Request<Texture2D>(Texture + "_White").Value;
 			Texture2D glow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Color color = HeatColor(trailWidth / 4f, 0.5f);
@@ -308,13 +317,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				offsetCache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
 				{
-					cache.Add(GetA4() + GetTop());
+					cache.Add(A4 + Top);
 
 					offsetCache.Add(Vector2.Zero);
 				}
 			}
 
-			cache.Add(GetA4() + GetTop());
+			cache.Add(A4 + Top);
 			offsetCache.Add((Projectile.rotation + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
 			while (cache.Count > TRAILLENGTH)
@@ -329,12 +338,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				offsetCache2 = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
 				{
-					cache2.Add(GetA4() + GetTop());
+					cache2.Add(A4 + Top);
 					offsetCache2.Add(Vector2.Zero);
 				}
 			}
 
-			cache2.Add(GetA4() + GetTop());
+			cache2.Add(A4 + Top);
 			offsetCache2.Add((Projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
 			while (cache2.Count > TRAILLENGTH)
@@ -377,50 +386,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (!stuck)
 			{
-				trail.NextPosition = GetA4() + (Projectile.rotation.ToRotationVector2() * 25) + GetTop();
-				trail2.NextPosition = GetA4() + (Projectile.rotation.ToRotationVector2() * 25) + GetTop();
+				trail.NextPosition = A4 + (Projectile.rotation.ToRotationVector2() * 25) + Top;
+				trail2.NextPosition = A4 + (Projectile.rotation.ToRotationVector2() * 25) + Top;
 			}
 		}
 
-		public Vector2 GetA()
-		{
-			return Projectile.Center + ((Projectile.rotation + 0.3f).ToRotationVector2() * 40);
-		}
-
-		public Vector2 GetB()
-		{
-			return Projectile.Center - ((Projectile.rotation + 0.3f).ToRotationVector2() * 40);
-		}
-
-		public Vector2 GetA2()
-		{
-			return Projectile.Center + ((Projectile.rotation - 0.3f).ToRotationVector2() * 40);
-		}
-
-		public Vector2 GetB2()
-		{
-			return Projectile.Center - ((Projectile.rotation - 0.3f).ToRotationVector2() * 40);
-		}
-
-		public Vector2 GetA3()
-		{
-			return Projectile.Center + ((Projectile.rotation).ToRotationVector2() * 30);
-		}
-
-		public Vector2 GetB3()
-		{
-			return Projectile.Center - ((Projectile.rotation).ToRotationVector2() * 30);
-		}
-
-		public Vector2 GetA4()
-		{
-			return Projectile.Center + ((Projectile.rotation).ToRotationVector2() * 35);
-		}
-
-		public Vector2 GetTop()
-        {
-			return (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
-        }
 		public void DrawPrimitives()
 		{
 			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;

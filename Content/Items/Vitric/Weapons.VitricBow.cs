@@ -38,14 +38,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            Vector2 aim = Vector2.Normalize(Main.MouseWorld - Player.Center);
+            Vector2 aim = Vector2.Normalize(Main.MouseWorld - player.Center);
 
-            int proj = Projectile.NewProjectile(Player.Center, (aim * 8.5f).RotatedBy(0.1f), type, damage, knockBack, Player.whoAmI);
+            int proj = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(0.1f), type, damage, knockback, player.whoAmI);
             Main.projectile[proj].scale = 0.5f;
             Main.projectile[proj].damage /= 2;
             Main.projectile[proj].noDropItem = true;
             NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
-            int proj2 = Projectile.NewProjectile(Player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockBack, Player.whoAmI);
+            int proj2 = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockback, player.whoAmI);
             Main.projectile[proj2].scale = 0.5f;
             Main.projectile[proj2].damage /= 2;
             Main.projectile[proj2].noDropItem = true;

@@ -16,7 +16,7 @@ using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
-    public class Buzzsaw : ModItem
+    public class Buzzsaw : ModItem //PORTTODO: Graydee rework this to be... not this.
     {
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 

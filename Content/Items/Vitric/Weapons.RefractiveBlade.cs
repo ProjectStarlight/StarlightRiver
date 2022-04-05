@@ -13,6 +13,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -60,18 +61,18 @@ namespace StarlightRiver.Content.Items.Vitric
                 Item.useStyle = ItemUseStyleID.Swing;
         }
 
-        public override bool Shoot(Player Player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-            if(Player.altFunctionUse == 2)
-			{
-                if(!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == Player.whoAmI))
-                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockBack, Player.whoAmI, 0, 120);
+            if (player.altFunctionUse == 2)
+            {
+                if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
+                    Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockback, player.whoAmI, 0, 120);
 
                 return false;
-			}
+            }
 
-            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == Player.whoAmI))
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, Player.whoAmI, 0, combo);
+            if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
 
             combo++;
 
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 combo = 0;
 
             return false;
-		}
+        }
 	}
 
     public class RefractiveBladeProj : ModProjectile, IDrawPrimitive
@@ -225,7 +226,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Utils.PlotTileLine(Owner.Center, Projectile.Center, (Projectile.width + Projectile.height) * 0.5f * Projectile.scale, DelegateMethods.CutTiles);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
             var tex = Request<Texture2D>(Texture).Value;
             var texGlow = Request<Texture2D>(Texture + "Glow").Value;
@@ -233,8 +234,8 @@ namespace StarlightRiver.Content.Items.Vitric
             float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
             var pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
 
-            spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
-            spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
+            Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
+            Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
 
             return false;
 		}
@@ -320,7 +321,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
             Projectile.Center = Owner.Center;
-            Owner.ItemAnimation = Owner.ItemAnimationMax;
+            Owner.itemAnimation = Owner.itemAnimationMax;
 
             ControlsPlayer cPlayer = Owner.GetModPlayer<ControlsPlayer>();
 
@@ -415,8 +416,10 @@ namespace StarlightRiver.Content.Items.Vitric
                 target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
 		}
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+            var spriteBatch = Main.spriteBatch;
+
             spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
             spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 

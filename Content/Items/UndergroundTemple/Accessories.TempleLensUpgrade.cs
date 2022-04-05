@@ -21,9 +21,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeUpdateEquip(Player Player)
         {
-            Player.meleeCrit += 4;
-            Player.rangedCrit += 4;
-            Player.magicCrit += 4;
+            Player.GetCritChance(DamageClass.Generic) += 4;
 
             Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f;
         }
@@ -32,7 +30,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHurtLens;
             StarlightProjectile.ModifyHitNPCEvent += ModifyProjectileLens;
-            return true;
         }
 
         private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
@@ -60,12 +57,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
     {
         public Exposed() : base("Exposed", "How do you have this its NPC only", true) { }
 
-		public override bool Autoload(ref string name, ref string texture)
+		public override void Load()
 		{
             StarlightNPC.ModifyHitByItemEvent += ExtraDamage;
             StarlightNPC.ModifyHitByProjectileEvent += ExtraDamageProjectile;
-
-            return base.Autoload(ref name, ref texture);
 		}
 
 		private void ExtraDamageProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

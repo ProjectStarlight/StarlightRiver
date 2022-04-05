@@ -81,9 +81,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (buffed && Player.altFunctionUse != 2)
+            if (buffed && player.altFunctionUse != 2)
             {
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, Player.whoAmI, 0, buffPower);
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, buffPower);
                 buffed = false;
 
                 return false;
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             buffed = false;
 
-            return base.Shoot(Player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
         public override bool AltFunctionUse(Player Player)
@@ -339,14 +339,14 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Projectile.timeLeft > 5 && !cPlayer.mouseRight)
             {
                 Projectile.timeLeft = 5;
-                Player.ItemTime = 20;
-                Player.ItemAnimation = 20;
+                Player.itemTime = 20;
+                Player.itemAnimation = 20;
             }
             if (cPlayer.mouseRight && Projectile.timeLeft < 10)
             {
                 Projectile.timeLeft = 10;
-                Player.ItemTime = 20;
-                Player.ItemAnimation = 20;
+                Player.itemTime = 20;
+                Player.itemAnimation = 20;
             }
 
             Rotation = (cPlayer.mouseWorld - Player.Center).ToRotation() - (float)Math.PI;
@@ -369,10 +369,10 @@ namespace StarlightRiver.Content.Items.Vitric
             else
                 Player.direction = -1;
 
-            Player.ItemRotation = Rotation + (float)Math.PI; //TODO: Wrap properly when facing left
+            Player.itemRotation = Rotation + (float)Math.PI; //TODO: Wrap properly when facing left
 
             if (Player.direction != 1)
-                Player.ItemRotation -= 3.14f;
+                Player.itemRotation -= 3.14f;
 
             Player.heldProj = Projectile.whoAmI;
 
@@ -424,8 +424,10 @@ namespace StarlightRiver.Content.Items.Vitric
                 findIfHit();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+            var spriteBatch = Main.spriteBatch;
+
             var tex = ModContent.Request<Texture2D>(Texture).Value;
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, 32 * Projectile.frame, 22, 32), lightColor, Projectile.rotation, new Vector2(11, 16), Projectile.scale, 0, 0);
 

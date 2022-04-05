@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
             Projectile.aiStyle = 1;
-            aiType = ProjectileID.WoodenArrowFriendly;
+            AIType = ProjectileID.WoodenArrowFriendly;
         }
         public override void AI()
         {
@@ -82,8 +82,10 @@ namespace StarlightRiver.Content.Items.Vitric
                 moltenCounter -= 0.05f;
             Lighting.AddLight(Projectile.Center, (Color.Orange * heat).ToVector3());
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+            var spriteBatch = Main.spriteBatch;
+
             Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom").Value;
             Color bloomColor = Color.Orange;
             bloomColor.A = 0;

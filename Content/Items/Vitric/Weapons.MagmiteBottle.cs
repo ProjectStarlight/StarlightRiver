@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void Kill(int timeLeft)
         {
             for (int k = 0; k < 60; k++)
-                Gore.NewGoreDirect(Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-16, -1)).RotatedByRandom(0.8f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(1.0f, 1.4f));
+                Gore.NewGoreDirect(Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-16, -1)).RotatedByRandom(0.8f), Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(1.0f, 1.4f));
 
             for (int k = 0; k < 50; k++)
                 Dust.NewDust(Projectile.position, 16, 16, 14);
@@ -72,11 +72,12 @@ namespace StarlightRiver.Content.Items.Vitric
                 for (int y = -8; y < 8; y++)
                 {
                     Tile tile = Main.tile[(int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y];
-                    if (tile.HasTile && Main.tileSolid[tile.type] && Helpers.Helper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
+                    if (tile.HasTile && Main.tileSolid[tile.TileType] && Helpers.Helper.IsEdgeTile((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y))
                     {
                         Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
+
                         if (!Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MagmaSwordBurn>() && n.Center == pos))
-                            Projectile.NewProjectile(pos, Vector2.Zero, ModContent.ProjectileType<MagmaSwordBurn>(), 25, 0, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<MagmaSwordBurn>(), 25, 0, Projectile.owner);
                         else Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MagmaSwordBurn>() && n.Center == pos).timeLeft = 180;
                     }
                 }
@@ -85,7 +86,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, Projectile.Center);
-            //Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, Projectile.Center);
         }
     }
 

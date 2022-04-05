@@ -29,10 +29,10 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Remove(tooltips.FirstOrDefault(n => n.Mod == "Terraria" && n.Name == "Equipable"));
+			tooltips.Remove(tooltips.FirstOrDefault(n => n.mod == "Terraria" && n.Name == "Equipable"));
 		}
 
-		public override bool CanEquipAccessory(Player Player, int slot)
+		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
 		{
 			if (Player.armor[slot].ModItem is CursedAccessory && slot <= 7 + Player.extraAccessorySlots)
 			{

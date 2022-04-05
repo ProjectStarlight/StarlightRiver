@@ -43,21 +43,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void Load()
 		{
-			StarlightRiver.Instance.AddGore(Texture + "_Gore1");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore2");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore3");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore4");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore5");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore6");
-			StarlightRiver.Instance.AddGore(Texture + "_Gore7");
-			
+			for (int k = 1; k <= 7; k++)
+				GoreLoader.AddGoreFromTexture<>(Mod, Texture + "_Gore" + k);
 		}
 
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crawler");
             Main.projFrames[Projectile.type] = 9;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
         }
@@ -77,8 +70,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			windup = Main.rand.Next(40, 80);
 			Projectile.ignoreWater = true;
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
+			var spriteBatch = Main.spriteBatch;
+
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             int frameHeight = tex.Height / Main.projFrames[Projectile.type];
             Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
@@ -127,7 +122,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			for (int i = 1; i < 8; i++)
 			{
-				Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()), 1f);
+				Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
 			}
 		}
 
@@ -223,9 +218,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.frameCounter = 0;
 
 				Vector2 pos = Projectile.Center + (GunOffset().RotatedBy(Projectile.rotation));
-				Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.MiscItem + "CoachGunCasing"), 1f);
+				Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.MiscItem + "CoachGunCasing").Type, 1f);
 				gunRotation -= Math.Sign(dir.X) * 0.3f;
-				Projectile.NewProjectile(pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }
         }
 
@@ -246,39 +241,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
 			Vector2 ret = Vector2.Zero;
 			ret.X = -3;
-			switch (Projectile.frame)
-            {
-				case 0:
-					ret.Y = -14;
-					break;
-				case 1:
-					ret.Y = -16;
-					break;
-				case 2:
-					ret.Y = -16;
-					break;
-				case 3:
-					ret.Y = -16;
-					break;
-				case 4:
-					ret.Y = -14;
-					break;
-				case 5:
-					ret.Y = -16;
-					break;
-				case 6:
-					ret.Y = -16;
-					break;
-				case 7:
-					ret.Y = -16;
-					break;
-				default:
-					ret.Y = -16; 
-					break;
-			}
+			ret.Y = -16;
+
+			if (Projectile.frame == 0 || Projectile.frame == 4)
+				ret.Y = -14;
+
 			if (flipGun == flipVertical)
 				ret.X *= -1;
+
 			ret.Y *= (flipVertical ? -1 : 1);
+
 			return ret;
         }
 
@@ -288,10 +260,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < direction.Length(); i += 4)
 			{
 				Vector2 toLookAt = point1 + (Vector2.Normalize(direction) * i);
-				if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).type]))
-				{
+
+				if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType]))
 					return false;
-				}
 			}
 			return true;
 		}
