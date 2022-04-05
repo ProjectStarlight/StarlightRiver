@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
             Item.defense = 4;
         }
 
-        public override void UpdateEquip(Player Player) => Player.rangedCrit += 2;
+        public override void UpdateEquip(Player Player) => Player.GetCritChance(DamageClass.Ranged) += 2;
 
         public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == ModContent.ItemType<ForestIvyHead>() && legs.type == ModContent.ItemType<ForestIvyLegs>();
 

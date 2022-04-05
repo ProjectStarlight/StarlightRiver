@@ -13,7 +13,6 @@ namespace StarlightRiver.Content.Items.Food
         public override void Load()
         {
             StarlightNPC.NPCLootEvent += LootEaterSteak;
-            return true;
         }
 
         public override void BuffEffects(Player Player, float multiplier)
@@ -24,7 +23,7 @@ namespace StarlightRiver.Content.Items.Food
         private void LootEaterSteak(NPC NPC)
         {
             if (NPC.type == NPCID.EaterofSouls && Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.Center, Item.type);
+                Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, Item.type);
         }
     }
 }

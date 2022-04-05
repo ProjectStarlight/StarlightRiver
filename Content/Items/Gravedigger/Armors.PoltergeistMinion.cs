@@ -12,6 +12,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					float rot = (target.Center - Projectile.Center).ToRotation();
 
 					if (Main.myPlayer == owner.whoAmI)
-						Projectile.NewProjectile(Projectile.Center, Vector2.UnitX.RotatedBy(rot) * Item.shootSpeed, Item.shoot, Item.damage / 2, Item.knockBack, Projectile.owner);
+						Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(rot) * Item.shootSpeed, Item.shoot, Item.damage / 2, Item.knockBack, Projectile.owner);
 
 					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
 					targetRotation = rot + (Item.staff[Item.type] ? 1.57f / 2 : 0);
@@ -158,15 +159,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return false;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			if (Item != null && !Item.IsAir)
 			{
 				
-				var tex = Main.PopupTexture[Item.type];
+				var tex = TextureAssets.Item[Item.type].Value;
 				//var frames = Main.itemFrame[Item.type];
 
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, tex.Size() / 2, 1, 0, 0);
 			}
 
 			return false;

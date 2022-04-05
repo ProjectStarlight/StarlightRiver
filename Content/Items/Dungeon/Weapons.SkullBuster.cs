@@ -59,9 +59,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				shotCounter = 0;
 				reloadCounter = 120;
-				Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Guns/RevolvingReload"), Player.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Guns/RevolvingReload"), Player.Center);
 				Item.noUseGraphic = true;
-				Projectile.NewProjectile(Player.Center,Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Player.whoAmI);
+				Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Player.whoAmI); //PORTTODO: Figure out source for this, since its outside of ModItem.Shoot
 			}
 		}
 		public override bool CanUseItem(Player Player)
@@ -75,18 +75,18 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Custom/Revolver"));
+			Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Custom/Revolver"));
 			if (shotCounter < 1)
 			{
-				Projectile.NewProjectile(position, new Vector2(speedX,speedY), ModContent.ProjectileType<SkullBusterProj>(), damage, knockBack, Player.whoAmI);
+				Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<SkullBusterProj>(), damage, knockback, player.whoAmI);
 				shotsHit = 0;
 			}
 			shotCounter++;
-			Vector2 direction = new Vector2(speedX,speedY);
+			Vector2 direction = velocity;
 			direction = direction.RotatedBy(spread);
-			int proj = Projectile.NewProjectile(position, direction, type, damage, knockBack, Player.whoAmI);
+			int proj = Projectile.NewProjectile(source, position, direction, type, damage, knockback, player.whoAmI);
 			Main.projectile[proj].GetGlobalProjectile<SkullBusterGlobalProj>().shotFromGun = true;
-			recoil = 0.8f * (Player.direction * -1);
+			recoil = 0.8f * (player.direction * -1);
 			spread = Main.rand.NextFloat(-1.5f, 1.5f);
 			return false;
 		}
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Projectile.Center = Player.Center;
 
 			direction = Main.MouseWorld - (Player.Center);
-			Player.ItemTime = Player.ItemAnimation = 8;
+			Player.itemTime = Player.itemAnimation = 8;
 			if (Player.HeldItem.ModItem is SkullBuster Item)
 			{
 				direction = direction.RotatedBy(Item.recoil);
@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				if (Main.mouseLeft && !leftClick) //Change to check if its myPlayer holding mouseleft later
 				{
 					leftClick = true;
-					Player.ItemTime = 0;
+					Player.itemTime = 0;
 					if (Item.shotCounter >= 3)
 					{
 						Projectile.active = false;
@@ -150,10 +150,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 					Projectile.active = false;
 				}
 
-				Player.ItemRotation = direction.ToRotation();
+				Player.itemRotation = direction.ToRotation();
 				if (Player.direction != 1)
 				{
-					Player.ItemRotation -= 3.14f;
+					Player.itemRotation -= 3.14f;
 				}
 			}
 		}
@@ -189,16 +189,16 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			Player Player = Main.player[Projectile.owner];
 			Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
-			Player.ItemTime = Player.ItemAnimation = 2;
+			Player.itemTime = Player.itemAnimation = 2;
 			direction = Main.MouseWorld - (Player.Center);
 			direction.Normalize();
 			direction*= 15;
-			Player.ItemRotation = direction.ToRotation();
+			Player.itemRotation = direction.ToRotation();
 			Player.heldProj = Projectile.whoAmI;
 			Projectile.Center = Player.Center;
 			if (Player.direction != 1)
 			{
-				Player.ItemRotation -= 3.14f;
+				Player.itemRotation -= 3.14f;
 			}
 			Projectile.frameCounter++;
 			if (Projectile.frameCounter >= 5)
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Projectile.active = false;
 			}
 		}
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			Player Player = Main.player[Projectile.owner];
 			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;

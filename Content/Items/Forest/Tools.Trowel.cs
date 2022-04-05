@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Forest
 				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
 
-				else if (nextTile.type != tile.type)
+				else if (nextTile.TileType != tile.TileType)
 					return default;
 			}
 
@@ -75,14 +75,14 @@ namespace StarlightRiver.Content.Items.Forest
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 			Item Item = null;
 
-			if (!tile.HasTile || Main.tileFrameImportant[tile.type])
+			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return true;
 
 			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
 			{
 				var thisItem = Player.inventory[k];
 
-				if (!thisItem.IsAir && thisItem.createTile == tile.type)
+				if (!thisItem.IsAir && thisItem.createTile == tile.TileType)
 					Item = Player.inventory[k];
 			}
 
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			if (next != default)
 			{
-				WorldGen.PlaceTile(next.X, next.Y, tile.type);
+				WorldGen.PlaceTile(next.X, next.Y, tile.TileType);
 				Item.stack--;
 				if (Item.stack <= 0)
 					Item.TurnToAir();
@@ -109,12 +109,12 @@ namespace StarlightRiver.Content.Items.Forest
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
-			if (!tile.HasTile || Main.tileFrameImportant[tile.type])
+			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return;
 
 			var pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
 
-			spriteBatch.Draw(TextureAssets.Tile[tile.type].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
+			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}
 	}
 

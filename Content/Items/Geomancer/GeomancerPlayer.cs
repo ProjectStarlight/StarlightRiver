@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
                 float opacity = 1.25f - (((sin / 2) + 0.5f) * 0.8f);
 
-                effect.Parameters["uTime"].SetValue(Main.GlobalTime * 0.6f);
+                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.6f);
                 effect.Parameters["uOpacity"].SetValue(opacity);
                 effect.CurrentTechnique.Passes[0].Apply();
 
@@ -123,9 +123,9 @@ namespace StarlightRiver.Content.Items.Geomancer
             SamplerState samplerState = Main.DefaultSamplerState;
 
             if (Player.mount.Active)
-                samplerState = Main.MountedSamplerState;
+                samplerState = Main.MountedSamplerState; //PORTTODO: Figure out what this is supposed to be
 
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
         }
 
         public override void ResetEffects()
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             }*/
         }
 
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+        public override void ModifyDrawLayers(List<PlayerLayer> layers) //PORTTODO: Port this over to new system
         {
             if (SetBonusActive && storedGem != StoredGem.None)
             {
@@ -208,17 +208,17 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
         }
 
-        public void DrawGemArmor(Texture2D texture, PlayerDrawInfo info, Rectangle frame, float rotation)
+        public void DrawGemArmor(Texture2D texture, PlayerDrawInfo info, Rectangle frame, float rotation) //PORTTODO: Port this over to new system
         {
             Player armorOwner = info.drawPlayer;
 
             Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - Player.gfxOffY);
-            float timerVar = (float)(Main.GlobalTime % 2.4f / 2.4f) * 6.28f;
+            float timerVar = (float)(Main.timeForVisualEffects % 2.4f / 2.4f) * 6.28f;
             float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
 
-            Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GlobalTime * 0.1f);
+            Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 
-            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GlobalTime * 0.1f);
+            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
             Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
 
             DrawData value = new DrawData(
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             ShieldPlayer shieldPlayer = Player.GetModPlayer<ShieldPlayer>();
             if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxShield - shieldPlayer.Shield < 100)
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
+                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI); //PORTTODO: Figure out what source to use here
 
             if (storedGem == StoredGem.All)
             {
@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             if (!SetBonusActive)
                 return;
 
-            if (!proj.magic)
+            if (proj.DamageType != DamageClass.Magic)
                 return;
 
             int odds = Math.Max(1, 15 - rngProtector);
@@ -305,14 +305,14 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 
             int critRate = Math.Min(Player.HeldItem.crit, 4);
-            critRate += Player.magicCrit;
+            critRate += Player.GetCritChance(DamageClass.Magic);
 
             if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) 
             {
                 int numStars = Main.rand.Next(3) + 1;
                 for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
                 {
-                    Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
+                    Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
                 }
             }
 
@@ -328,18 +328,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
             {
-                Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
+                Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
             }
 
             if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
             {
-                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI);
+                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); //PORTTODO: Figure out source for this
             }
 
             if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
             {
                 if (Main.rand.Next(Math.Max(((10 / Player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
                 {
+                    //PORTTODO: Figure out source for this
                     Projectile.NewProjectile(
                         target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
                         Vector2.Zero,
@@ -382,7 +383,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             ItemType = ItemTypes[Main.rand.Next(ItemTypes.Count)];
 
-            Item.NewItem(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
+            Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
         }
 
         public static void PickOldGem(Player Player)
@@ -421,7 +422,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             switch (storedGem)
             {
                 case StoredGem.All:
-                    return Main.hslToRgb((Main.GlobalTime * 0.1f) % 1, 1f, 0.5f);
+                    return Main.hslToRgb(((float)Main.timeForVisualEffects * 0.1f) % 1, 1f, 0.5f);
                 case StoredGem.Amethyst:
                     return Color.Purple;
                 case StoredGem.Topaz:

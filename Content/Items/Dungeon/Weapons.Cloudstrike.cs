@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true; //PORTTODO: Figure out whether removing this fucks the item up
 
         public override void SetStaticDefaults()
         {
@@ -83,30 +83,30 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             if (charge == 1)
             {
-                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 4)).ToString(), 0.2f, Main.rand.NextFloat(0f,0.2f), Player.Center);
+                Helper.PlayPitched("Magic/LightningShortest" + (1 + (charge % 4)).ToString(), 0.2f, Main.rand.NextFloat(0f,0.2f), player.Center);
             }
             else if (charge == MAXCHARGE)
             {
                 damage = (int)(damage * 1.5f);
                 //Full charge attack sound here
-                Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, Player.Center);
+                Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, player.Center);
             }
             else
             {
                 //staggered attack sound here
                 
-                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), Player.Center);
+                Helper.PlayPitched("Magic/LightningExplodeShallow", 0.4f, MathHelper.Clamp(1.0f - (charge * 0.01f), 0f, 1.0f), player.Center);
                 //MathHelper.Clamp(1.1f - (0.01f * (120.0f / charge)), 0.0f, 1.0f)
             }
-            Vector2 dir = Vector2.Normalize(new Vector2(speedX, speedY));
-            Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-Player.direction * 1.57f) * 5);
-            Projectile.NewProjectile(pos, new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockBack, Player.whoAmI, charge);
+            Vector2 dir = Vector2.Normalize(velocity);
+            Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
+            Projectile.NewProjectile(source, pos, velocity.RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockback, player.whoAmI, charge);
 
-            Player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(charge) * 2);
+            player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(charge) * 2);
 
             //Dust.NewDustPerfect(pos, DustID.Electric, dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5));
             if (charge > 60)
-                Player.velocity -= dir * (float)Math.Sqrt(charge - 60);
+                player.velocity -= dir * (float)Math.Sqrt(charge - 60);
             charge = 1;
             return false;
         }
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             float smalLCharge = fullCharge ? 0.5f : 0.01f;
 
-            Projectile proj = Projectile.NewProjectileDirect(Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smalLCharge, 2);
+            Projectile proj = Projectile.NewProjectileDirect(Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smalLCharge, 2); //PORTTODO: Figure out projectile source on this, considering its outside of ModItem.Shoot
             var mp = proj.ModProjectile as CloudstrikeShot;
             mp.velocityMult = Main.rand.Next(1, 4);
 
@@ -163,9 +163,9 @@ namespace StarlightRiver.Content.Items.Dungeon
                 mp.baseColor = Color.Cyan;
         }
 
-        public override void ModifyWeaponDamage(Player Player, ref float add, ref float mult, ref float flat)
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage, ref float flat)
         {
-            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * Player.magicDamage);
+            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * player.GetDamage(DamageClass.Magic));
         }
 
         public override void AddRecipes()
@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 ManageTrails();
             }
             if (Projectile.timeLeft > 36 && !miniature)
-                Player.ItemTime = Player.ItemAnimation = (int)(chargeSqrt + 1) * 3;
+                Player.itemTime = Player.itemAnimation = (int)(chargeSqrt + 1) * 3;
 
             foreach (Vector2 point in cache)
             {
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature)) //damaging, large branches
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, charge, 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, charge, 1);
                 proj.timeLeft = (int)((Projectile.timeLeft - 25) * 0.75f) + 25;
 
                 var modProj = proj.ModProjectile as CloudstrikeShot;
@@ -318,7 +318,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (Main.rand.NextBool(10 + (int)Math.Sqrt((Cloudstrike.MAXCHARGE + 2) - charge)) && !(branch || miniature)) //small, non damaging branches
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, 1, 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, 1, 1);
                 proj.timeLeft = Math.Min(Main.rand.Next(40,70), Projectile.timeLeft);
 
                 var modProj = proj.ModProjectile as CloudstrikeShot;
@@ -564,7 +564,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             if (!followPlayer)
                 return;
 
-            if (Player.ItemTime != 1)
+            if (Player.itemTime != 1)
                 return;
             float rot = (Main.MouseWorld - Player.Center).ToRotation();
             if (rot != oldRotation)

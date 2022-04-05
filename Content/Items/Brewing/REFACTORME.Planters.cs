@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Items.Herbology
 {
-	public class Soil : ModItem
+    /*public class Soil : ModItem //PORTTODO: Determine whether this should all be deleted
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/Soil";
 
@@ -41,7 +41,7 @@ namespace StarlightRiver.Items.Herbology
         }
     }
 
-    public class Trellis : ModItem
+    public class Trellis : ModItem //PORTTODO: Determine whether this should all be deleted
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/Trellis";
 
@@ -105,5 +105,5 @@ namespace StarlightRiver.Items.Herbology
             recipe.AddIngredient(ItemID.Chain, 1);
             recipe.AddTile(TileID.WorkBenches);
         }
-    }
+    }*/
 }

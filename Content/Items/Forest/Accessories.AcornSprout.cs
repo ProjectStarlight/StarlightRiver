@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Forest
                 {
                     foreach (NPC NPC in Main.npc.Where(n => n.active && n.chaseable && Vector2.DistanceSquared(n.Center, target.Center) < Math.Pow(240, 2)))
                     {
-                        Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<Acorn>(), 5, 1, Player.whoAmI, NPC.whoAmI);
+                        Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<Acorn>(), 5, 1, Player.whoAmI, NPC.whoAmI); //PORTTODO: Add source from item, since this is outside of Shoot
                     }
                 }
             }

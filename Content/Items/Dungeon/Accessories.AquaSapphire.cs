@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			Item.width = 30;
 			Item.height = 28;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.buyPrice(0, 5, 0, 0);
 			Item.accessory = true;
 		}

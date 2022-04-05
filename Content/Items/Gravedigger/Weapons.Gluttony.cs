@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			return !Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ModContent.ProjectileType<GluttonyHandle>());
+			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<GluttonyHandle>());
 		}
 	}
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			timer++;
 
 			Player Player = Main.player[Projectile.owner];
-			Projectile.damage = (int)(Player.HeldItem.damage * Player.magicDamage);
+			Projectile.damage = (int)(Player.HeldItem.damage * Player.GetDamage(DamageClass.Magic));
 
 			direction = Main.MouseWorld - (Player.Center);
 			direction.Normalize();
@@ -128,10 +128,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				//Player.ItemTime = Player.ItemAnimation = 2;
 				Projectile.timeLeft = 2;
 
-				Player.ItemRotation = direction.ToRotation();
+				Player.itemRotation = direction.ToRotation();
 
 				if (Player.direction != 1)
-					Player.ItemRotation -= 3.14f;
+					Player.itemRotation -= 3.14f;
 
 				if(timer > 10 && Main.rand.Next(4) == 0)
 				{
@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (damageDone > 150 && Player.ownedProjectileCounts[ModContent.ProjectileType<GluttonyGhoul>()] < 10)
             {
 				damageDone = 0;
-				Projectile.NewProjectile(Player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), Projectile.damage / 2, Projectile.knockBack, Player.whoAmI);
+				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), Projectile.damage / 2, Projectile.knockBack, Player.whoAmI);
             }
 
         }
@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return false;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
@@ -329,16 +329,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			return false;
 		}

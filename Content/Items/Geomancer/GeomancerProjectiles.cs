@@ -267,11 +267,11 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void Kill(int timeLeft)
         {
-            Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
             Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 4;
             Vector2 direction = Vector2.Normalize(Main.MouseWorld - Main.player[Projectile.owner].Center);
             for (int i = 0; i < 4; i++)
-                Projectile.NewProjectile(Projectile.Center, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.6f, 1f) * 15, ModContent.ProjectileType<TopazShard>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.6f, 1f) * 15, ModContent.ProjectileType<TopazShard>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner);
         }
     }
 
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             for (int i = 0; i < 3; i++)
             {
                 float rand = Main.rand.NextFloat(0.3f);
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.TopazBolt, Projectile.velocity.X * rand, Projectile.velocity.Y * rand);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.GemTopaz, Projectile.velocity.X * rand, Projectile.velocity.Y * rand);
             }
         }
         public void DrawAdditive(SpriteBatch spriteBatch)
@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void Kill(int timeLeft)
         {
             for (int i = 0; i < 4; i++)
-                Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.AmethystBolt).velocity *= 1.4f;
+                Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.GemAmethyst).velocity *= 1.4f;
         }
     }
 
@@ -507,9 +507,9 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void Kill(int timeLeft)
         {
             for (int i = 0; i < 10; i++)
-                Dust.NewDustPerfect(Projectile.Center, DustID.RubyBolt, (Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(0.4f)), 0, default, 1.25f).noGravity = true; ;
+                Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, (Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.4f, 0.4f)) * Main.rand.NextFloat(0.4f)), 0, default, 1.25f).noGravity = true; ;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }

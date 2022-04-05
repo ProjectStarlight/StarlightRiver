@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Items.Herbology.Materials
 {
-	public class BlendForest : QuickMaterial
+	/*public class BlendForest : QuickMaterial //PORTTODO: Figure out whether this should all be deleted
     {
         public override string Texture => "StarlightRiver/Assets/Items/Brewing/BlendForest";
 
@@ -21,7 +21,7 @@ namespace StarlightRiver.Items.Herbology.Materials
             recipe.AddIngredient(ItemID.Daybloom, 1);
             recipe.AddIngredient(ItemID.GrassSeeds, 1);
             recipe.AddIngredient(ItemType<Ivy>(), 5);
-            //recipe.AddTile(TileType<HerbStation>());
+            recipe.AddTile(TileType<HerbStation>());
         }
     }
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Items.Herbology.Materials
             recipe.AddIngredient(ItemID.Deathweed, 1);
             recipe.AddIngredient(ItemID.Shiverthorn, 1);
             recipe.AddIngredient(ItemType<Deathstalk>(), 5);
-            //recipe.AddTile(TileType<HerbStation>());
+            recipe.AddTile(TileType<HerbStation>());
         }
-    }
+    }*/
 }

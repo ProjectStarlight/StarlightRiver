@@ -49,10 +49,10 @@ namespace StarlightRiver.Content.Items.ForestIvy
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // Pos modifications for the Projectile so it's shot near where the blowdart is actually drawn (see: ForestIvyBlowdartPlayer)
-            position.X -= 4f * Player.direction;
-            position.Y -= 2f * Player.gravDir;
+            position.X -= 4f * player.direction;
+            position.Y -= 2f * player.gravDir;
 
-            Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, Player.whoAmI);
+            Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
             proj.GetGlobalProjectile<ForestIvyBlowdartGlobalProj>().forestIvyPoisonVine = true;
 
             return false;
@@ -71,13 +71,13 @@ namespace StarlightRiver.Content.Items.ForestIvy
     /// </summary>
     public class ForestIvyBlowdartPlayer : ModPlayer
     {
-        public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             // Don't know if this is the best hook to put it in, but eh
             // This code makes the Player hold the blowdart to their mouth instead of the normal useStyle code behavior
             // TODO: Determine if it'd be better to entirely customize useStyle code, not sure because we'd likely have to copy over draw-code which is a pain
             if (Player.inventory[Player.selectedItem].type != ModContent.ItemType<ForestIvyBlowdart>() ||
-                Player.ItemTime <= 0)
+                Player.itemTime <= 0)
                 return;
 
             Player.bodyFrame.Y = Player.bodyFrame.Height * 2;

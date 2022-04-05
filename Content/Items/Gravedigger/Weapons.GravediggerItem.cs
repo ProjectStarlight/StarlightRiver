@@ -155,8 +155,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				DoSFX();
 			}
 			Player.heldProj = Projectile.whoAmI;
-			Player.ItemTime = 2;
-			Player.ItemAnimation = 2;
+			Player.itemTime = 2;
+			Player.itemAnimation = 2;
 			Player.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
 			Vector2 frameOrigin;
 			if (Player.direction < 0)
@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
 				Projectile.position += (directionTwo * 10);
-				Player.ItemRotation = MathHelper.WrapAngle(direction.ToRotation()  - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation()  - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 				Projectile.rotation = MathHelper.WrapAngle(Player.AngleFrom(Projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 			}
 			else
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					else if (SwingFrame == 3) //swing DOWN
 						direction = direction.RotatedBy(Player.direction * -0.2f);
 				}
-				Player.ItemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 				Projectile.rotation = 0;
 			}
 
@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			Rectangle frame = new Rectangle(frameX, Projectile.frame * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				effects = SpriteEffects.None;
 			else
 				effects = SpriteEffects.FlipHorizontally;
-			spriteBatch.Draw(tex, Projectile.position - Main.screenPosition + frameOrigin, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, frameOrigin, Projectile.scale, effects, 0);
+			Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition + frameOrigin, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, frameOrigin, Projectile.scale, effects, 0);
 			return false;
 		}
 
@@ -390,7 +390,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Projectile.friendly = false;
 			counter += (float)(Math.PI / 2f) / 200;
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
         public void DrawOverTiles(SpriteBatch spriteBatch)
         {
 			Color color = Color.White;
@@ -441,7 +441,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				{
 					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
 				}
-				Projectile.NewProjectile(NPC.Center + new Vector2(0, NPC.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
+				Projectile.NewProjectile(NPC.Center + new Vector2(0, NPC.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee)), 0, NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI); //PORTTODO: Figure out what projectile source to use here
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, NPC.Center);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, NPC.Center);
 			}

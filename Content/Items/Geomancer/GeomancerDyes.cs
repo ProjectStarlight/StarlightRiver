@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			*/
             // Item.dye is already assigned to this Item prior to SetDefaults because of the GameShaders.Armor.BindShader code in ExampleMod.Load. 
             // This code here remembers Item.dye so that information isn't lost during CloneDefaults. The above code is the data being cloned by CloneDefaults, for informational purposes.
-            byte dye = Item.dye;
+            int dye = Item.dye;
             Item.CloneDefaults(ItemID.GelDye);
             Item.dye = dye;
         }
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			*/
             // Item.dye is already assigned to this Item prior to SetDefaults because of the GameShaders.Armor.BindShader code in ExampleMod.Load. 
             // This code here remembers Item.dye so that information isn't lost during CloneDefaults. The above code is the data being cloned by CloneDefaults, for informational purposes.
-            byte dye = Item.dye;
+            int dye = Item.dye;
             Item.CloneDefaults(ItemID.GelDye);
             Item.dye = dye;
         }

@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public virtual void SafeSetDefaults() { }
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true; //PORTTODO: Test to make sure commenting this out doesn't mess this up
 
         public override void SetStaticDefaults()
         {
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Food
 
             foreach (TooltipLine line in tooltips)
             {
-                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.text = description; line.overrideColor = nameColor; }
+                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.text = description; line.overrideColor = nameColor; } //PORTTODO: Replace line.Mod with something
                 if (line.Mod == "Terraria" && line.Name == "Tooltip1") { line.text = ItemTooltip; line.overrideColor = descriptionColor; }
             }
 

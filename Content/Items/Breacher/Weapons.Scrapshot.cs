@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using System.IO;
 using Terraria.GameContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -102,7 +103,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (Main.myPlayer == player.whoAmI)
             {
-                damage = (int)(Item.damage * player.rangedDamage);
+                damage = (int)(Item.damage * player.GetDamage(DamageClass.Ranged));
                 float rotation = (player.Center - Main.MouseWorld).ToRotation() - 1.57f;
                 speedX = speed * (float)Math.Sin(rotation);
                 speedY = speed * -(float)Math.Cos(rotation);
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 if (Main.myPlayer == player.whoAmI)
                 {
-                    int i = Projectile.NewProjectile(player, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, Item.knockBack, player.whoAmI);
+                    int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
                     hook = Main.projectile[i].ModProjectile as ScrapshotHook;
                 }
 
@@ -130,8 +131,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
                 bool shoot = true;
 
-                Player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, !ConsumeAmmo(Player));
-                shoot = Player.HasAmmo(sample, shoot);
+                player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, out int ammoID, !ConsumeAmmo(player)); //PORTTODO: Use ammoID somewhere? Maybe?
+                shoot = player.HasAmmo(sample, shoot);
 
                 if (!shoot)
                     return false;
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (type == ProjectileID.Bullet)
                     type = ModContent.ProjectileType<ScrapshotShrapnel>();
 
-                if (Main.myPlayer == Player.whoAmI)
+                if (Main.myPlayer == player.whoAmI)
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
                 
 
@@ -149,28 +150,28 @@ namespace StarlightRiver.Content.Items.Breacher
 
                     NPC hooked = Main.npc[hook.hookedNpcIndex];
                     hook.Projectile.timeLeft = 20;
-                    Player.velocity = Vector2.Normalize(hook.startPos - hooked.Center) * 12;
+                    player.velocity = Vector2.Normalize(hook.startPos - hooked.Center) * 12;
 
-                    Helper.PlayPitched("ChainHit", 0.5f, 0, Player.Center);
+                    Helper.PlayPitched("ChainHit", 0.5f, 0, player.Center);
 
                     for (int k = 0; k < 20; k++)
                     {
                         var direction = Vector2.One.RotatedByRandom(6.28f);
-                        Dust.NewDustPerfect(Player.Center + direction * 10, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(2, 4), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+                        Dust.NewDustPerfect(player.Center + direction * 10, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(2, 4), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
                     }
 
-                    if (Main.myPlayer == Player.whoAmI)
+                    if (Main.myPlayer == player.whoAmI)
                     {
                         spread = 0.05f;
                         damage += 4;
 
-                        Player.GetModPlayer<StarlightPlayer>().Shake += 12;
+                        player.GetModPlayer<StarlightPlayer>().Shake += 12;
                     }
                 }
 
                 float rot = new Vector2(speedX, speedY).ToRotation();
 
-                if (Main.myPlayer != Player.whoAmI)
+                if (Main.myPlayer != player.whoAmI)
                     hook = null;
 
                 for (int k = 0; k < 6; k++)
@@ -178,26 +179,26 @@ namespace StarlightRiver.Content.Items.Breacher
                     Vector2 offset = Vector2.UnitX.RotatedBy(rot);
                     var direction = offset.RotatedByRandom(spread);
 
-                    if (Main.myPlayer == Player.whoAmI)
+                    if (Main.myPlayer == player.whoAmI)
                     {
-                        int i = Projectile.NewProjectile(Player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, Item.knockBack, Player.whoAmI);
+                        int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
 
                         if (type != ModContent.ProjectileType<ScrapshotShrapnel>())
                             Main.projectile[i].timeLeft = 30;
 
                         //don't know direction for other Players so we only add these for self.
-                        Dust.NewDustPerfect(Player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
-                        Dust.NewDustPerfect(Player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+                        Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(20), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+                        Dust.NewDustPerfect(player.Center + direction * 60, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + direction * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
                     }
                 }
 
-                Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Player.Center);
+                Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
             }
 
             return true;
         }
 
-        public override bool ConsumeAmmo(Player Player)
+        public override bool CanConsumeAmmo(Player Player)
         {
             return Player.altFunctionUse != 2;
         }
@@ -255,8 +256,8 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 if (Player.HeldItem.ModItem is Scrapshot)
                 {
-                    Player.ItemAnimation = 1;
-                    Player.ItemTime = 1;
+                    Player.itemAnimation = 1;
+                    Player.itemTime = 1;
                 }
 
                 isHooked = true;
@@ -358,8 +359,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (Player.HeldItem.ModItem is Scrapshot)
             {
-                Player.ItemAnimation = 1;
-                Player.ItemTime = 1;
+                Player.itemAnimation = 1;
+                Player.itemTime = 1;
             }
 
             hookedNpcIndex = (byte)target.whoAmI;
@@ -378,7 +379,7 @@ namespace StarlightRiver.Content.Items.Breacher
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             if (struck)
                 return false;
@@ -397,14 +398,14 @@ namespace StarlightRiver.Content.Items.Breacher
                 var pos = Vector2.Lerp(Projectile.Center, Player.Center, k * length);
 
                 if (k % 2 == 0)
-                    spriteBatch.Draw(chainTex1, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(chainTex1, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
                 else
-                    spriteBatch.Draw(chainTex2, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
+                    Main.spriteBatch.Draw(chainTex2, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
             }
 
             Texture2D hook = TextureAssets.Projectile[Projectile.type].Value;
 
-            spriteBatch.Draw(hook, Projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(hook, Projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
 
             return false;
         }

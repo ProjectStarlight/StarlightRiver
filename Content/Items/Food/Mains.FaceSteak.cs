@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -13,20 +14,19 @@ namespace StarlightRiver.Content.Items.Food
         public override void Load()
         {
             StarlightNPC.NPCLootEvent += LootMonsterSteak;
-            return true;
         }
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.meleeCrit += 3;
-            Player.rangedCrit += 3;
-            Player.magicCrit += 3;
+            Player.GetCritChance(DamageClass.Melee) += 3;
+            Player.GetCritChance(DamageClass.Ranged) += 3;
+            Player.GetCritChance(DamageClass.Magic) += 3;
         }
 
         private void LootMonsterSteak(NPC NPC)
         {
             if (NPC.type == NPCID.FaceMonster && Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.Center, Item.type);
+                Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, Item.type);
         }
     }
 }

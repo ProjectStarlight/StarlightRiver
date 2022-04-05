@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Food
     {
         public List<Item> Ingredients { get; set; } = new List<Item>();
         public int Fullness { get; set; }
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true; //PORTODO: Figure out whether deleting this messes anything up
 
         public override string Texture => AssetDirectory.FoodItem + Name;
 
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Food
 
             if (Ingredients.Count > 0)
             {
-                foreach (Item Item in Ingredients) mp.Consumed.Add(Item.DeepClone());
+                foreach (Item Item in Ingredients) mp.Consumed.Add(Item.DeepClone()); //PORTTODO: Figure out what to do to replace Item.DeepClone()
                 Player.AddBuff(BuffType<FoodBuff>(), Fullness);
                 Player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f));
             }
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Food
 
             string fullName = mainName + sidesName;
 
-            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").text = fullName;
+            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").text = fullName; //PORTTODO: Replace n.mod with something
 
             foreach (Item Item in Ingredients.Where(n => n.ModItem is Ingredient))
             {
@@ -90,11 +90,8 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["Items"] = Ingredients,
-                ["Fullness"] = Fullness
-            };
+            tag.Add("Items", Ingredients);
+            tag.Add("Fullness", Fullness);
         }
 
         public override void LoadData(TagCompound tag)

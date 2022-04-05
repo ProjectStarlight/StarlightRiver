@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             SafeAI();
             Projectile.rotation = 0f;
-            Projectile.Center = Main.player[Projectile.owner].Center + ((Projectile.ai[0] + (Main.GlobalTime * 0.5f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
+            Projectile.Center = Main.player[Projectile.owner].Center + ((Projectile.ai[0] + ((float)Main.timeForVisualEffects * 0.5f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
 
             GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             Projectile.timeLeft = 2;
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 Projectile.active = false;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
             if (Projectile.scale == bigScale)
@@ -105,17 +105,17 @@ namespace StarlightRiver.Content.Items.Geomancer
                 float transparency = (float)Math.Pow(1 - progress, 2);
                 float scale = 0.95f + progress;
 
-                spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, scale * Projectile.scale, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, scale * Projectile.scale, SpriteEffects.None, 0f);
             }
 
             float progress2 = 1 - fade;
             float transparency2 = (float)Math.Pow(1 - progress2, 2);
             float scale2 = 0.95f + progress2;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
             return false;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             if (!released)
                 return;
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             float progress2 = 1 - fade;
             float transparency2 = (float)Math.Pow(1 - progress2, 2);
             float scale2 = 0.95f + progress2;
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
         }
 
         protected virtual void SafeAI() { }

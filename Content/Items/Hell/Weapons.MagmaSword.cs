@@ -44,17 +44,17 @@ namespace StarlightRiver.Content.Items.Hell
         {
             for (int k = 0; k < 4; k++)
             {
-                int i = Projectile.NewProjectile(Player.Center + new Vector2(0, -32), new Vector2(speedX, speedY).RotatedByRandom(0.25f) * ((k + 3) * 0.08f), type, damage, knockBack, Player.whoAmI);
+                int i = Projectile.NewProjectile(source, player.Center + new Vector2(0, -32), velocity.RotatedByRandom(0.25f) * ((k + 3) * 0.08f), type, damage, knockback, player.whoAmI);
                 Main.projectile[i].scale = Main.rand.NextFloat(0.4f, 0.9f);
             }
             return false;
         }
 
-        public void DrawGlowmask(PlayerDrawInfo info)
+        public void DrawGlowmask(PlayerDrawSet info)
         {
             Player Player = info.drawPlayer;
 
-            if (Player.ItemAnimation != 0)
+            if (Player.itemAnimation != 0)
             {
                 Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Items/Hell/MagmaSwordHilt").Value;
                 Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Items/Hell/MagmaSwordGlow").Value;
@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.Items.Hell
                 Color color = Lighting.GetColor((int)Player.Center.X / 16, (int)Player.Center.Y / 16);
                 Vector2 origin = new Vector2(Player.direction == 1 ? 0 : frame.Width, frame.Height);
 
-                Main.playerDrawData.Add(new DrawData(tex, info.ItemLocation - Main.screenPosition, frame, color, Player.ItemRotation, origin, Player.HeldItem.scale, info.spriteEffects, 0));
-                Main.playerDrawData.Add(new DrawData(tex2, info.ItemLocation - Main.screenPosition, frame, Color.White, Player.ItemRotation, origin, Player.HeldItem.scale, info.spriteEffects, 0));
+                info.DrawDataCache.Add(new DrawData(tex, info.ItemLocation - Main.screenPosition, frame, color, Player.itemRotation, origin, Player.HeldItem.scale, info.itemEffect, 0));
+                info.DrawDataCache.Add(new DrawData(tex2, info.ItemLocation - Main.screenPosition, frame, Color.White, Player.itemRotation, origin, Player.HeldItem.scale, info.itemEffect, 0));
             }
         }
     }
@@ -99,11 +99,11 @@ namespace StarlightRiver.Content.Items.Hell
                 for (int y = -3; y < 3; y++)
                 {
                     Tile tile = Main.tile[(int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y];
-                    if (tile.HasTile && Main.tileSolid[tile.type])
+                    if (tile.HasTile && Main.tileSolid[tile.TileType])
                     {
                         Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
                         if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<MagmaSwordBurn>() && n.Center == pos))
-                            Projectile.NewProjectile(pos, Vector2.Zero, ProjectileType<MagmaSwordBurn>(), 5, 0, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, Vector2.Zero, ProjectileType<MagmaSwordBurn>(), 5, 0, Projectile.owner);
                         else Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<MagmaSwordBurn>() && n.Center == pos).timeLeft = 180;
                     }
                 }
@@ -112,9 +112,9 @@ namespace StarlightRiver.Content.Items.Hell
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, Projectile.Center);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
@@ -123,8 +123,8 @@ namespace StarlightRiver.Content.Items.Hell
                 Texture2D tex = Request<Texture2D>(Texture).Value;
                 Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
-                spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
-                spriteBatch.Draw(tex2, Projectile.oldPos[k] + Projectile.Size - Main.screenPosition, null, Color.White, 0, tex2.Size() / 2, scale * 0.3f, default, default);
+                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                Main.spriteBatch.Draw(tex2, Projectile.oldPos[k] + Projectile.Size - Main.screenPosition, null, Color.White, 0, tex2.Size() / 2, scale * 0.3f, default, default);
             }
         }
     }
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.Hell
             return false;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Tile tile = Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16];
             Texture2D tex = TextureAssets.Tile[tile.TileType].Value;
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Items.Hell
             Vector2 pos = Projectile.position + Vector2.One - Main.screenPosition;
             Color color = new Color(255, 140, 50) * 0.2f * (Projectile.timeLeft / 180f);
 
-            spriteBatch.Draw(tex, pos, frame, color, 0, Vector2.Zero, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, pos, frame, color, 0, Vector2.Zero, 1, 0, 0);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)

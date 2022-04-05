@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -28,7 +29,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void Load()
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
-            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
+            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
             StarlightItem.CanUseItemEvent += ControlItemUse;
             
         }
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
                 if (Item.DamageType.CountsAs(DamageClass.Magic) && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= Player.statManaMax2) //addition
                 {                  
-                    int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, Player.whoAmI);
+                    int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, Player.whoAmI); //PORTTODO: Figure out source on this
                     var proj = Main.projectile[i];
                     (proj.ModProjectile as PoltergeistMinion).Item = Item.Clone();
 
@@ -151,7 +152,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             return true;
         }
 
-        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig)
+        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig) //PORTTODO: Make this work with different types of mana bars
         {
             orig();
 
@@ -178,7 +179,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                     if(manaDrawn - rottenManaAmount < 20)
 					{
                         var tex1 = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
 
                         int off = (int)(rottenManaAmount % 20 / 20f * tex1.Height);
                         var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
@@ -189,7 +190,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                     }
 
                     var tex = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                    var pos = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                    var pos = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
 
                     Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, starHeight, 0, 0);
                 }
@@ -219,7 +220,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void UpdateEquip(Player Player)
         {
-            Player.magicDamage += 0.05f;
+            Player.GetDamage(DamageClass.Magic) += 0.05f;
             Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
         }
     }
