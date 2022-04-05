@@ -17,20 +17,20 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void SafeSetDefaults() => Projectile.hide = true;
 
-        public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-        {
-            drawCacheProjsBehindNPCs.Add(index);
-        }
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+            behindProjectiles.Add(index);
+		}
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Vector2 dpos = Projectile.Center - Main.screenPosition + Vector2.UnitY * 16;
 
             Texture2D frametex = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowFrame").Value;
             Texture2D glasstex = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowGlass").Value;
 
-            spriteBatch.Draw(glasstex, dpos, glasstex.Frame(), Color.White * 0.15f, 0, glasstex.Frame().Size() / 2, 1, 0, 0); //glass
-            spriteBatch.Draw(frametex, dpos, frametex.Frame(), new Color(255, 255, 200), 0, frametex.Frame().Size() / 2, 1, 0, 0); //frame
+            Main.spriteBatch.Draw(glasstex, dpos, glasstex.Frame(), Color.White * 0.15f, 0, glasstex.Frame().Size() / 2, 1, 0, 0); //glass
+            Main.spriteBatch.Draw(frametex, dpos, frametex.Frame(), new Color(255, 255, 200), 0, frametex.Frame().Size() / 2, 1, 0, 0); //frame
         }
 
         private static ParticleSystem.Update update => UpdateWindowParticles;
@@ -94,16 +94,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                     Lighting.AddLight(Projectile.Center + new Vector2(40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
                     Lighting.AddLight(Projectile.Center + new Vector2(-40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
                 }
-            }
-
-            if (Main.player.Any(p => Vector2.Distance(p.Center, Projectile.Center) < 2000) && !Main.npc.Any(n => n.active && n.type == NPCType<Bosses.OvergrowBoss.OvergrowBoss>()) && !StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree))
-            {
-                NPC.NewNPC((int)Projectile.Center.X, (int)Projectile.Center.Y + 250, NPCType<Bosses.OvergrowBoss.OvergrowBoss>());
-
-                NPC.NewNPC((int)Projectile.Center.X - 790, (int)Projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)Projectile.Center.X + 790, (int)Projectile.Center.Y + 450, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)Projectile.Center.X - 300, (int)Projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
-                NPC.NewNPC((int)Projectile.Center.X + 300, (int)Projectile.Center.Y + 600, NPCType<Bosses.OvergrowBoss.OvergrowBossAnchor>());
             }
 
             if (StarlightWorld.HasFlag(WorldFlags.OvergrowBossFree) && Projectile.ai[0] <= 360) Projectile.ai[0]++;

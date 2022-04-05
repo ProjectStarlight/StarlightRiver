@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	class BasicVitricTileLoader : TileLoader
+	class BasicVitricTileLoader : SimpleTileLoader
     {
         public override string AssetRoot => AssetDirectory.VitricTile;
 

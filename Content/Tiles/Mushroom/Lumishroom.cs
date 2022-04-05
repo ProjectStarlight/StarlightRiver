@@ -17,7 +17,7 @@ namespace StarlightRiver.Tiles.Mushroom
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/" + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLighted[Type] = true;
             Main.tileCut[Type] = true;
@@ -26,7 +26,7 @@ namespace StarlightRiver.Tiles.Mushroom
             TileObjectData.newTile.RandomStyleRange = 5;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            drop = ItemType<LumishroomItem>();
+            ItemDrop = ItemType<LumishroomItem>();
 
             QuickBlock.QuickSetFurniture(this, 1, 1, 61, SoundID.Grass, false, Color.Green);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);

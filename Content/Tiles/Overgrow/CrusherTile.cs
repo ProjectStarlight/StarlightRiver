@@ -4,6 +4,8 @@ using StarlightRiver.Content.NPCs.Overgrow;
 using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -13,20 +15,19 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = false;
-            Main.tileMerge[Type][TileType<GrassOvergrow>()] = true;
-            Main.tileMerge[Type][Mod.GetTile("BrickOvergrow").Type] = true;
+            Main.tileMerge[Type][Mod.Find<ModTile>("BrickOvergrow").Type] = true;
             Main.tileFrameImportant[Type] = true;
-            dustType = Mod.DustType("Gold2");
+            DustType = ModContent.DustType<Dusts.GoldNoMovement>();
             AddMapEntry(new Color(81, 77, 71));
         }
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
             Dust.NewDustPerfect(new Vector2(4 + i * 16, 4 + j * 16), DustType<Content.Dusts.GoldWithMovement>());
             Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(255, 200, 110) * 0.001f);
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Vector2 pos = new Vector2(4 + i * 16, 4 + j * 16);
             if (!Main.npc.Any(NPC => NPC.type == NPCType<Crusher>() && (NPC.ModNPC as Crusher).Parent == Main.tile[i, j] && NPC.active))
             {
-                int crusher = NPC.NewNPC((int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>());
+                int crusher = NPC.NewNPC(new EntitySource_WorldEvent(), (int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>());
                 if (Main.npc[crusher].ModNPC is Crusher) (Main.npc[crusher].ModNPC as Crusher).Parent = Main.tile[i, j];
             }
         }

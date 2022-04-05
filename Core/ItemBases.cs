@@ -11,8 +11,9 @@ namespace StarlightRiver.Core
 	public abstract class HeldItemProjectile : ModProjectile
     {
         private readonly float Distance;
-        public HeldItemProjectile(float distance = 1) =>
-            Distance = distance;
+        protected Vector2 direction = Vector2.Zero;
+
+        public HeldItemProjectile(float distance = 1) => Distance = distance;
 
         public sealed override void SetDefaults()
         {
@@ -28,18 +29,17 @@ namespace StarlightRiver.Core
 
             SafeSetDefaults();
         }
+
         public virtual void SafeSetDefaults() { }
-
-
-        protected Vector2 direction = Vector2.Zero;
+       
         public sealed override bool PreAI()
         {
             AdjustDirection();
             Player Player = Main.player[Projectile.owner];
             Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
             Player.heldProj = Projectile.whoAmI;
-            Player.ItemTime = 2;
-            Player.ItemAnimation = 2;
+            Player.itemTime = 2;
+            Player.itemAnimation = 2;
             Projectile.Center = Player.Center;
 
             if (!Player.channel)
@@ -48,7 +48,7 @@ namespace StarlightRiver.Core
             return true;
         }
 
-        public sealed override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public sealed override bool PreDraw(ref Color lightColor)
         {
             SpriteEffects spriteEffect = SpriteEffects.None;
             Vector2 offset = Vector2.Zero;
@@ -57,11 +57,16 @@ namespace StarlightRiver.Core
             if (Main.player[Projectile.owner].direction != 1)
                 spriteEffect = SpriteEffects.FlipVertically;
 
-            Main.spriteBatch.Draw(tex, (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset + direction * Distance, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, Projectile.scale, spriteEffect, 0);
+            var pos = (Main.player[Projectile.owner].Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur() + offset + direction * Distance;
+            Main.spriteBatch.Draw(tex, pos, null, lightColor, direction.ToRotation(), tex.Size() * 0.5f, Projectile.scale, spriteEffect, 0);
 
-            return SafePreDraw(spriteBatch, lightColor);
+            return SafePreDraw(Main.spriteBatch, lightColor);
         }
-        public virtual bool SafePreDraw(SpriteBatch spriteBatch, Color lightColor) { return true; }
+
+        public virtual bool SafePreDraw(SpriteBatch spriteBatch, Color lightColor) 
+        {
+            return true; 
+        }
 
         private void AdjustDirection(float deviation = 0f)
         {
@@ -69,9 +74,9 @@ namespace StarlightRiver.Core
             direction = Main.MouseWorld - (Player.Center - new Vector2(4, 4)) - new Vector2(0, Main.player[Projectile.owner].gfxOffY);
             direction.Normalize();
             direction = direction.RotatedBy(deviation);
-            Player.ItemRotation = direction.ToRotation();
+            Player.itemRotation = direction.ToRotation();
             if (Player.direction != 1)
-                Player.ItemRotation -= 3.14f;
+                Player.itemRotation -= 3.14f;
         }
     }
 
@@ -117,7 +122,7 @@ namespace StarlightRiver.Core
     public class QuickBannerItem : QuickTileItem
     {
         public QuickBannerItem(string placetype, string NPCDisplayName, string texturePath = null, int rare = ItemRarityID.Blue, int ItemValue = 1000) : //todo maybe: bool for tooltip
-            base(NPCDisplayName + " Banner", "Nearby Players get a bonus against: " + NPCDisplayName, placetype, rare, texturePath, false, ItemValue) { }
+            base(NPCDisplayName + " BannerItem", NPCDisplayName + " Banner", "Nearby Players get a bonus against: " + NPCDisplayName, placetype, rare, texturePath, false, ItemValue) { }
 
         public override void SetDefaults()
         {
@@ -126,8 +131,9 @@ namespace StarlightRiver.Core
         }
     }
 
-    public class QuickTileItem : ModItem //this is no longer abstract to facilitate quick tile registration
+    public class QuickTileItem : ModItem 
     {
+        public string InternalName = "";
         public string Itemname;
         public string Itemtooltip;
         private readonly int Tiletype;
@@ -145,22 +151,24 @@ namespace StarlightRiver.Core
             Rare = rare;
             TexturePath = texturePath;
             PathHasName = pathHasName;
+            this.ItemValue = ItemValue;
         }
 
-        public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
+        public QuickTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
         {
+            InternalName = internalName;
             Itemname = name;
             Itemtooltip = tooltip;
             Tilename = placetype;
             Rare = rare;
             TexturePath = texturePath;
             PathHasName = pathHasName;
-            ItemValue = ItemValue;
+            this.ItemValue = ItemValue;
         }
 
-        public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
+        public override string Name => InternalName != "" ? InternalName : base.Name;
 
-        public override bool CloneNewInstances => true;
+		public override string Texture => string.IsNullOrEmpty(TexturePath) ? AssetDirectory.Debug : TexturePath + (PathHasName ? string.Empty : Name);
 
         public virtual void SafeSetDefaults() { }
 
@@ -181,7 +189,7 @@ namespace StarlightRiver.Core
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Tiletype == 0 && Tilename != null ? Mod.TileType(Tilename) : Tiletype;
+            Item.createTile = Tiletype == 0 && Tilename != null ? Mod.Find<ModTile>(Tilename).Type : Tiletype;
             Item.rare = Rare;
             Item.value = ItemValue;
             SafeSetDefaults();

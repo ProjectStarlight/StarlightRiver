@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class UndergroundTempleLoader : TileLoader
+	class UndergroundTempleLoader : SimpleTileLoader
     {
         public override string AssetRoot => AssetDirectory.UndergroundTempleTile;
 

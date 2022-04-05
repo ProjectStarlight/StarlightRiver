@@ -105,7 +105,7 @@ namespace StarlightRiver.Core
             tile.AddMapEntry(mapColor, name);
             tile.dustType = dustType;
             tile.soundType = soundType;
-            tile.disableSmartCursor = true;
+            tile.
         }
 
         public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, int soundType, Color mapColor, int bottomHeight = 16, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
@@ -148,7 +148,7 @@ namespace StarlightRiver.Core
             tile.AddMapEntry(mapColor, name);
             tile.dustType = dustType;
             tile.soundType = soundType;
-            tile.disableSmartCursor = true;
+            tile.
         }
 
         public static void QuickSetPainting(this ModTile tile, int width, int height, int dustType, Color mapColor, string mapName = "Painting", int soundType = SoundID.Dig)

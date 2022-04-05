@@ -3,11 +3,12 @@ using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-	class OvergrowTileLoader : TileLoader
+	class OvergrowTileLoader : SimpleTileLoader
     {
         public override string AssetRoot => AssetDirectory.OvergrowTile;
 
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             LoadTile(
                 "StoneOvergrow",
-                "Uhhhhh... Runic Stone?",
+                "Runic Stone",
                 new TileLoadData(
                     minPick: 210,
                     dustType: DustID.Stone,
@@ -53,27 +54,17 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override void PostLoad()
         {
-            int typeLeafOvergrow = TileType<LeafOvergrow>();
-            int typeBrickOvergrow = TileType<BrickOvergrow>();
-            int typeStoneOvergrow = TileType<StoneOvergrow>();
+            int typeLeafOvergrow = Mod.Find<ModTile>("LeafOvergrow").Type;
+            int typeBrickOvergrow = Mod.Find<ModTile>("BrickOvergrow").Type;
+            int typeStoneOvergrow = Mod.Find<ModTile>("StoneOvergrow").Type;
 
-            Main.tileMerge[typeLeafOvergrow][typeBrickOvergrow] = true;
-            Main.tileMerge[typeLeafOvergrow][typeStoneOvergrow] = true;
-            Main.tileMerge[typeLeafOvergrow][TileType<GlowBrickOvergrow>()] = true;
-            Main.tileMerge[typeLeafOvergrow][TileType<GrassOvergrow>()] = true;
+            AddMerge(typeLeafOvergrow, typeBrickOvergrow);
+            AddMerge(typeLeafOvergrow, typeStoneOvergrow);
+            AddMerge(typeBrickOvergrow, typeStoneOvergrow);
 
-            Main.tileMerge[typeBrickOvergrow][typeLeafOvergrow] = true;
-            Main.tileMerge[typeBrickOvergrow][typeStoneOvergrow] = true;
-            Main.tileMerge[typeBrickOvergrow][TileType<GlowBrickOvergrow>()] = true;
-            Main.tileMerge[typeBrickOvergrow][TileType<GrassOvergrow>()] = true;
-            Main.tileMerge[typeBrickOvergrow][Mod.GetTile("CrusherTile").Type] = true;
-            Main.tileMerge[typeBrickOvergrow][TileID.BlueDungeonBrick] = true;
-            Main.tileMerge[typeBrickOvergrow][TileID.GreenDungeonBrick] = true;
-            Main.tileMerge[typeBrickOvergrow][TileID.PinkDungeonBrick] = true;
-
-            Main.tileMerge[typeStoneOvergrow][typeLeafOvergrow] = true;
-            Main.tileMerge[typeStoneOvergrow][typeBrickOvergrow] = true;
-            Main.tileMerge[typeStoneOvergrow][TileType<GrassOvergrow>()] = true;
+            AddMerge(typeBrickOvergrow, TileID.BlueDungeonBrick);
+            AddMerge(typeBrickOvergrow, TileID.GreenDungeonBrick);
+            AddMerge(typeBrickOvergrow, TileID.PinkDungeonBrick);
         }
     }
 }

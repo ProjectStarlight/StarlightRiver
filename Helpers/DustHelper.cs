@@ -67,7 +67,7 @@ namespace StarlightRiver.Helpers
                     if (TileID.Sets.Snow[tile.type] || tile.type == TileID.Cloud || tile.type == TileID.RainCloud)
                         dusttype = 51;
 
-                    Terraria.ModLoader.ModTile modtile = Terraria.ModLoader.TileLoader.GetTile(tile.type);
+                    Terraria.ModLoader.ModTile modtile = Terraria.ModLoader.TileLoader.Find<ModTile>(tile.type);
                     if (modtile != null)
                         dusttype = modtile.dustType;
                     break;

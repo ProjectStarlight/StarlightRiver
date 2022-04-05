@@ -6,7 +6,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	public abstract class TileLoader : IOrderedLoadable, IPostLoadable
+	public abstract class SimpleTileLoader : IOrderedLoadable, IPostLoadable
     {
         public Mod Mod => StarlightRiver.Instance;
 
@@ -14,14 +14,14 @@ namespace StarlightRiver.Core.Loaders
 
         public void LoadTile(string internalName, string displayName, TileLoadData data)
         {
-            Mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
-            Mod.AddTile(internalName, new LoaderTile(data, data.dropType == -1 ? Mod.ItemType(internalName + "Item") : data.dropType), AssetRoot + internalName);
+            Mod.AddContent(new QuickTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddContent(new LoaderTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName));
         }
 
         public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
         {
-            Mod.AddItem(internalName + "Item", new QuickTileItem(displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
-            Mod.AddTile(internalName, new LoaderFurniture(data, Mod.ItemType(internalName + "Item")), AssetRoot + internalName);
+            Mod.AddContent(new QuickTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddContent(new LoaderFurniture(internalName, data, Mod.Find<ModItem>(internalName + "Item").Type, AssetRoot + internalName));
         }
 
 
@@ -39,8 +39,8 @@ namespace StarlightRiver.Core.Loaders
         {
             foreach (string type2 in type2arr)
             {
-                Main.tileMerge[Mod.TileType(type1)][Mod.TileType(type2)] = true;
-                Main.tileMerge[Mod.TileType(type2)][Mod.TileType(type1)] = true;
+                Main.tileMerge[Mod.Find<ModTile>(type1).Type][Mod.Find<ModTile>(type2).Type] = true;
+                Main.tileMerge[Mod.Find<ModTile>(type2).Type][Mod.Find<ModTile>(type1).Type] = true;
             }
         }
 
@@ -48,8 +48,8 @@ namespace StarlightRiver.Core.Loaders
         {
             foreach (int type2 in type2arr)
             {
-                Main.tileMerge[Mod.TileType(type1)][type2] = true;
-                Main.tileMerge[type2][Mod.TileType(type1)] = true;
+                Main.tileMerge[Mod.Find<ModTile>(type1).Type][type2] = true;
+                Main.tileMerge[type2][Mod.Find<ModTile>(type1).Type] = true;
             }
         }
 
@@ -63,31 +63,31 @@ namespace StarlightRiver.Core.Loaders
 
         public void AddMerge(string type1, string type2)
         {
-            Main.tileMerge[Mod.TileType(type1)][Mod.TileType(type2)] = true;
-            Main.tileMerge[Mod.TileType(type2)][Mod.TileType(type1)] = true;
+            Main.tileMerge[Mod.Find<ModTile>(type1).Type][Mod.Find<ModTile>(type2).Type] = true;
+            Main.tileMerge[Mod.Find<ModTile>(type2).Type][Mod.Find<ModTile>(type1).Type] = true;
         }
 
         public void AddSand(string type)
         {
-            TileID.Sets.Conversion.Sand[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
-            TileID.Sets.ForAdvancedCollision.ForSandshark[Mod.TileType(type)] = true;
+            TileID.Sets.Conversion.Sand[Mod.Find<ModTile>(type).Type] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.ForAdvancedCollision.ForSandshark[Mod.Find<ModTile>(type).Type] = true;
         }
 
         public void AddSandstone(string type)
         {
-            TileID.Sets.Conversion.Sandstone[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.Conversion.Sandstone[Mod.Find<ModTile>(type).Type] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
         }
 
         public void AddHardenedSand(string type)
         {
-            TileID.Sets.Conversion.HardenedSand[Mod.TileType(type)] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
+            TileID.Sets.Conversion.HardenedSand[Mod.Find<ModTile>(type).Type] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
         }
 
 
         public void AddMerge(string type1, int type2)
         {
-            Main.tileMerge[Mod.TileType(type1)][type2] = true;
-            Main.tileMerge[type2][Mod.TileType(type1)] = true;
+            Main.tileMerge[Mod.Find<ModTile>(type1).Type][type2] = true;
+            Main.tileMerge[type2][Mod.Find<ModTile>(type1).Type] = true;
         }
 
 
@@ -105,74 +105,86 @@ namespace StarlightRiver.Core.Loaders
 
     public class LoaderTile : ModTile
     {
-        TileLoadData data;
-        readonly int dropID;
+        public string InternalName;
+        public string TileTexture;
+        public TileLoadData Data;
+        public readonly int DropID;
 
-        public LoaderTile(TileLoadData data, int dropID)
+        public LoaderTile(string internalName, TileLoadData data, int dropID, string texture)
         {
-            this.data = data;
-            this.dropID = dropID;
+            InternalName = internalName;
+            Data = data;
+            DropID = dropID;
+            TileTexture = texture;
         }
 
-        public override void SetDefaults()
+		public override string Name => InternalName;
+
+		public override string Texture => TileTexture;
+
+		public override void SetStaticDefaults()
         {
             this.QuickSet
                 (
-                data.minPick,
-                data.dustType,
-                data.soundType,
-                data.mapColor,
-                dropID,
-                data.dirtMerge,
-                data.stone,
-                data.mapName
+                Data.minPick,
+                Data.dustType,
+                Data.soundType,
+                Data.mapColor,
+                DropID,
+                Data.dirtMerge,
+                Data.stone,
+                Data.mapName
                 );
         }
 
 		public override bool CanExplode(int i, int j)
 		{
-            return minPick < 100;
+            return MinPick < 100;
 		}
 	}
 
     public class LoaderFurniture : ModTile
     {
-        FurnitureLoadData data;
-        readonly int dropID;
+        public string InternalName;
+        public string TileTexture;
+        public FurnitureLoadData Data;
+        public readonly int DropID;
 
-        public LoaderFurniture(FurnitureLoadData data, int drop)
+        public LoaderFurniture(string internalName, FurnitureLoadData data, int drop, string texture)
         {
-            this.data = data;
-            this.dropID = drop;
+            InternalName = internalName;
+            Data = data;
+            DropID = drop;
+            TileTexture = texture;
         }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSetFurniture
                 (
-                    data.width,
-                    data.height,
-                    data.dustType,
-                    data.soundType,
-                    data.tallBottom,
-                    data.mapColor,
-                    data.solidTop,
-                    data.solid,
-                    data.mapName,
-                    data.bottomAnchor,
-                    data.topAnchor,
-                    data.anchorTiles
+                    Data.width,
+                    Data.height,
+                    Data.dustType,
+                    Data.soundType,
+                    Data.tallBottom,
+                    Data.mapColor,
+                    Data.solidTop,
+                    Data.solid,
+                    Data.mapName,
+                    Data.bottomAnchor,
+                    Data.topAnchor,
+                    Data.anchorTiles
                 );
         }
 
         public override bool CanExplode(int i, int j)
         {
-            return minPick < 100;
+            return MinPick < 100;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i, j) * 16, dropID);
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, DropID);
         }
     }
 

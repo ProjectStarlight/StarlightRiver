@@ -14,7 +14,7 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 7, 7, DustType<Content.Dusts.BlueStamina>(), 1, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
         }
@@ -36,7 +36,7 @@ namespace StarlightRiver.Tiles.Mushroom
                 for (int k = 16; k < 96; k++)
                     Dust.NewDustPerfect(Projectile.position + new Vector2(k, Main.rand.Next(36)), DustType<Content.Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * 2, 0, default, 0.9f);
 
-                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/JellyBounce"), Player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/JellyBounce"), Player.Center);
             }
         }
 

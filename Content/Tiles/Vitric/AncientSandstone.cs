@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             TileObjectData.addTile(Type);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
             AddMapEntry(new Color(200, 200, 200));
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.Platforms };
         }
     }

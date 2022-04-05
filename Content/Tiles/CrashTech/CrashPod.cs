@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             spriteBatch.Draw(tex, pos, frame, color);
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 

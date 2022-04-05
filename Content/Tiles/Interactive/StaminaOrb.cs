@@ -14,15 +14,15 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override string Texture => AssetDirectory.InteractiveTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
             Main.tileBlockLight[Type] = false;
             Main.tileLighted[Type] = true;
 
-            drop = ItemType<StaminaOrbItem>();
-            dustType = Mod.DustType("Stamina");
+            ItemDrop = ItemType<StaminaOrbItem>();
+            DustType = DustType<Dusts.Stamina>();
             AddMapEntry(new Color(255, 186, 66));
         }
 

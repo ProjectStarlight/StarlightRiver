@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Forest
     {
         public override string Texture => AssetDirectory.ForestTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
             int[] valid = new int[] { TileID.Grass };
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Forest
         public override void RandomUpdate(int i, int j) 
         {
             Tile tile = Main.tile[i, j]; 
-            TileObjectData data = TileObjectData.GetTileData(tile); 
+            TileObjectData data = TileObjectData.Find<ModTile>Data(tile); 
             int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); 
 
             if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0)
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                         }
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             if (Main.tile[i, j].TileFrameX > 35) 
             {
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                 int rand = Main.rand.Next(3, 5);
                 for (int k = 0; k < rand; k++)
                 {
-                    int index = NPC.NewNPC(i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
+                    int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
                     Main.npc[index].velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -8;
                 }
             }
@@ -79,10 +79,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(new Vector2(i * 16, j * 16), ItemType<SlimeberryBushItem>()); //drop a bush Item
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i * 16, j * 16), ItemType<SlimeberryBushItem>()); //drop a bush Item
 
             if (frameX > 35)
-                Item.NewItem(new Vector2(i, j) * 16, ItemType<Slimeberry>()); //Drops berries if harvestable
+                Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Slimeberry>()); //Drops berries if harvestable
         }
     }
 
@@ -167,10 +167,10 @@ namespace StarlightRiver.Content.Tiles.Forest
             }
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition, NPC.frame, drawColor.MultiplyRGBA(NPC.color * ((255 - NPC.alpha) / 255f)), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
-            spriteBatch.Draw(Request<Texture2D>(Texture + "Shine").Value, NPC.position - Main.screenPosition, NPC.frame, drawColor * (0.6f * (255 - NPC.alpha) / 255f), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.position - screenPos, NPC.frame, drawColor.MultiplyRGBA(NPC.color * ((255 - NPC.alpha) / 255f)), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Shine").Value, NPC.position - screenPos, NPC.frame, drawColor * (0.6f * (255 - NPC.alpha) / 255f), NPC.rotation, Vector2.Zero, NPC.scale, 0, 0);
             return false;
 		}
 
@@ -180,13 +180,13 @@ namespace StarlightRiver.Content.Tiles.Forest
                 Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
         }
 
-		public override void NPCLoot()
+		/*public override void NPCLoot()
 		{
             int i = Item.NewItem(NPC.Center, ItemID.Gel);
             Main.item[i].color = NPC.color;
 
             for (int k = 0; k < 20; k++)
                 Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
-		}
+		}*/
 	}
 }

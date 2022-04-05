@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Alchemy
 			(this).QuickSetFurniture(3, 2, DustType<Air>(), SoundID.Tink, false, new Color(50, 50, 50), false, false, "Alchemic Cauldron");
 		}
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
 			int x = i - Main.tile[i, j].TileFrameX / 16 % 3;
 			int y = j - Main.tile[i, j].TileFrameY / 16 % 2;

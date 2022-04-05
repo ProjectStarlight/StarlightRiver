@@ -56,7 +56,7 @@ namespace StarlightRiver.Core
 
             dustType = DustType;
             animationFrameHeight = Height * 18;
-            disableSmartCursor = true;
+            
             ItemType = Mod.ItemType(ItemName);
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
@@ -95,7 +95,7 @@ namespace StarlightRiver.Core
             return false;
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Mech, i * 16, j * 16, 0);
             HitWire(i, j);
@@ -190,7 +190,7 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide | AnchorType.SolidBottom, TileObjectData.newTile.Width, 0);
             TileObjectData.addTile(Type);
 
-            //disableSmartCursor = true;
+            //
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));

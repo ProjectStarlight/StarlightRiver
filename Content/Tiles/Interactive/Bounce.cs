@@ -4,6 +4,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,9 +16,9 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override string Texture => AssetDirectory.InteractiveTile + Name;
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<BouncerItem>());
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<BouncerItem>());
     }
 
     internal class BouncerItem : QuickTileItem 
@@ -58,11 +59,11 @@ namespace StarlightRiver.Content.Tiles.Interactive
             }
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/BouncerGlow").Value;
             Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
-            spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
+            Main.spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Player.cursorItemIconEnabled = true;
 		}
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			var dummy = (Dummy(i, j).ModProjectile as GearTileDummy);
 

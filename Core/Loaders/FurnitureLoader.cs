@@ -192,14 +192,14 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 4, 0);
             QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
             TileID.Sets.HasOutlines[Type] = true;
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.Beds };
             bed = true;
         }
 
         public override bool HasSmartInteract() => true;
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Player Player = Main.LocalPlayer;
             Tile tile = Main.tile[i, j];
@@ -395,13 +395,13 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.Origin = new Point16(0, 5);
             QuickBlock.QuickSetFurniture(this, 2, 5, dust, SoundID.Dig, false, color);
             TileID.Sets.HasOutlines[Type] = true;
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.GrandfatherClocks };
         }
 
         public override bool HasSmartInteract() => true;
 
-        public override bool NewRightClick(int x, int y)
+        public override bool RightClick(int x, int y)
         {
             string text = "AM";
             //Get current weird time
@@ -500,7 +500,7 @@ namespace StarlightRiver.Core
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.ClosedDoor };
             openDoorID = Mod.TileType(name.Replace("Closed", "Open"));
         }
@@ -568,7 +568,7 @@ namespace StarlightRiver.Core
             TileID.Sets.HousingWalls[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
 
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.OpenDoor };
             closeDoorID = Mod.TileType(name.Replace("Open", "Closed"));
         }
@@ -616,7 +616,7 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.HookCheck = new PlacementHook(new Func<int, int, int, int, int, int>(Chest.FindEmptyChest), -1, 0, true);
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(new Func<int, int, int, int, int, int>(Chest.AfterPlacement_Hook), -1, 0, false);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
-            disableSmartCursor = true;
+            
             adjTiles = new int[] { TileID.Dressers };
             dresser = name.Substring(0, name.Length - 7) + " Dresser";
             dresserDrop = Mod.ItemType(name);
@@ -630,7 +630,7 @@ namespace StarlightRiver.Core
             Chest.DestroyChest(i, j);
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Player Player = Main.LocalPlayer;
             if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY == 0)

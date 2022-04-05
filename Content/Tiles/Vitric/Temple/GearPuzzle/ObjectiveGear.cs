@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	{
 		public override int DummyType => ModContent.ProjectileType<ObjectiveGearDummy>();
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			var dummy = (Dummy(i, j).ModProjectile as GearTileDummy);
 

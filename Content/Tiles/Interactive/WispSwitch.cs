@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         public override string Texture => AssetDirectory.InteractiveTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
@@ -36,8 +36,8 @@ namespace StarlightRiver.Content.Tiles.Interactive
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("");//Map name
             AddMapEntry(new Color(0, 0, 0), name);
-            dustType = DustType<Dusts.GoldWithMovement>();
-            disableSmartCursor = true;
+            DustType = DustType<Dusts.GoldWithMovement>();
+            
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -78,13 +78,13 @@ namespace StarlightRiver.Content.Tiles.Interactive
     {
         public int timer = 0;
 
-        public override bool ValidTile(int i, int j)
+        public override bool IsTileValidForEntity(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.HasTile && tile.type == TileType<WispSwitch>() && tile.TileFrameX == 0 && tile.TileFrameY == 0;
+            return tile.HasTile && tile.TileType == TileType<WispSwitch>() && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
-        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {

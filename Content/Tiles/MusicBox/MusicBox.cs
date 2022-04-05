@@ -12,7 +12,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.MusicBox
 {
-	public class MusicBox : Core.Loaders.TileLoader
+	public class MusicBox : Core.Loaders.SimpleTileLoader
 	{
 		private static AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, 2, 0);
 		private static FurnitureLoadData boxData = new FurnitureLoadData(2, 2, 0, 0, true, new Color(255, 200, 100), false, false, "Music Box", anchor);
@@ -32,7 +32,8 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 		private void LoadMusicBox(string name, string displayName, string path)
 		{
 			LoadFurniture(name, displayName, boxData);
-			StarlightRiver.Instance.AddMusicBox(StarlightRiver.Instance.GetSoundSlot(SoundType.Music, path), StarlightRiver.Instance.ItemType(name + "Item"), StarlightRiver.Instance.TileType(name));
+			var mod = StarlightRiver.Instance;
+			MusicLoader.AddMusicBox(mod, MusicLoader.GetMusicSlot(path), mod.Find<ModItem>(name + "Item").Type, mod.Find<ModTile>(name).Type);
 		}
 	}
 }

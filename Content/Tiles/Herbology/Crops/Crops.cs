@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             return 100 / Height;
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             int tile = Main.tile[i, j].TileFrameY / 18;
             int off = Math.Abs(tile - 2);
@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 Item.NewItem(new Vector2(i, j) * 16, drop, Main.rand.Next(1, 3));
                 return true;
             }
-            return base.NewRightClick(i, j);
+            return base.RightClick(i, j);
         }
     }
 

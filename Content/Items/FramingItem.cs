@@ -91,9 +91,9 @@ namespace StarlightRiver.Content.Items
                 //		if (ModContent.GetModTile(baseTile.type) != null)
                 //		{
                 //			//Main.NewText("Origin : " + ModContent.GetModTile(baseTile.type).Name + " : " + ModContent.GetModTile(baseTile.type).Mod);
-                //			//Main.NewText("Placed : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Name + " : " + Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Mod);
+                //			//Main.NewText("Placed : " + Mod.Find<ModTile>(ModContent.GetModTile(baseTile.type).Name).Name + " : " + Mod.Find<ModTile>(ModContent.GetModTile(baseTile.type).Name).Mod);
 
-                //			targetTile.type = Mod.GetTile(ModContent.GetModTile(baseTile.type).Name).Type;
+                //			targetTile.type = Mod.Find<ModTile>(ModContent.GetModTile(baseTile.type).Name).Type;
                 //			targetTile.TileFrameX = baseTile.TileFrameX;
                 //			targetTile.TileFrameY = baseTile.TileFrameY;
                 //			targetTile.inActive(baseTile.inActive());

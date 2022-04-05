@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
     {
         public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
-        public override void SetDefaults() =>
+        public override void SetStaticDefaults() =>
             this.QuickSet(50, DustType<Dusts.Electric>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOre>(), true, true, "Moonstone Ore");
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -37,10 +37,10 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft0 = Main.tile[i - 1, j];
                         Tile tileRight0 = Main.tile[i + 1, j + 1];
 
-                        emptyLeft = !((tileLeft0.HasTile && tileLeft0.type == Type && !Main.tile[i - 1, j - 1].HasTile) || 
-                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
+                        emptyLeft = !((tileLeft0.HasTile && tileLeft0.TileType == Type && !Main.tile[i - 1, j - 1].HasTile) || 
+                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].TileType == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !tileRight0.HasTile || tileRight0.type != Type || tileRight0.Slope == SlopeType.SlopeDownRight || Main.tile[i + 1, j].HasTile;
+                        emptyRight = !tileRight0.HasTile || tileRight0.TileType != Type || tileRight0.Slope == SlopeType.SlopeDownRight || Main.tile[i + 1, j].HasTile;
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
                         yOffsetLeft = 1f;
@@ -50,10 +50,10 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft1 = Main.tile[i - 1, j + 1];
                         Tile tileRight1 = Main.tile[i + 1, j];
 
-                        emptyLeft = !tileLeft1.HasTile || tileLeft1.type != Type || tileLeft1.Slope == SlopeType.SlopeDownLeft || Main.tile[i - 1, j].HasTile;
+                        emptyLeft = !tileLeft1.HasTile || tileLeft1.TileType != Type || tileLeft1.Slope == SlopeType.SlopeDownLeft || Main.tile[i - 1, j].HasTile;
 
-                        emptyRight = !((tileRight1.HasTile && tileRight1.type == Type && !Main.tile[i + 1, j - 1].HasTile) || 
-                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
+                        emptyRight = !((tileRight1.HasTile && tileRight1.TileType == Type && !Main.tile[i + 1, j - 1].HasTile) || 
+                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
                         yOffsetRight = 1f;
@@ -63,11 +63,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         Tile tileLeft2 = Main.tile[i - 1, j];
                         Tile tileRight2 = Main.tile[i + 1, j];
 
-                        emptyLeft = !((tileLeft2.HasTile && tileLeft2.type == Type && tileLeft2.Slope != SlopeType.SlopeDownLeft &&!Main.tile[i - 1, j - 1].HasTile) ||
-                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].type == Type && !Main.tile[i - 1, j - 2].HasTile));
+                        emptyLeft = !((tileLeft2.HasTile && tileLeft2.TileType == Type && tileLeft2.Slope != SlopeType.SlopeDownLeft &&!Main.tile[i - 1, j - 1].HasTile) ||
+                            (Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].TileType == Type && !Main.tile[i - 1, j - 2].HasTile));
 
-                        emptyRight = !((tileRight2.HasTile && tileRight2.type == Type && tileRight2.Slope != SlopeType.SlopeDownRight && !Main.tile[i + 1, j - 1].HasTile) || 
-                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].type == Type && !Main.tile[i + 1, j - 2].HasTile));
+                        emptyRight = !((tileRight2.HasTile && tileRight2.TileType == Type && tileRight2.Slope != SlopeType.SlopeDownRight && !Main.tile[i + 1, j - 1].HasTile) || 
+                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
                         break;

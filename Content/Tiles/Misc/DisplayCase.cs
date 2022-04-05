@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<DisplayCaseEntity>().Hook_AfterPlacement, -1, 0, false);
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-                var tex = Main.PopupTexture[entity.containedItem.type];
+                var tex = Terraria.GameContent.TextureAssets.Item[entity.containedItem.type].Value;
                 var target = new Rectangle((i + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X + 4, (j + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y + 6, 20, 20);
 
                 spriteBatch.Draw(tex, target, null, Color.White);
@@ -83,14 +83,14 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public Item containedItem;
 
-        public override bool ValidTile(int i, int j)
+        public override bool IsTileValidForEntity(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return (tile.type == ModContent.TileType<DisplayCase>() || tile.type == ModContent.TileType<DisplayCaseFriendly>())
+            return (tile.TileType == ModContent.TileType<DisplayCase>() || tile.TileType == ModContent.TileType<DisplayCaseFriendly>())
                 && tile.HasTile && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
-        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void Update()
         {
-            if (!ValidTile(Position.X, Position.Y))
+            if (!IsTileValidForEntity(Position.X, Position.Y))
                 Kill(Position.X, Position.Y);
 
             if (containedItem != null)
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             Tile tile = Framing.GetTileSafely(Position.X, Position.Y);
 
-            if (tile.type == ModContent.TileType<DisplayCase>())
+            if (tile.TileType == ModContent.TileType<DisplayCase>())
             {
                 for (int k = 0; k < Main.maxPlayers; k++)
                 {
@@ -146,10 +146,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                ["Item"] = containedItem
-            };
+            tag["Item"] = containedItem;
         }
 
         public override void LoadData(TagCompound tag)

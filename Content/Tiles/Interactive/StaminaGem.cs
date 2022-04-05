@@ -4,6 +4,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,9 +16,9 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
         public override string Texture => AssetDirectory.InteractiveTile + Name;
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ItemType<StaminaGemItem>());
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<StaminaGemItem>());
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
@@ -59,13 +60,13 @@ namespace StarlightRiver.Content.Tiles.Interactive
             }
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             if (Projectile.ai[0] == 0)
             {
                 Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime * 3f);
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemGlow").Value, Projectile.position - Main.screenPosition, color);
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemOn").Value, Projectile.position - Main.screenPosition, Color.White);
+                Main.spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemGlow").Value, Projectile.position - Main.screenPosition, color);
+                Main.spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemOn").Value, Projectile.position - Main.screenPosition, Color.White);
             }
         }
     }

@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
@@ -11,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
     {
         public override string Texture => AssetDirectory.HerbologyTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSet(0, 13, SoundID.Shatter, new Color(156, 172, 177), ModContent.ItemType<GreenhouseGlassItem>(), false, false, "Greenhouse Glass");
             Main.tileBlockLight[Type] = false;
@@ -22,21 +21,21 @@ namespace StarlightRiver.Content.Tiles.Herbology
         /*public override void RightClick(int i, int j)//Debug
 		{
             Main.NewText("Manual Update");
-            TileLoader.GetTile(Main.tile[i, j].type)?.RandomUpdate(i, j);
+            TileLoader.Find<ModTile>(Main.tile[i, j].type)?.RandomUpdate(i, j);
         }*/
 
         public override void RandomUpdate(int i, int j)
         {
             for (int k = 0; k < 10; k++)//k = max range up, this checks the area above it
-                if (Main.tileSolid[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].HasTile && !Main.tileSolidTop[Main.tile[i, j - 1 - k].type] && Main.tile[i, j - 1 - k].type != Type && Main.tile[i, j - 1 - k].type != TileID.Glass)//maybe check for just blocks that stop light?
+                if (Main.tileSolid[Main.tile[i, j - 1 - k].TileType] && Main.tile[i, j - 1 - k].HasTile && !Main.tileSolidTop[Main.tile[i, j - 1 - k].TileType] && Main.tile[i, j - 1 - k].TileType != Type && Main.tile[i, j - 1 - k].TileType != TileID.Glass)//maybe check for just blocks that stop light?
                     break;//breaks if Solid if all of the above checks are true: Solid, active, No solidTop, not This type of block, and not glass
                 else if (k == 9)
                     for (int m = 0; m < 10; m++)//k = max range down, if the area above it clear this looks for the first plant below it
-                        if (Main.tileSolid[Main.tile[i, j + 1 + m].type] && Main.tile[i, j + 1 + m].HasTile && !Main.tileSolidTop[Main.tile[i, j + 1 + m].type])
+                        if (Main.tileSolid[Main.tile[i, j + 1 + m].TileType] && Main.tile[i, j + 1 + m].HasTile && !Main.tileSolidTop[Main.tile[i, j + 1 + m].TileType])
                             break;//breaks if Solid is true, Active is true, and solidTop is false
-                        else if (Main.tile[i, j + 1 + m].HasTile && Main.tileFrameImportant[Main.tile[i, j + 1 + m].type] && !Main.tileSolid[Main.tile[i, j + 1 + m].type])//chooses if frameimportant, non-solid, and active
+                        else if (Main.tile[i, j + 1 + m].HasTile && Main.tileFrameImportant[Main.tile[i, j + 1 + m].TileType] && !Main.tileSolid[Main.tile[i, j + 1 + m].TileType])//chooses if frameimportant, non-solid, and active
                         {
-                            TileLoader.GetTile(Main.tile[i, j + 1 + m].type)?.RandomUpdate(i, j + 1 + m);//runs randomUpdate on selected block
+                            TileLoader.Find<ModTile>(Main.tile[i, j + 1 + m].TileType)?.RandomUpdate(i, j + 1 + m);//runs randomUpdate on selected block
                             //TODO: I believe this doesn't work on vanilla plants since they dont use randomUpdate, figure out a way to fix this or make a case for vanilla plants
                             break;
                         }
@@ -64,10 +63,10 @@ namespace StarlightRiver.Content.Tiles.Herbology
     {
         public override string Texture => AssetDirectory.HerbologyTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.wallHouse[Type] = true;
-            drop = ModContent.ItemType<GreenhouseWallItem>();
+            ItemDrop = ModContent.ItemType<GreenhouseWallItem>();
         }
     }
 

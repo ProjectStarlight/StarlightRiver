@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player Player = Main.LocalPlayer;

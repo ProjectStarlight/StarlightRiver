@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 

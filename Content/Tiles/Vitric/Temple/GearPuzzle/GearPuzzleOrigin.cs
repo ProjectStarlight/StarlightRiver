@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	{
 		public override int DummyType => ModContent.ProjectileType<GearPuzzleOriginDummy>();
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
 			{

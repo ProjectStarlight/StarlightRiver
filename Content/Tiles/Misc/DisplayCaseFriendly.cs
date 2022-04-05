@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 {
 	class DisplayCaseFriendly : DisplayCase
     {
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Tile tile = Main.tile[i, j];
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             DisplayCaseEntity entity = (DisplayCaseEntity)TileEntity.ByID[index];
 
-            Item.NewItem(i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
+            Item.NewItem(new EntitySource_TileBreak(i, j), i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
 
             if(entity.containedItem != null && !entity.containedItem.IsAir)
                 Helpers.Helper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());

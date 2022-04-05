@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Dirt, SoundID.Dig, new Color(1, 1, 1));
 		}
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			var dummy = Dummy(i, j).ModProjectile as ReflectorDummy;
 

@@ -55,13 +55,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			}
 		}
 
-		public override bool ValidTile(int i, int j)
+		public override bool IsTileValidForEntity(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
 			return ModContent.GetModTile(tile.type) is GearTile && tile.HasTile;
 		}
 
-		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{

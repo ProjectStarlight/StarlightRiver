@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles
             minPick = int.MaxValue;
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             if (CanOpen(Main.LocalPlayer))
             {

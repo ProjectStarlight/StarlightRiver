@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "Rock2x2";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
             TileObjectData.newTile.StyleHorizontal = true;
