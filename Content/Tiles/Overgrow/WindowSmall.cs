@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
         public override int DummyType => ProjectileType<WindowSmallDummy>();
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 4, 6, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(255, 220, 0));
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 4, 6, DustType<Dusts.Stone>(), SoundID.Tink, false, new Color(255, 220, 0));
 
         public override bool SpawnConditions(int i, int j)
         {
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public WindowSmallDummy() : base(TileType<WindowSmall>(), 4 * 16, 6 * 16) { }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = Request<Texture2D>(AssetDirectory.OvergrowTile + "Window3").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.OvergrowTile + "WindowSmall").Value;
@@ -45,8 +45,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             float offY = (Main.screenPosition.Y + Main.screenHeight / 2 - Projectile.Center.Y) * -0.14f;
             Rectangle source = new Rectangle((int)(Projectile.position.X % tex.Width) + (int)offX, (int)(Projectile.position.Y % tex.Height) + (int)offY, 4 * 16, 6 * 16);
 
-            spriteBatch.Draw(tex, target, source, Color.White);
-            spriteBatch.Draw(tex2, target, tex2.Frame(), lightColor);
+            Main.spriteBatch.Draw(tex, target, source, Color.White);
+            Main.spriteBatch.Draw(tex2, target, tex2.Frame(), lightColor);
         }
 
         public override void Update()

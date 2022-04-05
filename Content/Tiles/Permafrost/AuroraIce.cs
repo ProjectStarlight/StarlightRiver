@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSet(this, 0, -1, -1, new Color(100, 255, 255), ItemType<AuroraIceItem>());
             Main.tileFrameImportant[Type] = true;
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 }
                 else
                 {
-                    tile.active(false);
+                    tile.HasTile = false;
                 }
 
                 for (int x = -1; x <= 1; x++)
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                     {
                         Tile tile2 = Framing.GetTileSafely(i + x, j + y);
 
-                        if (tile2.HasTile && tile2.type == Type && tile2.TileFrameY < 4 * 18)
+                        if (tile2.HasTile && tile2.TileType == Type && tile2.TileFrameY < 4 * 18)
                         {
                             WorldGen.KillTile(i + x, j + y);
                         }
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             //TODO: this is gross, change it later?
             if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
-                Framing.GetTileSafely(i, j).slope(0);
+                Framing.GetTileSafely(i, j).Slope = SlopeType.Solid;
 
             return false;
         }
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             if (color.R < 80) color.R = 80;
             if (color.G < 80) color.G = 80;
 
-            spriteBatch.Draw(TextureAssets.Tile[tile.type].Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color * 0.3f);
+            spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), color * 0.3f);
 
             spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
             spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             }
         }
 
-        bool checkIce(int x, int y) => Framing.GetTileSafely(x, y).type == TileType<PermafrostIce>();
+        bool checkIce(int x, int y) => Framing.GetTileSafely(x, y).TileType == TileType<PermafrostIce>();
     }
     //TODO: Move all this to a more sane place, im really tired tonight and cant be assed to put braincells into organizing this. Thanks in advance future me.
     class AuroraIceItem : QuickMaterial

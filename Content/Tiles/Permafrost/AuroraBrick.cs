@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrick";
 
-        public override void PostSetDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
+        public override void SetStaticDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class AuroraBrickDoor : AuroraBrick
     {
-        public override void NearbyEffects(int i, int j, bool closer) => Main.tile[i, j].inActive(StarlightWorld.HasFlag(WorldFlags.SquidBossOpen));
+        public override void NearbyEffects(int i, int j, bool closer) => Framing.GetTileSafely(i, j).IsActuated = (StarlightWorld.HasFlag(WorldFlags.SquidBossOpen));
     }
 
     class AuroraBrickItem : QuickTileItem

@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "WispAltarL";
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
     }
 
     class WispAltarLItem : QuickTileItem
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
     }
 
     class WispAltarRItem : QuickTileItem

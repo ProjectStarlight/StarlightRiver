@@ -14,8 +14,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "WallOvergrowGrass";
 
-        public override void SetDefaults() =>
+        public override void SetStaticDefaults() =>
             QuickBlock.QuickSetWall(this, DustType<Dusts.Leaf>(), SoundID.Grass, 0, false, new Color(114, 65, 37));
+
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             if (i > Main.screenPosition.X / 16 && i < Main.screenPosition.X / 16 + Main.screenWidth / 16 && j > Main.screenPosition.Y / 16 && j < Main.screenPosition.Y / 16 + Main.screenHeight / 16)
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + Name;
 
-        public override void SetDefaults() =>
+        public override void SetStaticDefaults() =>
             QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(62, 68, 55));
     }
 
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetWall(this, DustType<Dusts.Stone>(), SoundID.Tink, 0, false, new Color(255, 235, 50));
             WallID.Sets.Transparent[Type] = true;

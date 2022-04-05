@@ -12,11 +12,11 @@ namespace StarlightRiver.Core
     {
         public static void QuickSet(this ModTile tile, int minPick, int dustType, int soundType, Color mapColor, int drop, bool dirtMerge = false, bool stone = false, string mapName = "", int soundStyle = 1)
         {
-            tile.minPick = minPick;
-            tile.dustType = dustType;
-            tile.soundType = soundType;
-            tile.soundStyle = soundStyle;
-            tile.drop = drop;
+            tile.MinPick = minPick;
+            tile.DustType = dustType;
+            tile.SoundType = soundType;
+            tile.SoundStyle = soundStyle;
+            tile.ItemDrop = drop;
             Main.tileMergeDirt[tile.Type] = dirtMerge;
             Main.tileStone[tile.Type] = stone;
 
@@ -48,16 +48,16 @@ namespace StarlightRiver.Core
             if (mapColor != null)
                 tile.AddMapEntry(mapColor ?? Color.Transparent, name);
 
-            tile.dustType = dustType;
-            tile.soundType = soundType;
-            tile.drop = drop;
+            tile.DustType = dustType;
+            tile.SoundType = soundType;
+            tile.ItemDrop = drop;
         }
 
         public static void QuickSetWall(this ModWall wall, int dustType, int soundType, int drop, bool safe, Color mapColor)
         {
-            wall.dustType = dustType;
-            wall.soundType = soundType;
-            wall.drop = drop;
+            wall.DustType = dustType;
+            wall.SoundType = soundType;
+            wall.ItemDrop = drop;
             Main.wallHouse[wall.Type] = safe;
             wall.AddMapEntry(mapColor);
         }
@@ -103,9 +103,8 @@ namespace StarlightRiver.Core
             ModTranslation name = tile.CreateMapEntryName();
             name.SetDefault(mapName);
             tile.AddMapEntry(mapColor, name);
-            tile.dustType = dustType;
-            tile.soundType = soundType;
-            tile.
+            tile.DustType = dustType;
+            tile.SoundType = soundType;
         }
 
         public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, int soundType, Color mapColor, int bottomHeight = 16, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
@@ -146,9 +145,8 @@ namespace StarlightRiver.Core
             ModTranslation name = tile.CreateMapEntryName();
             name.SetDefault(mapName);
             tile.AddMapEntry(mapColor, name);
-            tile.dustType = dustType;
-            tile.soundType = soundType;
-            tile.
+            tile.DustType = dustType;
+            tile.SoundType = soundType;
         }
 
         public static void QuickSetPainting(this ModTile tile, int width, int height, int dustType, Color mapColor, string mapName = "Painting", int soundType = SoundID.Dig)
