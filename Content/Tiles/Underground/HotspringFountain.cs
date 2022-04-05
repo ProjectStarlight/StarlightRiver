@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using Terraria.ObjectData;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -20,11 +21,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/HotspringFountain";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.DrawYOffset = -2;
 			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100));
-			animationFrameHeight = 18 * 5;
+			AnimationFrameHeight = 18 * 5;
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num) => num = 1;
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, ModContent.ItemType<HotspringFountainItem>());
+		public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ModContent.ItemType<HotspringFountainItem>());
 	}
 
 	class HotspringFountainItem : QuickTileItem
@@ -128,7 +129,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void DrawMap(SpriteBatch spriteBatch)
 		{
-			var tex = Main.blackTileTexture; //ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, scale: 18f, 0, 0);
 		}
 	}

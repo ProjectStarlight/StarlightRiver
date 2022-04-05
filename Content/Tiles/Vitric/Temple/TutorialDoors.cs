@@ -17,9 +17,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(1, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -35,11 +35,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                 Player.velocity.X = 1;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Player Player = Main.LocalPlayer;
             if (!Player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value, Projectile.position - Main.screenPosition, lightColor);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value, Projectile.position - Main.screenPosition, lightColor);
         }
     }
 
@@ -56,9 +56,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -82,13 +82,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
                 else Player.velocity.X = -1;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Player Player = Main.LocalPlayer;
             if (!Player.GetModPlayer<StarlightPlayer>().inTutorial) 
                 return;
-            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, Projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, Projectile.position - Main.screenPosition, Helper.IndicatorColor);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, Projectile.position - Main.screenPosition, lightColor);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, Projectile.position - Main.screenPosition, Helper.IndicatorColor);
         }
     }
 

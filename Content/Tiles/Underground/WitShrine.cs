@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/WitShrine";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
@@ -212,14 +212,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Timer = 0;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitPlayerTile").Value;
 			var basePos = Projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) - Main.screenPosition;
 			var targetPos = basePos + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f) + Vector2.One;
 			var source = new Rectangle(0, 0, 34, 34);
 
-			spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, targetPos, source, Color.White, 0, Vector2.One * 17, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)

@@ -4,6 +4,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,9 +16,9 @@ namespace StarlightRiver.Tiles.Temple
 
         public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
-        public override void SetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
+        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 2, 4, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, false, "Stamina Jar");
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
             Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
             if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Content.Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
@@ -57,7 +58,7 @@ namespace StarlightRiver.Tiles.Temple
             if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 4, TileChangeType.None);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 4, TileChangeType.None);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
             }

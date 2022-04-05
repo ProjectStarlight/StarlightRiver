@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	public abstract class WalkableCrystalItem : QuickTileItem
     {
         private bool held = false;
-        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
+        public WalkableCrystalItem(string name, string placetype, string texturepath) : base(placetype + "Item", name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
         //public override bool AltFunctionUse(Player Player) => true;
         public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         {
             Texture2D lavaFadeTex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricLavaFade").Value;
 
-            if (Main.tile[i, j].type == Type)
+            if (Main.tile[i, j].TileType == Type)
             {
                 int val = (int)(Math.Sin(Main.GameUpdateCount * 0.04f + (i + j)) * 15f + 240f);
                 Color col = new Color(val, val, val, 0);
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 if (sideTile.LiquidType == LiquidID.Lava)
                     spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(0, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, default, new Vector2(val / 255f, sideTile .LiquidAmount / 255f), SpriteEffects.None, 0);
-                else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type)
+                else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.TileType != Type)
                     spriteBatch.Draw(lavaFadeTex, ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), null, col, 0, default, new Vector2(val / 255f, 1), SpriteEffects.None, 0);
                 else
                 {
@@ -110,8 +110,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     //    Terraria.Utils.DrawBorderString(spriteBatch, val.ToString(), ((new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition), Color.White, 0.75f);
 
                     if (sideTile.LiquidType == LiquidID.Lava)
-                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, (255f - sideTile.liquid) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile .LiquidAmount / 255f), SpriteEffects.FlipHorizontally, 0);
-                    else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.type != Type)
+                        spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, (255f - sideTile.LiquidAmount) / 16f), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, sideTile .LiquidAmount / 255f), SpriteEffects.FlipHorizontally, 0);
+                    else if (sideUpTile.LiquidType == LiquidID.Lava && sideTile.TileType != Type)
                         spriteBatch.Draw(lavaFadeTex, ((new Vector2(i - 2, j) + Helper.TileAdj) * 16 - Main.screenPosition) + new Vector2(lavaFadeTex.Width, 0), null, col, 0, new Vector2(lavaFadeTex.Width, 0), new Vector2(val / 255f, 1), SpriteEffects.FlipHorizontally, 0);
                 }
             }

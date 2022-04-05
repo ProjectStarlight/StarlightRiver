@@ -41,6 +41,6 @@ namespace StarlightRiver.Tiles.Temple
 
     class TempleChestPlacer : QuickTileItem
     {
-        public TempleChestPlacer() : base("Temple Chest Placer", "", "TempleChestSimple", 0, AssetDirectory.UndergroundTempleTile) { }
+        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0, AssetDirectory.UndergroundTempleTile) { }
     }
 }

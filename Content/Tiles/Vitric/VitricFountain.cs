@@ -13,6 +13,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     internal class VitricFountainItem : QuickTileItem
     {
-        public VitricFountainItem() : base("Vitric Fountain", "Debug Item", "VitricFountain", texturePath: AssetDirectory.VitricTile) { }
+        public VitricFountainItem() : base("VitricFountainItem", "Vitric Fountain", "Debug Item", "VitricFountain", texturePath: AssetDirectory.VitricTile) { }
     }
 }

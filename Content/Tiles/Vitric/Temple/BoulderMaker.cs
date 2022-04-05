@@ -5,6 +5,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -13,9 +14,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             (this).QuickSetFurniture(6, 1, DustType<Dusts.Sand>(), SoundID.Tink, false, new Color(100, 80, 10));
         }
 
@@ -23,7 +24,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.TileFrameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) NPC.NewNPC(i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen) && tile.TileFrameX == 0 && !Main.npc.Any(n => n.active && n.type == NPCType<Boulder>())) 
+                NPC.NewNPC(new EntitySource_WorldEvent(), i * 16 + 48, j * 16, NPCType<Boulder>(), 0, j * 16);
         }
     }
 
@@ -62,8 +64,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             NPC.rotation += NPC.velocity.X / 40f;
         }
 
-        public override void NPCLoot()
-        {
+		public override void OnKill()
+		{
             for (int k = 0; k < 100; k++)
                 Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Stone);
 

@@ -11,21 +11,21 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             (this).QuickSet(200, DustType<Dusts.GlassGravity>(), 2, new Color(95, 162, 138), -1, false, false, "", 27);
             TileID.Sets.TouchDamageOther[Type] = 5;//vanilla contact damage
-            Main.tileMerge[Type][TileType<VitricSand>()] = true;
+            Main.tileMerge[Type][Mod.Find<ModTile>("VitricSand").Type] = true;
             Main.tileMerge[Type][TileType<VitricGiantCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricMediumCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricLargeCrystal>()] = true;
             Main.tileMerge[Type][TileType<VitricSmallCrystal>()] = true;
         }
 
-        public override bool Dangersense(int i, int j, Player Player) => true;
+        public override bool IsTileDangerous(int i, int j, Player player) => true;
 
-        public static void CollideWithSpikes(Entity entity, out int damage)
+		public static void CollideWithSpikes(Entity entity, out int damage)
         {
             if (entity is NPC && ((entity as NPC).dontTakeDamage || (entity as NPC).immortal))
             {
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 var tile = Framing.GetTileSafely(p);
                 var vector = new Vector2();
 
-                if (tile.HasTile && tile.type == TileType<VitricSpike>())
+                if (tile.HasTile && tile.TileType == TileType<VitricSpike>())
                 {
                     // ech, necessary
                     if (p.X * 16 + 16 <= entity.TopLeft.X)
@@ -64,20 +64,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
                     vector *= 6;
                     entity.velocity.X = vector.X == 0 ? entity.velocity.X : vector.X;
                     entity.velocity.Y = vector.Y == 0 ? entity.velocity.Y : vector.Y;
-
-                    if (entity is Player)
-                    {
-                        var Player = entity as Player;
-
-                        Player.wingTime = Player.wingTimeMax; //thanks for making me manually set all of these vanilla.
-                        Player.rocketTime = Player.rocketTimeMax;
-                        Player.jumpAgainCloud = true;
-                        Player.jumpAgainBlizzard = true;
-                        Player.jumpAgainFart = true;
-                        Player.jumpAgainSandstorm = true;
-                        Player.jumpAgainSail = true;
-                        Player.jumpAgainUnicorn = true;
-                    }
                 }
             }
         }

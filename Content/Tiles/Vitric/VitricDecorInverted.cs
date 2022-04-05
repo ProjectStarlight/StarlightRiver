@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 2;
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 1;
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.RandomStyleRange = 2;
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.RandomStyleRange = 1;

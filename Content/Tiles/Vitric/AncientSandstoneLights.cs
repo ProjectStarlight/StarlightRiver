@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
         
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
@@ -28,9 +28,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             TileID.Sets.FramesOnKillWall[Type] = true;
 
-            minPick = 200;
-            drop = ItemType<AncientSandstoneTorchItem>();
-            dustType = Mod.DustType("Air");
+            MinPick = 200;
+            ItemDrop = ItemType<AncientSandstoneTorchItem>();
+            DustType = DustType<Dusts.Air>();
             AddMapEntry(new Color(115, 182, 158));
         }
 

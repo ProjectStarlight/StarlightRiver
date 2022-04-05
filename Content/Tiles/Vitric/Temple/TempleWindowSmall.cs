@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 4, 8, 0, SoundID.Tink, false, Color.White);
         }

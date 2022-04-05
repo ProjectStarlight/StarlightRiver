@@ -10,9 +10,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
@@ -27,9 +27,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }

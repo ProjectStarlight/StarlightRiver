@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -12,6 +13,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
             color: new Color(140, 97, 86),
             glowColor: new Color(255, 220, 150),
             dust: DustType<Dusts.Air>(),
-            material: StarlightRiver.Instance.ItemType("AncientSandstoneItem")) { }
+            material: StarlightRiver.Instance.Find<ModItem>("AncientSandstoneItem").Type) { }
     }
 }

@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults() => 
+        public override void SetStaticDefaults() => 
             this.QuickSetBreakableVase(22, new Color(80, 10, 30), 3);
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -26,25 +27,25 @@ namespace StarlightRiver.Content.Tiles.Vitric
             switch (Main.rand.Next(5))
             {
                 case 0:
-                    Item.NewItem(pos, ItemID.DirtBlock, Main.rand.Next(1, 5));
+                    Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.DirtBlock, Main.rand.Next(1, 5));
                     break;
                 case 1:
-                    Item.NewItem(pos, ItemID.StoneBlock, Main.rand.Next(1, 5));
+                    Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.StoneBlock, Main.rand.Next(1, 5));
                     break;
                 case 2:
-                    Item.NewItem(pos, ItemID.ClayBlock, Main.rand.Next(1, 5));
+                    Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.ClayBlock, Main.rand.Next(1, 5));
                     break;
                 case 3:
-                    Item.NewItem(pos, ItemID.SandBlock, Main.rand.Next(1, 5));
+                    Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.SandBlock, Main.rand.Next(1, 5));
                     break;
                 case 4:
-                    Item.NewItem(pos, ItemID.SiltBlock, Main.rand.Next(1, 5));
+                    Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.SiltBlock, Main.rand.Next(1, 5));
                     break;
             }
 
             ///coins
-            Item.NewItem(pos, ItemID.SilverCoin, Main.rand.Next(1, 5));
-            Item.NewItem(pos, ItemID.CopperCoin, Main.rand.Next(1, 100));
+            Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.SilverCoin, Main.rand.Next(1, 5));
+            Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.CopperCoin, Main.rand.Next(1, 100));
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -72,5 +73,5 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
     }
 
-    internal class VitricBreakableVaseItem : QuickTileItem { public VitricBreakableVaseItem() : base("Vitric Vase Placer", "Debug Item", "VitricBreakableVases", 2, AssetDirectory.VitricTile) { } }
+    internal class VitricBreakableVaseItem : QuickTileItem { public VitricBreakableVaseItem() : base("VitricBreakableVaseItem", "Vitric Vase Placer", "Debug Item", "VitricBreakableVases", 2, AssetDirectory.VitricTile) { } }
 }

@@ -9,6 +9,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -18,12 +19,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override string Texture => AssetDirectory.VitricTile + Name;
     
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.DrawYOffset = 2;
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.Ore[Type] = true;
-            chest = "Vitric Crystal";//this makes the game think this is a chest, and prevents the tiles below from being broken (as well as meteors avoiding it)
+            //chest = "Vitric Crystal";//this makes the game think this is a chest, and prevents the tiles below from being broken (as well as meteors avoiding it)
 
             var bottomAnchor = new Terraria.DataStructures.AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
             (this).QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, new Color(200, 255, 230), 16, false, false, "Vitric Ore", bottomAnchor);        
@@ -31,11 +32,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-            int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
+            int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
 
             // Sync the drop for multiPlayer
-            if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -58,20 +59,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             (this).QuickSetFurniture(2, 2, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.Ore[Type] = true;
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
+            int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 6);
 
             // Sync the drop for multiPlayer
-            if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
-                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
+            if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
         }
     }
 
@@ -88,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (Main.myPlayer == Player.whoAmI)
                 {
                     WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
-                    NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                    NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
                 } 
                 else
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
@@ -101,12 +102,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreGlow").Value;
             Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-            spriteBatch.Draw(tex, Projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
+            Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
         }
     }
 
@@ -123,7 +124,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (Main.myPlayer == Player.whoAmI)
                 {
                     WorldGen.KillTile((int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f));
-                    NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                    NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
                 }
                 else
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
@@ -136,12 +137,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
             }
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
             Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-            spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
+            Main.spriteBatch.Draw(tex, Projectile.position - Vector2.One - Main.screenPosition, color);
         }
     }
 

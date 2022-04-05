@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults() => (this).QuickSetFurniture(8, 2, DustID.Stone, SoundID.Tink, false, new Color(130, 85, 45));
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(8, 2, DustID.Stone, SoundID.Tink, false, new Color(130, 85, 45));
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
@@ -25,15 +26,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref Color drawColor, ref int nextSpecialDrawIndex)
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
             if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
                 Texture2D tex = TextureAssets.Tile[Type].Value;
                 Vector2 basepos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
                 int off = StarlightWorld.HasFlag(WorldFlags.DesertOpen) ? 46 : 0;
-                spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawColor, 0, Vector2.Zero, 1, 0, 0);
-                spriteBatch.Draw(tex, basepos + new Vector2(tex.Width + off, 0), tex.Frame(), drawColor, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(tex, basepos + new Vector2(-off, 0), tex.Frame(), drawData.colorTint, 0, Vector2.Zero, 1, 0, 0);
+                spriteBatch.Draw(tex, basepos + new Vector2(tex.Width + off, 0), tex.Frame(), drawData.colorTint, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
             }
         }
     }

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
-			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].ModProjectile as SawbladeSmall);
 			Main.projectile[i].timeLeft = time;
 			mp.parent = this;
@@ -191,7 +191,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].ModProjectile as Dart);
 			mp.endPoint = end;
 			mp.midPoint = mid;
@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
+			int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
 			var mp = (Main.projectile[i].ModProjectile as Spear);
 			mp.endPoint = end;
 			mp.timeToRise = riseTime;

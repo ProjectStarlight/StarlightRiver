@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override int DummyType => ProjectileType<LowWindBannerDummy>();
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(180, 100, 100));
         }

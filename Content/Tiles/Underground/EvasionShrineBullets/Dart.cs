@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
             return total;
 		}
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
 		{
             var glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 
@@ -131,16 +131,10 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
                 float alpha = (float)Math.Sin(timer / 30f * 3.14f);
 
                 for(int k = 0; k < 20; k++)
-                    spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(140, 100, 255) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
+                    Main.spriteBatch.Draw(tellTex, PointOnSpline(k / 20f) - Main.screenPosition, null, new Color(140, 100, 255) * alpha * 0.6f, Projectile.rotation, tellTex.Size() / 2, 3, 0, 0);
             }
 
-			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(100, 0, 255), Projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
-		}
-
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-		{
-
-			return true;
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(100, 0, 255), Projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
 		}
 
         private void ManageCaches()

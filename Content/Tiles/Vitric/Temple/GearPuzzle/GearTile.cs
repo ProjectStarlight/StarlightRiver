@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<GearTileEntity>().Hook_AfterPlacement, -1, 0, false);
 			QuickBlock.QuickSetFurniture(this, 1, 1, 1, 1, new Color(1, 1, 1));
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool IsTileValidForEntity(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return ModContent.GetModTile(tile.type) is GearTile && tile.HasTile;
+			return ModContent.GetModTile(tile.TileType) is GearTile && tile.HasTile;
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					engaged = true;
 
 					Tile tile = Main.tile[Position.X, Position.Y];
-					(ModContent.GetModTile(tile.type) as GearTile)?.OnEngage(this);
+					(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
 
 					entity.RecurseOverGears(entity.Engage);
 				}
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					engaged = false;
 
 					Tile tile = Main.tile[Position.X, Position.Y];
-					(ModContent.GetModTile(tile.type) as GearTile)?.OnDisengage(this);
+					(ModContent.GetModTile(tile.TileType) as GearTile)?.OnDisengage(this);
 
 					entity.RecurseOverGears(entity.Disengage);
 				}
@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			}
 		}
 
-		public override void NetSend(BinaryWriter writer, bool lightSend)
+		public override void NetSend(BinaryWriter writer)
 		{
 			writer.Write(engaged);
 			writer.Write(size);
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			writer.Write(rotationOffset);
 		}
 
-		public override void NetReceive(BinaryReader reader, bool lightReceive)
+		public override void NetReceive(BinaryReader reader)
 		{
 			engaged = reader.ReadBoolean();
 			size = reader.ReadInt32();
@@ -281,13 +281,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SaveData(TagCompound tag)
 		{
-			return new TagCompound()
-			{
-				["engaged"] = engaged,
-				["size"] = size,
-				["direction"] = rotationVelocity,
-				["rotationOffset"] = rotationOffset
-			};
+			tag["engaged"] = engaged;
+			tag["size"] = size;
+			tag["direction"] = rotationVelocity;
+			tag["rotationOffset"] = rotationOffset;
 		}
 
 		public override void LoadData(TagCompound tag)
@@ -363,7 +360,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			}
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex;
 
@@ -376,7 +373,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 }

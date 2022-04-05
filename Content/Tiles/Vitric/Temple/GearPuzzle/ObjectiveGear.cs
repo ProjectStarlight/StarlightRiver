@@ -38,10 +38,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	{
 		public ObjectiveGearDummy() : base(ModContent.TileType<ObjectiveGear>()) { }
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
-			spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
 			Texture2D tex;
 
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value; break;
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 

@@ -11,9 +11,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(2, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
         }
@@ -21,8 +21,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public override void NearbyEffects(int i, int j, bool closer)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen)) tile.inActive(true);
-            else tile.inActive(false);
+
+            if (StarlightWorld.HasFlag(WorldFlags.DesertOpen)) 
+                tile.IsActuated = true;
+            else 
+                tile.IsActuated = false;
         }
     }
 

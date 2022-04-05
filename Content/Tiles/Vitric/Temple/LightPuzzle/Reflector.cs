@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override string Texture => AssetDirectory.Debug;
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Dirt, SoundID.Dig, new Color(1, 1, 1));
 		}
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			{
 				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(Rotation) * k * 8;
 
-				if(Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).type == ModContent.TileType<Reflector>())
+				if(Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<Reflector>())
 				{
 					endPoint = posCheck;
 
@@ -134,10 +134,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			var tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 3.14f - 1.57f / 2, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 3.14f - 1.57f / 2, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -208,12 +208,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
+		public override void SafeSendExtraAI(BinaryWriter writer)
 		{
 			writer.WriteVector2(endPoint);
 		}
 
-		public override void ReceiveExtraAI(BinaryReader reader)
+		public override void SafeReceiveExtraAI(BinaryReader reader)
 		{
 			endPoint = reader.ReadVector2();
 		}

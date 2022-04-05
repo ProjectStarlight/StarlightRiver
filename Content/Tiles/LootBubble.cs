@@ -52,29 +52,29 @@ namespace StarlightRiver.Content.Tiles
     {
         public LootBubbleDummy() : base(0, 32, 32) { }
 
-        public override bool ValidTile(Tile tile) => GetModTile(Parent.type) is LootBubble;
+        public override bool ValidTile(Tile tile) => GetModTile(Parent.TileType) is LootBubble;
 
         public override void Collision(Player Player)
         {
-            LootBubble bubble = GetModTile(Parent.type) as LootBubble;
+            LootBubble bubble = GetModTile(Parent.TileType) as LootBubble;
 
             if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
             {
                 Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-                Item.NewItem(Projectile.Center, loot.Type, loot.GetCount());
+                Item.NewItem(Projectile.GetItemSource_FromThis(), Projectile.Center, loot.Type, loot.GetCount());
                 bubble.PickupEffects(Projectile.Center);
 
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
             }
         }
 
         public override void Update() => Projectile.ai[0] += 0.1f;
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            LootBubble bubble = GetModTile(Parent.type) as LootBubble;
-            bubble.DrawBubble(Projectile.position - Main.screenPosition, spriteBatch, Projectile.ai[0]);
+            LootBubble bubble = GetModTile(Parent.TileType) as LootBubble;
+            bubble.DrawBubble(Projectile.position - Main.screenPosition, Main.spriteBatch, Projectile.ai[0]);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)

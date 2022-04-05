@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Tiles.Underground
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Underground/" + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);

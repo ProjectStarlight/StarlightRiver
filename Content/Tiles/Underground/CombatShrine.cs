@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using Terraria.GameContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/CombatShrine";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
@@ -221,7 +222,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SpawnNPC(Vector2 pos, int type, int dustAmount, float hpOverride = -1, float damageOverride = -1, float defenseOverride = -1, float scale = 1)
 		{
-			int i = Projectile.NewProjectile(pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Main.myPlayer,type, dustAmount);
+			int i = Projectile.NewProjectile(new EntitySource_WorldEvent(), pos, Vector2.Zero, ModContent.ProjectileType<SpawnEgg>(), 0, 0, Main.myPlayer,type, dustAmount);
 			(Main.projectile[i].ModProjectile as SpawnEgg).parent = this;
 			(Main.projectile[i].ModProjectile as SpawnEgg).hpOverride = hpOverride;
 			(Main.projectile[i].ModProjectile as SpawnEgg).damageOverride = damageOverride;
@@ -229,8 +230,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Main.projectile[i].scale = scale;
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
+			var spriteBatch = Main.spriteBatch;
+
 			for(int k = 0; k < slaves.Count; k++)
 			{
 				var target = slaves[k];
@@ -320,14 +323,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (Projectile.timeLeft == 30)
 			{
-				int i = NPC.NewNPC((int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
+				int i = Terraria.NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
 				var NPC = Main.npc[i];
 				NPC.alpha = 255;
 				NPC.GivenName = "Shadow";
 				NPC.lavaImmune = true;
 				NPC.trapImmune = true;
 				NPC.HitSound = SoundID.NPCHit7;
-				NPC.DeathSound = Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/ShadowDeath");
+				NPC.DeathSound = SoundLoader.GetLegacySoundSlot(Mod, "Sounds/ShadowDeath");
 				NPC.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { NPC.lifeMax = (int)(NPC.lifeMax * hpOverride); NPC.life = (int)(NPC.life * hpOverride); }

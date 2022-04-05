@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
             Main.tileLighted[Type] = true;
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
             if(tile.TileFrameX < 16 && tile.TileFrameY == 0)
 			{
-                var tileTex = TextureAssets.Tile[tile.type].Value;
+                var tileTex = TextureAssets.Tile[tile.TileType].Value;
                 spriteBatch.Draw(tileTex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
 
                 return false;
@@ -85,13 +85,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             }
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
             var tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.TileFrameX).Value;
             var sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
             var pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
-            spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
         }
 
 		public void DrawAdditive(SpriteBatch spriteBatch)

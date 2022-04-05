@@ -13,9 +13,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             QuickBlock.QuickSetFurniture(this, 2, 5, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
         }

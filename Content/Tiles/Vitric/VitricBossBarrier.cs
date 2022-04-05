@@ -14,12 +14,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public float Priority => 0f;
 
-        public void Load()
+        new public void Load()
         {
             On.Terraria.Main.Update += UpdateCollision; //TODO: Find a better/cleaner way to do this
         }
 
-        public void Unload()
+        new public void Unload()
         {
             On.Terraria.Main.Update -= UpdateCollision;
         }
@@ -36,11 +36,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Main.tileSolid[TileType<VitricBossBarrier>()] = Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>());
         }
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileBlockLight[Type] = false;
-            minPick = 999;
+            MinPick = int.MaxValue;
         }
     }
 }

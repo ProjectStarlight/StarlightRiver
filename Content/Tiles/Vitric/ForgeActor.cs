@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
     }
 
     class ForgeActorDummy : Dummy
@@ -27,13 +27,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Projectile.hide = true;
 		}
 
-		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-            drawCacheProjsBehindNPCsAndTiles.Add(index);
-        }
+            behindNPCsAndTiles.Add(index);
+		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
+            var spriteBatch = Main.spriteBatch;
+
             Vector2 pos = Projectile.position + new Vector2(-608, -289) - Main.screenPosition;
             Texture2D backdrop = Request<Texture2D>(AssetDirectory.GlassMiniboss + "Backdrop").Value;
             Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "BackdropGlow").Value;

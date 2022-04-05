@@ -17,10 +17,10 @@ namespace StarlightRiver.Content.Tiles
 
         public virtual bool CanOpen(Player Player) => true;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             SafeSetDefaults();
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
         }
 
         public override bool RightClick(int i, int j)
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Tiles
                 UILoader.GetUIState<LootUI>().Visible = true;
 
                 WorldGen.KillTile(i, j);
-                NetMessage.SendTileRange(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
+                NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 
                 return true;
             }

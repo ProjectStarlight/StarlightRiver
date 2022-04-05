@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override string Texture => "StarlightRiver/Assets/Tiles/Vitric/RedBanner";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
         {
             this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }

@@ -15,10 +15,10 @@ namespace StarlightRiver.Tiles.Temple
 
         public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -44,7 +44,7 @@ namespace StarlightRiver.Tiles.Temple
             if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
             }
