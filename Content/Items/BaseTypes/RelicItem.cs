@@ -16,11 +16,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+		//public override bool CloneNewInstances => true; //PORTTODO: Double check that commenting this out doesn't fuck everything up
 
-        public override bool NeedsSaving(Item Item) => isRelic;
+		//public override bool NeedsSaving(Item Item) => isRelic; //PORTTODO: Double check that commenting this out doesn't fuck everything up
 
-        public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 
         public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)
@@ -78,33 +78,33 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 			if (Item.prefix == 67)
 			{
-				Player.meleeCrit += 2;
-				Player.rangedCrit += 2;
-				Player.magicCrit += 2;
-				Player.thrownCrit += 2;
+				Player.GetCritChance(DamageClass.Melee) += 2;
+				Player.GetCritChance(DamageClass.Ranged) += 2;
+				Player.GetCritChance(DamageClass.Magic) += 2;
+				Player.GetCritChance(DamageClass.Throwing) += 2;
 			}
 			if (Item.prefix == 68)
 			{
-				Player.meleeCrit += 4;
-				Player.rangedCrit += 4;
-				Player.magicCrit += 4;
-				Player.thrownCrit += 4;
+				Player.GetCritChance(DamageClass.Melee) += 4;
+				Player.GetCritChance(DamageClass.Ranged) += 4;
+				Player.GetCritChance(DamageClass.Magic) += 4;
+				Player.GetCritChance(DamageClass.Throwing) += 4;
 			}
 			if (Item.prefix == 69)
 			{
-				Player.allDamage += 0.01f;
+				Player.GetDamage(DamageClass.Generic) += 0.01f; //PORTTODO: Double check that damageclass.generic means all damage, and not classless damage
 			}
 			if (Item.prefix == 70)
 			{
-				Player.allDamage += 0.02f;
+				Player.GetDamage(DamageClass.Generic) += 0.02f;
 			}
 			if (Item.prefix == 71)
 			{
-				Player.allDamage += 0.03f;
+				Player.GetDamage(DamageClass.Generic) += 0.03f;
 			}
 			if (Item.prefix == 72)
 			{
-				Player.allDamage += 0.04f;
+				Player.GetDamage(DamageClass.Generic) += 0.04f;
 			}
 			if (Item.prefix == 73)
 			{
@@ -187,15 +187,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return input;
         }
 
-        public override TagCompound Save(Item Item)
+        public override void SaveData(Item Item, TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["isRelic"] = isRelic
-            };
-        }
+			tag.Add("isRelic", isRelic); //PORTTODO: Make sure this isn't fucked up
+		}
 
-        public override void Load(Item Item, TagCompound tag)
+        public override void LoadData(Item Item, TagCompound tag)
         {
             isRelic = tag.GetBool("isRelic");
         }

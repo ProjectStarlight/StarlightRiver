@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Astroflora
         private void Say(string text, Player Player)
         {
             // Main.fontCombatText[0] is just the variant used when dramatic == false.
-            Vector2 textSize = FontAssets.CombatText[0].MeasureString(text);
+            Vector2 textSize = FontAssets.CombatText[0].Value.MeasureString(text);
 
             Rectangle textRectangle = new Rectangle((int)Player.MountedCenter.X, (int)(Player.MountedCenter.Y + Player.height), (int)textSize.X, (int)textSize.Y);
 

@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			Main.EquipPageSelected = 2;
 
 			if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
-				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone());
+				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone(), GetItemSettings.ItemCreatedFromItemUsage);
         }
     }
 
@@ -89,9 +89,9 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			SamplerState samplerState = Main.DefaultSamplerState;
 
 			if (Player.mount.Active)
-				samplerState = Main.MountedSamplerState;
+				samplerState = Main.MountedSamplerState; //PORTTODO: Figure out what the fuck this is supposed to be
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

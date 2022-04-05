@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 	internal abstract class InfectedAccessory : SmartAccessory
     {
         public InfectedAccessory() : base("Unnamed Infected Accessory", "you forgot to set a display name/tooltip dingus!") { }
-        public override bool CanEquipAccessory(Player Player, int slot)
+        public override bool CanEquipAccessory(Player Player, int slot) //PORTTODO: Figure out what CanEquipAccessory has been replaced by
         {
             //Main.NewText("Slot: " + slot, 255, 255, 0);//debug?
             if (slot == 3) return false;
@@ -78,10 +78,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                [nameof(Parent)] = Parent
-            };
+            tag.Add(nameof(Parent), Parent); //TODO: Check that this is correct
         }
 
         public override void LoadData(TagCompound tag)

@@ -32,8 +32,6 @@ namespace StarlightRiver.Content.Items.Balanced
             Item.noUseGraphic = true;
         }
 
-        public override bool CloneNewInstances => true;
-
         public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Vector2 aim = Vector2.Normalize(Main.MouseWorld - Player.Center);

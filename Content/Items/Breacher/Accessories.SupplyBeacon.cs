@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				if (startupCounter < 1)
 					startupCounter += 0.02f;
 
-				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), GetColor().ToVector3() * startupCounter);
+				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.timeForVisualEffects * 0.6f))), GetColor().ToVector3() * startupCounter);
 				BuffPlayers();
 			}
 
@@ -180,12 +180,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				Rectangle symbolFrame = new Rectangle(
 					state * symbolTex.Width / 3,
-					(Main.GlobalTime * 100) % 10 > 5 ? 0 : symbolTex.Height / 2,
+					(Main.timeForVisualEffects * 100) % 10 > 5 ? 0 : symbolTex.Height / 2,
 					symbolTex.Width / 3,
 					symbolTex.Height / 2);
 
 				Main.spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
-				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.GlobalTime * 0.6f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.timeForVisualEffects * 0.6f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
 			}
 			Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 

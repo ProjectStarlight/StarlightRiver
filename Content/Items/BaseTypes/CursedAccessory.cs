@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             }
         }
 
-        public override bool CanEquipAccessory(Player Player, int slot)
+        public override bool CanEquipAccessory(Player Player, int slot) //PORTTODO: Figure out what the replacement method for this is
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 boomTimer++;
 
             if (boomTimer == 1)
-                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                 Item.TurnToAir();
 ;
-                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {
@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
-            if(line.Mod == "Terraria" && line.Name == "ItemName")
+            if(/*line.Mod == "Terraria" && */line.Name == "ItemName")//PORTTODO: Replace line.mod with something to make sure it just checks the vanilla one
 			{
                 var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
                 var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;

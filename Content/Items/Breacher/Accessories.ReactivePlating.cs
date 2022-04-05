@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 
 	}
-	public class ReactivePlatingHelper : IOrderedLoadable
+	public class ReactivePlatingHelper : IOrderedLoadable //PORTTODO: Replace drawplayer detour with something else
 	{
 
 		public float Priority => 1.05f; 
