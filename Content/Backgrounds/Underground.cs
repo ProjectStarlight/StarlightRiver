@@ -14,64 +14,46 @@ namespace StarlightRiver.Backgrounds
             if (Main.dedServ)
                 return;
 
-            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/Blank");
+            BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/Blank");
 
-            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/PermafrostBack");
+            BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/PermafrostBack");
 
-            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
-            StarlightRiver.Instance.AddBackgroundTexture("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
+            BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
+            BackgroundTextureLoader.AddBackgroundTexture(StarlightRiver.Instance, "StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
         }
 
         void IOrderedLoadable.Unload() { }
 	}
 
-	public class BlankBG : ModUgBgStyle
+	public class BlankBG : ModUndergroundBackgroundStyle
     {
-        public override bool ChooseBgStyle() => StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
-
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = Mod.GetBackgroundSlot("Assets/Backgrounds/Blank");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/Blank");
         }
     }
 
-    public class PermafrostBG : ModUgBgStyle
+    public class JungleCorruptBG : ModUndergroundBackgroundStyle
     {
-        public override bool ChooseBgStyle() => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZonePermafrost;
-
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = Mod.GetBackgroundSlot("Assets/Backgrounds/PermafrostBack");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
         }
     }
 
-    public class JungleCorruptBG : ModUgBgStyle
+    public class JungleBloodyBG : ModUndergroundBackgroundStyle
     {
-        public override bool ChooseBgStyle() => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt;
-
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = Mod.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 
-    public class JungleBloodyBG : ModUgBgStyle
+    public class JungleHolyBG : ModUndergroundBackgroundStyle
     {
-        public override bool ChooseBgStyle() => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleBloody;
-
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = Mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
-        }
-    }
-
-    public class JungleHolyBG : ModUgBgStyle
-    {
-        public override bool ChooseBgStyle() => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneJungleHoly;
-
-        public override void FillTextureArray(int[] textureSlots)
-        {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = Mod.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 }

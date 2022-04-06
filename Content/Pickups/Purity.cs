@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Pickups
                     Player.AddBuff(BuffID.Featherfall, 120);
                     mp.GetAbility<Pure>(out var purify);
                     UILoader.GetUIState<TextCard>().Display("Coronoa of Purity", "Press " + StarlightRiver.Instance.AbilityKeys.Get<Pure>().GetAssignedKeys()[0] + " to purify nearby tiles", purify);
-                    Helper.UnlockEntry<PureEntry>(Player);
+                    Helper.UnlockCodexEntry<PureEntry>(Player);
                 }
             }
 

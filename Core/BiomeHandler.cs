@@ -161,13 +161,13 @@ namespace StarlightRiver.Core
 
             //Codex Unlocks
             if (ZoneGlass && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is VitricEntry && entry.Locked))
-                Helper.UnlockEntry<VitricEntry>(Player);
+                Helper.UnlockCodexEntry<VitricEntry>(Player);
 
             if (ZoneOvergrow && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is OvergrowEntry && entry.Locked))
-                Helper.UnlockEntry<OvergrowEntry>(Player);
+                Helper.UnlockCodexEntry<OvergrowEntry>(Player);
 
             if (ZonePermafrost && Player.GetModPlayer<CodexHandler>().Entries.Any(entry => entry is PermafrostEntry && entry.Locked))
-                Helper.UnlockEntry<PermafrostEntry>(Player);
+                Helper.UnlockCodexEntry<PermafrostEntry>(Player);
         }
 
 		public override void ResetEffects()

@@ -119,7 +119,7 @@ namespace StarlightRiver.Helpers
             return min + (difference * val);
         }
 
-        public static void UnlockEntry<type>(Player Player)
+        public static void UnlockCodexEntry<type>(Player Player)
         {
             CodexHandler mp = Player.GetModPlayer<CodexHandler>();
             CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);

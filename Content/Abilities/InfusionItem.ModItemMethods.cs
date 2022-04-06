@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Abilities
 
         public override bool OnPickup(Player Player)
         {
-            Helper.UnlockEntry<Codex.Entries.InfusionEntry>(Player);
+            Helper.UnlockCodexEntry<Codex.Entries.InfusionEntry>(Player);
             return true;
         }
 
