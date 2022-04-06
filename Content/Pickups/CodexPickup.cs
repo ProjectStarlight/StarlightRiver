@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Pickups
                 string message = "Open the codex from your inventory to learn about the world.";
 
                 UILoader.GetUIState<TextCard>().Display("Starlight Codex", message, null, 240);
-                Helper.UnlockEntry<CodexEntry>(Main.LocalPlayer);
+                Helper.UnlockCodexEntry<CodexEntry>(Main.LocalPlayer);
             }
         }
 

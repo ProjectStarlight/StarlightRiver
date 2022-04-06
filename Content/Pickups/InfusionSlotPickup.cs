@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Pickups
             if (timer == 559) 
             {
                 UILoader.GetUIState<TextCard>().Display("Mysterious Technology", "What has it done to you?", time: 360);
-                Helper.UnlockEntry<InfusionEntry>(Main.LocalPlayer);
+                Helper.UnlockCodexEntry<InfusionEntry>(Main.LocalPlayer);
 
                 Player.headPosition = Vector2.Zero;
                 Player.bodyPosition = Vector2.Zero; 

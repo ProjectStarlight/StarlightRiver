@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Pickups
 
             Player.GetModPlayer<Core.StarlightPlayer>().MaxPickupTimer = 1;
 
-            Helper.UnlockEntry<StaminaShardEntry>(Main.LocalPlayer);
+            Helper.UnlockCodexEntry<StaminaShardEntry>(Main.LocalPlayer);
         }
 
         private static string GetStaminaTexture()

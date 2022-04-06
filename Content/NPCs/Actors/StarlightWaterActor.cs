@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 						var Player = Main.player[k];
 
 						if (Player.active && Vector2.Distance(Player.Center, targetItem.Center) < 500)
-							Helpers.Helper.UnlockEntry<Codex.Entries.StarlightWaterEntry>(Player);
+							Helpers.Helper.UnlockCodexEntry<Codex.Entries.StarlightWaterEntry>(Player);
 					}
 
 					NPC.active = false;

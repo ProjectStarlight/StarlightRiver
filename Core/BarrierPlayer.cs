@@ -117,7 +117,7 @@ namespace StarlightRiver.Core
 		{
 			if (Barrier > 0)
 			{
-				Helper.UnlockEntry<BarrierEntry>(Main.LocalPlayer);
+				Helper.UnlockCodexEntry<BarrierEntry>(Main.LocalPlayer);
 
 				if (RechargeAnimationTimer < 1)
 				{
