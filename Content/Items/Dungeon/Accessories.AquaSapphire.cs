@@ -37,8 +37,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<ShieldPlayer>().MaxShield += 10;
-			Player.GetModPlayer<ShieldPlayer>().ShieldResistance += 0.05f;
+			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 10;
+			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction += 0.05f;
 
 		}
 	}

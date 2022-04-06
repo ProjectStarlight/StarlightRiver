@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+
 namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem
@@ -17,7 +19,7 @@ namespace StarlightRiver.Core
 			Item.SetDefaults(ModContent.ItemType<T>());
 			var inworldItem = Item.ModItem as InworldItem;
 
-			int index = NPC.NewNPC((int)pos.X, (int)pos.Y, inworldItem.NPCType);
+			int index = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)pos.X, (int)pos.Y, inworldItem.NPCType);
 			inworldItem.inWorldNPC = Main.npc[index].ModNPC as InworldItemNPC;
 			inworldItem.inWorldNPC.inWorldItem = inworldItem;
 

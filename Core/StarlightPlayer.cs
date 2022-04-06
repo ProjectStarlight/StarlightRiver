@@ -139,7 +139,7 @@ namespace StarlightRiver.Core
                     ScreenMoveTimer++;
             }
 
-            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center)?.wall == ModContent.WallType<AuroraBrickWall>();
+            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center).WallType == ModContent.WallType<AuroraBrickWall>();
 
             if (validTile && Main.npc.Any(n => n.active && n.ModNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
                 panDown++;
@@ -212,10 +212,8 @@ namespace StarlightRiver.Core
             Main.screenPosition.Y = (int)Main.screenPosition.Y;
         }
 
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
+        public override void ModifyDrawLayers(List<PlayerLayer> layers) //PORTTODO: Port this behavior to the new player rendering system
         {
-            if (Player.HeldItem.ModItem is Content.Items.Vitric.VitricSword && (Player.HeldItem.ModItem as Content.Items.Vitric.VitricSword).Broken) PlayerLayer.HeldItem.visible = false;
-
             Action<PlayerDrawInfo> layerTarget = DrawGlowmasks;
             PlayerLayer layer = new PlayerLayer("ItemLayer", "Starlight River Item Drawing Layer", layerTarget);
             layers.Insert(layers.IndexOf(layers.FirstOrDefault(n => n.Name == "Arms")), layer);

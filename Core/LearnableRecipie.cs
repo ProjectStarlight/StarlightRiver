@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Core
 {
-	class LearnableRecipe : ModRecipe
+	class LearnableRecipe : ModRecipe //PORTTODO: Figure out how to replace this
     {
         private readonly string recipeName;
 

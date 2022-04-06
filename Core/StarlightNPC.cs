@@ -12,9 +12,6 @@ namespace StarlightRiver.Core
         public int DoT;
         public bool dontDropItems;
 
-        //TODO: Make a better system for this, stacking DoTs
-        public int AuroraDiscDoT;
-
         public override bool InstancePerEntity => true;
 
         public override bool CloneNewInstances => true;
@@ -25,7 +22,7 @@ namespace StarlightRiver.Core
             DoT = 0;
         }
 
-		public override bool PreNPCLoot(NPC NPC)
+		public override bool PreNPCLoot(NPC NPC) //PORTTODO: Find out how to replicate this behavior
 		{
             return !dontDropItems;
 		}

@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void UpdateEquip(Player Player)
 		{
             Player.GetCritChance(DamageClass.Melee) += 2;
-            Player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
 
             if(!IsArmorSet(Player))
 			{
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void UpdateEquip(Player Player)
         {
-            Player.GetModPlayer<ShieldPlayer>().MaxShield += 35;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 35;
         }
 
         public override void AddRecipes()
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public override void UpdateEquip(Player Player)
         {
             Player.runAcceleration *= 1.5f;
-            Player.GetModPlayer<ShieldPlayer>().MaxShield += 25;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 25;
         }
 
         public override void AddRecipes()

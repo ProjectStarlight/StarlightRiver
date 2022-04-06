@@ -14,7 +14,6 @@ namespace StarlightRiver.Core
     {
         //this is used to keep track of Player controls that are otherwise not possible to keep in sync (wtf tml why does terraria sync altfunctionuse but not for modded Items)
 
-
         /// <summary>
         /// technically called the "interact" key in game
         /// </summary>
@@ -31,7 +30,6 @@ namespace StarlightRiver.Core
         /// sets itself to false after one send
         /// </summary>
         public bool sendControls = false;
-
 
         /// <summary>
         /// set this to true when something wants to recieve updates on the mouseworld changes 

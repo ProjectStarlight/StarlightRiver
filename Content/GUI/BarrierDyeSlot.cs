@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.GUI
             Recalculate();
 
             var Player = Main.LocalPlayer;
-			var mp = Player.GetModPlayer<ShieldPlayer>();
+			var mp = Player.GetModPlayer<BarrierPlayer>();
 
 			base.Draw(spriteBatch);
 		}
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             var Player = Main.LocalPlayer;
-            var mp = Player.GetModPlayer<ShieldPlayer>();
+            var mp = Player.GetModPlayer<BarrierPlayer>();
             var Item = mp.barrierDyeItem;
 
             Texture2D tex = TextureAssets.InventoryBack8.Value;
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.GUI
         {
             Main.isMouseLeftConsumedByUI = true;
             var Player = Main.LocalPlayer;
-            var mp = Player.GetModPlayer<ShieldPlayer>();
+            var mp = Player.GetModPlayer<BarrierPlayer>();
             var Item = mp.barrierDyeItem;
 
             if (Item.type == ModContent.ItemType<BaseBarrierDye>())
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.GUI
                 Main.mouseItem = Item.Clone();
                 mp.barrierDyeItem.TurnToAir();
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                mp.RechargeAnimationTimer = 0;
             }
 
             if (Player.HeldItem.ModItem is BarrierDye && Item.IsAir) //if the slot is empty and the cursor has an Item, put it in the slot
@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.GUI
                 Player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                mp.RechargeAnimationTimer = 0;
             }
 
             if (Player.HeldItem.ModItem is BarrierDye && !Item.IsAir) //swap or stack
@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.GUI
                 mp.barrierDyeItem = Player.HeldItem;
                 Main.mouseItem = temp;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                mp.RechargeAnimationTimer = 0;
             }
         }
 

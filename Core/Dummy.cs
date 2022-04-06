@@ -27,9 +27,9 @@ namespace StarlightRiver.Core
             Height = height;
         }
 
-        public virtual bool ValidTile(Tile tile) => tile is null || (tile.type == ValidType && tile.HasTile); //the tile is null only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
+        public virtual bool ValidTile(Tile tile) => (tile.TileType == ValidType && tile.HasTile); //the tile is null only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
             Height = reader.ReadInt32();
 
             Point16 key = new Point16(ParentX, ParentY);
-            DummyTile.dummies[key] = Projectile.whoAmI;
+            DummyTile.dummies[key] = Projectile;
 
             SafeReceiveExtraAI(reader);
         }

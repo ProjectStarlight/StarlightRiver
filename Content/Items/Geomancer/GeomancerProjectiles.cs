@@ -147,9 +147,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         private Player owner => Main.player[Projectile.owner];
 
-        private ShieldPlayer shieldPlayer => owner.GetModPlayer<ShieldPlayer>();
+        private BarrierPlayer shieldPlayer => owner.GetModPlayer<BarrierPlayer>();
 
-        public int shieldLife => 100 + (shieldPlayer.Shield - shieldPlayer.MaxShield);
+        public int shieldLife => 100 + (shieldPlayer.Barrier - shieldPlayer.MaxBarrier);
 
         public float shieldSpring = 0;
 
@@ -209,14 +209,14 @@ namespace StarlightRiver.Content.Items.Geomancer
                             shieldSpring = 1;
                             proj.penetrate -= 1;
                             proj.friendly = true;
-                            Player.GetModPlayer<ShieldPlayer>().Shield -= proj.damage / 2;
+                            Player.GetModPlayer<BarrierPlayer>().Barrier -= proj.damage / 2;
                             CombatText.NewText(Projectile.Hitbox, Color.Yellow, proj.damage / 2);
                         }
                         else
                         {
                             CombatText.NewText(Projectile.Hitbox, Color.Yellow, proj.damage / 2);
                             proj.damage -= (int)shieldLife;
-                            shieldPlayer.Shield = shieldPlayer.MaxShield - 100;
+                            shieldPlayer.Barrier = shieldPlayer.MaxBarrier - 100;
                             Projectile.timeLeft = EXPLOSIONTIME;
                             return;
                         }
@@ -254,13 +254,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             hitDirection = Math.Sign(Projectile.Center.X - Main.player[Projectile.owner].Center.X);
             Player Player = Main.player[Projectile.owner];
 
-            Player.GetModPlayer<ShieldPlayer>().Shield -= target.damage;
+            Player.GetModPlayer<BarrierPlayer>().Barrier -= target.damage;
             shieldSpring = 1;
             CombatText.NewText(Projectile.Hitbox, Color.Yellow, target.damage);
 
             if (shieldLife <= 0)
             {
-                shieldPlayer.Shield = shieldPlayer.MaxShield - 100;
+                shieldPlayer.Barrier = shieldPlayer.MaxBarrier - 100;
                 Projectile.timeLeft = EXPLOSIONTIME;
             }
         }

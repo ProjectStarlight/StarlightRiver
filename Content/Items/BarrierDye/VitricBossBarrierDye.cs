@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			if (!CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			var barrier = Player.GetModPlayer<ShieldPlayer>();
+			var barrier = Player.GetModPlayer<BarrierPlayer>();
 
 			Texture2D tex = CustomHooks.PlayerTarget.Target;
 
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenFormAndColor"].GetShader().Shader;
             effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
-            effect.Parameters["uTime"].SetValue(barrier.rechargeAnimation * 2 + (barrier.rechargeAnimation >= 1 ? (Main.GameUpdateCount / 30f) % 2f : 0));
+            effect.Parameters["uTime"].SetValue(barrier.RechargeAnimationTimer * 2 + (barrier.RechargeAnimationTimer >= 1 ? (Main.GameUpdateCount / 30f) % 2f : 0));
             effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
             effect.Parameters["texSize"].SetValue(tex.Size());
 

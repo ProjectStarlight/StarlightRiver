@@ -24,8 +24,6 @@ namespace StarlightRiver.Core.Loaders
             Mod.AddContent(new LoaderFurniture(internalName, data, Mod.Find<ModItem>(internalName + "Item").Type, AssetRoot + internalName));
         }
 
-
-
         public void AddMerge(int type1, int[] type2arr)
         {
             foreach(int type2 in type2arr)
@@ -52,8 +50,6 @@ namespace StarlightRiver.Core.Loaders
                 Main.tileMerge[type2][Mod.Find<ModTile>(type1).Type] = true;
             }
         }
-
-
 
         public void AddMerge(int type1, int type2)
         {
@@ -83,14 +79,11 @@ namespace StarlightRiver.Core.Loaders
             TileID.Sets.Conversion.HardenedSand[Mod.Find<ModTile>(type).Type] = true; // Allows Clentaminator solutions to convert this tile to their respective Sand tiles.
         }
 
-
         public void AddMerge(string type1, int type2)
         {
             Main.tileMerge[Mod.Find<ModTile>(type1).Type][type2] = true;
             Main.tileMerge[type2][Mod.Find<ModTile>(type1).Type] = true;
         }
-
-
 
         public virtual float Priority { get => 2f; }
 

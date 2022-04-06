@@ -20,7 +20,7 @@ namespace StarlightRiver.Core
         protected int ItemType;
         protected readonly int FrameCount;
         protected readonly Color? MapColor;
-        protected readonly int DustType;
+        protected readonly int FountainDustType;
         protected readonly int Width;
         protected readonly int Height;
         protected readonly string TexturePath;
@@ -31,20 +31,14 @@ namespace StarlightRiver.Core
             TexturePath = path;
             FrameCount = animFrameCount;
             MapColor = mapColor;
-            DustType = dust;
+            FountainDustType = dust;
             Height = height;
             Width = width;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if (!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
+        public override string Texture => TexturePath + Name;
 
-            return base.Autoload(ref name, ref texture);
-        }
-
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
@@ -54,19 +48,19 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, Height).ToArray();
             TileObjectData.addTile(Type);
 
-            dustType = DustType;
-            animationFrameHeight = Height * 18;
+            DustType = FountainDustType;
+            AnimationFrameHeight = Height * 18;
             
-            ItemType = Mod.ItemType(ItemName);
+            ItemType = Mod.Find<ModItem>(ItemName).Type;
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
-            adjTiles = new int[] { TileID.WaterFountain };
+            AdjTiles = new int[] { TileID.WaterFountain };
         }
 
         public override bool HasSmartInteract() => true;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => 
-            Item.NewItem(i * 16, j * 16, 32, 48, ItemType);
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 48, ItemType);
 
         public override void NumDust(int i, int j, bool fail, ref int num) => 
             num = 1;
@@ -85,11 +79,10 @@ namespace StarlightRiver.Core
             Vector2 zero = Main.drawToScreen ?
                 Vector2.Zero : new Vector2(Main.offScreenRange, Main.offScreenRange);
 
-            Texture2D texture = Main.canDrawColorTile(i, j) ?
-                Main.tileAltTexture[Type, tile.TileColor] : TextureAssets.Tile[Type].Value;
+            Texture2D texture = TextureAssets.Tile[Type].Value;
 
-            int animate = tile.TileFrameY >= animationFrameHeight ?
-                Main.tileFrame[Type] * animationFrameHeight : 0;
+            int animate = tile.TileFrameY >= AnimationFrameHeight ?
+                Main.tileFrame[Type] * AnimationFrameHeight : 0;
 
             Main.spriteBatch.Draw(texture, new Vector2(i * 16, j * 16) - Main.screenPosition + zero, new Rectangle(tile.TileFrameX, tile.TileFrameY + animate, 16, 16), Lighting.GetColor(i, j), 0f, default, 1f, SpriteEffects.None, 0f);
             return false;
@@ -118,13 +111,11 @@ namespace StarlightRiver.Core
             for (int l = x; l < x + Width; l++)
                 for (int m = y; m < y + Height; m++)
                 {
-                    if (Main.tile[l, m] == null)
-                        Main.tile[l, m] = new Tile();
-                    if (Main.tile[l, m].HasTile && Main.tile[l, m].type == Type)
-                        if (Main.tile[l, m].TileFrameY < (short)animationFrameHeight)
-                            Main.tile[l, m].TileFrameY += (short)animationFrameHeight;
+                    if (Main.tile[l, m].HasTile && Main.tile[l, m].TileType == Type)
+                        if (Main.tile[l, m].TileFrameY < (short)AnimationFrameHeight)
+                            Main.tile[l, m].TileFrameY += (short)AnimationFrameHeight;
                         else
-                            Main.tile[l, m].TileFrameY -= (short)animationFrameHeight;
+                            Main.tile[l, m].TileFrameY -= (short)AnimationFrameHeight;
                 }
 
             if (Wiring.running)
@@ -137,7 +128,7 @@ namespace StarlightRiver.Core
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
-            if (Main.tile[i, j].TileFrameY >= animationFrameHeight)
+            if (Main.tile[i, j].TileFrameY >= AnimationFrameHeight)
                 FountainActive(i, j, closer);
         }
 
@@ -170,14 +161,9 @@ namespace StarlightRiver.Core
             TexturePath = path;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if(!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => TexturePath + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileFrameImportant[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -194,8 +180,8 @@ namespace StarlightRiver.Core
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));
-            ItemType = Mod.ItemType(ItemName);
-            dustType = -1;
+            ItemType = Mod.Find<ModItem>(ItemName).Type;
+            DustType = -1;
 
             SafeSetDefaults();
         }
@@ -206,9 +192,8 @@ namespace StarlightRiver.Core
         {
             if (closer)
             {
-                Player Player = Main.LocalPlayer;
-                Player.NPCBannerBuff[NpcType] = true;
-                Player.hasBanner = true;
+                Player player = Main.LocalPlayer;
+                //PORTTODO: Restore banner functionality
             }
         }
 
@@ -219,14 +204,14 @@ namespace StarlightRiver.Core
         }
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY) => 
-            Item.NewItem(i * 16, j * 16, 16 * Width, 16 * Height, ItemType);
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * Width, 16 * Height, ItemType);
     }
 
     public abstract class ModVine : ModTile
     {
         protected readonly string[] AnchorableTiles;
         protected int[] AnchorTileTypes;
-        protected readonly int DustType;
+        protected readonly int VineDustType;
         protected readonly int MaxVineLength;
         protected readonly int GrowthChance;//lower is faster (one out of this amount)
         protected readonly Color? MapColor;
@@ -238,7 +223,7 @@ namespace StarlightRiver.Core
         public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, string drop = null, int dustAmount = 1, int soundType = SoundID.Grass, string path = null)
         {
             AnchorableTiles = anchorableTiles;
-            DustType = dustType;
+            VineDustType = dustType;
             MapColor = mapColor;
             GrowthChance = growthChance;
             MaxVineLength = maxVineLength;
@@ -248,18 +233,13 @@ namespace StarlightRiver.Core
             TexturePath = path;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if (!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => TexturePath + Name;
 
-        public sealed override void SetDefaults()
+        public sealed override void SetStaticDefaults()
         {
             AnchorTileTypes = new int[AnchorableTiles.Length + 1];
             for (int i = 0; i < AnchorableTiles.Length; i++)
-                AnchorTileTypes[i] = Mod.TileType(AnchorableTiles[i]);
+                AnchorTileTypes[i] = Mod.Find<ModTile>(AnchorableTiles[i]).Type;
             AnchorTileTypes[AnchorableTiles.Length] = Type;
 
             Main.tileSolid[Type] = false;
@@ -278,9 +258,9 @@ namespace StarlightRiver.Core
             if(MapColor != null)
                 AddMapEntry(MapColor ?? Color.Transparent);
             if(ItemName != null)
-                drop = Mod.ItemType(ItemName);
-            dustType = DustType;
-            soundType = Sound;
+                ItemDrop = Mod.Find<ModItem>(ItemName).Type;
+            DustType = VineDustType;
+            SoundType = Sound;
 
             SafeSetDefaults();
         }
@@ -297,7 +277,7 @@ namespace StarlightRiver.Core
         }
         protected void Grow(int i, int j, int chance)
         {
-            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j - MaxVineLength].type != Type && Main.rand.Next(chance) == 0)
+            if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j - MaxVineLength].TileType != Type && Main.rand.Next(chance) == 0)
                 WorldGen.PlaceTile(i, j + 1, Type, true);
         }
 
@@ -305,7 +285,7 @@ namespace StarlightRiver.Core
 
         public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
         {
-            if (!Main.tile[i, j - 1].HasTile && !AnchorTileTypes.Contains(Main.tile[i, j - 1].type))
+            if (!Main.tile[i, j - 1].HasTile && !AnchorTileTypes.Contains(Main.tile[i, j - 1].TileType))
                 WorldGen.KillTile(i, j);
                 //WorldGen.SquareTileFrame(i, j, true);
             return true;

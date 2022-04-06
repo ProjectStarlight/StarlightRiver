@@ -23,16 +23,16 @@ namespace StarlightRiver.Core
         protected string FullStructPath;
         public readonly int VariantCount;
         protected readonly Color? MapColor;
-        protected readonly int DustType;
+        protected readonly int CrystalDustType;
         protected readonly int Sound;
-        protected readonly int SoundStyle;
+        protected readonly int CrystalSoundStyle;
         public readonly int MaxWidth;
         public readonly int MaxHeight;
         protected readonly string TexturePath;
         public readonly string DummyName;
 
 
-        public override int DummyType => Mod.ProjectileType(DummyName);
+        public override int DummyType => Mod.Find<ModProjectile>(DummyName).Type;
 
         public override bool SpawnConditions(int i, int j) => Main.tile[i, j].TileFrameX > 0;
 
@@ -43,27 +43,25 @@ namespace StarlightRiver.Core
             StructurePath = structurePath;
             VariantCount = variantCount;
             MapColor = mapColor;
-            DustType = dust;
+            CrystalDustType = dust;
             MaxHeight = maxHeight;
             MaxWidth = maxWidth;
             Sound = sound;
-            SoundStyle = soundStyleVar;
+            CrystalSoundStyle = soundStyleVar;
             DummyName = dummyType;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if (!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
+        public override string Texture => TexturePath + Name;
 
-            string suffix = name + (VariantCount > 1 ? "_" : string.Empty);
+        public override void Load()
+        {
+            string suffix = Name + (VariantCount > 1 ? "_" : string.Empty);
             FullStructPath = (string.IsNullOrEmpty(StructurePath) ? AssetDirectory.StructureFolder : StructurePath) + suffix;
-            return base.Autoload(ref name, ref texture);
         }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            (this).QuickSet(int.MaxValue, DustType, Sound, MapColor ?? Color.Transparent, -1, default, default, default, SoundStyle);
+            (this).QuickSet(int.MaxValue, CrystalDustType, Sound, MapColor ?? Color.Transparent, -1, default, default, default, CrystalSoundStyle);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;
@@ -73,18 +71,19 @@ namespace StarlightRiver.Core
             TileObjectData.addTile(Type);
 
             if (!string.IsNullOrEmpty(ItemName))
-                ItemType = Mod.ItemType(ItemName);
+                ItemType = Mod.Find<ModItem>(ItemName).Type;
 
             SafeSetDefaults();
         }
 
-        public virtual void SafeSetDefaults() { }
+		public virtual void SafeSetDefaults() { }
 
-        private int PostPlace(int x, int y, int type, int style, int dir)
+        private int PostPlace(int x, int y, int type, int style, int dir, int extra)
         {
             if (style < VariantCount)
             {
                 Point16 offset = new Point16((MaxWidth / 2) - 1, MaxHeight - 1);
+
                 if (VariantCount > 1)//if statement because the ternary was acting weird
                     StructureHelper.Generator.GenerateStructure(FullStructPath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
                 else
@@ -96,7 +95,7 @@ namespace StarlightRiver.Core
         public override bool Drop(int i, int j)
         {
             if (Main.tile[i, j].TileFrameX > 0)
-                Item.NewItem(i * 16, j * 16, 16 * MaxWidth, 16 * MaxHeight, ItemType);
+                Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * MaxWidth, 16 * MaxHeight, ItemType);
             return false;
         }
 
@@ -121,12 +120,12 @@ namespace StarlightRiver.Core
             Projectile.hide = true;
         }
 
-        public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-        {
-            drawCacheProjsBehindNPCsAndTiles.Add(index);
-        }
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+            behindNPCsAndTiles.Add(index);
+		}
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Tile t = Parent;
             

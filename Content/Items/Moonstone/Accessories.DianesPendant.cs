@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
 			Player.GetModPlayer<DianePlayer>().Active = true;
 
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)

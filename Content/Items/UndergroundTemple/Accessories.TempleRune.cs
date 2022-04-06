@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeUpdateEquip(Player Player)
         {
-            Player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
         }
     }
 }

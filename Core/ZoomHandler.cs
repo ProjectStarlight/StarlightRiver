@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Graphics;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	public static class ZoomHandler
+	public class ZoomHandler : ModSystem
     {
         private static int zoomTimer;
         public static float zoomOverride = 1;
@@ -31,6 +33,17 @@ namespace StarlightRiver.Core
         }
 
         public static float ClampedExtraZoomTarget => System.Math.Min(1, ExtraZoomTarget);
+
+        public override void PostUpdateEverything()
+        {
+            ZoomHandler.TickZoom();
+        }
+
+        public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
+        {
+            Transform.Zoom = ZoomHandler.ScaleVector;
+            ZoomHandler.UpdateZoom();
+        }
 
         public static void AddFlatZoom(float value)
 		{

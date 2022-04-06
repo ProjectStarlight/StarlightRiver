@@ -12,16 +12,16 @@ namespace StarlightRiver.Core
             GetHealLifeEvent?.Invoke(Item, Player, quickHeal, ref healValue);
         }
 
-        public delegate void ModifyWeaponDamageDelegate(Item Item, Player Player, ref float add, ref float mult, ref float flat);
+        public delegate void ModifyWeaponDamageDelegate(Item Item, Player Player, ref StatModifier statModifier, ref float flat);
         public static event ModifyWeaponDamageDelegate ModifyWeaponDamageEvent;
-		public override void ModifyWeaponDamage(Item Item, Player Player, ref float add, ref float mult, ref float flat)
+		public override void ModifyWeaponDamage(Item Item, Player Player, ref StatModifier statModifier, ref float flat)
 		{
-            ModifyWeaponDamageEvent?.Invoke(Item, Player, ref add, ref mult, ref flat);
+            ModifyWeaponDamageEvent?.Invoke(Item, Player, ref statModifier, ref flat);
 		}
 
         public delegate void GetWeaponCritDelegate(Item Item, Player Player, ref int crit);
         public static event GetWeaponCritDelegate GetWeaponCritEvent;
-		public override void GetWeaponCrit(Item Item, Player Player, ref int crit)
+		public override void ModifyWeaponCrit(Item Item, Player Player, ref int crit)
 		{
 			GetWeaponCritEvent?.Invoke(Item, Player, ref crit);
 		}

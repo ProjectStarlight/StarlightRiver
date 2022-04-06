@@ -26,7 +26,7 @@ namespace StarlightRiver.Core
 
 		private Medal attemptedMedal;
 
-		private static int Difficulty => Main.expertMode ? 1 : 0;
+		private static int Difficulty => Main.LocalPlayer.difficulty > 2 ? -1 : Main.LocalPlayer.difficulty;
 
 		public void QualifyForMedal(Medal medal)
 		{
@@ -63,10 +63,7 @@ namespace StarlightRiver.Core
 
 		public override void SaveData(TagCompound tag)
 		{
-			return new TagCompound()
-			{ 
-				["medals"] = medals
-			};
+			tag["medals"] = medals;
 		}
 
 		public override void LoadData(TagCompound tag)

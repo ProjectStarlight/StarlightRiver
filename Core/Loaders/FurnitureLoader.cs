@@ -54,36 +54,41 @@ namespace StarlightRiver.Core
             Add("Workbench", new GenericWorkbench(color, dust, name + "Workbench"), Mod, 10);
 
             //special stuff for the door
-            Mod.AddTile(name + "DoorClosed", new GenericDoorClosed(color, dust, name + "DoorClosed"), path + name + "DoorClosed");
-            Mod.AddTile(name + "DoorOpen", new GenericDoorOpen(color, dust, name + "DoorOpen"), path + name + "DoorOpen");
-            Mod.AddItem(name + "Door", new GenericFurnitureItem(name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
+            Mod.AddContent(new GenericDoorClosed(name + "DoorClosed", color, dust, name + "DoorClosed", path + name + "DoorClosed"));
+            Mod.AddContent(new GenericDoorOpen(name + "DoorOpen", color, dust, name + "DoorOpen", path + name + "DoorOpen"));
+            Mod.AddContent(new GenericFurnitureItem(name + "Door", name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
         }
 
         public void Unload() { }
 
-        private void Add(string typename, ModTile tile, Mod Mod, int craftingQuantity)
+        private void Add(string typename, Furniture tile, Mod Mod, int craftingQuantity)
         {
-            Mod.AddTile(name + typename, tile, path + name + typename);
-            Mod.AddItem(name + typename, new GenericFurnitureItem(name + " " + typename, path + name + typename + "Item", craftingQuantity, material));
+            tile.InternalName = name + typename;
+            tile.TileTexture = path + name + typename;
+            Mod.AddContent(tile);
+
+            Mod.AddContent(new GenericFurnitureItem(name + typename, name + " " + typename, path + name + typename + "Item", craftingQuantity, material));
         }
     }
 
     class GenericFurnitureItem : QuickTileItem
     {
+        private readonly string internalName;
         private readonly string name;
         private readonly int craftingQuantity;
         private readonly int craftingMaterial;
         private readonly string texture;
 
-        public GenericFurnitureItem(string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", StarlightRiver.Instance.TileType(name.Replace(" ", "")), 0)
+        public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", StarlightRiver.Instance.Find<ModTile>(name.Replace(" ", "")).Type, 0)
         {
+            this.internalName = internalName;
             this.name = name;
             this.craftingQuantity = craftingQuantity;
             this.craftingMaterial = craftingMaterial;
             this.texture = texture;
         }
 
-        public override bool CloneNewInstances => true;
+        public override string Name => internalName;
 
         public override string Texture => texture;
 
@@ -144,9 +149,20 @@ namespace StarlightRiver.Core
 
     abstract class Furniture : ModTile
     {
+        public string InternalName;
+        public string TileTexture;
         protected readonly Color color;
         protected readonly int dust;
         protected readonly string name;
+
+        public Furniture(string internalName, Color color, int dust, string name, string texture)
+        {
+            InternalName = internalName;    
+            this.color = color;
+            this.dust = dust;
+            this.name = name;
+            TileTexture = texture;  
+        }
 
         public Furniture(Color color, int dust, string name)
         {
@@ -155,12 +171,16 @@ namespace StarlightRiver.Core
             this.name = name;
         }
 
-        public override void NumDust(int i, int j, bool fail, ref int num)
+        public override string Texture => TileTexture;
+
+        public override string Name => InternalName;
+
+		public override void NumDust(int i, int j, bool fail, ref int num)
         {
             num = fail ? 1 : 3;
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name).Type);
     }
 
     //Bathtub
@@ -168,14 +188,14 @@ namespace StarlightRiver.Core
     {
         public GenericBathtub(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
 
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 4, 0);
             QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
-            adjTiles = new int[] { TileID.Bathtubs };
+            AdjTiles = new int[] { TileID.Bathtubs };
         }
     }
 
@@ -184,7 +204,7 @@ namespace StarlightRiver.Core
     {
         public GenericBed(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
@@ -193,8 +213,7 @@ namespace StarlightRiver.Core
             QuickBlock.QuickSetFurniture(this, 4, 2, dust, SoundID.Dig, false, color);
             TileID.Sets.HasOutlines[Type] = true;
             
-            adjTiles = new int[] { TileID.Beds };
-            bed = true;
+            AdjTiles = new int[] { TileID.Beds };
         }
 
         public override bool HasSmartInteract() => true;
@@ -214,12 +233,12 @@ namespace StarlightRiver.Core
             if (Player.SpawnX == spawnX && Player.SpawnY == spawnY)
             {
                 Player.RemoveSpawn();
-                Main.NewText("Spawn point removed!", 255, 240, 20, false);
+                Main.NewText("Spawn point removed!", 255, 240, 20);
             }
             else if (Player.CheckSpawn(spawnX, spawnY))
             {
                 Player.ChangeSpawn(spawnX, spawnY);
-                Main.NewText("Spawn point set!", 255, 240, 20, false);
+                Main.NewText("Spawn point set!", 255, 240, 20);
             }
             return true;
         }
@@ -229,7 +248,7 @@ namespace StarlightRiver.Core
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
             Player.cursorItemIconEnabled = true;
-            Player.cursorItemIconID = Mod.ItemType(this.name);
+            Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
         }
     }
 
@@ -238,13 +257,13 @@ namespace StarlightRiver.Core
     {
         public GenericBookcase(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
             TileObjectData.newTile.Origin = new Point16(0, 4);
             QuickBlock.QuickSetFurniture(this, 3, 4, dust, SoundID.Dig, false, color, true);
-            adjTiles = new int[] { TileID.Bookcases };
+            AdjTiles = new int[] { TileID.Bookcases };
         }
     }
 
@@ -253,14 +272,14 @@ namespace StarlightRiver.Core
     {
         public GenericCandelabra(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-            adjTiles = new int[] { TileID.Candelabras };
+            AdjTiles = new int[] { TileID.Candelabras };
         }
 
         public override void HitWire(int i, int j)
@@ -294,14 +313,14 @@ namespace StarlightRiver.Core
     {
         public GenericCandle(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 1, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-            adjTiles = new int[] { TileID.Candles };
+            AdjTiles = new int[] { TileID.Candles };
         }
 
         public override void HitWire(int i, int j)
@@ -322,7 +341,7 @@ namespace StarlightRiver.Core
     {
         public GenericChair(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileNoAttach[Type] = true;
@@ -338,7 +357,7 @@ namespace StarlightRiver.Core
             QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
 
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-            adjTiles = new int[] { TileID.Chairs };
+            AdjTiles = new int[] { TileID.Chairs };
         }
     }
 
@@ -347,14 +366,14 @@ namespace StarlightRiver.Core
     {
         public GenericChandelier(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 3, dust, SoundID.Dig, false, color, Origin: new Point16(1, 1));
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-            adjTiles = new int[] { TileID.Chandeliers };
+            AdjTiles = new int[] { TileID.Chandeliers };
         }
 
         public override void HitWire(int i, int j)
@@ -388,15 +407,16 @@ namespace StarlightRiver.Core
     {
         public GenericClock(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.Origin = new Point16(0, 5);
             QuickBlock.QuickSetFurniture(this, 2, 5, dust, SoundID.Dig, false, color);
             TileID.Sets.HasOutlines[Type] = true;
+            TileID.Sets.Clock[Type] = true;
             
-            adjTiles = new int[] { TileID.GrandfatherClocks };
+            AdjTiles = new int[] { TileID.GrandfatherClocks };
         }
 
         public override bool HasSmartInteract() => true;
@@ -452,27 +472,21 @@ namespace StarlightRiver.Core
             return true;
         }
 
-        public override void NearbyEffects(int i, int j, bool closer)
-        {
-            if (closer)
-                Main.clock = true;
-        }
-
         public override void MouseOver(int i, int j)
         {
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
             Player.cursorItemIconEnabled = true;
-            Player.cursorItemIconID = Mod.ItemType(this.name);
+            Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
         }
     }
 
     //Door
     class GenericDoorClosed : Furniture
     {
-        public GenericDoorClosed(Color color, int dust, string name) : base(color, dust, name) { }
+        public GenericDoorClosed(string internalName, Color color, int dust, string name, string texture) : base(internalName, color, dust, name, texture) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1xX);
@@ -501,8 +515,8 @@ namespace StarlightRiver.Core
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 
             
-            adjTiles = new int[] { TileID.ClosedDoor };
-            openDoorID = Mod.TileType(name.Replace("Closed", "Open"));
+            AdjTiles = new int[] { TileID.ClosedDoor };
+            OpenDoorID = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
         }
 
         public override bool HasSmartInteract() => true;
@@ -512,18 +526,18 @@ namespace StarlightRiver.Core
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
             Player.cursorItemIconEnabled = true;
-            Player.cursorItemIconID = Mod.ItemType(name.Replace("Closed", ""));
+            Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Closed", "")).Type;
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Closed", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Closed", "")).Type);
     }
 
     //Open Door
     class GenericDoorOpen : Furniture
     {
-        public GenericDoorOpen(Color color, int dust, string name) : base(color, dust, name) { }
+        public GenericDoorOpen(string internalName, Color color, int dust, string name, string texture) : base(internalName, color, dust, name, texture) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
@@ -569,8 +583,8 @@ namespace StarlightRiver.Core
             TileID.Sets.HasOutlines[Type] = true;
 
             
-            adjTiles = new int[] { TileID.OpenDoor };
-            closeDoorID = Mod.TileType(name.Replace("Open", "Closed"));
+            AdjTiles = new int[] { TileID.OpenDoor };
+            CloseDoorID = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
         }
 
         public override bool HasSmartInteract() => true;
@@ -580,10 +594,10 @@ namespace StarlightRiver.Core
             Player Player = Main.LocalPlayer;
             Player.noThrow = 2;
             Player.cursorItemIconEnabled = true;
-            Player.cursorItemIconID = Mod.ItemType(name.Replace("Open", ""));
+            Player.cursorItemIconID = Mod.Find<ModItem>(name.Replace("Open", "")).Type;
         }
 
-        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new Vector2(i, j) * 16, Mod.ItemType(name.Replace("Open", "")));
+        public override void KillMultiTile(int i, int j, int frameX, int frameY) => Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Mod.Find<ModItem>(name.Replace("Open", "")).Type);
     }
 
     //Piano, Sofa
@@ -591,14 +605,14 @@ namespace StarlightRiver.Core
     {
         public Generic3x2(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
 
             if(name.Contains("Piano"))
-                adjTiles = new int[] { TileID.Pianos };
+                AdjTiles = new int[] { TileID.Pianos };
         }
     }    
 
@@ -607,7 +621,7 @@ namespace StarlightRiver.Core
     {
         public GenericDresser(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileContainer[Type] = true;
             Main.tileLavaDeath[Type] = true;
@@ -617,22 +631,21 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(new Func<int, int, int, int, int, int>(Chest.AfterPlacement_Hook), -1, 0, false);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
             
-            adjTiles = new int[] { TileID.Dressers };
-            dresser = name.Substring(0, name.Length - 7) + " Dresser";
-            dresserDrop = Mod.ItemType(name);
+            AdjTiles = new int[] { TileID.Dressers };
+            DresserDrop = Mod.Find<ModItem>(name).Type;
         }
 
         public override bool HasSmartInteract() => true;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {
-            Item.NewItem(i * 16, j * 16, 48, 32, dresserDrop);
+            Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 32, DresserDrop);
             Chest.DestroyChest(i, j);
         }
 
         public override bool RightClick(int i, int j)
         {
-            Player Player = Main.LocalPlayer;
+            Player player = Main.LocalPlayer;
             if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY == 0)
             {
                 Main.CancelClothesWindow(true);
@@ -641,10 +654,10 @@ namespace StarlightRiver.Core
                 left %= 3;
                 left = Player.tileTargetX - left;
                 int top = Player.tileTargetY - (int)(Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY / 18);
-                if (Player.sign > -1)
+                if (player.sign > -1)
                 {
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
-                    Player.sign = -1;
+                    player.sign = -1;
                     Main.editSign = false;
                     Main.npcChatText = string.Empty;
                 }
@@ -654,16 +667,16 @@ namespace StarlightRiver.Core
                     Main.editChest = false;
                     Main.npcChatText = string.Empty;
                 }
-                if (Player.editedChestName)
+                if (player.editedChestName)
                 {
-                    NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[Player.chest].name), Player.chest, 1f, 0f, 0f, 0, 0, 0);
-                    Player.editedChestName = false;
+                    NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
+                    player.editedChestName = false;
                 }
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    if (left == Player.chestX && top == Player.chestY && Player.chest != -1)
+                    if (left == player.chestX && top == player.chestY && player.chest != -1)
                     {
-                        Player.chest = -1;
+                        player.chest = -1;
                         Recipe.FindRecipes();
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
                     }
@@ -675,34 +688,33 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    Player.flyingPigChest = -1;
-                    int num213 = Chest.FindChest(left, top);
-                    if (num213 != -1)
+                    int oldChest = Chest.FindChest(left, top);
+                    if (oldChest != -1)
                     {
                         Main.stackSplit = 600;
-                        if (num213 == Player.chest)
+                        if (oldChest == player.chest)
                         {
-                            Player.chest = -1;
+                            player.chest = -1;
                             Recipe.FindRecipes();
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
                         }
-                        else if (num213 != Player.chest && Player.chest == -1)
+                        else if (oldChest != player.chest && player.chest == -1)
                         {
-                            Player.chest = num213;
+                            player.chest = oldChest;
                             Main.playerInventory = true;
                             Main.recBigList = false;
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
-                            Player.chestX = left;
-                            Player.chestY = top;
+                            player.chestX = left;
+                            player.chestY = top;
                         }
                         else
                         {
-                            Player.chest = num213;
+                            player.chest = oldChest;
                             Main.playerInventory = true;
                             Main.recBigList = false;
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
-                            Player.chestX = left;
-                            Player.chestY = top;
+                            player.chestX = left;
+                            player.chestY = top;
                         }
                         Recipe.FindRecipes();
                     }
@@ -711,7 +723,7 @@ namespace StarlightRiver.Core
             else
             {
                 Main.playerInventory = false;
-                Player.chest = -1;
+                player.chest = -1;
                 Recipe.FindRecipes();
                 Main.dresserX = Player.tileTargetX;
                 Main.dresserY = Player.tileTargetY;
@@ -722,7 +734,7 @@ namespace StarlightRiver.Core
 
         public override void MouseOverFar(int i, int j)
         {
-            Player Player = Main.LocalPlayer;
+            Player player = Main.LocalPlayer;
             Tile tile = Main.tile[Player.tileTargetX, Player.tileTargetY];
             int left = Player.tileTargetX;
             int top = Player.tileTargetY;
@@ -732,33 +744,34 @@ namespace StarlightRiver.Core
                 top--;
             }
             int chestIndex = Chest.FindChest(left, top);
-            Player.cursorItemIconID = -1;
+            player.cursorItemIconID = -1;
             if (chestIndex < 0)
             {
-                Player.cursorItemIconEnabledText = Language.GetTextValue("LegacyDresserType.0");
+                player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[chestIndex].name != "")
                 {
-                    Player.cursorItemIconEnabledText = Main.chest[chestIndex].name;
+                    player.cursorItemIconText = Main.chest[chestIndex].name;
                 }
                 else
                 {
-                    Player.cursorItemIconEnabledText = chest;
+                    player.cursorItemIconText = chest;
                 }
-                if (Player.cursorItemIconEnabledText == chest)
+
+                if (player.cursorItemIconText == chest)
                 {
-                    Player.cursorItemIconID = Mod.ItemType(this.name);
-                    Player.cursorItemIconEnabledText = "";
+                    player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
+                    player.cursorItemIconText = "";
                 }
             }
-            Player.noThrow = 2;
-            Player.cursorItemIconEnabled = true;
-            if (Player.cursorItemIconEnabledText == "")
+            player.noThrow = 2;
+            player.cursorItemIconEnabled = true;
+            if (player.cursorItemIconText == "")
             {
-                Player.cursorItemIconEnabled = false;
-                Player.cursorItemIconID = 0;
+                player.cursorItemIconEnabled = false;
+                player.cursorItemIconID = 0;
             }
         }
 
@@ -777,22 +790,22 @@ namespace StarlightRiver.Core
             Player.cursorItemIconID = -1;
             if (num138 < 0)
             {
-                Player.cursorItemIconEnabledText = Language.GetTextValue("LegacyDresserType.0");
+                Player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
             }
             else
             {
                 if (Main.chest[num138].name != "")
                 {
-                    Player.cursorItemIconEnabledText = Main.chest[num138].name;
+                    Player.cursorItemIconText = Main.chest[num138].name;
                 }
                 else
                 {
-                    Player.cursorItemIconEnabledText = chest;
+                    Player.cursorItemIconText = chest;
                 }
-                if (Player.cursorItemIconEnabledText == chest)
+                if (Player.cursorItemIconText == chest)
                 {
-                    Player.cursorItemIconID = Mod.ItemType(this.name);
-                    Player.cursorItemIconEnabledText = "";
+                    Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
+                    Player.cursorItemIconText = "";
                 }
             }
             Player.noThrow = 2;
@@ -809,14 +822,14 @@ namespace StarlightRiver.Core
     {
         public GenericLamp(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 3, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-            adjTiles = new int[] { TileID.Lamps };
+            AdjTiles = new int[] { TileID.Lamps };
         }
 
         public override void HitWire(int i, int j)
@@ -846,14 +859,14 @@ namespace StarlightRiver.Core
     {
         public GenericLantern(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             Main.tileLighted[Type] = true;
             TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
             QuickBlock.QuickSetFurniture(this, 1, 2, dust, SoundID.Dig, false, color);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-            adjTiles = new int[] { TileID.HangingLanterns };
+            AdjTiles = new int[] { TileID.HangingLanterns };
         }
 
         public override void HitWire(int i, int j)
@@ -888,12 +901,12 @@ namespace StarlightRiver.Core
     {
         public GenericSink(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 2, dust, SoundID.Dig, false, color);
-            adjTiles = new int[] { TileID.Sinks };
+            AdjTiles = new int[] { TileID.Sinks };
         }
     }
 
@@ -902,12 +915,12 @@ namespace StarlightRiver.Core
     {
         public GenericSolidWithTop(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color, true);
-            adjTiles = new int[] { TileID.Tables };
+            AdjTiles = new int[] { TileID.Tables };
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
         }
     }
@@ -917,12 +930,12 @@ namespace StarlightRiver.Core
     {
         public GenericWorkbench(Color color, int dust, string name) : base(color, dust, name) { }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 1, dust, SoundID.Dig, false, color, true);
-            adjTiles = new int[] { TileID.WorkBenches };
+            AdjTiles = new int[] { TileID.WorkBenches };
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
         }
     }

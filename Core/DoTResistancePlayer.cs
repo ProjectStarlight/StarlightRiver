@@ -13,10 +13,8 @@ namespace StarlightRiver.Core
 		{
 			MonoModHooks.RequestNativeAccess();
 
-			IDetour d = new Hook(typeof(PlayerHooks).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
-			d.Apply();
-
-			
+			IDetour d = new Hook(typeof(PlayerLoader).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
+			d.Apply();			
 		}
 
 		public static void ReduceDoT(Action<Player> orig, Player Player)

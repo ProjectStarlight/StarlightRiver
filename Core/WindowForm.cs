@@ -50,9 +50,9 @@ namespace StarlightRiver.Core.Loaders
                 InvokeOnForm(WindowFormChanges);//if active change icon
         }
 
-        private void WaitForWindowAvailible(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+		private void WaitForWindowAvailible(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
         {
-            orig(self, gameTime);
+            orig(self, ref gameTime);
             if (IsFormActive(GameForm))//if form becomes active change icon and un-detour Main.DoUpdate
             {
                 InvokeOnForm(WindowFormChanges);
@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void WindowFormChanges()//generates a icon from a png and changes the window text
         {
-            GameForm.Icon = Texture2Icon(ModContent.Request<Texture2D>(GetModIcon().Value));
+            GameForm.Icon = Texture2Icon(ModContent.Request<Texture2D>(GetModIcon()).Value);
             GameForm.Text = GetWindowTitle();
         }
 

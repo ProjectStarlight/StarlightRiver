@@ -52,7 +52,7 @@ namespace StarlightRiver
 
         private Viewport _lastViewPort;
 
-        public override void UpdateMusic(ref int music, ref MusicPriority priority)
+        public override void UpdateMusic(ref int music, ref MusicPriority priority) //PORTTODO: Port this to modbiome and related
         {
             if (Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active)
             {
@@ -195,39 +195,6 @@ namespace StarlightRiver
             Compat.BossChecklistCalls.CallBossChecklist();
         }
 
-		public override void PostUpdateEverything()
-		{
-            ZoomHandler.TickZoom();
-		}
-
-		//private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
-        {
-            if (false) //ignore this block
-            {
-                Matrix rotation = Matrix.CreateRotationZ(Rotation);
-                Matrix translation = Matrix.CreateTranslation(new Vector3(Main.screenWidth / 2, Main.screenHeight / 2, 0));
-                Matrix translation2 = Matrix.CreateTranslation(new Vector3(Main.screenWidth / -2, Main.screenHeight / -2, 0));
-
-                //_transformMatrix.SetValue(Transform, ((translation2 * rotation) * translation));
-                //base.ModifyTransformMatrix(ref Transform);
-                //Helper.UpdateTilt();
-            }
-
-            Transform.Zoom = ZoomHandler.ScaleVector;
-            ZoomHandler.UpdateZoom();
-        }
-
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-        {
-            for (int k = 0; k < UILoader.UIStates.Count; k++)
-            {
-                var state = UILoader.UIStates[k];
-                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
-            }
-        }
-
         public override void Unload()
         {
             foreach (var loadable in loadCache)
@@ -241,91 +208,7 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
             }
-
-            //SwapFile();
         }
-
-
-
-
-        //TODO: (important) remove before puplic release
-        //private const string tempName = "StarlightRiver.export.rename_to_tmod";
-        //private void CopyFile()
-        //{
-        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-        //    bool doNotCopy = false;
-        //    char[] modSig;
-        //    long writerStartPos = 0;
-        //    string id = Steamworks.SteamUser.GetSteamID().ToString();
-
-        //    using (FileStream stream = new FileStream(path + "StarlightRiver.tmod", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        //    {
-        //        BinaryReader binaryReader = new BinaryReader(stream);
-
-        //        //advances the position forward to the Mod signature
-        //        stream.Position += 4; //binaryReader.ReadBytes(4);  //discarded //tmod
-        //        binaryReader.ReadString();  //discarded //version
-        //        stream.Position += 20; //binaryReader.ReadBytes(20); //discarded //hash
-
-        //        writerStartPos = stream.Position;
-
-        //        //the next 256 bytes are free to use*
-        //        modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the Mod is off the browser, but this bit of code should never be on a browser version
-
-        //        if (modSig.ToString().Contains(id))
-        //            doNotCopy = true;
-        //        else
-        //        {
-        //            int nextIndex = -1;//to store start of next string
-
-        //            for (int i = 0; i < modSig.Length; i++)//find next empty space
-        //                if (modSig[i] == '\0')
-        //                {
-        //                    nextIndex = i;
-        //                    break;
-        //                }
-
-        //            if (nextIndex == -1 || nextIndex > modSig.Length - (id.Length + 1))//if no empty space or not enough room
-        //            {
-        //                doNotCopy = true;
-        //                return;
-        //            }
-
-        //            modSig[nextIndex] = '|';
-        //            for (int i = 0; i < id.Length; i++)
-        //                modSig[nextIndex + i + 1] = id[i];
-        //        }
-        //    }
-
-        //    if (doNotCopy)//it does not copy if it cannot find a valid space, or the list is up to date (contains current id)
-        //    {
-        //        if (File.Exists(path + tempName))//makes sure a leftover copy does not exist if set to not copy
-        //            File.Delete(path + tempName);//a leftover copy would overwrite the current tmod on unload
-        //    }
-        //    else
-        //    {
-        //        File.Copy(path + "StarlightRiver.tmod", path + tempName, true);
-
-        //        using (FileStream stream = new FileStream(path + tempName, FileMode.Open))
-        //        {
-        //            BinaryWriter binaryWriter = new BinaryWriter(stream);
-
-        //            stream.Position = writerStartPos;
-
-        //            binaryWriter.Write(modSig);
-        //        }
-        //    }
-        //}
-
-        //private void SwapFile()
-        //{
-        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-        //    if (File.Exists(path + tempName))
-        //    {
-        //        File.Copy(path + tempName, path + "StarlightRiver.tmod", true);
-        //        File.Delete(path + tempName);
-        //    }
-        //}
 
         public override void AddRecipeGroups()
         {

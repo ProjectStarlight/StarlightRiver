@@ -66,4 +66,16 @@ namespace StarlightRiver.Core.Loaders
             UserInterfaces[index].SetState(UIStates[index]);
         }
     }
+
+    class AutoUISystem : ModSystem
+	{
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            for (int k = 0; k < UILoader.UIStates.Count; k++)
+            {
+                var state = UILoader.UIStates[k];
+                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
+            }
+        }
+    }
 }

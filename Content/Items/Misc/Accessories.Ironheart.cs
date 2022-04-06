@@ -57,13 +57,13 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 mp.ironheartTimer += 0.01f;
                 level = mp.ironheartLevel;
-                Player.GetModPlayer<ShieldPlayer>().DontDrainOvershield = true;
+                Player.GetModPlayer<BarrierPlayer>().DontDrainOvercharge = true;
             }
             else
             {
                 mp.ironheartTimer *= 1.02f;
                 level = (mp.ironheartLevel + 1) - mp.ironheartTimer;
-                Player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate = (int)(2.2f * mp.ironheartTimer);
+                Player.GetModPlayer<BarrierPlayer>().OverchargeDrainRate = (int)(2.2f * mp.ironheartTimer);
             }
 
             //Main.NewText(level + " | " + mp.ironheartTimer);
@@ -104,7 +104,7 @@ namespace StarlightRiver.Core
 
             if (level > 0 && ironheartLevel < IronheartMaxLevel)//if level was increased
             {
-                Player.GetModPlayer<ShieldPlayer>().Shield += ((ironheartLevel += level) > IronheartMaxLevel ? 
+                Player.GetModPlayer<BarrierPlayer>().Barrier += ((ironheartLevel += level) > IronheartMaxLevel ? 
                     level - (ironheartLevel - IronheartMaxLevel) : level) * 2;
 
                 ironheartLevel = ironheartLevel > IronheartMaxLevel ? IronheartMaxLevel : ironheartLevel;//caps value

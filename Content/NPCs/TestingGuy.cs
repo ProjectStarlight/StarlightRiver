@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.NPCs
             NPC.knockBackResist = 0.6f;
             NPC.aiStyle = 1;
 
-            NPC.GetGlobalNPC<ShieldNPC>().MaxShield = 100;
+            NPC.GetGlobalNPC<BarrierNPC>().MaxBarrier = 100;
         }
     }
 }

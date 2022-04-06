@@ -29,12 +29,12 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
         public override void RightClick(Player Player)
         {
-			ShieldPlayer mp = Player.GetModPlayer<ShieldPlayer>();
+			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
 			Item prevBarrierItem = mp.barrierDyeItem;
-			Player.GetModPlayer<ShieldPlayer>().barrierDyeItem = Item.Clone();
+			Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
 			Item.TurnToAir();
-			mp.rechargeAnimation = 0;
+			mp.RechargeAnimationTimer = 0;
 
 
 			Main.EquipPageSelected = 2;
@@ -67,12 +67,12 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			if (!CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			var barrier = Player.GetModPlayer<ShieldPlayer>();
+			var barrier = Player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			float opacity = barrier.rechargeAnimation;
+			float opacity = barrier.RechargeAnimationTimer;
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
 

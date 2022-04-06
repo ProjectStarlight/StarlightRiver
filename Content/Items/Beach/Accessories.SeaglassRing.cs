@@ -21,10 +21,10 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			var mp = Player.GetModPlayer<ShieldPlayer>();
+			var mp = Player.GetModPlayer<BarrierPlayer>();
 
 			mp.RechargeDelay -= 30;
-			mp.MaxShield += 10;
+			mp.MaxBarrier += 10;
 		}
 	}
 

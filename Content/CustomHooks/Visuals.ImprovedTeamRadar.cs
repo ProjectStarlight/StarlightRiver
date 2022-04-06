@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 if (Player != null && Player.active)
                 {
-                    var mp = Player.GetModPlayer<ShieldPlayer>();
+                    var mp = Player.GetModPlayer<BarrierPlayer>();
 
                     if (k != Main.myPlayer && Player.active && !Player.ghost && !Player.dead && Player.statLife != Player.statLifeMax2)
                     {
@@ -41,14 +41,14 @@ namespace StarlightRiver.Content.CustomHooks
                         var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
                         var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY);
-                        var factor = Math.Min(mp.Shield / (float)mp.MaxShield, 1);
+                        var factor = Math.Min(mp.Barrier / (float)mp.MaxBarrier, 1);
 
                         var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
                         var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(factor * tex.Width), tex.Height);
 
                         Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 1.5f);
 
-                        if (mp.Shield < mp.MaxShield && mp.Shield > 0)
+                        if (mp.Barrier < mp.MaxBarrier && mp.Barrier > 0)
                         {
                             var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
@@ -87,8 +87,8 @@ namespace StarlightRiver.Content.CustomHooks
                 if (rectangle.Intersects(value2))
                 {
                     var Player = Main.player[PlayerIndex];
-                    var mp = Player.GetModPlayer<Core.ShieldPlayer>();
-                    string textString = "[c/64c8ff:" + mp.Shield + "/" + mp.MaxShield +"]";
+                    var mp = Player.GetModPlayer<Core.BarrierPlayer>();
+                    string textString = "[c/64c8ff:" + mp.Barrier + "/" + mp.MaxBarrier +"]";
 
                     string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
 
@@ -136,12 +136,12 @@ namespace StarlightRiver.Content.CustomHooks
                 if (Main.player[i].active && Main.myPlayer != i && !Main.player[i].dead && Main.player[Main.myPlayer].team > 0 && Main.player[Main.myPlayer].team == Main.player[i].team)
                 {
                     var Player = Main.player[i];
-                    var mp = Player.GetModPlayer<Core.ShieldPlayer>();
+                    var mp = Player.GetModPlayer<Core.BarrierPlayer>();
 
-                    if (Player.statLife >= Player.statLifeMax2 && mp.Shield >= mp.MaxShield)
+                    if (Player.statLife >= Player.statLifeMax2 && mp.Barrier >= mp.MaxBarrier)
                         continue;
 
-                    string text = mp.Shield + "/" + mp.MaxShield;
+                    string text = mp.Barrier + "/" + mp.MaxBarrier;
 
                     Vector2 textPosition = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 

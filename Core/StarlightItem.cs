@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -16,13 +17,11 @@ namespace StarlightRiver.Core
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
-
         public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox) => meleeHitbox = hitbox;
 
         public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
         {
-            var prefix = ModPrefix.GetPrefix(Item.prefix);
+            var prefix = PrefixLoader.GetPrefix(Item.prefix);
 
             if (prefix is CustomTooltipPrefix)
                 (prefix as CustomTooltipPrefix).Update(Item, Player);
@@ -40,7 +39,7 @@ namespace StarlightRiver.Core
 
         public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
         {
-            if (ModPrefix.GetPrefix(Item.prefix) is CustomTooltipPrefix)
+            if (PrefixLoader.GetPrefix(Item.prefix) is CustomTooltipPrefix)
             {
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);

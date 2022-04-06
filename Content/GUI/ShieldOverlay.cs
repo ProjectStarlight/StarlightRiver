@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var Player = Main.LocalPlayer;
-			var sp = Player.GetModPlayer<ShieldPlayer>();
+			var sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if (sp.Shield > 0 || sp.MaxShield > 0)
+			if (sp.Barrier > 0 || sp.MaxBarrier > 0)
 			{
 				int num4 = (int)((float)Main.player[Main.myPlayer].statLifeMax2 / 20);
 				if (num4 >= 10)
@@ -41,19 +41,19 @@ namespace StarlightRiver.Content.GUI
 
 				Vector2 vector = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 
-				var shieldText = $"  {sp.Shield}/{sp.MaxShield}";
+				var shieldText = $"  {sp.Barrier}/{sp.MaxBarrier}";
 				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
 				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
 				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
 			}
 
-			if (sp.Shield > 0)
+			if (sp.Barrier > 0)
 			{
 				int vanillaHearts = Math.Min(20, Player.statLifeMax / 20);
-				int fullHeartsToDraw = Math.Min(vanillaHearts, sp.Shield / 20);
-				int partialHeartMax = fullHeartsToDraw < 20 ? sp.Shield % 20 : 0;
-				float shieldPerHeart = sp.MaxShield > vanillaHearts * 20 ? sp.MaxShield / (float)vanillaHearts : 20;
+				int fullHeartsToDraw = Math.Min(vanillaHearts, sp.Barrier / 20);
+				int partialHeartMax = fullHeartsToDraw < 20 ? sp.Barrier % 20 : 0;
+				float shieldPerHeart = sp.MaxBarrier > vanillaHearts * 20 ? sp.MaxBarrier / (float)vanillaHearts : 20;
 
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
@@ -66,10 +66,10 @@ namespace StarlightRiver.Content.GUI
 					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
 					int width = 0;
 
-					if (sp.Shield >= (k + 1) * shieldPerHeart)
+					if (sp.Barrier >= (k + 1) * shieldPerHeart)
 						width = tex.Width;
-					else if (sp.Shield > k * shieldPerHeart)
-						width = (int)((sp.Shield % shieldPerHeart) / shieldPerHeart * tex.Width);
+					else if (sp.Barrier > k * shieldPerHeart)
+						width = (int)((sp.Barrier % shieldPerHeart) / shieldPerHeart * tex.Width);
 
 					if (width > 0 && k < 20)
 					{

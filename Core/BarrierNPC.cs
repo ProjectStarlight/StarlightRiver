@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
@@ -6,46 +7,46 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class ShieldNPC : GlobalNPC
+	class BarrierNPC : GlobalNPC
 	{
-		public int MaxShield = 0;
-		public int Shield = 0;
-		public int MostShield = 0;
+		public int MaxBarrier = 0;
+		public int Barrier = 0;
+		public int MostBarrier = 0;
 
-		public bool DontDrainOvershield = false;
-		public int OvershieldDrainRate = 30;
+		public bool DontDrainOvercharge = false;
+		public int OverchargeDrainRate = 30;
 
 		public int TimeSinceLastHit = 0;
 		public int RechargeDelay = 180;
 		public int RechargeRate = 30;
 
-		public float ShieldResistance = 0.75f;
+		public float BarrierDamageReduction = 0.75f;
 
 		public override bool InstancePerEntity => true;
 
 		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
 		{
-			if (Shield > 0)
+			if (Barrier > 0)
 			{
-				float reduction = 1.0f - ShieldResistance;
+				float reduction = 1.0f - BarrierDamageReduction;
 
-				if (Shield > damage)
+				if (Barrier > damage)
 				{
 					CombatText.NewText(NPC.Hitbox, Color.Cyan, damage);
 
-					Shield -= damage;
+					Barrier -= damage;
 					damage = (int)(damage * reduction);
 				}
 				else
 				{
 					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, NPC.Center);
 
-					CombatText.NewText(NPC.Hitbox, Color.Cyan, Shield);
+					CombatText.NewText(NPC.Hitbox, Color.Cyan, Barrier);
 
-					int overblow = damage - Shield;
-					damage = (int)(Shield * reduction) + overblow;
+					int overblow = damage - Barrier;
+					damage = (int)(Barrier * reduction) + overblow;
 
-					Shield = 0;
+					Barrier = 0;
 				}
 
 				knockback *= 0.5f;
@@ -70,48 +71,48 @@ namespace StarlightRiver.Core
 
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)
 		{
-			if (Shield > MostShield) 
-				MostShield = Shield;
+			if (Barrier > MostBarrier) 
+				MostBarrier = Barrier;
 
-			if (MaxShield > MostShield)
-				MostShield = MaxShield;
+			if (MaxBarrier > MostBarrier)
+				MostBarrier = MaxBarrier;
 
 			TimeSinceLastHit++;
 
-			if (TimeSinceLastHit >= RechargeDelay && Shield < MaxShield)
+			if (TimeSinceLastHit >= RechargeDelay && Barrier < MaxBarrier)
 			{
 				int rechargeRateWhole = RechargeRate / 60;
 
-				Shield += Math.Min(rechargeRateWhole, MaxShield - Shield);
+				Barrier += Math.Min(rechargeRateWhole, MaxBarrier - Barrier);
 
 				if (RechargeRate % 60 != 0)
 				{
 					int rechargeSubDelay = 60 / (RechargeRate % 60);
 
-					if (TimeSinceLastHit % rechargeSubDelay == 0 && Shield < MaxShield)
-						Shield++;
+					if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier < MaxBarrier)
+						Barrier++;
 				}
 			}
 
-			if (Shield > MaxShield && !DontDrainOvershield)
+			if (Barrier > MaxBarrier && !DontDrainOvercharge)
 			{
-				int drainRateWhole = OvershieldDrainRate / 60;
+				int drainRateWhole = OverchargeDrainRate / 60;
 
-				Shield -= Math.Min(drainRateWhole, Shield - MaxShield);
+				Barrier -= Math.Min(drainRateWhole, Barrier - MaxBarrier);
 
-				if (OvershieldDrainRate % 60 != 0)
+				if (OverchargeDrainRate % 60 != 0)
 				{
-					int drainSubDelay = 60 / (OvershieldDrainRate % 60);
+					int drainSubDelay = 60 / (OverchargeDrainRate % 60);
 
-					if (NPC.GetAge() % drainSubDelay == 0 && Shield > MaxShield)
-						Shield--;
+					if (NPC.GetAge() % drainSubDelay == 0 && Barrier > MaxBarrier)
+						Barrier--;
 				}
 			}
 		}
 
 		public override bool? DrawHealthBar(NPC NPC, byte hbPosition, ref float scale, ref Vector2 position)
 		{
-			if (Shield > 0)
+			if (Barrier > 0)
 			{
 				var bright = Lighting.Brightness((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
 
@@ -119,14 +120,14 @@ namespace StarlightRiver.Core
 
 				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-				var factor = Math.Min(Shield / (float)MaxShield, 1);
+				var factor = Math.Min(Barrier / (float)MaxBarrier, 1);
 
 				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
 				Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
-				if (Shield < MaxShield)
+				if (Barrier < MaxBarrier)
 				{
 					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 

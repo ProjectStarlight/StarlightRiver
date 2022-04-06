@@ -30,7 +30,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                     if (WorldGen.InWorld(realX, realY))
                     {
                         Tile tile = Framing.GetTileSafely(realX, realY);
-                        if ( (tile.bTileHeader3 & 0b11100000) >> 5 == 1)
+                        if ( (tile.bTileHeader3 & 0b11100000) >> 5 == 1) //PORTTODO: Integrate with properly ported aurora water system
                             return true;
                     }
                 }
@@ -74,15 +74,15 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
             Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
 
-           if (Player.ItemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.ItemAnimation == Player.ItemAnimationMax - 1) //corrects the rotation on used Items
-                Player.ItemRotation -= realRotation + 1.57f;
+           if (Player.itemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.itemAnimation == Player.itemAnimationMax - 1) //corrects the rotation on used Items
+                Player.itemRotation -= realRotation + 1.57f;
 
             if (!isSwimming) //return later so rotation logic still runs
                 return;
 
             emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
 
-            if (Player.ItemAnimation == 0)
+            if (Player.itemAnimation == 0)
                 Player.bodyFrame = new Rectangle(0, 56 * (int)(1 + Main.GameUpdateCount / 10 % 5), 40, 56);
 
             Player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);

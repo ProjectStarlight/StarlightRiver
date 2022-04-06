@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class CritMultiPlayer : ModPlayer
+	class CritMultiPlayer : ModPlayer //PortTODO: Make compatible with new damage type hoo-hah
 	{
 		public float MeleeCritMult = 0;
 		public float RangedCritMult = 0;
@@ -12,8 +12,7 @@ namespace StarlightRiver.Core
 
 		public override void Load()
 		{
-			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;
-			
+			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;		
 		}
 
 		private void AddCritToProjectiles(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

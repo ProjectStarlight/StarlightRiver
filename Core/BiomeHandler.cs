@@ -4,7 +4,6 @@ using StarlightRiver.Codex;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.AshHell;
-using StarlightRiver.Content.Tiles.AstralMeteor;
 using StarlightRiver.Content.Tiles.JungleBloody;
 using StarlightRiver.Content.Tiles.JungleCorrupt;
 using StarlightRiver.Content.Tiles.JungleHoly;
@@ -22,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	public class BiomeHandler : ModPlayer
+	public class BiomeHandler : ModPlayer //PORTTODO: Break into ModBiomes
     {
         public bool ZoneGlass = false;
         public bool ZoneGlassTemple = false;

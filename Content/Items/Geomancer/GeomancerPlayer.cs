@@ -269,8 +269,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             timer--;
 
-            ShieldPlayer shieldPlayer = Player.GetModPlayer<ShieldPlayer>();
-            if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxShield - shieldPlayer.Shield < 100)
+            BarrierPlayer shieldPlayer = Player.GetModPlayer<BarrierPlayer>();
+            if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxBarrier - shieldPlayer.Barrier < 100)
                 Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI); //PORTTODO: Figure out what source to use here
 
             if (storedGem == StoredGem.All)

@@ -12,7 +12,7 @@ using Terraria.ModLoader;
  * Please.
  */
 
-namespace StarlightRiver.Core
+namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
 {
 	class PermafrostGlobalTile : ModSystem, IOrderedLoadable
 	{

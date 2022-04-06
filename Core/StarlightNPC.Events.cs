@@ -13,7 +13,7 @@ namespace StarlightRiver.Core
         }
 
         public delegate void NPCLootDelegate(NPC NPC);
-        public static event NPCLootDelegate NPCLootEvent;
+        public static event NPCLootDelegate NPCLootEvent; //PORTTODO: Figure out how to work this with the new loot system
         public override void NPCLoot(NPC NPC)
         {
             NPCLootEvent?.Invoke(NPC);

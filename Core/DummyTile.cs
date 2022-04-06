@@ -102,7 +102,7 @@ namespace StarlightRiver.Core
                     p.SetDefaults(type);
 
                     var spawnPos = new Vector2(i, j) * 16 + p.Size / 2;
-                    int n = Projectile.NewProjectile(spawnPos, Vector2.Zero, type, 1, 0);
+                    int n = Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero, type, 1, 0);
 
                     Point16 key = new Point16(i, j);
                     dummies[key] = Main.projectile[n];

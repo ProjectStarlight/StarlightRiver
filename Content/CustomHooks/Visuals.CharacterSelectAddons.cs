@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.CustomHooks
                 spriteBatch.Draw(TextureAssets.Heart2.Value, origin + new Vector2(80, 37), Color.White);
             }
 
-            if(Player.GetModPlayer<ShieldPlayer>().MaxShield > 0)
+            if(Player.GetModPlayer<BarrierPlayer>().MaxBarrier > 0)
 			{
                 var barrierTex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
                 var barrierTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
