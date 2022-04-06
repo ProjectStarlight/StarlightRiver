@@ -104,8 +104,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             Projectile.velocity = Vector2.Zero;
             Projectile.timeLeft = 2;
-            Player.ItemTime = 5; // Set Item time to 2 frames while we are used
-            Player.ItemAnimation = 5; // Set Item animation time to 2 frames while we are used
+            Player.itemTime = 5; // Set Item time to 2 frames while we are used
+            Player.itemAnimation = 5; // Set Item animation time to 2 frames while we are used
 
             float shake = 0;
 
@@ -151,12 +151,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             Projectile.Center = Player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
             Projectile.velocity = Vector2.Zero;
-            Player.ItemRotation = direction.ToRotation();
+            Player.itemRotation = direction.ToRotation();
 
             if (Player.direction != 1)
-                Player.ItemRotation -= 3.14f;
+                Player.itemRotation -= 3.14f;
 
-            Player.ItemRotation = MathHelper.WrapAngle(Player.ItemRotation);
+            Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
 
             Player.heldProj = Projectile.whoAmI;
 
@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             justHit = reader.ReadBoolean();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
+        public override bool PreDraw(ref Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
         {
             Color heatColor = new Color(255, 96, 0);
             lightColor = Color.Lerp(lightColor, heatColor, (Charge / (float)MAXCHARGE) * 0.6f);
@@ -231,18 +231,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Vector2 position = (Projectile.position - (0.5f * (direction * OFFSET)) + new Vector2((float)Projectile.width, (float)Projectile.height) / 2f + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition).Floor();
 
             if (!released)
-                spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), lightColor, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
+                Main.spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), lightColor, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
 
             if (Player.direction == 1)
             {
                 SpriteEffects effects1 = SpriteEffects.None;
-                spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
 
             }
             else
             {
                 SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-                spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
             }
 
             if (Charge >= MAXCHARGE && !released && flickerTime < 16)
@@ -256,18 +256,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 if (alpha < 0)
                     alpha = 0;
 
-                spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), color * alpha, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
+                Main.spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), color * alpha, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
 
                 if (Player.direction == 1)
                 {
                     SpriteEffects effects1 = SpriteEffects.None;
-                    spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
+                    Main.spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
 
                 }
                 else
                 {
                     SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-                    spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
+                    Main.spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
                 }
             }
 
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             {
                 float speed = MathHelper.Lerp(8f, 12f, Charge / (float)MAXCHARGE);
                 float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / (float)MAXCHARGE);
-                Projectile.NewProjectile(Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
             }
         }
 
@@ -348,7 +348,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             if (justLaunched && Main.myPlayer == Projectile.owner)
             {
-                int proj = Projectile.NewProjectile(Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                int proj = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 ((PhantomBuzzsaw)Main.projectile[proj].ModProjectile).parent = Projectile;
                 justLaunched = false;
             }
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
                     int spriteDirection = Math.Sign(direction.X);
 
-                    Projectile proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, bloodID, 0, 0, Projectile.owner);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), target.Center, Vector2.Zero, bloodID, 0, 0, Projectile.owner);
                     proj.spriteDirection = -spriteDirection;
                 }
 
