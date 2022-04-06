@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                     //REACHING FULL CHARGE SOUND HERE
                     Helper.PlayPitched("Magic/LightningChargeReady", 0.6f, 0f, Player.Center);
                     for (int i = 0; i < 12; i++)
-                        CreateStatic(charge, Player, true);
+                        CreateStatic(Item, charge, Player, true);
                 }
                 
                 if (counter % 3 == 0) //change the 10 to the number of ticks you want the sound to loop on
@@ -139,19 +139,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (Main.rand.NextBool((int)(50 / (float)Math.Sqrt(charge))) && !Player.channel)
             {
-                CreateStatic(charge, Player);
+                CreateStatic(Item, charge, Player);
             }
             base.HoldItem(Player);
         }
 
-        private static void CreateStatic(int charge, Player Player, bool fullCharge = false)
+        private static void CreateStatic(Item item, int charge, Player Player, bool fullCharge = false)
         {
             Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
             Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), Player.height / 2);
 
             float smalLCharge = fullCharge ? 0.5f : 0.01f;
 
-            Projectile proj = Projectile.NewProjectileDirect(Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smalLCharge, 2); //PORTTODO: Figure out projectile source on this, considering its outside of ModItem.Shoot
+            EntitySource_ItemUse source = new EntitySource_ItemUse(Player, item);
+            Projectile proj = Projectile.NewProjectileDirect(source, Player.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, smalLCharge, 2);
             var mp = proj.ModProjectile as CloudstrikeShot;
             mp.velocityMult = Main.rand.Next(1, 4);
 

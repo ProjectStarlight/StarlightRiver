@@ -57,11 +57,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 				recoil += 0.01f;
 			if (shotCounter >= 4)
 			{
+				EntitySource_ItemUse source = new EntitySource_ItemUse(Player, Item);
 				shotCounter = 0;
 				reloadCounter = 120;
 				Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Guns/RevolvingReload"), Player.Center);
 				Item.noUseGraphic = true;
-				Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Player.whoAmI); //PORTTODO: Figure out source for this, since its outside of ModItem.Shoot
+				Projectile.NewProjectile(source, Player.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, Player.whoAmI);
 			}
 		}
 		public override bool CanUseItem(Player Player)

@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.DiamondStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoDiamondProj>(), 0, 0, Player.whoAmI, rotation);//PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoDiamondProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.DiamondStored = true;
                 modPlayer.storedGem = StoredGem.Diamond;
                 modPlayer.ActivationCounter = 1f;
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.RubyStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoRubyProj>(), 0, 0, Player.whoAmI, rotation);//PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoRubyProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.RubyStored = true;
                 modPlayer.storedGem = StoredGem.Ruby;
                 modPlayer.ActivationCounter = 1f;
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.EmeraldStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoEmeraldProj>(), 0, 0, Player.whoAmI, rotation); //PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoEmeraldProj>(), 0, 0, Player.whoAmI, rotation); 
                 modPlayer.EmeraldStored = true;
                 modPlayer.storedGem = StoredGem.Emerald;
                 modPlayer.ActivationCounter = 1f;
@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.SapphireStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoSapphireProj>(), 0, 0, Player.whoAmI, rotation);//PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoSapphireProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.SapphireStored = true;
                 modPlayer.storedGem = StoredGem.Sapphire;
                 modPlayer.ActivationCounter = 1f;
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.TopazStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, Player.whoAmI, rotation);//PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.TopazStored = true;
                 modPlayer.storedGem = StoredGem.Topaz;
                 modPlayer.ActivationCounter = 1f;
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.AmethystStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoAmethystProj>(), 0, 0, Player.whoAmI, rotation);//PORTTODO: Add projectile source to this (I can't figure out which one)
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoAmethystProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.AmethystStored = true;
                 modPlayer.storedGem = StoredGem.Amethyst;
                 modPlayer.ActivationCounter = 1f;

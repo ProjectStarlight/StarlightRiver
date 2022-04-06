@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, position, frame, color, 0, origin, scale, 0, 0);
         }
 
-        public void DrawGlowmask(PlayerDrawSet info) //PORTTODO: Port to new player drawing functionality
+        public void DrawGlowmask(PlayerDrawSet info)
         {
             var Player = info.drawPlayer;
 
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Items.Vitric
             var origin = Player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
             var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.itemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            Main.playerDrawData.Add(data);
+            info.DrawDataCache.Add(data);
         }
 
         public override void AddRecipes()

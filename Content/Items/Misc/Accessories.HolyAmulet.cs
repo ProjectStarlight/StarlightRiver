@@ -22,6 +22,11 @@ namespace StarlightRiver.Content.Items.Misc
             On.Terraria.Player.HealEffect += HealEffect;
         }
 
+        public override void SafeUpdateEquip(Player Player)
+        {
+            Player.GetModPlayer<HolyAmuletHealingTracker>().item = Item;
+        }
+
         private void HealEffect(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
         {
             if (Equipped(self))
@@ -50,6 +55,8 @@ namespace StarlightRiver.Content.Items.Misc
     {
         private int cumulativeAmountHealed;
 
+        public Item item;
+
         public void Healed(int amount)
         {
             cumulativeAmountHealed += amount;
@@ -65,7 +72,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             while (cumulativeAmountHealed >= 25)
             {
-                Projectile.NewProjectile(Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI); //PORTTODO: Figure out correct projectile source for this
+                Projectile.NewProjectile(Player.GetProjectileSource_Accessory(item),Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI); 
 
                 rotation += step;
 
