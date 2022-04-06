@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 			if (Item.prefix == 69)
 			{
-				Player.GetDamage(DamageClass.Generic) += 0.01f; //PORTTODO: Double check that damageclass.generic means all damage, and not classless damage
+				Player.GetDamage(DamageClass.Generic) += 0.01f; 
 			}
 			if (Item.prefix == 70)
 			{

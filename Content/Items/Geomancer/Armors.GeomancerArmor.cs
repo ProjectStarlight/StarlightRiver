@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void Load() //PORTTODO: replace this with something else
         {
-            On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
+            On.Terraria.Main.DrawPendingMouseText += SpoofMouseItem;
         }
 
         public override void SetStaticDefaults()
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
         }
 
-        private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
+        private void SpoofMouseItem(On.Terraria.Main.orig_DrawPendingMouseText orig)
         {
             var Player = Main.LocalPlayer;
 
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 Main.hoverItemName = dummyItem.Name;
             }
 
-            orig(self, rare, diff, X, Y);
+            orig();
         }
 
         public bool IsGeomancerArmor(Item Item)
