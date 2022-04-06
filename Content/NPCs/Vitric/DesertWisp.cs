@@ -118,6 +118,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
             trail?.Render(effect);
         }
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 50f : 0f;
+		public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 50f : 0f;
     }
 }

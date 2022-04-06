@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -36,7 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
                 return;
             r = 125 * 0.003f;
             g = 162 * 0.003f;
@@ -45,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>())) 
                 return;
             Texture2D tex = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow0").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow1").Value;

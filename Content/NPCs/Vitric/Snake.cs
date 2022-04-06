@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 using System.IO;
+using StarlightRiver.Content.Biomes;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
@@ -194,7 +195,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 100 : 0;
+            return spawnInfo.player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 100 : 0;
         }
 
         public override void HitEffect(int hitDirection, double damage)

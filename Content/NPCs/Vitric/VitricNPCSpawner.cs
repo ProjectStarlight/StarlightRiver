@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	class VitricNPCSpawner : PlayerTicker
 	{
-		public override bool Active(Player Player) => Player.GetModPlayer<BiomeHandler>().ZoneGlass;
+		public override bool Active(Player Player) => Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>());
 
 		public override int TickFrequency => 30;
 

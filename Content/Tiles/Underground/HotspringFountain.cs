@@ -67,15 +67,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 			}
 
-			if (Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) < 30 * 16)
-			{
-				Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneHotspring = true;
-
-				float fade = Vector2.Distance(Main.LocalPlayer.Center, Projectile.Center) / (30f * 16);
-				Main.musicFade[Main.curMusic] = 1 - fade;
-				//Main.musicFade[StarlightRiver.Instance.GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient")] = 1 - fade;
-			}
-
 			foreach (Player Player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Projectile.Center) < 30 * 16))
 				Player.AddBuff(ModContent.BuffType<HotspringHeal>(), 10);
 
@@ -90,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					var tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					var tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
-					if (tile1.collisionType == 0 && tile1.LiquidType == LiquidID.Water && tile1 .LiquidAmount > 0)
+					if (tile1.collisionType == 0 && tile1.LiquidType == LiquidID.Water && tile1 .LiquidAmount > 0) //PORTTODO: change to proper new colission type check
 					{
 						if (tile2 .LiquidAmount == 0)
 						{

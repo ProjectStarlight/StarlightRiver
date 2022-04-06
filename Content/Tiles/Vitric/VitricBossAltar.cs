@@ -272,7 +272,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (parent.TileFrameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
             {
-                if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
+                if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
                 {
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
                     Dust.NewDust(Projectile.Center + new Vector2(-632, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
@@ -291,7 +291,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 {
                     StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 
-                    if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
+                    if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
                     {
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = Projectile.Center + new Vector2(0, -400);
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = Projectile.Center;
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             {
                 BarrierProgress++;
 
-                if (Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass)
+                if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
                 {
                     if (BarrierProgress % 3 == 0)
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake

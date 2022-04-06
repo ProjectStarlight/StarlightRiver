@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-            return tile.HasTile && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 95f : 0f;
+            return tile.HasTile && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 95f : 0f;
         }
 
         public override void FindFrame(int frameHeight)

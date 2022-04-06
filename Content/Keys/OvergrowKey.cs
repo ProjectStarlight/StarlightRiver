@@ -13,7 +13,7 @@ namespace StarlightRiver.Keys
         {
         }
 
-        public override bool ShowCondition => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow;
+        public override bool ShowCondition => Main.LocalPlayer.InModBiome(ModContent.GetInstance<OvergrowBiome>());
 
         public override void PreDraw(SpriteBatch spriteBatch)
         {

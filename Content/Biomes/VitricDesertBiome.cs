@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -18,6 +19,8 @@ namespace StarlightRiver.Content.Biomes
 
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
+		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Desert");
@@ -25,7 +28,28 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return StarlightWorld.glassTiles > 50 || StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
+			return StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
+		}
+
+		public override void OnInBiome(Player player)
+		{
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false))
+			{
+				if (!Filters.Scene["GradientDistortion"].IsActive())
+				{
+					Filters.Scene["GradientDistortion"].GetShader().Shader.Parameters["uZoom"].SetValue(Main.GameViewMatrix.Zoom);
+					Filters.Scene.Activate("GradientDistortion").GetShader()
+						.UseOpacity(2.5f)
+						.UseIntensity(7f)
+						.UseProgress(6)
+						.UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+				}
+			}
+			else
+			{
+				if (Filters.Scene["GradientDistortion"].IsActive())
+					Filters.Scene.Deactivate("GradientDistortion");
+			}
 		}
 
 		public override void OnEnter(Player player)
@@ -41,6 +65,18 @@ namespace StarlightRiver.Content.Biomes
 		public override bool IsSceneEffectActive(Player player)
 		{
 			return StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
+		}
+	}
+
+	public class VitricBossAmbientMusic : ModSceneEffect
+	{
+		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/VitricBossAmbient");
+
+		public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
+
+		public override bool IsSceneEffectActive(Player player)
+		{
+			return StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((player.Center / 16).ToPoint());
 		}
 	}
 }

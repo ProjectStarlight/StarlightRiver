@@ -16,6 +16,7 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
+using StarlightRiver.Content.Biomes;
 
 namespace StarlightRiver
 {
@@ -52,100 +53,8 @@ namespace StarlightRiver
 
         private Viewport _lastViewPort;
 
-        public override void UpdateMusic(ref int music, ref MusicPriority priority) //PORTTODO: Port this to modbiome and related
-        {
-            if (Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active)
-            {
-                Player Player = Main.LocalPlayer;
-
-                if(useIntenseMusic)
-				{
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
-                    priority = MusicPriority.BossLow;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneHotspring)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneGlass)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((Player.Center / 16).ToPoint()))
-				{
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
-                    priority = MusicPriority.BossLow;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleCorrupt");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleBloody)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleBloody");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneJungleHoly)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleHoly");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().zoneAluminum)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/AluminumPassive");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZonePermafrost)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/PermafrostPassive");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Main.tile[(int)Player.Center.X / 16, (int)Player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (Player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
-                    priority = MusicPriority.BiomeHigh;
-                }
-            }
-
-            useIntenseMusic = false;
-
-            return;
-        }
-
         public override void Load()
         {
-            //CopyFile();
-
             loadCache = new List<IOrderedLoadable>();
 
             foreach (Type type in Code.GetTypes())
@@ -164,7 +73,6 @@ namespace StarlightRiver
                 loadCache[k].Load();
             }
 
-
             recipeGroupCache = new List<IRecipeGroup>();
 
             foreach (Type type in Code.GetTypes())
@@ -177,7 +85,6 @@ namespace StarlightRiver
 
                 recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
             }
-
 
             if (!Main.dedServ)
             {

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (!Main.gameMenu)
             {
                 mult = (0.8f + (Main.dayTime ? (float)System.Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)System.Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
-                vitricLava = Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlass;
+                vitricLava = Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>());
             }
 
             orig(self, gameTime);
