@@ -627,8 +627,8 @@ namespace StarlightRiver.Core
             Main.tileLavaDeath[Type] = true;
             TileID.Sets.HasOutlines[Type] = true;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
-            TileObjectData.newTile.HookCheck = new PlacementHook(new Func<int, int, int, int, int, int>(Chest.FindEmptyChest), -1, 0, true);
-            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(new Func<int, int, int, int, int, int>(Chest.AfterPlacement_Hook), -1, 0, false);
+            TileObjectData.newTile.HookCheckIfCanPlace = new PlacementHook(new Func<int, int, int, int, int, int, int>(Chest.FindEmptyChest), -1, 0, true);//not sure if correct hook
+            TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(new Func<int, int, int, int, int, int, int>(Chest.AfterPlacement_Hook), -1, 0, false);
             QuickBlock.QuickSetFurniture(this, 3, 2, dust, SoundID.Dig, false, color);
             
             AdjTiles = new int[] { TileID.Dressers };
@@ -725,8 +725,8 @@ namespace StarlightRiver.Core
                 Main.playerInventory = false;
                 player.chest = -1;
                 Recipe.FindRecipes();
-                Main.dresserX = Player.tileTargetX;
-                Main.dresserY = Player.tileTargetY;
+                //Main.dresserX = Player.tileTargetX;
+                //Main.dresserY = Player.tileTargetY;
                 Main.OpenClothesWindow();
             }
             return true;
@@ -757,10 +757,10 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    player.cursorItemIconText = chest;
+                    player.cursorItemIconText = name;
                 }
 
-                if (player.cursorItemIconText == chest)
+                if (player.cursorItemIconText == name)
                 {
                     player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
                     player.cursorItemIconText = "";
@@ -800,9 +800,9 @@ namespace StarlightRiver.Core
                 }
                 else
                 {
-                    Player.cursorItemIconText = chest;
+                    Player.cursorItemIconText = name;
                 }
-                if (Player.cursorItemIconText == chest)
+                if (Player.cursorItemIconText == name)
                 {
                     Player.cursorItemIconID = Mod.Find<ModItem>(name).Type;
                     Player.cursorItemIconText = "";
