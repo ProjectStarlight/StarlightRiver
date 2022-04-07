@@ -1,7 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Items.Prototypes;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -22,17 +21,17 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void HandleSpecialItemInteractions(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
         {
-            if ((inv[slot].ModItem is CursedAccessory || inv[slot].ModItem is Blocker) && context == 10)
+            if (inv[slot].ModItem is CursedAccessory && context == 10) //|| inv[slot].ModItem is Blocker)
             {
                 ItemLoader.CanEquipAccessory(Main.mouseItem, slot, true);
                 return;
             }
 
-            if (Main.mouseItem.ModItem is SoulboundItem && (context != 0 || inv != Main.LocalPlayer.inventory))
-                return;
+            //if (Main.mouseItem.ModItem is SoulboundItem && (context != 0 || inv != Main.LocalPlayer.inventory))
+            //    return;
 
-            if (inv[slot].ModItem is SoulboundItem && Main.keyState.PressingShift())
-                return;
+            //if (inv[slot].ModItem is SoulboundItem && Main.keyState.PressingShift())
+            //    return;
 
             orig(inv, context, slot);
         }
@@ -43,8 +42,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             for (int i = 0; i < Player.armor.Length; i++)
             {
-                if ((Player.armor[i].ModItem is CursedAccessory || Player.armor[i].ModItem is Blocker) && ItemSlot.ShiftInUse && inv[slot].accessory)
-				{              
+                if (Player.armor[i].ModItem is CursedAccessory && ItemSlot.ShiftInUse && inv[slot].accessory) //Player.armor[i].ModItem is Blocker)
+                {              
                     return;
                 }                  
             }
@@ -53,7 +52,7 @@ namespace StarlightRiver.Content.CustomHooks
             {
                 Item swaptarget = Player.armor[slot - 10];
 
-                if (context == 11 && (swaptarget.ModItem is CursedAccessory || swaptarget.ModItem is Blocker || swaptarget.ModItem is InfectedAccessory))
+                if (context == 11 && swaptarget.ModItem is CursedAccessory)// || swaptarget.ModItem is Blocker || swaptarget.ModItem is InfectedAccessory)
                     return;
             }
 
@@ -71,22 +70,22 @@ namespace StarlightRiver.Content.CustomHooks
                 sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
                 RedrawItem(sb, inv, back, position, slot, color);
             }
-            else if ((inv[slot].ModItem is InfectedAccessory || inv[slot].ModItem is Blocker) && context == 10)
-            {
-                Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/InfectedBack").Value;
-                Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
+            //else if ((inv[slot].ModItem is InfectedAccessory || inv[slot].ModItem is Blocker) && context == 10)
+            //{
+            //    Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/InfectedBack").Value;
+            //    Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
-                sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-                RedrawItem(sb, inv, back, position, slot, color);
-            }
-            else if (inv[slot].ModItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
-            {
-                Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ProtoBack").Value;
-                Color backcolor = Main.LocalPlayer.HeldItem != inv[slot] ? Color.White * 0.75f : Color.Yellow;
+            //    sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+            //    RedrawItem(sb, inv, back, position, slot, color);
+            //}
+            //else if (inv[slot].ModItem is PrototypeWeapon && inv[slot] != Main.mouseItem)
+            //{
+            //    Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ProtoBack").Value;
+            //    Color backcolor = Main.LocalPlayer.HeldItem != inv[slot] ? Color.White * 0.75f : Color.Yellow;
 
-                sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-                RedrawItem(sb, inv, back, position, slot, color);
-            }
+            //    sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+            //    RedrawItem(sb, inv, back, position, slot, color);
+            //}
             else
             {
                 orig(sb, inv, context, slot, position, color);
