@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -9,11 +10,9 @@ namespace StarlightRiver.Keys
 {
 	internal class OvergrowKey : Key
     {
-        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey")
-        {
-        }
+        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey") { }
 
-        public override bool ShowCondition => Main.LocalPlayer.InModBiome(ModContent.GetInstance<OvergrowBiome>());
+        public override bool ShowCondition => Main.LocalPlayer.InModBiome(GetInstance<OvergrowBiome>());
 
         public override void PreDraw(SpriteBatch spriteBatch)
         {

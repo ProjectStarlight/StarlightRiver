@@ -12,14 +12,7 @@ namespace StarlightRiver.Content.Waters
 
 		public override string BlockTexture => Texture + "_Block";
 
-        public override bool ChooseWaterStyle()
-        {
-            BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneGlass|| modPlayer.FountainVitric;
-        }
-
-        public override int ChooseWaterfallStyle() => 
-            Mod.GetWaterfallStyleSlot<WaterfallVitric>();
+        public override int ChooseWaterfallStyle() => ModContent.GetInstance<WaterfallVitric>().Slot;
 
         public override int GetSplashDust() => 
             DustType<Dusts.QuickSplash>();

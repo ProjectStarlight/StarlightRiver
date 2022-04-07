@@ -30,8 +30,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
             On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
-            StarlightItem.CanUseItemEvent += ControlItemUse;
-            
+            StarlightItem.CanUseItemEvent += ControlItemUse;          
         }
 
 		public override void SetStaticDefaults()
@@ -49,9 +48,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
             Item.defense = 5;
         }
 
-        public override void UpdateEquip(Player Player)
+        public override void UpdateEquip(Player player)
         {
-            Player.GetModPlayer<CritMultiPlayer>().MagicCritMult += 0.15f;
+            player.GetModPlayer<CritMultiPlayer>().MagicCritMult += 0.15f;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -59,9 +58,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
             return body.type == ItemType<PoltergeistChest>() && legs.type == ItemType<PoltergeistLegs>();
         }
 
-        public override void UpdateArmorSet(Player Player)
+        public override void UpdateArmorSet(Player player)
         {
-            Player.setBonus = 
+            player.setBonus = 
                 "Double tap DOWN with a magic weapon to haunt or unhaunt it, or with an empty hand to unhaunt all\n" +
                 "Haunted weapons float around you and attack automatically, but decrease your max mana\n" +
                 "Haunted weapons become disinterested in non-magic users and can't be used while haunted";
@@ -78,10 +77,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
                     manaRestrictFade--;
             }
 
-            if (Player.statMana > Player.statManaMax2 - manaRestrictFade) //restrict mana
-                Player.statMana = Player.statManaMax2 - manaRestrictFade;
+            if (player.statMana > player.statManaMax2 - manaRestrictFade) //restrict mana
+                player.statMana = player.statManaMax2 - manaRestrictFade;
 
-            if (Player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
+            if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
                 Main.NewText("Your haunted weapons seem bored...", new Color(200, 120, 255));
 
             if (sleepTimer > 0) //decrement sleep timer
@@ -89,30 +88,30 @@ namespace StarlightRiver.Content.Items.Gravedigger
             
         }
 
-        private void HauntItem(On.Terraria.Player.orig_KeyDoubleTap orig, Player Player, int keyDir)
+        private void HauntItem(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
         {
-            if (keyDir == 0 && Player.armor[0].type == ItemType<PoltergeistHead>())
+            if (keyDir == 0 && player.armor[0].type == ItemType<PoltergeistHead>())
             {
-                var Item = Player.HeldItem;
-                var helm = Player.armor[0].ModItem as PoltergeistHead;
+                var Item = player.HeldItem;
+                var helm = player.armor[0].ModItem as PoltergeistHead;
 
                 if(Item.IsAir) //clear from empty hand
 				{
                     helm.minions.Clear();
-                    orig(Player, keyDir);
+                    orig(player, keyDir);
                     return;
                 }
 
                 if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion).Item.type == Item.type)) //removal
                 {
                     helm.minions.RemoveAll(n => (n.ModProjectile as PoltergeistMinion).Item.type == Item.type);
-                    orig(Player, keyDir);
+                    orig(player, keyDir);
                     return;
                 }
 
-                if (Item.DamageType.CountsAs(DamageClass.Magic) && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= Player.statManaMax2) //addition
+                if (Item.DamageType.CountsAs(DamageClass.Magic) && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= player.statManaMax2) //addition
                 {                  
-                    int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, Player.whoAmI); //PORTTODO: Figure out source on this
+                    int i = Projectile.NewProjectile(player.GetProjectileSource_Misc(0), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI); //PORTTODO: Figure out source on this
                     var proj = Main.projectile[i];
                     (proj.ModProjectile as PoltergeistMinion).Item = Item.Clone();
 
@@ -121,7 +120,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                 }
             }
 
-            orig(Player, keyDir);
+            orig(player, keyDir);
         }
 
         private int GetManaRestrict(Item add = null)
@@ -152,7 +151,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             return true;
         }
 
-        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig) //PORTTODO: Make this work with different types of mana bars
+        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig) //PORTTODO: Generalize to central "reserved mana" system
         {
             orig();
 
