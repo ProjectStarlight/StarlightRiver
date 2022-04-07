@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Vitric
             return MoltenGlowc;
         }
 
-        public override bool CanDamage() => false;
+        public override bool? CanDamage() => false;
 
         public override bool MinionContactDamage() => false;
 
