@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Vitric
             MovementLerp += (Projectile.velocity.X - MovementLerp) / 20f;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
 
             if (Weapon < 0 || DisabledTime > 0)
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Vitric
             float scale = Math.Min(AnimationTimer / 15f, 1f);
             Rectangle Rect = WhiteFrame(tex.Size().ToRectangle(), false);
             Rectangle Rect2 = WhiteFrame(tex.Size().ToRectangle(), true);
-
+            SpriteBatch spriteBatch = Main.spriteBatch;
 
             Vector2 drawPos = Projectile.Center - Main.screenPosition;
             Color color = lightColor * scale;

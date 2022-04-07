@@ -154,15 +154,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
                 spriteBatch.Draw(Request<Texture2D>(Texture).Value,
-                    new Rectangle((int)(NPC.position.X - Main.screenPosition.X - off / 2 + NPC.width / 2),
-                    (int)(NPC.position.Y - Main.screenPosition.Y - 64), off, NPC.frame.Height),
+                    new Rectangle((int)(NPC.position.X - screenPos.X - off / 2 + NPC.width / 2),
+                    (int)(NPC.position.Y - screenPos.Y - 64), off, NPC.frame.Height),
                     NPC.frame, drawColor, 0, Vector2.Zero, effect, 0);
             }
 
             else
             {
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition - offset, NPC.frame, drawColor, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - Main.screenPosition - offset, NPC.frame, Color.White * glowStrength, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos - offset, NPC.frame, drawColor, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+                spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos - offset, NPC.frame, Color.White * glowStrength, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
             }
 
             if (glowStrength > 0.2f)
