@@ -61,15 +61,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
             CustomGroundOnly = customGroundOnly;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if (!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
-
-            return base.Autoload(ref name, ref texture);
-        }
-
-        public override void SetDefaults()
+        public override string Texture => TexturePath + Name;
+        
+        public override void SetStaticDefaults()
         {
             Main.tileNoFail[Type] = true;
             //TileObjectData.newTile.DrawYOffset = 2;
@@ -81,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             List<int> valid = CustomGroundOnly ? 
                 new List<int>() : 
                 new List<int>() { 
-                    TileType<Soil>(), TileType<Trellis>(), TileType<GardenPot>(),
+                    //TileType<Soil>(), TileType<Trellis>(), TileType<GardenPot>(),
                     TileID.Dirt, TileID.Sand, TileID.Mud, TileID.Grass,
                     TileID.HallowedGrass, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.JungleGrass 
                 };
@@ -91,13 +85,13 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
             if(ExtraGroundNames != null)
                 foreach (string name in ExtraGroundNames)
-                    valid.Add(Mod.TileType(name));
+                    valid.Add(Type);
 
             QuickBlock.QuickSetFurniture(this, 1, Height, DustType, SoundType, false, 
                 MapColor == default ? new Color(200, 255, 220) : MapColor,
                 false, false, MapName, anchor, TopAnchorOverride, valid.ToArray());
 
-            drop = Mod.ItemType(DropType);
+            ItemDrop = Mod.Find<ModItem>(DropType).Type;
 
             FrameHeight = 16 * Height;
             LastFrame = (FrameCount - 1) * FrameHeight;
@@ -110,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         {
             Tile thisTile = Main.tile[i, j];
             if (thisTile.TileFrameY == ((Height - 1) * 18))
-                Item.NewItem(i * 16, j * 16, 0, 0, drop, (thisTile.TileFrameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
+                Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 0, 0, ItemDrop, (thisTile.TileFrameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
             return false;
         }
 
@@ -118,14 +112,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
         {
             if (Main.tile[i, j].TileFrameY == 36)
             {
-                Texture2D tex;
-                if (Main.canDrawColorTile(i, j))
-                    tex = Main.tileAltTexture[Type, Main.tile[i, j].TileColor];
-                else
-                    tex = TextureAssets.Tile[Type].Value;
+                Texture2D tex = TextureAssets.Tile[Type].Value;
+                //if (Main.canDrawColorTile(i, j))
+                //    tex = Main.tileAltTexture[Type, Main.tile[i, j].TileColor];
+                //else
+                //    tex = TextureAssets.Tile[Type].Value;
 
                 SpriteEffects effect = i % 2 == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeed) * 0.07f), 0.12f);
+                float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeedCurrent) * 0.07f), 0.12f);//not sure if windSpeedCurrent is the correct replacement
                 spriteBatch.Draw(tex, 
                     (new Vector2(i + 11.5f, j + 10) * 16) + new Vector2(tex.Width / 2, FrameHeight + 3) - Main.screenPosition, 
                     new Rectangle(0, Main.tile[i, j].TileFrameX + 1, 32, 48), Lighting.GetColor(i, j), 
@@ -144,7 +138,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             {
                 Main.LocalPlayer.noThrow = 2;
                 Main.LocalPlayer.cursorItemIconEnabled = true;
-                Main.LocalPlayer.cursorItemIconID = drop;
+                Main.LocalPlayer.cursorItemIconID = ItemDrop;
             }
         }
 
@@ -159,7 +153,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             {
                 int bottomY = j + (Height - 1);
                 Tile bottomTile = Main.tile[i, bottomY];
-                if (bottomTile.type == Type && bottomTile.TileFrameY == ((Height - 1) * 18) && bottomTile.TileFrameX < LastFrame)
+                if (bottomTile.TileType == Type && bottomTile.TileFrameY == ((Height - 1) * 18) && bottomTile.TileFrameX < LastFrame)
                 {
                     if (Main.rand.Next(1, 101) <= GrowthPercentChance(i, bottomY))
                     {
@@ -183,7 +177,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
                 Main.tile[i, j + off].TileFrameX -= (short)FrameHeight;
-                Item.NewItem(new Vector2(i, j) * 16, drop, Main.rand.Next(1, 3));
+                Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemDrop, Main.rand.Next(1, 3));
                 return true;
             }
             return base.RightClick(i, j);
@@ -207,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class Rice : QuickTileItem
     {
-        public Rice() : base("Rice", " ", "TallRice", ItemRarityID.White, AssetDirectory.HerbologyCropTile) { }
+        public Rice() : base("Rice", " ", TileType<TallRice>(), ItemRarityID.White, AssetDirectory.HerbologyCropTile) { }
     }
 
 
@@ -217,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class GoldenRice : QuickTileItem
     {
-        public GoldenRice() : base("Golden Rice", " ", "TallGoldenRice", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
+        public GoldenRice() : base("Golden Rice", " ", TileType<TallGoldenRice>(), ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
     }
 
 
@@ -227,6 +221,6 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class AncientFruit : QuickTileItem
     {
-        public AncientFruit() : base("Ancient Fruit", " ", "TallAncientFruit", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
+        public AncientFruit() : base("Ancient Fruit", " ", TileType<TallAncientFruit>(), ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
     }
 }
