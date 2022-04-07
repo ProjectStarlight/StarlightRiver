@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             On.Terraria.Main.SetDisplayMode += RefreshTargets;
             On.Terraria.Main.CheckMonoliths += DrawTargets;
-            On.Terraria.Main.DrawPlayers += DrawReflectionLayer;
+            //On.Terraria.Main.DrawPlayers += DrawReflectionLayer; PORTTODO: replace this detour
 
             ReflectionTarget.DrawReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
@@ -155,10 +155,12 @@ namespace StarlightRiver.Content.CustomHooks
             canUseTarget = true;
         }
 
+        /*PORTTODO: replace this detour
         /// <summary>
         /// draw background reflections immediately before drawing Players since they are the
         /// </summary>
         /// <param name="orig"></param>
+        ///
         public void DrawReflectionLayer(On.Terraria.Main.orig_DrawPlayers orig, Main self)
         {
             ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
@@ -183,6 +185,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             orig(self);
         }
+        */
 
         public void drawGlassWallReflectionNormalMap(SpriteBatch spriteBatch)
         {
