@@ -205,50 +205,11 @@ namespace StarlightRiver.Core
             Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
             Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
 
-            if (Shake > 0) 
+            if (Shake > 0)
                 Shake--;
 
             Main.screenPosition.X = (int)Main.screenPosition.X;
             Main.screenPosition.Y = (int)Main.screenPosition.Y;
-        }
-
-        public override void ModifyDrawLayers(List<PlayerLayer> layers) //PORTTODO: Port this behavior to the new player rendering system
-        {
-            Action<PlayerDrawInfo> layerTarget = DrawGlowmasks;
-            PlayerLayer layer = new PlayerLayer("ItemLayer", "Starlight River Item Drawing Layer", layerTarget);
-            layers.Insert(layers.IndexOf(layers.FirstOrDefault(n => n.Name == "Arms")), layer);
-
-            void DrawGlowmasks(PlayerDrawInfo info)
-            {
-                if (info.drawPlayer.HeldItem.ModItem is IGlowingItem) (info.drawPlayer.HeldItem.ModItem as IGlowingItem).DrawGlowmask(info);
-            }
-            #region armor masks
-            Action<PlayerDrawInfo> helmetTarget = DrawHelmetMask;
-            layers.Insert(layers.IndexOf(layers.FirstOrDefault(n => n.Name == "Head")) + 1, new PlayerLayer("SLRHelmet", "Helmet mask layer", helmetTarget));
-
-            Action<PlayerDrawInfo> chestTarget = DrawChestMask;
-            layers.Insert(layers.IndexOf(layers.FirstOrDefault(n => n.Name == "Body")) + 1, new PlayerLayer("SLRChest", "Chest mask layer", chestTarget));
-
-            Action<PlayerDrawInfo> legTarget = DrawLegMask;
-            layers.Insert(layers.IndexOf(layers.FirstOrDefault(n => n.Name == "Legs")) + 1, new PlayerLayer("SLRLeg", "Leg mask layer", legTarget));
-
-
-            void DrawHelmetMask(PlayerDrawInfo info)
-            {
-                if (info.drawPlayer.armor[10].IsAir && info.drawPlayer.armor[0].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[0].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[10].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[10].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-            }
-            void DrawChestMask(PlayerDrawInfo info)
-            {
-                if (info.drawPlayer.armor[11].IsAir && info.drawPlayer.armor[1].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[1].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[11].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[11].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-            }
-            void DrawLegMask(PlayerDrawInfo info)
-            {
-                if (info.drawPlayer.armor[12].IsAir && info.drawPlayer.armor[2].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[2].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-                else if (info.drawPlayer.armor[12].ModItem is IArmorLayerDrawable) (info.drawPlayer.armor[12].ModItem as IArmorLayerDrawable).DrawArmorLayer(info);
-            }
-            #endregion
         }
 
         /// <summary>
@@ -298,8 +259,8 @@ namespace StarlightRiver.Core
             DummyTile.dummies.Clear();
         }
 
-		public override void OnRespawn(Player Player)
-		{
+        public override void OnRespawn(Player Player)
+        {
             panDown = 0;
 
             ScreenMoveTime = 0;
@@ -310,7 +271,7 @@ namespace StarlightRiver.Core
             inTutorial = false;
         }
 
-		public override void PlayerConnect(Player Player)
+        public override void PlayerConnect(Player Player)
         {
             AbilityProgress packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
             packet.Send(runLocally: false);
@@ -338,6 +299,19 @@ namespace StarlightRiver.Core
                     }
                 }
             }
+        }
+    }
+
+    public class StarlightRiverPlayerLayer : PlayerDrawLayer
+    {
+        public override Position GetDefaultPosition()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Draw(ref PlayerDrawSet drawInfo)
+        {
+            throw new NotImplementedException();
         }
     }
 }

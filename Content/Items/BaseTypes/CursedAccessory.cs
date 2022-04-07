@@ -26,16 +26,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public static ParticleSystem CursedSystem;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
-
         public static ParticleSystem ShardsSystem;
 
-        public static void Load() //PORTTODO: Make it so this doesn't hide ModType.Load();
+        public static void LoadSystem()
         {
             CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
             ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
         }
 
-        public static void Unload() //PORTTODO: Make it so this doesn't hide ModType.Unload();
+        public static void UnloadSystem()
         {
             CursedSystem = null;
             ShardsSystem = null;
@@ -108,7 +107,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             }
         }
 
-        public override bool CanEquipAccessory(Player Player, int slot) //PORTTODO: Figure out what the replacement method for this is
+        public override bool CanEquipAccessory(Player Player, int slot, bool modded)
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);

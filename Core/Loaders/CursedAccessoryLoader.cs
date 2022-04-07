@@ -11,12 +11,12 @@ namespace StarlightRiver.Core.Loaders
         public float Priority => 1f;
         public void Load()
         {
-            CursedAccessory.Load();
+            CursedAccessory.LoadSystem();
         }
 
         public void Unload()
         {
-            CursedAccessory.Unload();
+            CursedAccessory.UnloadSystem();
         }
     }
 }

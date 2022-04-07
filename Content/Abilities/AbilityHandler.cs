@@ -84,12 +84,12 @@ namespace StarlightRiver.Content.Abilities
             unlockedAbilities = new Dictionary<Type, Ability>();
         }
 
-        public void Load()
+        public override void Load()
 		{
             StarlightPlayer.PostDrawEvent += PostDrawAbility;
 		}
 
-        public void Unload() { }
+        public override void Unload() { }
 
         private void Unlock(Type t, Ability ability)
         {

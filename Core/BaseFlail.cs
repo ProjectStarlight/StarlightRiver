@@ -86,7 +86,7 @@ namespace StarlightRiver.Core
 		{
 			Player Owner = Main.player[Projectile.owner];
 			Owner.ItemTime = 2;
-			Owner.ItemAnimation = 2;
+			Owner.itemAnimation = 2;
 			Owner.heldProj = Projectile.whoAmI;
 			if (!Owner.channel && !released) //check to see if Player stops channelling
 			{

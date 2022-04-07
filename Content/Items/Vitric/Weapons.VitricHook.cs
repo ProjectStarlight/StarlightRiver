@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Vitric
         //public override void HoldItem(Player Player)
         //{
         //    if (Main.projectile.Any(n => n.type == ProjectileType<VitricHookProjectile>() && n.owner == Player.whoAmI))
-        //        Player.ItemAnimation = 5;
+        //        Player.itemAnimation = 5;
         //}
 
         public override void AddRecipes()

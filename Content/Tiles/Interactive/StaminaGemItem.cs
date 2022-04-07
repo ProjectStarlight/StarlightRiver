@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
         {
             DisplayName.SetDefault(Itemname);
             Tooltip.SetDefault(Itemtooltip);
-            Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(3, 6));
+            Main.RegisteritemAnimation(Item.type, new DrawAnimationVertical(3, 6));
         }
     }
 }

@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Abilities.Purify
 
         public override void UpdateActive()
         {
-            Projectile.NewProjectile(Player.Center + new Vector2(16, -24), Vector2.Zero, ProjectileType<Purifier>(), 0, 0, Player.whoAmI);
+            Projectile.NewProjectile(null, Player.Center + new Vector2(16, -24), Vector2.Zero, ProjectileType<Purifier>(), 0, 0, Player.whoAmI); //TODO: centralize / standardize our source Ids instead of null here
             StarlightWorld.PureTiles.Add((Player.Center + new Vector2(16, -24)) / 16);
 
             Deactivate();
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Abilities.Purify
             {
                 for (int k = 0; k <= 50; k++)
                     Dust.NewDustPerfect(Projectile.Center - Vector2.One * 8, DustType<Dusts.Purify2>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2.4f), 0, default, 1.2f);
-                Projectile.NewProjectile(Projectile.Center - Vector2.One * 16, Vector2.Normalize(Projectile.Center - Vector2.One * 16 - Main.player[Projectile.owner].Center).RotatedBy(0.3f) * 6,
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center - Vector2.One * 16, Vector2.Normalize(Projectile.Center - Vector2.One * 16 - Main.player[Projectile.owner].Center).RotatedBy(0.3f) * 6,
                     ProjectileType<PurifierReturn>(), 0, 0, Projectile.owner);
             }
 
@@ -113,13 +113,13 @@ namespace StarlightRiver.Content.Abilities.Purify
         private readonly Texture2D cirTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/ArcaneCircle").Value;
         private readonly Texture2D cirTex2 = Request<Texture2D>("StarlightRiver/Assets/Abilities/ArcaneCircle2").Value;
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            spriteBatch.Draw(cirTex, Projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(Projectile.ai[0] / 300f), cirTex.Size() / 2, Projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
-            spriteBatch.Draw(cirTex2, Projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, Projectile.ai[0] / 300f, cirTex2.Size() / 2, Projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
+            Main.EntitySpriteDraw(cirTex, Projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex.Frame(), Color.White, -(Projectile.ai[0] / 300f), cirTex.Size() / 2, Projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
+            Main.EntitySpriteDraw(cirTex2, Projectile.Center - Vector2.One * 16 - Main.screenPosition, cirTex2.Frame(), Color.White, Projectile.ai[0] / 300f, cirTex2.Size() / 2, Projectile.ai[0] / cirTex.Width * 2.1f, 0, 0);
 
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Abilities/PureCrown").Value;
-            spriteBatch.Draw(tex, Projectile.Center + new Vector2(-16, -16 + (float)Math.Sin(StarlightWorld.rottime) * 2) - Main.screenPosition, tex.Frame(),
+            Main.EntitySpriteDraw(tex, Projectile.Center + new Vector2(-16, -16 + (float)Math.Sin(StarlightWorld.rottime) * 2) - Main.screenPosition, tex.Frame(),
                 Color.White * (Projectile.timeLeft < 500 ? 1 : Projectile.ai[0] / 250f), 0, tex.Size() / 2, 1, 0, 0);
         }
     }

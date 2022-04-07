@@ -12,6 +12,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -52,8 +53,8 @@ namespace StarlightRiver.Content.Items.Misc
 			float distanceMult = Main.rand.NextFloat(0.8f, 1.2f);
 			float curvatureMult = 0.7f;
 
-			Vector2 direction = Vector2.Normalize(new Vector2(speedX, speedY).RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f))) * 7;
-			Projectile proj = Projectile.NewProjectileDirect(position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockBack, Player.whoAmI);
+			Vector2 direction = Vector2.Normalize(velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f))) * 7;
+			Projectile proj = Projectile.NewProjectileDirect(source, position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockback, player.whoAmI);
 			if (proj.ModProjectile is GunchuckProj modProj)
 			{
 				modProj.Flip = combo % 2 == 0;
@@ -158,7 +159,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 direction = newRotation.ToRotationVector2();
 				for (int i = 0; i < 5; i++)
                 {
-					Projectile.NewProjectile(Projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+					Projectile.NewProjectile(Projectile.InheritSource(Projectile),Projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
                 }
 				
 				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
@@ -172,7 +173,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			Owner.ItemRotation = MathHelper.WrapAngle(Owner.AngleTo(Main.MouseWorld) - (Owner.direction < 0 ? MathHelper.Pi : 0));
+			Owner.itemRotation = MathHelper.WrapAngle(Owner.AngleTo(Main.MouseWorld) - (Owner.direction < 0 ? MathHelper.Pi : 0));
 		}
 
 		private Vector2 GetSwingPosition(float progress)
@@ -200,7 +201,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.Kill();
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
 			if (Projectile.timeLeft > 2)
 				return false;
@@ -209,7 +210,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			//End control point for the chain
 			Vector2 projBottom = Projectile.Center + new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;
-			DrawChainCurve(spriteBatch, projBottom, out Vector2[] chainPositions);
+			DrawChainCurve(Main.spriteBatch, projBottom, out Vector2[] chainPositions);
 
 			//Adjust rotation to face from the last point in the bezier curve
 			newRotation = (projBottom - chainPositions[chainPositions.Length - 2]).ToRotation();
@@ -220,7 +221,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			lightColor = Lighting.GetColor((int)(Projectile.Center.X / 16f), (int)(Projectile.Center.Y / 16f));
 
-			spriteBatch.Draw(projTexture, projBottom - Main.screenPosition, null, lightColor, newRotation, origin, Projectile.scale, flip, 0);
+			Main.EntitySpriteDraw(projTexture, projBottom - Main.screenPosition, null, lightColor, newRotation, origin, Projectile.scale, flip, 0);
 
 
 			CurrentBase = projBottom + (newRotation - 1.57f).ToRotationVector2() * (projTexture.Height / 2);

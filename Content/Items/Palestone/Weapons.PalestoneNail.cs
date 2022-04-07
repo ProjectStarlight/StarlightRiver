@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			Main.projPet[Projectile.type] = true; // Denotes that this Projectile is a pet or minion
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true; // This is necessary for right-click targeting
 			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; // This is needed so your minion can properly spawn when summoned and replaced when other minions are summoned			 
-			ProjectileID.Sets.Homing[Projectile.type] = true; // Don't mistake this with "if this is true, then it will automatically home". It is just for damage reduction for certain NPCs
+			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Don't mistake this with "if this is true, then it will automatically home". It is just for damage reduction for certain NPCs
 		}
 
         public sealed override void SetDefaults()
@@ -106,19 +106,16 @@ namespace StarlightRiver.Content.Items.Palestone
 		private const int Flying = 1;
 		private const int Attacking = 2;
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+
+		public override void PostDraw(Color lightColor)
         {
+			SpriteBatch spriteBatch = Main.spriteBatch;
 			Utils.DrawBorderString(spriteBatch, Projectile.ai[1].ToString(), Projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
 			Utils.DrawBorderString(spriteBatch, Projectile.ai[0].ToString(), Projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
 			Utils.DrawBorderString(spriteBatch, Projectile.velocity.Length().ToString(), Projectile.position + new Vector2(0, -20) - Main.screenPosition, Color.LightBlue);
 			if(Projectile.ai[1] >= 0)
 				Utils.DrawLine(spriteBatch, Projectile.Center, Main.npc[(int)Projectile.ai[1]].Center, Color.LightBlue, Color.IndianRed, 2f);
 		}
-
-		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough)
-        {
-			return true;
-        }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => 
 			Projectile.ai[1] = target.whoAmI;//TODO: possible desync, needs testing

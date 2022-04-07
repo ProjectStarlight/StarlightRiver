@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
                 Player.ChangeDir(Math.Sign(direction.X));
 
-                Player.ItemTime = Player.ItemAnimation = 2;
+                Player.ItemTime = Player.itemAnimation = 2;
                 Player.ItemRotation = direction.ToRotation();
                 if (Player.direction != 1)
                     Player.ItemRotation -= 3.14f;
@@ -368,7 +368,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (Player.channel)
             {
                 Projectile.timeLeft = 2;
-                Player.ItemTime = Player.ItemAnimation = 2;
+                Player.ItemTime = Player.itemAnimation = 2;
 
                 direction = Player.DirectionTo(Main.MouseWorld);
                 direction.Normalize();
@@ -516,23 +516,15 @@ namespace StarlightRiver.Content.Items.SteampunkSet
     public class JetwelderPlayer : ModPlayer
     {
         public int scrap;
+    }
 
-        public override void ModifyDrawLayers(List<PlayerLayer> layers)
-        {
-            if (Player.HeldItem.type == ModContent.ItemType<Jetwelder>())
-            {
-                layers.Insert(layers.FindIndex(x => x.Name == "MiscEffectsFront" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "JetwelderBar",
-                       delegate (PlayerDrawInfo info)
-                       {
-                           DrawBar(info);
-                       }));
-            }
-            base.ModifyDrawLayers(layers);
-        }
+    public class JetWelderPlayerLayer : PlayerDrawLayer
+    {
+        public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.SolarShield); //PORTTODO: find out what the top most layer is for players and replace
 
-        private static void DrawBar(PlayerDrawInfo info)
+        protected override void Draw(ref PlayerDrawSet drawInfo)
         {
-            Player Player = info.drawPlayer;
+            Player Player = drawInfo.drawPlayer;
             Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar").Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar_Glow").Value;
 
@@ -549,12 +541,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                         SpriteEffects.None,
                         0
                     );
-            Main.playerDrawData.Add(value);
+            drawInfo.DrawDataCache.Add(value);
 
             DrawData value2 = new DrawData(
                         glowTex,
-                        new Vector2((int)drawPos.X, (int)drawPos.Y) - new Vector2(0,1),
-                        new Rectangle(0,0, (int)(glowTex.Width * (Player.GetModPlayer<JetwelderPlayer>().scrap / 20f)), glowTex.Height),
+                        new Vector2((int)drawPos.X, (int)drawPos.Y) - new Vector2(0, 1),
+                        new Rectangle(0, 0, (int)(glowTex.Width * (Player.GetModPlayer<JetwelderPlayer>().scrap / 20f)), glowTex.Height),
                         Color.White,
                         0f,
                         glowTex.Size() / 2,
@@ -562,7 +554,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                         SpriteEffects.None,
                         0
                     );
-            Main.playerDrawData.Add(value2);
+            drawInfo.DrawDataCache.Add(value2);
         }
     }
 

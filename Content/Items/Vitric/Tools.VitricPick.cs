@@ -98,15 +98,15 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             var Player = info.drawPlayer;
 
-            if (Player.ItemAnimation == 0)
+            if (Player.itemAnimation == 0)
                 return;
 
             var tex = Request<Texture2D>(Texture + "Glow").Value;
             var color = Color.White * (heat / 20f);
             var origin = Player.direction == 1 ? new Vector2(0, tex.Height) : new Vector2(tex.Width, tex.Height);
 
-            var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.ItemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            Main.playerDrawData.Add(data);
+            var data = new DrawData(tex, info.ItemLocation - Main.screenPosition, null, color, Player.itemRotation, origin, Item.scale, Player.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            info.DrawDataCache.Add(data);
         }
 
         public override void AddRecipes()

@@ -134,12 +134,12 @@ namespace StarlightRiver.Content.Pickups
             return false;
 		}
 
-		public sealed override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if (Visible)
             {
                 Texture2D tex = Request<Texture2D>(Texture).Value;
-                Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
+                Vector2 pos = NPC.Center - screenPos + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
                 spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
             }
 

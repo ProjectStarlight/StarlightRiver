@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Starwood
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
-        public void DrawArmorLayer(PlayerDrawInfo info)//custom drawing the hat (todo)
+        public void DrawArmorLayer(PlayerDrawSet info)//custom drawing the hat (todo)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(10, 18));
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 target.GetGlobalNPC<ManastarDrops>().DropStar = true;
         }
 
-        public void DrawArmorLayer(PlayerDrawInfo info)
+        public void DrawArmorLayer(PlayerDrawSet info)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawBodyFramed(info, AssetDirectory.StarwoodItem + "StarwoodChest_Body_Alt", 1, new Vector2(10, 18));
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Items.Starwood
             isEmpowered = Player.GetModPlayer<StarlightPlayer>().empowered;
         }
 
-        public void DrawArmorLayer(PlayerDrawInfo info)
+        public void DrawArmorLayer(PlayerDrawSet info)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
                 ArmorHelper.QuickDrawLegsFramed(info, AssetDirectory.StarwoodItem + "StarwoodBoots_Legs_Alt", 1, new Vector2(10, 18));
