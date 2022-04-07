@@ -14,10 +14,6 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
-
-        public override bool NeedsSaving(Item Item) => Enchantment != null;
-
         public override void PostDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             Enchantment?.DrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
@@ -52,17 +48,14 @@ namespace StarlightRiver.Content.ArmorEnchantment
             }
         }
 
-        public override TagCompound Save(Item Item)
+        public override void SaveData(Item Item, TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["EnchantGuid"] = Enchantment.Guid.ToString(),
-                ["EnchantType"] = Enchantment.GetType().FullName,
-                ["Enchantment"] = Enchantment.Save()
-            };
+            tag["EnchantGuid"] = Enchantment.Guid.ToString();
+            tag["EnchantType"] = Enchantment.GetType().FullName;
+            tag["Enchantment"] = Enchantment.SaveData();
         }
 
-        public override void Load(Item Item, TagCompound tag)
+        public override void LoadData(Item Item, TagCompound tag)
         {
             var guid = Guid.ParseExact(tag.GetString("EnchantGuid"), "D");
             var type = tag.GetString("EnchantType");
@@ -77,7 +70,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
                         new object[] { guid }
                     );
 
-                Enchantment.Load(tag.GetCompound("Enchantment"));
+                Enchantment.LoadData(tag.GetCompound("Enchantment"));
             }
         }
 

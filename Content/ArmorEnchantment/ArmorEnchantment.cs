@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
             return true;
         }
 
-        public virtual void SaveData(TagCompound tag)
+        public virtual TagCompound SaveData()
         {
             return new TagCompound()
             {
