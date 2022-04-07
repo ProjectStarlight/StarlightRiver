@@ -29,8 +29,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void Load()
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
-            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
-            StarlightItem.CanUseItemEvent += ControlItemUse;          
+            //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
+            StarlightItem.CanUseItemEvent += ControlItemUse;
+            
         }
 
 		public override void SetStaticDefaults()
@@ -151,6 +152,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             return true;
         }
 
+        /*
         private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig) //PORTTODO: Generalize to central "reserved mana" system
         {
             orig();
@@ -195,6 +197,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
                 }
             }
         }
+        */
     }
 
     [AutoloadEquip(EquipType.Body)]

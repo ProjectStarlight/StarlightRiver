@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             behindNPCsAndTiles.Add(index);
         }
 
-		public override void PostDraw(ref Color lightColor)
+		public override void PostDraw(Color lightColor)
         {
             if (Projectile.ai[0] > 50)
             {

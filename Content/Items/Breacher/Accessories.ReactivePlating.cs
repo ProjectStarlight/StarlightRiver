@@ -100,11 +100,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawPlayer += Main_DrawPlayer;
+			//On.Terraria.Main.DrawPlayer += Main_DrawPlayer; PORTTODO: find out what this is replaced with
 		}
 
 		public void Unload() { }
 
+		/* PORTTODO: find out what this is replaced with
 		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
 		{
 			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
@@ -114,6 +115,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (modPlayer.Shield)
 				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, drawPlayer);
 		}
+		*/
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {

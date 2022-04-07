@@ -265,14 +265,14 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
                 Projectile.velocity.Y = Projectile.timeLeft <= 10 ? 1f : -1f;
 
                 if (Projectile.timeLeft == 19 && Math.Abs(ShockwavesLeft) > 0) 
-                    Projectile.NewProjectile(new Vector2((int)Projectile.Center.X / 16 * 16 + 16 * Math.Sign(ShockwavesLeft)
+                    Projectile.NewProjectile(Projectile.InheritSource(Projectile), new Vector2((int)Projectile.Center.X / 16 * 16 + 16 * Math.Sign(ShockwavesLeft)
                     , (int)Projectile.Center.Y / 16 * 16 - 32),
                     Vector2.Zero, Projectile.type, Projectile.damage, 0, Main.myPlayer, TileType, Projectile.ai[1] - Math.Sign(ShockwavesLeft));
 
             }
         }
 
-        public override bool PreDraw(Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             if (Projectile.timeLeft < 21)
                 Main.spriteBatch.Draw(TextureAssets.Tile[TileType].Value, Projectile.position - Main.screenPosition, new Rectangle(18, 0, 16, 16), lightColor);

@@ -61,6 +61,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void PostDraw(Color lightColor)
 		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 

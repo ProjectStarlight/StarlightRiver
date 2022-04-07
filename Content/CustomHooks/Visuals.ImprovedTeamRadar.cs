@@ -17,7 +17,8 @@ namespace StarlightRiver.Content.CustomHooks
             //and re-calculate the position of their text and if they should display for the client. You could avoid this using an IL delegate injection, but that would be less
             //safe than the method swap. Due to the fact that this will need to be ported at some point im going with the safer and more portable option of using a detour.
             //at some point in the future we may want to change this if the delegate injection figures to be a significant performance gain and is relatively safe.
-            On.Terraria.Main.DrawInterface_20_MultiPlayerPlayerNames += DrawNewInfo;
+
+        //    On.Terraria.Main.DrawInterface_20_MultiPlayerPlayerNames += DrawNewInfo; PORTTODO: find out what this is replaced by
             On.Terraria.Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
             On.Terraria.Main.DrawInterface_39_MouseOver += drawShieldHoverText;
         }
@@ -114,6 +115,7 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
+        /* PORTTODO: replace this with new detour
         private void DrawNewInfo(On.Terraria.Main.orig_DrawInterface_20_MultiPlayerPlayerNames orig)
         {
             orig();
@@ -192,5 +194,6 @@ namespace StarlightRiver.Content.CustomHooks
                 }
             }
         }
+        */
     }
 }
