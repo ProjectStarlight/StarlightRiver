@@ -40,8 +40,8 @@ namespace StarlightRiver.Core
             progress.Message = "Digging the Vitric Desert";
 
             int vitricHeight = 140;
-            ValidGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand") };
-            ValidDesertGround = new int[] { instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"), TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+            ValidGround = new int[] { instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type };
+            ValidDesertGround = new int[] { instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type, TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.FossilOre };
             
             //Basic biome information
@@ -138,8 +138,8 @@ namespace StarlightRiver.Core
                 int x = genRand.Next(2) == 0 ? genRand.Next(VitricBiome.X + VitricSlopeOffset + 20, VitricBiome.Center.X - 61) : genRand.Next(VitricBiome.Center.X + 62, VitricBiome.Right - VitricSlopeOffset - 20);
                 int y = (maxCeilingDepth + 20) + (genRand.Next((int)(VitricBiome.Height / 3.2f)));
 
-                if (Helper.ScanForTypeDown(x, y, instance.TileType("VitricSand"), 120))
-                    y = FindType(x, y, VitricBiome.Bottom + 20, instance.TileType("VitricSand"));
+                if (Helper.ScanForTypeDown(x, y, instance.Find<ModItem>("VitricSand").Type, 120))
+                    y = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type);
                 else
                 {
                     i--;
@@ -169,7 +169,7 @@ namespace StarlightRiver.Core
                         bool sloped = (me.LeftSlope || me.RightSlope) && me.TopSlope && !me.BottomSlope; //top and bottom are mutually exclusive but you never know
                         if (left.HasTile || right.HasTile)
                             if (sloped && genRand.NextBool(3))
-                                Framing.GetTileSafely(i, j).halfBrick(true);
+                                Framing.GetTileSafely(i, j).IsHalfBlock = true;
                     }
                 }
             }
@@ -294,9 +294,9 @@ namespace StarlightRiver.Core
                         break;
                     int xRand = xDif < 20 ? xDif : VitricBiome.Width - xDif;
                     Tile t = Main.tile[x, y];
-                    if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.HasTile && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
+                    if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.HasTile && Main.tileSolid[t.TileType]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
                     {
-                        PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
+                        PlaceTile(x, y, instance.Find<ModItem>("VitricSand").Type, false, true);
                         t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
                     }
@@ -315,10 +315,10 @@ namespace StarlightRiver.Core
 
                     int xRand = xDif < 20 ? xDif : VitricBiome.Width - xDif;
                     
-                    if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.HasTile && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
+                    if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.HasTile && Main.tileSolid[t.TileType]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
                     {
-                        if(t.type != TileType<VitricSpike>())
-                            PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
+                        if(t.TileType != TileType<VitricSpike>())
+                            PlaceTile(x, y, instance.Find<ModItem>("VitricSand").Type, false, true);
 
                         t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
@@ -336,16 +336,16 @@ namespace StarlightRiver.Core
                         if (lakeProgress == 30)
                             PlaceTile(x + 1, y, TileType<VitricSpike>(), false, true);
 
-                        t.liquidType(1);
+                        t.LiquidType = 1;
                         t .LiquidAmount = 200;
-                        t.active(false);
+                        t.HasTile = false;
 
                         if (y == targetY)
                         {
                             for (int k = 0; k < genRand.Next(2, 3); k++)
                             {
                                 PlaceTile(x, y + k, TileType<VitricSpike>(), false, true);
-                                t.active(true);
+                                t.HasTile = true;
                             }
                         }
                     }
@@ -379,12 +379,12 @@ namespace StarlightRiver.Core
                     Tile t = Main.tile[p.X + offsetX, p.Y];
                     if (!hasLeftIsland)
                     {
-                        if (!t.HasTile || !ValidGround.Any(v => v == t.type))
+                        if (!t.HasTile || !ValidGround.Any(v => v == t.TileType))
                             hasLeftIsland = true;
                     }
                     else
                     {
-                        if (t.HasTile && ValidGround.Any(v => v == t.type) && --hitCount == 0)
+                        if (t.HasTile && ValidGround.Any(v => v == t.TileType) && --hitCount == 0)
                             break;
                     }
                     p.Y += 1 * dir;
@@ -414,7 +414,7 @@ namespace StarlightRiver.Core
                 Point16 size = ruinedHouseSizes[ty];
                 int y = FindType(x, (VitricBiome.Y + 38) + (genRand.Next((int)(VitricBiome.Height / 3.2f))), -1, ValidGround) + genRand.Next(2);
                 if ((x < VitricBiome.X + VitricBiome.Width / 2 - 71 || x > VitricBiome.X + VitricBiome.Width / 2 + 70) && Helper.CheckAirRectangle(new Point16(x, y - size.Y), new Point16(size.X, size.Y - 3)) && //ScanRectangle(x, y, size.X, size.Y) < 10
-                    ValidGround.Any(v => v == Main.tile[x + 1, y].type) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].type))
+                    ValidGround.Any(v => v == Main.tile[x + 1, y].TileType) && ValidGround.Any(v => v == Main.tile[x + size.X - 1, y].TileType))
                     StructureHelper.Generator.GenerateStructure("Structures/Vitric/VitricTempleRuins_" + ty, new Point16(x, y - size.Y), StarlightRiver.Instance);
                 else { i--; failCount++; continue; }
             }
@@ -441,7 +441,7 @@ namespace StarlightRiver.Core
         {
             int x = forgeSide == 0 ? VitricBiome.X - 40 : VitricBiome.Right - 40;
             StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 10), StarlightRiver.Instance);
-            NPC.NewNPC((VitricBiome.X) * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+            NPC.NewNPC(new EntitySource_WorldGen(), (VitricBiome.X) * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
         }
 
         private static void GenTemple()
@@ -464,7 +464,7 @@ namespace StarlightRiver.Core
                 {
                     if (i >= VitricBiome.Center.X - 52 && i <= VitricBiome.Center.X - 51) continue;
 
-                    if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].type)) //Generates vines, random size between 4-23
+                    if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].TileType)) //Generates vines, random size between 4-23
                     {
                         int targSize = genRand.Next(4, 23);
                         for (int k = 1; k < targSize; ++k)
@@ -496,7 +496,7 @@ namespace StarlightRiver.Core
 
 		private static void GenerateDeco(int x, int y, int w, int h, int type, int variants)
 		{
-			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].type) && Helper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].type))
+			if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y - h), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
 				Helper.PlaceMultitile(new Point16(x, y - h), type, genRand.Next(variants));
 
             KillTile(x, y - h, true);
@@ -504,7 +504,7 @@ namespace StarlightRiver.Core
 
         private static void GenerateDecoInverted(int x, int y, int w, int h, int type, int variants)
         {
-            if (ValidGround.Any(x1 => x1 == Main.tile[x, y].type) && Helper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].type))
+            if (ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType) && Helper.CheckAirRectangle(new Point16(x, y + 1), new Point16(w, h)) && ValidGround.Any(x1 => x1 == Main.tile[x, y].TileType))
                 Helper.PlaceMultitile(new Point16(x, y + 1), type, genRand.Next(variants));
 
             KillTile(x, y + 1, true);
@@ -522,9 +522,9 @@ namespace StarlightRiver.Core
                     int posX = (i - range) + g;
                     int posY = j + h;
 
-                    if (Vector2.Distance(new Vector2(g, h), new Vector2(range, 0)) <= range + 0.5f && InWorld(posX, posY) && Main.tile[posX, posY].type == TileID.Sandstone)
+                    if (Vector2.Distance(new Vector2(g, h), new Vector2(range, 0)) <= range + 0.5f && InWorld(posX, posY) && Main.tile[posX, posY].TileType == TileID.Sandstone)
                     {
-                        Main.tile[posX, posY].type = (ushort)instance.TileType("VitricSand");
+                        Main.tile[posX, posY].TileType = (ushort)instance.Find<ModItem>("VitricSand").Type;
                     }
                 }
             }
@@ -558,7 +558,7 @@ namespace StarlightRiver.Core
                 {
                     for (int k = pos.Y; k < bot; ++k)
                     {
-                        if (Main.tile[j, k].type != instance.TileType("VitricSand"))
+                        if (Main.tile[j, k].TileType != instance.Find<ModItem>("VitricSand").Type)
                             continue; //Skip not-sand tiles
                         bool endCheck = false;
                         for (int x = -1; x < 1; ++x)
@@ -567,7 +567,6 @@ namespace StarlightRiver.Core
                             {
                                 if (!Main.tile[j - x, k - y].HasTile)
                                 {
-                                    Main.tile[j, k].type = (ushort)TileType<VitricMoss>();
                                     endCheck = true;
                                     break;
                                 }
@@ -639,7 +638,7 @@ namespace StarlightRiver.Core
 
                 for (int j = y - top + offset; j < y + depth + offset; j++)
                 {
-                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.TileType("VitricSand");
+                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.Find<ModItem>("VitricSand").Type;
                     PlaceTile(i, j, t, false, true);
                 }
 
@@ -653,8 +652,8 @@ namespace StarlightRiver.Core
                 int posX = genRand.Next(x - (int)(wid / 2f), x + (int)(wid / 2f));
                 int posY = genRand.Next(y, y + maxDepth);
 
-                if (Framing.GetTileSafely(posX, posY).type == instance.TileType("VitricSand"))
-                    TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.TileType("VitricSoftSand"), false, 0, 0, true, true);
+                if (Framing.GetTileSafely(posX, posY).TileType == instance.Find<ModItem>("VitricSand").Type)
+                    TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.Find<ModItem>("VitricSoftSand").Type, false, 0, 0, true, true);
             }
 
             //Place crystal if needed
@@ -671,7 +670,7 @@ namespace StarlightRiver.Core
                         FindType(cX, cY, -1, ValidGround),
                         FindType(cX + 1, cY, -1, ValidGround)
                         );
-                    if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].type) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].type) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
+                    if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].TileType) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].TileType) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
                     {
                         StructureHelper.Generator.GenerateStructure(
                             AssetDirectory.VitricCrystalStructs + "VitricMediumCrystal_" + genRand.Next(2),
@@ -708,7 +707,7 @@ namespace StarlightRiver.Core
                         continue;
 
                     // Success! Halve the spawnAttempts count so we don't spam crystals.
-                    PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).type, true, true);
+                    PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).TileType, true, true);
                     Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
                     spawnAttempts /= 2;
                 }
@@ -739,15 +738,15 @@ namespace StarlightRiver.Core
         /// <returns>True if a pillar was successfully placed within an area</returns>
         public static bool GenPillar(int x, int y)
         {
-            int ceil = FindTypeUp(x, y, VitricBiome.Y - 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"));
-            int floor = FindType(x, y, VitricBiome.Bottom + 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"));
+            int ceil = FindTypeUp(x, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
+            int floor = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
             if (ceil == -1 || floor == -1 || ceil >= floor) return false; //If there's an invalid ceiling or floor, or if the floor is above or on the ceiling, kill
             int height = floor - ceil; //Height of pillar
             if (height < 7 || height > 50) return false; //If it's too short or too tall
             int wid = genRand.Next(3, 6); //Width of pillar
 
-            int GetHeight(int xPos) => Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand")));
-            int GetDepth(int xPos) => Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand")));
+            int GetHeight(int xPos) => Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type));
+            int GetDepth(int xPos) => Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type));
 
             for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
             {
@@ -763,15 +762,15 @@ namespace StarlightRiver.Core
                 int depth = genRand.Next(2) + 1;
                 if (Math.Abs(i) == wid || Math.Abs(i) == wid - 2) depth = (int)Math.Ceiling(height / 4f) + genRand.Next((int)Math.Ceiling(-height / 6f), (int)Math.Ceiling(height / 6f));
                 if (Math.Abs(i) == wid - 1) depth = (int)Math.Ceiling(height / 3f) + genRand.Next((int)Math.Ceiling(-height / 6f), (int)Math.Ceiling(height / 6f));
-                int ceilingY = FindTypeUp(x + i, y, VitricBiome.Y - 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"));
-                int floorY = FindType(x + i, y, VitricBiome.Bottom + 20, instance.TileType("VitricSand"), instance.TileType("VitricSoftSand"));
+                int ceilingY = FindTypeUp(x + i, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
+                int floorY = FindType(x + i, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
 
                 for (int j = 0; j < depth; ++j)
                 {
                     KillTile(x + i, ceilingY + j, false, false, true);
-                    PlaceTile(x + i, ceilingY + j, instance.TileType("AncientSandstone"), true, false);
+                    PlaceTile(x + i, ceilingY + j, instance.Find<ModItem>("AncientSandstone").Type, true, false);
                     KillTile(x + i, floorY - j, false, false, true);
-                    PlaceTile(x + i, floorY - j, instance.TileType("AncientSandstone"), true, false);
+                    PlaceTile(x + i, floorY - j, instance.Find<ModItem>("AncientSandstone").Type, true, false);
                 }
 
                 //Wall placement
@@ -802,8 +801,8 @@ namespace StarlightRiver.Core
                     if (tile.LiquidType == LiquidID.Water)
                         tile .LiquidAmount = 0;
 
-                    if (tile.type == TileID.Obsidian)
-                        tile.active(false);
+                    if (tile.TileType == TileID.Obsidian)
+                        tile.HasTile = false;
 				}
 		}
 
@@ -820,7 +819,7 @@ namespace StarlightRiver.Core
             {
                 if (y >= maxDepth)
                     break;
-                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].type))
+                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].TileType))
                     return y; //Returns first valid tile under intitial Y pos, -1 if max depth is reached
                 y++;
             }
@@ -840,7 +839,7 @@ namespace StarlightRiver.Core
             {
                 if (y <= minDepth)
                     break;
-                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].type))
+                if (Main.tile[x, y].HasTile && types.Any(i => i == Main.tile[x, y].TileType))
                     return y; //Returns first valid tile under intitial Y pos, -1 if max depth is reached
                 y--;
             }
@@ -852,7 +851,7 @@ namespace StarlightRiver.Core
             int count = 0;
             for (int i = x; i < x + wid; ++i)
                 for (int j = y; j < y + hei; ++j)
-                    if ((Main.tile[i, j].HasTile && Main.tile[i, j].collisionType == 1) || Main.tile[i, j] .LiquidAmount > 0) count++;
+                    if ((Main.tile[i, j].HasTile && Main.tile[i, j].BlockType == BlockType.Solid) || Main.tile[i, j] .LiquidAmount > 0) count++;
             return count;
         }
 

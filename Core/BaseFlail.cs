@@ -214,6 +214,7 @@ namespace StarlightRiver.Core
 				-Projectile.oldVelocity.Y / 5 : Projectile.velocity.Y);
 			SafeTileCollide(oldVelocity);
 			Timer = 30;
+
 			return false;
 		}
         public override bool PreDrawExtras()
@@ -221,6 +222,7 @@ namespace StarlightRiver.Core
 			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_chain").Value;
 			Player Owner = Main.player[Projectile.owner];
 			int timestodrawchain = Math.Max((int)(Projectile.Distance(Owner.MountedCenter) / ChainTexture.Width), 1);
+
 			for (int i = 0; i < timestodrawchain; i++)
 			{
 				Vector2 chaindrawpos = Vector2.Lerp(Owner.MountedCenter, Projectile.Center, (i / (float)timestodrawchain));
@@ -229,6 +231,7 @@ namespace StarlightRiver.Core
 				Color lightColor = Lighting.GetColor((int)chaindrawpos.X / 16, (int)chaindrawpos.Y / 16);
 				Main.spriteBatch.Draw(ChainTexture, chaindrawpos - Main.screenPosition, null, lightColor, Projectile.AngleFrom(Owner.MountedCenter), new Vector2(0, ChainTexture.Height / 2), chainscale, SpriteEffects.None, 0);
 			}
+
 			return true;
 		}
 	}
