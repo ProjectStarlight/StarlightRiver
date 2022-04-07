@@ -297,7 +297,7 @@ namespace StarlightRiver.Core
                     if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.HasTile && Main.tileSolid[t.type]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
                     {
                         PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
-                        t.slope(0);
+                        t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
                     }
                 }
@@ -320,7 +320,7 @@ namespace StarlightRiver.Core
                         if(t.type != TileType<VitricSpike>())
                             PlaceTile(x, y, instance.TileType("VitricSand"), false, true);
 
-                        t.slope(0);
+                        t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
                     }
 

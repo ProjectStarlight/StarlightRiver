@@ -612,10 +612,10 @@ namespace StarlightRiver.Core
                     tile.TileFrameY = (short)((frameStartY + yRel) * 18);
 
                     int r = radius - 1;
-                    if (xRel == 0 && yRel == 0) tile.slope(2);
-                    if (xRel == 0 && yRel == r) tile.slope(4);
-                    if (xRel == r && yRel == 0) tile.slope(1);
-                    if (xRel == r && yRel == r) tile.slope(3);
+                    if (xRel == 0 && yRel == 0) tile.Slope = SlopeType.SlopeDownRight;
+                    if (xRel == 0 && yRel == r) tile.Slope = SlopeType.SlopeUpRight;
+                    if (xRel == r && yRel == 0) tile.Slope = SlopeType.SlopeDownLeft;
+                    if (xRel == r && yRel == r) tile.Slope = SlopeType.SlopeUpLeft;
 
                     bool dummy = false; //this really shouldn't matter for anything but if something goes catastrophic here tell me
                     GetInstance<AuroraIce>().TileFrame(x, y, ref dummy, ref dummy);

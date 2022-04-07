@@ -336,7 +336,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
             {
-                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); //PORTTODO: Figure out source for this
+                Projectile.NewProjectile(null, Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); //PORTTODO: Figure out source for this
             }
 
             if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
@@ -345,6 +345,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 {
                     //PORTTODO: Figure out source for this
                     Projectile.NewProjectile(
+                        null,
                         target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
                         Vector2.Zero,
                         ModContent.ProjectileType<AmethystShard>(),

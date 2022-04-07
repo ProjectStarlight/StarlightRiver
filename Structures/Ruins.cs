@@ -34,7 +34,7 @@ namespace StarlightRiver.Structures
 
                                 for (int x2 = 0; x2 < 8; x2++) //every entry in the row
                                 {
-                                    Main.tile[x + x2, y + y2].slope(0);
+                                    Main.tile[x + x2, y + y2].Slope = SlopeType.Solid;
 
                                     ushort placeType = 0;
                                     ushort wallType = 0;
