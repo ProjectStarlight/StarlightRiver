@@ -8,12 +8,13 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
+using Terraria.IO;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
     {
-        private void ForestHerbGen(GenerationProgress progress)
+        private void ForestHerbGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Planting the forest...";
             for (int k = 60; k < Main.maxTilesX - 60; k++)

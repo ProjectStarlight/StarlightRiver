@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
+using Terraria.IO;
 using static Terraria.ModLoader.ModContent;
 using static Terraria.WorldGen;
 
@@ -35,7 +36,7 @@ namespace StarlightRiver.Core
 
         /// <summary>Generates the Vitric Desert under the Underground Desert.</summary>
         /// <param name="progress"></param>
-        public static void VitricGen(GenerationProgress progress)
+        public static void VitricGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Digging the Vitric Desert";
 

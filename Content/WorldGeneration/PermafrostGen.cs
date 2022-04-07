@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
+using Terraria.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
@@ -17,7 +18,7 @@ namespace StarlightRiver.Core
     {
         public static int permafrostCenter;
 
-        private void PermafrostGen(GenerationProgress progress)
+        private void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Permafrost generation";
 

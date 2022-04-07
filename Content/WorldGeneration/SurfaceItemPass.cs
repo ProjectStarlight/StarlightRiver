@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
@@ -11,7 +12,7 @@ namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
     {
-        private void SurfaceItemPass(GenerationProgress progress)
+        private void SurfaceItemPass(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Placing treasures";
             //Seaglass ring

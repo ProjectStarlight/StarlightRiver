@@ -3,12 +3,14 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.WorldBuilding;
+using Terraria.IO;
+using Terraria.ModLoader;
 
-namespace StarlightRiver.Structures
+namespace StarlightRiver.Core
 {
-	public partial class GenHelper
+    public partial class StarlightWorld : ModSystem
     {
-        public static void BookAltarGen(GenerationProgress progress)
+        public static void BookAltarGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Hiding Codex...";
 

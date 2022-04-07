@@ -3,12 +3,13 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.WorldBuilding;
+using Terraria.IO;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld
     {
-        public static void UndergroundTempleGen(GenerationProgress progress)
+        public static void UndergroundTempleGen(GenerationProgress progress, GameConfiguration configuration)
         {
             for (int x = 0; x < Main.maxTilesX - 200; x += WorldGen.genRand.Next(70, 130))
             {
