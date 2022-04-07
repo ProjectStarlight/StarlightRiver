@@ -217,9 +217,9 @@ namespace StarlightRiver.Core
 			return false;
 		}
 
-		public override bool PreDrawExtras(SpriteBatch spriteBatch)
+		public override bool PreDrawExtras()
 		{
-			Texture2D ChainTexture = Mod.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1).Value + "_chain");
+			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_chain").Value;
 			Player Owner = Main.player[Projectile.owner];
 			int timestodrawchain = Math.Max((int)(Projectile.Distance(Owner.MountedCenter) / ChainTexture.Width), 1);
 			for (int i = 0; i < timestodrawchain; i++)
@@ -228,7 +228,7 @@ namespace StarlightRiver.Core
 				float scaleratio = Projectile.Distance(Owner.MountedCenter) / ChainTexture.Width / timestodrawchain;
 				Vector2 chainscale = new Vector2(scaleratio, 1);
 				Color lightColor = Lighting.GetColor((int)chaindrawpos.X / 16, (int)chaindrawpos.Y / 16);
-				spriteBatch.Draw(ChainTexture, chaindrawpos - Main.screenPosition, null, lightColor, Projectile.AngleFrom(Owner.MountedCenter), new Vector2(0, ChainTexture.Height / 2), chainscale, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(ChainTexture, chaindrawpos - Main.screenPosition, null, lightColor, Projectile.AngleFrom(Owner.MountedCenter), new Vector2(0, ChainTexture.Height / 2), chainscale, SpriteEffects.None, 0);
 			}
 			return true;
 		}

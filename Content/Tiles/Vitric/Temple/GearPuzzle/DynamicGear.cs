@@ -59,10 +59,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
-			spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
 			Texture2D tex;
 
@@ -91,18 +91,18 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				if (gearAnimation > 20)
 				{
 					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);
-					spriteBatch.Draw(texOld, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
+					Main.spriteBatch.Draw(texOld, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, texOld.Size() / 2, progress, 0, 0);
 				}
 				else
 				{
 					float progress = Helpers.Helper.SwoopEase(1 - gearAnimation / 20f);
-					spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
+					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f * progress, 0, tex.Size() / 2, progress, 0, 0);
 				}
 
 				return;
 			}
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 
