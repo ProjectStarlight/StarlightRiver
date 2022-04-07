@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * NPC.height, NPC.width, NPC.height);
 
-					spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - Main.screenPosition, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
+					spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
 
 					break;
 			}

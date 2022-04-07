@@ -223,13 +223,13 @@ namespace StarlightRiver.Content.Items.Vitric
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             var tex = TextureAssets.Projectile[Projectile.type].Value;
             var color = lightColor * (DrawbackTime < 10 ? (DrawbackTime / 10f) : 1); //fadein   why did I write it like this? idk lol shoot me
             if (Projectile.timeLeft <= 5) color *= Projectile.timeLeft / 5f; //fadeout
 
-            spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
+            Main.EntitySpriteDraw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
                 tex.Frame(), color, Projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), Projectile.scale, 0, 0);
 
             return false;

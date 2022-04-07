@@ -63,7 +63,7 @@ namespace StarlightRiver.Tiles.Mushroom
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             var back = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroomBack").Value;
             var blob0 = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/JellyShroom0").Value;
@@ -76,7 +76,7 @@ namespace StarlightRiver.Tiles.Mushroom
             var mult = 0.05f;
             if (Projectile.ai[1] == 1)
                 mult = 0.05f + 0.00533333f * Projectile.ai[0] - 0.0000592593f * Projectile.ai[0] * Projectile.ai[0];
-
+            SpriteBatch spriteBatch = Main.spriteBatch;
             spriteBatch.Draw(back, pos, lightColor);
             DrawBlob(spriteBatch, blob0, pos + new Vector2(12, 0), 0, mult);
             DrawBlob(spriteBatch, blob1, pos + new Vector2(52, 42), 1, 0.15f);

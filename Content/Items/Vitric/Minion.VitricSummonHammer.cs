@@ -203,10 +203,10 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
             return true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Vector2 pos = Projectile.Center;
-
+            SpriteBatch spriteBatch = Main.spriteBatch;
             for (float xx = Math.Min(1f, (Projectile.velocity.Length() - 4f) / 2f); xx > 0; xx -= 0.10f)
             {
                 Vector2 drawPos = pos - Projectile.velocity * 6f * xx;
@@ -272,10 +272,10 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(Color lightColor)
         {
             if (Projectile.timeLeft < 21)
-                spriteBatch.Draw(TextureAssets.Tile[TileType].Value, Projectile.position - Main.screenPosition, new Rectangle(18, 0, 16, 16), lightColor);
+                Main.spriteBatch.Draw(TextureAssets.Tile[TileType].Value, Projectile.position - Main.screenPosition, new Rectangle(18, 0, 16, 16), lightColor);
 
             return false;
         }

@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>());
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             int timer = 120 - Projectile.timeLeft;
             Texture2D backTex = Request<Texture2D>(Texture).Value;
@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Texture2D tex = Request<Texture2D>(AssetDirectory.VitricItem + "VitricSummonKnife").Value;
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
-                spriteBatch.Draw(backTex, Projectile.oldPos[0] + Projectile.Size / 2 - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
-                spriteBatch.Draw(tex, Projectile.oldPos[0] + Projectile.Size / 2 - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
+                Main.EntitySpriteDraw(backTex, Projectile.oldPos[0] + Projectile.Size / 2 - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
+                Main.EntitySpriteDraw(tex, Projectile.oldPos[0] + Projectile.Size / 2 - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
                 Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
             }
             else
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int k = 0; k < ProjectileID.Sets.TrailCacheLength[Projectile.type]; k++)
                 {
                     float alpha = 1 - k / (float)ProjectileID.Sets.TrailCacheLength[Projectile.type];
-                    spriteBatch.Draw(backTex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, lightColor * alpha, Projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
+                    Main.EntitySpriteDraw(backTex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, lightColor * alpha, Projectile.oldRot[k], backTex.Size() / 2, 1, 0, 0);
                 }
             }
 

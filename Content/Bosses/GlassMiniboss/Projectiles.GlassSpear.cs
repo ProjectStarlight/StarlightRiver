@@ -54,12 +54,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.velocity *= 1.28f;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             int timer = 130 - Projectile.timeLeft;
             Texture2D backTex = Request<Texture2D>(Texture).Value;
 
-            spriteBatch.Draw(backTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
+            Main.EntitySpriteDraw(backTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
 
             if (timer < 60)
             {
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Texture2D tex = Request<Texture2D>(AssetDirectory.VitricItem + "VitricSummonJavelin").Value;
                 Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
 
-                spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
+                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
                 Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
             }
 
