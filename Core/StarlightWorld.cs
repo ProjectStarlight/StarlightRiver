@@ -53,10 +53,6 @@ namespace StarlightRiver.Core
 
         public static List<Key> KeyInventory = new List<Key>();
 
-        //temporary space event stuff
-        public static bool spaceEventActive;
-        public static float spaceEventFade;
-
         public static Rectangle VitricBossArena => new Rectangle(VitricBiome.X + VitricBiome.Width / 2 - 59, VitricBiome.Y - 1, 108, 74); //ceiros arena
 
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
