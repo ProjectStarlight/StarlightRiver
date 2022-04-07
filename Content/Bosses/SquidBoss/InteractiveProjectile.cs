@@ -21,19 +21,29 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             SafeKill(timeLeft);
 
-            if (ValidPoints.Count(n => Main.tile[n.X, n.Y].HasTile) == ValidPoints.Count) GoodEffects();
-            else BadEffects();
+            if (ValidPoints.Count(n => Main.tile[n.X, n.Y].HasTile) == ValidPoints.Count) 
+                GoodEffects();
+            else 
+                BadEffects();
 
-            foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
+            foreach (Point16 point in ValidPoints)
+            {
+                WorldGen.KillTile(point.X, point.Y);
+            }
         }
 
         public sealed override void PostAI() //need to do this early to make sure all blocks get cucked
         {
             foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
+            {
                 Framing.GetTileSafely(point.X, point.Y).IsActuated = false;
+            }
 
             if (Projectile.timeLeft < 10)
-                foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
+                foreach (Point16 point in ValidPoints)
+                {
+                    WorldGen.KillTile(point.X, point.Y);
+                }
         }
 
         public override void PostDraw(Color lightColor)
