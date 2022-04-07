@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -28,5 +29,20 @@ namespace StarlightRiver.Content.Biomes
         {
 			return spaceEventActive;//this is here for now to stick with the old style
 		}
+    }
+
+    public class FirstContactSystem : ModSystem
+    {
+        public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
+        {
+            TargetHost.Maps?.OrderedShaderPass();
+            TargetHost.Maps?.OrderedRenderPassBatched(Main.spriteBatch, Main.graphics.GraphicsDevice);
+
+            if (FirstContactEvent.spaceEventFade > 0) //PORTTODO: Move this to a ModSceneEffect
+            {
+                tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), FirstContactEvent.spaceEventFade);
+                backgroundColor = Color.Lerp(Color.White, new Color(17, 15, 30), FirstContactEvent.spaceEventFade);
+            }
+        }
     }
 }
