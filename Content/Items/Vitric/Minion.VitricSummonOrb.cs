@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.Vitric
             return MoltenGlowc;
         }
 
-        public override bool CanDamage() => false;
+        public override bool? CanDamage() => false;
 
         public override bool MinionContactDamage() => false;
 
@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Vitric
             ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
             Main.projPet[Projectile.type] = true;
             ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
         }
 
         public sealed override void SetDefaults()
@@ -358,7 +358,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 float targetdistance = target.Distance(Projectile.Center);
                 if (attack == (int)WeaponType.Hammer && targetdistance < 72)
                 {
-                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.Center, Projectile.velocity / 3f, ModContent.ProjectileType<VitricSummonHammer>(), Projectile.damage, Projectile.knockBack + 2f, Projectile.owner)];
+                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity / 3f, ModContent.ProjectileType<VitricSummonHammer>(), Projectile.damage, Projectile.knockBack + 2f, Projectile.owner)];
                     proj.ai[0] = Projectile.rotation + (Projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     Projectile.ai[1] = 80;
@@ -369,7 +369,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (attack == (int)WeaponType.Sword && targetdistance < 80)
                 {
-                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.Center, Projectile.velocity * 10.50f, ModContent.ProjectileType<VitricSummonSword>(), Projectile.damage, Projectile.knockBack + 1f, Projectile.owner)];
+                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity * 10.50f, ModContent.ProjectileType<VitricSummonSword>(), Projectile.damage, Projectile.knockBack + 1f, Projectile.owner)];
                     proj.ai[0] = Projectile.rotation + (Projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     Projectile.ai[1] = 80;
@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     int index = 0;
                     foreach (VKnife knife in knives)
                     {
-                        Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.Center + knife.pos, Projectile.velocity * 2, ModContent.ProjectileType<VitricSummonKnife>(), Projectile.damage, Projectile.knockBack, Projectile.owner)];
+                        Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center + knife.pos, Projectile.velocity * 2, ModContent.ProjectileType<VitricSummonKnife>(), Projectile.damage, Projectile.knockBack, Projectile.owner)];
                         proj.ai[0] = Projectile.rotation + knife.rotation + (Projectile.spriteDirection > 0 ? 0 : 1000);
                         proj.ai[1] = target.whoAmI;
                         (proj.ModProjectile as VitricSummonKnife).offset = new Vector2(0, -10 + index * 10);
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (attack == (int)WeaponType.Javelin && targetdistance < 300)
                 {
-                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.Center, Projectile.velocity * -5f, ModContent.ProjectileType<VitricSummonJavelin>(), Projectile.damage, Projectile.knockBack, Projectile.owner)];
+                    Projectile proj = Main.projectile[Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity * -5f, ModContent.ProjectileType<VitricSummonJavelin>(), Projectile.damage, Projectile.knockBack, Projectile.owner)];
                     proj.ai[0] = Projectile.rotation + (Projectile.spriteDirection > 0 ? 0 : 1000);
                     proj.ai[1] = target.whoAmI;
                     Projectile.ai[1] = 80;
