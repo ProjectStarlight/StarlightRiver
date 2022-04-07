@@ -76,17 +76,16 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                 for (int k = 0; k < 1000; k++) Dust.NewDustPerfect(target.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, 3);
             }
         }
-
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Overgrow/CrusherGlow").Value;
             Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/NPCs/Overgrow/CrusherTile").Value;
 
-            spriteBatch.Draw(tex, NPC.Center - Main.screenPosition + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(NPC.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
+            spriteBatch.Draw(tex, NPC.Center - screenPos + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(NPC.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
 
             int count = NPC.ai[0] < 10 ? (int)NPC.ai[0] / 3 : NPC.ai[0] > 40 ? (60 - (int)NPC.ai[0]) / 4 : 3;
             for (int k = 1; k <= count; k++)
-                spriteBatch.Draw(tex2, NPC.position - Main.screenPosition + new Vector2(8, -48 - k * 28), drawColor);
+                spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * 28), drawColor);
         }
     }
 }

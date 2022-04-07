@@ -51,13 +51,13 @@ namespace StarlightRiver.Content.Pickups
             }
         }
 
-        public override void PickupEffects(Player Player)
+        public override void PickupEffects(Player player)
         {
-            CodexHandler mp = Player.GetModPlayer<CodexHandler>();
+            CodexHandler mp = player.GetModPlayer<CodexHandler>();
             mp.CodexState = 1;
 
-            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 120;
-            Player.AddBuff(BuffID.Featherfall, 130);
+            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 120;
+            player.AddBuff(BuffID.Featherfall, 130);
         }
     }
 

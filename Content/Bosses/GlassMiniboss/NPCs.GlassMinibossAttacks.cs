@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 for (int k = 0; k < 9; k++)
                 {
-                    Projectile.NewProjectile(NPC.Center + new Vector2(0, -120), Vector2.Zero, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, NPC.target, (k - 7) * 0.05f);
+                    Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(),NPC.Center + new Vector2(0, -120), Vector2.Zero, ProjectileType<GlassKnife>(), 15, 1, Main.myPlayer, NPC.target, (k - 7) * 0.05f);
                 }
             }
 
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 30) //stop and spawn Projectile
             {
                 NPC.velocity *= 0;
-                Projectile.NewProjectile(NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.direction, NPC.whoAmI);
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.direction, NPC.whoAmI);
             }
 
             if (AttackTimer >= 110)
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int k = 0; k < 6; k++)
                 {
                     if ((k / 2) != exclude) //leave an opening!
-                        Projectile.NewProjectile(NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
+                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
                 }
             }
 

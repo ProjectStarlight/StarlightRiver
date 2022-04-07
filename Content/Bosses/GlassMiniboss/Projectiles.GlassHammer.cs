@@ -36,8 +36,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.timeLeft == 60)
             {
                 origin = Projectile.Center; //sets origin when spawned
-                Projectile.NewProjectile(Parent.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer); //Shockwave spawners
-                Projectile.NewProjectile(Parent.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer);
+                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * 10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer); //Shockwave spawners
+                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * -10, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer);
             }
 
             if (Projectile.timeLeft >= 30)
@@ -73,11 +73,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Rectangle frame = new Rectangle(0, 166 * (int)((60 - Projectile.timeLeft) / 40f * 12), 214, 166);
             if (Projectile.timeLeft <= 20) frame.Y = 12 * 166;
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, origin + new Vector2(-100, -130) - Main.screenPosition, frame, Color.White, 0, Vector2.Zero, 1, Projectile.ai[0] == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
+            Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, origin + new Vector2(-100, -130) - Main.screenPosition, frame, Color.White, 0, Vector2.Zero, 1, Projectile.ai[0] == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
 
             return false;
         }
@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.position.Y -= 128;
 
             if (Projectile.timeLeft < 150 && Projectile.velocity.Y == 0 && Projectile.timeLeft % 20 == 0)
-                Projectile.NewProjectile(Projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), Projectile.damage, 0, Projectile.owner);
+                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), Projectile.damage, 0, Projectile.owner);
 
             if (Projectile.velocity.X == 0)
                 Projectile.Kill();
@@ -166,13 +166,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.height = off;
             }
         }
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+            behindNPCsAndTiles.Add(index);
+        }
 
-		public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-		{
-            drawCacheProjsBehindNPCsAndTiles.Add(index);
-		}
-
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(ref Color lightColor)
         {
             if (Projectile.ai[0] > 50)
             {
@@ -185,9 +184,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 Rectangle targetRect = new Rectangle((int)(Projectile.position.X - Main.screenPosition.X) + off / 4, (int)(Projectile.ai[1] - off + 26 - Main.screenPosition.Y), tex.Width, off);
                 Rectangle sourceRect = new Rectangle(0, 0, tex.Width, off);
-                spriteBatch.Draw(tex, targetRect, sourceRect, lightColor, 0, Vector2.Zero, 0, 0);
-
-
+                Main.spriteBatch.Draw(tex, targetRect, sourceRect, lightColor, 0, Vector2.Zero, 0, 0);
             }
         }
 

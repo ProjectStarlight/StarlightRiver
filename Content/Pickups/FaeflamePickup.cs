@@ -44,13 +44,13 @@ namespace StarlightRiver.Content.Pickups
             }
         }
 
-        public override void PickupEffects(Player Player)
+        public override void PickupEffects(Player player)
         {
-            AbilityHandler mp = Player.GetHandler();
+            AbilityHandler mp = player.GetHandler();
             mp.Unlock<Whip>();
 
-            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
-            Player.AddBuff(BuffID.Featherfall, 580);
+            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
+            player.AddBuff(BuffID.Featherfall, 580);
         }
     }
 

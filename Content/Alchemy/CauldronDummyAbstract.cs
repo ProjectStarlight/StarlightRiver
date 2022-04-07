@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Alchemy
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             if (mostRecentIngredient != null && wrapper.bubbleOpacity > 0f)
             {
@@ -129,6 +129,7 @@ namespace StarlightRiver.Content.Alchemy
                     wrapper.bubbleOpacity = 1f;
 
                 wrapper.bubbleColor.A = (byte)(wrapper.bubbleColor.A * wrapper.bubbleOpacity);
+                SpriteBatch spriteBatch = Main.spriteBatch;
                 spriteBatch.Draw(bubbleSheet, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
 
                 spriteBatch.End();
