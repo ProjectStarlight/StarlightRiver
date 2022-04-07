@@ -20,17 +20,17 @@ namespace StarlightRiver.Content.Items.Misc
             Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player Player)
+        public override void SafeUpdateEquip(Player player)
         {
-            Player.jumpBoost = true;
-            if (Player.velocity.Y != 0 && Player.wings <= 0 && !Player.mount.Active)
+            player.jumpBoost = true;
+            if (player.velocity.Y != 0 && player.wings <= 0 && !player.mount.Active)
             {
-                Player.runAcceleration *= 2f;
-                Player.maxRunSpeed *= 1.5f;
+                player.runAcceleration *= 2f;
+                player.maxRunSpeed *= 1.5f;
             }
 
-            if (Player.controlUp && Player.velocity.Y > 0)
-                Player.AddBuff(BuffID.Featherfall, 5);
+            if (player.controlUp && player.velocity.Y > 0)
+                player.AddBuff(BuffID.Featherfall, 5);
         }
 
         public override void AddRecipes()

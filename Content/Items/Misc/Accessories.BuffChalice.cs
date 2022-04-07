@@ -19,14 +19,14 @@ namespace StarlightRiver.Content.Items.Misc
 			
 		}
 
-		private void ChaliceEffects(Player Player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
+		private void ChaliceEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
 		{
-			if (Equipped(Player))
+			if (Equipped(player))
 			{
 				for (int k = 0; k < 5; k++)
 				{
 					if (oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k])
-						Player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
+						player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
 				}
 			}
 		}

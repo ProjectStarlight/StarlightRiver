@@ -130,10 +130,10 @@ namespace StarlightRiver.Content.CustomHooks
             return orig(i, j, type, mute, forced, plr, style);
         }
 
-        public override bool CanUseItem(Item Item, Player Player)
+        public override bool CanUseItem(Item Item, Player player)
 		{
-            if (Player != Main.LocalPlayer)
-                return base.CanUseItem(Item, Player);
+            if (player != Main.LocalPlayer)
+                return base.CanUseItem(Item, player);
 
             //list of Item ids that don't place Items in the normal way so we need to specifically take them out
             List<int> forbiddenItemIds = new List<int>{ ItemID.WaterBucket, ItemID.LavaBucket, ItemID.HoneyBucket, ItemID.BottomlessBucket,
@@ -156,23 +156,23 @@ namespace StarlightRiver.Content.CustomHooks
 
                         if (proj.active && proj.timeLeft > 10 && proj.ModProjectile is InteractiveProjectile && (proj.ModProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
                         {
-                            return base.CanUseItem(Item, Player);
+                            return base.CanUseItem(Item, player);
                         }
                     }
-                    Player.AddBuff(BuffID.Cursed, 10, false);
+                    player.AddBuff(BuffID.Cursed, 10, false);
                     FailFX(targetPoint);
                     return false;
                 }
 
                 if (IsProtected(targetPoint.X, targetPoint.Y))
                 {
-                    Player.AddBuff(BuffID.Cursed, 10, false);
+                    player.AddBuff(BuffID.Cursed, 10, false);
                     FailFX(targetPoint);
                     return false;
                 }
             }
 
-            return base.CanUseItem(Item, Player);
+            return base.CanUseItem(Item, player);
         }
 
         private void FailFX(Point16 pos)

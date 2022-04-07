@@ -99,15 +99,15 @@ namespace StarlightRiver.Content.Items.Misc
         }
 
         public override bool ItemSpace(Player Player) => true;
-        public override bool OnPickup(Player Player)
+        public override bool OnPickup(Player player)
         {
-            int healAmount = (int)MathHelper.Min(Player.statLifeMax2 - Player.statLife, 10);
-            Player.HealEffect(10);
-            Player.statLife += healAmount;
+            int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 10);
+            player.HealEffect(10);
+            player.statLife += healAmount;
 
-            Player.AddBuff(BuffID.WellFed, 18000);
-            Player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)Player.position.X, (int)Player.position.Y);
+            player.AddBuff(BuffID.WellFed, 18000);
+            player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
             return false;
         }
     }

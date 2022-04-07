@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
         }
 
-        public override void FloorVisuals(Player Player) => 
-            Player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+        public override void FloorVisuals(Player player) => 
+            player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
     }
 }

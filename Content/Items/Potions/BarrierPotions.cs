@@ -44,14 +44,14 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override bool CanUseItem(Player Player) => !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
 
-		public override bool? UseItem(Player Player)
+		public override bool? UseItem(Player player)
 		{
-			Player.GetModPlayer<BarrierPlayer>().Barrier += amount;
-			Player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
-			Player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
-			Player.AddBuff(BuffID.PotionSickness, 1200);
+			player.GetModPlayer<BarrierPlayer>().Barrier += amount;
+			player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
+			player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
+			player.AddBuff(BuffID.PotionSickness, 1200);
 
-			CombatText.NewText(Player.Hitbox, new Color(150, 255, 255), amount);
+			CombatText.NewText(player.Hitbox, new Color(150, 255, 255), amount);
 
 			return true;
 		}

@@ -225,8 +225,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			for (int i = 0; i < Main.player.Length; i++)
 			{
-				Player Player = Main.player[i];
-				if (Player.active && Player.Distance(Projectile.Center) < 150 && !Player.dead)
+				Player player = Main.player[i];
+				if (player.active && player.Distance(Projectile.Center) < 150 && !player.dead)
 				{
 					int buffType = -1;
 					switch (state)
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Items.Breacher
 							buffType = ModContent.BuffType<SupplyBeaconDamage>();
 							break;
 					}
-					Player.AddBuff(buffType, 2);
+					player.AddBuff(buffType, 2);
 				}
 			}
 		}

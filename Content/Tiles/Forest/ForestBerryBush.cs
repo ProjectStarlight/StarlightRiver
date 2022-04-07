@@ -99,9 +99,9 @@ namespace StarlightRiver.Content.Tiles.Forest
             Item.UseSound = SoundID.Item2;
         }
 
-        public override bool? UseItem(Player Player)
+        public override bool? UseItem(Player player)
         {
-            Player.AddBuff(BuffID.PotionSickness, 15);
+            player.AddBuff(BuffID.PotionSickness, 15);
             return true;
         }
     }

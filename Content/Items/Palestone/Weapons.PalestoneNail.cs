@@ -46,7 +46,8 @@ namespace StarlightRiver.Content.Items.Palestone
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             // This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
-            Player.AddBuff(Item.buffType, 2);
+            player.AddBuff(Item.buffType, 2);
+            
 
             // Here you can change where the minion is spawned. Most vanilla minions spawn at the cursor position.
             position = Main.MouseWorld;

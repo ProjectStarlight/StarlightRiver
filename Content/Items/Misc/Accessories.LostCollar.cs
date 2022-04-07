@@ -26,14 +26,14 @@ namespace StarlightRiver.Content.Items.Misc
 			
 		}
 
-		private void CollarEffects(Player Player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
+		private void CollarEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
 		{
-			if (Equipped(Player))
+			if (Equipped(player))
 			{
 				for (int k = 0; k < 5; k++)
 				{
-					if ((oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k]) && Main.debuff[Player.buffType[k]])
-						Player.AddBuff(newTypes[k], newTimes[k]);
+					if ((oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k]) && Main.debuff[player.buffType[k]])
+						player.AddBuff(newTypes[k], newTimes[k]);
 				}
 			}
 		}

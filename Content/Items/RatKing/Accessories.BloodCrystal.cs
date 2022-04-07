@@ -48,15 +48,15 @@ namespace StarlightRiver.Content.Items.RatKing
 			StatusTrackingNPC.buffCompareEffects -= buffCompareEffects;
 		}
 
-		private void buffCompareEffects(Player Player, NPC NPC, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
+		private void buffCompareEffects(Player player, NPC NPC, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
         {
-			if (Player.GetModPlayer<BloodCrystalPlayer>().equipped)
+			if (player.GetModPlayer<BloodCrystalPlayer>().equipped)
 			{
 				for (int i = 0; i < 5; i++)
                 {
 					if (!storedBuffs.Contains(buffType[i]))
                     {
-						Player.AddBuff(buffType[i], buffTime[i] / 4);
+						player.AddBuff(buffType[i], buffTime[i] / 4);
 						buffTime[i] = (int)(buffTime[i] * 1.25f);
 					}
 					else
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.RatKing
 						if (storedTimes[storedIndex] != buffTime[i] && storedTimes[storedIndex] - 1 != buffTime[i])
                         {
 							buffTime[i] = storedTimes[storedIndex] + (int)(buffTime[i] * 0.25f);
-							Player.AddBuff(buffType[i], buffTime[i] / 4);
+							player.AddBuff(buffType[i], buffTime[i] / 4);
 						}
 
 					}

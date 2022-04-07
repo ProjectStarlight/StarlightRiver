@@ -116,10 +116,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             for (int k = 0; k < Main.maxPlayers; k++)
             {
-                Player Player = Main.player[k];
+                Player player = Main.player[k];
 
-                if (Player.active && Player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)NPC.ai[0])))
-                    Player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
+                if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)NPC.ai[0])))
+                    player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
             }
 
             for (int k = 0; k < Main.maxItems; k++)

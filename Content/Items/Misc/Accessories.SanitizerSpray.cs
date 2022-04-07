@@ -53,11 +53,11 @@ namespace StarlightRiver.Content.Items.Misc
 
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC NPC = Main.npc[i];
+                NPC npc = Main.npc[i];
 
-                if (NPC.CanBeChasedBy() && Vector2.DistanceSquared(Player.Center, NPC.Center) < transferRadius * transferRadius)
+                if (npc.CanBeChasedBy() && Vector2.DistanceSquared(Player.Center, npc.Center) < transferRadius * transferRadius)
                 {
-                    NPC.AddBuff(type, transferredBuffDuration);
+                    npc.AddBuff(type, transferredBuffDuration);
                 }
             }
         }
