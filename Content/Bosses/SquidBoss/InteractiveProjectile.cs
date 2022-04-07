@@ -30,20 +30,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public sealed override void PostAI() //need to do this early to make sure all blocks get cucked
         {
             foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
-                Main.tile[point.X, point.Y].inActive(false);
+                Framing.GetTileSafely(point.X, point.Y).IsActuated = false;
 
             if (Projectile.timeLeft < 10)
                 foreach (Point16 point in ValidPoints) WorldGen.KillTile(point.X, point.Y);
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "Highlight").Value;
             int off = 16 * ((int)Projectile.ai[0] % 5);
 
             if (Projectile.timeLeft > 10)
                 foreach (Point16 point in ValidPoints)
-                    if (!Main.tile[point.X, point.Y].HasTile) spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
+                {
+                    if (!Main.tile[point.X, point.Y].HasTile)
+                        Main.spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
+                }
+
             Projectile.ai[0] += 0.2f;
         }
 
