@@ -23,7 +23,7 @@ namespace StarlightRiver.Core
             for (int i = WorldGen.UndergroundDesertLocation.X; i < Main.maxTilesX; i++)
                 for (int j = 0; j < Main.maxTilesY; j++)
                 {
-                    if (Main.tile[i, j].type == TileID.Sand)
+                    if (Main.tile[i, j].TileType == TileID.Sand)
                     {
                         if (Helper.AirScanUp(new Vector2(i, j), 40)) return new Vector2(i, j - 30);
                         else break;

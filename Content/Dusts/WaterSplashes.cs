@@ -8,9 +8,9 @@ namespace StarlightRiver.Content.Dusts
     {
         public override string Texture => AssetDirectory.Dust + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            updateType = 33;
+            UpdateType = 33;
         }
 
         public override void OnSpawn(Dust dust)
