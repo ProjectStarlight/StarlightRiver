@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
                     {
                         for (int y = 10; y < Main.worldSurface; y++)
                         {
-                            if (Main.tile[k, y].type == TileID.Grass && Main.tile[k + 1, y].type == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
+                            if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
                                 var type = TileType<ForestBerryBush>();
                                 if (WorldGen.genRand.Next(4) == 0)
@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 
                             for (int w = -2; w < 2; ++w) //Scans are for valid placement (fixed some really bizzare placement issues)
                             {
-                                if (Main.tile[k, y].type != TileID.Grass || !Main.tile[k, y].HasTile)
+                                if (Main.tile[k, y].TileType != TileID.Grass || !Main.tile[k, y].HasTile)
                                 {
                                     canPlace = false;
                                     break;
@@ -61,24 +61,6 @@ namespace StarlightRiver.Core
                     }
                 }
 
-                for (int j = 15; j < Main.worldSurface; j++) //ivy
-                {
-                    if (WorldGen.genRand.Next(500) == 0) //a check for grass could also be here which would speed up this step
-                    {
-                        int size = WorldGen.genRand.Next(6, 15);
-
-                        for (int x = k - size / 2; x < k + size / 2; x++)
-                            for (int y = j - size / 2; y < j + size / 2; y++)
-                            {
-                                if (Main.tile[x, y].HasTile && Main.tile[x, y].type == TileID.Grass && Main.tile[x, y - 1].collisionType != 1 && Main.tile[x, y].Slope == SlopeType.Solid) //!Main.tileSolid[Main.tile[x, y - 1].type] may be redundant
-                                {
-                                    WorldGen.PlaceTile(x, y - 1, TileType<Tiles.Herbology.ForestIvyWild>()); //this line throws a stack overflow on worldgen SOMEHOW?!?! ONLY WHEN IT ROLLS FOR SLIME BUSHES VERSUS BERRIES?!?!?! WHAT
-                                    break;
-                                }
-                            }
-                    }
-                }
-
                 if (WorldGen.genRand.Next(30) == 0 && AnyGrass(k))
                 {
                     int size = WorldGen.genRand.Next(10, 15);
@@ -91,7 +73,7 @@ namespace StarlightRiver.Core
                             break;
                                                    
                         for (int j = 50; j < Main.worldSurface; j++) //Wall Bushes
-                            if (Main.tile[k + x, j].wall != 0 && Main.tile[k, j].wall != WallType<LeafWall>()) 
+                            if (Main.tile[k + x, j].WallType != 0 && Main.tile[k, j].WallType != WallType<LeafWall>()) 
                             {
                                 surface = j; 
                                 break; 
@@ -106,7 +88,7 @@ namespace StarlightRiver.Core
                         {
                             WorldGen.PlaceWall(k + x, y, WallType<LeafWall>());
 
-                            if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].wall != 0) 
+                            if (y - surface > 20 || !WorldGen.InWorld(k + x, y + 1) || Main.tile[k + x, y + 1].WallType != 0) 
                                 break;
                         }
 
@@ -146,7 +128,7 @@ namespace StarlightRiver.Core
         private static bool AnyGrass(int x)
         {
             for (int y = 10; y < Main.maxTilesY; y++)
-                if (Main.tile[x, y].type == TileID.Grass) return true;
+                if (Main.tile[x, y].TileType == TileID.Grass) return true;
 
             return false;
         }
