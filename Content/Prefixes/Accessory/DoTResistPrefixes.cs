@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
         public override PrefixCategory Category => PrefixCategory.Accessory;
 
-        public override void SetDefaults() => DisplayName.SetDefault(name);
+        public override void SetStaticDefaults() => DisplayName.SetDefault(name);
 
         public override void ModifyValue(ref float valueMult) => valueMult *= 1 + 0.05f * power;
 
