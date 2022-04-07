@@ -85,7 +85,7 @@ namespace StarlightRiver.Core
 		public override void AI()
 		{
 			Player Owner = Main.player[Projectile.owner];
-			Owner.ItemTime = 2;
+			Owner.itemTime = 2;
 			Owner.itemAnimation = 2;
 			Owner.heldProj = Projectile.whoAmI;
 			if (!Owner.channel && !released) //check to see if Player stops channelling
@@ -97,7 +97,7 @@ namespace StarlightRiver.Core
 
 			if (Owner.channel && !released) //spinning around the Player
 			{
-				Owner.ItemRotation = 0;
+				Owner.itemRotation = 0;
 				Projectile.velocity = Vector2.Zero;
 				Projectile.tileCollide = false;
 				Projectile.rotation = Projectile.AngleFrom(Owner.MountedCenter);
@@ -120,7 +120,7 @@ namespace StarlightRiver.Core
 			{
 				Projectile.rotation += Projectile.velocity.X * 0.03f;
 				Owner.ChangeDir(Math.Sign(Projectile.Center.X - Owner.Center.X));
-				Owner.ItemRotation = MathHelper.WrapAngle(Projectile.AngleFrom(Owner.MountedCenter) - ((Owner.direction < 0) ? MathHelper.Pi : 0));
+				Owner.itemRotation = MathHelper.WrapAngle(Projectile.AngleFrom(Owner.MountedCenter) - ((Owner.direction < 0) ? MathHelper.Pi : 0));
 			}
 
 			float launchspeed = Owner.HeldItem.shootSpeed * MathHelper.Lerp(SpeedMult.X, SpeedMult.Y, ChargeTime / MaxChargeTime);

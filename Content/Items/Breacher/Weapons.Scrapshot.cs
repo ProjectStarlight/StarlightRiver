@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 if (Main.myPlayer == player.whoAmI)
                 {
-                    int i = Projectile.NewProjectile(player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
+                    int i = Projectile.NewProjectile(player.GetProjectileSource_Item(Item) ,player.Center, new Vector2(speedX, speedY), ModContent.ProjectileType<ScrapshotHook>(), Item.damage, (int)Item.knockBack, player.whoAmI);
                     hook = Main.projectile[i].ModProjectile as ScrapshotHook;
                 }
 
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                 bool shoot = true;
 
-                player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, out int ammoID, !ConsumeAmmo(player)); //PORTTODO: Use ammoID somewhere? Maybe?
+                player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, out int ammoID, !CanConsumeAmmo(player));
                 shoot = player.HasAmmo(sample, shoot);
 
                 if (!shoot)
@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                     if (Main.myPlayer == player.whoAmI)
                     {
-                        int i = Projectile.NewProjectile(player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
+                        int i = Projectile.NewProjectile(player.GetProjectileSource_Item_WithPotentialAmmo(Item, Item.useAmmo), player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
 
                         if (type != ModContent.ProjectileType<ScrapshotShrapnel>())
                             Main.projectile[i].timeLeft = 30;

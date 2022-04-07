@@ -56,8 +56,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            JetwelderPlayer modPlayer = Player.GetModPlayer<JetwelderPlayer>();
-            if (Player.altFunctionUse == 2)
+            JetwelderPlayer modPlayer = player.GetModPlayer<JetwelderPlayer>();
+            if (player.altFunctionUse == 2)
             {
                 clickingRight = true;
                 type = ModContent.ProjectileType<JetwelderSelector>();
@@ -131,27 +131,27 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.ignoreWater = true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            DrawRobot(spriteBatch,
+            DrawRobot(Main.spriteBatch,
                       ModContent.Request<Texture2D>(Texture + "_Crawler").Value,
                       ModContent.Request<Texture2D>(Texture + "_Crawler_Gray").Value,
                       -2 * PiOverFour,
                       5,
                       crawlerScale);
-            DrawRobot(spriteBatch,
+            DrawRobot(Main.spriteBatch,
                       ModContent.Request<Texture2D>(Texture + "_Jumper").Value,
                       ModContent.Request<Texture2D>(Texture + "_Jumper_Gray").Value,
                       0 * PiOverFour,
                       10,
                       jumperScale);
-            DrawRobot(spriteBatch,
+            DrawRobot(Main.spriteBatch,
                       ModContent.Request<Texture2D>(Texture + "_Gatler").Value,
                       ModContent.Request<Texture2D>(Texture + "_Gatler_Gray").Value,
                       2 * PiOverFour,
                       15,
                       gatlerScale);
-            DrawRobot(spriteBatch,
+            DrawRobot(Main.spriteBatch,
                       ModContent.Request<Texture2D>(Texture + "_Final").Value,
                       ModContent.Request<Texture2D>(Texture + "_Final_Gray").Value,
                       4 * PiOverFour, //Yes I know this is PI but it's consistant this way
@@ -178,12 +178,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
                 Player.ChangeDir(Math.Sign(direction.X));
 
-                Player.ItemTime = Player.itemAnimation = 2;
-                Player.ItemRotation = direction.ToRotation();
+                Player.itemTime = Player.itemAnimation = 2;
+                Player.itemRotation = direction.ToRotation();
                 if (Player.direction != 1)
-                    Player.ItemRotation -= 3.14f;
+                    Player.itemRotation -= 3.14f;
 
-                Player.ItemRotation = MathHelper.WrapAngle(Player.ItemRotation);
+                Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
 
                 rotation = MathHelper.WrapAngle(direction.ToRotation());
 
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                             Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()), 1f);
                         }
                     }
-                    Projectile.NewProjectile(position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+                    Projectile.NewProjectile(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
                 }
             }
         }
@@ -368,18 +368,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             if (Player.channel)
             {
                 Projectile.timeLeft = 2;
-                Player.ItemTime = Player.itemAnimation = 2;
+                Player.itemTime = Player.itemAnimation = 2;
 
                 direction = Player.DirectionTo(Main.MouseWorld);
                 direction.Normalize();
                 Player.ChangeDir(Math.Sign(direction.X));
 
-                Player.ItemRotation = direction.ToRotation();
+                Player.itemRotation = direction.ToRotation();
 
                 if (Player.direction != 1)
-                    Player.ItemRotation -= 3.14f;
+                    Player.itemRotation -= 3.14f;
 
-                Player.ItemRotation = MathHelper.WrapAngle(Player.ItemRotation);
+                Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
             }
             Projectile.rotation = direction.ToRotation();
             Projectile.Center = Player.Center + new Vector2(0, Player.gfxOffY) + new Vector2(30, -18 * Player.direction).RotatedBy(Projectile.rotation);
@@ -399,7 +399,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 target.AddBuff(BuffID.OnFire, 150);
             knockback = 0;
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
@@ -411,9 +411,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             Color bloomColor = Color.White;
             bloomColor.A = 0;
-            spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
+            Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
 
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
 
             return false;
         }
@@ -442,7 +442,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 SpawnScrap(target.Center);
         }
 
-        private static void SpawnScrap(Vector2 position)
+        private void SpawnScrap(Vector2 position)
         {
             int ItemType = ModContent.ItemType<JetwelderScrap1>();
             switch (Main.rand.Next(4))
@@ -460,7 +460,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     ItemType = ModContent.ItemType<JetwelderScrap4>();
                     break;
             }
-            Item.NewItem(position, ItemType);
+            Item.NewItem(Projectile.GetItemSource_FromThis(), position, ItemType);
         }
     }
     public abstract class JetwelderScrap : ModItem

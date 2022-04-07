@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Projectiles
             Player Player = Main.player[Projectile.owner];
 
             Player.heldProj = Projectile.whoAmI;
-            Player.ItemTime = Player.itemAnimation;
+            Player.itemTime = Player.itemAnimation;
 
             int realDuration = (int)(Duration * Player.meleeSpeed);
             if (Projectile.timeLeft == Duration) Projectile.timeLeft = realDuration;

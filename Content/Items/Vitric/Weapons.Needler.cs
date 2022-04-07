@@ -58,11 +58,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Helper.PlayPitched("Guns/SMG2", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			Vector2 direction = velocity;
-			float ItemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
-			direction = direction.RotatedBy(ItemRotation * 2);
+			float itemRotation = Main.rand.NextFloat(-0.1f, 0.1f);
+			direction = direction.RotatedBy(itemRotation * 2);
 			Projectile.NewProjectile(source, position, direction, type, damage, knockback, player.whoAmI);
 
-			direction = velocity.RotatedBy(ItemRotation);
+			direction = velocity.RotatedBy(itemRotation);
 
 			for (int i = 0; i < 15; i++)
 			{

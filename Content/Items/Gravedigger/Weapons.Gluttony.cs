@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             {
 				Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
 
-				//Player.ItemTime = Player.itemAnimation = 2;
+				//Player.itemTime = Player.itemAnimation = 2;
 				Projectile.timeLeft = 2;
 
 				Player.itemRotation = direction.ToRotation();
