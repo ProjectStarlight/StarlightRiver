@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
+using StarlightRiver.Content.Waters;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -30,6 +31,8 @@ namespace StarlightRiver.Content.Biomes
 		{
 			return StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
 		}
+
+		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
 
 		public override void OnInBiome(Player player)
 		{

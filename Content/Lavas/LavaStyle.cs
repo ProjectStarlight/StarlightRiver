@@ -28,8 +28,6 @@ namespace StarlightRiver.Content.Lavas
 
         public string blockTexture;
 
-        public sealed override bool ChooseWaterStyle() => false; //PORTTODO: Figure out modbiome integration for this
-
         public virtual bool ChooseLavaStyle() => false;
     }
 }

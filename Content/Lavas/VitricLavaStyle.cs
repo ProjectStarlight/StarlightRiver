@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.GameContent;
@@ -16,8 +17,7 @@ namespace StarlightRiver.Content.Lavas
 
         public override bool ChooseLavaStyle()
         {
-            BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneGlass || modPlayer.FountainVitric;
+            return Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>());
         }
 
         public override bool SafeAutoload(ref string name, ref string texture, ref string blockTexture)

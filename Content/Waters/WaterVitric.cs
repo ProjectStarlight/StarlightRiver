@@ -8,12 +8,9 @@ namespace StarlightRiver.Content.Waters
 {
 	public class WaterVitric : ModWaterStyle
     {
-        public override bool Autoload(ref string name, ref string texture, ref string blockTexture)
-        {
-            texture = "StarlightRiver/Assets/Waters/" + name;
-            blockTexture = texture + "_Block";
-            return base.Autoload(ref name, ref texture, ref blockTexture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Waters/" + Name;
+
+		public override string BlockTexture => Texture + "_Block";
 
         public override bool ChooseWaterStyle()
         {

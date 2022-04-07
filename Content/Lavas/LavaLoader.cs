@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Lavas
 	class LavaLoader : IOrderedLoadable
     {
         public static List<LavaStyle> lavas = new List<LavaStyle>();
-        public static LavaStyle activeStyle;
+        public static LavaStyle ActiveStyle;
 
         public void Load()
         {
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Lavas
         private void UpdateActiveStyle(StarlightPlayer Player)
 		{
             if(!Main.gameMenu)
-                activeStyle = lavas.FirstOrDefault(n => n.ChooseLavaStyle());
+                ActiveStyle = lavas.FirstOrDefault(n => n.ChooseLavaStyle());
 		}
 
 		public void Unload()
@@ -57,8 +57,8 @@ namespace StarlightRiver.Content.Lavas
 
         private int LavaBody(int arg)
         {
-            if (activeStyle != null)
-                return activeStyle.type; //PORTTODO: Figure out how this has changed
+            if (ActiveStyle != null)
+                return ActiveStyle.type; //PORTTODO: Figure out how this has changed
 
             return arg;
         }
@@ -81,14 +81,14 @@ namespace StarlightRiver.Content.Lavas
 
         private Texture2D LavaBlockBody(Texture2D arg, int x, int y, Tile up, Tile left, Tile right, Tile down)
         {
-            if (activeStyle is null)
+            if (ActiveStyle is null)
                 return arg;
 
             if (arg != Request<Texture2D>("Terraria/Liquid_1").Value)
                 return arg;
 
-            string path = activeStyle.texturePath;
-            activeStyle.DrawBlockEffects(x, y, up, left, right, down);
+            string path = ActiveStyle.texturePath;
+            ActiveStyle.DrawBlockEffects(x, y, up, left, right, down);
             return Request<Texture2D>(path + "_Block").Value;
         }
 
@@ -112,8 +112,8 @@ namespace StarlightRiver.Content.Lavas
 
         private bool SwapLava(int x, int y)
         {
-            if (activeStyle != null)
-                return activeStyle.DrawEffects(x, y);
+            if (ActiveStyle != null)
+                return ActiveStyle.DrawEffects(x, y);
 
             return false;
         }
