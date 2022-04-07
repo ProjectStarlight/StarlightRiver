@@ -139,8 +139,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             attackVariant = reader.ReadBoolean();
         }
-
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             NPC.frame.Width = 110;
             NPC.frame.Height = 92;
@@ -154,8 +153,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value, 
-                    new Rectangle((int)(NPC.position.X - Main.screenPosition.X - off / 2 + NPC.width / 2), 
+                spriteBatch.Draw(Request<Texture2D>(Texture).Value,
+                    new Rectangle((int)(NPC.position.X - Main.screenPosition.X - off / 2 + NPC.width / 2),
                     (int)(NPC.position.Y - Main.screenPosition.Y - 64), off, NPC.frame.Height),
                     NPC.frame, drawColor, 0, Vector2.Zero, effect, 0);
             }
