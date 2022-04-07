@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 }
             }
 
-            Projectile.NewProjectile(position, Vector2.Zero, type, damage, knockback, player.whoAmI, index);
+            Projectile.NewProjectile(player.GetProjectileSource_Item(Item), position, Vector2.Zero, type, damage, knockback, player.whoAmI, index);
 
             return false;
         }

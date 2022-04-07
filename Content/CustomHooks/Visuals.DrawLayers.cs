@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.NPCs.Hell;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core;
 using StarlightRiver.Keys;

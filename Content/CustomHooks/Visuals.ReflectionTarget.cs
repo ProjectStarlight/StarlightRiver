@@ -13,6 +13,7 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -215,8 +216,9 @@ namespace StarlightRiver.Content.CustomHooks
                          || type == WallID.RedStainedGlass)
                         {
                             Vector2 pos = pij.ToVector2() * 16;
-                            Texture2D tex = Main.wallTexture[type];
-                            if (tex != null) spriteBatch.Draw(Main.wallTexture[type], pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.WallTypeFrameX(), tile.WallTypeFrameY(), 36, 36), new Color(128, 128, 255, 255));
+                            Texture2D tex = TextureAssets.Wall[type].Value;
+                            //not sure if tile.WallFrame* is the correct value
+                            if (tex != null) spriteBatch.Draw(TextureAssets.Wall[type].Value, pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.WallFrameX, tile.WallFrameY, 36, 36), new Color(128, 128, 255, 255));
                         }
                     }
 

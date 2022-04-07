@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Balanced;
-using StarlightRiver.Content.Tiles.Interactive;
-using StarlightRiver.Content.Tiles.Purified;
+﻿using StarlightRiver.Content.Tiles.Interactive;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;

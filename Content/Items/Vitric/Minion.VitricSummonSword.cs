@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
             enemySize = Vector2.One;
         }
 
-        public override bool CanDamage() => doDamage;
+        public override bool? CanDamage() => doDamage;
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             DisplayName.SetDefault("Enchanted Vitric Weapons");
             Main.projFrames[Projectile.type] = 1;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
         }
 
         public sealed override void SetDefaults()

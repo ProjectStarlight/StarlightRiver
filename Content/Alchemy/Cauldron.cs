@@ -50,18 +50,18 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			int Item = Item.NewItem(new Vector2(i, j) * 16, ItemType<CauldronItem>(), 1);
+			int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<CauldronItem>(), 1);
 
 			// Sync the drop for multiPlayer
-			if (Main.netMode == NetmodeID.MultiplayerClient && Item >= 0)
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, Item, 1f);
+			if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
 		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
 		}
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			(this).QuickSetFurniture(3, 2, DustType<Air>(), SoundID.Tink, false, new Color(50, 50, 50), false, false, "Alchemic Cauldron");
 		}

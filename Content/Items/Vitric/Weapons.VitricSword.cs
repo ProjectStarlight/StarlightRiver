@@ -41,22 +41,22 @@ namespace StarlightRiver.Content.Items.Vitric
             return !Broken;
 		}
 
-		public override void OnHitNPC(Player Player, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
         {
-            if (!Broken)
+            if (!Broken)//Projectile.GetProjectileSource_FromThis()
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(Player.Center - target.Center) * -32, Mod.ProjectileType("VitricSwordProjectile"), 24, 0, Player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(Player.Center - target.Center).RotatedBy(0.3) * -16, Mod.ProjectileType("VitricSwordProjectile"), 24, 0, Player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(Player.Center - target.Center).RotatedBy(-0.25) * -24, Mod.ProjectileType("VitricSwordProjectile"), 24, 0, Player.whoAmI);
+                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center) * -32, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
 
                 for (int k = 0; k <= 20; k++)
                 {
-                    Dust.NewDust(Vector2.Lerp(Player.Center, target.Center, 0.4f), 8, 8, ModContent.DustType<Dusts.Air>(), (Vector2.Normalize(Player.Center - target.Center) * -2).X, (Vector2.Normalize(Player.Center - target.Center) * -2).Y);
+                    Dust.NewDust(Vector2.Lerp(player.Center, target.Center, 0.4f), 8, 8, ModContent.DustType<Dusts.Air>(), (Vector2.Normalize(player.Center - target.Center) * -2).X, (Vector2.Normalize(player.Center - target.Center) * -2).Y);
 
                     float vel = Main.rand.Next(-300, -100) * 0.1f;
-                    int dus = Dust.NewDust(Vector2.Lerp(Player.Center, target.Center, 0.4f), 16, 16, ModContent.DustType<Dusts.GlassAttracted>(), (Vector2.Normalize(Player.Center - target.Center) * vel).X, (Vector2.Normalize(Player.Center - target.Center) * vel).Y);
-                    Main.dust[dus].customData = Player;
+                    int dus = Dust.NewDust(Vector2.Lerp(player.Center, target.Center, 0.4f), 16, 16, ModContent.DustType<Dusts.GlassAttracted>(), (Vector2.Normalize(player.Center - target.Center) * vel).X, (Vector2.Normalize(player.Center - target.Center) * vel).Y);
+                    Main.dust[dus].customData = player;
                 }
                 Broken = true;
             }
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool CanUseItem(Player Player)
         {
-            if (Main.projectile.Any(Projectile => Projectile.type == Mod.ProjectileType("VitricSwordProjectile") && Projectile.owner == Player.whoAmI && Projectile.active))
+            if (Main.projectile.Any(Projectile => Projectile.type == ModContent.ProjectileType<VitricSwordProjectile>() && Projectile.owner == Player.whoAmI && Projectile.active))
                 return false;
             else
                 Broken = false;

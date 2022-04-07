@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
         {
             DisplayName.SetDefault("Enchanted Vitric Weapons");
             Main.projFrames[Projectile.type] = 1;
-            ProjectileID.Sets.Homing[Projectile.type] = true;
+            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
         }
 
         public override void SetDefaults()
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
             Projectile.extraUpdates = 1;
         }
 
-        public override bool CanDamage() => Projectile.localAI[0] > 60;
+        public override bool? CanDamage() => Projectile.localAI[0] > 60;
 
         public override void AI()
         {
@@ -150,17 +150,18 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
                     Point16 point = new Point16((int)((Projectile.Center.X + Projectile.width / 3f * Projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, tileTargetY));
                     Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
-                    if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.HasTile && Main.tileSolid[tile.type])
+                    if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.HasTile && Main.tileSolid[tile.TileType])
                     {
                         Projectile.localAI[0] = 301;
                         int dusttype = ModContent.DustType<Dusts.GlassGravity>();
                         DustHelper.TileDust(tile, ref dusttype);
 
-                        int ai0 = tile.type;
+                        int ai0 = tile.TileType;
                         int ai1 = 16 * Projectile.spriteDirection;
                         Vector2 tilepos16 = new Vector2(point.X, point.Y - 1) * 16;
 
-                        Projectile.NewProjectile(tilepos16, Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(Projectile.damage * 0.25), 0, Main.myPlayer, ai0, ai1);
+                        //not sure if correct source
+                        Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), tilepos16, Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(Projectile.damage * 0.25), 0, Main.myPlayer, ai0, ai1);
                         Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
 
                         for (float num315 = 2f; num315 < 15; num315 += 0.50f)
@@ -287,10 +288,10 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
                 Point16 point = new Point16((int)((Projectile.Center.X + Projectile.width / 3f * Projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)(Projectile.Center.Y / 16) + 1));
                 Tile tile = Framing.GetTileSafely(point.X, point.Y);
 
-                if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.HasTile && Main.tileSolid[tile.type])
+                if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.HasTile && Main.tileSolid[tile.TileType])
                 {
                     Projectile.timeLeft = 20;
-                    Projectile.ai[0] = tile.type;
+                    Projectile.ai[0] = tile.TileType;
                     Projectile.tileCollide = false;
                     Projectile.position.Y += 16;
 
