@@ -31,9 +31,9 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if ((tile.collisionType == 1 && tile.type != TileID.Grass) || tile .LiquidAmount > 0)
+                    if ((tile.BlockType == BlockType.Solid && tile.TileType != TileID.Grass) || tile .LiquidAmount > 0)
                         break;
-                    else if (tile.HasTile && tile.type == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    else if (tile.HasTile && tile.TileType == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         Point16 dims = new Point16();
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Core
                             for (int i = pos.X; i < pos.X + dims.X; i++) {
                                 for (int j = pos.Y; j < pos.Y + dims.Y; j++)
                                 {
-                                    if (Main.tile[i, j].HasTile && (Main.tile[i, j].type == TileID.SnowBlock || Main.tile[i, j].type == TileID.Sand))
+                                    if (Main.tile[i, j].HasTile && (Main.tile[i, j].TileType == TileID.SnowBlock || Main.tile[i, j].TileType == TileID.Sand))
                                         valid = false;
                                 }
                             }
@@ -83,14 +83,14 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if (tile.HasTile && tile.type != TileID.Sand || tile .LiquidAmount > 0)
+                    if (tile.HasTile && tile.TileType != TileID.Sand || tile .LiquidAmount > 0)
                         break;
-                    else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.type == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         var newTile = Framing.GetTileSafely(x, y - 1);
                         newTile.ClearEverything();
-                        newTile.active(true);
-                        newTile.type = (ushort)TileType<SeaglassRingTile>();
+                        newTile.HasTile = false;
+                        newTile.TileType = (ushort)TileType<SeaglassRingTile>();
 
                         return true;
                     }
