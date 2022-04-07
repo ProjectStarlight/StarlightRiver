@@ -136,13 +136,13 @@ namespace StarlightRiver.Content.Pickups
             Main.musicFade[Main.curMusic] = timer < 500 ? 0 : (timer - 500) / 70f;
         }
 
-        public override void PickupEffects(Player Player)
+        public override void PickupEffects(Player player)
         {
-            Player.GetHandler().Unlock<Dash>();
+            player.GetHandler().Unlock<Dash>();
 
-            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 650;
-            Player.GetModPlayer<StarlightPlayer>().inTutorial = true;
-            Player.AddBuff(BuffID.Featherfall, 660);
+            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 650;
+            player.GetModPlayer<StarlightPlayer>().inTutorial = true;
+            player.AddBuff(BuffID.Featherfall, 660);
         }
 
         private void ManageCache(ref List<Vector2> cache, Vector2 point)
