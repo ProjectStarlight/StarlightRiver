@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Pickups
 
             if (timer == 1)
             {
-                Terraria.Audio.SoundEngine.PlaySound(Mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
+                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Pickups/get")); //start the SFX
                 Filters.Scene.Deactivate("Shockwave");
 
                 cache1.Clear();

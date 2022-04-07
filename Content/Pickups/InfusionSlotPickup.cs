@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
@@ -122,7 +123,7 @@ namespace StarlightRiver.Content.Pickups
             //Main.instance.DrawCacheProjsBehindNPCsAndTiles.Add(index);
 		}
 
-		public override void PostDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
             var Player = Main.LocalPlayer;
             var timer = Player.GetModPlayer<StarlightPlayer>().PickupTimer;
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.Pickups
             if (timer > 300)
                 progressFirst = 1 - (timer - 300) / 60f;
 
-            Vector2 positionFirst = Player.Center + Vector2.SmoothStep(Vector2.UnitY * 100, Vector2.Zero, progressFirst) - Main.screenPosition;
+            Vector2 positionFirst = Player.Center + Vector2.SmoothStep(Vector2.UnitY * 100, Vector2.Zero, progressFirst) - screenPos;
 
             spriteBatch.Draw(tex, positionFirst, null, Color.White, (float)Math.PI * 0.5f, origin, 1, 0, 0);
 
@@ -153,7 +154,7 @@ namespace StarlightRiver.Content.Pickups
                     if (relTime2 > 180)
                         progress = 1 - (relTime2 - 180) / 60f;
 
-                    Vector2 position = Player.Center + Vector2.SmoothStep(Vector2.UnitX.RotatedBy(k) * 140, Vector2.Zero, progress) - Main.screenPosition;
+                    Vector2 position = Player.Center + Vector2.SmoothStep(Vector2.UnitX.RotatedBy(k) * 140, Vector2.Zero, progress) - screenPos;
 
                     if (progress > 0)
                     {
