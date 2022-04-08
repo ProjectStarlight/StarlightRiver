@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Lavas
         private int LavaBody(int arg)
         {
             if (ActiveStyle != null)
-                return ActiveStyle.type; //PORTTODO: Figure out how this has changed
+                return ActiveStyle.Slot;
 
             return arg;
         }

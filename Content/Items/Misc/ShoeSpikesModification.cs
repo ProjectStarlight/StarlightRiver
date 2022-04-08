@@ -38,25 +38,24 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddTile(TileID.TinkerersWorkbench);
         }
 
-        private bool ItemIsDerivativeOfShoeSpikes(Item Item)
+        private bool ItemIsDerivativeOfShoeSpikes(Item item)
         {
-            if (Item.type == ItemID.ShoeSpikes || Item.type == ItemID.ClimbingClaws || Item.type == ItemID.MasterNinjaGear)
+            if (item.type == ItemID.ShoeSpikes || item.type == ItemID.ClimbingClaws || item.type == ItemID.MasterNinjaGear)
                 return true;
 
-            return ShoeSpikeAccessories.Contains(Item.type);
+            return ShoeSpikeAccessories.Contains(item.type);
         }
 
-		public void PostLoad()
-		{
-            RecipeFinder finder = new RecipeFinder();
-
-            for (int k = Main.maxItemTypes; k < ItemLoader.ItemCount; k++)
+        public void PostLoad()
+        {
+            for (int i = 0; i < Recipe.numRecipes; i++)
             {
-                finder.SetResult(k);
-                finder.AddIngredient(ItemID.ShoeSpikes);
+                Recipe recipe = Main.recipe[i];
 
-                if (finder.SearchRecipes().Count > 0)
-                    ShoeSpikeAccessories.Add(k);
+                if (recipe.TryGetIngredient(ItemID.ShoeSpikes, out Item item))
+                {
+                    ShoeSpikeAccessories.Add(item.type);
+                }
             }
         }
 

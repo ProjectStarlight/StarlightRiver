@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.Main.DrawInterface_Resources_Life += ShiftText; //PORTTODO: Figure out where this moved to in vanilla
+			IL.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText; //PORTTODO: Is this patch correct?
 		}
 
 		private void ShiftText(ILContext il)
