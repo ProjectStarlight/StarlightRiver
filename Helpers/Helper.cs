@@ -397,7 +397,7 @@ namespace StarlightRiver.Helpers
                 }
             }
 
-            var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance(); //PORTTODO: Figure out new audio
+            var soundEffect = Terraria.Audio.SoundEngine.GetTrackableSoundByStyleId(SoundLoader.GetSoundSlot(StarlightRiver.Instance, "StarlightRiver/Sounds/" + path)).CreateInstance(); //PORTTODO: Figure out new audio
 
             float distFactor = 1;
 
