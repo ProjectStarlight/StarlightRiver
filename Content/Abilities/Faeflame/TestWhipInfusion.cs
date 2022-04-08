@@ -9,7 +9,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Abilities.Faeflame
 {
-    public class TestWhip : InfusionItem<Wisp>
+    public class TestWhip : InfusionItem<Whip>
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/TestWhip";
