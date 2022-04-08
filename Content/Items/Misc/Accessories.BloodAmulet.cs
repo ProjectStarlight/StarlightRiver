@@ -18,59 +18,51 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class BloodAmulet : SmartAccessory
     {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+		public int StoredDamage;
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guaruntee they drop life hearts on death") { }
 
-        public override void SafeSetDefaults()
+		public override void Load()
+		{
+			StarlightPlayer.ModifyHitByNPCEvent += BloodAmuletOnhit;
+			StarlightPlayer.ModifyHitByProjectileEvent += BloodAmuletOnhitProjectile;
+		}
+
+		public override void SafeSetDefaults()
         {
             Item.value = Item.sellPrice(0, 2, 0, 0);
             Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player Player)
-        {
-            Player.GetModPlayer<BloodAmuletPlayer>().equipped = true;
-        }
+		public void BloodAmuletOnhit(Player player, NPC NPC, ref int damage, ref bool crit)
+		{
+			if (Equipped(player))
+			{
+				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
+				SpawnBolts(player);
+			}
+		}
+
+		public void BloodAmuletOnhitProjectile(Player player, Projectile proj, ref int damage, ref bool crit)
+		{
+			if (Equipped(player))
+			{
+				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
+				SpawnBolts(player);
+			}
+		}
+
+		private void SpawnBolts(Player player)
+		{
+			while (StoredDamage > 25)
+			{
+				StoredDamage -= 25;
+				Projectile.NewProjectile(player.GetProjectileSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
+			}
+		}
 	}
-    public class BloodAmuletPlayer : ModPlayer
-    {
-        public bool equipped = false;
-
-        public int damageTicker;
-
-        public override void ResetEffects()
-        {
-            equipped = false;
-        }
-
-        public override void ModifyHitByNPC(NPC NPC, ref int damage, ref bool crit)
-        {
-            if (equipped)
-            {
-                damageTicker += damage;
-                SpawnBolts();
-            }
-        }
-
-        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
-        {
-            if (equipped)
-            {
-                damageTicker += damage;
-                SpawnBolts();
-            }
-        }
-
-        private void SpawnBolts()
-        {
-            while (damageTicker > 25)
-            {
-                damageTicker -= 25;
-                Projectile.NewProjectile(Player.Center, Main.rand.NextVector2Circular(10,10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, Player.whoAmI); //PORTTODO: Figure out source for this
-            }
-        }
-    }
 
 	public class BloodAmuletGNPC : GlobalNPC
     {

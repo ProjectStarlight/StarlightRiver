@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -19,10 +21,10 @@ namespace StarlightRiver.Content.Items.Forest
             
         }
 
-		private void AddDamage(Item Item, Player Player, ref float add, ref float mult, ref float flat)
+		private void AddDamage(Item Item, Player Player, ref StatModifier statModifier, ref float flat)
 		{
             if (Equipped(Player))
                 flat += 1;
-		}
+        }
 	}
 }

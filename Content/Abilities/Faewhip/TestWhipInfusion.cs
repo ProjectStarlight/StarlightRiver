@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Abilities.Faeflame
+namespace StarlightRiver.Content.Abilities.Faewhip
 {
     public class TestWhip : InfusionItem<Whip>
     {

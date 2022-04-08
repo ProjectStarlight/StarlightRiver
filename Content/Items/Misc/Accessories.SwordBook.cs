@@ -33,40 +33,40 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = Terraria.ID.ItemRarityID.Orange;
 		}
 
-		private bool OverrideSwordEffects(Item Item, Player Player)
+		private bool OverrideSwordEffects(Item item, Player player)
 		{
-			if (Equipped(Player))
+			if (Equipped(player))
 			{
-				if (Item.DamageType.CountsAs(DamageClass.Melee) && Item.pick <= 0 && Item.axe <= 0 && Item.hammer <= 0 && Item.shoot <= 0 && Item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !Item.noMelee)
+				if (item.DamageType.CountsAs(DamageClass.Melee) && item.pick <= 0 && item.axe <= 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
 				{
-					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == Player.whoAmI))
+					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == player.whoAmI))
 						return false;
 
-					int i = Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), Item.damage, Item.knockBack, Player.whoAmI); //TODO: Figure out what projectile source to use here
+					int i = Projectile.NewProjectile(player.GetProjectileSource_Item(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI);
 					var proj = Main.projectile[i];
 
-					proj.timeLeft = Item.useAnimation * 4;
-					proj.scale = Item.scale;
+					proj.timeLeft = item.useAnimation * 4;
+					proj.scale = item.scale;
 
 					if (proj.ModProjectile is SwordBookProjectile)
 					{
 						var modProj = proj.ModProjectile as SwordBookProjectile;
-						modProj.trailColor = ItemColorUtility.GetColor(Item.type);
-						modProj.texture = TextureAssets.Item[Item.type].Value;
-						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * Item.scale;
-						modProj.lifeSpan = Item.useAnimation * 4;
-						modProj.baseAngle = (Main.MouseWorld - Player.Center).ToRotation() + (float)Math.PI / 4f;
+						modProj.trailColor = ItemColorUtility.GetColor(item.type);
+						modProj.texture = TextureAssets.Item[item.type].Value;
+						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
+						modProj.lifeSpan = item.useAnimation * 4;
+						modProj.baseAngle = (Main.MouseWorld - player.Center).ToRotation() + (float)Math.PI / 4f;
 						modProj.comboState = comboState;
 					}
 
-					float pitch = 1 - Item.useAnimation / 60f;
+					float pitch = 1 - item.useAnimation / 60f;
 					pitch += comboState * 0.1f;
 
 					if (pitch >= 1)
 						pitch = 1;
 
-					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, Player.Center);
-					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound, Player.Center);
+					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
+					Terraria.Audio.SoundEngine.PlaySound(item.UseSound, player.Center);
 
 					comboState++;
 					comboState %= 4;

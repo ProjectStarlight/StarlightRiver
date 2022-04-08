@@ -16,9 +16,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public void Load()
 		{
 			for(int k = 1; k <= 19; k++)
-				GoreLoader.AddGoreFromTexture(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/Cluster" + k);
+				GoreLoader.AddGoreFromTexture<>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/Cluster" + k);
 
-			GoreLoader.AddGoreFromTexture(StarlightRiver.Instance, AssetDirectory.VitricBoss + "TempleHole");
+			GoreLoader.AddGoreFromTexture<>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "TempleHole");
 		}
 
 		public void Unload() { }

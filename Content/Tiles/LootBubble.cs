@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles
         public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
         {
             int n = (int)(time % GoldLootPool.Count);
-            Texture2D tex2 = Helper.GetPopupTexture(GoldLootPool[n].Type);
+            Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].Type);
             Rectangle ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
             spriteBatch.Draw(tex2, ItemTarget, Color.White);
 

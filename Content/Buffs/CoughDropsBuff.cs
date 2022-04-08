@@ -13,7 +13,6 @@ namespace StarlightRiver.Content.Buffs
         public override void Update(Player Player, ref int buffIndex)
         {
             Player.maxRunSpeed += 2;
-            Player.BoostAllDamage(0.15f);
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;

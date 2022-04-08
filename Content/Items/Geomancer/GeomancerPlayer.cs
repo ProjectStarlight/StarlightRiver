@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             SamplerState samplerState = Main.DefaultSamplerState;
 
             if (Player.mount.Active)
-                samplerState = Main.MountedSamplerState; //PORTTODO: Figure out what this is supposed to be
+                samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
         }

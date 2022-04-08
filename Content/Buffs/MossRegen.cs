@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 
 namespace StarlightRiver.Content.Buffs
 {

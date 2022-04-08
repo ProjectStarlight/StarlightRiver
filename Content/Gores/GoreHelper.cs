@@ -121,7 +121,7 @@ namespace StarlightRiver.Gores
                 }
                 int tileX = (int)(gore.position.X + 8f) / 16;
                 int tileY = (int)(gore.position.Y + 14f) / 16;
-                if (Main.tile[tileX, tileY]? .LiquidAmount > 0)
+                if (Main.tile[tileX, tileY].LiquidAmount > 0)
                 {
                     gore.velocity *= 0f;
                     gore.position.Y = tileY * 16 - Main.tile[tileX, tileY] .LiquidAmount / 16;

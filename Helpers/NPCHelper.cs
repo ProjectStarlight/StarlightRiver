@@ -22,7 +22,7 @@ namespace StarlightRiver.Helpers
             for (int y = 0; y < jumpheight; y++)//idea: this should have diminishing results for output jump height
             {
                 Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - y - 1);
-                if ((Main.tileSolid[tileType.type] || Main.tileSolidTop[tileType.type]) && tileType.HasTile) //how tall the wall is
+                if ((Main.tileSolid[tileType.TileType] || Main.tileSolidTop[tileType.TileType]) && tileType.HasTile) //how tall the wall is
                 {
                     NPC.ai[slot] = (y + 1);
                 }
@@ -42,12 +42,12 @@ namespace StarlightRiver.Helpers
                 Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - 1);
                 if (NPC.ai[slot] == 1 && NPC.collideX)
                 {
-                    if (tileType.IsHalfBlock || (Main.tileSolid[tileType.type] && (NPC.position.Y % 16 + 8) == 0))
+                    if (tileType.IsHalfBlock || (Main.tileSolid[tileType.TileType] && (NPC.position.Y % 16 + 8) == 0))
                     {
                         NPC.position.Y -= 8;//note: these just zip the NPC up the block and it looks bad, need to figure out how vanilla glides them up
                         NPC.velocity.X = NPC.oldVelocity.X;
                     }
-                    else if (Main.tileSolid[tileType.type])
+                    else if (Main.tileSolid[tileType.TileType])
                     {
                         NPC.position.Y -= 16;
                         NPC.velocity.X = NPC.oldVelocity.X;

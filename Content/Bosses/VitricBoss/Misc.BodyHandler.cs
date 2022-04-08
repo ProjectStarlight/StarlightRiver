@@ -27,20 +27,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public static void LoadGores()
         {
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadNose", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadJaw", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyBottom", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentLarge", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentMedium", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentSmall", new DebugGore());
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadTop");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadNose");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadJaw");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadLeft");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadRight");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekLeft");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekRight");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornLeft");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornRight");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyTop");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyBottom");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentLarge");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentMedium");
+            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentSmall");
         }
 
         public void DrawBody(SpriteBatch sb)
@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void GoreMe(Vector2 pos, Vector2 offset, string tex)
 		{
             var texture = Request<Texture2D>(tex).Value;
-            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), Mod.Find<ModGore>(tex));
+            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
         }
     }
 

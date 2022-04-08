@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void Load()
         {
-            StarlightNPC.NPCLootEvent += LootMonsterSteak;
+            StarlightNPC.OnKillEvent += LootMonsterSteak;
         }
 
         public override void BuffEffects(Player Player, float multiplier)

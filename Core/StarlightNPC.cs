@@ -22,10 +22,10 @@ namespace StarlightRiver.Core
             DoT = 0;
         }
 
-		public override bool PreNPCLoot(NPC NPC) //PORTTODO: Find out how to replicate this behavior
+		public override bool PreKill(NPC npc)
 		{
             return !dontDropItems;
-		}
+        }
 
 		public override bool PreAI(NPC NPC)
         {

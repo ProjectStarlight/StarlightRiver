@@ -5,9 +5,8 @@ namespace StarlightRiver.Sounds.Custom
 {
 	public class Revolver : ModSound
 	{
-        public override SoundEffectInstance PlaySound(ref SoundEffectInstance soundInstance, float volume, float pan, SoundType type)
+		public override SoundEffectInstance PlaySound(ref SoundEffectInstance soundInstance, float volume, float pan)
         {
-            soundInstance = sound.CreateInstance();
             return soundInstance;
         }
     }

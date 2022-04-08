@@ -119,12 +119,13 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             List<TagCompound> objectiveTags = new List<TagCompound>();
 
             foreach (InfusionObjective obj in objectives)
-                objectiveTags.Add(obj.Save());
-
-            return new TagCompound()
             {
-                ["objectives"] = objectiveTags
-            };
+                var tag2 = new TagCompound();
+                obj.SaveData(tag2);
+                objectiveTags.Add(tag2);
+            }
+
+            tag["objectives"] = objectiveTags;
         }
 
         public override void LoadData(TagCompound tag)
@@ -136,7 +137,7 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
             foreach (TagCompound objectiveTag in tags)
             {
                 var objective = new InfusionObjective("Invalid Objective", 1);
-                objective.Load(objectiveTag);
+                objective.LoadData(objectiveTag);
                 objectives.Add(objective);
             }
         }
@@ -155,14 +156,11 @@ namespace StarlightRiver.Abilities.AbilityContent.Infusions
         }
 
         public void SaveData(TagCompound tag)
-		{
-            return new TagCompound()
-            {
-                ["progress"] = progress,
-                ["maxProgress"] = maxProgress,
-                ["text"] = text
-            };
-		}
+        {
+            tag["progress"] = progress;
+            tag["maxProgress"] = maxProgress;
+            tag["text"] = text;
+        }
 
         public void LoadData(TagCompound tag)
 		{

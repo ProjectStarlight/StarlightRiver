@@ -43,11 +43,11 @@ namespace StarlightRiver.Content.Tiles.Interactive
                     Player.velocity = Vector2.Normalize(Player.velocity) * -18f;
                     Player.wingTime = Player.wingTimeMax;
                     Player.rocketTime = Player.rocketTimeMax;
-                    Player.jumpAgainCloud = true;
-                    Player.jumpAgainBlizzard = true;
-                    Player.jumpAgainSandstorm = true;
-                    Player.jumpAgainFart = true;
-                    Player.jumpAgainSail = true;
+                    //Player.jumpAgainCloud = true;
+                    //Player.jumpAgainBlizzard = true;
+                    //Player.jumpAgainSandstorm = true;
+                    //Player.jumpAgainFart = true;
+                    //Player.jumpAgainSail = true;
                 }
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);

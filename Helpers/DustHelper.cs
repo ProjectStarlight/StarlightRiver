@@ -48,7 +48,7 @@ namespace StarlightRiver.Helpers
 
         public static int TileDust(Tile tile, ref int dusttype)
         {
-            switch (tile.type)
+            switch (tile.TileType)
             {
                 case TileID.Stone: dusttype = DustID.Stone; break;
                 case TileID.Sand: case TileID.Sandstone: dusttype = 32; break;
@@ -58,18 +58,15 @@ namespace StarlightRiver.Helpers
                 case TileID.MushroomGrass: case TileID.MushroomBlock: dusttype = 96; break;
 
                 default:
-                    if (TileID.Sets.Crimson[tile.type])
+                    if (TileID.Sets.Crimson[tile.TileType])
                         dusttype = DustID.Blood;
-                    if (TileID.Sets.Corrupt[tile.type])
+                    if (TileID.Sets.Corrupt[tile.TileType])
                         dusttype = 14;
-                    if (TileID.Sets.Ices[tile.type] || TileID.Sets.IcesSnow[tile.type])
+                    if (TileID.Sets.Ices[tile.TileType] || TileID.Sets.IcesSnow[tile.TileType])
                         dusttype = DustID.Ice;
-                    if (TileID.Sets.Snow[tile.type] || tile.type == TileID.Cloud || tile.type == TileID.RainCloud)
+                    if (TileID.Sets.Snow[tile.TileType] || tile.TileType == TileID.Cloud || tile.TileType == TileID.RainCloud)
                         dusttype = 51;
 
-                    Terraria.ModLoader.ModTile modtile = Terraria.ModLoader.TileLoader.Find<ModTile>(tile.type);
-                    if (modtile != null)
-                        dusttype = modtile.dustType;
                     break;
             }
 

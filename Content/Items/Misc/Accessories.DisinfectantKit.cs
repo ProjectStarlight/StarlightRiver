@@ -45,8 +45,6 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 if (Helper.IsValidDebuff(Player, i))
                 {
-                    Player.BoostAllDamage(0, 10);
-
                     return;
                 }
             }

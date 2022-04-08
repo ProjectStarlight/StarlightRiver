@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void Load()
         {
             for (int k = 0; k <= 4; k++)
-                GoreLoader.AddGoreFromTexture<>(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);    //PORTTODO: Gore stuff again       
+                GoreLoader.AddGoreFromTexture<>(Mod, AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);    //PORTTODO: Gore stuff again       
         }
 
         public override void SetStaticDefaults()

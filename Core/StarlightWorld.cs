@@ -133,13 +133,7 @@ namespace StarlightRiver.Core
             //Keys
             foreach (Key key in Keys) key.Update();
 
-            if (spaceEventActive)
-            {
-                if (spaceEventFade <= 1)
-                    spaceEventFade += 0.01f;
-            }
-            else if (spaceEventFade > 0)
-                spaceEventFade -= 0.01f;
+
 
         }
 

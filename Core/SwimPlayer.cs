@@ -30,7 +30,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                     if (WorldGen.InWorld(realX, realY))
                     {
                         Tile tile = Framing.GetTileSafely(realX, realY);
-                        if ( (tile.bTileHeader3 & 0b11100000) >> 5 == 1) //PORTTODO: Integrate with properly ported aurora water system
+                        if (tile.Get<AuroraWaterData>().HasAuroraWater) //PORTTODO: Integrate with properly ported aurora water system
                             return true;
                     }
                 }

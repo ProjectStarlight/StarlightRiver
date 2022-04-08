@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
 
                     if (NPC.ai[0] < 120) //dust before rising
-                        Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Fire);
+                        Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Torch);
 
                     if (NPC.ai[0] >= 150)
                     {
@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 for (int k = 0; k < Main.rand.Next(6); k++)
                 {
-                    var type = Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
+                    var type = Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type;
                     Gore.NewGoreDirect(Projectile.Center - Vector2.UnitY * 16, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
                     Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * 16, DustType<Dusts.Glow>(), (Vector2.UnitY * Main.rand.Next(-5, -2)).RotatedByRandom(0.8f), 0, new Color(255, 200, 100), 0.3f);
                 }

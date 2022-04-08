@@ -5,27 +5,24 @@ using MonoMod.Cil;
 using Terraria;
 using Terraria.ModLoader;
 
-/*
- * Fair warning to anyone reading this file, I'm fairly certain what you see here was only able to be made through demonic posession or similar supernatural events.
- * Do not attempt to reverse engineer this yourself, for everyone's sake.
- * If this is broken in the future, just cancel the Mod. Its not worth it.
- * Please.
- */
-
-namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
+namespace StarlightRiver.Core
 {
-	class PermafrostGlobalTile : ModSystem, IOrderedLoadable
+	struct AuroraWaterData : ITileData
+	{
+		public bool HasAuroraWater;
+		public byte AuroraWaterFrameX;
+		public byte AuroraWaterFrameY;	
+	}
+
+	class AuroraWaterSystem : ModSystem, IOrderedLoadable
 	{
 		public static RenderTarget2D auroraTarget;
 		public static RenderTarget2D auroraBackTarget;
 
 		public float Priority => 1;
 
-		public void Load()
+		new public void Load()
 		{
-			IL.Terraria.IO.WorldFile.SaveWorldTiles += SaveExtraBits;
-			IL.Terraria.IO.WorldFile.LoadWorldTiles += LoadExtraBits;
-			On.Terraria.Tile.isTheSameAs += CompareExtraBits;
 			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
 			On.Terraria.Main.CheckMonoliths += DrawAuroraTarget;
 
@@ -36,7 +33,7 @@ namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
 			}
 		}
 
-		public void Unload() { }
+		new public void Unload() { }
 
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
@@ -70,14 +67,14 @@ namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
 					if (WorldGen.InWorld(i, j))
 					{
 						Tile tile = Framing.GetTileSafely(i, j);
-						if ((tile.bTileHeader3 & 0b11100000) >> 5 == 1)
+						var tileData = tile.Get<AuroraWaterData>();
+
+						if (tileData.HasAuroraWater)
 						{
 							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
 							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
-							Main.spriteBatch.Draw(tex, target, findSource(i, j), Color.White * 0.5f);
+							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX, tileData.AuroraWaterFrameY, 16, 16), Color.White * 0.5f);
 						}
-
-						tile = null;
 					}
 				}
 
@@ -117,57 +114,6 @@ namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
 		}
 
-		private bool CompareExtraBits(On.Terraria.Tile.orig_isTheSameAs orig, Tile self, Tile compTile)
-		{
-			return orig(self, compTile) && (self.bTileHeader3 & 0b11100000) == (compTile.bTileHeader3 & 0b11100000);
-		}
-
-		private void SaveExtraBits(ILContext il)
-		{
-			ILCursor c = new ILCursor(il);
-			if( c.TryGotoNext(n => n.MatchLdloc(0), n => n.MatchLdloc(12), n => n.MatchLdloc(7), n => n.MatchStelemI1()) )
-			{
-				c.Index += 3;
-
-				c.Emit(OpCodes.Ldloc, 5);
-				c.Emit(OpCodes.Ldfld, typeof(Tile).GetField("bTileHeader3"));
-				c.Emit(OpCodes.Ldc_I4_1);
-				c.Emit(OpCodes.Shl);
-				c.Emit(OpCodes.Ldc_I4, 0b11000001);
-				c.Emit(OpCodes.And);
-				c.Emit(OpCodes.Or);
-				c.Emit(OpCodes.Conv_U1);
-
-				c.TryGotoPrev(n => n.MatchLdloc(8));
-				ILLabel label = il.DefineLabel(c.Next);
-
-				c.TryGotoPrev(n => n.MatchLdloc(7));
-				c.Emit(OpCodes.Br, label);
-			}
-		}
-
-		private void LoadExtraBits(ILContext il)
-		{
-			ILCursor c = new ILCursor(il);
-
-			if( c.TryGotoNext(n => n.MatchLdloc(5), n => n.MatchLdcI4(2), n => n.MatchAnd(), n => n.MatchLdcI4(2) ))
-			{
-				c.Emit(OpCodes.Ldloc, 7);
-				c.Emit(OpCodes.Dup);
-				c.Emit(OpCodes.Ldfld, typeof(Tile).GetField("bTileHeader3"));
-
-				c.Emit(OpCodes.Ldloc, 5);
-				c.Emit(OpCodes.Ldc_I4_1);
-				c.Emit(OpCodes.Shr_Un);
-				c.Emit(OpCodes.Ldc_I4, 0b11100000);
-				c.Emit(OpCodes.And);
-				c.Emit(OpCodes.Conv_U1);
-				c.Emit(OpCodes.Or);
-				c.Emit(OpCodes.Conv_U1);
-				c.Emit(OpCodes.Stfld, typeof(Tile).GetField("bTileHeader3"));
-			}
-		}
-
 		public override void PostDrawTiles()
 		{
 			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
@@ -183,50 +129,90 @@ namespace StarlightRiver.Core //PORTTODO: Change this to new tile data utils
 			Main.spriteBatch.End();
 		}
 
-		private Rectangle findSource(int i, int j) //too tired to figure smth better. Ideally this would be cached on the tile and only updated when neccisary but not enough extra data exists on tiles to do so.
+		public static void PlaceAuroraWater(int i, int j)
 		{
-			var u = ((Framing.GetTileSafely(i, j - 1).bTileHeader3 & 0b11100000) >> 5) == 1;
-			var l = ((Framing.GetTileSafely(i - 1, j).bTileHeader3 & 0b11100000) >> 5) == 1;
-			var d = ((Framing.GetTileSafely(i, j + 1).bTileHeader3 & 0b11100000) >> 5) == 1;
-			var r = ((Framing.GetTileSafely(i + 1, j).bTileHeader3 & 0b11100000) >> 5) == 1;
+			var tile = Framing.GetTileSafely(i, j);
+			var tileData = tile.Get<AuroraWaterData>();
+
+			tileData.HasAuroraWater = true;
+			FrameAuroraTile(i, j);
+
+			FrameAuroraTile(i - 1, j);
+			FrameAuroraTile(i, j - 1);
+			FrameAuroraTile(i + 1, j);
+			FrameAuroraTile(i, j + 1);
+		}
+
+		public static void RemoveAuroraWater(int i, int j)
+		{
+			var tile = Framing.GetTileSafely(i, j);
+			var tileData = tile.Get<AuroraWaterData>();
+
+			tileData.HasAuroraWater = false;
+			tileData.AuroraWaterFrameX = 0;
+			tileData.AuroraWaterFrameY = 0;
+
+			FrameAuroraTile(i - 1, j);
+			FrameAuroraTile(i, j - 1);
+			FrameAuroraTile(i + 1, j);
+			FrameAuroraTile(i, j + 1);
+		}
+
+		private static void FrameAuroraTile(int i, int j) 
+		{
+			var data = Framing.GetTileSafely(i, j).Get<AuroraWaterData>();
+
+			if (!data.HasAuroraWater)
+				return;
+
+			var u = Framing.GetTileSafely(i, j - 1).Get<AuroraWaterData>().HasAuroraWater;
+			var l = Framing.GetTileSafely(i - 1, j).Get<AuroraWaterData>().HasAuroraWater;
+			var d = Framing.GetTileSafely(i, j + 1).Get<AuroraWaterData>().HasAuroraWater;
+			var r = Framing.GetTileSafely(i + 1, j).Get<AuroraWaterData>().HasAuroraWater;
 
 			if (u && l && d && r)
-				return new Rectangle(18 * 3, 18 * 2, 16, 16);
+				SetFrameData(data, 18 * 3, 18 * 2);
 
 			else if (l && r && d)
-				return new Rectangle(18, 0, 16, 16);
+				SetFrameData(data, 18, 0);
 			else if (u && d && r)
-				return new Rectangle(18, 18, 16, 16);
+				SetFrameData(data, 18, 18);
 			else if (l && r && u)
-				return new Rectangle(18, 18 * 2, 16, 16);
+				SetFrameData(data, 18, 18 * 2);
 			else if (u && d && l)
-				return new Rectangle(18, 18 * 3, 16, 16);
+				SetFrameData(data, 18, 18 * 3);
 
 			else if (r && d)
-				return new Rectangle(0, 0, 16, 16);
+				SetFrameData(data, 0, 0);
 			else if (u && r)
-				return new Rectangle(0, 18, 16, 16);
+				SetFrameData(data, 0, 18);
 			else if (l && u)
-				return new Rectangle(0, 18 * 2, 16, 16);
+				SetFrameData(data, 0, 18 * 2);
 			else if (d && l)
-				return new Rectangle(0, 18 * 3, 16, 16);
+				SetFrameData(data, 0, 18 * 3);
 
 			else if (u && d)
-				return new Rectangle(18 * 3, 0, 16, 16);
+				SetFrameData(data, 18 * 3, 0);
 			else if (l && r)
-				return new Rectangle(18 * 3, 18, 16, 16);
+				SetFrameData(data,18 * 3, 18);
 
 
 			else if (u)
-				return new Rectangle(18 * 2, 0, 16, 16);
+				SetFrameData(data, 18 * 2, 0);
 			else if (l)
-				return new Rectangle(18 * 2, 18, 16, 16);
+				SetFrameData(data, 18 * 2, 18);
 			else if (d)
-				return new Rectangle(18 * 2, 18 * 2, 16, 16);
+				SetFrameData(data, 18 * 2, 18 * 2);
 			else if (r)
-				return new Rectangle(18 * 2, 18 * 3, 16, 16);
+				SetFrameData(data, 18 * 2, 18 * 3);
+			else
+				SetFrameData(data,18 * 3, 18 * 3);
+		}
 
-			return new Rectangle(18 * 3, 18 * 3, 16, 16);
+		private static void SetFrameData(AuroraWaterData data, int x, int y)
+		{
+			data.AuroraWaterFrameX = (byte)x;
+			data.AuroraWaterFrameY = (byte)y;
 		}
 	}
 }

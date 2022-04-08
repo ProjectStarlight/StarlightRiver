@@ -12,11 +12,11 @@ namespace StarlightRiver.Core
             PostAIEvent?.Invoke(NPC);
         }
 
-        public delegate void NPCLootDelegate(NPC NPC);
-        public static event NPCLootDelegate NPCLootEvent; //PORTTODO: Figure out how to work this with the new loot system
-        public override void NPCLoot(NPC NPC)
+        public delegate void OnKillDelegate(NPC NPC);
+        public static event OnKillDelegate OnKillEvent;
+        public override void OnKill(NPC NPC)
         {
-            NPCLootEvent?.Invoke(NPC);
+            OnKillEvent?.Invoke(NPC);
         }
 
         //these modify hit bys should only be used for editting the ref variables if you want them changed in a way that happens BEFORE Player on hit effects run. no extra effects will be synced in multiPlayer outside of the ref variables

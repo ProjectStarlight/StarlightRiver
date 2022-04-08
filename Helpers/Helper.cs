@@ -37,7 +37,7 @@ namespace StarlightRiver.Helpers
         /// </summary>
         public static Vector2 TwoValueMax(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Max(vector.X, vector2.X), Math.Max(vector.Y, vector2.Y));
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
-        public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
+        public static Vector2 TileAdj => (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
 
         public static Rectangle ScreenTiles => new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
@@ -85,7 +85,7 @@ namespace StarlightRiver.Helpers
                     NPC.HitSound == SoundID.NPCHit4 ||
                     NPC.HitSound == SoundID.NPCHit41 ||
                     NPC.HitSound == SoundID.NPCHit42 ||
-                    NPC.HitSound == StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact")
+                    NPC.HitSound == SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/VitricBoss/ceramicimpact")
                 );
 		}
 
@@ -135,15 +135,9 @@ namespace StarlightRiver.Helpers
                 if (mp.CodexState != 0)
                 {
                     UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-                    Terraria.Audio.SoundEngine.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/CodexUnlock"));
+                    Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/CodexUnlock"));
                 }
             }
-        }
-
-        public static void SpawnGem(int ID, Vector2 position)
-        {
-            int Item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
-            (Main.item[Item].ModItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
         public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
@@ -222,7 +216,7 @@ namespace StarlightRiver.Helpers
                     if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
 
                         var tile = Framing.GetTileSafely(thisPoint);
-                    if(tile.collisionType == 1 && tile.HasTile)
+                    if(tile.BlockType == BlockType.Solid && tile.HasTile)
                     {
                         var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
                         if (rect.Contains(point.ToPoint())) return true;
@@ -264,20 +258,10 @@ namespace StarlightRiver.Helpers
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
                 Tile tile = Framing.GetTileSafely(startX, startY + k);
-                if (tile.HasTile && tile?.type == type)
+                if (tile.HasTile && tile.TileType == type)
                     return true;
             }
             return false;
-        }
-
-        public static int SamplePerlin2D(int x, int y, int min, int max)
-        {
-            Texture2D perlin = TextureManager.Load("Images/Misc/Perlin");
-
-            Color[] rawData = new Color[perlin.Width]; //array of colors
-            Rectangle row = new Rectangle(0, y, perlin.Width, 1); //one row of the image
-            perlin.GetData(0, row, rawData, 0, perlin.Width); //put the color data from the image into the array
-            return (int)(min + rawData[x % 512].R / 255f * max);
         }
 
         public static float CompareAngle(float baseAngle, float targetAngle)
@@ -413,7 +397,7 @@ namespace StarlightRiver.Helpers
                 }
             }
 
-            var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance();
+            var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance(); //PORTTODO: Figure out new audio
 
             float distFactor = 1;
 

@@ -35,20 +35,19 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             if (WorldGen.InWorld(Player.tileTargetX, Player.tileTargetY))
             {
-                Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-
-                if (Player.altFunctionUse != 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 0) //PORTTODO: Port to new 1.4 tile data utils
+                if (Player.altFunctionUse != 2)
                 {
-                    tile.bTileHeader3 |= 0b00100000;
+                    AuroraWaterSystem.PlaceAuroraWater(Player.tileTargetX, Player.tileTargetY);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
+
                     for (int k = 0; k < 5; k++)
                         Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
                 }
 
-                if(Player.altFunctionUse == 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 1)
+                if(Player.altFunctionUse == 2)
 				{
-                    tile.bTileHeader3 &= 0b00011111;
+                    AuroraWaterSystem.RemoveAuroraWater(Player.tileTargetX, Player.tileTargetY);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
                     for (int k = 0; k < 10; k++)

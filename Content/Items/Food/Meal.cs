@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Food
 
             if (Ingredients.Count > 0)
             {
-                foreach (Item Item in Ingredients) mp.Consumed.Add(Item.DeepClone()); //PORTTODO: Figure out what to do to replace Item.DeepClone()
+                foreach (Item Item in Ingredients) mp.Consumed.Add(Item.Clone()); 
                 player.AddBuff(BuffType<FoodBuff>(), Fullness);
                 player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f));
             }
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Food
 
             string fullName = mainName + sidesName;
 
-            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").text = fullName; //PORTTODO: Replace n.mod with something
+            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.mod == "Terraria").text = fullName; 
 
             foreach (Item Item in Ingredients.Where(n => n.ModItem is Ingredient))
             {

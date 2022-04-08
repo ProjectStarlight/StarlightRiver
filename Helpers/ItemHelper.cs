@@ -10,20 +10,6 @@ namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
     {
-        public static void BoostAllDamage(this Player Player, float damage, int crit = 0)
-        {
-            Player.meleeDamage += damage;
-            Player.rangedDamage += damage;
-            Player.magicDamage += damage;
-            Player.minionDamage += damage;
-            Player.thrownDamage += damage;
-
-            Player.thrownCrit += crit;
-            Player.rangedCrit += crit;
-            Player.meleeCrit += crit;
-            Player.magicCrit += crit;
-        }
-
         public static void NewItemSpecific(Vector2 position, Item Item)
         {
             int targetIndex = 400;
@@ -46,9 +32,9 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k] > num2)
+                    if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > num2)
                     {
-                        num2 = Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k];
+                        num2 = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
                         targetIndex = k;
                     }
                 }
@@ -57,7 +43,7 @@ namespace StarlightRiver.Helpers
             Main.item[targetIndex] = Item;
             Main.item[targetIndex].position = position;
 
-            if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverShiny[Item.type]) //vanilla Item highlight system
+            if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
             {
                 Item.newAndShiny = true;
             }
@@ -107,9 +93,9 @@ namespace StarlightRiver.Helpers
                 int num2 = 0;
                 for (int k = 0; k < 400; k++)
                 {
-                    if (Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k] > num2)
+                    if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > num2)
                     {
-                        num2 = Main.item[k].spawnTime - Main.timeItemSlotCannotBeReusedFor[k];
+                        num2 = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
                         targetIndex = k;
                     }
                 }
@@ -121,12 +107,12 @@ namespace StarlightRiver.Helpers
             Item.position = position;
             Item.velocity = velocity;
             Item.active = true;
-            Item.spawnTime = 0;
+            Item.timeSinceItemSpawned = 0;
             Item.stack = stack;
 
             Item.wet = Collision.WetCollision(Item.position, Item.width, Item.height); //not sure what this is, from vanilla
 
-            if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverShiny[Item.type]) //vanilla Item highlight system
+            if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
             {
                 Item.newAndShiny = true;
             }
@@ -142,15 +128,18 @@ namespace StarlightRiver.Helpers
             return Item;
         }
 
-        public static Texture2D GetPopupTexture(Item Item)
+        public static Texture2D GetItemTexture(Item Item)
         {
-            if (Item.type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[Item.type];
-            else return Request<Texture2D>(Item.ModItem.Texture).Value;
+            if (Item.type < Main.maxItemTypes) 
+                return Terraria.GameContent.TextureAssets.Item[Item.type].Value;
+            else 
+                return Request<Texture2D>(Item.ModItem.Texture).Value;
         }
 
-        public static Texture2D GetPopupTexture(int type)
+        public static Texture2D GetItemTexture(int type)
         {
-            if (type < Main.maxItemTypes) return Terraria.GameContent.TextureAssets.Item[type];
+            if (type < Main.maxItemTypes) 
+                return Terraria.GameContent.TextureAssets.Item[type].Value;
             else
             {
                 Item Item = new Item();

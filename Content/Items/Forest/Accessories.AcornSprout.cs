@@ -23,15 +23,15 @@ namespace StarlightRiver.Content.Items.Forest
             
         }
 
-		private void SpawnAcorn(Player Player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void SpawnAcorn(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
             if (target.life - damage <= 0)
             {
-                if (proj.minion && proj.owner == Player.whoAmI && Player.MinionAttackTargetNPC == target.whoAmI)
+                if (proj.minion && proj.owner == player.whoAmI && player.MinionAttackTargetNPC == target.whoAmI)
                 {
                     foreach (NPC NPC in Main.npc.Where(n => n.active && n.chaseable && Vector2.DistanceSquared(n.Center, target.Center) < Math.Pow(240, 2)))
                     {
-                        Projectile.NewProjectile(Player.Center, Vector2.Zero, ModContent.ProjectileType<Acorn>(), 5, 1, Player.whoAmI, NPC.whoAmI); //PORTTODO: Add source from item, since this is outside of Shoot
+                        Projectile.NewProjectile(player.GetProjectileSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<Acorn>(), 5, 1, player.whoAmI, NPC.whoAmI);
                     }
                 }
             }
