@@ -118,17 +118,17 @@ namespace StarlightRiver.Content.CustomHooks
         private void SwapTitle(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchStloc(8));
+            c.TryGotoNext(i => i.MatchStloc(10));
             c.Index++;
 
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
-            c.Emit(OpCodes.Ldloc, 7);
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldloc, 9);
             c.Emit(OpCodes.Ldelem_Ref);
 
-            c.Emit(OpCodes.Ldloc, 8);
+            c.Emit(OpCodes.Ldloc, 10);
 
             c.EmitDelegate<SwapTitleDelegate>(EmitSwapTitleDelegate);
-            c.Emit(OpCodes.Stloc, 8);
+            c.Emit(OpCodes.Stloc, 10);
         }
 
         private delegate string SwapTitleDelegate(NPC NPC, string input);
