@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿/*using Microsoft.Xna.Framework; //PORTTODO: Dear god x2.
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -254,4 +254,4 @@ namespace StarlightRiver.Content.CustomHooks
 		}
 	}
 
-}
+}*/
